@@ -1,0 +1,27 @@
+.ui.selection.dropdown {
+    background-color: rgba(0,0,0,0.6);
+    color: rgba(255,255,255,0.6);
+    border: solid 1px rgba(255,255,255,0.2);
+}
+.ui.selection.dropdown:hover {
+    background-color: rgba(0,0,0,0.8);
+    color: rgba(255,255,255,0.9);
+    border: solid 1px rgba(255,255,255,0.4);
+}
+.ui.dropdown.menu {
+    background: #4C4C4C;
+}
+.ui.selection.active.dropdown {
+    border-color: #4C4C4C;
+}
+.ui.selection.active.dropdown .menu{
+    border-color: #4C4C4C;
+}
+.ui.dropdown .menu .selected.item,
+.ui.dropdown.selected,
+.ui.menu .ui.dropdown .menu>.selected.item {
+    border-top: solid 1px rgba(255,255,255,0.2);
+    background: rgba(0,0,0,0.8) !important;
+    color: rgba(255,255,255,0.6) !important;
+    font-weight: normal !important;
+}

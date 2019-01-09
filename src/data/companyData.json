@@ -1,0 +1,18 @@
+{
+    "data": {
+        "company_1": {
+            "group_1":{
+                "event":103,
+                "system":79,
+                "alert":73,
+                "syslog":172
+            },
+            "group_2": {
+                "regClient": {"label":"Rate of RegisterClient API", "value":0.0135, "unit":"per sec"},
+                "currentConnect": {"label":"Current Connection", "value":32159, "unit":""},
+                "avgConnect": {"label":"Average Connection", "value":1.5267, "unit":"sec"},
+
+            }
+        }
+    }
+}

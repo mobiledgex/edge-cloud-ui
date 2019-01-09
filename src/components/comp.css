@@ -1,0 +1,286 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.topHeader{
+    background-color: blue !important;
+}
+/* 테이블 스타일 */
+
+.tableA .cellasHeader td {
+  padding: 5px;
+  text-align: center;
+  color: #ffffff;
+  background: -webkit-linear-gradient(#2f5a94 10%, #4d7094 85%, #2f5a94 90%); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#2f5a94 10%, #4d7094 85%, #2f5a94 90%); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#2f5a94 10%, #4d7094 85%, #2f5a94 90%); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#2f5a94 10%, #4d7094 85%, #2f5a94 90%); /* Standard syntax (must be last) */
+}
+.tableA .cellasFooter td {
+
+  background-color: aliceblue;
+}
+
+.tableA table thead .cellasHeader th {
+  border-top: none;
+  padding: 4px;
+  text-align: center;
+  color: #ffffff;
+  background: -webkit-linear-gradient(#2f5a94 10%, #4d7094 85%, #2f5a94 90%); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#2f5a94 10%, #4d7094 85%, #2f5a94 90%); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#2f5a94 10%, #4d7094 85%, #2f5a94 90%); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#2f5a94 10%, #4d7094 85%, #2f5a94 90%); /* Standard syntax (must be last) */
+}
+/*type b*/
+.tableA table thead tr .cellasHeaderGray th{
+  border-top: none;
+  padding: 4px;
+  text-align: center;
+  color: #ffffff;
+  background: -webkit-linear-gradient(#2f5a94 10%, #4d7094 85%, #2f5a94 90%); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#2f5a94 10%, #4d7094 85%, #2f5a94 90%); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#2f5a94 10%, #4d7094 85%, #2f5a94 90%); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#2f5a94 10%, #4d7094 85%, #2f5a94 90%); /* Standard syntax (must be last) */
+}
+.cellasHeaderGray {
+  padding: 1px;
+  height:28px;
+  text-align: center;
+  color: #ffffff;
+  background: -webkit-linear-gradient(#9E9E9E 20%, #4C4C4C 100%, #9E9E9E 20%); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#9E9E9E 20%, #4C4C4C 100%, #9E9E9E 20%); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#9E9E9E 20%, #4C4C4C 100%, #9E9E9E 20%); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#9E9E9E 20%, #4C4C4C 100%, #9E9E9E 20%); /* Standard syntax (must be last) */
+}
+.cellasHeaderGray th{
+  padding: 1px;
+  height:28px;
+  text-align: center;
+  color: #000;
+  background: -webkit-linear-gradient(#ececec 20%, #ececec 100%, #ececec 20%) !important; /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#ececec 20%, #ececec 100%, #ececec 20%) !important; /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#ececec 20%, #ececec 100%, #ececec 20%) !important; /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#ececec 20%, #ececec 100%, #ececec 20%) !important; /* Standard syntax (must be last) */
+}
+.tableA .cellasHeaderDark {
+  padding: 10px;
+  text-align: center;
+  color: #ffffff;
+  background: -webkit-linear-gradient(#2f5a94 20%, #4C4C4C 100%, #2f5a94 20%); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#9E9E9E 20%, #4C4C4C 100%, #9E9E9E 20%); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#9E9E9E 20%, #4C4C4C 100%, #9E9E9E 20%); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#2f5a94 20%, #4d7094 100%, #2f5a94 20%); /* Standard syntax (must be last) */
+}
+.test {
+    color: "#ffffff"
+}
+.tableA table thead .cellasHeader th:first-child{
+  border-radius:0 0 0 0;
+}
+
+/* Very compact table */
+.ui[class*="very-compact"].table td {
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+}
+.ui[class*="very-compact"].table td {
+  padding: 0.3em 0.3em;
+}
+.ui[class*="very-compact"].padded.table td,
+.ui[class*="very-compact"].padded.table th {
+    padding: 0.3em 0.3em;
+}
+
+
+.ui.table tr.green,
+.ui.table td.green {
+  box-shadow: 0px 0px 0px #E0B4B4 inset;
+}
+
+.ui.table tr.green,
+.ui.table td.green {
+  background: #caff66 !important;
+  color: #003534 !important;
+}
+
+.ui.table tr.sky,
+.ui.table td.sky {
+  background: #bdf3ff !important;
+  color: #003534 !important;
+}
+
+
+/*test */
+.page {
+  height: 100%;
+}
+%shape {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 100px;
+  height: 100px;
+}
+.box {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 100px;
+  height: 100px;
+background-color: #3498DB;
+}
+.circle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 100px;
+  height: 100px;
+  background-color: #ffa500;
+  border-radius: 100%;
+}
+
+
+
+/*양정은 css style 수정*/
+
+.ui.padded.grid,
+.ui.segment{
+  background-color:#0b111e !important;
+}
+.ui.blue.button, .ui.blue.buttons .button{
+  background-color:#41506b !important;
+}
+
+.ui.blue.button, .ui.blue.buttons .button:hover{
+  background-color:#0b529c !important;
+}
+
+.ui.padded.relaxed.grid a.active.item{
+  background-color:#023f7e !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.ui.padded.relaxed.grid a.item{
+  background-color: #091e48 !important;
+  color: #6293d3 !important;
+  border-radius: .28571429rem .28571429rem 0 0!important;
+  border:solid 1px #384e6a;
+  border-bottom: none !important;
+}
+
+/*
+.ui.padded.relaxed.grid div.row{
+  background: #023f7e !important;
+  bottom: 15px;
+}
+*/
+
+.ui.padded.relaxed.grid .ui.tabular.menu{
+  border: none !important;
+}
+.ui.table tr.sky, .ui.table td.sky{
+  background-color: #ffd9d9 !important;
+}
+.ui.table tr.green, .ui.table td.green{
+  background-color: #ffbaba !important;
+}
+
+/*양정은 수정*/
+
+.mainTitle{
+  text-align: left;
+  width: 55%;
+  display: table;
+  float: right;
+  color: white;
+  font-size: 20px;
+  line-height: 35px !important;
+  font-weight: bold !important;
+}
+.ui.vertically.padded.grid div.row{
+  background-color:#023f7e! important;
+}
+.ui.attached.segment{
+  border: none !important;
+}
+
+.ui.relaxed.grid>.row>.column{
+  padding: 0 !important;
+}
+.ui.card>.extra, .ui.cards>.card>.extra{
+  text-align: center !important;
+  background-color: #0061b6 !important;
+  margin-bottom: 5px !important;
+}
+.tableA .cellasHeader td{
+  background:#0061b6 !important;
+  border: solid 1px #01529a !important;
+}
+.ui.card>.extra a:not(.ui), .ui.cards>.card>.extra a:not(.ui){
+  color: #fff !important;
+}
+
+.ui.card, .ui.cards>.card{
+  padding: 5px !important;
+}
+
+.ui.table thead th,
+.ui.huge.attached.header,
+h2.ui.header{
+  color: #204376 !important;
+  font-size: 17px !important;
+}
+.ui.huge.attached.header{
+  text-align: center !important;
+}
+.ui.grid{
+  margin-top: 0 !important;
+}
+.ui.top.attached.header{
+  border-radius: 3px !important;
+}
+.tableA .cellasFooter td {
+  background-color: #3151b226;
+}
+.ui.table{
+  color: #30405c !important;
+  font-weight: bold !important;
+}
+.tableA .cellasFooter td .love{
+  background-color: red !important;
+}
+
+.eight.wide.column .tableA{
+  border: solid 3px red !important;
+}

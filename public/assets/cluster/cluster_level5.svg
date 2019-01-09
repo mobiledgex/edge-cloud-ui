@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 48 48" style="enable-background:new 0 0 48 48;" xml:space="preserve">
+	<style type="text/css">
+		.st51{fill:url(#SVGID_5);}
+		.st52{opacity:0.6;fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+		.st53{opacity:0.5;fill:#000000;}
+	</style>
+	<g id="level_5">
+		<linearGradient id="SVGID_5" gradientUnits="userSpaceOnUse" x1="24" y1="48" x2="24" y2="3.819878e-11">
+			<stop  offset="0.2" style="stop-color:#FF0022"/>
+			<stop  offset="0.95" style="stop-color:#FF667A"/>
+		</linearGradient>
+		<path class="st51" d="M38,48H10C4.5,48,0,43.5,0,38l0-28C0,4.5,4.5,0,10,0l28,0c5.5,0,10,4.5,10,10v28C48,43.5,43.5,48,38,48z"/>
+	</g>
+	<g id="all">
+		<path class="st52" d="M35.5,17.5h-23c-1.1,0-2-0.9-2-2v-3c0-1.1,0.9-2,2-2h23c1.1,0,2,0.9,2,2v3C37.5,16.6,36.6,17.5,35.5,17.5z"/>
+		<rect x="13" y="13" class="st53" width="2" height="2"/>
+		<rect x="17" y="13" class="st53" width="2" height="2"/>
+		<rect x="21" y="13" class="st53" width="2" height="2"/>
+		<path class="st52" d="M35.5,27.5h-23c-1.1,0-2-0.9-2-2v-3c0-1.1,0.9-2,2-2h23c1.1,0,2,0.9,2,2v3C37.5,26.6,36.6,27.5,35.5,27.5z"/>
+		<rect x="13" y="23" class="st53" width="2" height="2"/>
+		<rect x="17" y="23" class="st53" width="2" height="2"/>
+		<rect x="21" y="23" class="st53" width="2" height="2"/>
+		<path class="st52" d="M35.5,37.5h-23c-1.1,0-2-0.9-2-2v-3c0-1.1,0.9-2,2-2h23c1.1,0,2,0.9,2,2v3C37.5,36.6,36.6,37.5,35.5,37.5z"/>
+		<rect x="13" y="33" class="st53" width="2" height="2"/>
+		<rect x="17" y="33" class="st53" width="2" height="2"/>
+		<rect x="21" y="33" class="st53" width="2" height="2"/>
+	</g>
+</svg>

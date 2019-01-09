@@ -1,0 +1,25 @@
+#legendEl {
+    position:fixed;
+    bottom: 2em;
+    left: 3em;
+    z-index: 120;
+}
+.ui.animated.list>.item {
+    cursor: pointer;
+}
+.zoom-inout-reset {
+    position: fixed;
+    bottom: 13.7em;
+    left: 2em;
+    z-index: 120;
+}
+#mapZoomCtl {
+    background-color: rgba(0, 0, 0, 0.85);
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 0.3em 0;
+    padding: 0 3px;
+    width: 32px;
+    height: 32px;
+    display: block;
+}
