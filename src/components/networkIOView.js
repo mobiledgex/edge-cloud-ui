@@ -38,8 +38,8 @@ class NetworkIOView extends React.Component {
                     </Grid.Column>
                     <Grid.Column width={4}>
                         <Grid.Row>
-                            <NetworkInoutLegend type="in" colors={['#22cccc','#22cccc']}></NetworkInoutLegend>
-                            <NetworkInoutLegend type="out" colors={['#6699ff','#6699ff']}></NetworkInoutLegend>
+                            <NetworkInoutLegend type="in" colors={['#22cccc','#22cccc']} title="CPU(Average)" value={13.03} unit="%"></NetworkInoutLegend>
+                            <NetworkInoutLegend type="out" colors={['#6699ff','#6699ff']} title="MEMORY(Average)" value={24.04} unit="%"></NetworkInoutLegend>
                         </Grid.Row>
                     </Grid.Column>
                 </Grid.Row>
@@ -51,8 +51,8 @@ class NetworkIOView extends React.Component {
                     </Grid.Column>
                     <Grid.Column width={4}>
                         <Grid.Row>
-                            <NetworkInoutLegend type="in" colors={['#22cccc','#22cccc']}></NetworkInoutLegend>
-                            <NetworkInoutLegend type="out" colors={['#6699ff','#6699ff']}></NetworkInoutLegend>
+                            <NetworkInoutLegend type="in" colors={['#22cccc','#22cccc']} title="Network In" value={448.64} unit="MB"></NetworkInoutLegend>
+                            <NetworkInoutLegend type="out" colors={['#6699ff','#6699ff']} title="Network Out" value={12.04} unit="MB"></NetworkInoutLegend>
                         </Grid.Row>
                     </Grid.Column>
                 </Grid.Row>
