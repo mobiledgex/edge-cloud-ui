@@ -27,11 +27,11 @@ export default {
         }
     },
     marker: {
-        levelColors:["rgba(255,87,34,0.7)","rgba(45,255,34,0.7)","rgba(44,87,255,0.7)","rgba(255,255,34,0.7)","rgba(255,87,255,0.7)"],
+        levelColors:["rgba(255,87,34,0.8)","rgba(45,255,34,0.8)","rgba(44,87,255,0.8)","rgba(255,255,34,0.8)","rgba(255,87,255,0.8)"],
         stroke:"rgba(255,255,255,1)",
         strokeWidth: 0,
         second: {
-            fill:"rgba(255,127,0,0.8)",
+            fill:"rgba(255,25,56,1)",
             stroke:"rgba(255,255,255,1)",
             strokeWidth: 0.0001,
         }
