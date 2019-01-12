@@ -8,7 +8,7 @@ $ npm start
 
 ### Style Guid
 
-| page Name | component  | css           | 설명                         |
+| page Name | component  | css           | Description                  |
 |-----------|------------|---------------|------------------------------|
 | main      | main       | main.css      | Main All(Color, Layout etc.) |
 |           | worldMap   | worldMap.css  | map color                  |
