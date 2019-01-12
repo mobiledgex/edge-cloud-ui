@@ -171,7 +171,9 @@ class AnimatedMap extends Component {
         let _countries = [
             { "name": "Barcelona", "coordinates": [2.1734, 41.3851], "population": 1, "cost":1, "offsets": [10,15]},
             { "name": "Sant Montjuic", "coordinates": [0.170459, 41.018247], "population": 1, "cost":1, "offsets": [-10,15] },
-            { "name": "Sant Gervasi", "coordinates": [1.005055, 42.493365], "population": 1, "cost":1, "offsets": [10,-15] }
+            { "name": "Sant Gervasi", "coordinates": [1.005055, 42.493365], "population": 1, "cost":1, "offsets": [10,-15] },
+            { "name": "frankfurt", "coordinates": [8.6821, 50.1109], "population": 1, "cost":1, "offsets": [0,15] },
+            { "name": "hamburg", "coordinates": [9.9937, 53.5511], "population": 1, "cost":1, "offsets": [0,15] },
             ]
 
         this.setState({
@@ -185,13 +187,13 @@ class AnimatedMap extends Component {
         let alpha = 1;
         let durate = 900;
         if(dir === 1){
-            radius = 20;
+            radius = 32;
             alpha = 0.1;
             durate = 900;
         } else {
-            radius = 10;
+            radius = 16;
             alpha = 1;
-            durate = 1;
+            durate = 0;
         }
         if(d3.selectAll('.'+id).selectAll(".levelFive")) {
             d3.selectAll('.'+id).selectAll(".levelFive")

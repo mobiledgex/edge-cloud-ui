@@ -1,5 +1,5 @@
 import React from 'react';
-import { Segment, Image, Header } from 'semantic-ui-react';
+import { Dropdown, Image, Header } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -22,8 +22,8 @@ var vertical = 13;
 var layout = [
     {"w":6,"h":14,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Cluster Health"},
     {"w":6,"h":14,"x":6,"y":0,"i":"1","moved":false,"static":false, "title":"Application Statistics"},
-    {"w":6,"h":8,"x":0,"y":15,"i":"2","moved":false,"static":false, "title":"Daily Report"},
-    {"w":6,"h":8,"x":6,"y":15,"i":"3","moved":false,"static":false, "title":"Top 5 Interface Traffic"}];
+    {"w":6,"h":7,"x":0,"y":15,"i":"2","moved":false,"static":false, "title":"Daily Report"},
+    {"w":6,"h":7,"x":6,"y":15,"i":"3","moved":false,"static":false, "title":"Top 5 Interface Traffic"}];
 
 class AnalysticViewZone extends React.Component {
     constructor(props) {
@@ -31,6 +31,11 @@ class AnalysticViewZone extends React.Component {
         this.onHandleClick = this.onHandleClick.bind(this);
         const layout = this.generateLayout();
         this.state = { layout };
+        this.state.optionOne = [
+            {key:'itm_1', value:'cpu', text:'CPU Usage'},
+            {key:'itm_2', value:'memory', text:'MEM Usage'},
+            {key:'itm_3', value:'filesys', text:'FileSys Usage'}
+            ]
     }
 
     onHandleClick = function(e, data) {
@@ -42,12 +47,17 @@ class AnalysticViewZone extends React.Component {
     )
     makeHeader_date =(title)=> (
         <Header className='panel_title' style={{display:'flex',flexDirection:'row'}}>
-            <div style={{display:'flex', flexGrow:3}}>{title}</div>
-            <SelectFromTo style={{display:'flex', alignSelf:'flex-end'}}></SelectFromTo>
+            <div style={{display:'flex', flexGrow:8}}>{title}</div>
+            <SelectFromTo></SelectFromTo>
         </Header>
     )
     makeHeader_select =(title)=> (
-        <Header className='panel_title'>{title}</Header>
+        <Header className='panel_title' style={{display:'flex',flexDirection:'row'}}>
+            <div style={{display:'flex', flexGrow:14}}>{title}</div>
+            <div style={{display:'flex',  flexGrow:2, alignSelf:'flex-end'}} className='panel_title_filter'>
+                <Dropdown placeholder='CPU Usage' fluid search selection options={this.state.optionOne} />
+            </div>
+        </Header>
     )
 
     generateDOM() {
@@ -58,11 +68,13 @@ class AnalysticViewZone extends React.Component {
                     (i === 1)? this.makeHeader_date(item.title) :
                         (i === 2)? this.makeHeader_select(item.title) : this.makeHeader_noChild(item.title)
                 }
-                {(i === 0)? <CPUMEMListView></CPUMEMListView>
+                {
+                    (i === 0)? <CPUMEMListView></CPUMEMListView>
                     : (i === 1)? <NetworkIOView />
                     : (i === 2)? <DailyReportView />
                     : (i === 3)? <NetworkTrafficIOView></NetworkTrafficIOView>
-                    : <span>{item.i}</span>}
+                    : <span>{item.i}</span>
+                }
             </div>
         ))
     }

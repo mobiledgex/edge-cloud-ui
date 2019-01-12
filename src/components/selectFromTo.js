@@ -23,7 +23,7 @@ export default class SelectFromTo extends React.PureComponent {
     render() {
         const state = this.state;
         return (
-            <Grid>
+            <Grid style={{display:'flex', flexGrow:8, alignSelf:'flex-end'}}>
 
                 {/*<Grid.Row columns={4}>*/}
                     {/*<Grid.Column width={1}><div>From</div></Grid.Column>*/}

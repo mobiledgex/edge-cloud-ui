@@ -16,7 +16,7 @@ import NetworkInOutSimple from '../components/network/networkInoutSimple';
 import HighCharts from '../charts/highChart';
 import BBLineChart from '../charts/bbLineChart';
 
-let countryOptions = [ { key: 'af', value: 'af', flag: 'af', text: 'Disk I/O' } ]
+let dataOptions = [ { key: 'af', value: 'af', text: 'Disk W/R' },{ key: 'af2', value: 'af2', text: 'Networ I/O' } ]
 const VerticalSidebar = ({ animation, direction, visible, gotoNext }) => (
     <Sidebar
         as={Menu}
@@ -140,14 +140,14 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext }) => (
             {/*Network I/O*/}
             <Grid.Row columns={1}>
                 <Grid.Column width={8}>
-                    <Dropdown placeholder='Network I/O' fluid search selection options={countryOptions} />
+                    <Dropdown placeholder='Network I/O' fluid search selection options={dataOptions} />
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row columns={2}>
                 <Grid.Column width={5}>
                     <Grid.Row>
-                        <NetworkInOutSimple type="in" colors={['#22cccc','#22cccc']}></NetworkInOutSimple>
-                        <NetworkInOutSimple type="out" colors={['#6699ff','#6699ff']}></NetworkInOutSimple>
+                        <NetworkInOutSimple type="in" colors={['#22cccc','#22cccc']} title="Network In" value="448.64" unit="MB">></NetworkInOutSimple>
+                        <NetworkInOutSimple type="out" colors={['#6699ff','#6699ff']} title="Network Out" value="312.04" unit="MB">></NetworkInOutSimple>
                     </Grid.Row>
                 </Grid.Column>
                 <Grid.Column width={11}>

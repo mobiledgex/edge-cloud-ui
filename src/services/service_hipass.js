@@ -9,7 +9,7 @@ import FormatLaneGather from './formatter/formatLaneGather';
 
 //let gUrl = 'http://121.78.87.232:8080/station/';
 //let gUrl = 'http://211.195.163.17:8080/station/';
-let gUrl = 'http://192.168.10.42:8080/station/';
+let gUrl = 'http://dashboard.mobiledgex.net:9090/api/v1/query?query=';
 /*
 신공항    : 097 <Integer>
 북인천    : 098 <Integer>
@@ -19,21 +19,15 @@ let gUrl = 'http://192.168.10.42:8080/station/';
 let areaCode = ['097', '098', '099', 'ALL'];
 
 /*
-
+ 
 */
 
 let siteAddress = {
-    hipassMonitor: 'hipassDashboard.do?method=getLaneStatInfos',
-    trafficStatus: 'hipassDashboard.do?method=getTrafficHourInfos',
-    laneEquipEventInfoList: 'hipassDashboard.do?method=getLaneEquipEventInfoList',
-    laneGatherEventInfoList: 'hipassDashboard.do?method=getLaneGatherEventInfoList',
+    cpuUsage: '100%20-%20(avg%20by%20(instance)%20(irate(node_cpu_seconds_total%7Bjob%3D%22prometheus%22%2Cmode%3D%22idle%22%7D%5B5m%5D))%20*%20100)',
+    memoryUsage: '100%20-%20((node_memory_MemAvailable_bytes%7Bjob%3D%22prometheus%22%7D%20*%20100)%20%2F%20node_memory_MemTotal_bytes%7Bjob%3D%22prometheus%22%7D)',
+    networkTraffic_recv: 'sum%20(irate(node_network_receive_packets_total%7Bjob%3D%22prometheus%22%7D%5B5m%5D))%20by%20(instance)',
+    networkTraffic_send: 'sum%20(irate(node_network_transmit_packets_total%7Bjob%3D%22prometheus%22%7D%5B5m%5D))%20by%20(instance)',
 
-
-
-    cardStatInfos:'hipassDashboard.do?method=getCardStatInfos',//카드관리현황
-    cardBLStatInfoList:'hipassDashboard.do?method=getCardBLStatInfoList',//교통카드별 B/L현황
-
-    bridgeWeatherInfos:'hipassDashboard.do?method=getBridgeWeatherInfos'//기상정보
 }
 /////////////////
 // 로컬 환경에서 테스트 하기 위함

@@ -48,3 +48,9 @@ export function loadedData(act:string):Action {
         loaded: act,
     };
 }
+export function registDeveloper(accountInfo:string):Action {
+    return {
+        type: types.REGIST_DEVELOPER,
+        account: accountInfo,
+    };
+}

@@ -8,22 +8,17 @@ class DailyReportView extends React.Component {
     constructor() {
         super();
         this.state = {
-            optionOne : [ { key: 'ba', value: 'ba', flag: 'ba', text: 'CPU Usage' } ]
+
         }
     }
     render() {
         const { width, height } = this.props.size
         console.log('chart size == ', width, height)
         return (
-            <Grid divided='vertically'>
-                <Grid.Row columns={4} className='panel_filter_inline'>
-                    <Grid.Column>
-                        <Dropdown placeholder='CPU Usage' fluid search selection options={this.state.optionOne} />
-                    </Grid.Column>
-                </Grid.Row>
-                <Grid.Row columns={2} className='panel_contents'>
+            <Grid divided='vertically' className='panel_contents'>
+                <Grid.Row columns={2} className='panel_charts'>
                     <Grid.Column width={12}>
-                        <BBLineChart w={width*(12/16)} h={height*0.7}/>
+                        <BBLineChart w={width*(12/16)} h={height*0.8}/>
                     </Grid.Column>
                     <Grid.Column width={4}>
                         <NetworkInoutLegend type="in" colors={['#22cccc','#22cccc']} title="CPU(Average)" value="54" unit="sec"></NetworkInoutLegend>

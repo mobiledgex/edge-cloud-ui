@@ -9,9 +9,20 @@ class NetworkIOView extends React.Component {
     constructor() {
         super();
         this.state = {
-            optionOne : [ { key: 'ba', value: 'ba', flag: 'ba', text: 'Cluster-A' } ],
-            optionTwo : [ { key: 'do', value: 'do', flag: 'do', text: 'PockeMonGo' } ],
-            optionThree : [ { key: 'do', value: 'do', flag: 'do', text: 'CPU/MEM' } ]
+            optionOne : [
+                { key: 'ca', value: 'ca', text: 'Cluster-A' },
+                { key: 'cb', value: 'cb', text: 'Cluster-B' },
+                { key: 'cc', value: 'cc', text: 'Cluster-C' },
+                ],
+            optionTwo : [
+                { key: 'g1', value: 'g1', text: 'PokemonGo' },
+                { key: 'g2', value: 'g2', text: 'Game2' },
+                { key: 'g3', value: 'g3', text: 'Game3' }
+                ],
+            optionThree : [
+                { key: 'd1', value: 'd1', text: 'CPU/MEM' },
+                { key: 'd2', value: 'd2', text: 'NetworkIO' }
+                ]
         }
     }
     makeSelectRange=()=> (
@@ -20,7 +31,7 @@ class NetworkIOView extends React.Component {
                 <Dropdown placeholder='Cluster-A' fluid search selection options={this.state.optionOne} />
             </Grid.Column>
             <Grid.Column>
-                <Dropdown placeholder='PockemonGo' fluid search selection options={this.state.optionTwo} />
+                <Dropdown placeholder='PokemonGo' fluid search selection options={this.state.optionTwo} />
             </Grid.Column>
             <Grid.Column>
                 <Dropdown placeholder='CPU/MEM' fluid search selection options={this.state.optionThree} />
@@ -30,9 +41,9 @@ class NetworkIOView extends React.Component {
     render() {
         const { width, height } = this.props.size
         return (
-            <Grid divided='vertically'>
+            <Grid divided='vertically' className='panel_contents'>
                 {this.makeSelectRange()}
-                <Grid.Row columns={2} className='panel_contents'>
+                <Grid.Row columns={2} className='panel_charts'>
                     <Grid.Column width={12}>
                         <BBLineChart w={width*(12/16)} h={height*0.35}/>
                     </Grid.Column>
@@ -45,7 +56,7 @@ class NetworkIOView extends React.Component {
                 </Grid.Row>
                 <div className='panel_line_h'/>
                 {this.makeSelectRange()}
-                <Grid.Row columns={2} className='panel_contents'>
+                <Grid.Row columns={2} className='panel_charts'>
                     <Grid.Column width={12}>
                         <BBLineChart  w={width*(12/16)} h={height*0.35}/>
                     </Grid.Column>

@@ -6,3 +6,4 @@ export const SET_USER = "SET_USER";
 export const SET_VIDEO = "SET_VIDEO";
 export const CLICK_TAB = "CLICK_TAB";
 export const LOADED_DATA = "LOADED_DATA";
+export const REGIST_DEVELOPER = "REGIST_DEVELOPER";

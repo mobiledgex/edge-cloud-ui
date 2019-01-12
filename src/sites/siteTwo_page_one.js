@@ -29,8 +29,14 @@ class SiteTwoPageOne extends React.Component  {
         this.state = {
             receivedData:null,
             url:'',
-            countryOptionsOper : [ { key: 'ba', value: 'ba', flag: 'ba', text: 'Barcelona' } ],
-            countryOptionsDev : [ { key: 'do', value: 'do', flag: 'do', text: 'Deutsche Telekom' } ],
+            countryOptionsOper : [
+                { key: 'ba', value: 'ba', text: 'Barcelona' },
+                { key: 'sp', value: 'sp', text: 'Spain' }
+            ],
+            countryOptionsDev : [
+                { key: 'de', value: 'de', text: 'Deutsche Telekom' },
+                { key: 'oo', value: 'oo', text: 'Other Operator' }
+            ],
             sideVisible: false
         }
     }
