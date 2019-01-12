@@ -71,7 +71,7 @@ const getRow = (idx, level, dName, uValues, spkDatas) => (
             <CPUMEMUsage label="MEMORY" value={uValues.mem} w={60} h={60}></CPUMEMUsage>
             <CPUMEMUsage label="SYSTEM" value={uValues.sys} w={60} h={60}></CPUMEMUsage>
         </Grid.Column>
-        <Grid.Column width={6} style={{display:'flex', justifyContent:'flex-end', padding:0, margin:0}}>
+        <Grid.Column width={6} style={{display:'flex', justifyContent:'center', padding:0, margin:0}}>
             <div className='spark_chart'>
                 <SparkLine sId={'spchart_'+idx} w={200} h={60}></SparkLine>
                 <div className='label'>NETWORK I/O</div>
@@ -81,7 +81,7 @@ const getRow = (idx, level, dName, uValues, spkDatas) => (
 )
 
 const CPUMEMListView = () => (
-    <Grid divided size="small" style={{marginLeft:10, marginRight:10}}>
+    <Grid divided size="small" className='panel_contents'>
         {listDatas.map((data, i) => getRow(i, data.alarm, data.dName, data.values, sampleData))}
     </Grid>
 )

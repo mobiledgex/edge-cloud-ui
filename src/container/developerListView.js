@@ -1,12 +1,8 @@
 import React from 'react';
-import { List, Image, Header, Button, Table, Menu, Icon } from 'semantic-ui-react';
+import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Divider, Container } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
-import CPUMEMListView from './usage/cpumemoryListView';
-import NetworkIOView from '../components/networkIOView';
-import DailyReportView from '../components/dailyReportView';
-import NetworkTrafficIOView from '../components/networkTrafficIOView';
 import SelectFromTo from '../components/selectFromTo';
 
 import './styles.css';
@@ -20,15 +16,15 @@ const headerStyle = {
 var horizon = 6;
 var vertical = 13;
 var layout = [
-    {"w":19,"h":20,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Developer"},
+    {"w":19,"h":18,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Developer"},
 ]
 
 class DeveloperListView extends React.Component {
     constructor(props) {
         super(props);
-        this.onHandleClick = this.onHandleClick.bind(this);
+
         const layout = this.generateLayout();
-        this.state = { layout };
+        this.state = { layout,open: false, dimmer:true};
         this.dummyData = [
             {Index:'110', DeveloperName:'Mobiledgex SDK Demo', UserName:'bruce', Address:'000 Nowhere Street, Gaineville, FL 32604', Email:'empty@xxx.com',Edit:''},
             {Index:'109', DeveloperName:'Mobiledgex SDK Demo', UserName:'bruce', Address:'000 Nowhere Street, Gaineville, FL 32604', Email:'empty@xxx.com',Edit:''},
@@ -43,9 +39,14 @@ class DeveloperListView extends React.Component {
         ]
     }
 
-    onHandleClick = function(e, data) {
-        this.props.handleChangeSite(data.children.props.to)
+    onHandleClick(data) {
+        console.log('on handle click == ', data)
+        this.setState({ dimmer:data, open: true })
+        //this.props.handleChangeSite(data.children.props.to)
     }
+
+    show = (dim) => this.setState({ dimmer:dim, open: true })
+    close = () => this.setState({ open: false })
 
     makeHeader_noChild =(title)=> (
         <Header className='panel_title'>{title}</Header>
@@ -60,11 +61,67 @@ class DeveloperListView extends React.Component {
         <Header className='panel_title'>{title}</Header>
     )
 
-    generateDOM() {
+    InputExampleFluid = () => <Input fluid placeholder='' />
+
+    generateDOM(open, dimmer) {
 
         return layout.map((item, i) => (
             <div className="round_panel" key={i}>
                 {this.TableExampleVeryBasic()}
+                <Modal size={'small'} dimmer={dimmer} open={open} onClose={this.close}>
+                    <Modal.Header>New Apps</Modal.Header>
+                    <Modal.Content image>
+                        <Grid divided>
+                            <Grid.Row columns={2}>
+                                <Grid.Column width={5} style={{alignContent:'center'}}>
+                                    <div style={{alignSelf:'center'}}>Develper Name</div>
+                                </Grid.Column>
+                                <Grid.Column width={11}>
+                                    {this.InputExampleFluid()}
+                                </Grid.Column>
+                                <Divider vertical></Divider>
+                            </Grid.Row>
+                            <Grid.Row columns={2}>
+                                <Grid.Column width={5}>
+                                    <div>Develper Name</div>
+                                </Grid.Column>
+                                <Grid.Column width={11}>
+                                    {this.InputExampleFluid()}
+                                </Grid.Column>
+                                <Divider vertical></Divider>
+                            </Grid.Row>
+                            <Grid.Row columns={2}>
+                                <Grid.Column width={5}>
+                                    <div>Develper Name</div>
+                                </Grid.Column>
+                                <Grid.Column width={11}>
+                                    {this.InputExampleFluid()}
+                                </Grid.Column>
+                                <Divider vertical></Divider>
+                            </Grid.Row>
+                            <Grid.Row columns={2}>
+                                <Grid.Column width={5}>
+                                    <div>Develper Name</div>
+                                </Grid.Column>
+                                <Grid.Column width={11}>
+                                    {this.InputExampleFluid()}
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button color='black' onClick={this.close}>
+                            Nope
+                        </Button>
+                        <Button
+                            positive
+                            icon='checkmark'
+                            labelPosition='right'
+                            content="Yep, that's me"
+                            onClick={this.close}
+                        />
+                    </Modal.Actions>
+                </Modal>
             </div>
         ))
     }
@@ -95,15 +152,15 @@ class DeveloperListView extends React.Component {
             <Table.Body>
                 {
                     this.dummyData.map((item, i) => (
-                        <Table.Row>
-                            {Object.keys(item).map((value) => (
+                        <Table.Row key={i}>
+                            {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
-                                    <Table.Cell style={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
-                                        <Button>Delete</Button>
-                                        <Button color='teal'>Add</Button>
+                                    <Table.Cell key={j} style={{display:'flex', flexDirection:'row', justifyContent:'center'}}>
+                                        <Button onClick={() => alert('good')}>Delete</Button>
+                                        <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true)}>Edit</Button>
                                     </Table.Cell>
                                 :
-                                    <Table.Cell textAlign='center'>{item[value]}</Table.Cell>
+                                    <Table.Cell key={j} textAlign='center'>{item[value]}</Table.Cell>
                             ))}
                         </Table.Row>
                     ))
@@ -111,8 +168,8 @@ class DeveloperListView extends React.Component {
             </Table.Body>
             <Table.Footer>
                 <Table.Row>
-                    <Table.HeaderCell inverted>
-                        <Menu floated='center' pagination>
+                    <Table.HeaderCell colspan={100}>
+                        <Menu floated={'center'} pagination>
                             <Menu.Item as='a' icon>
                                 <Icon name='chevron left' />
                             </Menu.Item>
@@ -129,15 +186,23 @@ class DeveloperListView extends React.Component {
             </Table.Footer>
         </Table>
     )
+    componentWillReceiveProps(nextProps, nextContext) {
+                console.log('nextProps')
+        if(nextProps.accountInfo){
+            this.setState({ dimmer:'blurring', open: true })
+        }
+    }
 
     render() {
+        const { open, dimmer } = this.state;
         return (
             <ReactGridLayout
                 layout={this.state.layout}
                 onLayoutChange={this.onLayoutChange}
                 {...this.props}
             >
-                {this.generateDOM()}
+                {this.generateDOM(open, dimmer)}
+
             </ReactGridLayout>
         );
     }
@@ -150,7 +215,14 @@ class DeveloperListView extends React.Component {
     };
 }
 
+const mapStateToProps = (state) => {
+    let account = state.registryAccount.account;
+    console.log('account -- '+account)
 
+    return {
+        accountInfo: account + Math.random()*10000
+    };
+};
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
@@ -158,6 +230,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchProps)(DeveloperListView);
+export default connect(mapStateToProps, mapDispatchProps)(DeveloperListView);
 
 

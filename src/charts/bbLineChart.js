@@ -20,7 +20,7 @@ export default class BBLineChart extends React.Component {
         let chartMargin = 10;
 
         let chartWidth = this.props.w || 320;
-        let chartHeight = this.props.h || 150;
+        let chartHeight = this.props.h || 130;
 
         let tooltipShouldShowThreshold = 600;
         //let dataset = [{},{},{}]

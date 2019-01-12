@@ -10,9 +10,9 @@ $ npm start
 
 | page Name | component  | css           | 설명                         |
 |-----------|------------|---------------|------------------------------|
-| main      | main       | main.css      | 메인 전체(칼라, 레이아웃 등) |
-|           | worldMap   | worldMap.css  | 지도의 칼라                  |
-|           | line Chart | lineChart.css | 라인차트의 스타일            |
+| main      | main       | main.css      | Main All(Color, Layout etc.) |
+|           | worldMap   | worldMap.css  | map color                  |
+|           | line Chart | lineChart.css | Line chart style            |
 
 ### External Library
 

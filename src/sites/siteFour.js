@@ -44,6 +44,10 @@ class SiteFour extends React.Component {
 
     }
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+
+    onHandleRegistry() {
+        this.props.handleInjectDeveloper('userInfo');
+    }
     componentWillMount() {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -163,7 +167,7 @@ class SiteFour extends React.Component {
                     <Grid.Column width={14} style={{height:this.state.bodyHeight}} className='contents_body'>
                         <Grid.Row columns={2} className='content_title'>
                             <Grid.Column width={8}>Developers</Grid.Column>
-                            <Grid.Column width={8}><Button color='teal'>New</Button></Grid.Column>
+                            <Grid.Column width={8}><Button color='teal' onClick={() => this.onHandleRegistry()}>New</Button></Grid.Column>
                         </Grid.Row>
                         <DeveloperListView></DeveloperListView>
                     </Grid.Column>
@@ -178,7 +182,8 @@ class SiteFour extends React.Component {
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))}
+        handleInjectData: (data) => { dispatch(actions.injectData(data))},
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
     };
 };
 
