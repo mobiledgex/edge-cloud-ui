@@ -42,7 +42,7 @@ export default class Legend extends React.Component {
     }
     componentDidMount(){
 
-        d3.svg('/assets/images/console_legend_health/console_legend_health.svg').then((svg) => {
+        d3.svg('/assets/worldmap/console_legend_health.svg').then((svg) => {
             const gElement = d3.select(svg).select('svg');
             d3.select('#legendCont').node().append(gElement.node());
         });

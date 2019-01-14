@@ -20,7 +20,8 @@ class CPUMEMUsage extends React.Component {
     render() {
         return (
             <div className='circular_chart' style={{width:this.props.w, height:this.props.h}}>
-                <CircularProgress value={this.props.value}/>
+                <CircularProgress value={this.props.value} style={{fontSize:this.props.w/6}}/>
+                <div className='unit' style={{width:this.props.w, top:this.props.h/1.68, fontSize:this.props.w/6}}>%</div>
                 <div className='label' style={this.props.labelStyle}>{this.props.label}</div>
             </div>
         );

@@ -9,7 +9,7 @@ import Login from '../components/login';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 //service
-import * as service from '../services/service_hipass';
+import * as service from '../services';
 
 
 

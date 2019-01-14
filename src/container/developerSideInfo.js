@@ -17,7 +17,7 @@ import HighCharts from '../charts/highChart';
 import BBLineChart from '../charts/bbLineChart';
 
 let dataOptions = [ { key: 'af', value: 'af', text: 'Disk W/R' },{ key: 'af2', value: 'af2', text: 'Networ I/O' } ]
-const VerticalSidebar = ({ animation, direction, visible, gotoNext }) => (
+const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu }) => (
     <Sidebar
         as={Menu}
         animation={animation}
@@ -25,7 +25,7 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext }) => (
         icon='labeled'
         vertical
         visible={visible}
-        className='main_sidebar'
+        className='console_sidebar'
     >
         <Grid style={{margin:10}}>
             <Grid.Row>
@@ -128,7 +128,7 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext }) => (
             {/* cpu memory usage */}
             <Grid.Row columns={3}>
                 <Grid.Column>
-                    <CPUMEMUsage label="CPU" value={78}></CPUMEMUsage>
+                    <CPUMEMUsage label="CPU" value={cpu}></CPUMEMUsage>
                 </Grid.Column>
                 <Grid.Column>
                     <CPUMEMUsage label="MEMORY" value={74}></CPUMEMUsage>
@@ -167,6 +167,7 @@ export default class DeveloperSideInfo extends React.Component {
         direction: 'right',
         dimmed: false,
         visible: false,
+        cpu:0
     }
     constructor() {
         super();
@@ -177,6 +178,9 @@ export default class DeveloperSideInfo extends React.Component {
     componentWillReceiveProps(nextProps) {
         if(nextProps) {
             this.setState({visible:(nextProps.sideVisible) ? true : false});
+            if(nextProps.cpu) {
+                this.setState({cpu:nextProps.cpu})
+            }
         }
     }
     handleClickBtn() {
@@ -186,12 +190,12 @@ export default class DeveloperSideInfo extends React.Component {
 
 
     render() {
-        const { animation, dimmed, direction, visible } = this.state
+        const { animation, dimmed, direction, visible, cpu } = this.state
         const vertical = direction === 'bottom' || direction === 'top'
 
         return (
             <div>
-                <VerticalSidebar animation={animation} direction={direction} visible={visible} gotoNext={this.handleClickBtn} />
+                <VerticalSidebar animation={animation} direction={direction} visible={visible} gotoNext={this.handleClickBtn} cpu={cpu} />
             </div>
         )
     }

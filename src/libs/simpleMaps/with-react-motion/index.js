@@ -188,12 +188,12 @@ class AnimatedMap extends Component {
         let durate = 900;
         if(dir === 1){
             radius = 32;
-            alpha = 0.1;
+            alpha = 0;
             durate = 900;
         } else {
             radius = 16;
             alpha = 1;
-            durate = 0;
+            durate = 300;
         }
         if(d3.selectAll('.'+id).selectAll(".levelFive")) {
             d3.selectAll('.'+id).selectAll(".levelFive")
@@ -209,7 +209,7 @@ class AnimatedMap extends Component {
     handleMove(geography, evt) {
         const x = evt.clientX
         const y = evt.clientY + window.pageYOffset
-        console.log('tooltip move -- ', x, y, geography.properties.NAME)
+        //console.log('tooltip move -- ', x, y, geography.properties.NAME)
         //let tooltipComp = document.getElementsByClassName('tooltipSH')[0];
         // tooltipComp.style.backgroundColor = 'red';
         // tooltipComp.style.position = 'absolute';
@@ -244,18 +244,18 @@ class AnimatedMap extends Component {
 
     }
     render() {
-        const grdColors = ['#000000', '#00ff00', '#99BB00', '#ffff00', '#FF8600', '#ff0000']
+        const grdColors = ['#000000', '#00CC44', '#88ff00', '#FFEE00', '#FF7700', '#FF0022']
         return (
             <div style={wrapperStyles}>
                 <div className="zoom-inout-reset">
+                    <Button id="mapZoomCtl" size='20' icon onClick={this.handleReset}>
+                        <Icon name="expand" />
+                    </Button>
                     <Button id="mapZoomCtl" size='20' icon onClick={this.handleZoomIn}>
                         <Icon name="plus square outline" />
                     </Button>
                     <Button id="mapZoomCtl" size='20' icon onClick={this.handleZoomOut}>
                         <Icon name="minus square outline" />
-                    </Button>
-                    <Button id="mapZoomCtl" size='20' icon onClick={this.handleReset}>
-                        <Icon name="expand" />
                     </Button>
                 </div>
 
@@ -328,26 +328,10 @@ class AnimatedMap extends Component {
                                                             stroke={styles.marker.stroke}
                                                             strokeWidth={styles.marker.strokeWidth}
                                                         />
-                                                        <text
-                                                            textAnchor="middle"
-                                                            y={4}
-                                                            style={{
-                                                                fontFamily: "sans-serif",
-                                                                fill: "#fff",
-                                                                fontSize: '12px',
-                                                            }}
-                                                        >
+                                                        <text textAnchor="middle" y={4} class="marker_value">
                                                             {city.cost}
                                                         </text>
-                                                        <text
-                                                            textAnchor="middle"
-                                                            y={24}
-                                                            style={{
-                                                                fontFamily: "sans-serif",
-                                                                fill: "#999",
-                                                                fontSize: '9px',
-                                                            }}
-                                                        >
+                                                        <text textAnchor="middle" y={24} class="marker_label">
                                                             {city.name}
                                                         </text>
                                                     </Marker>
@@ -366,17 +350,14 @@ class AnimatedMap extends Component {
                                                             r={6}
                                                             fill={styles.marker.second.fill}
                                                             stroke={styles.marker.second.stroke}
+                                                            strokeWidth={styles.marker.second.strokeWidth}
                                                         />
 
                                                         <text
+                                                            class="marker_label"
                                                             textAnchor="middle"
                                                             x={city.offsets[0]}
                                                             y={city.offsets[1]}
-                                                            style={{
-                                                                fontFamily: "sans-serif",
-                                                                fill: "#999",
-                                                                fontSize: '9px',
-                                                            }}
                                                         >
                                                             {city.name}
                                                         </text>

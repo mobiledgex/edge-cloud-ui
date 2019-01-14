@@ -28,11 +28,19 @@
 .CircularProgressbar .CircularProgressbar-text {
     fill: rgba(51,255,255,0.9);
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 2em;
+    font-size: 2.143em;
     font-weight: 200;
-    dominant-baseline: middle;
+    dominant-baseline: text-top;
     text-anchor: middle;
+    baseline-shift:10%;
 }
+.circular_chart .unit {
+    color: rgba(51,255,255,.5);
+    text-align: center;
+    position: absolute;
+    line-height: 1em;
+}
+
 
 .CircularProgressbar .CircularProgressbar-background {
     fill: rgba(255,255,255,0.2);

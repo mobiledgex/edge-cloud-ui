@@ -90,7 +90,7 @@ class SiteThree extends React.Component {
                             <MaterialIcon icon={'notifications_none'} />
                         </div>
                         <div>
-                            <Image src='/assets/images/console_legend_health/icon_nav_user.png' avatar />
+                            <Image src='/assets/avatar/avatar_default.svg' avatar />
                             <span>Administrator</span>
                         </div>
                         <div>

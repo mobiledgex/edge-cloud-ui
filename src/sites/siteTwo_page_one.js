@@ -10,6 +10,9 @@ import { withRouter } from 'react-router-dom';
 import BubbleMaps from '../libs/simpleMaps/bubbles-map';
 import AnimatedMap from '../libs/simpleMaps/with-react-motion';
 import DeveloperSideInfo from '../container/developerSideInfo'
+//service
+import * as Service from '../services'
+
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -37,7 +40,10 @@ class SiteTwoPageOne extends React.Component  {
                 { key: 'de', value: 'de', text: 'Deutsche Telekom' },
                 { key: 'oo', value: 'oo', text: 'Other Operator' }
             ],
-            sideVisible: false
+            sideVisible: false,
+            cpuUsage:null,
+            memUsage:null,
+            network:null
         }
     }
     clearData() {
@@ -50,11 +56,32 @@ class SiteTwoPageOne extends React.Component  {
     /*********************
      * Call Data from Server as REST
      **********************/
+    receiveCPUData(data) {
+        //console.log('receive data = '+JSON.stringify(data));
+        let _data = null
+        data.map((key, i) => {
+            if(key.inst.indexOf('dashboard') > -1) _data = data[i]
+        })
+        _self.setState({cpuUsage:_data.score})
+    }
+    receiveMEMData(data) {
+        //console.log('receive data = '+JSON.stringify(data));
+        _self.setState({memUsage:data})
+    }
+    receiveNETData(dataIn, dataOut) {
+        //console.log('receive data = '+dataIn+":"+dataOut);
+        _self.setState({network:{network_in:dataIn, network_out:dataOut}})
+    }
     componentDidMount() {
-        //test speech
-
+        //call data from service
+        Service.getStatusCPU(this.receiveCPUData, 5000);
+        Service.getStatusMEM(this.receiveMEMData, 5000);
+        Service.getStatusNET(this.receiveNETData, 5000);
 
     }
+
+
+
     componentWillReceiveProps(nextProps) {
         console.log('receive props ----- '+JSON.stringify(nextProps))
         /*
@@ -110,11 +137,11 @@ class SiteTwoPageOne extends React.Component  {
     }
     render() {
         return (
-            <div id="bodyCont" className='main_body'>
+            <div id="bodyCont" className='console_body'>
                 <div style={{position:'absolute', backgroundColor:'transparent', width:'100%', height:'100%', overflow:'hidden'}}>
                     <ContainerOne ref={ref => this.container = ref} {...this.props} data={this.state.receivedData} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
                 </div>
-                <Grid className='main_nav_left'>
+                <Grid className='console_nav_left'>
                     <Grid.Row columns={2}>
                         <Grid.Column>
                             <Dropdown placeholder='Select Operator' fluid search selection options={this.state.countryOptionsOper} />
@@ -124,8 +151,8 @@ class SiteTwoPageOne extends React.Component  {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-                <div className='main_right_content'>
-                    <DeveloperSideInfo sideVisible={this.state.sideVisible} gotoNext={this.gotoNext}></DeveloperSideInfo>
+                <div className='console_right_content'>
+                    <DeveloperSideInfo sideVisible={this.state.sideVisible} gotoNext={this.gotoNext} cpu={this.state.cpuUsage} mem={this.state.memUsage} network={this.state.network}></DeveloperSideInfo>
                 </div>
             </div>
         );
