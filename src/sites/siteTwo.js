@@ -28,7 +28,7 @@ const ContainerOne = (props) => (
 );
 const Footer = () => (
     <div style={Styles.footer}>
-        <Image style={Styles.footerImage} src='/assets/images/console_legend_health/console_mark_btm.png' />
+        <Image style={Styles.footerImage} src='/assets/worldmap/title_footer.png' />
     </div>
 )
 

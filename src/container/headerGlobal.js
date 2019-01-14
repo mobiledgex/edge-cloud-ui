@@ -39,14 +39,14 @@ class HeaderGlobal extends React.Component {
         const imageProps = {
             avatar: true,
             spaced: 'right',
-            src: '/assets/images/avatar/nan.jpg',
+            src: '/assets/avatar/avatar_default.svg',
         }
 
         return (
-            <Grid className='main_gnb_header'>
+            <Grid className='console_gnb_header'>
                 <Grid.Column width={5}></Grid.Column>
                 <Grid.Column width={6}>
-                    <div className='main_title_top' />
+                    <div className='title_top' />
                 </Grid.Column>
                 <Grid.Column width={5} className='navbar_right'>
                     <div style={{cursor:'pointer'}} onClick={() => this.gotoPreview()}>
@@ -56,7 +56,7 @@ class HeaderGlobal extends React.Component {
                         <MaterialIcon icon={'notifications_none'} />
                     </div>
                     <div>
-                        <Image src='/assets/images/console_legend_health/icon_nav_user.png' avatar />
+                        <Image src='/assets/avatar/avatar_default.svg' avatar />
                         <span>Administrator</span>
                     </div>
                     <div>

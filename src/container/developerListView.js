@@ -53,7 +53,7 @@ class DeveloperListView extends React.Component {
     )
     makeHeader_date =(title)=> (
         <Header className='panel_title' style={{display:'flex',flexDirection:'row'}}>
-            <div style={{display:'flex', flexGrow:3}}>{title}</div>
+            <div style={{display:'flex', flexGrow:8}}>{title}</div>
             <SelectFromTo style={{display:'flex', alignSelf:'flex-end'}}></SelectFromTo>
         </Header>
     )
@@ -70,18 +70,9 @@ class DeveloperListView extends React.Component {
                 {this.TableExampleVeryBasic()}
                 <Modal size={'small'} dimmer={dimmer} open={open} onClose={this.close}>
                     <Modal.Header>New Apps</Modal.Header>
-                    <Modal.Content image>
+                    <Modal.Content>
                         <Grid divided>
                             <Grid.Row columns={2}>
-                                <Grid.Column width={5} style={{alignContent:'center'}}>
-                                    <div style={{alignSelf:'center'}}>Develper Name</div>
-                                </Grid.Column>
-                                <Grid.Column width={11}>
-                                    {this.InputExampleFluid()}
-                                </Grid.Column>
-                                <Divider vertical></Divider>
-                            </Grid.Row>
-                            <Grid.Row columns={2}>
                                 <Grid.Column width={5}>
                                     <div>Develper Name</div>
                                 </Grid.Column>
@@ -92,7 +83,7 @@ class DeveloperListView extends React.Component {
                             </Grid.Row>
                             <Grid.Row columns={2}>
                                 <Grid.Column width={5}>
-                                    <div>Develper Name</div>
+                                    <div>User Name</div>
                                 </Grid.Column>
                                 <Grid.Column width={11}>
                                     {this.InputExampleFluid()}
@@ -101,7 +92,16 @@ class DeveloperListView extends React.Component {
                             </Grid.Row>
                             <Grid.Row columns={2}>
                                 <Grid.Column width={5}>
-                                    <div>Develper Name</div>
+                                    <div>Address</div>
+                                </Grid.Column>
+                                <Grid.Column width={11}>
+                                    {this.InputExampleFluid()}
+                                </Grid.Column>
+                                <Divider vertical></Divider>
+                            </Grid.Row>
+                            <Grid.Row columns={2}>
+                                <Grid.Column width={5}>
+                                    <div>Email</div>
                                 </Grid.Column>
                                 <Grid.Column width={11}>
                                     {this.InputExampleFluid()}
@@ -110,14 +110,14 @@ class DeveloperListView extends React.Component {
                         </Grid>
                     </Modal.Content>
                     <Modal.Actions>
-                        <Button color='black' onClick={this.close}>
-                            Nope
+                        <Button onClick={this.close}>
+                            Cancel
                         </Button>
                         <Button
                             positive
                             icon='checkmark'
                             labelPosition='right'
-                            content="Yep, that's me"
+                            content="Save"
                             onClick={this.close}
                         />
                     </Modal.Actions>

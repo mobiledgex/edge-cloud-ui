@@ -33,9 +33,8 @@ export default {
         second: {
             fill:"rgba(255,25,56,1)",
             stroke:"rgba(255,255,255,1)",
-            strokeWidth: 0.0001,
-        }
-    }
-
+            strokeWidth: 0.4,
+        },
+    },
 
 };

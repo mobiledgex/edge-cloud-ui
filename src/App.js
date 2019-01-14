@@ -19,14 +19,7 @@ import SiteThree from "./sites/siteThree";
 import SiteFour from "./sites/siteFour";
 
 let self = null;
-const headerStyle = {
-    backgroundImage: 'url(/assets/tcs_title_bg.png)',
-    backgroundRepeat: 'repeat-x'
-}
-const headerFMSStyle = {
-    backgroundImage: 'url(/assets/fms_title_bg.png)',
-    backgroundRepeat: 'repeat-x'
-}
+
 const asyncComponent = getComponent => (
     class AsyncComponent extends Component {
         constructor() {

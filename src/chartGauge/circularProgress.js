@@ -29,9 +29,9 @@ class CircularProgress extends React.Component {
             <div className='circular_outer'>
                 <CircularProgressbar
                     percentage={percentage}
-                    text={`${percentage}%`}
+                    text={`${percentage}`}
                     styles={{
-                        path: { stroke: `rgba(62, 152, 199, ${percentage / 100})` },
+                        path: { stroke: `rgba(62, 152, 199, ${percentage / 100})` }
                     }}
                 >
 

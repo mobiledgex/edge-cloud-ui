@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 
 //service
-import * as service from '../services/service_hipass';
+import * as service from '../services';
 //
 // HTML5 History API 지원여부 파악
 const isBrowserHistory = window.history.pushState;
