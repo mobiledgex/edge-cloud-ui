@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 42 42" style="enable-background:new 0 0 42 42;" xml:space="preserve">
+<style type="text/css">
+	.user_bg{opacity:0.3;fill:#FFFFFF;}
+	.user{opacity:0.4;fill:#FFFFFF;}
+</style>
+<rect class="user_bg" width="42" height="42"/>
+<path class="user" d="M21,23c3.87,0,7-3.13,7-7s-3.13-7-7-7s-7,3.13-7,7S17.13,23,21,23z M21,26.5c-4.67,0-14,2.35-14,7V42h28v-8.5
+	C35,28.85,25.67,26.5,21,26.5z"/>
+</svg>

@@ -1,14 +1,12 @@
 //import axios from 'axios';
 //import fetchJsonp from 'fetch-jsonp';
 import axios from 'axios-jsonp-pro';
-import FormatHipassMonitor from './formatter/formatHipassMonitor';
-import FormatHipassMonitorTraffic from './formatter/formatHipassMonitorTraffic';
-//import FormatHipassMonitorLane from './formatter/formatHipassMonitorLane';
+import FormatHipassMonitorTraffic from './formatter/formatCPUMEMUsage';
 import FormatLaneEquip from './formatter/formatLaneEquip';
 import FormatLaneGather from './formatter/formatLaneGather';
+import FormatCPUMEMUsage from './formatter/formatCPUMEMUsage';
+import FormatNetworkIO from './formatter/formatNetworkIO';
 
-//let gUrl = 'http://121.78.87.232:8080/station/';
-//let gUrl = 'http://211.195.163.17:8080/station/';
 let gUrl = 'http://dashboard.mobiledgex.net:9090/api/v1/query?query=';
 /*
 신공항    : 097 <Integer>
@@ -30,7 +28,7 @@ let siteAddress = {
 
 }
 /////////////////
-// 로컬 환경에서 테스트 하기 위함
+// below script is just test on local
 /////////////////
 // export function getHipassMonitor(resource, hId, callback, every) {
 //     console.log('request data as global area code == '+global.areaCode)
@@ -61,23 +59,63 @@ function getUrl(resource) {
 
 
 let ajaxcall0 = null;
-export function getHipassMonitor(resource, state, callback, every) {
+export function getStatusCPU(callback, every) {
     console.log('request data as global area code == '+global.areaCode)
-    let url = getUrl(resource);
-    axios.jsonp(url)
-            .then(function (response) {
-                console.log('axios json p == '+JSON.stringify(response));
-                let responseData = FormatHipassMonitor(response)
+    let url = gUrl + siteAddress.cpuUsage;
+    var start = () => {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                let responseData = FormatCPUMEMUsage(data)
                 callback(responseData);
-
-            })
-            .catch(function (error) {
-                console.log('axios json p error == '+error);
-
             });
+    }
+
+
+    if(every) {
+        let loop =()=> {
+            start();
+            setTimeout(()=>loop(), every)
+        }
+        loop();
+    } else {
+        start();
+    }
 
 }
+export function getStatusMEM(callback, every) {
+    console.log('request data as global area code == '+global.areaCode)
+    let url = gUrl + siteAddress.cpuUsage;
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            let responseData = FormatCPUMEMUsage(data)
+            callback(responseData);
+        });
+}
+export function getStatusNET(callback, every) {
+    console.log('request data as global area code == '+global.areaCode)
+    let url1 = gUrl + siteAddress.networkTraffic_recv;
+    let url2 = gUrl + siteAddress.networkTraffic_send;
+    let responseData1 = null, responseData2 = null
+    fetch(url1)
+        .then(response => response.json())
+        .then(data => {
+            let responseData1 = FormatNetworkIO(data)
+            if(responseData1 && responseData2){
+                callback(responseData1, responseData2);
+            }
 
+        });
+    fetch(url2)
+        .then(response => response.json())
+        .then(data => {
+            let responseData2 = FormatNetworkIO(data)
+            if(responseData1 && responseData2){
+                callback(responseData1, responseData2);
+            }
+        });
+}
 let ajaxcall1= null;
 export function getTrafficData(resource, hId, callback, every) {
     let url = getUrl(resource);
