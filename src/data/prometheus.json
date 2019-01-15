@@ -1,0 +1,53 @@
+{
+  "status": "success",
+  "data": {
+    "resultType": "vector",
+    "result": [
+      {
+        "metric": {
+          "instance": "berlin.tdg.mobiledgex.net:9100"
+        },
+        "value": [
+          1547119613.683,
+          "0.2708333333187767"
+        ]
+      },
+      {
+        "metric": {
+          "instance": "bonn.tdg.mobiledgex.net:9100"
+        },
+        "value": [
+          1547119613.683,
+          "0.3249999999873978"
+        ]
+      },
+      {
+        "metric": {
+          "instance": "dashboard.mobiledgex.net:9100"
+        },
+        "value": [
+          1547119613.683,
+          "5.333333333255723"
+        ]
+      },
+      {
+        "metric": {
+          "instance": "hamburg.tdg.mobiledgex.net:9100"
+        },
+        "value": [
+          1547119613.683,
+          "0.258333333355651"
+        ]
+      },
+      {
+        "metric": {
+          "instance": "munich-test.tdg.mobiledgex.net:9100"
+        },
+        "value": [
+          1547119613.683,
+          "0.24166666669771075"
+        ]
+      }
+    ]
+  }
+}

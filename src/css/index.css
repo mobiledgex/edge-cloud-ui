@@ -467,6 +467,7 @@ body {
     background-color: #292c33;
     border-radius: 6px;
     padding: 0.857em 1.071em;
+    overflow: hidden;
 }
 .ui.header.panel_title {
     color: rgba(255,255,255,0.7);

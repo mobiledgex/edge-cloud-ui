@@ -10,9 +10,10 @@ $ npm start
 
 | page Name | component  | css           | Description                  |
 |-----------|------------|---------------|------------------------------|
-| main      | main       | main.css      | Main All(Color, Layout etc.) |
-|           | worldMap   | worldMap.css  | map color                    |
-|           | line Chart | lineChart.css | Style of LineChart           |
+| main      | main       | main.css      | All Main(color, layout etc.) |
+|           | worldMap   | worldMap.css  | Color of map                 |
+|           | line Chart | lineChart.css | Style of linechart           |
+
 
 ### External Library
 
