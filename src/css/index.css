@@ -11,14 +11,9 @@ body {
 }
 
 /* font */
-body,
-.ui.input>input,
-.buttons .button,
-.button,
-.console_sidebar,
-.ui.header,
+body, button, input, optgroup, select, textarea,
 .header,
-.ui.menu {
+.menu {
     font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif !important;
 }
 
@@ -297,7 +292,7 @@ body,
     align-items: normal;
 }
 .console_sidebar {
-    background-color: rgba(0,0,0,0.4) !important;
+    background-color: rgba(0,0,0,.5) !important;
     width: 500px !important;
     top: 70px !important;
 }
@@ -381,7 +376,7 @@ body,
 .console_sidebar .category .label,
 .console_sidebar .circular_chart .label,
 .chart_category .label {
-    color: rgba(255,255,255,0.7);
+    color: rgba(255,255,255,0.65);
     font-size: 1em;
     font-weight: 300;
     line-height: 1.4em;
@@ -621,7 +616,7 @@ body,
 .cluster_property .circular_chart .label,
 .cluster_property .cluster_health .label,
 .cluster_property .spark_chart .label {
-    color: rgba(255,255,255,.7);
+    color: rgba(255,255,255,.65);
     font-size: 12px;
 }
 .cluster_property .circular_chart .label {
@@ -736,7 +731,7 @@ body,
 .contents_body .ui.table thead th {
     color: rgba(255,255,255,.7);
     border-top: 2px solid rgba(255,255,255,.2);
-    border-bottom: 1px solid rgba(255,255,255,.1);
+    border-bottom: 1px solid rgba(255,255,255,.125);
     border-radius: 0 !important;
     font-weight: 400;
     padding: 1.2em .78571429em;

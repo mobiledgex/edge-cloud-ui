@@ -50,11 +50,11 @@ function getIcon (level, domId) {
         case '5': src = '/assets/cluster/cluster_level5.svg'; break;
         default: src = '/assets/cluster/cluster_level1.svg'; break;
     }
-    // 오류나서 잠시 막음
-    // d3.svg(src).then((svg) => {
-    //     const gElement = d3.select(svg).select('svg');
-    //     d3.select(domId).node().append(gElement.node());
-    // })
+
+    d3.svg(src).then((svg) => {
+        const gElement = d3.select(svg).select('svg');
+        d3.select(domId).node().append(gElement.node());
+    })
 }
 const sampleData = randomData(30);
 const sampleData100 = randomData(100);

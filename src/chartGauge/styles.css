@@ -27,7 +27,6 @@
 
 .CircularProgressbar .CircularProgressbar-text {
     fill: rgba(51,255,255,0.9);
-    font-family: Helvetica, Arial, sans-serif;
     font-size: 2.143em;
     font-weight: 200;
     dominant-baseline: text-top;
