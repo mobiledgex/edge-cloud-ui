@@ -9,13 +9,18 @@ import CircularProgress from '../../chartGauge/circularProgress';
 class CPUMEMUsage extends React.Component {
     constructor() {
         super();
+        this.state = {
+
+        }
 
     }
     componentDidMount() {
 
     }
     componentWillReceiveProps(nextProps) {
-
+        if(nextProps.value){
+            
+        }
     }
     render() {
         return (
@@ -29,7 +34,7 @@ class CPUMEMUsage extends React.Component {
 }
 CPUMEMUsage.defaultProps = {
     label:'CPU/Memory',
-    value:10,
+    value:Math.random()*100,
     w:90,
     h:90
 }

@@ -17,7 +17,9 @@ let gUrl = 'http://dashboard.mobiledgex.net:9090/api/v1/query?query=';
 let areaCode = ['097', '098', '099', 'ALL'];
 
 /*
- 
+http://dashboard.mobiledgex.net:9090/api/v1/query?query=sum%20(irate(node_network_receive_packets_total%7Bjob%3D%22prometheus%22%7D%5B5m%5D))%20by%20(instance)
+
+http://dashboard.mobiledgex.net:9090/api/v1/query?query=sum%20(irate(node_network_transmit_packets_total%7Bjob%3D%22prometheus%22%7D%5B5m%5D))%20by%20(instance)
 */
 
 let siteAddress = {
@@ -71,7 +73,6 @@ export function getStatusCPU(callback, every) {
             });
     }
 
-
     if(every) {
         let loop =()=> {
             start();
@@ -85,36 +86,67 @@ export function getStatusCPU(callback, every) {
 }
 export function getStatusMEM(callback, every) {
     console.log('request data as global area code == '+global.areaCode)
-    let url = gUrl + siteAddress.cpuUsage;
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            let responseData = FormatCPUMEMUsage(data)
-            callback(responseData);
-        });
+    let url = gUrl + siteAddress.memoryUsage;
+
+    var start = () => {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                let responseData = FormatCPUMEMUsage(data)
+                callback(responseData);
+            });
+    }
+
+    if(every) {
+        let loop =()=> {
+            start();
+            setTimeout(()=>loop(), every)
+        }
+        loop();
+    } else {
+        start();
+    }
 }
 export function getStatusNET(callback, every) {
-    console.log('request data as global area code == '+global.areaCode)
+
     let url1 = gUrl + siteAddress.networkTraffic_recv;
     let url2 = gUrl + siteAddress.networkTraffic_send;
     let responseData1 = null, responseData2 = null
-    fetch(url1)
-        .then(response => response.json())
-        .then(data => {
-            let responseData1 = FormatNetworkIO(data)
-            if(responseData1 && responseData2){
-                callback(responseData1, responseData2);
-            }
+    console.log('network url == ', url1, url2)
 
-        });
-    fetch(url2)
-        .then(response => response.json())
-        .then(data => {
-            let responseData2 = FormatNetworkIO(data)
-            if(responseData1 && responseData2){
-                callback(responseData1, responseData2);
-            }
-        });
+    const start = () => {
+        fetch(url1)
+            .then(response => response.json())
+            .then(data1 => {
+                responseData1 = FormatNetworkIO(data1)
+                if(responseData1 && responseData2){
+                    console.log('res data 1-- '+responseData1)
+                    callback(responseData1, responseData2);
+                }
+
+            });
+        fetch(url2)
+            .then(response => response.json())
+            .then(data2 => {
+                responseData2 = FormatNetworkIO(data2)
+                if(responseData1 && responseData2){
+                    console.log('res data 2-- '+responseData2)
+                    callback(responseData1, responseData2);
+                }
+            });
+    }
+
+    if(every) {
+        let loop =()=> {
+            responseData1 = null;
+            responseData2 = null;
+            start();
+            setTimeout(()=>loop(), every)
+        }
+        loop();
+    } else {
+        start();
+    }
 }
 let ajaxcall1= null;
 export function getTrafficData(resource, hId, callback, every) {

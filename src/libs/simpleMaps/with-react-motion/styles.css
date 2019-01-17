@@ -4,6 +4,11 @@
     left: 3em;
     z-index: 120;
 }
+#legendCont {
+    background-color: transparent;
+    width: 30px;
+    height: 150px;
+}
 .ui.animated.list>.item {
     cursor: pointer;
 }
@@ -16,7 +21,7 @@
 #mapZoomCtl {
     background-color: rgba(0, 0, 0, 0.85);
     color: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     margin: 0.3em 0;
     padding: 0 3px;
     width: 32px;

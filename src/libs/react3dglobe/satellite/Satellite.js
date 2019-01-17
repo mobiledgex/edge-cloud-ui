@@ -1,3 +1,5 @@
+import React from 'react';
+
 var TextureAnimator = require('./TextureAnimator'),
     THREE = require('three'),
     utils = require('./utils');
@@ -230,41 +232,7 @@ Satellite.prototype.changeAltitude = function(_altitude){
 
 };
 
-Satellite.prototype.changeCanvas = function(numWaves, waveColor, coreColor, shieldColor){
-    /* private vars */
-    numFrames = 50;
-    pixels = 100;
-    rows = 10;
-    waveStart = Math.floor(numFrames/8);
 
-    if(!numWaves){
-        numWaves = this.opts.numWaves;
-    } else {
-        this.opts.numWaves = numWaves;
-    }
-    if(!waveColor){
-        waveColor = this.opts.waveColor;
-    } else {
-        this.opts.waveColor = waveColor;
-    }
-    if(!coreColor){
-        coreColor = this.opts.coreColor;
-    } else {
-        this.opts.coreColor = coreColor;
-    }
-    if(!shieldColor){
-        shieldColor = this.opts.shieldColor;
-    } else {
-        this.opts.shieldColor = shieldColor;
-    }
-
-    this.canvas = createCanvas(numFrames, pixels, rows, waveStart, numWaves, waveColor, coreColor, shieldColor);
-    this.texture = new THREE.Texture(this.canvas)
-    this.texture.needsUpdate = true;
-    repeatAt = Math.floor(numFrames-2*(numFrames-waveStart)/numWaves)+1;
-    this.animator = new TextureAnimator(this.texture,rows, numFrames/rows, numFrames, 80, repeatAt); 
-    this.material.map = this.texture;
-};
 
 Satellite.prototype.tick = function(cameraPosition, cameraAngle, renderTime) {
     // underscore should be good enough
@@ -299,5 +267,6 @@ Satellite.prototype.toString = function(){
     return "" + this.lat + '_' + this.lon + '_' + this.altitude;
 };
 
-module.exports = Satellite;
+
+export default Satellite;
 

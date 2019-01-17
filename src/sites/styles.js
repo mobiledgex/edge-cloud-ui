@@ -25,15 +25,5 @@ export default {
         height:50,
         backgroundColor:'transparent'
     },
-    footer: {
-        position: 'fixed',
-        width:'100%',
-        bottom:0,
-        paddingBottom: 9
-    },
-    footerImage: {
-        display:'block',
-        margin:'auto'
-    }
 
 };
