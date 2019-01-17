@@ -24,6 +24,12 @@ export function injectData(state) {
         data:state
     };
 }
+export function injectNetworkData(state) {
+    return {
+        type: types.INJECT_DATA,
+        data:state
+    };
+}
 export function clearData(state) {
     return {
         type: types.CLEAR_DATA,

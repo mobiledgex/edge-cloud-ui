@@ -8,7 +8,7 @@ var TextureAnimator = function(texture, tilesVert, tilesHoriz, numTiles, tileDis
     if(repeatAtTile == undefined){
         this.repeatAtTile=-1;
     }
-
+    var _this = this;
     this.shutDownFlag = (this.repeatAtTile < 0);
     this.done = false;
 

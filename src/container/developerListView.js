@@ -73,8 +73,8 @@ class DeveloperListView extends React.Component {
                     <Modal.Content>
                         <Grid divided>
                             <Grid.Row columns={2}>
-                                <Grid.Column width={5}>
-                                    <div>Develper Name</div>
+                                <Grid.Column width={5} className='detail_item'>
+                                    <div>Developer Name</div>
                                 </Grid.Column>
                                 <Grid.Column width={11}>
                                     {this.InputExampleFluid()}
@@ -82,7 +82,7 @@ class DeveloperListView extends React.Component {
                                 <Divider vertical></Divider>
                             </Grid.Row>
                             <Grid.Row columns={2}>
-                                <Grid.Column width={5}>
+                                <Grid.Column width={5} className='detail_item'>
                                     <div>User Name</div>
                                 </Grid.Column>
                                 <Grid.Column width={11}>
@@ -91,7 +91,7 @@ class DeveloperListView extends React.Component {
                                 <Divider vertical></Divider>
                             </Grid.Row>
                             <Grid.Row columns={2}>
-                                <Grid.Column width={5}>
+                                <Grid.Column width={5} className='detail_item'>
                                     <div>Address</div>
                                 </Grid.Column>
                                 <Grid.Column width={11}>
@@ -100,7 +100,7 @@ class DeveloperListView extends React.Component {
                                 <Divider vertical></Divider>
                             </Grid.Row>
                             <Grid.Row columns={2}>
-                                <Grid.Column width={5}>
+                                <Grid.Column width={5} className='detail_item'>
                                     <div>Email</div>
                                 </Grid.Column>
                                 <Grid.Column width={11}>

@@ -5,6 +5,8 @@ import * as TWEEN from 'es6-tween';
 import {loadTexture} from './loaders';
 import {latLongToVector} from './projections';
 
+import Satllite from '../satellite/Satellite';
+
 class Globe {
   constructor(
     width,
@@ -518,6 +520,8 @@ class Globe {
 
 
   _createMarkers() {
+    //lat, lon, altitude, scene, _opts, canvas, texture
+    //var stl = new Satllite(32,37, 0, this.scene, this.options, null, null)
     return new THREE.Group();
   }
 

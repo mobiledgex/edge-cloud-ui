@@ -8,10 +8,10 @@ const itemContents = [{label:'Critical'},{label:'Major'},{label:'Minor'},{label:
 const ChildrenItem = (props) => (
     itemContents.map((obj, i) => (
         <List.Item id={'itm_'+i}>
-            <List.Content style={{display:'inline-block'}}>
-                <MaterialIcon icon={(props[obj.label] === true)?'check_circle_outline':'radio_button_unchecked'} size={20} color={props.iconColor} />
+            <List.Content>
+                <MaterialIcon icon={(props[obj.label] === true)?'check_circle_outline':'radio_button_unchecked'} />
             </List.Content>
-            <List.Content style={{display:'inline-block', verticalAlign:'super', fontSize:'1em', marginLeft:'0.75em'}}>
+            <List.Content className='label'>
                 {obj.label}
             </List.Content>
         </List.Item>
@@ -68,10 +68,10 @@ export default class Legend extends React.Component {
     childrenItem=(states)=>(
         itemContents.map((obj, i) => (
             <List.Item id={'itm_'+i}>
-                <List.Content style={{display:'inline-block'}}>
+                <List.Content>
                     <MaterialIcon icon={states['itm_'+i]} size={20} color={states.iconColor} />
                 </List.Content>
-                <List.Content style={{display:'inline-block', fontSize:'1em'}}>
+                <List.Content>
                     {obj.label}
                 </List.Content>
             </List.Item>
@@ -82,8 +82,8 @@ export default class Legend extends React.Component {
         return (
             <Grid id="legendEl">
                 <Grid.Row>
-                    <div id="legendCont" style={{backgroundColor:'transparent', width:30, height:150}}></div>
-                    <List animated style={{color:'rgba(255,255,255,0.8)', position:'absolute', width:120, marginLeft:5, marginTop:7}} onClick={this.handleClickItem.bind(this)}>
+                    <div id="legendCont"></div>
+                    <List animated className='worldmap_legend' onClick={this.handleClickItem.bind(this)}>
                         <ChildrenItem {...this.state}></ChildrenItem>
                     </List>
                 </Grid.Row>

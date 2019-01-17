@@ -101,8 +101,8 @@ class InstanceListView extends React.Component {
                     <Modal.Content>
                         <Grid divided>
                             <Grid.Row columns={2}>
-                                <Grid.Column width={5}>
-                                    <div>Develper Name</div>
+                                <Grid.Column width={5} className='detail_item'>
+                                    <div>Developer Name</div>
                                 </Grid.Column>
                                 <Grid.Column width={11}>
                                     {this.InputExampleFluid()}
@@ -110,7 +110,7 @@ class InstanceListView extends React.Component {
                                 <Divider vertical></Divider>
                             </Grid.Row>
                             <Grid.Row columns={2}>
-                                <Grid.Column width={5}>
+                                <Grid.Column width={5} className='detail_item'>
                                     <div>User Name</div>
                                 </Grid.Column>
                                 <Grid.Column width={11}>
@@ -119,7 +119,7 @@ class InstanceListView extends React.Component {
                                 <Divider vertical></Divider>
                             </Grid.Row>
                             <Grid.Row columns={2}>
-                                <Grid.Column width={5}>
+                                <Grid.Column width={5} className='detail_item'>
                                     <div>Address</div>
                                 </Grid.Column>
                                 <Grid.Column width={11}>
@@ -128,7 +128,7 @@ class InstanceListView extends React.Component {
                                 <Divider vertical></Divider>
                             </Grid.Row>
                             <Grid.Row columns={2}>
-                                <Grid.Column width={5}>
+                                <Grid.Column width={5} className='detail_item'>
                                     <div>Email</div>
                                 </Grid.Column>
                                 <Grid.Column width={11}>
@@ -165,23 +165,23 @@ class InstanceListView extends React.Component {
         console.log('changed layout = ', JSON.stringify(layout))
     }
     TableExampleVeryBasic = () => (
-        <List divided style={{width:'90%' }}>
+        <List divided style={{width:'100%'}}>
             {this.dummyData.map((data)=>(
-                <List.Item >
-                    <List.Header style={{color:'#cccccc'}}>{data['Application Name']}</List.Header>
+                <List.Item className='detail_list'>
+                    <List.Header>{data['Application Name']}</List.Header>
                     <Grid>
                         <Grid.Row columns={3}>
-                            <Grid.Column width={4} style={{color:'#9f9f9f'}}>
+                            <Grid.Column width={3} className='detail_item'>
                                 {Object.keys(data).map((key)=>(
                                     <div>{key}</div>
                                 ))}
                             </Grid.Column>
-                            <Grid.Column width={8} style={{color:'#727272'}}>
+                            <Grid.Column width={10}>
                                 {Object.keys(data).map((key)=>(
                                     <div>{data[key]}</div>
                                 ))}
                             </Grid.Column>
-                            <Grid.Column width={4} style={{display:'flex', alignItems:'flex-end', justifyContent:'flex-end'}}>
+                            <Grid.Column width={3} style={{display:'flex', alignItems:'flex-end', justifyContent:'flex-end'}}>
                                 <div>
                                     <Button onClick={() => alert('good')}>Delete</Button>
                                     <Button color='teal' onClick={() => this.onHandleClick(true)}>Edit</Button>

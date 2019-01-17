@@ -27,8 +27,8 @@ const ContainerOne = (props) => (
 
 );
 const Footer = () => (
-    <div style={Styles.footer}>
-        <Image style={Styles.footerImage} src='/assets/worldmap/title_footer.png' />
+    <div className='console_footer'>
+        <div className='console_footer_img' />
     </div>
 )
 
@@ -86,7 +86,7 @@ class SiteTwo extends React.Component  {
     }
     render() {
         return (
-            <div id="mainCont" style={{position:'relative', height:'100%', width:'100%'}}>
+            <div id="mainCont">
                 <ContainerOne ref={ref => this.container = ref} {...this.props} data={this.state.receivedData}></ContainerOne>
                 <HeaderGlobal />
                 <Footer></Footer>
@@ -97,7 +97,6 @@ class SiteTwo extends React.Component  {
 
 const mapStateToProps = (state) => {
     let site = state.siteChanger.site;
-    console.log('site -- '+site)
     let tab = state.tabChanger.tab;
     return {
         tabName: tab

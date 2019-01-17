@@ -11,13 +11,19 @@ import {
     Sidebar, Label, Dropdown
 } from 'semantic-ui-react';
 import MaterialIcon from 'material-icons-react';
+
+//redux
+import { connect } from 'react-redux';
+import * as actions from '../actions';
+
 import CPUMEMUsage from '../container/usage/cupmemory';
 import NetworkInOutSimple from '../components/network/networkInoutSimple';
 import HighCharts from '../charts/highChart';
 import BBLineChart from '../charts/bbLineChart';
 
+
 let dataOptions = [ { key: 'af', value: 'af', text: 'Disk W/R' },{ key: 'af2', value: 'af2', text: 'Networ I/O' } ]
-const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu }) => (
+const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, recv, send, network, networkSeries }) => (
     <Sidebar
         as={Menu}
         animation={animation}
@@ -131,7 +137,7 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu }) => (
                     <CPUMEMUsage label="CPU" value={cpu}></CPUMEMUsage>
                 </Grid.Column>
                 <Grid.Column>
-                    <CPUMEMUsage label="MEMORY" value={74}></CPUMEMUsage>
+                    <CPUMEMUsage label="MEMORY" value={mem}></CPUMEMUsage>
                 </Grid.Column>
                 <Grid.Column>
                     <CPUMEMUsage label="FILESYSTEM" value={82}></CPUMEMUsage>
@@ -146,13 +152,13 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu }) => (
             <Grid.Row columns={2}>
                 <Grid.Column width={5}>
                     <Grid.Row>
-                        <NetworkInOutSimple type="in" colors={['#22cccc','#22cccc']} title="Network In" value="448.64" unit="MB">></NetworkInOutSimple>
-                        <NetworkInOutSimple type="out" colors={['#6699ff','#6699ff']} title="Network Out" value="312.04" unit="MB">></NetworkInOutSimple>
+                        <NetworkInOutSimple type="in" colors={['#22cccc','#22cccc']} title="Network In" value={recv} unit="MB">></NetworkInOutSimple>
+                        <NetworkInOutSimple type="out" colors={['#6699ff','#6699ff']} title="Network Out" value={send} unit="MB">></NetworkInOutSimple>
                     </Grid.Row>
                 </Grid.Column>
                 <Grid.Column width={11}>
                     {/*<HighCharts chart="line" style={{height:'100%'}}/>*/}
-                    <BBLineChart/>
+                    <BBLineChart chartData={network} series={networkSeries}/>
                 </Grid.Column>
             </Grid.Row>
         </Grid>
@@ -160,27 +166,88 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu }) => (
 )
 
 let _self = null;
-export default class DeveloperSideInfo extends React.Component {
+class DeveloperSideInfo extends React.Component {
 
-    state = {
-        animation: 'overlay',
-        direction: 'right',
-        dimmed: false,
-        visible: false,
-        cpu:0
-    }
+
     constructor() {
         super();
         _self = this;
+        this.state = {
+            animation: 'overlay',
+            direction: 'right',
+            dimmed: false,
+            visible: false,
+            cpu:0, mem:0, recv:0, send:0, network:[], networkSeries:[]
+        }
+        this.dataArray = [];
+        this.dataSeries = [];
+        this.oldSeries = null;
+        //x axis length to divide
+        this.limitDataLength = 50;
 
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps) {
+        if(nextProps.data) {
             this.setState({visible:(nextProps.sideVisible) ? true : false});
-            if(nextProps.cpu) {
-                this.setState({cpu:nextProps.cpu})
+            if(nextProps.data.cpuUsage) {
+                this.setState({cpu:nextProps.data.cpuUsage})
             }
+            if(nextProps.data.memUsage) {
+                this.setState({mem:nextProps.data.memUsage})
+            }
+
+            if(nextProps.data.network) {
+
+                //TODO: 네트웍데이터 가공하기
+                /*
+                [
+                    ["data1", 30, 200, 100, 400, 150, 250],
+                    ["data2", 50, 20, 10, 40, 15, 25]
+                ]
+                 */
+                let keyLength = Object.keys(nextProps.data.network).length;
+                let newData = true;
+                Object.keys(nextProps.data.network).map((key, i) => {
+                    if(this.dataArray.length < Object.keys(nextProps.data.network).length) {
+                        this.dataArray.push([key])
+                        this.dataSeries[0]=['time']
+                    } else {
+                        console.log('data compare  old='+ this.oldSeries, 'width new = '+nextProps.data.network[key].time)
+                        if(this.oldSeries === nextProps.data.network[key].time){
+                            newData = false;
+                        } else {
+                            newData = true;
+                        }
+
+                        //should limit display data in chart
+                        if(this.dataArray[i].length > this.limitDataLength) {
+                            //pop first data
+                            this.dataArray[i].splice(1,1)
+                            this.dataSeries[0].splice(1,1)
+                        }
+
+                        if(newData) {
+                            this.dataArray[i].push(Number(nextProps.data.network[key].score))
+
+                            if(i === keyLength-1) {
+                                this.dataSeries[0].push(nextProps.data.network[key].time)
+                                this.oldSeries = nextProps.data.network[key].time;
+                            }
+                            this.setState({[key]:nextProps.data.network[key].score})
+                        }
+
+                    }
+                })
+
+                if(newData){
+                    console.log('dataArray is ++++++'+this.dataArray[0].length+":"+this.dataArray[1].length, 'dataSeries = '+this.dataSeries[0].length)
+
+                    this.setState({network:this.dataArray, networkSeries:this.dataSeries})
+                }
+
+            }
+
         }
     }
     handleClickBtn() {
@@ -190,13 +257,29 @@ export default class DeveloperSideInfo extends React.Component {
 
 
     render() {
-        const { animation, dimmed, direction, visible, cpu } = this.state
+        const { animation, dimmed, direction, visible } = this.state
         const vertical = direction === 'bottom' || direction === 'top'
 
         return (
             <div>
-                <VerticalSidebar animation={animation} direction={direction} visible={visible} gotoNext={this.handleClickBtn} cpu={cpu} />
+                <VerticalSidebar animation={animation} direction={direction} visible={visible} gotoNext={this.handleClickBtn}
+                                 cpu={this.state.cpu} mem={this.state.mem} recv={this.state.recv} send={this.state.send} network={this.state.network} networkSeries={this.state.networkSeries} />
             </div>
         )
     }
 }
+
+
+const mapStateToProps = (state, ownProps) => {
+    return {
+        data: state.receiveDataReduce.data
+    };
+};
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleInjectData: (data) => { dispatch(actions.setUser(data)) },
+        handleChangeTab: (data) => { dispatch(actions.changeTab(data)) }
+    };
+};
+
+export default connect(mapStateToProps, null)(DeveloperSideInfo);

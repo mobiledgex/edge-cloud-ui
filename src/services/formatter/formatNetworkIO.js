@@ -69,11 +69,12 @@ let generateData = (datas) => {
     if(result){
         result.map((data) => {
             moment.locale('es-us')
-            let time = moment(data.value[0] * 1000).format('MM-DD-YYYY HH:mm:ss');
+            //let time = moment(data.value[0] * 1000).format('MM-DD-YYYY HH:mm:ss');
+            let time = moment(data.value[0] * 1000).format('YYYY-MM-DD HH:mm:ss');
             let score = data.value[1];
             let instance = data.metric.instance;
             //console.log('time -- '+time, 'score --'+score, 'instance -- '+instance)
-            values.push({time:time, score:score, inst:instance})
+            values.push({time:time, score:parseFloat(score).toFixed(3), inst:instance})
         })
     } else {
         console.log('there is no result')

@@ -127,6 +127,11 @@ class AnimatedMap extends Component {
 
     }
 
+    /** ************************************************
+     * fetchCities
+     * display marker and alarm-counter on the worldmap
+     * 지도위에 마커포시하고 숫자표현
+     ** ************************************************/
     fetchCities() {
         request
             .get("/data-maps/world-most-populous-cities.json")
@@ -290,7 +295,7 @@ class AnimatedMap extends Component {
                                     height={551}
                                     style={{
                                         width: "100%",
-                                        height: "auto",
+                                        height: "100%",
                                         backgroundColor:styles.geoBackground.color
                                     }}
                                 >

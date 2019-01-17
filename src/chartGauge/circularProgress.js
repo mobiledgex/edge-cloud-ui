@@ -41,5 +41,8 @@ class CircularProgress extends React.Component {
         );
     }
 }
+CircularProgress.defaultProps = {
+        value: Math.random() * 100
+}
 export default CircularProgress;
 

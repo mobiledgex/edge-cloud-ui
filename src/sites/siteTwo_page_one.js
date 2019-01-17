@@ -63,14 +63,30 @@ class SiteTwoPageOne extends React.Component  {
             if(key.inst.indexOf('dashboard') > -1) _data = data[i]
         })
         _self.setState({cpuUsage:_data.score})
+        _self.props.handleInjectData({cpuUsage:_data.score});
     }
     receiveMEMData(data) {
-        //console.log('receive data = '+JSON.stringify(data));
-        _self.setState({memUsage:data})
+        //console.log('memUsage data = '+JSON.stringify(data));
+        let _data = null
+        data.map((key, i) => {
+            if(key.inst.indexOf('dashboard') > -1) _data = data[i]
+        })
+        _self.setState({memUsage:_data.score})
+        _self.props.handleInjectData({memUsage:_data.score});
     }
     receiveNETData(dataIn, dataOut) {
-        //console.log('receive data = '+dataIn+":"+dataOut);
-        _self.setState({network:{network_in:dataIn, network_out:dataOut}})
+        let _dataIn = null;
+        dataIn.map((key, i) => {
+            if(key.inst.indexOf('dashboard') > -1) _dataIn = dataIn[i]
+        })
+        let _dataOut = null;
+        dataOut.map((key, i) => {
+            if(key.inst.indexOf('dashboard') > -1) _dataOut = dataOut[i]
+        })
+
+        _self.props.handleInjectData({network:{recv:_dataIn, send:_dataOut}});
+
+        //_self.setState({network:{recv:_dataIn, send:_dataOut}})
     }
     componentDidMount() {
         //call data from service
@@ -138,7 +154,7 @@ class SiteTwoPageOne extends React.Component  {
     render() {
         return (
             <div id="bodyCont" className='console_body'>
-                <div style={{position:'absolute', backgroundColor:'transparent', width:'100%', height:'100%', overflow:'hidden'}}>
+                <div className='console_worldmap'>
                     <ContainerOne ref={ref => this.container = ref} {...this.props} data={this.state.receivedData} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
                 </div>
                 <Grid className='console_nav_left'>
@@ -152,7 +168,7 @@ class SiteTwoPageOne extends React.Component  {
                     </Grid.Row>
                 </Grid>
                 <div className='console_right_content'>
-                    <DeveloperSideInfo sideVisible={this.state.sideVisible} gotoNext={this.gotoNext} cpu={this.state.cpuUsage} mem={this.state.memUsage} network={this.state.network}></DeveloperSideInfo>
+                    <DeveloperSideInfo sideVisible={this.state.sideVisible} gotoNext={this.gotoNext}></DeveloperSideInfo>
                 </div>
             </div>
         );
@@ -160,8 +176,6 @@ class SiteTwoPageOne extends React.Component  {
 };
 
 const mapStateToProps = (state) => {
-    let site = state.siteChanger.site;
-    console.log('site -- '+site)
     let tab = state.tabChanger.tab;
     return {
         tabName: tab
@@ -170,7 +184,7 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))}
+        handleInjectData: (data) => { dispatch(actions.injectNetworkData(data))},
     };
 };
 SiteTwoPageOne.defaultProps = {

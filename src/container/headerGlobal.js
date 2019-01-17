@@ -45,8 +45,8 @@ class HeaderGlobal extends React.Component {
         return (
             <Grid className='console_gnb_header'>
                 <Grid.Column width={5}></Grid.Column>
-                <Grid.Column width={6}>
-                    <div className='title_top' />
+                <Grid.Column width={6} className='console_header'>
+                    <div>MobiledgeX Console</div>
                 </Grid.Column>
                 <Grid.Column width={5} className='navbar_right'>
                     <div style={{cursor:'pointer'}} onClick={() => this.gotoPreview()}>
