@@ -1,6 +1,5 @@
 [
   { "name": "Barcelona", "coordinates": [2.1734, 41.3851], "population": 37843000, "cost":3 },
-  { "name": "Seoul", "coordinates": [37.5652894,126.8494651], "population": 30539000, "cost":5 },
   { "name": "Jakarta", "coordinates": [106.8650,-6.1751], "population": 29539000, "cost":4 },
   { "name": "Delhi", "coordinates": [77.1025,28.7041], "population": 24998000, "cost":3 },
   { "name": "Manila", "coordinates": [120.9842,14.5995], "population": 24123000, "cost":2 },

@@ -19,7 +19,7 @@ class CPUMEMUsage extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         if(nextProps.value){
-            
+
         }
     }
     render() {
