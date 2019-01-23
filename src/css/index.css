@@ -295,6 +295,8 @@ body, button, input, optgroup, select, textarea,
     background-color: rgba(0,0,0,.5) !important;
     width: 500px !important;
     top: 70px !important;
+    padding: 1.5em;
+    box-shadow: 0 0 20px rgba(0,0,0,.2) !important;
 }
 .console_sidebar .ui.header {
     color: rgba(255,255,255,0.8);
@@ -387,7 +389,7 @@ body, button, input, optgroup, select, textarea,
 }
 
 .console_sidebar .circular_outer {
-    margin-bottom: -1.3em;
+    height: 90px;
 }
 .circular_chart {
     display: inline-block;
@@ -398,9 +400,10 @@ body, button, input, optgroup, select, textarea,
 .console_sidebar .circular_chart .label {
     text-align: center;
     width: 100%;
+    padding-top: .5em;
 }
 .console_sidebar .ui.fluid.dropdown {
-    margin-bottom: -1em;
+    margin-bottom: -0.5em;
 }
 .console_sidebar .chart_category {
     text-align: left;
@@ -523,13 +526,15 @@ body, button, input, optgroup, select, textarea,
 .ui.secondary.vertical.menu>.item {
     color: rgba(255, 255, 255, 0.6);
 }
-.ui.secondary.vertical.menu>.item:hover {
-    background-color: rgba(0, 0, 0, 0.25) !important;
-    color: rgba(255, 255, 255, 0.6);
-}
-.ui.secondary.menu .active.item {
-    background-color: rgba(0, 0, 0, 0.25) !important;
+.ui.secondary.menu .active.item,
+.ui.secondary.vertical.menu>.item:hover,
+.ui.secondary.vertical.menu>.item:hover> .left_menu_item i.material-icons {
     color: rgba(51, 255, 255, 0.8) !important;
+}
+
+.ui.secondary.menu .active.item,
+.ui.secondary.vertical.menu>.item:hover {
+    background: rgba(0, 0, 0, 0.25) !important;
 }
 .left_menu_item {
     display: flex;
@@ -537,12 +542,13 @@ body, button, input, optgroup, select, textarea,
     justify-content: flex-start;
     align-items: center;
 }
-.left_menu_item i.material-icons.md-24.md-dark {
+.left_menu_item i.material-icons {
     color: rgba(255, 255, 255, 0.6);
     font-size: 24px;
     padding-right: 6px;
 }
-.active.item .left_menu_item i.material-icons.md-24.md-dark {
+.active.item .left_menu_item i.material-icons,
+.active.item .left_menu_item i.material-icons:hover {
     color: rgba(51, 255, 255, 0.8);
 }
 
@@ -607,8 +613,7 @@ body, button, input, optgroup, select, textarea,
     padding-left: 0 !important;
 }
 .cluster_property .cluster_health .cluster_icon {
-    margin: 6px 0;
-    text-align: center;
+    margin: 6px;
     width: 48px;
     height: 48px;
     display: inline-block;
@@ -618,21 +623,15 @@ body, button, input, optgroup, select, textarea,
 .cluster_property .spark_chart .label {
     color: rgba(255,255,255,.65);
     font-size: 12px;
-}
-.cluster_property .circular_chart .label {
-    text-align: center;
-    position: absolute;
-    width: 60px;
-    bottom: 0;
-}
-.cluster_property .cluster_health .label {
     text-align: center;
     width: 100%;
     padding-top: 5px;
 }
-.cluster_property .spark_chart .label {
-    text-align: left;
-    width: 100%;
+.cluster_property .circular_chart .circular_outer {
+    height: 60px;
+}
+.cluster_property .spark_chart div:first-child {
+    display: flex;
 }
 
 .panel_title_filter {
@@ -813,9 +812,9 @@ body, button, input, optgroup, select, textarea,
     color: rgba(255,255,255,0.7);
     font-size: 1.5em !important;
     font-weight: normal !important;
-    border-bottom: 1px solid rgba(255,255,255,.15);
+    border-bottom: 1px solid rgba(255,255,255,.1);
 }
 .ui.modal>.actions {
-    border-top: 1px solid rgba(255,255,255,.15) !important;
+    border-top: 1px solid rgba(255,255,255,.1) !important;
     text-align: center !important;
 }

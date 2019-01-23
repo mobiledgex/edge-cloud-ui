@@ -10,6 +10,7 @@ import * as actions from '../actions';
 import './siteThree.css';
 //pages
 import SiteFourPageOne from './siteFour_page_one';
+import SiteFourPageThree from './siteFour_page_three';
 import SiteFourPageTwo from './siteFour_page_two';
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
@@ -77,6 +78,11 @@ class SiteFour extends React.Component {
 
     }
 
+    //query data
+    getDataDeveloper() {
+
+    }
+
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
@@ -126,7 +132,7 @@ class SiteFour extends React.Component {
                             <Grid.Column width={8}>{this.state.headerTitle}</Grid.Column>
                             <Grid.Column width={8}><Button color='teal' onClick={() => this.onHandleRegistry()}>New</Button></Grid.Column>
                         </Grid.Row>
-                        {(this.state.page === 'pg=3')?<SiteFourPageOne></SiteFourPageOne>:<SiteFourPageTwo></SiteFourPageTwo>}
+                        {(this.state.page === 'pg=3')?<SiteFourPageThree></SiteFourPageThree>:<SiteFourPageTwo></SiteFourPageTwo>}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

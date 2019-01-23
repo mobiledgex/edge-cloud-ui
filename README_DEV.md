@@ -99,3 +99,34 @@
 #### zoom 
  - https://chrvadala.github.io/react-svg-pan-zoom/?knob-detectWheel=true&knob-scaleFactor=1.1&knob-scaleFactorMax=999999&knob-detectPinchGesture=true&knob-preventPanOutside=true&knob-toolbarPosition=right&knob-scaleFactorMin=0&knob-miniaturePosition=left&knob-detectAutoPan=true&knob-scaleFactorOnWheel=1.1&knob-miniatureWidth=100&selectedKind=React%20SVG%20Pan%20Zoom&selectedStory=Viewer&full=0&addons=1&stories=1&panelRight=1&addonPanel=storybooks%2Fstorybook-addon-knobs
  
+ 
+ 
+#### influxdb
+ - https://docs.influxdata.com/influxdb/v1.7/administration/https_setup/
+ - 실행
+ : $ influxd run -->  인스턴스 생성
+ : $ influx  --> 인스턴스에 접
+ : $ show databases;
+ 
+ : $ CREATE DATABASE foodb
+ : $ use foodb
+ : $ SHOW FIELD KEYS;
+ 
+ - 기타 설정
+  : https://influxdbcom.readthedocs.io/en/latest/content/docs/v0.9/introduction/installation/ 
+  : https://code.i-harness.com/ko/docs/influxdata/influxdb/v1.3/administration/config/index
+  : http://blog.naver.com/PostView.nhn?blogId=alice_k106&logNo=221226137412&parentCategoryNo=&categoryNo=27&viewDate=&isShowPopularPosts=true&from=search
+
+ - REST API
+  : 명령프롬프트 상태에서 (inkis-MacBook-Pro:etc inkikim$ ) curl -G 'http://localhost:8086/query?pretty=true' --data-urlencode "db=mexTestDB" --data-urlencode "q=SELECT * FROM memory where host='server01'"
+
+ - influxdb 환경설정
+  : /usr/local/etc/influxdb.conf
+  : 참고 - https://docs.influxdata.com/influxdb/v1.7/administration/https_setup/
+  : 
+  
+  
+  curl -X POST "https://mexdemo.ctrl.mobiledgex.net:36001/show/operator" -H "accept: application/json" -H "Content-Type: application/json" --cacert mex-ca.crt --key mex-client.key --cert mex-client.crt
+
+#### SSL을 node.js에서 인증하기
+ - https://www.namecheap.com/support/knowledgebase/article.aspx/9705/33/installing-a-ssl-certificate-on-nodejs

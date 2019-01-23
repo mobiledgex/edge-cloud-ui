@@ -278,7 +278,12 @@ class Globe {
 
   render = () => {
     TWEEN.update();
-    this.cloud.rotation.y += 0.0002;
+
+    // camera rotation > globe, markers, cloud rotation change
+    this.globe.rotation.y += 0.001;
+    this.cloud.rotation.y += 0.00125;
+    this.markers.rotation.y += 0.001;
+
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
     this.frameId = window.requestAnimationFrame(this.render);
@@ -316,6 +321,14 @@ class Globe {
     renderer.domElement.addEventListener('click', this.onClick);
     renderer.domElement.addEventListener('mousemove', this.onMousemove);
     renderer.setSize(this.width, this.height);
+
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.autoClear = false;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
+    renderer.shadowMap.enabled = true;
+    renderer.gammaInput = true;
+    renderer.gammaOutput = true;
+    document.body.appendChild( renderer.domElement );
     return renderer;
   }
 
@@ -386,80 +399,101 @@ class Globe {
     }
 
     // scenelight
-    const sceneLight = new THREE.AmbientLight(
+    const sceneLight = new THREE.DirectionalLight(
       this.options.light.sceneLightColor,
       this.options.light.sceneLightIntensity,
     );
+    sceneLight.position.set( -0.8, 2, 0.8 ).normalize();
+    sceneLight.target.position.set(0, 0, 0);
     this.scene.add(sceneLight);
+
     // front light
     const frontLight = new THREE.SpotLight(
       this.options.light.frontLightColor,
       this.options.light.frontLightIntensity,
-      this.radius * 10,
+      // this.radius * 10,
     );
     frontLight.target.position.set(0, 0, 0);
-    this.camera.add(frontLight);
-    frontLight.position.set(0, this.radius * 2, this.radius * 3);
+    frontLight.position.set(this.radius * -1, this.radius * 2.6, this.radius * 2);
+    // frontLight shadow
+    frontLight.castShadow = true;
+    frontLight.shadow = new THREE.LightShadow( new THREE.PerspectiveCamera( 50, 1, this.radius * 0.1, this.radius * 6.4 ) );
+    frontLight.shadow.bias = 0.0001;
+    frontLight.shadow.width = 4096;
+    frontLight.shadow.height = 2048;
+    this.scene.add(frontLight);
 
     // back light
-    const backLight = new THREE.SpotLight(
+    const backLight = new THREE.DirectionalLight(
       this.options.light.backLightColor,
       this.options.light.backLightIntensity,
-      this.radius * 10,
+      // this.radius * 10,
     );
+    backLight.position.set( 0.8, -2, -0.8 ).normalize();
     backLight.target.position.set(0, 0, 0);
-    this.camera.add(backLight);
-    backLight.position.set(-this.radius * 6, 0, -this.radius * 8);
+    this.scene.add(backLight);
+
   }
 
   _createSpace() {
 
-    var i, r = 6371, starsGeometry = [ new THREE.Geometry(), new THREE.Geometry() ];
+    // add star
+    var i, r = this.radius, starsGeometry = [ new THREE.BufferGeometry(), new THREE.BufferGeometry() ];
+
+    var vertices1 = [];
+    var vertices2 = [];
+
+    var vertex = new THREE.Vector3();
 
     for ( i = 0; i < 250; i ++ ) {
-      var vertex = new THREE.Vector3();
+
       vertex.x = Math.random() * 2 - 1;
       vertex.y = Math.random() * 2 - 1;
       vertex.z = Math.random() * 2 - 1;
       vertex.multiplyScalar( r );
 
-      starsGeometry[ 0 ].vertices.push( vertex );
+      vertices1.push( vertex.x, vertex.y, vertex.z );
+
     }
 
-    for ( i = 0; i < 150; i ++ ) {
-      var vertex = new THREE.Vector3();
+    for ( i = 0; i < 1500; i ++ ) {
+
       vertex.x = Math.random() * 2 - 1;
       vertex.y = Math.random() * 2 - 1;
       vertex.z = Math.random() * 2 - 1;
       vertex.multiplyScalar( r );
 
-      starsGeometry[ 1 ].vertices.push( vertex );
+      vertices2.push( vertex.x, vertex.y, vertex.z );
+
     }
+
+    starsGeometry[ 0 ].addAttribute( 'position', new THREE.Float32BufferAttribute( vertices1, 3 ) );
+    starsGeometry[ 1 ].addAttribute( 'position', new THREE.Float32BufferAttribute( vertices2, 3 ) );
 
     var stars;
     var starsMaterials = [
-      new THREE.PointsMaterial( { color: 0x475766, size: 2, sizeAttenuation: false } ),
-      new THREE.PointsMaterial( { color: 0x475766, size: 1, sizeAttenuation: false } ),
-      new THREE.PointsMaterial( { color: 0x323f4d, size: 2, sizeAttenuation: false } ),
-      new THREE.PointsMaterial( { color: 0x323f4d, size: 1, sizeAttenuation: false } ),
-      new THREE.PointsMaterial( { color: 0x1f2933, size: 2, sizeAttenuation: false } ),
-      new THREE.PointsMaterial( { color: 0x1f2933, size: 1, sizeAttenuation: false } )
+      new THREE.PointsMaterial( { color: 0x555555, size: 2, sizeAttenuation: false } ),
+      new THREE.PointsMaterial( { color: 0x555555, size: 1, sizeAttenuation: false } ),
+      new THREE.PointsMaterial( { color: 0x333333, size: 2, sizeAttenuation: false } ),
+      new THREE.PointsMaterial( { color: 0x3a3a3a, size: 1, sizeAttenuation: false } ),
+      new THREE.PointsMaterial( { color: 0x1a1a1a, size: 2, sizeAttenuation: false } ),
+      new THREE.PointsMaterial( { color: 0x1a1a1a, size: 1, sizeAttenuation: false } )
     ];
 
     for ( i = 10; i < 30; i ++ ) {
+
       stars = new THREE.Points( starsGeometry[ i % 2 ], starsMaterials[ i % 6 ] );
 
       stars.rotation.x = Math.random() * 6;
       stars.rotation.y = Math.random() * 6;
       stars.rotation.z = Math.random() * 6;
-
-      //ss = i * 10;
-      //stars.scale.set( 'ss', 'ss', 'ss' );
+      stars.scale.setScalar( i * 10 );
 
       stars.matrixAutoUpdate = false;
       stars.updateMatrix();
 
       this.scene.add( stars );
+
     }
 
   //return new THREE.Mesh(
@@ -475,9 +509,17 @@ class Globe {
     //);
   }
 
+
   _createGlobe() {
-    const sphereMaterial = new THREE.MeshLambertMaterial({
+    const sphereMaterial = new THREE.MeshPhongMaterial({
+      specular: 0x111111,
+      shininess: 40,
       map: loadTexture(this.textures.globe),
+      specularMap: loadTexture(this.textures.globeSpecular),
+      // normalMap: loadTexture(this.textures.globeNormal),
+      // normalScale: new THREE.Vector2( 0.85, 0.85 ),
+      bumpMap: loadTexture(this.textures.globeBump),
+      bumpScale: 1,
     });
     let geometry = null;
     switch (this.options.globe.type) {
@@ -498,6 +540,93 @@ class Globe {
     }
     const globe = new THREE.Mesh(geometry, sphereMaterial);
     globe.position.set(0, 0, 0);
+    globe.castShadow = false;
+    globe.receiveShadow = true;
+
+
+    // earth glow shader
+    const glowShaders = {
+      'earthGlow' : {
+        uniforms: {
+          'texture': { type: 't', value: null }
+        },
+        vertexShader: [
+          'varying vec3 vNormal;',
+          'varying vec2 vUv;',
+          'void main() {',
+          'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
+          'vNormal = normalize( normalMatrix * normal );',
+          'vUv = uv;',
+          '}'
+        ].join('\n'),
+        fragmentShader: [
+          'uniform sampler2D texture;',
+          'varying vec3 vNormal;',
+          'varying vec2 vUv;',
+          'void main() {',
+          'vec3 diffuse = texture2D( texture, vUv ).xyz;',
+          'float intensity = 1.05 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) );',		// top bright : 1.05
+          'vec3 atmosphere = vec3( 0.255, 0.595, 1.275 ) * pow( intensity, 2.4 );',	// inner color white : vec3( 1.0, 1.0, 1.0 ) // gradient size : intensity, 3.0
+          'gl_FragColor = vec4( diffuse + atmosphere, 0.65 );',		// bright : 1.0
+          '}'
+        ].join('\n')
+      },
+      'atmosphere' : {
+        uniforms: {},
+        vertexShader: [
+          'varying vec3 vNormal;',
+          'void main() {',
+          'vNormal = normalize( normalMatrix * normal );',
+          'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
+          '}'
+        ].join('\n'),
+        fragmentShader: [
+          'varying vec3 vNormal;',
+          'void main() {',
+          'float intensity = pow( 0.72 - dot( vNormal, vec3( 0, 0, 0.54 ) ), 8.0 );',	// 12.0
+          'gl_FragColor = vec4( 0.255, 0.595, 1.275, 0.75 ) * intensity;',	// out color white : ( 1.0, 1.0, 1.0, 1.0 )
+          '}'
+        ].join('\n')
+      }
+    };
+
+    // earth glow shader start
+    const geometryEarthGlow = new THREE.SphereGeometry( this.radius*1.002, 160, 80 );
+
+    // glow in
+    const shaderIn = glowShaders['earthGlow']
+    const uniformsIn = THREE.UniformsUtils.clone(shaderIn.uniforms);
+
+    const materialEarthGlowIn = new THREE.ShaderMaterial({
+      uniforms: uniformsIn,
+      vertexShader: shaderIn.vertexShader,
+      fragmentShader: shaderIn.fragmentShader,
+      side: THREE.FrontSide,
+      blending: THREE.AdditiveBlending,
+      transparent: true
+    });
+    const meshEarthGlowIn = new THREE.Mesh(geometryEarthGlow, materialEarthGlowIn);
+    meshEarthGlowIn.rotation.y = Math.PI;
+    this.scene.add(meshEarthGlowIn);
+
+    // glow out
+    const shaderOut = glowShaders['atmosphere'];
+    const uniformsOut = THREE.UniformsUtils.clone(shaderOut.uniforms);
+
+    const materialEarthGlowOut = new THREE.ShaderMaterial({
+      uniforms: uniformsOut,
+      vertexShader: shaderOut.vertexShader,
+      fragmentShader: shaderOut.fragmentShader,
+      side: THREE.BackSide,
+      blending: THREE.AdditiveBlending,
+      transparent: true
+    });
+
+    const meshEarthGlowOut = new THREE.Mesh(geometryEarthGlow, materialEarthGlowOut);
+    meshEarthGlowOut.scale.set( 1.2, 1.2, 1.2 );
+    this.scene.add(meshEarthGlowOut);
+    // earth glow shader end
+
     return globe;
   }
 
@@ -506,15 +635,18 @@ class Globe {
       map: loadTexture(this.textures.cloud),
       transparent: true,
       side: THREE.DoubleSide,
-      opacity: 0.2,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending,
     });
     const geometry = new THREE.SphereGeometry(
-      this.radius * 1.04,
+      this.radius * 1.004,
       this.options.globe.widthSegments,
       this.options.globe.heightSegments,
     );
     const cloud = new THREE.Mesh(geometry, sphereMaterial);
     cloud.position.set(0, 0, 0);
+    cloud.castShadow = false;
+    cloud.receiveShadow = true;
     return cloud;
   }
 

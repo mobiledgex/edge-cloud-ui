@@ -26,8 +26,12 @@ class BBLineChart extends React.Component {
         _self = this;
         this.chart = null;
         this.positionArray = [];
+        this.reloadCount = 0;
+        this.limit = 10;
+        this.settingDone = false;
+        this.testCount = 0;
     }
-    setPositionTick() {
+    setPositionTick1() {
         //remember postion
         d3.selectAll(".bb-axis-x .tick").each(function(v) {
             let textConTrans = this.attributes.transform.textContent;
@@ -39,19 +43,23 @@ class BBLineChart extends React.Component {
 
         })
     }
-    componentWillReceiveProps(nextProps, nextContext) {
-        //this.setState({dataArray:nextProps.data})
 
-
-
-        this.reloadChart(nextProps.chartData, nextProps.series, this.positionArray);
-
+    setPositionTick() {
+        //remember postion
+        _self.positionArray = [];
+        d3.selectAll(".bb-event-rects.bb-event-rects-single rect").each(function(v) {
+            _self.positionArray.push({x:this.x.baseVal.value, y:this.y.baseVal.value, width:this.width.baseVal.value})
+        })
+        console.log('rect pos info == ',_self.positionArray, _self.positionArray.length)
     }
-    reloadChart(data, series, tickPositions) {
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.reloadChart(nextProps.chartData, nextProps.series, this.positionArray, nextProps.lineLimit);
+    }
+    reloadChart(data, series, tickPositions, lineLimit) {
         let seriesData = null;
         if(_self.chart && series) {
             seriesData = data.concat(series);
-            //console.log('seriesData == ', seriesData)
+            console.log('reload == ', _self.reloadCount, 'lineLimit='+lineLimit)
 
             let testData = [
                 ["recv", Math.random()*200, 100, Math.random()*200, 500, Math.random()*200, 350, 130, 240, Math.random()*200, 100, 350, Math.random()*200, Math.random()*200],
@@ -59,11 +67,65 @@ class BBLineChart extends React.Component {
                 ["time", "2019-01-01 12:38:22", "2019-01-01 12:38:23", "2019-01-01 12:38:24", "2019-01-01 12:38:25", "2019-01-01 12:38:26", "2019-01-01 12:38:27", "2019-01-01 12:38:28"]
             ]
 
+            if(lineLimit && !_self.settingDone) {
+
+                console.log('arrive limit = ', series[0].length)
+
+                if(_self.reloadCount === 1) {
+                    _self.settingDone = true;
+                    _self.setPositionTick()
+                }
+                _self.reloadCount ++;
+            }
+
+            // if(_self.testCount <= 45){
+            //     //reset data chart -------------------
+            //     _self.chart.load(
+            //         {
+            //             columns: seriesData
+            //         }
+            //     )
+            // } else {
+            //     _self.settingDone = false;
+            // }
+
+
+
+
             _self.chart.load(
                 {
                     columns: seriesData
                 }
             )
+
+
+
+
+            _self.testCount ++;
+
+            if(_self.settingDone) {
+                setTimeout(() => {
+                        let idCnt = 0;
+                        d3.selectAll(".bb-event-rects.bb-event-rects-single rect").each(function (v) {
+                            let className = 'bb-event-rect bb-event-rect-' + idCnt;
+                            this.attributes.class.nodeValue = className;
+                            this.attributes.width.nodeValue = _self.positionArray[idCnt].width;
+                            this.attributes.x.nodeValue = _self.positionArray[idCnt].x;
+                            this.attributes.y.nodeValue = _self.positionArray[idCnt].y;
+                            let classNm = this.attributes.class.textContent;
+                            console.log('- index = ' + classNm.lastIndexOf('-'))
+                            console.log('rect --------', classNm)
+                            idCnt++;
+
+                        })
+
+
+
+                    }, 1500
+                )
+
+            }
+
             // let _cnt = 0;
             // d3.selectAll(".bb-axis-x .tick tspan").each(function(v) {
             //     let format = d3.timeFormat('%H:%M:%S');
@@ -85,8 +147,7 @@ class BBLineChart extends React.Component {
         console.log('get axis tick value =====================')
         return ["2019-01-01 12:38:22", "2019-01-01 12:38:23", "2019-01-01 12:38:24", "2019-01-01 12:38:25", "2019-01-01 12:38:26", "2019-01-01 12:38:27", "2019-01-01 12:38:28"]
     }
-    componentDidMount(){
-
+    generateChart () {
         let chartMargin = 10;
 
         let chartWidth = this.props.w || 320;
@@ -110,7 +171,7 @@ class BBLineChart extends React.Component {
                 x: "time",
                 xFormat: '%Y-%m-%d %H:%M:%S',
                 columns: this.state.dataArray,
-                type: "spline",
+                //type: "spline",
             },
             axis: {
                 x: {
@@ -134,7 +195,8 @@ class BBLineChart extends React.Component {
                 }
             },
             point: {
-                show: false
+                show: true,
+                r: 0.8
             },
             color: {
                 pattern: [
@@ -179,8 +241,10 @@ class BBLineChart extends React.Component {
             },
             bindto: '#'+chartId
         });
+    }
+    componentDidMount(){
 
-        this.setPositionTick()
+        this.generateChart();
 
     }
     render() {

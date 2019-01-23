@@ -22,7 +22,6 @@ import * as actions from '../actions';
 //pages
 import PageOne from './page_one';
 import PageTwo from './page_two';
-import PageThree from './page_three';
 
 //
 // HTML5 History API 지원여부 파악
@@ -36,7 +35,6 @@ const ContainerOne = (props) => (
         <div className="page">
                 {props.params.subPath === 'pg=0' && <PageOne/>}
                 {props.params.subPath === 'pg=1' && <PageTwo/>}
-                {props.params.subPath === 'pg=2' && <PageThree/>}
         </div>
     </Grid>
 )

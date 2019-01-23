@@ -2,6 +2,10 @@
 #Regions .fill_green { fill: green; }
 #Regions .fill_red { fill: red; }
 
+.bb svg {
+    width: 100%;
+}
+
 
 .bb-zoom-rect {
     fill: rgba(0,0,0,1);

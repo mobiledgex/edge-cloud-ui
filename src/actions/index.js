@@ -60,3 +60,10 @@ export function registDeveloper(accountInfo:string):Action {
         account: accountInfo,
     };
 }
+
+export function changeCity(state) {
+    return {
+        type: types.CHANGE_CITY,
+        data:state
+    };
+}

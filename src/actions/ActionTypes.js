@@ -7,3 +7,4 @@ export const SET_VIDEO = "SET_VIDEO";
 export const CLICK_TAB = "CLICK_TAB";
 export const LOADED_DATA = "LOADED_DATA";
 export const REGIST_DEVELOPER = "REGIST_DEVELOPER";
+export const CHANGE_CITY = "CHANGE_CITY";
