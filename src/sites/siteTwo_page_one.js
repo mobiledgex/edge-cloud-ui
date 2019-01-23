@@ -11,7 +11,8 @@ import BubbleMaps from '../libs/simpleMaps/bubbles-map';
 import AnimatedMap from '../libs/simpleMaps/with-react-motion';
 import DeveloperSideInfo from '../container/developerSideInfo'
 //service
-import * as Service from '../services'
+import * as Service from '../services';
+import * as ServiceInflux from '../services/service_compute_inflxdb';
 
 //redux
 import { connect } from 'react-redux';
@@ -29,7 +30,7 @@ class SiteTwoPageOne extends React.Component  {
     constructor(props){
         super(props)
         _self = this;
-        this.state = {
+        _self.state = {
             receivedData:null,
             url:'',
             countryOptionsOper : [
@@ -43,8 +44,12 @@ class SiteTwoPageOne extends React.Component  {
             sideVisible: false,
             cpuUsage:null,
             memUsage:null,
-            network:null
+            network:null,
+            everyCall:true,
+            selectedCity:'dashboard'
         }
+        this.timeout = null;
+
     }
     clearData() {
 
@@ -57,19 +62,19 @@ class SiteTwoPageOne extends React.Component  {
      * Call Data from Server as REST
      **********************/
     receiveCPUData(data) {
-        //console.log('receive data = '+JSON.stringify(data));
+        console.log('slected city = '+_self.state.selectedCity);
         let _data = null
         data.map((key, i) => {
-            if(key.inst.indexOf('dashboard') > -1) _data = data[i]
+            if(key.inst.indexOf(_self.state.selectedCity) > -1) _data = data[i]
         })
         _self.setState({cpuUsage:_data.score})
         _self.props.handleInjectData({cpuUsage:_data.score});
     }
     receiveMEMData(data) {
-        //console.log('memUsage data = '+JSON.stringify(data));
+        console.log('selected city = '+_self.state.selectedCity);
         let _data = null
         data.map((key, i) => {
-            if(key.inst.indexOf('dashboard') > -1) _data = data[i]
+            if(key.inst.indexOf(_self.state.selectedCity) > -1) _data = data[i]
         })
         _self.setState({memUsage:_data.score})
         _self.props.handleInjectData({memUsage:_data.score});
@@ -77,57 +82,68 @@ class SiteTwoPageOne extends React.Component  {
     receiveNETData(dataIn, dataOut) {
         let _dataIn = null;
         dataIn.map((key, i) => {
-            if(key.inst.indexOf('dashboard') > -1) _dataIn = dataIn[i]
+            if(key.inst.indexOf(_self.state.selectedCity) > -1) _dataIn = dataIn[i]
         })
         let _dataOut = null;
         dataOut.map((key, i) => {
-            if(key.inst.indexOf('dashboard') > -1) _dataOut = dataOut[i]
+            if(key.inst.indexOf(_self.state.selectedCity) > -1) _dataOut = dataOut[i]
         })
 
         _self.props.handleInjectData({network:{recv:_dataIn, send:_dataOut}});
 
-        //_self.setState({network:{recv:_dataIn, send:_dataOut}})
+    }
+    receiveOperators() {
+
     }
     componentDidMount() {
-        //call data from service
-        Service.getStatusCPU(this.receiveCPUData, 5000);
-        Service.getStatusMEM(this.receiveMEMData, 5000);
-        Service.getStatusNET(this.receiveNETData, 5000);
+        console.log('props pg is didmnt== '+this.props.tabName)
+        var every = 3000;
+        var getDatas = function(self){
+            //call data from service
+            Service.getStatusCPU(self.receiveCPUData);
+            Service.getStatusMEM(self.receiveMEMData);
+            Service.getStatusNET(self.receiveNETData);
+            //
+            Service.getComputService();
+            self.timeout = setTimeout(function(){getDatas(self)} , every)
+        }
+
+        getDatas(_self);
+
+        if(this.props.tabName === 'pg=1') {
+            this.setState({sideVisible: true})
+        } else {
+            this.setState({sideVisible: false})
+        }
+
+        //influxdb
+        ServiceInflux.getOperator();
+
+        //get post
+
 
     }
 
+    componentWillUnmount() {
+        clearTimeout(this.timeout)
+    }
 
 
     componentWillReceiveProps(nextProps) {
-        console.log('receive props ----- '+JSON.stringify(nextProps))
-        /*
-         라우터 사용 예제
-         import React from "react";
-         import {withRouter} from "react-router-dom";
 
-         class MyComponent extends React.Component {
-         ...
-         myFunction() {
-         this.props.history.push("/some/Path");
-         }
-         ...
-         }
-         export default withRouter(MyComponent);
-         */
-
-
-
-        // this.props.history.push({
-        //     pathname: nextProps.location.pathname,
-        //     search: 'pg='+nextProps['tabName'],
-        //     state: { some: 'state' }
-        // });
+        if(nextProps.city) {
+            console.log('change city -- ', nextProps.city)
+            //현재 Barcelona == dashboard
+            let city = nextProps.city.name;
+            if(nextProps.city.name === 'Barcelona') {
+                city = 'dashboard'
+            }
+            this.setState({selectedCity:city})
+            this.props.handleChangeCity(null)
+        }
 
     }
-    shouldComponentUpdate(nextProps, nextState) {
-        //console.log("업데이트 할지 말지: " + JSON.stringify(nextProps) + " " + JSON.stringify(nextState));
-        return true;
-    }
+
     //go to NEXT
     gotoNext(value) {
         //브라우져 입력창에 주소 기록
@@ -176,13 +192,15 @@ class SiteTwoPageOne extends React.Component  {
 };
 
 const mapStateToProps = (state) => {
-    let tab = state.tabChanger.tab;
+    let tab = state.siteChanger.site;
     return {
-        tabName: tab
+        tabName: tab.subPath,
+        city: state.cityChanger.city
     };
 };
 const mapDispatchProps = (dispatch) => {
     return {
+        handleChangeCity: (data) => { dispatch(actions.changeCity(data))},
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectNetworkData(data))},
     };

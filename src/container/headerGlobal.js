@@ -3,12 +3,14 @@ import { Button, Icon, Label, Grid, Image } from 'semantic-ui-react';
 
 import MaterialIcon, {colorPalette} from 'material-icons-react';
 import { withRouter } from 'react-router-dom';
+
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
 import ClockComp from '../components/clock';
 import './styles.css';
+import * as Service from "../services";
 
 let _self = null;
 class HeaderGlobal extends React.Component {

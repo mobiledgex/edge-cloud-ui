@@ -37,7 +37,7 @@ class SiteThree extends React.Component {
     gotoPreview(site) {
         //브라우져 입력창에 주소 기록
         let mainPath = site;
-        let subPath = 'pg=0';
+        let subPath = 'pg=1';
         _self.props.history.push({
             pathname: mainPath,
             search: subPath,

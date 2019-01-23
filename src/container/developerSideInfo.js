@@ -20,10 +20,13 @@ import CPUMEMUsage from '../container/usage/cupmemory';
 import NetworkInOutSimple from '../components/network/networkInoutSimple';
 import HighCharts from '../charts/highChart';
 import BBLineChart from '../charts/bbLineChart';
+import TimeSeriesFlow from '../charts/plotly/timeseriesFlow';
+import InterpolNumber from '../components/number/interpolNumber';
+
 
 
 let dataOptions = [ { key: 'af', value: 'af', text: 'Disk W/R' },{ key: 'af2', value: 'af2', text: 'Networ I/O' } ]
-const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, recv, send, network, networkSeries }) => (
+const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, recv, send, network, networkSeries, lineLimit, redraw, cloudletInfo }) => (
     <Sidebar
         as={Menu}
         animation={animation}
@@ -33,11 +36,11 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, re
         visible={visible}
         className='console_sidebar'
     >
-        <Grid style={{margin:10}}>
+        <Grid>
             <Grid.Row>
                 <Header>
                     <Header.Content onClick={gotoNext}>
-                        Barcelona MWC Deutsche Telecom
+                        {cloudletInfo}
                         <MaterialIcon icon={'arrow_forward'} />
                     </Header.Content>
                 </Header>
@@ -76,12 +79,12 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, re
             {/* hit count for second */}
             <Grid.Row columns={2}>
                 <Grid.Column className='category'>
-                    <div className='value'>0.0135</div>
+                    <InterpolNumber className='value' sId={'RateOfReg'} value={10000}  format={null}/>
                     <div className='unit'>per sec</div>
                     <div className='label'>Rate of RegisterClient API</div>
                 </Grid.Column>
                 <Grid.Column className='category'>
-                    <div className='value'></div>
+
                     <div className='label'></div>
                 </Grid.Column>
             </Grid.Row>
@@ -92,7 +95,7 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, re
                     <div className='label'>Current Connection</div>
                 </Grid.Column>
                 <Grid.Column className='category'>
-                    <div className='value'>1.5267</div>
+                    <InterpolNumber className='value' sId={'AvgConnect'} format={null}/>
                     <div className='unit'>sec</div>
                     <div className='label'>Average Connection</div>
                 </Grid.Column>
@@ -111,7 +114,7 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, re
             </Grid.Row>
             <Grid.Row columns={2}>
                 <Grid.Column className='category'>
-                    <div className='value'>0.5378</div>
+                    <InterpolNumber className='value' sId={'RateOfFind'} format={null}/>
                     <div className='unit'>per sec</div>
                     <div className='label'>Rate of Find Cloudlet API</div>
                 </Grid.Column>
@@ -152,13 +155,14 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, re
             <Grid.Row columns={2}>
                 <Grid.Column width={5}>
                     <Grid.Row>
-                        <NetworkInOutSimple type="in" colors={['#22cccc','#22cccc']} title="Network In" value={recv} unit="MB">></NetworkInOutSimple>
-                        <NetworkInOutSimple type="out" colors={['#6699ff','#6699ff']} title="Network Out" value={send} unit="MB">></NetworkInOutSimple>
+                        <NetworkInOutSimple type="in" cId="networkIn" colors={['#22cccc','#22cccc']} title="Network In" value={recv} unit="MB">></NetworkInOutSimple>
+                        <NetworkInOutSimple type="out" cId="networkOut" colors={['#6699ff','#6699ff']} title="Network Out" value={send} unit="MB">></NetworkInOutSimple>
                     </Grid.Row>
                 </Grid.Column>
                 <Grid.Column width={11}>
                     {/*<HighCharts chart="line" style={{height:'100%'}}/>*/}
-                    <BBLineChart chartData={network} series={networkSeries}/>
+                    {/*<BBLineChart chartData={network} series={networkSeries} lineLimit={lineLimit}/>*/}
+                    <TimeSeriesFlow style={{width:'300px', height:'150px'}} chartData={network} series={networkSeries} lineLimit={lineLimit} redraw={redraw}></TimeSeriesFlow>
                 </Grid.Column>
             </Grid.Row>
         </Grid>
@@ -177,17 +181,21 @@ class DeveloperSideInfo extends React.Component {
             direction: 'right',
             dimmed: false,
             visible: false,
-            cpu:0, mem:0, recv:0, send:0, network:[], networkSeries:[]
+            cpu:0, mem:0, recv:0, send:0, network:[], networkSeries:[],
+            lineLimit:false,
+            redraw:false,
+            cloudletInfo:'Barcelona MWC Deutsche Telecom'
         }
         this.dataArray = [];
         this.dataSeries = [];
         this.oldSeries = null;
         //x axis length to divide
-        this.limitDataLength = 50;
-
+        this.limitDataLength = 15;
     }
 
     componentWillReceiveProps(nextProps) {
+
+        this.setState({redraw:false})
         if(nextProps.data) {
             this.setState({visible:(nextProps.sideVisible) ? true : false});
             if(nextProps.data.cpuUsage) {
@@ -198,7 +206,6 @@ class DeveloperSideInfo extends React.Component {
             }
 
             if(nextProps.data.network) {
-
                 //TODO: 네트웍데이터 가공하기
                 /*
                 [
@@ -208,12 +215,14 @@ class DeveloperSideInfo extends React.Component {
                  */
                 let keyLength = Object.keys(nextProps.data.network).length;
                 let newData = true;
+                let sCnt = 0;
+                //console.log('data network -- ', nextProps.data.network)
                 Object.keys(nextProps.data.network).map((key, i) => {
                     if(this.dataArray.length < Object.keys(nextProps.data.network).length) {
-                        this.dataArray.push([key])
-                        this.dataSeries[0]=['time']
+                        this.dataArray.push([])
+                        this.dataSeries[0]=[]
                     } else {
-                        console.log('data compare  old='+ this.oldSeries, 'width new = '+nextProps.data.network[key].time)
+
                         if(this.oldSeries === nextProps.data.network[key].time){
                             newData = false;
                         } else {
@@ -221,37 +230,55 @@ class DeveloperSideInfo extends React.Component {
                         }
 
                         //should limit display data in chart
+
                         if(this.dataArray[i].length > this.limitDataLength) {
                             //pop first data
-                            this.dataArray[i].splice(1,1)
-                            this.dataSeries[0].splice(1,1)
+                            this.dataArray[i].splice(0,1)
+                            if(sCnt === (keyLength - 1)) this.dataSeries[0].splice(0,1)
                         }
 
                         if(newData) {
                             this.dataArray[i].push(Number(nextProps.data.network[key].score))
-
-                            if(i === keyLength-1) {
+                            if(sCnt === (keyLength - 1)) {
                                 this.dataSeries[0].push(nextProps.data.network[key].time)
                                 this.oldSeries = nextProps.data.network[key].time;
+                                //console.log('time series == ', this.dataSeries[0] , 'data length='+this.dataArray[i].length, 'limitDataLength='+this.limitDataLength)
+                                if(this.dataSeries[0].length === (this.limitDataLength+1)){
+                                    this.setState({lineLimit: true})
+                                }
+                                this.setState({redraw:true})
+                            } else {
+
                             }
                             this.setState({[key]:nextProps.data.network[key].score})
                         }
 
                     }
+                    sCnt ++;
                 })
 
                 if(newData){
-                    console.log('dataArray is ++++++'+this.dataArray[0].length+":"+this.dataArray[1].length, 'dataSeries = '+this.dataSeries[0].length)
-
                     this.setState({network:this.dataArray, networkSeries:this.dataSeries})
                 }
 
             }
 
         }
+        if(nextProps.city) {
+            let cdName = '';
+            switch(nextProps.city.name) {
+                case 'Barcelona': cdName = 'Barcelona MWC Deutsche Telecom'; break;
+                case 'frankfurt': cdName = 'Franfrut MWC Macrometa'; break;
+                case 'hamburg': cdName = 'Hamburg MWC Mexdemo'; break;
+            }
+
+            this.setState({cloudletInfo:cdName})
+
+            //change data......
+
+        }
     }
     handleClickBtn() {
-        console.log('handle click button', _self.props)
         _self.props.gotoNext();
     }
 
@@ -263,7 +290,11 @@ class DeveloperSideInfo extends React.Component {
         return (
             <div>
                 <VerticalSidebar animation={animation} direction={direction} visible={visible} gotoNext={this.handleClickBtn}
-                                 cpu={this.state.cpu} mem={this.state.mem} recv={this.state.recv} send={this.state.send} network={this.state.network} networkSeries={this.state.networkSeries} />
+                                 cpu={this.state.cpu} mem={this.state.mem} recv={this.state.recv}
+                                 send={this.state.send} network={this.state.network} networkSeries={this.state.networkSeries}
+                                 lineLimit={this.state.lineLimit} redraw={this.state.redraw}
+                                 cloudletInfo={this.state.cloudletInfo}
+                />
             </div>
         )
     }
@@ -272,14 +303,14 @@ class DeveloperSideInfo extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        data: state.receiveDataReduce.data
+        data: state.receiveDataReduce.data,
+        city: state.cityChanger.city
     };
 };
 const mapDispatchProps = (dispatch) => {
     return {
-        handleInjectData: (data) => { dispatch(actions.setUser(data)) },
-        handleChangeTab: (data) => { dispatch(actions.changeTab(data)) }
+        handleChangeCity: (data) => { dispatch(actions.changeCity(data)) }
     };
 };
 
-export default connect(mapStateToProps, null)(DeveloperSideInfo);
+export default connect(mapStateToProps, mapDispatchProps)(DeveloperSideInfo);

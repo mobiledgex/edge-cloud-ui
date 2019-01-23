@@ -62,7 +62,10 @@ class AnimatedMap extends Component {
             cities:[],
             countries:[],
             citiesSecond:[],
-            detailMode:false
+            detailMode:false,
+            selectedCity:'Barcelona',
+            oldCountry:'',
+            unselectCity:''
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
@@ -73,6 +76,7 @@ class AnimatedMap extends Component {
         this.handleMove = this.handleMove.bind(this)
         this.handleLeave = this.handleLeave.bind(this)
         this.dir = 1;
+        this.interval = null;
     }
     handleZoomIn() {
         this.setState({
@@ -104,6 +108,8 @@ class AnimatedMap extends Component {
         "ContinentName":"Africa"
     }
      */
+
+    // 펼쳐진 지도( full screen map)
     handleCityClick(city) {
         this.setState({
             zoom: 4,
@@ -111,20 +117,37 @@ class AnimatedMap extends Component {
             detailMode:true
         })
         this.props.parentProps.zoomIn(true)
-        //
+
         if(d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
             d3.selectAll('.rsm-markers').selectAll(".levelFive")
                 .transition()
                 .ease(d3.easeBack)
                 .attr("r", 6)
         }
+
+
     }
     handleGotoAnalysis(country) {
         if(this.props.parentProps) this.props.parentProps.gotoNext(country);
     }
+
+    /**************
+     * 지도 줌인 상태에서 지역을 마커를 클릭하면,  우측 패널의 지표값 변경
+     * @param country
+     */
     handleViewZone(country) {
         //change the data of detail Info
+        console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++', country)
+        _self.setState({selectedCity: country.name})
+        if(d3.selectAll('.detailMarker_'+_self.state.oldCountry)) {
+            d3.selectAll('.detailMarker_'+_self.state.oldCountry)
+                .transition()
+                .attr("r", 6)
+                .style("opacity",1)
+        }
+        _self.setState({oldCountry:country.name})
 
+        _self.props.handleChangeCity(country)
     }
 
     /** ************************************************
@@ -175,8 +198,8 @@ class AnimatedMap extends Component {
         let _Country = []
         let _countries = [
             { "name": "Barcelona", "coordinates": [2.1734, 41.3851], "population": 1, "cost":1, "offsets": [10,15]},
-            { "name": "Sant Montjuic", "coordinates": [0.170459, 41.018247], "population": 1, "cost":1, "offsets": [-10,15] },
-            { "name": "Sant Gervasi", "coordinates": [1.005055, 42.493365], "population": 1, "cost":1, "offsets": [10,-15] },
+            // { "name": "Sant Montjuic", "coordinates": [0.170459, 41.018247], "population": 1, "cost":1, "offsets": [-10,15] },
+            // { "name": "Sant Gervasi", "coordinates": [1.005055, 42.493365], "population": 1, "cost":1, "offsets": [10,-15] },
             { "name": "frankfurt", "coordinates": [8.6821, 50.1109], "population": 1, "cost":1, "offsets": [0,15] },
             { "name": "hamburg", "coordinates": [9.9937, 53.5511], "population": 1, "cost":1, "offsets": [0,15] },
             ]
@@ -208,6 +231,17 @@ class AnimatedMap extends Component {
                 .attr("r", radius)
                 .style("opacity",alpha)
         }
+
+
+        if(d3.selectAll('.detailMarker_'+_self.state.selectedCity)) {
+            d3.selectAll('.detailMarker_'+_self.state.selectedCity)
+                .transition()
+                .duration(durate)
+                .ease(d3.easeBack)
+                .attr("r", (dir === 1)?6:8)
+                .style("opacity",alpha)
+        }
+
     }
 
     //tooltip
@@ -238,7 +272,7 @@ class AnimatedMap extends Component {
         this.fetchCountry();
 
         let _self = this;
-        var interval = setInterval(function() {
+        this.interval = setInterval(function() {
             if(_self.dir === 1) {
                 _self.dir = -1
             } else {
@@ -247,7 +281,18 @@ class AnimatedMap extends Component {
             _self.blinkAnimationMarker('rsm-markers', _self.dir)
         }, 900)
 
+
+        if(_self.props.tabIdx === 'pg=1'){
+            _self.handleCityClick({ "name": this.state.selectedCity, "coordinates": [2.1734, 41.3851], "population": 37843000, "cost":3 });
+        }
+
+        _self.setState({oldCountry:this.state.selectedCity})
+
     }
+    componentWillUnmount() {
+        clearInterval(this.interval)
+    }
+
     render() {
         const grdColors = ['#000000', '#00CC44', '#88ff00', '#FFEE00', '#FF7700', '#FF0022']
         return (
@@ -269,8 +314,6 @@ class AnimatedMap extends Component {
                 <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[3]} endColor={grdColors[3]} idCSS="levelThree" rotation={0}/>
                 <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[2]} endColor={grdColors[2]} idCSS="levelTwo" rotation={0}/>
                 <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[1]} endColor={grdColors[1]} idCSS="levelOne" rotation={0}/>
-
-
 
                 <Legend />
 
@@ -349,10 +392,11 @@ class AnimatedMap extends Component {
                                                         onClick={this.handleViewZone}
                                                     >
                                                         <circle
-                                                            class="detailMarker"
+                                                            class={"detailMarker_"+city.name}
                                                             cx={0}
                                                             cy={0}
                                                             r={6}
+                                                            opacity={1}
                                                             fill={styles.marker.second.fill}
                                                             stroke={styles.marker.second.stroke}
                                                             strokeWidth={styles.marker.second.strokeWidth}
@@ -385,17 +429,18 @@ class AnimatedMap extends Component {
 }
 
 
-// const mapStateToProps = (state, ownProps) => {
-//     return {
-//         data: state.receiveDataReduce.data,
-//         tabIdx: state.tabChanger
-//     };
-// };
+const mapStateToProps = (state, ownProps) => {
+    return {
+        data: state.receiveDataReduce.data,
+        tabIdx: state.siteChanger.site.subPath
+    };
+};
 const mapDispatchProps = (dispatch) => {
     return {
         handleInjectData: (data) => { dispatch(actions.setUser(data)) },
-        handleChangeTab: (data) => { dispatch(actions.changeTab(data)) }
+        handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
+        handleChangeCity: (data) => { dispatch(actions.changeCity(data)) }
     };
 };
 
-export default connect(null, mapDispatchProps)(AnimatedMap);
+export default connect(mapStateToProps, mapDispatchProps)(AnimatedMap);

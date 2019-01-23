@@ -1,16 +1,16 @@
 export default {
   camera: {
-    far: 20000,
-    near: 1,
+    far: 1e7,
+    near: 50,
     positionX: 0,
-    positionY: 1000,
-    radiusScale: 3,
-    viewAngle: 45,
+    positionY: 0,
+    radiusScale: 6.4,
+    viewAngle: 25,
   },
   orbitControls: {
     autoRotate: true,
-    autoRotateSpeed: 0.04,
-    rotateSpeed: 0.04,
+    autoRotateSpeed: 0.00,
+    rotateSpeed: 0.05,
     enableDamping: true,
     dampingFactor: 0.1,
     enablePan: true,
@@ -22,24 +22,24 @@ export default {
   },
   globe: {
     isFocused: true,
-    widthSegments: 120,
-    heightSegments: 120,
+    widthSegments: 160,
+    heightSegments: 80,
     type: 'real',
   },
   space: {
-    radius: 18000, // earth 6371
+    radius: 6371, // earth 6371
     widthSegments: 80,
-    heightSegments: 80,
+    heightSegments: 40,
   },
   renderer: {
     antialias: true,
   },
   light: {
     sceneLightColor: 0xffffff,
-    sceneLightIntensity: 0.6,
+    sceneLightIntensity: 0.2,
     frontLightColor: 0xffffff,
-    frontLightIntensity: 3.6,
-    backLightColor: 0xf5f5dc,
-    backLightIntensity: 60,
+    frontLightIntensity: 1.0,
+    backLightColor: 0xffffff,
+    backLightIntensity: 0.06,
   },
 };

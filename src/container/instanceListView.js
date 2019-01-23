@@ -229,9 +229,9 @@ const mapStateToProps = (state) => {
     let account = state.registryAccount.account;
     console.log('account -- '+account)
 
-    return {
+    return (account)?{
         accountInfo: account + Math.random()*10000
-    };
+    }:null;
 };
 const mapDispatchProps = (dispatch) => {
     return {
