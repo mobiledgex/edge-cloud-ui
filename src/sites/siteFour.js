@@ -65,7 +65,7 @@ class SiteFour extends React.Component {
     }
 
     onHandleRegistry() {
-        this.props.handleInjectDeveloper('userInfo');
+        this.props.handleInjectDeveloper('newRegist');
     }
     componentWillMount() {
         console.log('info..will mount ', this.columnLeft)
@@ -162,78 +162,3 @@ const mapDispatchProps = (dispatch) => {
 
 export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFour)));
 
-
-/*
-
-<Menu secondary vertical className='view_left_menu'>
-                            <Menu.Item
-                                name='Flavors'
-                                active={activeItem === 'Flavors'}
-                                onClick={(e) => this.handleItemClick(0, e)}
-                            >
-                                <div className="left_menu_item">
-                                    <MaterialIcon icon={'free_breakfast'}/>
-                                    <div className='label'>Flavors</div>
-                                </div>
-                            </Menu.Item>
-                            <Menu.Item
-                                name='Clusters'
-                                active={activeItem === 'Clusters'}
-                                onClick={(e) => this.handleItemClick(1, e)}
-                            >
-                                <div className="left_menu_item">
-                                    <MaterialIcon icon={'developer_board'} />
-                                    <div className='label'>Clusters</div>
-                                </div>
-                            </Menu.Item>
-                            <Menu.Item
-                                name='Operators'
-                                active={activeItem === 'Operators'}
-                                onClick={(e) => this.handleItemClick(2, e)}
-                            >
-                                <div className="left_menu_item">
-                                    <MaterialIcon icon={'dvr'} />
-                                    <div className='label'>Operators</div>
-                                </div>
-                            </Menu.Item>
-                            <Menu.Item
-                                name='Developers'
-                                active={activeItem === 'Developers'}
-                                onClick={(e) => this.handleItemClick(3, e)}
-                            >
-                                <div className="left_menu_item">
-                                    <MaterialIcon icon={'developer_mode'} />
-                                    <div className='label'>Developers</div>
-                                </div>
-                            </Menu.Item>
-                            <Menu.Item
-                                name='Cloudlets'
-                                active={activeItem === 'Cloudlets'}
-                                onClick={(e) => this.handleItemClick(4, e)}
-                            >
-                                <div className="left_menu_item">
-                                    <MaterialIcon icon={'cloud_queue'} />
-                                    <div className='label'>Cloudlets</div>
-                                </div>
-                            </Menu.Item>
-                            <Menu.Item
-                                name='Apps'
-                                active={activeItem === 'Apps'}
-                                onClick={(e) => this.handleItemClick(5, e)}
-                            >
-                                <div className="left_menu_item">
-                                    <MaterialIcon icon={'apps'} />
-                                    <div className='label'>Apps</div>
-                                </div>
-                            </Menu.Item>
-                            <Menu.Item
-                                name='App Instances'
-                                active={activeItem === 'App Instances'}
-                                onClick={(e) => this.handleItemClick(6, e)}
-                            >
-                                <div className="left_menu_item">
-                                    <MaterialIcon icon={'storage'} />
-                                    <div className='label'>App Instances</div>
-                                </div>
-                            </Menu.Item>
- */
