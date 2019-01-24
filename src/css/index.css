@@ -258,7 +258,7 @@ body, button, input, optgroup, select, textarea,
 }
 .marker_label {
     fill: rgba(255,255,255,.6);
-    font-size: 9px;
+    font-size: 8px;
     font-weight: lighter;
     line-height: 1em;
 }

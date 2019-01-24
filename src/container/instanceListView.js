@@ -26,18 +26,26 @@ class InstanceListView extends React.Component {
         super(props);
 
         const layout = this.generateLayout();
-        this.state = { layout,open: false, dimmer:true, dummyData:[]};
+        this.state = {
+            layout,open: false,
+            dimmer:true,
+            dummyData:[],
+            selected:{}
+        };
 
     }
 
-    onHandleClick(data) {
+    onHandleClick(dim, data) {
         console.log('on handle click == ', data)
-        this.setState({ dimmer:data, open: true })
+        this.setState({ dimmer:dim, open: true, selected:data })
         //this.props.handleChangeSite(data.children.props.to)
     }
 
     show = (dim) => this.setState({ dimmer:dim, open: true })
-    close = () => this.setState({ open: false })
+    close = () => {
+        this.setState({ open: false })
+        this.props.handleInjectDeveloper(null)
+    }
 
     makeHeader_noChild =(title)=> (
         <Header className='panel_title'>{title}</Header>
@@ -52,7 +60,8 @@ class InstanceListView extends React.Component {
         <Header className='panel_title'>{title}</Header>
     )
 
-    InputExampleFluid = () => <Input fluid placeholder='' />
+
+    InputExampleFluid = (value) => <Input fluid placeholder={(this.state.dimmer === 'blurring')? '' : value} />
 
     generateDOM(open, dimmer) {
 
@@ -67,44 +76,25 @@ class InstanceListView extends React.Component {
 
                 </div>
                 <Modal size={'small'} dimmer={dimmer} open={open} onClose={this.close}>
-                    <Modal.Header>New Apps</Modal.Header>
+                    <Modal.Header>Settings</Modal.Header>
                     <Modal.Content>
                         <Grid divided>
-                            <Grid.Row columns={2}>
-                                <Grid.Column width={5} className='detail_item'>
-                                    <div>Developer Name</div>
-                                </Grid.Column>
-                                <Grid.Column width={11}>
-                                    {this.InputExampleFluid()}
-                                </Grid.Column>
-                                <Divider vertical></Divider>
-                            </Grid.Row>
-                            <Grid.Row columns={2}>
-                                <Grid.Column width={5} className='detail_item'>
-                                    <div>User Name</div>
-                                </Grid.Column>
-                                <Grid.Column width={11}>
-                                    {this.InputExampleFluid()}
-                                </Grid.Column>
-                                <Divider vertical></Divider>
-                            </Grid.Row>
-                            <Grid.Row columns={2}>
-                                <Grid.Column width={5} className='detail_item'>
-                                    <div>Address</div>
-                                </Grid.Column>
-                                <Grid.Column width={11}>
-                                    {this.InputExampleFluid()}
-                                </Grid.Column>
-                                <Divider vertical></Divider>
-                            </Grid.Row>
-                            <Grid.Row columns={2}>
-                                <Grid.Column width={5} className='detail_item'>
-                                    <div>Email</div>
-                                </Grid.Column>
-                                <Grid.Column width={11}>
-                                    {this.InputExampleFluid()}
-                                </Grid.Column>
-                            </Grid.Row>
+                            {
+                                (this.state.dummyData.length > 0)?
+                                    Object.keys(this.state.dummyData[0]).map((key)=>(
+                                        <Grid.Row columns={2}>
+                                            <Grid.Column width={5} className='detail_item'>
+                                                <div>{key}</div>
+                                            </Grid.Column>
+                                            <Grid.Column width={11}>
+                                                {this.InputExampleFluid(this.state.selected[key])}
+                                            </Grid.Column>
+                                            <Divider vertical></Divider>
+                                        </Grid.Row>
+                                    ))
+                                    :''
+                            }
+
                         </Grid>
                     </Modal.Content>
                     <Modal.Actions>
@@ -136,7 +126,7 @@ class InstanceListView extends React.Component {
     }
     TableExampleVeryBasic = () => (
         <List divided style={{width:'100%'}}>
-            {this.state.dummyData.map((data)=>(
+            {this.state.dummyData.map((data, i)=>(
                 <List.Item className='detail_list'>
                     <List.Header>{data['Application Name']}</List.Header>
                     <Grid>
@@ -153,8 +143,8 @@ class InstanceListView extends React.Component {
                             </Grid.Column>
                             <Grid.Column width={3} style={{display:'flex', alignItems:'flex-end', justifyContent:'flex-end'}}>
                                 <div>
-                                    <Button onClick={() => alert('good')}>Delete</Button>
-                                    <Button color='teal' onClick={() => this.onHandleClick(true)}>Edit</Button>
+                                    <Button onClick={() => alert('Are you sure?')}>Delete</Button>
+                                    <Button color='teal' bId={'edit_'+i} onClick={() => this.onHandleClick(true, data)}>Edit</Button>
                                 </div>
                             </Grid.Column>
                         </Grid.Row>
@@ -209,10 +199,9 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
     };
 };
 
 export default connect(mapStateToProps, mapDispatchProps)(InstanceListView);
-
 

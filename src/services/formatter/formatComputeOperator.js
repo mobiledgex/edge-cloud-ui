@@ -51,10 +51,9 @@ let generateData = (datas) => {
         result.map((data, i) => {
             let dataResult = data.result || '-';
             let Index = i;
-            let DeveloperName = dataResult.key.name || '-';
-            let Ip_support = dataResult.ip_support || '-';
+            let OperatorName = dataResult.key.name || '-';
 
-            values.push({Index:Index, DeveloperName:DeveloperName, Ip_support:Ip_support})
+            values.push({Index:Index, OperatorName:OperatorName})
         })
     } else {
         console.log('there is no result')
