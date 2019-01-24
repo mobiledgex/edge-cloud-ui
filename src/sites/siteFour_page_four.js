@@ -12,9 +12,10 @@ import './siteThree.css';
 
 
 
+let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
-class SiteFourPageTwo extends React.Component {
+class SiteFourPageFour extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -24,6 +25,7 @@ class SiteFourPageTwo extends React.Component {
             contHeight:0,
             contWidth:0,
             bodyHeight:0,
+            activeItem: 'Developers',
             devData:[]
         };
         this.headerH = 70;
@@ -56,7 +58,7 @@ class SiteFourPageTwo extends React.Component {
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
-        this.getData();
+        this.getDataCloudlet();
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -64,11 +66,11 @@ class SiteFourPageTwo extends React.Component {
 
     }
     receiveResult(result) {
-        console.log("receive  == ", result)
+        console.log("receive cloudlet == ", result)
         _self.setState({devData:result})
     }
-    getData() {
-        services.getOperatorInfo('operator', this.receiveResult)
+    getDataCloudlet() {
+        services.getCloudletInfo('cloudlent', this.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -91,4 +93,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageTwo)));
+export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageFour)));

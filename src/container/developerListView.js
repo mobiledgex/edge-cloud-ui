@@ -28,18 +28,8 @@ class DeveloperListView extends React.Component {
             layout,
             open: false,
             dimmer:true,
-            dummyData : [
-                {Index:'110', DeveloperName:'Mobiledgex SDK Demo', UserName:'bruce', Address:'000 Nowhere Street, Gaineville, FL 32604', Email:'empty@xxx.com',Edit:''},
-                {Index:'109', DeveloperName:'Mobiledgex SDK Demo', UserName:'bruce', Address:'000 Nowhere Street, Gaineville, FL 32604', Email:'empty@xxx.com',Edit:''},
-                {Index:'108', DeveloperName:'Mobiledgex SDK Demo', UserName:'bruce', Address:'000 Nowhere Street, Gaineville, FL 32604', Email:'empty@xxx.com',Edit:''},
-                {Index:'107', DeveloperName:'Mobiledgex SDK Demo', UserName:'bruce', Address:'000 Nowhere Street, Gaineville, FL 32604', Email:'empty@xxx.com',Edit:''},
-                {Index:'106', DeveloperName:'Mobiledgex SDK Demo', UserName:'bruce', Address:'000 Nowhere Street, Gaineville, FL 32604', Email:'empty@xxx.com',Edit:''},
-                {Index:'105', DeveloperName:'Mobiledgex SDK Demo', UserName:'bruce', Address:'000 Nowhere Street, Gaineville, FL 32604', Email:'empty@xxx.com',Edit:''},
-                {Index:'104', DeveloperName:'Mobiledgex SDK Demo', UserName:'bruce', Address:'000 Nowhere Street, Gaineville, FL 32604', Email:'empty@xxx.com',Edit:''},
-                {Index:'103', DeveloperName:'Mobiledgex SDK Demo', UserName:'bruce', Address:'000 Nowhere Street, Gaineville, FL 32604', Email:'empty@xxx.com',Edit:''},
-                {Index:'102', DeveloperName:'Mobiledgex SDK Demo', UserName:'bruce', Address:'000 Nowhere Street, Gaineville, FL 32604', Email:'empty@xxx.com',Edit:''},
-                {Index:'101', DeveloperName:'Mobiledgex SDK Demo', UserName:'bruce', Address:'000 Nowhere Street, Gaineville, FL 32604', Email:'empty@xxx.com',Edit:''}
-            ]
+            activeItem:'',
+            dummyData : []
         };
 
     }
@@ -171,14 +161,14 @@ class DeveloperListView extends React.Component {
                     ))
                 }
             </Table.Body>
-            <Table.Footer>
+            <Table.Footer className='listPageContainer'>
                 <Table.Row>
                     <Table.HeaderCell colspan={100}>
                         <Menu floated={'center'} pagination>
                             <Menu.Item as='a' icon>
                                 <Icon name='chevron left' />
                             </Menu.Item>
-                            <Menu.Item as='a'>1</Menu.Item>
+                            <Menu.Item as='a' active={true}>1</Menu.Item>
                             <Menu.Item as='a'>2</Menu.Item>
                             <Menu.Item as='a'>3</Menu.Item>
                             <Menu.Item as='a'>4</Menu.Item>
