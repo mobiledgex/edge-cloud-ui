@@ -37,15 +37,7 @@ const wrapperStyles = {
     overflow:'hidden'
 }
 //reference : /public/assets/data-maps/world-most-populous-cities.json
-const _citiesSecond = [
-    { name: "Zurich", coordinates: [8.5417,47.3769] },
-    { name: "Singapore", coordinates: [103.8198,1.3521] },
-    { name: "San Francisco", coordinates: [-122.4194,37.7749] },
-    { name: "Sydney", coordinates: [151.2093,-33.8688] },
-    { name: "Lagos", coordinates: [3.3792,6.5244] },
-    { name: "Buenos Aires", coordinates: [-58.3816,-34.6037] },
-    { name: "Shanghai", coordinates: [121.4737,31.2304] },
-]
+
 const cityScale = scaleLinear()
     .domain([0,37843000])
     .range([1,25])
@@ -379,7 +371,7 @@ class AnimatedMap extends Component {
                                                         <text textAnchor="middle" y={4} class="marker_value">
                                                             {city.cost}
                                                         </text>
-                                                        <text textAnchor="middle" y={24} class="marker_label">
+                                                        <text textAnchor="middle" class="marker_label" x={(city.markerOffsetX)?(city.markerOffsetX):0} y={(city.markerOffset)?(city.markerOffset):24}>
                                                             {city.name}
                                                         </text>
                                                     </Marker>

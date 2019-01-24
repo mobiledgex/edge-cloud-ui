@@ -760,13 +760,14 @@ body, button, input, optgroup, select, textarea,
     color: rgba(255,255,255,.5);
     border-radius: .28571429rem !important;
 }
-.contents_body .ui.pagination.menu .item:hover {
+.contents_body .ui.pagination.menu .item:hover,
+.contents_body .ui.pagination.menu .active.item:hover {
     background: rgba(0,153,153,1);
     color: rgba(255,255,255,1);
 }
-.contents_body .ui.pagination.menu .item:active {
+.contents_body .ui.pagination.menu .active.item {
     background-color: rgba(0,128,128,1);
-    color: rgba(255,255,255,0.7);
+    color: rgba(255,255,255,0.75);
 }
 
 

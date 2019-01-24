@@ -10,8 +10,11 @@ import * as actions from '../actions';
 import './siteThree.css';
 //pages
 import SiteFourPageOne from './siteFour_page_one';
-import SiteFourPageThree from './siteFour_page_three';
 import SiteFourPageTwo from './siteFour_page_two';
+import SiteFourPageThree from './siteFour_page_three';
+import SiteFourPageFour from './siteFour_page_four';
+import SiteFourPageFive from './siteFour_page_five';
+import SiteFourPageSix from './siteFour_page_six';
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
@@ -57,6 +60,7 @@ class SiteFour extends React.Component {
 
     }
     handleItemClick ( id, label ) {
+        console.log('let pg=='+id)
         this.setState({ page:'pg='+id, activeItem: label, headerTitle:label })
     }
 
@@ -132,7 +136,13 @@ class SiteFour extends React.Component {
                             <Grid.Column width={8}>{this.state.headerTitle}</Grid.Column>
                             <Grid.Column width={8}><Button color='teal' onClick={() => this.onHandleRegistry()}>New</Button></Grid.Column>
                         </Grid.Row>
-                        {(this.state.page === 'pg=3')?<SiteFourPageThree></SiteFourPageThree>:<SiteFourPageTwo></SiteFourPageTwo>}
+                        {
+                            (this.state.page === 'pg=2')?<SiteFourPageTwo></SiteFourPageTwo> :
+                            (this.state.page === 'pg=3')?<SiteFourPageThree></SiteFourPageThree> :
+                            (this.state.page === 'pg=4')?<SiteFourPageFour></SiteFourPageFour> :
+                            (this.state.page === 'pg=5')?<SiteFourPageFive></SiteFourPageFive> :
+                            (this.state.page === 'pg=6')?<div> </div> : <div> </div>
+                        }
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

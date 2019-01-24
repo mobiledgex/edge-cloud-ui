@@ -14,7 +14,7 @@ import './siteThree.css';
 
 
 let _self = null;
-class SiteFourPageTwo extends React.Component {
+class SiteFourPageSix extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -91,4 +91,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageTwo)));
+export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageSix)));

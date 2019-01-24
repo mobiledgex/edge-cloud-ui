@@ -36,22 +36,31 @@ let trimData = (datas) => {
 const week_kr = ["월","화","수","목","금","토","일"]
 let week = moment().format('E');
 let getWeek = week_kr[(week-1)];
+const numberDes =(a,b)=> (
+    b-a
+)
+
 let generateData = (datas) => {
     let result = datas.data.data;
     let values = [];
     if(result){
         result.map((data, i) => {
             let Index = i;
-            let DeveloperName = data.result.key.name;
-            let UserName = data.result.userName;
-            let Address = data.result.address;
-            let Email = data.result.email;
+            let DeveloperName = data.result.key.name || '-';
+            let UserName = data.result.username || '-';
+            let Address = data.result.address || '-';
+            let Email = data.result.email || '-';
             //console.log('time -- '+time, 'score --'+score, 'instance -- '+instance)
             values.push({Index:Index, DeveloperName:DeveloperName, UserName:UserName, Address:Address, Email:Email, Edit:''})
         })
     } else {
         console.log('there is no result')
     }
+
+    //ascending or descending
+
+    //values.sort(numberDes);
+    values.reverse();
 
     return values
 

@@ -26,38 +26,8 @@ class InstanceListView extends React.Component {
         super(props);
 
         const layout = this.generateLayout();
-        this.state = { layout,open: false, dimmer:true};
-        this.dummyData = [
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo1",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"},
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo2",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"},
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo3",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"},
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo4",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"},
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo5",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"},
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo6",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"},
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo7",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"}
+        this.state = { layout,open: false, dimmer:true, dummyData:[]};
 
-        ]
     }
 
     onHandleClick(data) {
@@ -166,7 +136,7 @@ class InstanceListView extends React.Component {
     }
     TableExampleVeryBasic = () => (
         <List divided style={{width:'100%'}}>
-            {this.dummyData.map((data)=>(
+            {this.state.dummyData.map((data)=>(
                 <List.Item className='detail_list'>
                     <List.Header>{data['Application Name']}</List.Header>
                     <Grid>
@@ -194,9 +164,12 @@ class InstanceListView extends React.Component {
         </List>
     )
     componentWillReceiveProps(nextProps, nextContext) {
-                console.log('nextProps')
+        console.log('nextProps')
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
+        }
+        if(nextProps.devData) {
+            this.setState({dummyData:nextProps.devData})
         }
     }
     componentDidMount() {
