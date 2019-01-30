@@ -69,7 +69,7 @@ class SiteFourPageFive extends React.Component {
         _self.setState({devData:result})
     }
     getData() {
-        services.getAppInfo('app', this.receiveResult)
+        services.getComputeService('app', this.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;

@@ -1,0 +1,21 @@
+{
+  "name": "02.mexexpress",
+  "version": "1.0.0",
+  "description": "mex compute influxdb with nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "start express!"
+  },
+  "author": "bic",
+  "license": "ISC",
+  "dependencies": {
+    "curl-request": "^1.1.1",
+    "express": "^4.16.4",
+    "express-curl": "^1.0.1",
+    "fs": "0.0.1-security",
+    "influx": "^5.0.7",
+    "influxdb-nodejs": "^2.11.0",
+    "node-influx": "^1.0.2",
+    "request": "^2.88.0"
+  }
+}

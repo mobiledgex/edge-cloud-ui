@@ -1,12 +1,14 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-    city: ''
+    city: 'Barcelona'
 };
-export default function cityChanger( state = initialState, action = initialState.city) {
+export default function cityChanger( state = initialState, action) {
     switch( action.type ) {
         case types.CHANGE_CITY :
-            return { ...state, city:action.data }
+            return Object.assign({}, state, {
+                city:action.city
+            })
             break;
         default:
             return state

@@ -1,21 +1,20 @@
 import React from 'react';
 import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
-import DeveloperListView from '../container/developerListView';
+import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
 
 
-let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
+
 
 let _self = null;
-class SiteFourPageThree extends React.Component {
+class SiteFourPageSeven extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -25,7 +24,6 @@ class SiteFourPageThree extends React.Component {
             contHeight:0,
             contWidth:0,
             bodyHeight:0,
-            activeItem: 'Developers',
             devData:[]
         };
         this.headerH = 70;
@@ -58,7 +56,7 @@ class SiteFourPageThree extends React.Component {
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
-        this.getDataDeveloper();
+        this.getData();
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -66,18 +64,18 @@ class SiteFourPageThree extends React.Component {
 
     }
     receiveResult(result) {
-        console.log("receive == ", result)
+        console.log("receive  == ", result)
         _self.setState({devData:result})
     }
-    getDataDeveloper() {
-        services.getComputeService('developer', this.receiveResult)
+    getData() {
+        services.getInstanceInfo('inst', this.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
 
-            <DeveloperListView devData={this.state.devData}></DeveloperListView>
+            <InstanceListView devData={this.state.devData}></InstanceListView>
 
         );
     }
@@ -93,4 +91,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageThree)));
+export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageSeven)));

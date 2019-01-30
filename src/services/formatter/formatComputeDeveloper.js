@@ -41,7 +41,8 @@ const numberDes =(a,b)=> (
 )
 
 let generateData = (datas) => {
-    let result = datas.data.data;
+    console.log('format data - ', datas)
+    let result = datas;
     let values = [];
     if(result){
         result.map((data, i) => {
@@ -60,7 +61,7 @@ let generateData = (datas) => {
     //ascending or descending
 
     //values.sort(numberDes);
-    values.reverse();
+    //values.reverse();
 
     return values
 

@@ -68,7 +68,7 @@ class SiteFourPageTwo extends React.Component {
         _self.setState({devData:result})
     }
     getData() {
-        services.getOperatorInfo('operator', this.receiveResult)
+        services.getComputeService('operator', this.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;

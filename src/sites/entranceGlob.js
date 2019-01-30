@@ -84,7 +84,7 @@ class EntranceGlobe extends Component {
                             onMarkerMouseout={this.handleMarkerMouseout}
                             onMarkerClick={this.handleMarkerClick}
                         />
-                        <div className='intro_logo' />
+                        {/*<div className='intro_logo' />*/}
                         <div className='intro_link'>
                             <Button onClick={() => this.goToNext('/site2')}>MobiledgeX Monitoring</Button>
                             <Button onClick={() => this.goToNext('/site4')}>MobiledgeX Compute</Button>

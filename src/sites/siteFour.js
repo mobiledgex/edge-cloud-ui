@@ -4,6 +4,7 @@ import sizeMe from 'react-sizeme';
 
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
+import ContainerDimensions from 'react-container-dimensions'
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -61,6 +62,11 @@ class SiteFour extends React.Component {
     }
     handleItemClick ( id, label ) {
         console.log('let pg=='+id)
+        _self.props.history.push({
+            pathname: '/site4',
+            search: "pg="+id
+        });
+        _self.props.history.location.search = "pg="+id;
         this.setState({ page:'pg='+id, activeItem: label, headerTitle:label })
     }
 
@@ -136,13 +142,25 @@ class SiteFour extends React.Component {
                             <Grid.Column width={8}>{this.state.headerTitle}</Grid.Column>
                             <Grid.Column width={8}><Button color='teal' onClick={() => this.onHandleRegistry()}>New</Button></Grid.Column>
                         </Grid.Row>
-                        {
-                            (this.state.page === 'pg=2')?<SiteFourPageTwo></SiteFourPageTwo> :
-                            (this.state.page === 'pg=3')?<SiteFourPageThree></SiteFourPageThree> :
-                            (this.state.page === 'pg=4')?<SiteFourPageFour></SiteFourPageFour> :
-                            (this.state.page === 'pg=5')?<SiteFourPageFive></SiteFourPageFive> :
-                            (this.state.page === 'pg=6')?<div> </div> : <div> </div>
-                        }
+                        <Grid.Row className='site_content_body' style={{height:'100%'}}>
+                            <Grid.Column style={{height:'100%'}}>
+                                <ContainerDimensions>
+                                    { ({ width, height }) =>
+                                        <div style={{width:width, height:height-60, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
+                                            {
+                                                (this.state.page === 'pg=2')?<SiteFourPageTwo></SiteFourPageTwo> :
+                                                    (this.state.page === 'pg=3')?<SiteFourPageThree></SiteFourPageThree> :
+                                                        (this.state.page === 'pg=4')?<SiteFourPageFour></SiteFourPageFour> :
+                                                            (this.state.page === 'pg=5')?<SiteFourPageFive></SiteFourPageFive> :
+                                                                (this.state.page === 'pg=6')?<SiteFourPageSix></SiteFourPageSix> :
+                                                                    (this.state.page === 'pg=7')?<div> </div> : <div> </div>
+                                            }
+                                        </div>
+                                    }
+                                </ContainerDimensions>
+
+                            </Grid.Column>
+                        </Grid.Row>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

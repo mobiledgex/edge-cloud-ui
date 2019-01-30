@@ -4,11 +4,13 @@ import sizeMe from 'react-sizeme';
 import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
+import ContainerDimensions from 'react-container-dimensions'
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
+import MapWithListView from "../container/mapWithListView";
 
 
 
@@ -28,6 +30,7 @@ class SiteFourPageSix extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
+        this.headerLayout = [1,2,2,2,3,2,3,2,2]
     }
 
     //go to
@@ -68,14 +71,14 @@ class SiteFourPageSix extends React.Component {
         _self.setState({devData:result})
     }
     getData() {
-        services.getOperatorInfo('operator', this.receiveResult)
+        services.getComputeService('appinst', this.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout}></MapWithListView>
 
-            <InstanceListView devData={this.state.devData}></InstanceListView>
 
         );
     }

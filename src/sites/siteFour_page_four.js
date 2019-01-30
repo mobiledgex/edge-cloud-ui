@@ -70,7 +70,7 @@ class SiteFourPageFour extends React.Component {
         _self.setState({devData:result})
     }
     getDataCloudlet() {
-        services.getCloudletInfo('cloudlent', this.receiveResult)
+        services.getComputeService('cloudlet', this.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;

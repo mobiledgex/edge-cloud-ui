@@ -6,7 +6,9 @@ const initialState = {
 export default function receiveDataReduce( state = initialState, action ) {
     switch( action.type ) {
         case types.INJECT_DATA :
-            return { ...state, data:action.data }
+            return Object.assign({}, state, {
+                data:action.data
+            })
         case types.CLEAR_DATA :
             return initialState;
         case types.LOADED_DATA :
