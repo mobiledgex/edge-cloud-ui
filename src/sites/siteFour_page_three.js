@@ -70,7 +70,7 @@ class SiteFourPageThree extends React.Component {
         _self.setState({devData:result})
     }
     getDataDeveloper() {
-        services.getDevelopersInfo('developer', this.receiveResult)
+        services.getComputeService('developer', this.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;

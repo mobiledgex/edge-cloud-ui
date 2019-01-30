@@ -22,7 +22,14 @@ class NetworkIOView extends React.Component {
             optionThree : [
                 { key: 'd1', value: 'd1', text: 'CPU/MEM' },
                 { key: 'd2', value: 'd2', text: 'NetworkIO' }
-                ]
+                ],
+            optionFour : [
+                { key: 't1', value: 't1', text: 'Last Hour' },
+                { key: 't2', value: 't2', text: 'Last 3 Hours' },
+                { key: 't3', value: 't3', text: 'Last 6 Hours' },
+                { key: 't4', value: 't4', text: 'Last 12 Hours' },
+                { key: 't5', value: 't5', text: 'Last 24 Hours' }
+            ]
         }
     }
     makeSelectRange=()=> (
@@ -35,6 +42,9 @@ class NetworkIOView extends React.Component {
             </Grid.Column>
             <Grid.Column>
                 <Dropdown placeholder='CPU/MEM' fluid search selection options={this.state.optionThree} />
+            </Grid.Column>
+            <Grid.Column>
+                <Dropdown placeholder='Last Hour' fluid search selection options={this.state.optionFour} />
             </Grid.Column>
         </Grid.Row>
     )

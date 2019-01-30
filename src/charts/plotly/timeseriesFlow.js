@@ -2,7 +2,9 @@ import React from 'react';
 import Plot from 'react-plotly.js';
 import ContainerDimensions from 'react-container-dimensions';
 
+import {connect} from "react-redux";
 import './styles.css';
+import * as actions from "../../actions";
 
 //https://plot.ly/python/#layout-options
 //https://plot.ly/javascript/axes/#tick-placement-color-and-style
@@ -19,17 +21,18 @@ class TimeSeriesFlow extends React.Component {
             layout: {
                 datarevision: 0,
             },
+            currentKey:'',
             revision: 0,
         }
         this.colors = ['#22cccc', '#6699ff', '#ffce03', '#ff710a'];
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps.redraw) {
-            //console.log('time chartData plotly...',nextProps.chartData[0])
-            //console.log('time series plotly...',nextProps.series[0])
+        if(nextProps.chartData && nextProps.series[0]) {
             this.reloadChart(nextProps.chartData, nextProps.series[0], nextProps.lineLimit);
-            //this.setState({chartData:nextProps.chartData})
         }
+
+
+
 
     }
     reloadChart(data, series, lineLimit) {
@@ -40,7 +43,7 @@ class TimeSeriesFlow extends React.Component {
                 x: series,
                 y: item,
                 line: {color: this.colors[i],width:1},
-                marker:{size:2.5}
+                marker:{size:5}
             }
         ))
         this.setState({
@@ -70,8 +73,8 @@ class TimeSeriesFlow extends React.Component {
                                     l: 40,
                                     r: 20,
                                     b: 40,
-                                    t: 1,
-                                    pad: 1
+                                    t: 5,
+                                    pad: 0
                                 },
                                 paper_bgcolor: 'transparent',
                                 plot_bgcolor: 'transparent',
@@ -80,31 +83,33 @@ class TimeSeriesFlow extends React.Component {
                                     zeroline: true,
                                     showline: true,
                                     mirror: 'ticks',
-                                    gridcolor: 'rgba(255,255,255,.1)',
+                                    gridcolor: 'rgba(255,255,255,.05)',
                                     gridwidth: 1,
-                                    zerolinecolor: 'rgba(255,255,255,.4)',
+                                    zerolinecolor: 'rgba(255,255,255,0)',
                                     zerolinewidth: 1,
-                                    linecolor: 'rgba(255,255,255,.4)',
+                                    linecolor: 'rgba(255,255,255,.2)',
                                     linewidth: 1,
                                     color: 'rgba(255,255,255,.4)'
                                 },
                                 yaxis: {
                                     showgrid: true,
-                                    zeroline: true,
+                                    zeroline: false,
                                     showline: true,
                                     mirror: 'ticks',
-                                    gridcolor: 'rgba(255,255,255,.1)',
-                                    gridwidth: 1,
-                                    zerolinecolor: 'rgba(255,255,255,.4)',
+                                    ticklen: 3,
+                                    tickcolor: 'rgba(0,0,0,0)',
+                                    gridcolor: 'rgba(255,255,255,.05)',
+                                    gridwidth:1,
+                                    zerolinecolor: 'rgba(255,255,255,0)',
                                     zerolinewidth: 1,
-                                    linecolor: 'rgba(255,255,255,.4)',
+                                    linecolor: 'rgba(255,255,255,.2)',
                                     linewidth: 1,
                                     color: 'rgba(255,255,255,.4)'
                                 },
                                 showlegend: false,
 
                                 points: {
-                                    width:0.5
+                                    width: 1
                                 },
                                 datarevision: this.state.datarevision + 1
 
@@ -124,4 +129,18 @@ class TimeSeriesFlow extends React.Component {
 TimeSeriesFlow.defaultProps = {
         width:300, height:150
 }
-export default TimeSeriesFlow;
+
+
+//
+const mapStateToProps = (state, ownProps) => {
+    return {
+        currentKey: state.cityChanger.city
+    };
+};
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleChangeCity: (data) => { dispatch(actions.changeCity(data)) }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchProps)(TimeSeriesFlow);

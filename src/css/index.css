@@ -37,6 +37,11 @@ body, button, input, optgroup, select, textarea,
     outline: -webkit-focus-ring-color auto 0 !important;
 }
 
+/* scroll bottom right box */
+.react-grid-item > .react-resizable-handle {
+    background: transparent;
+}
+
 
 .CircularProgressbar .CircularProgressbar-path {
     stroke: url('#gradientTwo') !important;
@@ -115,7 +120,7 @@ body, button, input, optgroup, select, textarea,
 }
 .intro_link {
     position: absolute;
-    top: 72%;
+    top: 70%;
     left: 50%;
     width: 500px;
     height: 60px;
@@ -251,6 +256,10 @@ body, button, input, optgroup, select, textarea,
 
 
 /* world map marker & legend */
+.rsm-marker circle {
+    box-suppress: hide;
+
+}
 .marker_value {
     fill: rgba(255,255,255,1);
     font-size: 12px;
@@ -360,7 +369,7 @@ body, button, input, optgroup, select, textarea,
 }
 .console_sidebar .category .value,
 .chart_category .value {
-    display: inline-block;
+    display: inline;
     color: rgba(51,255,255,0.9);
     font-size: 2.286em;
     font-weight: 200;
@@ -368,7 +377,7 @@ body, button, input, optgroup, select, textarea,
 }
 .console_sidebar .category .unit,
 .chart_category .unit {
-    display: inline-block;
+    display: inline;
     color: rgba(51,255,255,0.6);
     font-size: 1.286em;
     font-weight: 200;
@@ -385,7 +394,8 @@ body, button, input, optgroup, select, textarea,
 }
 .chart_category .line {
     height: 2px;
-    width: 90%;
+    width: 100%;
+    margin-top: .2em;
 }
 
 .console_sidebar .circular_outer {
@@ -485,7 +495,6 @@ body, button, input, optgroup, select, textarea,
 
 .gnb_header .navbar_left .nav_filter .material-icons {
     color: rgba(255, 255, 255, 0.4);
-    padding-left: .4em;
     padding-bottom: .2em;
     vertical-align: middle;
 }
@@ -626,6 +635,7 @@ body, button, input, optgroup, select, textarea,
     text-align: center;
     width: 100%;
     padding-top: 5px;
+    white-space: nowrap;
 }
 .cluster_property .circular_chart .circular_outer {
     height: 60px;
@@ -666,6 +676,7 @@ body, button, input, optgroup, select, textarea,
     background-color: rgba(0,0,0,0.2);
     font-weight: normal;
     display: inline;
+    margin: 0 .5em;
 }
 .gnb_header .navbar_left .nav_filter .ui.selection.active.dropdown {
     border-color: #96c8da;
@@ -748,6 +759,13 @@ body, button, input, optgroup, select, textarea,
 
 
 /* grid table paging */
+.listPageContainer {
+    width: 100%;
+    height: 70px;
+    margin:0.5em;
+    display: flex;
+    justify-content: center;
+}
 .contents_body .ui.table tfoot th {
     text-align: center;
 }

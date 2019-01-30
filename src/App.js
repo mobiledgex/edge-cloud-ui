@@ -135,7 +135,7 @@ class App extends Component {
         let props = nextProps;
         if(nextProps.clickTab) {
             let params = {params:{page:'pg='+nextProps.clickTab}}
-            DashboardContainer({mainPath:nextProps.siteName.mainPath}, {match:params})
+            DashboardContainer({mainPath:nextProps.siteName.site.mainPath}, {match:params})
         }
     }
     render() {
@@ -168,9 +168,9 @@ App.defaultProps = {
 const mapStateToProps = (state, ownProps) => {
 
     return {
-        siteName: state.siteChanger.site,
-        tab: state.tabChanger.tab,
-        clickTab: state.tabClick.clickTab
+        siteName: (state.siteChanger)?state.siteChanger.site:null,
+        tab: (state.tabChanger.tab)?state.tabChanger.tab:null,
+        clickTab: (state.tabClick.clickTab)?state.tabClick.clickTab:null
     };
 };
 

@@ -48,7 +48,7 @@ class AnalysticViewZone extends React.Component {
     makeHeader_date =(title)=> (
         <Header className='panel_title' style={{display:'flex',flexDirection:'row'}}>
             <div style={{display:'flex', flexGrow:8}}>{title}</div>
-            <SelectFromTo></SelectFromTo>
+            {/* <SelectFromTo></SelectFromTo> */}
         </Header>
     )
     makeHeader_select =(title)=> (

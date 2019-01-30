@@ -1,11 +1,12 @@
 import React from 'react';
-import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Divider, List } from 'semantic-ui-react';
+import { Modal, Grid, Header, Button, Table, Icon, Input, Divider, List } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
 import ContainerDimensions from 'react-container-dimensions'
 
 import SelectFromTo from '../components/selectFromTo';
+import RegistNewItem from './registNewItem';
 
 import './styles.css';
 
@@ -38,7 +39,7 @@ class InstanceListView extends React.Component {
     onHandleClick(dim, data) {
         console.log('on handle click == ', data)
         this.setState({ dimmer:dim, open: true, selected:data })
-        //this.props.handleChangeSite(data.children.props.to)
+
     }
 
     show = (dim) => this.setState({ dimmer:dim, open: true })
@@ -61,9 +62,10 @@ class InstanceListView extends React.Component {
     )
 
 
-    InputExampleFluid = (value) => <Input fluid placeholder={(this.state.dimmer === 'blurring')? '' : value} />
 
-    generateDOM(open, dimmer) {
+
+
+    generateDOM() {
 
         return layout.map((item, i) => (
             <div className="round_panel" key={i} style={{display:'flex'}}>
@@ -73,43 +75,7 @@ class InstanceListView extends React.Component {
                             <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>{this.TableExampleVeryBasic()}</div>
                         }
                     </ContainerDimensions>
-
                 </div>
-                <Modal size={'small'} dimmer={dimmer} open={open} onClose={this.close}>
-                    <Modal.Header>Settings</Modal.Header>
-                    <Modal.Content>
-                        <Grid divided>
-                            {
-                                (this.state.dummyData.length > 0)?
-                                    Object.keys(this.state.dummyData[0]).map((key)=>(
-                                        <Grid.Row columns={2}>
-                                            <Grid.Column width={5} className='detail_item'>
-                                                <div>{key}</div>
-                                            </Grid.Column>
-                                            <Grid.Column width={11}>
-                                                {this.InputExampleFluid(this.state.selected[key])}
-                                            </Grid.Column>
-                                            <Divider vertical></Divider>
-                                        </Grid.Row>
-                                    ))
-                                    :''
-                            }
-
-                        </Grid>
-                    </Modal.Content>
-                    <Modal.Actions>
-                        <Button onClick={this.close}>
-                            Cancel
-                        </Button>
-                        <Button
-                            positive
-                            icon='checkmark'
-                            labelPosition='right'
-                            content="Save"
-                            onClick={this.close}
-                        />
-                    </Modal.Actions>
-                </Modal>
             </div>
         ))
     }
@@ -169,14 +135,23 @@ class InstanceListView extends React.Component {
     render() {
         const { open, dimmer } = this.state;
         return (
-            <ReactGridLayout
-                layout={this.state.layout}
-                onLayoutChange={this.onLayoutChange}
-                {...this.props}
-            >
-                {this.generateDOM(open, dimmer)}
 
-            </ReactGridLayout>
+            <ContainerDimensions>
+                { ({ width, height }) =>
+                    <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
+                        <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>
+                        <ReactGridLayout
+                            layout={this.state.layout}
+                            onLayoutChange={this.onLayoutChange}
+                            {...this.props}
+                            style={{width:width, height:height-20}}
+                        >
+                            {this.generateDOM(open, dimmer, width, height)}
+                        </ReactGridLayout>
+                    </div>
+                }
+            </ContainerDimensions>
+
         );
     }
     static defaultProps = {

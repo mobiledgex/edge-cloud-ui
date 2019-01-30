@@ -96,7 +96,6 @@ class SiteTwo extends React.Component  {
 };
 
 const mapStateToProps = (state) => {
-    let site = state.siteChanger.site;
     let tab = state.tabChanger.tab;
     return {
         tabName: tab

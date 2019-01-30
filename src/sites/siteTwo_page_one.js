@@ -62,22 +62,26 @@ class SiteTwoPageOne extends React.Component  {
      * Call Data from Server as REST
      **********************/
     receiveCPUData(data) {
-        console.log('slected city = '+_self.state.selectedCity);
+        //console.log('slected city = '+_self.state.selectedCity);
         let _data = null
         data.map((key, i) => {
             if(key.inst.indexOf(_self.state.selectedCity) > -1) _data = data[i]
         })
-        _self.setState({cpuUsage:_data.score})
-        _self.props.handleInjectData({cpuUsage:_data.score});
+        if(_data) {
+            _self.setState({cpuUsage:_data.score})
+            _self.props.handleInjectData({cpuUsage:_data.score});
+        }
     }
     receiveMEMData(data) {
-        console.log('selected city = '+_self.state.selectedCity);
+        //console.log('selected city = '+_self.state.selectedCity);
         let _data = null
         data.map((key, i) => {
             if(key.inst.indexOf(_self.state.selectedCity) > -1) _data = data[i]
         })
-        _self.setState({memUsage:_data.score})
-        _self.props.handleInjectData({memUsage:_data.score});
+        if(_data){
+            _self.setState({memUsage:_data.score})
+            _self.props.handleInjectData({memUsage:_data.score});
+        }
     }
     receiveNETData(dataIn, dataOut) {
         let _dataIn = null;
@@ -116,6 +120,8 @@ class SiteTwoPageOne extends React.Component  {
             this.setState({sideVisible: false})
         }
 
+        //this.props.handleChangeCity('Barcelona')
+
         //influxdb
         ServiceInflux.getOperator();
 
@@ -135,11 +141,10 @@ class SiteTwoPageOne extends React.Component  {
             console.log('change city -- ', nextProps.city)
             //현재 Barcelona == dashboard
             let city = nextProps.city.name;
-            if(nextProps.city.name === 'Barcelona') {
+            if(nextProps.city.name === 'barcelona') {
                 city = 'dashboard'
             }
             this.setState({selectedCity:city})
-            this.props.handleChangeCity(null)
         }
 
     }
@@ -193,6 +198,7 @@ class SiteTwoPageOne extends React.Component  {
 
 const mapStateToProps = (state) => {
     let tab = state.siteChanger.site;
+
     return {
         tabName: tab.subPath,
         city: state.cityChanger.city

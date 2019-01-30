@@ -70,7 +70,7 @@ const getRow = (idx, level, dName, uValues, spkDatas) => (
         <Grid.Column width={7} style={{display:'flex', justifyContent:'space-between'}}>
             <CPUMEMUsage label="CPU" value={uValues.cpu} w={60} h={60}></CPUMEMUsage>
             <CPUMEMUsage label="MEMORY" value={uValues.mem} w={60} h={60}></CPUMEMUsage>
-            <CPUMEMUsage label="SYSTEM" value={uValues.sys} w={60} h={60}></CPUMEMUsage>
+            <CPUMEMUsage label="Disk Usage" value={uValues.sys} w={60} h={60}></CPUMEMUsage>
         </Grid.Column>
         <Grid.Column width={6} style={{display:'flex', justifyContent:'center', padding:0, margin:0}}>
             <div className='spark_chart'>

@@ -49,28 +49,28 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, re
             <Grid.Row columns={4}>
                 <Grid.Column>
                     <Label>
-                        103
+                        0
                         <Label.Detail>Event</Label.Detail>
                         <MaterialIcon icon={'chevron_right'} size={32} />
                     </Label>
                 </Grid.Column>
                 <Grid.Column>
                     <Label>
-                        79
+                        0
                         <Label.Detail>System</Label.Detail>
                         <MaterialIcon icon={'chevron_right'} size={32} />
                     </Label>
                 </Grid.Column>
                 <Grid.Column>
                     <Label>
-                        72
+                        0
                         <Label.Detail>Alert</Label.Detail>
                         <MaterialIcon icon={'chevron_right'} size={32} />
                     </Label>
                 </Grid.Column>
                 <Grid.Column>
                     <Label>
-                        63
+                        0
                         <Label.Detail>Syslog</Label.Detail>
                         <MaterialIcon icon={'chevron_right'} size={32} />
                     </Label>
@@ -143,12 +143,12 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, re
                     <CPUMEMUsage label="MEMORY" value={mem}></CPUMEMUsage>
                 </Grid.Column>
                 <Grid.Column>
-                    <CPUMEMUsage label="FILESYSTEM" value={82}></CPUMEMUsage>
+                    <CPUMEMUsage label="DISK" value={0.14}></CPUMEMUsage>
                 </Grid.Column>
             </Grid.Row>
             {/*Network I/O*/}
             <Grid.Row columns={1}>
-                <Grid.Column width={8}>
+                <Grid.Column width={6}>
                     <Dropdown placeholder='Network I/O' fluid search selection options={dataOptions} />
                 </Grid.Column>
             </Grid.Row>
@@ -183,19 +183,36 @@ class DeveloperSideInfo extends React.Component {
             visible: false,
             cpu:0, mem:0, recv:0, send:0, network:[], networkSeries:[],
             lineLimit:false,
-            redraw:false,
-            cloudletInfo:'Barcelona MWC Deutsche Telecom'
+            redraw:false, resetData:false,
+            cloudletInfo:'Barcelona MWC Deutsche Telecom',
+            city:'Barcelona'
         }
         this.dataArray = [];
         this.dataSeries = [];
         this.oldSeries = null;
+        this.oldCity = '';
         //x axis length to divide
         this.limitDataLength = 15;
+    }
+    componentDidMount() {
+        this.props.handleChangeCity({name:'barcelona'})
     }
 
     componentWillReceiveProps(nextProps) {
 
         this.setState({redraw:false})
+
+        /********************
+         *  새로운 지역 선택시에 네트워크 이전데이터 초기화
+         ********************/
+
+        if(nextProps.city.name && this.state.city !== nextProps.city.name) {
+            console.log('새로운 지역 선택 == '+nextProps.city.name)
+            this.dataArray = [];
+            this.dataSeries = [];
+            this.setState({dataArray:[], dataSeries:[], network:[], networkSeries:[], city:(nextProps.city.name)?nextProps.city.name:nextProps.city})
+        }
+
         if(nextProps.data) {
             this.setState({visible:(nextProps.sideVisible) ? true : false});
             if(nextProps.data.cpuUsage) {
@@ -223,21 +240,23 @@ class DeveloperSideInfo extends React.Component {
                         this.dataSeries[0]=[]
                     } else {
 
-                        if(this.oldSeries === nextProps.data.network[key].time){
+                        if(nextProps.data.network[key] && this.oldSeries === nextProps.data.network[key].time){
                             newData = false;
                         } else {
                             newData = true;
                         }
 
                         //should limit display data in chart
-
-                        if(this.dataArray[i].length > this.limitDataLength) {
+                        /****************
+                         * 차트에 표현할 데이터의 개수 정의
+                         ****************/
+                        if(this.dataArray[i] && this.dataArray[i].length > this.limitDataLength) {
                             //pop first data
                             this.dataArray[i].splice(0,1)
                             if(sCnt === (keyLength - 1)) this.dataSeries[0].splice(0,1)
                         }
 
-                        if(newData) {
+                        if(newData && nextProps.data.network[key]) {
                             this.dataArray[i].push(Number(nextProps.data.network[key].score))
                             if(sCnt === (keyLength - 1)) {
                                 this.dataSeries[0].push(nextProps.data.network[key].time)
@@ -270,13 +289,12 @@ class DeveloperSideInfo extends React.Component {
                 case 'Barcelona': cdName = 'Barcelona MWC Deutsche Telecom'; break;
                 case 'frankfurt': cdName = 'Franfrut MWC Macrometa'; break;
                 case 'hamburg': cdName = 'Hamburg MWC Mexdemo'; break;
+                default : cdName = 'Barcelona MWC Deutsche Telecom'; break;
             }
 
-            this.setState({cloudletInfo:cdName})
-
-            //change data......
-
+            this.setState({cloudletInfo:cdName, city:(nextProps.city.name)?nextProps.city.name : this.state.city})
         }
+
     }
     handleClickBtn() {
         _self.props.gotoNext();
@@ -302,6 +320,7 @@ class DeveloperSideInfo extends React.Component {
 
 
 const mapStateToProps = (state, ownProps) => {
+        //console.log('dev side info -- ', state.cityChanger.city)
     return {
         data: state.receiveDataReduce.data,
         city: state.cityChanger.city

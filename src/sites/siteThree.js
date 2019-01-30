@@ -10,8 +10,11 @@ import * as actions from '../actions';
 import './siteThree.css';
 
 
-let devOptions = [
-    { key: 'af', value: 'af', text: 'Barcelona MWC' },
+let devOptionsOne = [
+    { key: 'af', value: 'af', text: 'Barcelona MWC' }
+]
+let devOptionsTwo = [
+    { key: 'af', value: 'af', text: 'Deutsche Telecom' },
     { key: 'af', value: 'af', text: 'SK Telecom' },
     { key: 'af2', value: 'af2', text: 'Other Telecom' }
 ]
@@ -75,9 +78,10 @@ class SiteThree extends React.Component {
                             </Header.Content>
                         </Header>
                         <div className='nav_filter'>
-                            <div className='title'>Developer : Deutsche Telecom</div>
+                            <div className='title'>Operator</div>
                             <div className='filter'>
-                                <Dropdown placeholder='Barcelona MWC' fluid search selection options={devOptions} />
+                                <Dropdown placeholder='Barcelona MWC' fluid search selection options={devOptionsOne} />
+                                <Dropdown placeholder='Deutsche Telecom' fluid search selection options={devOptionsTwo} />
                                 <MaterialIcon icon={'refresh'} />
                             </div>
                         </div>

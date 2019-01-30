@@ -64,6 +64,6 @@ export function registDeveloper(accountInfo:string):Action {
 export function changeCity(state) {
     return {
         type: types.CHANGE_CITY,
-        data:state
+        city:state
     };
 }

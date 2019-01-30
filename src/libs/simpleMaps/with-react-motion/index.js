@@ -117,6 +117,8 @@ class AnimatedMap extends Component {
                 .attr("r", 6)
         }
 
+        this.props.handleChangeCity(city)
+
 
     }
     handleGotoAnalysis(country) {
@@ -371,9 +373,9 @@ class AnimatedMap extends Component {
                                                         <text textAnchor="middle" y={4} class="marker_value">
                                                             {city.cost}
                                                         </text>
-                                                        <text textAnchor="middle" class="marker_label" x={(city.markerOffsetX)?(city.markerOffsetX):0} y={(city.markerOffset)?(city.markerOffset):24}>
-                                                            {city.name}
-                                                        </text>
+                                                        {/*<text textAnchor="middle" class="marker_label" x={(city.markerOffsetX)?(city.markerOffsetX):0} y={(city.markerOffset)?(city.markerOffset):24}>*/}
+                                                            {/*{city.name}*/}
+                                                        {/*</text>*/}
                                                     </Marker>
                                                 ))
                                                 :

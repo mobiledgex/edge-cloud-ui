@@ -76,16 +76,17 @@ const numberDes =(a,b)=> (
 )
 
 let generateData = (datas) => {
-    let result = datas.data.data;
+    console.log('format data - ', datas)
+    let result = datas;
     let values = [];
     if(result){
         result.map((data, i) => {
             let Index = i;
             let DeveloperName = data.result.key.name || '-';
             let Operator = data.result.key.operator_key.name || '-';
-            let Ip_support = data.result.ip_support || '-';
+            //let Ip_support = data.result.ip_support || '-';
 
-            values.push({Index:Index, DeveloperName:DeveloperName, Operator:Operator, Ip_support:Ip_support})
+            values.push({Index:Index, DeveloperName:DeveloperName, Operator:Operator})
         })
     } else {
         console.log('there is no result')
@@ -94,7 +95,7 @@ let generateData = (datas) => {
     //ascending or descending
 
     //values.sort(numberDes);
-    values.reverse();
+    //values.reverse();
 
     return values
 
