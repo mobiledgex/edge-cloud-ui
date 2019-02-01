@@ -69,7 +69,7 @@ class DeveloperListView extends React.Component {
 
             (i === 0)?
                 <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
-                    <div style={{width:'100%', height:height-50, overflowY:'auto'}}>
+                    <div style={{width:'100%', height:height, overflowY:'auto'}}>
                         {this.TableExampleVeryBasic(width, height, this.props.headerLayout)}
                     </div>
 

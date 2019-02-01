@@ -110,7 +110,7 @@ class AnalysticViewZone extends React.Component {
     }
     componentDidMount() {
         _self.interval = setInterval(() => {
-            service.getClusterHealth(['levcluster', 'skt-barcelona-1000realities','tdg-barcelona-mobiledgex-demoapp','tdg-barcelona-niantic'], _self.receiveClusterInfo)
+            service.getClusterHealth(['levcluster', 'skt-barcelona-1000realities'], _self.receiveClusterInfo)
         }, 3000)
 
 
