@@ -819,7 +819,7 @@ body, button, input, optgroup, select, textarea,
 /* grid table paging */
 .listPageContainer {
     width: 100%;
-    height: 70px;
+    height: 80px;
     margin:0.5em;
     display: flex;
     justify-content: center;
@@ -830,6 +830,7 @@ body, button, input, optgroup, select, textarea,
 .contents_body .ui.pagination {
     background: none;
     float: none !important;
+    box-shadow: none;
 }
 .contents_body .ui.pagination.menu .item,
 .contents_body .ui.pagination.menu .item {
@@ -848,7 +849,8 @@ body, button, input, optgroup, select, textarea,
 
 
 /* detail list table */
-.contents_body .detail_list {
+.contents_body .ui.divided.list>.item {
+    border-top: 0;
     border-bottom: solid 1px rgba(255,255,255,0.125);
     padding: 1em !important;
     line-height: 1.5em !important;
@@ -856,7 +858,7 @@ body, button, input, optgroup, select, textarea,
 .contents_body .detail_list .header {
     font-size: 1.286em;
     font-weight: normal !important;
-    padding-bottom: 0.286em;
+    /* padding-bottom: 0.286em; */
 }
 .contents_body .detail_list .detail_item,
 .ui.modal .detail_item {
