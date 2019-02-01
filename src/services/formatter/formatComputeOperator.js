@@ -54,7 +54,7 @@ let generateData = (datas) => {
             let Index = i;
             let OperatorName = dataResult.key.name || '-';
 
-            values.push({Index:Index, OperatorName:OperatorName})
+            values.push({Index:Index, OperatorName:OperatorName, Edit:''})
         })
     } else {
         console.log('there is no result')

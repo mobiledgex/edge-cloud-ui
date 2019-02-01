@@ -146,7 +146,7 @@ class SiteFour extends React.Component {
                             <Grid.Column style={{height:'100%'}}>
                                 <ContainerDimensions>
                                     { ({ width, height }) =>
-                                        <div style={{width:width, height:height-60, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
+                                        <div style={{width:width, height:height-60, display:'flex', overflow:'hidden'}}>
                                             {
                                                 (this.state.page === 'pg=2')?<SiteFourPageTwo></SiteFourPageTwo> :
                                                     (this.state.page === 'pg=3')?<SiteFourPageThree></SiteFourPageThree> :

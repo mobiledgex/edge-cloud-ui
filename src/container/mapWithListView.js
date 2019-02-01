@@ -20,14 +20,14 @@ var horizon = 6;
 var vertical = 13;
 
 var layout = [
-    {"w":19,"h":8,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"LocationView"},
-    {"w":19,"h":14,"x":0,"y":8,"i":"1","moved":false,"static":false, "title":"Developer"},
+    {"w":19,"h":10,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"LocationView"},
+    {"w":19,"h":12,"x":0,"y":10,"i":"1","moved":false,"static":false, "title":"Developer"},
 ]
-let headerLayout = [1,2,1,3,2,2,3,2,1,2]
+
 
 const ContainerOne = (props) => (
 
-    <ClustersMap parentProps={props}/>
+    <ClustersMap parentProps={props} />
 
 );
 let _self = null;
@@ -112,10 +112,10 @@ class MapWithListView extends React.Component {
         return layout.map((item, i) => (
 
             (i === 1)?
-                <div className="round_panel" key={i} style={{padding:10, display:'flex', flexDirection:'column'}} >
+                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
 
-                    <div style={{width:'100%', height:height-50, overflowY:'auto'}}>
-                        {this.TableExampleVeryBasic(width, height, headerLayout)}
+                    <div style={{width:'100%', height:height, overflowY:'auto'}}>
+                        {this.TableExampleVeryBasic(width, height, this.props.headerLayout)}
                     </div>
 
                     <Table.Footer className='listPageContainer'>
@@ -139,9 +139,9 @@ class MapWithListView extends React.Component {
 
                 </div>
                 :
-                <div className="round_panel" key={i} style={{ padding:10, display:'flex', flexDirection:'column'}} >
-                    <div style={{width:'100%', height:'100%', overflow:'hidden'}}>
-                        clusters position on the Map
+                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
+                    <Header className='panel_title'>Clusters position on the Map</Header>
+                    <div className='panel_worldmap'>
                         <ContainerOne ref={ref => this.container = ref} {...this.props} data={this.state.receivedData} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
                     </div>
 
@@ -169,11 +169,11 @@ class MapWithListView extends React.Component {
         console.log('default width header -- ', widthDefault)
         return keys.map((key, i) => (
             (i === keys.length -1) ?
-                <Table.HeaderCell style={{color:'#c8c8c8'}} width={3} textAlign='center' sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
+                <Table.HeaderCell width={3} textAlign='center' sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell style={{color:'#c8c8c8'}} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
+                <Table.HeaderCell textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
                     {key}
                 </Table.HeaderCell>
         ));
@@ -189,7 +189,7 @@ class MapWithListView extends React.Component {
     TableExampleVeryBasic = (w, h, headL) => (
         <Table className="viewListTable" basic='very' striped celled fixed sortable ref={ref => this.viewListTable = ref} style={{width:'100%'}}>
             <Table.Header className="viewListTableHeader"  style={{width:'100%'}}>
-                <Table.Row style={{color:'#eeeeee'}}>
+                <Table.Row>
                     {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL):null}
                 </Table.Row>
             </Table.Header>
@@ -199,7 +199,7 @@ class MapWithListView extends React.Component {
                         <Table.Row key={i}>
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
-                                    <Table.Cell key={j} textAlign='center'>
+                                    <Table.Cell key={j} textAlign='center' style={{whiteSpace:'nowrap'}}>
                                         <Button onClick={() => alert('Are you sure?')}>Delete</Button>
                                         <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                     </Table.Cell>
@@ -212,8 +212,8 @@ class MapWithListView extends React.Component {
                                 (value === 'CloudletLocation')?
                                     <Table.Cell key={j} textAlign='left'>
                                         {
-                                            `L : ${item[value].latitude}
-                                            R : ${item[value].longitude}`
+                                            `LAT : ${item[value].latitude}
+                                            LON : ${item[value].longitude}`
                                         }
                                     </Table.Cell>
                                 :

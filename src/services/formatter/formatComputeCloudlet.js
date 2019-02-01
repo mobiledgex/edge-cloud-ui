@@ -82,11 +82,12 @@ let generateData = (datas) => {
     if(result){
         result.map((data, i) => {
             let Index = i;
-            let DeveloperName = data.result.key.name || '-';
+            let CloudletName = data.result.key.name || '-';
             let Operator = data.result.key.operator_key.name || '-';
+            let CloudletLocation = data.result.location || '-';
             //let Ip_support = data.result.ip_support || '-';
 
-            values.push({Index:Index, DeveloperName:DeveloperName, Operator:Operator})
+            values.push({Index:Index, CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Edit:''})
         })
     } else {
         console.log('there is no result')

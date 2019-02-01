@@ -184,7 +184,7 @@ class DeveloperSideInfo extends React.Component {
             cpu:0, mem:0, recv:0, send:0, network:[], networkSeries:[],
             lineLimit:false,
             redraw:false, resetData:false,
-            cloudletInfo:'Barcelona MWC Deutsche Telecom',
+            cloudletInfo:'Deutsche Telecom Barcelona MWC',
             city:'Barcelona'
         }
         this.dataArray = [];
@@ -286,10 +286,10 @@ class DeveloperSideInfo extends React.Component {
         if(nextProps.city) {
             let cdName = '';
             switch(nextProps.city.name) {
-                case 'Barcelona': cdName = 'Barcelona MWC Deutsche Telecom'; break;
-                case 'frankfurt': cdName = 'Franfrut MWC Macrometa'; break;
-                case 'hamburg': cdName = 'Hamburg MWC Mexdemo'; break;
-                default : cdName = 'Barcelona MWC Deutsche Telecom'; break;
+                case 'Barcelona': cdName = 'Deutsche Telecom Barcelona MWC'; break;
+                case 'frankfurt': cdName = 'Macrometa Franfrut MWC'; break;
+                case 'hamburg': cdName = 'Mexdemo Hamburg MWC'; break;
+                default : cdName = 'Deutsche Telecom Barcelona MWC'; break;
             }
 
             this.setState({cloudletInfo:cdName, city:(nextProps.city.name)?nextProps.city.name : this.state.city})

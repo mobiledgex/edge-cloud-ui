@@ -8,15 +8,17 @@ import MaterialIcon from 'material-icons-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import './siteThree.css';
+//
+import * as service from '../services/service_compute_service';
+import * as aggregate from '../utils';
 
-
-let devOptionsOne = [
-    { key: 'af', value: 'af', text: 'Barcelona MWC' }
+let _devOptionsOne = [
+    { key: 'op', value: 'op', text: 'Deutsche Telecom' },
+    { key: 'op1', value: 'op1', text: 'SK Telecom' },
+    { key: 'op2', value: 'op2', text: 'Other Telecom' }
 ]
-let devOptionsTwo = [
-    { key: 'af', value: 'af', text: 'Deutsche Telecom' },
-    { key: 'af', value: 'af', text: 'SK Telecom' },
-    { key: 'af2', value: 'af2', text: 'Other Telecom' }
+let _devOptionsTwo = [
+    { key: 'cl', value: 'cl', text: 'Barcelona MWC' }
 ]
 
 let _self = null;
@@ -30,7 +32,11 @@ class SiteThree extends React.Component {
             contHeight:0,
             contWidth:0,
             bodyHeight:0,
-            activeItem: 'Monitoring'
+            activeItem: 'Monitoring',
+            devOptionsOne:_devOptionsOne,
+            devOptionsTwo:_devOptionsTwo,
+            dropdownValueOne:'TDG',
+            dropdownValueTwo:'bonn-niantic'
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -51,13 +57,49 @@ class SiteThree extends React.Component {
 
     }
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+    handleChange = (e, { value }) => this.setState({ value })
     componentWillMount() {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
+    receiveOper(result) {
+        console.log('operators == ', result)
+        _self.setState({devOptionsOne: result.map((oper, i) => (
+                { key: i, value: oper.OperatorName, text: oper.OperatorName }
+            ))})
+    }
+    receiveCloudlet(result) {
+        let groupByOper = aggregate.groupBy(result, 'Operator')
+        console.log('receiveCloudlet == ', groupByOper)
+        _self.setState({devOptionsTwo: groupByOper['TDG'].map((oper, i) => (
+                { key: i, value: oper.CloudletName, text: oper.CloudletName }
+            ))})
+        _self.setState({cloudletResult:groupByOper})
+        //
+        //셀렉트박스를 통하여 클러스터 항목 클릭하면.....
+        //_self.getClusterInfo('');
+    }
+    receiveCluster(cloudlet) {
+
+    }
+    getClusterInfo() {
+        // 오퍼의 클러스터 정보
+        //service.getComputeService('cloudlet', this.receiveCloudlet)
+    }
+
+
+    getCloudletList = (operNm) => {
+        _self.setState({devOptionsTwo: this.state.cloudletResult[operNm].map((oper, i) => (
+                { key: i, value: oper.CloudletName, text: oper.CloudletName }
+            ))})
+    }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
+        // 오퍼레이터
+        service.getComputeService('operator', this.receiveOper)
+        // 오퍼의 클러스터 정보
+        service.getComputeService('cloudlet', this.receiveCloudlet)
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -80,8 +122,8 @@ class SiteThree extends React.Component {
                         <div className='nav_filter'>
                             <div className='title'>Operator</div>
                             <div className='filter'>
-                                <Dropdown placeholder='Barcelona MWC' fluid search selection options={devOptionsOne} />
-                                <Dropdown placeholder='Deutsche Telecom' fluid search selection options={devOptionsTwo} />
+                                <Dropdown placeholder='Select Operator' fluid search selection options={this.state.devOptionsOne} value={this.state.dropdownValueOne} />
+                                <Dropdown placeholder='Barcelona MWC' fluid search selection options={this.state.devOptionsTwo} value={this.state.dropdownValueTwo} onChange={this.handleChange} />
                                 <MaterialIcon icon={'refresh'} />
                             </div>
                         </div>

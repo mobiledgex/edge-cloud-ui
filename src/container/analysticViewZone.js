@@ -8,6 +8,7 @@ import NetworkIOView from '../components/networkIOView';
 import DailyReportView from '../components/dailyReportView';
 import NetworkTrafficIOView from '../components/networkTrafficIOView';
 import SelectFromTo from '../components/selectFromTo';
+import * as service from '../services/service_monitoring_cluster';
 
 import './styles.css';
 
@@ -25,17 +26,32 @@ var layout = [
     {"w":6,"h":7,"x":0,"y":15,"i":"2","moved":false,"static":false, "title":"Daily Report"},
     {"w":6,"h":7,"x":6,"y":15,"i":"3","moved":false,"static":false, "title":"Top 5 Interface Traffic"}];
 
+let _self = null;
 class AnalysticViewZone extends React.Component {
     constructor(props) {
         super(props);
         this.onHandleClick = this.onHandleClick.bind(this);
         const layout = this.generateLayout();
-        this.state = { layout };
+        this.state = {
+            layout,
+            listData : [
+                {alarm:'3', dName:'Cluster-A', values:{cpu:35, mem:55, sys:33}},
+                {alarm:'5', dName:'Cluster-B', values:{cpu:78, mem:78, sys:12}},
+                {alarm:'1', dName:'Cluster-C', values:{cpu:32, mem:33, sys:67}},
+                {alarm:'2', dName:'Cluster-D', values:{cpu:23, mem:46, sys:41}},
+                {alarm:'4', dName:'Cluster-E', values:{cpu:55, mem:67, sys:23}}
+            ],
+            networkData:[]
+        };
         this.state.optionOne = [
             {key:'itm_1', value:'cpu', text:'CPU Usage'},
             {key:'itm_2', value:'memory', text:'MEM Usage'},
             {key:'itm_3', value:'filesys', text:'FileSys Usage'}
             ]
+        _self = this;
+
+        this.interval = null;
+
     }
 
     onHandleClick = function(e, data) {
@@ -69,10 +85,10 @@ class AnalysticViewZone extends React.Component {
                         (i === 2)? this.makeHeader_select(item.title) : this.makeHeader_noChild(item.title)
                 }
                 {
-                    (i === 0)? <CPUMEMListView></CPUMEMListView>
+                    (i === 0)? <CPUMEMListView listData={this.state.listData}></CPUMEMListView>
                     : (i === 1)? <NetworkIOView />
                     : (i === 2)? <DailyReportView />
-                    : (i === 3)? <NetworkTrafficIOView></NetworkTrafficIOView>
+                    : (i === 3)? <NetworkTrafficIOView listData={this.state.listData}></NetworkTrafficIOView>
                     : <span>{item.i}</span>
                 }
             </div>
@@ -88,6 +104,19 @@ class AnalysticViewZone extends React.Component {
     onLayoutChange(layout) {
         //this.props.onLayoutChange(layout);
         console.log('changed layout = ', JSON.stringify(layout))
+    }
+    receiveClusterInfo(result) {
+        _self.setState({listData:result})
+    }
+    componentDidMount() {
+        _self.interval = setInterval(() => {
+            service.getClusterHealth(['levcluster', 'skt-barcelona-1000realities','tdg-barcelona-mobiledgex-demoapp','tdg-barcelona-niantic'], _self.receiveClusterInfo)
+        }, 3000)
+
+
+    }
+    componentWillUnmount() {
+        clearTimeout(_self.interval)
     }
 
     render() {

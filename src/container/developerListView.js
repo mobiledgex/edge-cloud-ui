@@ -18,7 +18,6 @@ var horizon = 6;
 var vertical = 13;
 var layout = [
     {"w":19,"h":14,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Developer"},
-    {"w":19,"h":8,"x":0,"y":14,"i":"1","moved":false,"static":false, "title":"LocationView"},
 ]
 
 class DeveloperListView extends React.Component {
@@ -147,7 +146,7 @@ class DeveloperListView extends React.Component {
                         <Table.Row key={i}>
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
-                                    <Table.Cell key={j} textAlign='center'>
+                                    <Table.Cell key={j} textAlign='center' style={{whiteSpace:'nowrap'}}>
                                         <Button onClick={() => alert('Are you sure?')}>Delete</Button>
                                         <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                     </Table.Cell>

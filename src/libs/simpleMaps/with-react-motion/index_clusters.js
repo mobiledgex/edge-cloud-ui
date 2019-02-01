@@ -9,7 +9,6 @@ import {
     Marker,
 } from "react-simple-maps"
 import { Button, Icon } from 'semantic-ui-react';
-import MaterialIcon from 'material-icons-react';
 import ContainerDimensions from 'react-container-dimensions'
 
 import { Motion, spring } from "react-motion"
@@ -20,10 +19,9 @@ import request from "axios"
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 
-import Legend from './legend';
 import RadialGradientSVG from '../../../../src/chartGauge/radialGradientSVG';
-import Tooltip from '../../../components/tooltip';
-import {ReactSVGPanZoom} from 'react-svg-pan-zoom';
+
+import * as aggregation from '../../../utils';
 
 //style
 import styles from '../../../css/worldMapStyles';
@@ -42,7 +40,7 @@ const zoomControls = {center:[70, 40], zoom:3}
 const cityScale = scaleLinear()
     .domain([0,37843000])
     .range([1,25])
-
+const markerSize = [10, 12]
 
 let _self = null;
 class ClustersMap extends Component {
@@ -115,7 +113,7 @@ class ClustersMap extends Component {
             d3.selectAll('.rsm-markers').selectAll(".levelFive")
                 .transition()
                 .ease(d3.easeBack)
-                .attr("r", 6)
+                .attr("r", markerSize[0])
         }
 
         this.props.handleChangeCity(city)
@@ -137,7 +135,7 @@ class ClustersMap extends Component {
         if(d3.selectAll('.detailMarker_'+_self.state.oldCountry)) {
             d3.selectAll('.detailMarker_'+_self.state.oldCountry)
                 .transition()
-                .attr("r", 6)
+                .attr("r", markerSize[0])
                 .style("opacity",1)
         }
         _self.setState({oldCountry:country.name})
@@ -233,7 +231,7 @@ class ClustersMap extends Component {
                 .transition()
                 .duration(durate)
                 .ease(d3.easeBack)
-                .attr("r", (dir === 1)?6:8)
+                .attr("r", (dir === 1)?markerSize[0]:markerSize[1])
                 .style("opacity",alpha)
         }
 
@@ -263,8 +261,8 @@ class ClustersMap extends Component {
     }
 
     componentDidMount() {
-        this.fetchCities();
-        this.fetchCountry();
+        //this.fetchCities();
+        //this.fetchCountry();
 
         let _self = this;
         this.interval = setInterval(function() {
@@ -284,12 +282,27 @@ class ClustersMap extends Component {
         _self.setState({oldCountry:this.state.selectedCity})
 
     }
+
     componentWillReceiveProps(nextProps) {
         let data = nextProps.parentProps.devData;
         let locations = data.map((item) => (
-            {'locations':item.CloudletLocation}
+            {LAT:item.CloudletLocation.latitude, LON:item.CloudletLocation.longitude, cloudlet:item.DeveloperName}
         ))
-        console.log('data locations -- ', locations)
+
+
+        let locationData = [];
+
+        let groupbyData = aggregation.groupBy(locations, 'LAT');
+
+        console.log('data locations -- ', Object.keys(groupbyData))
+        Object.keys(groupbyData).map((key) => {
+            locationData.push({ "name": "barcelona",    "coordinates": [groupbyData[key][0]['LON'], groupbyData[key][0]['LAT']], "population": 17843000, "cost":groupbyData[key].length })
+        })
+
+        console.log('locationData  -- ', locationData)
+        this.setState({
+            cities: locationData
+        })
     }
     componentWillUnmount() {
         clearInterval(this.interval)
@@ -299,7 +312,7 @@ class ClustersMap extends Component {
         const grdColors = ['#000000', '#00CC44', '#88ff00', '#FFEE00', '#FF7700', '#FF0022']
         return (
             <div style={wrapperStyles}>
-                <div className="zoom-inout-reset-clusterMap" style={{bottom:20, position:'absolute', display:'block'}}>
+                <div className="zoom-inout-reset-clusterMap" style={{left:8, bottom:4, position:'absolute', display:'block'}}>
                     <Button id="mapZoomCtl" size='20' icon onClick={this.handleReset}>
                         <Icon name="expand" />
                     </Button>
@@ -395,7 +408,7 @@ class ClustersMap extends Component {
                                                             class={"detailMarker_"+city.name}
                                                             cx={0}
                                                             cy={0}
-                                                            r={6}
+                                                            r={markerSize[0]}
                                                             opacity={1}
                                                             fill={styles.marker.second.fill}
                                                             stroke={styles.marker.second.stroke}

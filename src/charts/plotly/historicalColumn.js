@@ -142,7 +142,11 @@ class HistoricalColumn extends React.Component {
                                     size: 12
                                 },
                                 bargap: 0.3,
-                                bargroupgap: 0.2
+                                bargroupgap: 0.2,
+                                hoverlabel: {
+                                    bordercolor: 'rgba(255,255,255,.3)',
+                                    font: {color:'rgba(255,255,255,.7)'},
+                                }
 
                             }}
                               revision={this.state.revision}

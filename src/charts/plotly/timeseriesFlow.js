@@ -111,6 +111,10 @@ class TimeSeriesFlow extends React.Component {
                                 points: {
                                     width: 1
                                 },
+                                hoverlabel: {
+                                    bordercolor: 'rgba(255,255,255,.3)',
+                                    font: {color:'rgba(255,255,255,.7)'},
+                                },
                                 datarevision: this.state.datarevision + 1
 
                             }}
