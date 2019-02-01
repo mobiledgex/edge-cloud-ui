@@ -34,6 +34,10 @@ export default class NetworkTrafficIOView extends React.PureComponent {
         }
 
     }
+    componentWillReceiveProps(nextProps, nextContext) {
+        console.log('receive props network data........ ', nextProps.listData)
+    }
+
     makeRow = (item, i) => (
         <Grid.Row key={'itm_'+i} columns={3} className='traffic_list'>
             <Grid.Column>

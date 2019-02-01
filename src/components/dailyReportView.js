@@ -14,7 +14,6 @@ class DailyReportView extends React.Component {
     }
     render() {
         const { width, height } = this.props.size
-        console.log('chart size == ', width, height)
         return (
             <div style={{width:width, height:height}}>
                 <HistoricalColumn/>

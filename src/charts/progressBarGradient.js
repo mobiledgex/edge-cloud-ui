@@ -38,7 +38,7 @@ export default class ProgressBarGradient extends React.Component {
         if(!document.getElementById(chartId)) {
             return;
         }
-        var chartDomWidth = document.getElementById(chartId).offsetWidth || 200;
+        var chartDomWidth = document.getElementById(chartId).offsetWidth - 4 || 200;
         var w = chartDomWidth, h = 20;
         var roundedCorners = _roundedCorners;
         var chartData;

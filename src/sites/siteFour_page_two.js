@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
+import DeveloperListView from '../container/developerListView';
 
 
 
@@ -28,6 +29,7 @@ class SiteFourPageTwo extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
+        this.headerLayout = [1,5,1]
     }
 
     //go to
@@ -75,7 +77,7 @@ class SiteFourPageTwo extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <InstanceListView devData={this.state.devData}></InstanceListView>
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
 
         );
     }

@@ -9,13 +9,15 @@ import CPUMEMUsage from './cupmemory';
 import SparkLine from '../../charts/sparkline';
 
 
-let listDatas = [
+let listData = [
     {alarm:'3', dName:'Cluster-A', values:{cpu:35, mem:55, sys:33}},
     {alarm:'5', dName:'Cluster-B', values:{cpu:78, mem:78, sys:12}},
     {alarm:'1', dName:'Cluster-C', values:{cpu:32, mem:33, sys:67}},
     {alarm:'2', dName:'Cluster-D', values:{cpu:23, mem:46, sys:41}},
     {alarm:'4', dName:'Cluster-E', values:{cpu:55, mem:67, sys:23}}
 ]
+let icnt = 0;
+let domId_old = null;
 function boxMullerRandom () {
     let phase = false,
         x1, x2, w, z;
@@ -40,7 +42,8 @@ function boxMullerRandom () {
 function randomData(n = 30) {
     return Array.apply(0, Array(n)).map(boxMullerRandom);
 }
-function getIcon (level, domId) {
+function getIcon (domId, level) {
+    console.log('get icon count ...'+level+":"+domId)
     let src;
     switch(level) {
         case '1': src = '/assets/cluster/cluster_level1.svg'; break;
@@ -51,10 +54,16 @@ function getIcon (level, domId) {
         default: src = '/assets/cluster/cluster_level1.svg'; break;
     }
 
-    d3.svg(src).then((svg) => {
-        const gElement = d3.select(svg).select('svg');
-        d3.select(domId).node().append(gElement.node());
-    })
+    setTimeout( () =>
+        d3.svg(src).then((svg) => {
+            const gElement = d3.select(svg).select('svg');
+            d3.select(domId).node().append(gElement.node());
+        }), 1000
+    )
+
+    icnt ++;
+
+
 }
 const sampleData = randomData(30);
 const sampleData100 = randomData(100);
@@ -63,7 +72,7 @@ const getRow = (idx, level, dName, uValues, spkDatas) => (
     <Grid.Row key={idx} columns={3} className='cluster_property'>
         <Grid.Column width={3} className='cluster_health'>
             <div id={"icon_"+idx} className='cluster_icon'>
-                {getIcon(level, '#icon_'+idx)}
+                {/*{getIcon(level, '#icon_'+idx)}*/}
             </div>
             <div className='label'>{dName}</div>
         </Grid.Column>
@@ -73,17 +82,18 @@ const getRow = (idx, level, dName, uValues, spkDatas) => (
             <CPUMEMUsage label="Disk Usage" value={uValues.sys} w={60} h={60}></CPUMEMUsage>
         </Grid.Column>
         <Grid.Column width={6} style={{display:'flex', justifyContent:'center', padding:0, margin:0}}>
-            <div className='spark_chart'>
-                <SparkLine sId={'spchart_'+idx} w={200} h={60}></SparkLine>
+            <div className='spark_chart' style={{width:'100%', marginLeft:20, marginRight:20}}>
+                <SparkLine sId={'spchart_'+idx} w={400} h={110} value={uValues.net}></SparkLine>
                 <div className='label'>NETWORK I/O</div>
             </div>
         </Grid.Column>
     </Grid.Row>
 )
 
-const CPUMEMListView = () => (
+const CPUMEMListView = (props) => (
     <Grid divided size="small" className='panel_contents'>
-        {listDatas.map((data, i) => getRow(i, data.alarm, data.dName, data.values, sampleData))}
+        {props.listData.map((data, i) => getRow(i, data.alarm, data.dName, data.values, sampleData))}
+        {(icnt < props.listData.length)?props.listData.map((data, i) => getIcon('#icon_'+i, data.alarm)):null}
     </Grid>
 )
 

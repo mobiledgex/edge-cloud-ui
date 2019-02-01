@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import { Grid, Button, Container } from 'semantic-ui-react';
+import { Grid, Button, Container, Input, Label } from 'semantic-ui-react';
 import React3DGlobe from '../libs/react3dglobe';
 import { getMockData } from "../libs/react3dglobe/mockData";
 
@@ -22,6 +22,7 @@ class EntranceGlobe extends Component {
             clickedMarker: null,
             hoveredMarker: null,
             mouseEvent: null,
+            loginState:'out'
         };
     }
 
@@ -70,6 +71,9 @@ class EntranceGlobe extends Component {
         this.setState({clickedMarker, mouseEvent});
     };
 
+    handleClickLogin() {
+        this.setState({loginState:'in'})
+    }
     render() {
         const {clickedMarker, hoveredMarker, mouseEvent} = this.state;
         return (
@@ -84,11 +88,36 @@ class EntranceGlobe extends Component {
                             onMarkerMouseout={this.handleMarkerMouseout}
                             onMarkerClick={this.handleMarkerClick}
                         />
-                        {/*<div className='intro_logo' />*/}
-                        <div className='intro_link'>
-                            <Button onClick={() => this.goToNext('/site2')}>MobiledgeX Monitoring</Button>
-                            <Button onClick={() => this.goToNext('/site4')}>MobiledgeX Compute</Button>
-                        </div>
+                        {(this.state.loginState === 'out')?
+                            <div className='intro_login'>
+                                <Grid>
+                                    <Grid.Row>
+                                        <span className='title'>User Login</span>
+                                    </Grid.Row>
+                                    <Grid.Row columns={2}>
+                                        <Grid.Column>
+                                            <Input placeholder='ID' width></Input>
+                                        </Grid.Column>
+                                        <Grid.Column >
+                                            <Input  placeholder='Password' type='password'></Input>
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                    <Grid.Row>
+                                        <Button onClick={() => this.handleClickLogin()}>Log In</Button>
+                                    </Grid.Row>
+                                </Grid>
+                            </div>
+                            :
+                            (this.state.loginState === 'in')?
+                            <div className='intro_link'>
+                                <Button onClick={() => this.goToNext('/site2')}>MobiledgeX Monitoring</Button>
+                                <Button onClick={() => this.goToNext('/site4')}>MobiledgeX Compute</Button>
+                            </div>
+                            :
+                            <Label>Incorrect password or confirmation code entered. Please try again.</Label>
+
+                        }
+
                     </div>
                     :
                     <div style={{width:'100%', height:'100%'}}>

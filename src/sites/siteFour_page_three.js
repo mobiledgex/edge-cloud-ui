@@ -10,6 +10,7 @@ import * as actions from '../actions';
 
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
+import MapWithListView from "./siteFour_page_six";
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
@@ -30,6 +31,7 @@ class SiteFourPageThree extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
+        this.headerLayout = [1,5,2]
     }
 
     //go to
@@ -77,7 +79,7 @@ class SiteFourPageThree extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <DeveloperListView devData={this.state.devData}></DeveloperListView>
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
 
         );
     }

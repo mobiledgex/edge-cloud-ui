@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
+import MapWithListView from "../container/mapWithListView";
 
 
 
@@ -77,7 +78,7 @@ class SiteFourPageFour extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <InstanceListView devData={this.state.devData}></InstanceListView>
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout}></MapWithListView>
 
         );
     }
