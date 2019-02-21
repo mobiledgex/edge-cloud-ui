@@ -10,7 +10,7 @@ let rightStyle = {
     display:'flex', flexDirection:'row', alignItems:'baseline', justifyContent:'flex-end'
 }
 
-class NetworkTrafficIO extends React.PureComponent {
+class NetworkTrafficIO extends React.Component {
     makeRowRevers = (obj, max) => (
         <Grid.Row className="progressContent" columns={2}>
             <Grid.Column width={4} style={rightStyle}>
@@ -31,6 +31,10 @@ class NetworkTrafficIO extends React.PureComponent {
             </Grid.Column>
         </Grid.Row>
     )
+    componentWillReceiveProps(nextProps, nextContext) {
+
+    }
+
     componentDidMount() {
         console.log(this.props.direction,'    max -'+this.props.maxData, ' data-'+this.props.data)
     }

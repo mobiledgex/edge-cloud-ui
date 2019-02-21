@@ -2,7 +2,7 @@ import React from 'react';
 
 import {bb} from "billboard.js";
 import * as d3 from 'd3';
-
+import uuid from 'uuid';
 import "billboard.js/dist/billboard.css";
 import "./bblineStyles.css";
 
@@ -16,7 +16,7 @@ class BBLineChart extends React.Component {
     constructor() {
         super();
         this.state = {
-            chartId:generateKey('chartId'),
+            chartId:uuid.v1(),
             dataArray:[
                 ["recv", 30, 200, 100, 400, 150, 250, 30, 200, 100, 400, 150, 250],
                 ["send", 40, 220, 133, 450, 158, 350, 130, 240, 200, 300, 250, 550],
@@ -53,6 +53,7 @@ class BBLineChart extends React.Component {
         console.log('rect pos info == ',_self.positionArray, _self.positionArray.length)
     }
     componentWillReceiveProps(nextProps, nextContext) {
+        console.log('will receive props in bbline chart .... .... ...', nextProps.chartData)
         this.reloadChart(nextProps.chartData, nextProps.series, this.positionArray, nextProps.lineLimit);
     }
     reloadChart(data, series, tickPositions, lineLimit) {
@@ -61,11 +62,6 @@ class BBLineChart extends React.Component {
             seriesData = data.concat(series);
             console.log('reload == ', _self.reloadCount, 'lineLimit='+lineLimit)
 
-            let testData = [
-                ["recv", Math.random()*200, 100, Math.random()*200, 500, Math.random()*200, 350, 130, 240, Math.random()*200, 100, 350, Math.random()*200, Math.random()*200],
-                ["send", Math.random()*200, 120, 183, 250, Math.random()*200, 150, 530, Math.random()*200, 400, Math.random()*200, Math.random()*200, 450, Math.random()*200],
-                ["time", "2019-01-01 12:38:22", "2019-01-01 12:38:23", "2019-01-01 12:38:24", "2019-01-01 12:38:25", "2019-01-01 12:38:26", "2019-01-01 12:38:27", "2019-01-01 12:38:28"]
-            ]
 
             if(lineLimit && !_self.settingDone) {
 
@@ -158,7 +154,7 @@ class BBLineChart extends React.Component {
 
         let chartId = (this.props.chartId)? this.props.chartId : this.state.chartId;
         this.setState({chartId:chartId})
-
+        console.log('==========chart id=========', chartId)
         this.chart = bb.generate({
             size: {
                 height: chartHeight,

@@ -7,7 +7,10 @@ import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
+
+import * as services from '../services/service_compute_service';
 import './siteThree.css';
+import MapWithListView from "./siteFour_page_six";
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
@@ -23,10 +26,12 @@ class SiteFourPageOne extends React.Component {
             contHeight:0,
             contWidth:0,
             bodyHeight:0,
-            activeItem: 'Developers'
+            activeItem: 'Developers',
+            devData:[]
         };
         this.headerH = 70;
         this.hgap = 0;
+        this.headerLayout = [1,5,2]
     }
 
     //go to
@@ -49,24 +54,32 @@ class SiteFourPageOne extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
+        console.log('info..will mount page one  0000   ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
+        this.getDataDeveloper();
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
     }
+    receiveResult(result) {
+        console.log("receive cluster== ", result)
+        _self.setState({devData:result})
+    }
+    getDataDeveloper() {
+        services.getComputeService('cluster', this.receiveResult)
+    }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
 
-            <DeveloperListView></DeveloperListView>
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
 
         );
     }

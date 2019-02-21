@@ -51,8 +51,9 @@ let generateData = (datas) => {
             let UserName = data.result.username || '-';
             let Address = data.result.address || '-';
             let Email = data.result.email || '-';
+            let newRegistKey = ['DeveloperName', 'UserName', 'Address', 'Email'];
             //console.log('time -- '+time, 'score --'+score, 'instance -- '+instance)
-            values.push({Index:Index, DeveloperName:DeveloperName, UserName:UserName, Address:Address, Email:Email, Edit:''})
+            values.push({Index:Index, DeveloperName:DeveloperName, UserName:UserName, Address:Address, Email:Email, Edit:newRegistKey})
         })
     } else {
         console.log('there is no result')

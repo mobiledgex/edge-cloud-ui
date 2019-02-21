@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
+import {Grid, Image, Header, Menu, Dropdown, Button, Popup} from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 
 import { withRouter } from 'react-router-dom';
@@ -10,12 +10,14 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import './siteThree.css';
 //pages
+import SiteFourPageZero from './siteFour_page_zero';
 import SiteFourPageOne from './siteFour_page_one';
 import SiteFourPageTwo from './siteFour_page_two';
 import SiteFourPageThree from './siteFour_page_three';
 import SiteFourPageFour from './siteFour_page_four';
 import SiteFourPageFive from './siteFour_page_five';
 import SiteFourPageSix from './siteFour_page_six';
+import SiteFourPageSeven from './siteFour_page_seven';
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
@@ -24,6 +26,7 @@ class SiteFour extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.state = {
             shouldShowBox: true,
             shouldShowCircle: false,
@@ -32,7 +35,8 @@ class SiteFour extends React.Component {
             bodyHeight:0,
             headerTitle:'',
             activeItem: 'Developers',
-            page: 'pg=3'
+            page: 'pg=5',
+            email: store ? store.email : 'Administrator'
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -40,10 +44,12 @@ class SiteFour extends React.Component {
             {label:'Flavors', icon:'free_breakfast'},
             {label:'Clusters', icon:'developer_board'},
             {label:'Operators', icon:'dvr'},
-            {label:'Developers', icon:'developer_mode'},
             {label:'Cloudlets', icon:'cloud_queue'},
+            {label:'Cluster Instances', icon:'storage'},
+            {label:'Developers', icon:'developer_mode'},
             {label:'Apps', icon:'apps'},
-            {label:'App Instances', icon:'storage'}]
+            {label:'App Instances', icon:'storage'}
+        ]
     }
 
     //go to
@@ -111,13 +117,21 @@ class SiteFour extends React.Component {
                         <div>
                             <MaterialIcon icon={'notifications_none'} />
                         </div>
-                        <div>
-                            <Image src='/assets/avatar/avatar_default.svg' avatar />
-                            <span>Administrator</span>
-                        </div>
+                        <Popup
+                            trigger={<div style={{cursor:'pointer'}}>
+                                <Image src='/assets/avatar/avatar_default.svg' avatar />
+                                <span>{this.state.email}</span>
+                            </div>}
+                            content={<Button content='Log out' onClick={() => this.gotoPreview('/logout')} />}
+                            on='click'
+                            position='bottom center'
+                            className='gnb_logout'
+                        />
                         <div>
                             <span>Support</span>
                         </div>
+
+
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row columns={2} className='view_contents'>
@@ -146,14 +160,17 @@ class SiteFour extends React.Component {
                             <Grid.Column style={{height:'100%'}}>
                                 <ContainerDimensions>
                                     { ({ width, height }) =>
-                                        <div style={{width:width, height:height-60, display:'flex', overflow:'hidden'}}>
+                                        <div style={{width:width, height:height, display:'flex', overflow:'hidden'}}>
                                             {
+                                                (this.state.page === 'pg=0')?<SiteFourPageZero></SiteFourPageZero> :
+                                                (this.state.page === 'pg=1')?<SiteFourPageOne></SiteFourPageOne> :
                                                 (this.state.page === 'pg=2')?<SiteFourPageTwo></SiteFourPageTwo> :
-                                                    (this.state.page === 'pg=3')?<SiteFourPageThree></SiteFourPageThree> :
-                                                        (this.state.page === 'pg=4')?<SiteFourPageFour></SiteFourPageFour> :
-                                                            (this.state.page === 'pg=5')?<SiteFourPageFive></SiteFourPageFive> :
-                                                                (this.state.page === 'pg=6')?<SiteFourPageSix></SiteFourPageSix> :
-                                                                    (this.state.page === 'pg=7')?<div> </div> : <div> </div>
+                                                (this.state.page === 'pg=3')?<SiteFourPageFour></SiteFourPageFour>:
+                                                    (this.state.page === 'pg=4')? <SiteFourPageSeven></SiteFourPageSeven> :
+                                                        (this.state.page === 'pg=5')?<SiteFourPageThree></SiteFourPageThree>:
+                                                            (this.state.page === 'pg=6')?<SiteFourPageFive></SiteFourPageFive> :
+                                                                (this.state.page === 'pg=7')?<SiteFourPageSix></SiteFourPageSix> :
+                                                                    (this.state.page === 'pg=8')?<SiteFourPageSeven></SiteFourPageSeven> : <div> </div>
                                             }
                                         </div>
                                     }

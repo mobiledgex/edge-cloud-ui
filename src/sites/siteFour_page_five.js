@@ -9,6 +9,8 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
+import MapWithListView from "./siteFour_page_six";
+import DeveloperListView from '../container/developerListView';
 
 
 
@@ -29,6 +31,7 @@ class SiteFourPageFive extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
+        this.headerLayout = [1,2,2,1,3,2,3,2,2];
     }
 
     //go to
@@ -75,9 +78,7 @@ class SiteFourPageFive extends React.Component {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
-
-            <InstanceListView devData={this.state.devData}></InstanceListView>
-
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
         );
     }
 

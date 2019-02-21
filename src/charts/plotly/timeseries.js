@@ -10,7 +10,11 @@ import * as actions from "../../actions";
 //https://plot.ly/javascript/axes/#tick-placement-color-and-style
 //https://plot.ly/javascript/streaming/
 
-class TimeSeriesFlow extends React.Component {
+
+
+
+
+class TimeSeries extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -24,12 +28,12 @@ class TimeSeriesFlow extends React.Component {
                 datarevision: 0,
             },
             currentKey:'',
-            revision: 0,
+            revision: 10,
         }
-        this.colors = ['#22cccc', '#6699ff', '#ffce03', '#ff710a'];
+        this.colors = ['#22cccc', '#6699ff','#ff710a', '#ffce03' ];
+        this.colorsErr = ['#22cccc','#ff3355', '#6699ff', '#ffce03' ];
     }
     componentWillReceiveProps(nextProps, nextContext) {
-
         if(nextProps.chartData && nextProps.series[0]) {
             this.reloadChart(nextProps.chartData, nextProps.series[0], nextProps.label, nextProps.lineLimit);
         }
@@ -43,7 +47,7 @@ class TimeSeriesFlow extends React.Component {
                 x: series,
                 y: item,
                 name:(names && names.length>0)?names[i]:'',
-                line: {color: this.colors[i],width:1},
+                line: {color: (this.props.error)?this.colorsErr[i]:this.colors[i],width:1},
                 marker:{size:5}
             }
         ))
@@ -51,14 +55,12 @@ class TimeSeriesFlow extends React.Component {
             chartData:seriesData
         })
 
-        // this.setState({
-        //     data:seriesData
-        // })
 
         this.setState({ revision: this.state.revision + 1 });
     }
 
     render() {
+        let {error} = this.props;
         return (
             <ContainerDimensions>
                 { ({ width, height }) =>
@@ -101,7 +103,7 @@ class TimeSeriesFlow extends React.Component {
                                     linewidth: 1,
                                     color: 'rgba(255,255,255,.4)'
                                 },
-                                yaxis2: {
+                                yaxis2:{
                                     showgrid: true,
                                     zeroline: false,
                                     showline: true,
@@ -118,7 +120,7 @@ class TimeSeriesFlow extends React.Component {
                                     overlaying: 'y',
                                     side: 'right'
                                 },
-                                showlegend: false,
+                                showlegend: true,
 
                                 points: {
                                     width: 1
@@ -142,7 +144,7 @@ class TimeSeriesFlow extends React.Component {
         );
     }
 }
-TimeSeriesFlow.defaultProps = {
+TimeSeries.defaultProps = {
     margin: {
         l: 40,
         r: 20,
@@ -166,4 +168,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(TimeSeriesFlow);
+export default connect(mapStateToProps, mapDispatchProps)(TimeSeries);

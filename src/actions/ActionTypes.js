@@ -8,3 +8,5 @@ export const CLICK_TAB = "CLICK_TAB";
 export const LOADED_DATA = "LOADED_DATA";
 export const REGIST_DEVELOPER = "REGIST_DEVELOPER";
 export const CHANGE_CITY = "CHANGE_CITY";
+export const LOGIN_WITH_EMAIL = 'LOGIN_WITH_EMAIL';
+export const REFRESH_DATA = 'REFRESH_DATA';

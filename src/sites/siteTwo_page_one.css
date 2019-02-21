@@ -5,6 +5,8 @@
 .ui.active.search.dropdown input.search:focus+.text {
     color: rgba(255,255,255,.4) !important;
 }
+
+
 .ui.selection.dropdown {
     background-color: rgba(0,0,0,.6);
     border: solid 1px rgba(255,255,255,.2);

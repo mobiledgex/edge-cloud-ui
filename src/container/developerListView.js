@@ -15,9 +15,9 @@ const headerStyle = {
     backgroundImage: 'url()'
 }
 var horizon = 6;
-var vertical = 13;
+var vertical = 20;
 var layout = [
-    {"w":19,"h":14,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Developer"},
+    {"w":19,"h":20,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Developer"},
 ]
 
 class DeveloperListView extends React.Component {
@@ -69,7 +69,7 @@ class DeveloperListView extends React.Component {
 
             (i === 0)?
                 <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
-                    <div style={{width:'100%', height:height, overflowY:'auto'}}>
+                    <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
                         {this.TableExampleVeryBasic(width, height, this.props.headerLayout)}
                     </div>
 

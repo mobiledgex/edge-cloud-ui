@@ -4,6 +4,7 @@ import Influx from 'influx';
 
 import FormatCPUMEMUsage from './formatter/formatCPUMEMUsage';
 import FormatNetworkIO from './formatter/formatNetworkIO';
+import FormatFILEUsage from './formatter/formatFILEUsage';
 
 let gUrl = 'http://dashboard.mobiledgex.net:9090/api/v1/query?query=';
 
@@ -32,7 +33,7 @@ let siteAddress = {
     memoryUsage: '100%20-%20((node_memory_MemAvailable_bytes%7Bjob%3D%22prometheus%22%7D%20*%20100)%20%2F%20node_memory_MemTotal_bytes%7Bjob%3D%22prometheus%22%7D)',
     networkTraffic_recv: 'sum%20(irate(node_network_receive_packets_total%7Bjob%3D%22prometheus%22%7D%5B5m%5D))%20by%20(instance)',
     networkTraffic_send: 'sum%20(irate(node_network_transmit_packets_total%7Bjob%3D%22prometheus%22%7D%5B5m%5D))%20by%20(instance)',
-
+    filesystemUsage: '100%20-%20((node_filesystem_avail_bytes%7Bmountpoint%3D%22%2F%22%2Cfstype!%3D%22rootfs%22%7D%20*%20100)%20%2F%20node_filesystem_size_bytes%7Bmountpoint%3D%22%2F%22%2Cfstype!%3D%22rootfs%22%7D)'
 }
 
 
@@ -132,7 +133,20 @@ export function getStatusNET(callback, every, stop) {
     start();
 
 }
-
+export function getStatusFilesys(callback, every, stop) {
+    //console.log('request data as global area code == '+global.areaCode)
+    let url = gUrl + siteAddress.filesystemUsage;
+    let responseData = null
+    var start = () => {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                responseData = FormatFILEUsage(data)
+                callback(responseData);
+            });
+    }
+    start();
+}
 //////////////////////////////////
 // curl -X POST...
 /*

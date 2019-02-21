@@ -56,33 +56,11 @@ class SiteTwo extends React.Component  {
     }
     componentWillReceiveProps(nextProps) {
         console.log('receive props ----- '+JSON.stringify(nextProps))
-        /*
-        라우터 사용 예제
-        import React from "react";
-        import {withRouter} from "react-router-dom";
-
-        class MyComponent extends React.Component {
-          ...
-          myFunction() {
-            this.props.history.push("/some/Path");
-          }
-          ...
-        }
-        export default withRouter(MyComponent);
-        */
-
-
-
-        // this.props.history.push({
-        //     pathname: nextProps.location.pathname,
-        //     search: 'pg='+nextProps['tabName'],
-        //     state: { some: 'state' }
-        // });
 
     }
     shouldComponentUpdate(nextProps, nextState) {
         //console.log("업데이트 할지 말지: " + JSON.stringify(nextProps) + " " + JSON.stringify(nextState));
-        return true;
+        return false;
     }
     render() {
         return (

@@ -1,0 +1,9 @@
+.loadingBox {
+    width:80px;
+    height:80px;
+    position:fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -40px;
+    margin-left: -40px;
+}

@@ -13,7 +13,7 @@ import './styles.css';
 import * as Service from "../services";
 
 let _self = null;
-class HeaderGlobal extends React.Component {
+class headerGlobalMini extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -59,18 +59,8 @@ class HeaderGlobal extends React.Component {
         }
 
         return (
-            <Grid className='console_gnb_header'>
-                <Grid.Column width={5}></Grid.Column>
-                <Grid.Column width={6} className='console_header'>
-                    <div className='console_header_img'></div>
-                </Grid.Column>
-                <Grid.Column width={5} className='navbar_right'>
-                    <div style={{cursor:'pointer'}} onClick={() => this.gotoPreview('/site1')}>
-                        <MaterialIcon icon={'public'} />
-                    </div>
-                    <div>
-                        <MaterialIcon icon={'notifications_none'} />
-                    </div>
+            <div className='intro_gnb_header'>
+                <div className='navbar_right'>
                     <Popup
                         trigger={<div style={{cursor:'pointer'}}>
                             <Image src='/assets/avatar/avatar_default.svg' avatar />
@@ -81,12 +71,8 @@ class HeaderGlobal extends React.Component {
                         position='bottom center'
                         className='gnb_logout'
                     />
-
-                    <div>
-                        <span>Support</span>
-                    </div>
-                </Grid.Column>
-            </Grid>
+                </div>
+            </div>
         )
     }
 }
@@ -103,6 +89,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(HeaderGlobal));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(headerGlobalMini));
 
 ///////

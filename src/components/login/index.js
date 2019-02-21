@@ -1,26 +1,37 @@
 import React, { Component } from 'react';
-import { Container, Button, Checkbox, Form, Label } from 'semantic-ui-react'
+import { Container, Button, Checkbox, Form, Label, Grid, Input } from 'semantic-ui-react'
 import { Redirect } from 'react-router';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
+// alert
+import Alert from 'react-s-alert';
+// API
+import * as MyAPI from '../utils/MyAPI'
+import { LOCAL_STRAGE_KEY } from '../utils/Settings'
+/*
 
+ */
 let self = null;
-const FormExampleForm = (props) => (
-    <Form className="loginWrap">
-        <Form.Field>
-            <label style={{color:'#ffffff', fontSize:15}}>UserName</label>
-            <input placeholder='UserName' ref={ipt=>{props.self.uid = ipt}} />
-        </Form.Field>
-        <Form.Field>
-            <label style={{color:'#ffffff', fontSize:15}}>PASSWORD</label>
-            <input placeholder='PASSWORD' ref={ipt=>{props.self.upw = ipt}}/>
-        </Form.Field>
-        <Form.Field className="rememberAccount" >
-            <Checkbox label='저장'/>
-        </Form.Field>
-        <Button type='submit' className="loginBtn" onClick={props.self.onConfirm.bind(props.self)}>LOGIN</Button>
-    </Form>
+
+const FormContainer = (props) => (
+    <Grid>
+        <Grid.Row>
+            <span className='title'>User Login</span>
+        </Grid.Row>
+        <Grid.Row columns={2}>
+            <Grid.Column>
+                <Input placeholder='ID' name='email' width ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput}></Input>
+            </Grid.Column>
+            <Grid.Column >
+                <Input  placeholder='Password' name='password' type='password' ref={ipt=>{props.self.pwd = ipt}} onChange={props.self.onChangeInput}></Input>
+            </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+            <Button  onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Log In</Button>
+        </Grid.Row>
+    </Grid>
+
 )
 const validate = values => {
     const error= {};
@@ -63,7 +74,10 @@ class Login extends Component {
             disabled: false,
             redirect:false,
             directLink:'/site1',
-            mainPath:'/', subPath:'pg=0'
+            mainPath:'/', subPath:'pg=0',
+            loginBtnStyle:'loginBtn',
+            email:'',
+            password:''
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -77,48 +91,79 @@ class Login extends Component {
 
     }
     componentWillReceiveProps (nextProps) {
-        console.log('receive props in login === '+nextProps.loginState)
-        let pathName = window.location.pathname+window.location.search;
-        let paths = (pathName.indexOf('?') > -1) ? pathName.split('?') : [pathName, ''];
-        let mainPath = paths[0];
-        let subPath = paths[1];
-        let trmF = window.location.search.indexOf('=');
-        let trmB = window.location.search.substring(trmF + 1, trmF + 2)
 
-        //success loginState ===========>>>>>>>>>>>>>>>>>
-        //브라우져 주소 값을 받아서 다이렉트링크 처리
-        if(nextProps.loginState) {
-            //주소 값 리덕스로 처리
-            this.props.handleChangeSite({
-                mainPath:(pathName === '/') ? this.state.directLink : mainPath,
-                subPath:subPath
-            })
-            this.props.handleChangeTab(parseInt((trmB !== '') ? trmB : 0));
-
-            self.setState({redirect: true, session: 'open', directLink: pathName});
-            self.forceUpdate();
-        }
-
-        //localStorage.setItem(key, JSON.stringify(result.hits));
     }
-    shouldComponentUpdate(nextProps, nextState) {
-        return (
-            nextProps.data != this.props.data ||
-            nextState.loginSuccess != this.state.loginSuccess
-        )
-    }
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     return (
+    //         nextProps.data != this.props.data ||
+    //         nextState.loginSuccess != this.state.loginSuccess
+    //     )
+    // }
 
 
 
-    onFocusHandle(event) {
-        this.setState({focused: true})
+    onFocusHandle(value) {
+        console.log('on focust button', value)
+        self.setState({focused: value})
     }
     onSignOut() {
         this.props.requestLogout();
     }
     onConfirm() {
-        this.props.requestLogin(this.props.target, {uid:this.uid.value, pwd: this.upw.value}); // ajax 요청
+        this.props.requestLogin(this.props.target, {uid:this.uid.value, pwd: this.pwd.value}); // ajax 요청
 
+    }
+    onChangeInput = (e, { name, value }) => {
+        this.setState({ [name]: value })
+    }
+    onSubmit() {
+
+        const { email, password } = this.state
+        const params = {
+            email: email,
+            password: password,
+        }
+
+        // create account
+        MyAPI.signinWithPassword(params)
+            .then((data) => {
+
+                return new Promise((resolve, reject) => {
+
+                    if (data.status !== 'success'){
+                        let error_text = 'Error';
+                        if (data.detail){
+                            error_text = data.detail
+                        }
+                        reject(error_text)
+
+                    } else {
+                        // success
+                        const params = {
+                            user: data.user,
+                            login_token: data.login_token,
+                            email:email
+                        }
+
+                        localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(params))
+                        this.props.mapDispatchToLoginWithPassword(params)
+                        resolve()
+                    }
+                })
+            })
+            .then(() => {
+                // redirect
+                //this.props.history.push("/dashboard")
+            })
+            .catch((err) => {
+                console.log("err:", err)
+
+                Alert.error(err, {
+                    position: 'top-right',
+                    effect: 'slide',
+                    timeout: 5000
+                });
+            })
     }
     /* http://docs.nativebase.io/docs/examples/ReduxFormExample.html */
     render() {
@@ -128,7 +173,7 @@ class Login extends Component {
 
                 (this.state.session !== 'open') ?
 
-                <FormExampleForm self={this} />
+                <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle}/>
 
                 :
                 (this.state.redirect) ?
@@ -144,15 +189,16 @@ class Login extends Component {
 }
 
 
-const mapStateToProps = (state, ownProps) => {
+function mapStateToProps ( {user} ) {
     return {
-        data: state.user
-    };
-};
+        user
+    }
+}
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleChangeTab: (data) => { dispatch(actions.changeTab(data))}
+        handleChangeTab: (data) => { dispatch(actions.changeTab(data))},
+        mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data}))
     };
 };
 

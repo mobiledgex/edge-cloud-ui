@@ -38,6 +38,17 @@ export default {
     width: '100%'
   },
 
+  loginBtn_active: {
+    marginTop: 20,
+    alignSelf: 'center',
+    backgroundColor:'#a74b08',
+      borderWidth:2,
+      borderColor:'#ff0000',
+    height:50,
+    //lineHeight:50,
+    width: '100%'
+  },
+
   textInput:{
     backgroundColor:'#ffffff',
     marginLeft: 30,

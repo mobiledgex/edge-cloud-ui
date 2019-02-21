@@ -16,42 +16,32 @@ This is a connect influxdb there mex.co as a client server middleware via expres
 Using [npm](https://www.npmjs.com/package/react-https-redirect):
 
 ```bash
-npm install
-node app.js
+$ npm install
+$ node start.js 
+or $ npm run start_server
 
 You can request http get method like this : 
 --> http://localhost:3030/
 --> http://localhost:3030/operator
 ```
+You need MongoDB. Here's an example of installing MongoDB on mac os X
+```
+brew update   
+brew install mongodb  
+mkdir mongodb_data  
+mongod --dbpath mongodb_data/ 
+```
 
-View code :
+
+
+Create account DB :
 
 ```javascript
-const express = require('express')
-const app = express()
-const port = 3030
-const Influx = require('influxdb-nodejs');
-const client = new Influx('http://uiteam:$word@40.122.54.157:8086/metrics');
-//
-const request = require('request');
-//
-app.get('/', (req, res, next) => {
-    client.query('dme-api')
-        .set({limit: 10})
-        .then(data => res.json(data))
-        .catch(err => next(err))
-})
-
-//curl -X POST "https://mexdemo.ctrl.mobiledgex.net:36001/show/cloudlet" -H "accept: application/json" -H "Content-Type: application/json" --cacert mex-ca.crt --key mex-client.key --cert mex-client.crt
-
-app.get('/operator', function(req, res){
-    //TODO: 2019-01-24 inki kim , request data useing post method
-    // https://github.com/mbasso/react-https-redirect/blob/master/README.md
-    res
-});
-
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+in new terminal window
+$ mongo
+> show dbs or show collections 
+> db.createCollection('mex-mwc-mongo')
+> use mex-mwc-mongo
 ```
 
 

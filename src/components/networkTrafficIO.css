@@ -11,7 +11,7 @@
     color: rgba(255,255,255,0.6);
     font-size: 14px;
     text-align: center;
-    line-height: 24px;
+    line-height: 1.143em;
 }
 .traffic_value {
     color: rgba(51,255,255,0.9);
