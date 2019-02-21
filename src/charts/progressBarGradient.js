@@ -13,14 +13,17 @@ export default class ProgressBarGradient extends React.Component {
         super();
         _self = this;
         this.state = {
-            chartId:generateKey('chartId')
+            chartId:generateKey('chartId'),
+            max:0
         }
+        this.interAni = null;
+        this.interAni2 = null;
     }
     componentDidMount() {
 
         let chartId = (this.props.chartId)? this.props.chartId : this.state.chartId;
         this.setState({chartId:chartId})
-        console.log('direction--', chartId, this.props.direction)
+        //console.log('direction--', chartId, this.props.direction, 'max=', this.props.max)
         let dir = this.props.direction;
         let self = this;
 
@@ -30,10 +33,25 @@ export default class ProgressBarGradient extends React.Component {
         }, 1000);
 
     }
+    componentWillReceiveProps(nextProps, nextContext) {
+        let chartId = (nextProps.chartId)? nextProps.chartId : this.state.chartId;
+        this.setState({chartId:chartId, max:nextProps.max})
+        //console.log('direction--', chartId, nextProps.direction, 'max=', nextProps.max)
+
+
+
+
+    }
+    componentWillUnmount() {
+        clearInterval(this.interAni)
+        clearInterval(this.interAni2)
+    }
+
     calculateRatio = (chartId, data, max, chartDomWidth) => {
         return (chartDomWidth / max) * data;
 
     }
+
     makeChart(chartId, direction, self) {
         if(!document.getElementById(chartId)) {
             return;
@@ -120,11 +138,22 @@ export default class ProgressBarGradient extends React.Component {
                 .transition().duration(1500)
                 .attr("x", function(d){ return (w - d.value)})
             ;
+            self.interAni = setInterval(()=>{
+                mask.attr("x", w)
+                    .transition().duration(1500)
+                    .attr("x", function(d){ return (w - d.value)})
+            }, 5000)
         } else {
             //animation
             mask.transition().duration(1500)
                 .attr("width", function(d){ return d.value})
             ;
+            self.interAni2 = setInterval(()=>{
+                mask.attr("width", 0)
+                mask.transition().duration(1500)
+                    .attr("width", function(d){ return d.value})
+                ;
+            }, 5000)
         }
 
 

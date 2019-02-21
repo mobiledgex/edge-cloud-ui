@@ -34,13 +34,13 @@ const wrapperStyles = {
     margin: "0 auto",
     overflow:'hidden'
 }
-const zoomControls = {center:[70, 40], zoom:3}
+const zoomControls = {center:[30, 40], zoom:3}
 //reference : /public/assets/data-maps/world-most-populous-cities.json
 
 const cityScale = scaleLinear()
     .domain([0,37843000])
-    .range([1,25])
-const markerSize = [10, 12]
+    .range([1,48])
+const markerSize = [20, 24]
 
 let _self = null;
 class ClustersMap extends Component {
@@ -285,21 +285,40 @@ class ClustersMap extends Component {
 
     componentWillReceiveProps(nextProps) {
         let data = nextProps.parentProps.devData;
+        function reduceUp(value) {
+            return Math.round(value)
+        }
         let locations = data.map((item) => (
-            {LAT:item.CloudletLocation.latitude, LON:item.CloudletLocation.longitude, cloudlet:item.DeveloperName}
+            {LAT:reduceUp(item.CloudletLocation.latitude), LON:reduceUp(item.CloudletLocation.longitude), cloudlet:item.DeveloperName}
         ))
 
 
         let locationData = [];
 
-        let groupbyData = aggregation.groupBy(locations, 'LAT');
+        let groupbyData = aggregation.groupByCompare(locations, ['LAT','LON']);
 
         console.log('data locations -- ', Object.keys(groupbyData))
         Object.keys(groupbyData).map((key) => {
             locationData.push({ "name": "barcelona",    "coordinates": [groupbyData[key][0]['LON'], groupbyData[key][0]['LAT']], "population": 17843000, "cost":groupbyData[key].length })
         })
+        //
+        let cloudlet = data.map((item) => (
+            {LAT:item.CloudletLocation.latitude, LON:item.CloudletLocation.longitude, cloudlet:item.CloudletName}
+        ))
 
-        console.log('locationData  -- ', locationData)
+
+        let cloudletData = [];
+
+        let groupbyClData = aggregation.groupBy(cloudlet, 'cloudlet');
+
+        console.log('data groupbyClData -- ', Object.keys(groupbyClData))
+        Object.keys(groupbyClData).map((key) => {
+            cloudletData.push({ "name": key,    "coordinates": [groupbyClData[key][0]['LON'], groupbyClData[key][0]['LAT']], "population": 17843000, "cost":groupbyClData[key].length })
+        })
+        //
+
+
+        console.log('cloudletData  -- ', cloudletData)
         this.setState({
             cities: locationData
         })
@@ -335,13 +354,13 @@ class ClustersMap extends Component {
                         <Motion
                             defaultStyle={{
                                 zoom: 1,
-                                x: 0,
-                                y: 20,
+                                x: 30,
+                                y: 40,
                             }}
                             style={{
-                                zoom: spring(this.state.zoom, {stiffness: 210, damping: 20}),
-                                x: spring(this.state.center[0], {stiffness: 210, damping: 20}),
-                                y: spring(this.state.center[1], {stiffness: 210, damping: 20}),
+                                zoom: spring(this.state.zoom, {stiffness: 210, damping: 30}),
+                                x: spring(this.state.center[0], {stiffness: 210, damping: 30}),
+                                y: spring(this.state.center[1], {stiffness: 210, damping: 30}),
                             }}
                         >
                             {({zoom,x,y}) => (
@@ -389,7 +408,7 @@ class ClustersMap extends Component {
                                                             stroke={styles.marker.stroke}
                                                             strokeWidth={styles.marker.strokeWidth}
                                                         />
-                                                        <text textAnchor="middle" y={4} class="marker_value">
+                                                        <text textAnchor="middle" y={8} class="marker_value" style={{fontSize:24}}>
                                                             {city.cost}
                                                         </text>
                                                         {/*<text textAnchor="middle" class="marker_label" x={(city.markerOffsetX)?(city.markerOffsetX):0} y={(city.markerOffset)?(city.markerOffset):24}>*/}

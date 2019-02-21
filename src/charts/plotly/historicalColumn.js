@@ -17,7 +17,7 @@ var trace1 = {
         color: 'rgb(34, 204, 204)',
         opacity: 1,
         line: {
-            color: 'rgba(255,255,255,.4)',
+            color: 'rgba(255,255,255,.5)',
             width: 1
         }
     },
@@ -32,7 +32,7 @@ var trace2 = {
         color: 'rgb(102, 153, 255)',
         opacity: 1,
         line: {
-            color: 'rgba(255,255,255,.4)',
+            color: 'rgba(255,255,255,.5)',
             width: 1
         }
     },
@@ -57,7 +57,7 @@ class HistoricalColumn extends React.Component {
     }
     componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.chartData && nextProps.series[0]) {
-            this.reloadChart(nextProps.chartData, nextProps.series[0], nextProps.lineLimit);
+            //this.reloadChart(nextProps.chartData, nextProps.series[0], nextProps.lineLimit);
         }
 
 

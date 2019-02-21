@@ -7,6 +7,7 @@ import { Button, Image, List, Grid } from 'semantic-ui-react'
 import * as d3 from 'd3';
 import CPUMEMUsage from './cupmemory';
 import SparkLine from '../../charts/sparkline';
+import ClusterIcon from '../../components/icon/clusterIcon';
 
 
 let listData = [
@@ -42,60 +43,77 @@ function boxMullerRandom () {
 function randomData(n = 30) {
     return Array.apply(0, Array(n)).map(boxMullerRandom);
 }
-function getIcon (domId, level) {
-    console.log('get icon count ...'+level+":"+domId)
-    let src;
-    switch(level) {
-        case '1': src = '/assets/cluster/cluster_level1.svg'; break;
-        case '2': src = '/assets/cluster/cluster_level2.svg'; break;
-        case '3': src = '/assets/cluster/cluster_level3.svg'; break;
-        case '4': src = '/assets/cluster/cluster_level4.svg'; break;
-        case '5': src = '/assets/cluster/cluster_level5.svg'; break;
-        default: src = '/assets/cluster/cluster_level1.svg'; break;
-    }
 
-    setTimeout( () =>
-        d3.svg(src).then((svg) => {
-            const gElement = d3.select(svg).select('svg');
-            d3.select(domId).node().append(gElement.node());
-        }), 1000
-    )
-
-    icnt ++;
-
-
-}
 const sampleData = randomData(30);
 const sampleData100 = randomData(100);
 
-const getRow = (idx, level, dName, uValues, spkDatas) => (
+const testColor = ['yellow', 'green', 'blue', 'grey', 'sky']
+const getRow = (idx, uValues, clusterNm, state) => (
     <Grid.Row key={idx} columns={3} className='cluster_property'>
-        <Grid.Column width={3} className='cluster_health'>
-            <div id={"icon_"+idx} className='cluster_icon'>
-                {/*{getIcon(level, '#icon_'+idx)}*/}
-            </div>
-            <div className='label'>{dName}</div>
+        <Grid.Column width={4} className='cluster_health'>
+            <ClusterIcon idx={idx} uValues={uValues['cpu']}></ClusterIcon>
+            <div className='label'>{clusterNm}</div>
         </Grid.Column>
         <Grid.Column width={7} style={{display:'flex', justifyContent:'space-between'}}>
             <CPUMEMUsage label="CPU" value={uValues.cpu} w={60} h={60}></CPUMEMUsage>
             <CPUMEMUsage label="MEMORY" value={uValues.mem} w={60} h={60}></CPUMEMUsage>
-            <CPUMEMUsage label="Disk Usage" value={uValues.sys} w={60} h={60}></CPUMEMUsage>
+            <CPUMEMUsage label="DISK" value={uValues.sys} w={60} h={60}></CPUMEMUsage>
         </Grid.Column>
-        <Grid.Column width={6} style={{display:'flex', justifyContent:'center', padding:0, margin:0}}>
-            <div className='spark_chart' style={{width:'100%', marginLeft:20, marginRight:20}}>
-                <SparkLine sId={'spchart_'+idx} w={400} h={110} value={uValues.net}></SparkLine>
+        <Grid.Column width={5} style={{display:'flex', justifyContent:'center'}}>
+            <div className='transition_chart'>
+                <SparkLine sId={'spchart_'+idx} w={240} h={60} value={{IN:uValues.net[0], OUT:uValues.net[1]}} label={['recvBytes','sendBytes']} series={uValues.time}></SparkLine>
                 <div className='label'>NETWORK I/O</div>
             </div>
         </Grid.Column>
     </Grid.Row>
 )
 
-const CPUMEMListView = (props) => (
-    <Grid divided size="small" className='panel_contents'>
-        {props.listData.map((data, i) => getRow(i, data.alarm, data.dName, data.values, sampleData))}
-        {(icnt < props.listData.length)?props.listData.map((data, i) => getIcon('#icon_'+i, data.alarm)):null}
-    </Grid>
-)
+class CPUMEMListView extends React.PureComponent {
+    constructor() {
+        super();
+        this.state = {
+            listCluster:['ClusterA', 'ClusterB', 'ClusterC', 'ClusterD', 'ClusterE'],
+            listData:[]
+        }
+        this.count = 0;
+    }
+
+    componentDidMount() {
+        let idx = 0;
+        this.state.listCluster.map((clst, i) => {
+            //getIcon('#icon_'+i, 2);
+        })
+        this.setState({listCluster: this.props.clusters})
+
+    }
+    componentWillReceiveProps(nextProps, nextContext) {
+
+        let list = [];
+        this.state.listCluster.map((cluster, i) => {
+            nextProps.listData.map((data) => {
+                if(data.dName === cluster){
+                    //It's too long name of cluster, so that cut operator name....
+                    //data.dName = data.dName.replace(nextProps.cloudlets[i], '')
+                    list[i] = data;
+                }
+            })
+        })
+        //순서 고정하기
+        this.setState({listData:list})
+
+    }
+
+    render() {
+        return (
+            <Grid divided size="small" className='panel_contents'>
+                {this.state.listData.map((data, i) =>
+                    getRow(i, data.values, data.dName, this.state)
+                )}
+            </Grid>
+        )
+    }
+
+}
 
 export default CPUMEMListView
 

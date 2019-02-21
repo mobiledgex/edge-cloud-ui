@@ -11,7 +11,6 @@ import HashRouter from 'react-router-dom/es/HashRouter';
 
 import { withRouter } from 'react-router-dom';
 //
-import HeaderContainer from './headerContainer';
 
 //redux
 import { connect } from 'react-redux';
@@ -31,7 +30,6 @@ const Router = isBrowserHistory ? BrowserRouter : HashRouter;
 
 const ContainerOne = (props) => (
     <Grid padded relaxed>
-        <HeaderContainer params={props}/>
         <div className="page">
                 {props.params.subPath === 'pg=0' && <PageOne/>}
                 {props.params.subPath === 'pg=1' && <PageTwo/>}

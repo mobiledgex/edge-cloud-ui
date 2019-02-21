@@ -2,20 +2,37 @@
   "name": "02.mexexpress",
   "version": "1.0.0",
   "description": "mex compute influxdb with nodejs",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "start express!"
+    "start_react": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "start_server": "babel-node start"
   },
   "author": "bic",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^3.0.3",
+    "crypto": "^1.0.1",
     "curl-request": "^1.1.1",
     "express": "^4.16.4",
     "express-curl": "^1.0.1",
+    "express-session": "^1.15.6",
     "fs": "0.0.1-security",
     "influx": "^5.0.7",
     "influxdb-nodejs": "^2.11.0",
+    "ip": "^1.1.5",
+    "mongodb": "^3.1.13",
     "node-influx": "^1.0.2",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "sha256": "^0.2.0",
+    "url-parse": "^1.4.4",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0"
   }
 }

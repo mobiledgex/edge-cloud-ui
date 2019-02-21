@@ -1,5 +1,5 @@
 
-import React, { Component } from "react"
+import React, { Component } from "react";
 import {
     ComposableMap,
     ZoomableGroup,
@@ -7,15 +7,16 @@ import {
     Geography,
     Markers,
     Marker,
-} from "react-simple-maps"
-import { Button, Icon } from 'semantic-ui-react';
+} from "react-simple-maps";
+import { Button, Icon, List } from 'semantic-ui-react';
 import MaterialIcon from 'material-icons-react';
-import ContainerDimensions from 'react-container-dimensions'
+import ContainerDimensions from 'react-container-dimensions';
 
-import { Motion, spring } from "react-motion"
+import { Motion, spring } from "react-motion";
 import * as d3 from 'd3';
-import { scaleLinear } from "d3-scale"
-import request from "axios"
+import { scaleLinear } from "d3-scale";
+import request from "axios";
+import ReactTooltip from 'react-tooltip';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -27,7 +28,7 @@ import {ReactSVGPanZoom} from 'react-svg-pan-zoom';
 
 //style
 import styles from '../../../css/worldMapStyles';
-import './styles.css'
+import './styles.css';
 
 const wrapperStyles = {
     width: "100%",
@@ -44,6 +45,20 @@ const cityScale = scaleLinear()
 
 
 let _self = null;
+const makeList = (obj) => (
+    <List>
+        {obj.map((key) => (
+            <List.Item>
+                <List.Icon name='marker' />
+                <List.Content>
+                    <List.Header as='a'>{'- '+key}</List.Header>
+                </List.Content>
+            </List.Item>
+        ))
+        }
+    </List>
+
+)
 class AnimatedMap extends Component {
     constructor() {
         super()
@@ -55,9 +70,10 @@ class AnimatedMap extends Component {
             countries:[],
             citiesSecond:[],
             detailMode:false,
-            selectedCity:'Barcelona',
+            selectedCity:'barcelona',
             oldCountry:'',
-            unselectCity:''
+            unselectCity:'',
+            ReactTooltip:'No Message'
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
@@ -69,6 +85,7 @@ class AnimatedMap extends Component {
         this.handleLeave = this.handleLeave.bind(this)
         this.dir = 1;
         this.interval = null;
+        this.moveMouse = false;
     }
     handleZoomIn() {
         this.setState({
@@ -114,7 +131,7 @@ class AnimatedMap extends Component {
             d3.selectAll('.rsm-markers').selectAll(".levelFive")
                 .transition()
                 .ease(d3.easeBack)
-                .attr("r", 6)
+                .attr("r", 5)
         }
 
         this.props.handleChangeCity(city)
@@ -131,12 +148,12 @@ class AnimatedMap extends Component {
      */
     handleViewZone(country) {
         //change the data of detail Info
-        console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++', country)
+        //console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++', country)
         _self.setState({selectedCity: country.name})
         if(d3.selectAll('.detailMarker_'+_self.state.oldCountry)) {
             d3.selectAll('.detailMarker_'+_self.state.oldCountry)
                 .transition()
-                .attr("r", 6)
+                .attr("r", 5)
                 .style("opacity",1)
         }
         _self.setState({oldCountry:country.name})
@@ -149,14 +166,24 @@ class AnimatedMap extends Component {
      * display marker and alarm-counter on the worldmap
      * 지도위에 마커포시하고 숫자표현
      ** ************************************************/
-    fetchCities() {
-        request
-            .get("/data-maps/world-most-populous-cities.json")
-            .then(res => {
-                this.setState({
-                    cities: res.data,
-                })
-            })
+    fetchCities(data) {
+
+        //display custom setting data in json file to local server.
+        // request
+        //     .get("/data-maps/world-most-populous-cities.json")
+        //     .then(res => {
+        //         this.setState({
+        //             cities: res.data,
+        //         })
+        //     })
+
+        /*****************
+         * 실데이터 입력
+         * ***************/
+        //console.log('fetch cities...+++++------++++++ ', data)
+        this.setState({
+            cities : data
+        })
     }
     fetchCountry() {
         request
@@ -187,17 +214,21 @@ class AnimatedMap extends Component {
             citiesSecond: _Country
         })
     }
+
     fetchMWCZone() {
         //Longitude, Latitude
         let _Country = []
+        // let _countries = [
+        //     { "name": "barcelona", "coordinates": [2.1734, 41.3851], "population": 1, "cost":1, "offsets": [0,15]},
+        //     { "name": "bonn", "coordinates": [7.098, 50.737], "population": 1, "cost":1, "offsets": [0,15] },
+        //     { "name": "frankfurt", "coordinates": [8.6821, 50.1109], "population": 1, "cost":1, "offsets": [0,15] },
+        //     { "name": "berlin", "coordinates": [13.405,52.52], "population": 1, "cost":1, "offsets": [0,15] },
+        //     ]
         let _countries = [
-            { "name": "Barcelona", "coordinates": [2.1734, 41.3851], "population": 1, "cost":1, "offsets": [10,15]},
-            // { "name": "Sant Montjuic", "coordinates": [0.170459, 41.018247], "population": 1, "cost":1, "offsets": [-10,15] },
-            // { "name": "Sant Gervasi", "coordinates": [1.005055, 42.493365], "population": 1, "cost":1, "offsets": [10,-15] },
-            { "name": "frankfurt", "coordinates": [8.6821, 50.1109], "population": 1, "cost":1, "offsets": [0,15] },
-            { "name": "hamburg", "coordinates": [9.9937, 53.5511], "population": 1, "cost":1, "offsets": [0,15] },
-            ]
-
+            { "name": "barcelona-mexdemo", "coordinates": [2.1734, 41.3851], "population": 1, "cost":1, "offsets": [0,15]},
+            { "name": "skt-mwc", "coordinates": [2.1734, 42.0851], "population": 1, "cost":1, "offsets": [0,-10] },
+            { "name": "tip-mexdemo", "coordinates": [1.4, 41.5851], "population": 1, "cost":1, "offsets": [-30,0] },
+        ]
         this.setState({
             citiesSecond: _countries
         })
@@ -232,37 +263,56 @@ class AnimatedMap extends Component {
                 .transition()
                 .duration(durate)
                 .ease(d3.easeBack)
-                .attr("r", (dir === 1)?6:8)
+                .attr("r", (dir === 1)?5:7)
                 .style("opacity",alpha)
         }
 
     }
 
     //tooltip
-    handleMove(geography, evt) {
+    handleMove = (geography, evt) => {
         const x = evt.clientX
         const y = evt.clientY + window.pageYOffset
-        //console.log('tooltip move -- ', x, y, geography.properties.NAME)
-        //let tooltipComp = document.getElementsByClassName('tooltipSH')[0];
-        // tooltipComp.style.backgroundColor = 'red';
-        // tooltipComp.style.position = 'absolute';
-        // tooltipComp.style.left = x;
-        // tooltipComp.style.top = y;
 
-        // this.props.dispatch(
-        //     show({
-        //         origin: { x, y },
-        //         content: geography.properties.name,
-        //     })
-        // )
+        // this.setState({tooltipMsg:geography.properties.NAME})
+
     }
-    handleLeave() {
-        console.log('tooltip hide -- ')
+    handleLeave = () => {
         //this.props.dispatch(hide())
+        ReactTooltip.hide(this.tooltipref)
     }
+    handleMoveMk = (marker, evt) => {
+        const x = evt.clientX
+        const y = evt.clientY + window.pageYOffset
+        let names = [];
+        console.log('maker..', marker)
+        if(marker.name.length){
+            names = makeList(marker.name)
+        }
+
+        this.setState({tooltipMsg:(names.length>0) ? names : marker.name})
+        if(!this.moveMouse){
+            ReactTooltip.rebuild()
+            ReactTooltip.show(this.circle)
+        }
+
+        this.moveMouse = true;
+    }
+    handleLeaveMk = () => {
+        //this.props.dispatch(hide())
+        ReactTooltip.hide(this.tooltipref)
+        this.moveMouse = false;
+    }
+
+    handleMouseOverMarker(value) {
+        this.setState({tooltipMsg:value})
+        ReactTooltip.rebuild()
+        ReactTooltip.show(this.tooltipref)
+    }
+
 
     componentDidMount() {
-        this.fetchCities();
+
         this.fetchCountry();
 
         let _self = this;
@@ -275,8 +325,8 @@ class AnimatedMap extends Component {
             _self.blinkAnimationMarker('rsm-markers', _self.dir)
         }, 900)
 
-
-        if(_self.props.tabIdx === 'pg=1'){
+        console.log('map did mount == ', _self.props.parentProps)
+        if(_self.props.parentProps.tabIdx === 'pg=1'){
             _self.handleCityClick({ "name": this.state.selectedCity, "coordinates": [2.1734, 41.3851], "population": 37843000, "cost":3 });
         }
 
@@ -285,6 +335,10 @@ class AnimatedMap extends Component {
     }
     componentWillUnmount() {
         clearInterval(this.interval)
+    }
+    componentWillReceiveProps(nextProps, nextContext) {
+
+        this.fetchCities(nextProps.parentProps.data)
     }
 
     render() {
@@ -311,6 +365,9 @@ class AnimatedMap extends Component {
 
                 <Legend />
 
+                <ReactTooltip id='happyFace' className='customToolTip' type='dark' effect='float'>
+                    <span>{this.state.tooltipMsg}</span>
+                </ReactTooltip>
                 <ContainerDimensions>
                     { ({ width, height }) =>
                         <Motion
@@ -320,9 +377,9 @@ class AnimatedMap extends Component {
                                 y: 20,
                             }}
                             style={{
-                                zoom: spring(this.state.zoom, {stiffness: 210, damping: 20}),
-                                x: spring(this.state.center[0], {stiffness: 210, damping: 20}),
-                                y: spring(this.state.center[1], {stiffness: 210, damping: 20}),
+                                zoom: spring(this.state.zoom, {stiffness: 210, damping: 30}),
+                                x: spring(this.state.center[0], {stiffness: 210, damping: 30}),
+                                y: spring(this.state.center[1], {stiffness: 210, damping: 30}),
                             }}
                         >
                             {({zoom,x,y}) => (
@@ -353,31 +410,38 @@ class AnimatedMap extends Component {
                                         </Geographies>
                                         <Markers>
                                             {(!this.state.detailMode) ?
-                                                this.state.cities.map((city, i) => (
-                                                    <Marker key={i} marker={city} onClick={ this.handleCityClick }>
-                                                        <circle
-                                                            class={(city.population > 35000000)?'levelFive':'levelOther'}
-                                                            cx={0}
-                                                            cy={0}
-                                                            r={cityScale(city.population)}
-                                                            fill={
-                                                                (city.population > 35000000)?'url(#levelFive)':
-                                                                    (city.population <= 35000000 &&  city.population > 30000000)?'url(#levelFour)':
-                                                                        (city.population <= 30000000 &&  city.population > 25000000)?'url(#levelThree)':
-                                                                            (city.population <= 25000000 &&  city.population > 20000000)?'url(#levelTwo)':
-                                                                                'url(#levelOne)'
-                                                            }
-                                                            stroke={styles.marker.stroke}
-                                                            strokeWidth={styles.marker.strokeWidth}
-                                                        />
-                                                        <text textAnchor="middle" y={4} class="marker_value">
-                                                            {city.cost}
-                                                        </text>
-                                                        {/*<text textAnchor="middle" class="marker_label" x={(city.markerOffsetX)?(city.markerOffsetX):0} y={(city.markerOffset)?(city.markerOffset):24}>*/}
-                                                            {/*{city.name}*/}
-                                                        {/*</text>*/}
-                                                    </Marker>
-                                                ))
+                                                (this.state.cities)?
+                                                    this.state.cities.map((city, i) => (
+                                                        <Marker key={i} marker={city}
+                                                                onClick={ this.handleCityClick }
+                                                                onMouseMove={this.handleMoveMk}
+                                                                onMouseLeave={this.handleLeaveMk}
+                                                                >
+                                                            <text textAnchor="middle" y={3.5} className="marker_value">
+                                                                {city.cost}
+                                                            </text>
+                                                            <circle
+                                                                ref={ref => this.circle = ref}   data-tip='tooltip' data-for='happyFace'
+                                                                class={(city.population > 35000000)?'levelFive':'levelOther'}
+                                                                cx={0}
+                                                                cy={0}
+                                                                r={cityScale(city.population)}
+                                                                fill={
+                                                                    (city.population > 35000000)?'url(#levelFive)':
+                                                                        (city.population <= 35000000 &&  city.population > 30000000)?'url(#levelFour)':
+                                                                            (city.population <= 30000000 &&  city.population > 25000000)?'url(#levelThree)':
+                                                                                (city.population <= 25000000 &&  city.population > 20000000)?'url(#levelTwo)':
+                                                                                    'url(#levelOne)'
+                                                                }
+                                                                stroke={styles.marker.stroke}
+                                                                strokeWidth={styles.marker.strokeWidth}
+                                                            />
+
+                                                            {/*<text textAnchor="middle" class="marker_label" x={(city.markerOffsetX)?(city.markerOffsetX):0} y={(city.markerOffset)?(city.markerOffset):24}>*/}
+                                                                {/*{city.name}*/}
+                                                            {/*</text>*/}
+                                                        </Marker>
+                                                    )) : null
                                                 :
                                                 this.state.citiesSecond.map((city, i) => (
                                                     <Marker
@@ -389,13 +453,12 @@ class AnimatedMap extends Component {
                                                             class={"detailMarker_"+city.name}
                                                             cx={0}
                                                             cy={0}
-                                                            r={6}
+                                                            r={5}
                                                             opacity={1}
                                                             fill={styles.marker.second.fill}
                                                             stroke={styles.marker.second.stroke}
                                                             strokeWidth={styles.marker.second.strokeWidth}
                                                         />
-
                                                         <text
                                                             class="marker_label"
                                                             textAnchor="middle"
@@ -416,19 +479,12 @@ class AnimatedMap extends Component {
                         </Motion>
                     }
                 </ContainerDimensions>
-
             </div>
         )
     }
 }
 
 
-const mapStateToProps = (state, ownProps) => {
-    return {
-        data: state.receiveDataReduce.data,
-        tabIdx: state.siteChanger.site.subPath
-    };
-};
 const mapDispatchProps = (dispatch) => {
     return {
         handleInjectData: (data) => { dispatch(actions.setUser(data)) },
@@ -437,4 +493,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(AnimatedMap);
+export default connect(null, mapDispatchProps)(AnimatedMap);

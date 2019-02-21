@@ -104,7 +104,8 @@ let generateData = (datas) => {
 
             let Index = i;
             let AppName = dataResult.key.app_key.name || '-';
-            let AppVer = dataResult.key.app_key.version || '-';
+            let DeveloperName = dataResult.key.app_key.developer_key.name || '-';
+            let Version = dataResult.key.app_key.version || '-';
             let CloudletName= dataResult.cluster_inst_key.cloudlet_key.name || '-';
             let OperatorName=dataResult.cluster_inst_key.cloudlet_key.operator_key.name || '-';
             let CloudletLocation=dataResult.cloudlet_loc || '-';
@@ -112,7 +113,20 @@ let generateData = (datas) => {
             let ClusterInst=dataResult.cluster_inst_key.cluster_key.name || '-';
             let Mapped_ports= dataResult.mapped_ports || '-';
 
-            values.push({Index:Index, AppName:AppName, AppVer:AppVer, CloudletName:CloudletName, OperatorName:OperatorName, CloudletLocation:CloudletLocation, URI:URI, ClusterInst:ClusterInst, Mapped_ports:JSON.stringify(Mapped_ports), Edit:''})
+            let newRegistKey = ['OperatorName', 'DeveloperName', 'CloudletName','AppName', 'Version' ];
+
+            values.push({
+                Index:Index,
+                AppName:AppName,
+                DeveloperName:DeveloperName,
+                Version:Version,
+                OperatorName:OperatorName,
+                CloudletName:CloudletName,
+                CloudletLocation:CloudletLocation,
+                URI:URI,
+                ClusterInst:ClusterInst,
+                Mapped_ports:JSON.stringify(Mapped_ports),
+                Edit:newRegistKey})
         })
     } else {
         console.log('there is no result')

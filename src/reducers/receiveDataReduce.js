@@ -13,6 +13,8 @@ export default function receiveDataReduce( state = initialState, action ) {
             return initialState;
         case types.LOADED_DATA :
             return action.loaded;
+        case types.REFRESH_DATA :
+            return action;
         default:
             return state
     }

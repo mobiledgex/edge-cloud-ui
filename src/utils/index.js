@@ -11,6 +11,20 @@ export const groupBy = (objectArray, property) => (
     },{})
 )
 
+export const groupByCompare = (objectArray, properties) => (
+    objectArray.reduce((accumulator, obj) => {
+        let key1 = obj[properties[0]];
+        let key2 = obj[properties[1]];
+        let key = [properties[0]]+':'+key1 + [properties[1]]+':'+key2
+        console.log('reduce key-', key)
+        if(!accumulator[key]) {
+            accumulator[key] = [];
+        }
+        accumulator[key].push(obj);
+        return accumulator;
+    },{})
+)
+
 //Counting instances of values in an object
 export const countedNames = (objectArray) => (
     objectArray.reduce((allNames, name) => {
@@ -35,3 +49,23 @@ export const removeDuplicate = (objectArray) => (
         return accumulator
     }, [])
 )
+
+/*
+var sum, avg = 0;
+
+// dividing by 0 will return Infinity
+// arr must contain at least 1 element to use reduce
+if (arr.length)
+{
+    sum = arr.reduce(function(a, b) { return a + b; });
+    avg = sum / arr.length;
+}
+* */
+export const avg = (objectArray) => (
+    (objectArray.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue;
+    })) / objectArray.length
+)
+
+
+

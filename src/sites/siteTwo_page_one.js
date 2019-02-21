@@ -12,8 +12,9 @@ import AnimatedMap from '../libs/simpleMaps/with-react-motion';
 import DeveloperSideInfo from '../container/developerSideInfo'
 //service
 import * as Service from '../services';
-import * as ServiceInflux from '../services/service_compute_inflxdb';
-
+import * as ComputeService from '../services/service_compute_service';
+//
+import * as aggregation from '../utils';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -31,22 +32,25 @@ class SiteTwoPageOne extends React.Component  {
         super(props)
         _self = this;
         _self.state = {
-            receivedData:null,
+            locationData:null,
             url:'',
-            countryOptionsOper : [
-                { key: 'ba', value: 'ba', text: 'Barcelona' },
-                { key: 'sp', value: 'sp', text: 'Spain' }
-            ],
-            countryOptionsDev : [
-                { key: 'de', value: 'de', text: 'Deutsche Telekom' },
-                { key: 'oo', value: 'oo', text: 'Other Operator' }
-            ],
+            countryOptionsOper : [],
+            countryOptionsDev : [],
+            countryOptionsClou : [],
             sideVisible: false,
             cpuUsage:null,
             memUsage:null,
             network:null,
             everyCall:true,
-            selectedCity:'dashboard'
+            selectedCity:'dashboard',
+            dropdownValueOne:null,
+            dropdownValueTwo:null,
+            dropdownValueThree:null,
+            operGroup:null,
+            selectedDevelop:'',
+            selectedCloudlet:'',
+            zoom:''
+
         }
         this.timeout = null;
 
@@ -96,7 +100,67 @@ class SiteTwoPageOne extends React.Component  {
         _self.props.handleInjectData({network:{recv:_dataIn, send:_dataOut}});
 
     }
-    receiveOperators() {
+    receiveFileData(data) {
+        let _dataIn = null;
+        data.map((key, i) => {
+            if(key.inst.indexOf(_self.state.selectedCity) > -1) _dataIn = data[i]
+        })
+
+        if(_dataIn) _self.props.handleInjectData({filesystemUsage:_dataIn.score});
+
+    }
+    receiveCloudlet(result) {
+        console.log('receive cloudlet  result... ', result)
+        function reduceUp(value) {
+            return Math.round(value)
+        }
+        let locations = result.map((item) => (
+            {LAT:reduceUp(item.CloudletLocation.latitude), LON:reduceUp(item.CloudletLocation.longitude), cloudlet:item.CloudletName}
+        ))
+
+
+        let locationData = [];
+
+        let groupbyData = aggregation.groupByCompare(locations, ['LAT','LON']);
+        console.log('grouby groupbyData = ', groupbyData)
+        let names = []
+        Object.keys(groupbyData).map((key, i) => {
+            names[i] = [];
+            groupbyData[key].map((data, j) => {
+                names[i].push(data['cloudlet']+'  /  ');
+                if(j === groupbyData[key].length -1) locationData.push({ "name": names[i],    "coordinates": [data['LON'], data['LAT']], "population": 17843000, "cost":groupbyData[key].length })
+            })
+
+        })
+
+
+
+        console.log('location data ..... data ....data....', locationData)
+
+        _self.setState({
+            locationData: locationData
+        })
+
+
+    }
+    receiveAppInst(result) {
+        console.log('result ---->>>> ', result)
+
+
+
+        // //////////////////////////////
+        // set operators to dropDown
+        /////////////////////////////////
+        let nameObj = result.map((item) => (
+            {operator:item.OperatorName, developer:item.DeveloperName, cloudlet:item.CloudletName}
+        ))
+        console.log('nameObj ', nameObj)
+        _self.setState({nameObj:nameObj})
+        let operatorsGroup = aggregation.groupBy(nameObj, 'operator');
+        let operKeys = Object.keys(operatorsGroup)
+        console.log('groupbyData operKeys ==>==> ', operKeys)
+        let operators = operKeys.map((opr, i) => ({ key: i, value: opr, text: opr }))
+        _self.setState({countryOptionsOper:operators, operGroup:operatorsGroup})
 
     }
     componentDidMount() {
@@ -106,6 +170,7 @@ class SiteTwoPageOne extends React.Component  {
             //call data from service
             Service.getStatusCPU(self.receiveCPUData);
             Service.getStatusMEM(self.receiveMEMData);
+            Service.getStatusFilesys(self.receiveFileData);
             Service.getStatusNET(self.receiveNETData);
             //
             Service.getComputService();
@@ -120,29 +185,53 @@ class SiteTwoPageOne extends React.Component  {
             this.setState({sideVisible: false})
         }
 
-        //this.props.handleChangeCity('Barcelona')
+        //get info cloudlet
+        ComputeService.getComputeService('cloudlet', this.receiveCloudlet)
 
-        //influxdb
-        ServiceInflux.getOperator();
+        //get info appInstance
+        ComputeService.getComputeService('appinst', this.receiveAppInst)
 
-        //get post
 
+        /*
+        dropdownValueOne:'TDG',
+            dropdownValueTwo:'barcelona-mexdemo',
+            dropdownValueThree:'MobiledgeX SDK Demo',
+         */
+
+        setTimeout(() => {
+            //_self.setState({dropdownValueOne:'TDG'})
+            //_self.setDeveloperList({value:'TDG'});
+            //_self.setCloudletList({value:'TDG'});
+        }, 2000)
 
     }
 
     componentWillUnmount() {
         clearTimeout(this.timeout)
+
+
     }
 
 
     componentWillReceiveProps(nextProps) {
 
         if(nextProps.city) {
-            console.log('change city -- ', nextProps.city)
+            console.log('change city -->> ', nextProps.city.name, this.state.zoom)
+            this.setState({sideVisible:(this.state.zoom === 'in')?true:false})
+
             //현재 Barcelona == dashboard
             let city = nextProps.city.name;
-            if(nextProps.city.name === 'barcelona') {
+            // if(nextProps.city.name === 'barcelona' || nextProps.city.name === 'Barcelona') {
+            //     city = 'dashboard'
+            // }
+            if(nextProps.city.name.indexOf('frankfurt') > -1) {
+                city = 'frankfurt'
+            } else if(nextProps.city.name.indexOf('bonn') > -1) {
+                city = 'bonn'
+            } else if(nextProps.city.name.indexOf('barcelona') > -1) {
                 city = 'dashboard'
+            } else if(nextProps.city.name.indexOf('berlin') > -1 || nextProps.city.name.indexOf('skt') > -1) {
+                city = 'berlin'
             }
             this.setState({selectedCity:city})
         }
@@ -157,37 +246,81 @@ class SiteTwoPageOne extends React.Component  {
         _self.props.history.push({
             pathname: mainPath,
             search: subPath,
-            state: { some: 'state' }
+            state: { cloudlet: _self.state.dropdownValueThree }
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath, cloudlet:_self.state.dropdownValueThree})
 
     }
     zoomIn(detailMode) {
-        _self.setState({sideVisible:detailMode})
+        //_self.setState({sideVisible:detailMode})
+        _self.setState({zoom:'in'})
     }
     zoomOut(detailMode) {
-        _self.setState({sideVisible:detailMode})
+        _self.setState({sideVisible:detailMode, zoom:'out'})
     }
     resetMap(detailMode) {
         _self.setState({sideVisible:detailMode})
+    }
+    handleChangeOne = (e, {value}) => {
+        this.setState({ dropdownValueOne: value })
+        this.setState({dropDownValueTwo:'', countryOptionsDev:[], selectedDevelop:''})
+        //reset list of sub dropwDown
+        this.setDeveloperList(value);
+        this.setCloudletList(value);
+    }
+    handleChangeThree = (e, {value}) => {
+        this.setState({ dropdownValueThree: value })
+        this.props.handleChangeCity({name:value})
+    }
+    setDeveloperList(key) {
+        let operatorsGroup = [];
+        _self.state.operGroup[key].map((name) => {
+            operatorsGroup.push(name)
+        })
+        let groupbyDevel = aggregation.groupBy(operatorsGroup, 'developer')
+        let operKeys = Object.keys(groupbyDevel)
+        console.log('groupbyData developKeys ==>==> ', operKeys)
+        let developers = operKeys.map((opr, i) => ({ key: i, value: opr, text: opr }))
+        _self.setState({countryOptionsDev:developers})
+
+        //&&&&&&&&&& until set MWC &&&&&&&&&&&&&
+        //setTimeout(()=>_self.setState({dropdownValueTwo:'MobiledgeX SDK Demo'}), 2500)
+    }
+    setCloudletList(key) {
+        let operatorsGroup = [];
+        _self.state.operGroup[key].map((name) => {
+            operatorsGroup.push(name)
+        })
+        let groupbyDevel = aggregation.groupBy(operatorsGroup, 'cloudlet')
+        let operKeys = Object.keys(groupbyDevel)
+        console.log('groupbyData cloudlet Keys ==>==> ', operKeys)
+        let developers = operKeys.map((opr, i) => ({ key: i, value: opr, text: opr }))
+        _self.setState({countryOptionsClou:developers})
+
+        //&&&&&&&&&& until set MWC &&&&&&&&&&&&&
+        //setTimeout(()=>_self.setState({dropdownValueThree:'barcelona-mexdemo'}), 2000)
+
     }
     render() {
         return (
             <div id="bodyCont" className='console_body'>
                 <div className='console_worldmap'>
-                    <ContainerOne ref={ref => this.container = ref} {...this.props} data={this.state.receivedData} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
+                    <ContainerOne ref={ref => this.container = ref} tabIdx={this.props.tabName} data={this.state.locationData} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
                 </div>
-                <Grid className='console_nav_left'>
-                    <Grid.Row columns={2}>
-                        <Grid.Column>
-                            <Dropdown placeholder='Select Operator' fluid search selection options={this.state.countryOptionsOper} />
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Dropdown placeholder='Select Developer' fluid search selection options={this.state.countryOptionsDev} />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
+
+                <div className='console_nav_left'>
+                    <div className='filter'>
+                        <Dropdown placeholder='Select Operator' fluid search selection options={this.state.countryOptionsOper} value={this.state.dropdownValueOne} onChange={this.handleChangeOne}  />
+                    </div>
+                    <div className='filter'>
+                        <Dropdown placeholder='Select Cloudlet' fluid search selection options={this.state.countryOptionsClou} value={this.state.dropdownValueThree} selectedLabel={this.state.selectedCloudlet} onChange={this.handleChangeThree} />
+                    </div>
+                    <div className='filter'>
+                        <Dropdown placeholder='Select Developer' fluid search selection options={this.state.countryOptionsDev} value={this.state.dropdownValueTwo} selectedLabel={this.state.selectedDevelop} />
+                    </div>
+                </div>
+
                 <div className='console_right_content'>
                     <DeveloperSideInfo sideVisible={this.state.sideVisible} gotoNext={this.gotoNext}></DeveloperSideInfo>
                 </div>

@@ -4,11 +4,14 @@
 ```
 $ npm install
 $ npm start
-$ cd server
-$ npm install
-$ node app.js
 ```
-
+### Run on Daemon
+```
+$ cd server
+$ pm2 start npm -- run start_server
+$ cd ..
+$ pm2 start npm -- start
+```
 ### Style Guid
 
 | page Name | component  | css           | Description                  |

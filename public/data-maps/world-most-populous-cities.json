@@ -1,11 +1,11 @@
 [
   { "name": "barcelona",    "coordinates": [2.1734, 41.3851], "population": 37843000, "cost":3 },
-  { "name": "bonn-niantic","markerOffsetX": -50, "markerOffset": 2, "coordinates": [7.098,50.737], "population": 12539000, "cost":1 },
-  { "name": "frankfurt-macrometa", "markerOffsetX": -40, "markerOffset": 10, "coordinates": [8.6821, 50.1109], "population": 12539000, "cost":1 },
+  { "name": "bonn","markerOffsetX": -50, "markerOffset": 2, "coordinates": [7.098,50.737], "population": 12539000, "cost":1 },
+  { "name": "frankfurt", "markerOffsetX": -40, "markerOffset": 10, "coordinates": [8.6821, 50.1109], "population": 12539000, "cost":1 },
   { "name": "Seoul",        "coordinates": [126.9780,37.5665], "population": 12539000, "cost":2 },
   { "name": "munich", "markerOffsetX": 20, "markerOffset": 15, "coordinates": [11.582,48.1351], "population": 12539000, "cost":2 },
   { "name": "centralus",    "coordinates": [-93.0977,41.878], "population": 12539000, "cost":2 },
-  { "name": "berlin-macrometa", "markerOffsetX": 50, "markerOffset": -2, "coordinates": [13.405,52.52], "population": 12539000, "cost":1 },
+  { "name": "berlin", "markerOffsetX": 50, "markerOffset": -2, "coordinates": [13.405,52.52], "population": 12539000, "cost":1 },
   { "name": "westindia",    "coordinates": [72.8777,19.076], "population": 12539000, "cost":1 },
   { "name": "hamburg",      "markerOffset": -20,"coordinates": [9.9937,53.5511], "population": 12539000, "cost":1 },
   { "name": "krakow",       "markerOffsetX": 30, "markerOffset": 2, "coordinates": [19.945,50.0647], "population": 12539000, "cost":1 }

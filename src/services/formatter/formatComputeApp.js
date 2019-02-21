@@ -57,15 +57,16 @@ let generateData = (datas) => {
         result.map((data, i) => {
             let dataResult = data.result || '-';
             let Index = i;
-            let DeveloperName = dataResult.key.name || '-';
-            let DeveKey = dataResult.key.developer_key.name || '-';
+            let AppName = dataResult.key.name || '-';
+            let DeveloperName = dataResult.key.developer_key.name || '-';
             let Version = dataResult.key.version || '-';
             let Ip_access = dataResult.ip_access || '-';
             let Access_ports = dataResult.access_ports || '-';
             let Cluster = dataResult.cluster.name || '-';
             let Deployment = dataResult.deployment || '-';
+            let newRegistKey = ['AppName', 'DeveloperName', 'Version', 'Cluster', 'Deployment'];
 
-            values.push({Index:Index, DeveloperName:DeveloperName, DeveKey:DeveKey, Version:Version, Ip_access:Ip_access, Access_ports:Access_ports, Cluster:Cluster, Deployment:Deployment})
+            values.push({Index:Index, AppName:AppName, DeveloperName:DeveloperName, Version:Version, Ip_access:Ip_access, Access_ports:Access_ports, Cluster:Cluster, Deployment:Deployment, Edit:newRegistKey})
         })
     } else {
         console.log('there is no result')

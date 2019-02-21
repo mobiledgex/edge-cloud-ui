@@ -25,8 +25,8 @@ import InterpolNumber from '../components/number/interpolNumber';
 
 
 
-let dataOptions = [ { key: 'af', value: 'af', text: 'Disk W/R' },{ key: 'af2', value: 'af2', text: 'Networ I/O' } ]
-const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, recv, send, network, networkSeries, lineLimit, redraw, cloudletInfo }) => (
+let dataOptions = [ { key: 'af', value: 'af', text: 'Disk W/R' },{ key: 'af2', value: 'af2', text: 'Network I/O' } ]
+const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, file, recv, send, network, networkSeries, lineLimit, redraw, cloudletInfo }) => (
     <Sidebar
         as={Menu}
         animation={animation}
@@ -143,7 +143,7 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, re
                     <CPUMEMUsage label="MEMORY" value={mem}></CPUMEMUsage>
                 </Grid.Column>
                 <Grid.Column>
-                    <CPUMEMUsage label="DISK" value={0.14}></CPUMEMUsage>
+                    <CPUMEMUsage label="DISK" value={file}></CPUMEMUsage>
                 </Grid.Column>
             </Grid.Row>
             {/*Network I/O*/}
@@ -162,7 +162,7 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, re
                 <Grid.Column width={11}>
                     {/*<HighCharts chart="line" style={{height:'100%'}}/>*/}
                     {/*<BBLineChart chartData={network} series={networkSeries} lineLimit={lineLimit}/>*/}
-                    <TimeSeriesFlow style={{width:'300px', height:'150px'}} chartData={network} series={networkSeries} lineLimit={lineLimit} redraw={redraw}></TimeSeriesFlow>
+                    <TimeSeriesFlow style={{width:'100%', height:'160px'}} chartData={network} series={networkSeries} lineLimit={lineLimit} redraw={redraw}></TimeSeriesFlow>
                 </Grid.Column>
             </Grid.Row>
         </Grid>
@@ -181,7 +181,7 @@ class DeveloperSideInfo extends React.Component {
             direction: 'right',
             dimmed: false,
             visible: false,
-            cpu:0, mem:0, recv:0, send:0, network:[], networkSeries:[],
+            cpu:0, mem:0, file:0, recv:0, send:0, network:[], networkSeries:[],
             lineLimit:false,
             redraw:false, resetData:false,
             cloudletInfo:'Deutsche Telecom Barcelona MWC',
@@ -195,7 +195,7 @@ class DeveloperSideInfo extends React.Component {
         this.limitDataLength = 15;
     }
     componentDidMount() {
-        this.props.handleChangeCity({name:'barcelona'})
+        this.props.handleChangeCity({name:'dashboard'})
     }
 
     componentWillReceiveProps(nextProps) {
@@ -207,7 +207,7 @@ class DeveloperSideInfo extends React.Component {
          ********************/
 
         if(nextProps.city.name && this.state.city !== nextProps.city.name) {
-            console.log('새로운 지역 선택 == '+nextProps.city.name)
+            console.log('새로운 cloudlet 선택 == ', nextProps.city)
             this.dataArray = [];
             this.dataSeries = [];
             this.setState({dataArray:[], dataSeries:[], network:[], networkSeries:[], city:(nextProps.city.name)?nextProps.city.name:nextProps.city})
@@ -220,6 +220,9 @@ class DeveloperSideInfo extends React.Component {
             }
             if(nextProps.data.memUsage) {
                 this.setState({mem:nextProps.data.memUsage})
+            }
+            if(nextProps.data.filesystemUsage) {
+                this.setState({file:nextProps.data.filesystemUsage})
             }
 
             if(nextProps.data.network) {
@@ -284,13 +287,15 @@ class DeveloperSideInfo extends React.Component {
 
         }
         if(nextProps.city) {
-            let cdName = '';
-            switch(nextProps.city.name) {
-                case 'Barcelona': cdName = 'Deutsche Telecom Barcelona MWC'; break;
-                case 'frankfurt': cdName = 'Macrometa Franfrut MWC'; break;
-                case 'hamburg': cdName = 'Mexdemo Hamburg MWC'; break;
-                default : cdName = 'Deutsche Telecom Barcelona MWC'; break;
-            }
+            let cdName = 'No Name of Cloudlet';
+            // switch(nextProps.city.name) {
+            //     case 'Barcelona': cdName = 'Deutsche Telecom Barcelona MWC'; break;
+            //     case 'frankfurt': cdName = 'Macrometa Franfrut MWC'; break;
+            //     case 'hamburg': cdName = 'Mexdemo Hamburg MWC'; break;
+            //     default : cdName = 'Deutsche Telecom Barcelona MWC'; break;
+            // }
+
+            cdName = nextProps.city.name;
 
             this.setState({cloudletInfo:cdName, city:(nextProps.city.name)?nextProps.city.name : this.state.city})
         }
@@ -308,7 +313,7 @@ class DeveloperSideInfo extends React.Component {
         return (
             <div>
                 <VerticalSidebar animation={animation} direction={direction} visible={visible} gotoNext={this.handleClickBtn}
-                                 cpu={this.state.cpu} mem={this.state.mem} recv={this.state.recv}
+                                 cpu={this.state.cpu} mem={this.state.mem} file={this.state.file} recv={this.state.recv}
                                  send={this.state.send} network={this.state.network} networkSeries={this.state.networkSeries}
                                  lineLimit={this.state.lineLimit} redraw={this.state.redraw}
                                  cloudletInfo={this.state.cloudletInfo}

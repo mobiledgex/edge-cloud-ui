@@ -19,10 +19,10 @@
     z-index: 120;
 }
 #mapZoomCtl {
-    background-color: rgba(0, 0, 0, 0.85);
-    color: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 0.3em 0;
+    background-color: rgba(0,0,0,.85);
+    color: rgba(255,255,255,.7);
+    border: 1px solid rgba(255,255,255,.1);
+    margin: 0.3em 0 !important;
     padding: 0 3px;
     width: 32px;
     height: 32px;

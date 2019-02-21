@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
+
 import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
@@ -30,7 +31,7 @@ class SiteFourPageSix extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [1,2,2,2,3,2,3,2,2]
+        this.headerLayout = [1,3,3,1,1,2,3,2,2,2];
     }
 
     //go to
@@ -64,7 +65,9 @@ class SiteFourPageSix extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-
+        if(nextProps.stateChange) {
+            this.getData();
+        }
     }
     receiveResult(result) {
         console.log("receive  == ", result)
@@ -77,15 +80,23 @@ class SiteFourPageSix extends React.Component {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout}></MapWithListView>
-
-
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} siteId='appinst'></MapWithListView>
         );
     }
 
 };
 
+const mapStateToProps = (state) => {
 
+    console.log('change --- --- --- --- -- ',state)
+    let stateChange = false;
+    if(state.receiveDataReduce.params && state.receiveDataReduce.params.state === 'refresh'){
+        stateChange = true;
+    }
+    return (stateChange)? {
+        stateChange: true
+    }:null;
+};
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
@@ -94,4 +105,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageSix)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageSix)));

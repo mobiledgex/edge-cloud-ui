@@ -1,8 +1,23 @@
 import React from 'react';
 import TooltipTrigger from 'react-popper-tooltip';
 import 'react-popper-tooltip/dist/styles.css';
+import { List } from 'semantic-ui-react'
 
-const Tooltip = ({tooltip, children, hideArrow, ...props}) => (
+const makeList = (obj) => (
+    <List>
+        {obj.map((key) => (
+            <List.Item>
+                <List.Icon name='marker' />
+                <List.Content>
+                    <List.Header as='a'>{'- '+key}</List.Header>
+                </List.Content>
+            </List.Item>
+            ))
+        }
+    </List>
+
+)
+const Tooltip = ({tooltips, children, hideArrow, ...props}) => (
     <TooltipTrigger
         {...props}
         tooltip={({
@@ -25,7 +40,7 @@ const Tooltip = ({tooltip, children, hideArrow, ...props}) => (
                         className: 'tooltip-arrow'
                     })}
                 />}
-                {tooltip}
+                {makeList(tooltips)}
             </div>
         )}
     >

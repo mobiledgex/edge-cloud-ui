@@ -45,7 +45,7 @@ const numberDes =(a,b)=> (
 )
 
 let generateData = (datas) => {
-    console.log('format data - ', datas)
+
     let result = datas;
     let values = [];
     if(result){
@@ -53,8 +53,9 @@ let generateData = (datas) => {
             let dataResult = data.result || '-';
             let Index = i;
             let OperatorName = dataResult.key.name || '-';
+            let newRegistKey = ['OperatorName'];
 
-            values.push({Index:Index, OperatorName:OperatorName, Edit:''})
+            values.push({Index:Index, OperatorName:OperatorName, Edit:newRegistKey})
         })
     } else {
         console.log('there is no result')

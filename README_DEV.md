@@ -67,7 +67,7 @@
 
 #### react motion
  - https://github.com/chenglou/react-motion/wiki/Gallery-of-third-party-React-Motion-demos
-
+ - https://github.com/chenglou/react-motion/wiki/Gallery-of-third-party-React-Motion-demos
 #### d3 svg
  - https://github.com/Olical/react-faux-dom
 
@@ -130,3 +130,17 @@
 
 #### SSL을 node.js에서 인증하기
  - https://www.namecheap.com/support/knowledgebase/article.aspx/9705/33/installing-a-ssl-certificate-on-nodejs
+
+
+### Login , Mongodb, bcrypt
+- https://medium.com/front-end-weekly/how-to-create-a-simple-authorization-login-using-bcrypt-react-and-ajax-d71ed919f5cb
+- https://medium.com/@kouohhashi/simple-authentication-with-react-and-mongodb-dd2828cc4f16
+- https://github.com/kouohhashi/react_mongo_accounts
+
+
+### PM2 사용하여 서버 실행
+- pm2 start app.js --interpreter ./node_modules/.bin/babel-node –
+- npm install -g babel-cli
+- pm2 start --interpreter babel-node server.js
+
+

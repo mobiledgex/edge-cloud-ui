@@ -114,7 +114,7 @@ class Globe {
       this.markerMap[mesh.uuid] = marker;
       this.markers.add(mesh);
     });
-    this.scene.add(this.markers);
+    // this.scene.add(this.markers);
   };
 
   _blink(markerMesh, from, to, recursive, initial, isInitialBlink) {

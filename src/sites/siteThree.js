@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown } from 'semantic-ui-react';
+import {Grid, Image, Header, Menu, Dropdown, Button, Popup} from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 import AnalysticViewZone from '../container/analysticViewZone';
 import { withRouter } from 'react-router-dom';
@@ -11,6 +11,7 @@ import './siteThree.css';
 //
 import * as service from '../services/service_compute_service';
 import * as aggregate from '../utils';
+import {LOCAL_STRAGE_KEY} from "../components/utils/Settings";
 
 let _devOptionsOne = [
     { key: 'op', value: 'op', text: 'Deutsche Telecom' },
@@ -36,7 +37,11 @@ class SiteThree extends React.Component {
             devOptionsOne:_devOptionsOne,
             devOptionsTwo:_devOptionsTwo,
             dropdownValueOne:'TDG',
-            dropdownValueTwo:'bonn-niantic'
+            dropdownValueTwo:'barcelona-mexdemo',
+            email:'Administrator',
+            selectedCloudlet:null,
+            clusters:[],
+            appClusterData:[]
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -57,29 +62,43 @@ class SiteThree extends React.Component {
 
     }
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
-    handleChange = (e, { value }) => this.setState({ value })
+    handleChange = (e, { value }) => {
+        this.setState({ value })
+    }
+    handleChangeOne = (e, {value}) => {
+        this.setState({ dropdownValueOne: value })
+        //reset list of sub dropwDown
+        this.setCloudletList(value)
+    }
+    handleChangeTwo = (e, {value}) => {
+        //this.setState({ dropdownValueTwo: value })
+    }
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     receiveOper(result) {
-        console.log('operators == ', result)
         _self.setState({devOptionsOne: result.map((oper, i) => (
                 { key: i, value: oper.OperatorName, text: oper.OperatorName }
             ))})
     }
     receiveCloudlet(result) {
         let groupByOper = aggregate.groupBy(result, 'Operator')
-        console.log('receiveCloudlet == ', groupByOper)
         _self.setState({devOptionsTwo: groupByOper['TDG'].map((oper, i) => (
                 { key: i, value: oper.CloudletName, text: oper.CloudletName }
             ))})
         _self.setState({cloudletResult:groupByOper})
-        //
-        //셀렉트박스를 통하여 클러스터 항목 클릭하면.....
-        //_self.getClusterInfo('');
+
+
+
     }
+    receiveAppinst(result) {
+        let groupByOper = aggregate.groupBy(result, 'CloudletName')
+        console.log('receive cloudlet in appinstance ==<<<<<< ', groupByOper)
+
+        //TODO: 클라우드렛 선택에 대한 클러스터들
+    }
+
     receiveCluster(cloudlet) {
 
     }
@@ -89,21 +108,61 @@ class SiteThree extends React.Component {
     }
 
 
-    getCloudletList = (operNm) => {
-        _self.setState({devOptionsTwo: this.state.cloudletResult[operNm].map((oper, i) => (
-                { key: i, value: oper.CloudletName, text: oper.CloudletName }
-            ))})
+    setCloudletList = (operNm) => {
+        let cl = [];
+        if(_self.state.cloudletResult && _self.state.cloudletResult[operNm]) {
+            _self.state.cloudletResult[operNm].map((oper, i) => {
+                if(i === 0) _self.setState({dropdownValueTwo: oper.CloudletName})
+                cl.push({ key: i, value: oper.CloudletName, text: oper.CloudletName })
+            })
+        }
+
+
+        _self.setState({devOptionsTwo: cl})
     }
     componentDidMount() {
-        console.log('info.. ', this.childFirst, this.childSecond)
+        console.log('selectedCloudlet check ...', this.props.selectedCloudlet)
+        let selectedCloudlet = this.props.selectedCloudlet;
+        if(!selectedCloudlet){
+            selectedCloudlet = 'barcelona-mexdemo'
+        }
+        if(selectedCloudlet){
+            setTimeout(() => {
+                _self.setState({
+                    selectedCloudlet:selectedCloudlet,
+                    dropdownValueTwo:selectedCloudlet
+                })
+            }, 1000)
+
+        }
         // 오퍼레이터
         service.getComputeService('operator', this.receiveOper)
-        // 오퍼의 클러스터 정보
+        // 오퍼의 클라우드렛 정보
         service.getComputeService('cloudlet', this.receiveCloudlet)
+        // 앱인스턴스 정보
+        service.getComputeService('appinst', this.receiveAppinst)
+
+
+        // Login check
+        const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
+        if (!storage_data) {
+            return;
+        }
+        const storage_json = JSON.parse(storage_data)
+        if(storage_json.email) {
+            this.setState({email:storage_json.email})
+        }
+
+
     }
     componentWillReceiveProps(nextProps) {
+
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
+        if(nextProps.user) {
+            this.setState({email:nextProps.user.email})
+        }
+
 
     }
     render() {
@@ -114,18 +173,27 @@ class SiteThree extends React.Component {
                 <Grid.Row className='gnb_header'>
                     <Grid.Column width={11} className='navbar_left'>
                         <Header>
-                            <Header.Content onClick={() => this.gotoPreview('/site2')}>
-                                <MaterialIcon icon={'arrow_back'} />
-                                MobiledgeX Console
+                            <Header.Content onClick={() => this.gotoPreview('/site2')} className='brand' >
+                                {/* <MaterialIcon icon={'arrow_back'} />
+                                MobiledgeX Console */}
                             </Header.Content>
                         </Header>
                         <div className='nav_filter'>
                             <div className='title'>Operator</div>
-                            <div className='filter'>
-                                <Dropdown placeholder='Select Operator' fluid search selection options={this.state.devOptionsOne} value={this.state.dropdownValueOne} />
-                                <Dropdown placeholder='Barcelona MWC' fluid search selection options={this.state.devOptionsTwo} value={this.state.dropdownValueTwo} onChange={this.handleChange} />
-                                <MaterialIcon icon={'refresh'} />
-                            </div>
+                            <Grid.Row columns={4} className='filter'>
+                                <Grid.Column>
+                                    <Dropdown placeholder='Select Operator' fluid search selection options={this.state.devOptionsOne} value={this.state.dropdownValueOne} onChange={this.handleChangeOne}/>
+                                </Grid.Column>
+                                <Grid.Column width={2}>
+                                    <div className='title'>Cloudlet</div>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <Dropdown placeholder='Select Cloudlet' fluid search selection options={this.state.devOptionsTwo} value={this.state.dropdownValueTwo} onChange={this.handleChangeTwo} />
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <MaterialIcon icon={'refresh'} />
+                                </Grid.Column>
+                            </Grid.Row>
                         </div>
                     </Grid.Column>
                     <Grid.Column width={5} className='navbar_right'>
@@ -135,10 +203,16 @@ class SiteThree extends React.Component {
                         <div>
                             <MaterialIcon icon={'notifications_none'} />
                         </div>
-                        <div>
-                            <Image src='/assets/avatar/avatar_default.svg' avatar />
-                            <span>Administrator</span>
-                        </div>
+                        <Popup
+                            trigger={<div style={{cursor:'pointer'}}>
+                                <Image src='/assets/avatar/avatar_default.svg' avatar />
+                                <span>{this.state.email}</span>
+                            </div>}
+                            content={<Button content='Log out' onClick={() => this.gotoPreview('/logout')} />}
+                            on='click'
+                            position='bottom center'
+                            className='gnb_logout'
+                        />
                         <div>
                             <span>Support</span>
                         </div>
@@ -199,7 +273,7 @@ class SiteThree extends React.Component {
                         </Menu>
                     </Grid.Column>
                     <Grid.Column width={14} style={{height:this.state.bodyHeight}} className='contents_body'>
-                        <AnalysticViewZone></AnalysticViewZone>
+                        <AnalysticViewZone ></AnalysticViewZone>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -207,8 +281,15 @@ class SiteThree extends React.Component {
     }
 
 };
+SiteThree.defaultProps = {
+    selectedCloudlet:'barcelona-mexdemo'
+}
+const mapStateToProps = (state) => {
 
-
+    return {
+        user:state.user
+    };
+};
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
@@ -216,4 +297,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteThree)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteThree)));

@@ -17,9 +17,9 @@ const headerStyle = {
     backgroundImage: 'url()'
 }
 var horizon = 6;
-var vertical = 13;
+var vertical = 20;
 var layout = [
-    {"w":19,"h":18,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Developer"},
+    {"w":19,"h":20,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Developer"},
 ]
 
 class InstanceListView extends React.Component {
@@ -69,10 +69,10 @@ class InstanceListView extends React.Component {
 
         return layout.map((item, i) => (
             <div className="round_panel" key={i} style={{display:'flex'}}>
-                <div style={{flex:1, width:'100%'}}>
+                <div className='grid_table'>
                     <ContainerDimensions>
                         { ({ width, height }) =>
-                            <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>{this.TableExampleVeryBasic()}</div>
+                            <div style={{width:width, height:height-4, display:'flex', overflowY:'auto', overflowX:'hidden'}}>{this.TableExampleVeryBasic()}</div>
                         }
                     </ContainerDimensions>
                 </div>

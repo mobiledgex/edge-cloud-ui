@@ -1,16 +1,23 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import { Grid, Button, Container, Input, Label } from 'semantic-ui-react';
+import { spring } from 'react-motion'
+import Transition from 'react-motion-ui-pack'
 import React3DGlobe from '../libs/react3dglobe';
 import { getMockData } from "../libs/react3dglobe/mockData";
-
+import Login from '../components/login';
+// API
+import * as MyAPI from '../components/utils/MyAPI';
+import { LOCAL_STRAGE_KEY } from '../components/utils/Settings';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
+import HeaderGlobalMini from '../container/headerGlobalMini';
 
 import SiteOne from './siteOne';
 
 const pointMarkers = getMockData(0x97bcd8, 'point');
 
+let self = null;
 class EntranceGlobe extends Component {
 
     constructor() {
@@ -22,26 +29,28 @@ class EntranceGlobe extends Component {
             clickedMarker: null,
             hoveredMarker: null,
             mouseEvent: null,
-            loginState:'out'
+            loginState:'out',
+            modalOpen: true
         };
+        self = this;
     }
 
     componentDidMount() {
-        axios.get('../data/sampleData.json')
-            .then(response => this.setState({data: response.data}))
-        let clickedMarker = {
-            "lat": 39.483,
-            "long": -0.367,
-            "city": "Valencia",
-            "id": "HkYDMRP1ysfN",
-            "color": 9204427,
-            "type": "point",
-            "value": 94,
-            "size": 10
-        };
-        let mouseEvent;
-        let self = this;
-        setTimeout(()=>self.setState({clickedMarker}), 2000)
+        console.log('user info entranceGlobal ...', this.props.user)
+        
+
+        if(this.props.user.login_token) {
+            this.setState({modalOpen: false})
+        }
+    }
+    componentWillReceiveProps(nextProps, nextContext) {
+        console.log('new props... ', nextProps.user)
+        if(nextProps.user.login_token !== undefined) {
+            this.setState({modalOpen: false})
+        } else {
+            this.setState({modalOpen: true})
+        }
+
     }
 
     //go to NEXT
@@ -58,6 +67,27 @@ class EntranceGlobe extends Component {
         this.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
+    logoutRequest = () => {
+
+        const { user } = this.props
+
+        const param = {
+            login_token: user.login_token
+        }
+
+        MyAPI.logout(param)
+            .then((results) => {
+                localStorage.removeItem(LOCAL_STRAGE_KEY);
+                self.goToNext("/logout")
+            })
+            .catch((err) => {
+                console.log("err: ", err)
+                localStorage.removeItem(LOCAL_STRAGE_KEY);
+                self.gotoNext("/logout")
+            })
+        this.setState({modalOpen:true})
+
+    }
     handleMarkerMouseover = (mouseEvent, hoveredMarker) => {
         this.setState({hoveredMarker, mouseEvent});
     };
@@ -72,7 +102,7 @@ class EntranceGlobe extends Component {
     };
 
     handleClickLogin() {
-        this.setState({loginState:'in'})
+        this.setState({modalOpen:false, loginState:'in'})
     }
     render() {
         const {clickedMarker, hoveredMarker, mouseEvent} = this.state;
@@ -88,35 +118,35 @@ class EntranceGlobe extends Component {
                             onMarkerMouseout={this.handleMarkerMouseout}
                             onMarkerClick={this.handleMarkerClick}
                         />
-                        {(this.state.loginState === 'out')?
+
+                        {!this.state.modalOpen &&
+                        <HeaderGlobalMini></HeaderGlobalMini>
+                        }
+
+                        <Transition
+                            component={false} // don't use a wrapping component
+                            enter={{
+                                opacity: 1,
+                                translateY: spring(0, {stiffness: 400, damping: 10})
+                            }}
+                            leave={{
+                                opacity: 0,
+                                translateY: 250
+                            }}
+                        >
+                            { this.state.modalOpen &&
                             <div className='intro_login'>
-                                <Grid>
-                                    <Grid.Row>
-                                        <span className='title'>User Login</span>
-                                    </Grid.Row>
-                                    <Grid.Row columns={2}>
-                                        <Grid.Column>
-                                            <Input placeholder='ID' width></Input>
-                                        </Grid.Column>
-                                        <Grid.Column >
-                                            <Input  placeholder='Password' type='password'></Input>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                    <Grid.Row>
-                                        <Button onClick={() => this.handleClickLogin()}>Log In</Button>
-                                    </Grid.Row>
-                                </Grid>
+                                <Login></Login>
                             </div>
-                            :
-                            (this.state.loginState === 'in')?
+                            }
+                            {!this.state.modalOpen &&
                             <div className='intro_link'>
                                 <Button onClick={() => this.goToNext('/site2')}>MobiledgeX Monitoring</Button>
                                 <Button onClick={() => this.goToNext('/site4')}>MobiledgeX Compute</Button>
                             </div>
-                            :
-                            <Label>Incorrect password or confirmation code entered. Please try again.</Label>
+                            }
 
-                        }
+                        </Transition>
 
                     </div>
                     :
@@ -129,7 +159,11 @@ class EntranceGlobe extends Component {
         )
     }
 }
-
+function mapStateToProps ( {user} ) {
+    return {
+        user
+    }
+}
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
@@ -137,4 +171,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchProps)(EntranceGlobe);
+export default connect(mapStateToProps, mapDispatchProps)(EntranceGlobe);

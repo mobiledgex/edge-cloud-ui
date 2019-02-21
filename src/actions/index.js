@@ -67,3 +67,16 @@ export function changeCity(state) {
         city:state
     };
 }
+export function loginWithEmailRedux ({ params }) {
+    return {
+        type: types.LOGIN_WITH_EMAIL,
+        params
+    }
+}
+export function refreshData ({ params }) {
+    console.log('refreshdata reducer is ...', params)
+    return {
+        type: types.REFRESH_DATA,
+        params
+    }
+}

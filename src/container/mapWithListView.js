@@ -1,15 +1,19 @@
 import _ from 'lodash'
 import React from 'react';
 import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Divider, Container, Sticky } from 'semantic-ui-react';
+import {findDOMNode} from 'react-dom'
+import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux';
-import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
+import ContainerDimensions from 'react-container-dimensions';
+import { GridLoader } from 'react-spinners';
+import * as actions from '../actions';
 import SelectFromTo from '../components/selectFromTo';
 import RegistNewItem from './registNewItem';
+import DeleteItem from './deleteItem';
 import './styles.css';
-import ContainerDimensions from 'react-container-dimensions'
 import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
-
+import * as service from "../services/service_compute_service";
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -17,12 +21,19 @@ const headerStyle = {
     backgroundImage: 'url()'
 }
 var horizon = 6;
-var vertical = 13;
+var vertical = 20;
 
 var layout = [
-    {"w":19,"h":10,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"LocationView"},
-    {"w":19,"h":12,"x":0,"y":10,"i":"1","moved":false,"static":false, "title":"Developer"},
+    {"w":19,"h":9,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"LocationView"},
+    {"w":19,"h":11,"x":0,"y":9,"i":"1","moved":false,"static":false, "title":"Developer"},
 ]
+const override = {
+    display: 'fixed',
+    position:'absolute',
+    margin: '0 auto',
+    borderColor: 'red'
+}
+
 
 
 const ContainerOne = (props) => (
@@ -48,6 +59,10 @@ class MapWithListView extends React.Component {
             direction:null,
             column:null,
             isDraggable: false,
+            selectedItem:null,
+            loading:false,
+            openDelete:false,
+            tooltipMsg:'No Message'
         };
 
         _self = this;
@@ -62,7 +77,7 @@ class MapWithListView extends React.Component {
 
     show = (dim) => this.setState({ dimmer:dim, open: true })
     close = () => {
-        this.setState({ open: false })
+        this.setState({ open: false, openDelete: false })
         this.props.handleInjectDeveloper(null)
     }
 
@@ -114,7 +129,7 @@ class MapWithListView extends React.Component {
             (i === 1)?
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
 
-                    <div style={{width:'100%', height:height, overflowY:'auto'}}>
+                    <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
                         {this.TableExampleVeryBasic(width, height, this.props.headerLayout)}
                     </div>
 
@@ -136,7 +151,6 @@ class MapWithListView extends React.Component {
                             </Table.HeaderCell>
                         </Table.Row>
                     </Table.Footer>
-
                 </div>
                 :
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
@@ -189,7 +203,7 @@ class MapWithListView extends React.Component {
     TableExampleVeryBasic = (w, h, headL) => (
         <Table className="viewListTable" basic='very' striped celled fixed sortable ref={ref => this.viewListTable = ref} style={{width:'100%'}}>
             <Table.Header className="viewListTableHeader"  style={{width:'100%'}}>
-                <Table.Row>
+                <Table.Row onMouseOver={() => console.log('onMouseOver..')}>
                     {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL):null}
                 </Table.Row>
             </Table.Header>
@@ -200,7 +214,7 @@ class MapWithListView extends React.Component {
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
                                     <Table.Cell key={j} textAlign='center' style={{whiteSpace:'nowrap'}}>
-                                        <Button onClick={() => alert('Are you sure?')}>Delete</Button>
+                                        <Button onClick={() => this.setState({openDelete: true, selected:item})}>Delete</Button>
                                         <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                     </Table.Cell>
                                 :
@@ -210,14 +224,20 @@ class MapWithListView extends React.Component {
                                     </Table.Cell>
                                 :
                                 (value === 'CloudletLocation')?
-                                    <Table.Cell key={j} textAlign='left'>
+                                    <Table.Cell key={j} textAlign='left' onMouseOver={() => this.handleMouseOverCell(`Latitude : ${item[value].latitude} Longitude : ${item[value].longitude}`)}>
+                                        <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                         {
-                                            `LAT : ${item[value].latitude}
-                                            LON : ${item[value].longitude}`
+                                            `Latitude : ${item[value].latitude}
+                                            Longitude : ${item[value].longitude}`
                                         }
+                                        </div>
                                     </Table.Cell>
                                 :
-                                    <Table.Cell key={j} textAlign='left'>{String(item[value])}</Table.Cell>
+                                    <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell}  onMouseOver={() => this.handleMouseOverCell(String(item[value]))}>
+                                        <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
+                                        {String(item[value])}
+                                        </div>
+                                    </Table.Cell>
                             ))}
                         </Table.Row>
                     ))
@@ -226,23 +246,50 @@ class MapWithListView extends React.Component {
 
         </Table>
     )
+    handleSpinner(value) {
+        _self.setState({loading:value})
+    }
+    handleMouseOverCell(value) {
+        console.log('mouse over cell ', value, 'tooltip = ', this.tooltipref)
+        this.setState({tooltipMsg:value})
+        ReactTooltip.rebuild()
+        ReactTooltip.show(this.tooltipref)
+    }
+    successfully(msg) {
+        //reload data of dummyData that defined props devData
+
+        _self.props.handleRefreshData({params:{state:'refresh'}})
+    }
+
     componentWillReceiveProps(nextProps, nextContext) {
-                console.log('nextProps')
+                console.log('nextProps--------', nextProps)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
         if(nextProps.devData) {
             this.setState({dummyData:nextProps.devData})
         }
+
     }
 
     render() {
-        const { open, dimmer } = this.state;
+        const { open, dimmer, siteId } = this.state;
         return (
             <ContainerDimensions>
                 { ({ width, height }) =>
                     <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
-                        <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>
+                        <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open}
+                                       selected={this.state.selected} close={this.close} siteId={this.props.siteId}
+                                       handleSpinner={this.handleSpinner}
+                                       success={this.successfully}
+                        />
+
+                        <DeleteItem open={this.state.openDelete}
+                                    selected={this.state.selected} close={this.close} siteId={this.props.siteId}
+                                    handleSpinner={this.handleSpinner}
+                                    success={this.successfully}
+                        ></DeleteItem>
+
                         <ReactGridLayout
                             layout={this.state.layout}
                             onLayoutChange={this.onLayoutChange}
@@ -251,7 +298,21 @@ class MapWithListView extends React.Component {
                         >
                             {this.generateDOM(open, dimmer, width, height)}
                         </ReactGridLayout>
+                        <div className="loadingBox">
+                            <GridLoader
+                                sizeUnit={"px"}
+                                size={20}
+                                color={'#70b2bc'}
+                                loading={this.state.loading}
+                            />
+                        </div>
+
+                        <ReactTooltip className='customToolTip' id='happyFace' type='dark'>
+                            <span>{this.state.tooltipMsg}</span>
+                        </ReactTooltip>
+
                     </div>
+
                 }
             </ContainerDimensions>
 
@@ -278,7 +339,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
+        handleRefreshData: (data) => { dispatch(actions.refreshData(data))}
     };
 };
 
