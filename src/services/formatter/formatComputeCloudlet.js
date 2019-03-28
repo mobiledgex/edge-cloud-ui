@@ -88,7 +88,7 @@ let generateData = (datas) => {
             //let Ip_support = data.result.ip_support || '-';
             let newRegistKey = ['CloudletName', 'Operator', 'CloudletLocation'];
 
-            values.push({Index:Index, CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Edit:newRegistKey})
+            values.push({ CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Edit:newRegistKey})
         })
     } else {
         console.log('there is no result')

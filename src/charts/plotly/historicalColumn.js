@@ -5,96 +5,146 @@ import ContainerDimensions from 'react-container-dimensions';
 import {connect} from "react-redux";
 import './styles.css';
 import * as actions from "../../actions";
+import * as aggregation from "../../utils";
 
 //https://plot.ly/python/#layout-options
 //https://plot.ly/javascript/axes/#tick-placement-color-and-style
 //https://plot.ly/javascript/streaming/
+
+var colors = ['#22cccc', '#6699ff','#aa77ff', '#ff8e06' ];
+var fontColor = 'rgba(255,255,255,.5)' ;
 var trace1 = {
-    x: ['2019-02-23', '2019-02-24', '2019-02-25', '2019-02-26', '2019-02-27', '2019-02-28', '2019-02-29'],
-    y: [20, 14, 23, 25, 12, 16, 34 ],
-    name: 'Cluster A',
-    marker: {
-        color: 'rgb(34, 204, 204)',
-        opacity: 1,
-        line: {
-            color: 'rgba(255,255,255,.5)',
-            width: 1
-        }
-    },
+    x: ['giraffes', 'orangutans', 'monkeys'],
+    y: [20, 14, 23],
+    name: 'SF Zoo',
     type: 'bar'
 };
 
 var trace2 = {
-    x: ['2019-02-23', '2019-02-24', '2019-02-25', '2019-02-26', '2019-02-27', '2019-02-28', '2019-02-29'],
-    y: [12, 18, 29, 21, 14, 29, 22],
-    name: 'Cluster B',
-    marker: {
-        color: 'rgb(102, 153, 255)',
-        opacity: 1,
-        line: {
-            color: 'rgba(255,255,255,.5)',
-            width: 1
-        }
-    },
+    x: ['giraffes', 'orangutans', 'monkeys'],
+    y: [12, 18, 29],
+    name: 'LA Zoo',
     type: 'bar'
 };
+
+let _self = null;
 class HistoricalColumn extends React.Component {
     constructor() {
         super();
         this.state = {
             vWidth: 600,
             vHeight: 300,
-            data:[trace1, trace2],
-            chartData:[trace1, trace2],
+            chartData:[],
             layout: {
                 datarevision: 0,
 
             },
             currentKey:'',
             revision: 0,
+            changeState:0
         }
+        _self = this;
         this.colors = ['#22cccc', '#6699ff', '#ffce03', '#ff710a'];
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps.chartData && nextProps.series[0]) {
-            //this.reloadChart(nextProps.chartData, nextProps.series[0], nextProps.lineLimit);
-        }
+        let dataComp = [];
+        let methodCounts = [];
+        let self = this;
+        if(nextProps.data && nextProps.data.methodCall) {
 
+            let methodName = ['FindCloudlet', 'RegisterClient', 'GetFqdnList']
+            let mthData = nextProps.data.methodCall;
+            let groupDev = aggregation.groupBy(mthData, 'dev')
+
+            let devKeys = Object.keys(groupDev); // samsung, neon2...
+            methodName.map((name, i) => {
+                let item = {
+                    x: [],
+                    y: [],
+                    name: '',
+                    type: 'bar'
+                }
+
+                //method 이름별 디벨로퍼들의 3가지 메소스 호출 카운트
+                // 1. name
+                item.name = name;
+                // x array : dev 이름들
+                item.x = devKeys;
+                // y array : method 당 호출 카운드
+                let mthCount = 0;
+                devKeys.map(dName => {
+                    groupDev[dName].map(obj => {
+                        if(obj.method === name) mthCount ++;
+                    })
+
+                    item.y.push(mthCount)
+                })
+
+
+                dataComp.push(item);
+            })
+
+            this.reloadChart(nextProps.data)
+
+
+        }
+        this.setState({chartData: [trace2]})
 
     }
-    reloadChart(data, series, lineLimit) {
-        let xaxis = series;
-        let seriesData = data.map((item, i) => (
-            {
-                type: 'scatter',
-                x: series,
-                y: item,
-                line: {color: this.colors[i],width:0},
-                marker:{size:1}
+
+    reloadChart(data) {
+        let methodName = ['FindCloudlet', 'RegisterClient', 'GetFqdnList']
+        let mthData = data.methodCall;
+        let groupDev = aggregation.groupBy(mthData, 'dev')
+        let dataComp = [];
+        let devKeys = Object.keys(groupDev); // samsung, neon2...
+        methodName.map((name, i) => {
+            let item = {
+                x: [],
+                y: [],
+                name: '',
+                type: 'bar'
             }
-        ))
-        this.setState({
-            //chartData:seriesData
+
+            //method 이름별 디벨로퍼들의 3가지 메소스 호출 카운트
+            // 1. name
+            item.name = name;
+            // x array : dev 이름들
+            item.x = devKeys;
+            // y array : method 당 호출 카운드
+            let mthCount = 0;
+            devKeys.map(dName => {
+                groupDev[dName].map(obj => {
+                    if(obj.method === name) mthCount ++;
+                })
+
+                item.y.push(mthCount)
+            })
+
+
+            dataComp.push(item);
         })
 
 
         this.setState({ revision: this.state.revision + 1 });
     }
 
+
     render() {
+        const { width, height, data } = this.props;
+        const { chartData, changeState } = this.state;
         return (
-            <ContainerDimensions>
-                { ({ width, height }) =>
-                    <div  className="plotContainer" style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'auto'}}>
-                        <Plot style={{backgroundColor:'transparent', overflow:'auto'}}
-                            data={this.state.chartData}
+            <div>
+                <div>{changeState}</div>
+                        <Plot style={{backgroundColor:'transparent', overflow:'auto', width:width, height:height}} ref={ref=>this.plotCh=ref}
+                            data={chartData}
                               responsive={true}
                             layout={{
                                 barmode:'group',
                                 title: null,
                                 autosize: false,
                                 width:width,
-                                height:height-30,
+                                height:height,
                                 margin: {
                                     l: 40,
                                     r: 20,
@@ -146,16 +196,14 @@ class HistoricalColumn extends React.Component {
                                 hoverlabel: {
                                     bordercolor: 'rgba(255,255,255,.3)',
                                     font: {color:'rgba(255,255,255,.7)'},
-                                }
+                                },
+                                datarevision: this.state.datarevision + 1
 
                             }}
                               revision={this.state.revision}
                         />
-                    </div>
 
-                }
-            </ContainerDimensions>
-
+            </div>
 
 
         );
@@ -166,16 +214,5 @@ HistoricalColumn.defaultProps = {
 }
 
 
-//
-const mapStateToProps = (state, ownProps) => {
-    return {
-        currentKey: state.cityChanger.city
-    };
-};
-const mapDispatchProps = (dispatch) => {
-    return {
-        handleChangeCity: (data) => { dispatch(actions.changeCity(data)) }
-    };
-};
 
-export default connect(mapStateToProps, mapDispatchProps)(HistoricalColumn);
+export default HistoricalColumn;

@@ -56,7 +56,7 @@ let generateData = (datas) => {
             let FlavorName = dataResult.default_flavor.name || '-';
             let newRegistKey = ['ClusterName', 'FlavorName'];
 
-            values.push({Index:Index, ClusterName:ClusterName, FlavorName:FlavorName, Edit:newRegistKey})
+            values.push({ClusterName:ClusterName, FlavorName:FlavorName, Edit:newRegistKey})
         })
     } else {
         console.log('there is no result')

@@ -18,15 +18,24 @@ import * as actions from '../actions';
 
 import CPUMEMUsage from '../container/usage/cupmemory';
 import NetworkInOutSimple from '../components/network/networkInoutSimple';
-import HighCharts from '../charts/highChart';
-import BBLineChart from '../charts/bbLineChart';
 import TimeSeriesFlow from '../charts/plotly/timeseriesFlow';
-import InterpolNumber from '../components/number/interpolNumber';
+import TimeSeries from '../charts/plotly/timeseries';
+import ScatterMethods from '../charts/plotly/scatterMethods';
+import HistoricalColumn from '../charts/plotly/historicalColumn';
+import * as aggregation from "../utils";
+import MethodCallChart from "../charts/plotly/methodCallChart";
 
 
-
+let customMargin = {
+    l: 0,
+    r: 0,
+    b: 0,
+    t: 0,
+    pad: 0
+}
+let methodCounts = [{mtName:'',sum:0},{mtName:'',sum:0},{mtName:'',sum:0}]
 let dataOptions = [ { key: 'af', value: 'af', text: 'Disk W/R' },{ key: 'af2', value: 'af2', text: 'Network I/O' } ]
-const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, file, recv, send, network, networkSeries, lineLimit, redraw, cloudletInfo }) => (
+const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, file, recv, send, network, networkSeries, lineLimit, redraw, cloudletInfo, scatterData, methodCounts }) => (
     <Sidebar
         as={Menu}
         animation={animation}
@@ -76,64 +85,27 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, fi
                     </Label>
                 </Grid.Column>
             </Grid.Row>
+
             {/* hit count for second */}
             <Grid.Row columns={2}>
-                <Grid.Column className='category'>
-                    <InterpolNumber className='value' sId={'RateOfReg'} value={10000}  format={null}/>
-                    <div className='unit'>per sec</div>
-                    <div className='label'>Rate of RegisterClient API</div>
+                <Grid.Column width={5} className='hit_count'>
+                    <Grid.Column>
+                        <NetworkInOutSimple type="in" cId="RateOfReg" colors={['#22cccc','#22cccc']} title="Rate of RegisterClient" value={methodCounts[0]['sum']} unit="per sec">></NetworkInOutSimple>
+                    </Grid.Column>
+                    <Grid.Column>
+                        <NetworkInOutSimple type="out" cId="RateOfFind" colors={['#6699ff','#6699ff']} title="Rate of FindCloudlet" value={methodCounts[1]['sum']} unit="per sec">></NetworkInOutSimple>
+                    </Grid.Column>
+                    <Grid.Column>
+                        <NetworkInOutSimple type="out2" cId="RateOfVery" colors={['#aa77ff','#aa77ff']} title="Rate of VerifyLocation " value={methodCounts[2]['sum']} unit="per sec">></NetworkInOutSimple>
+                    </Grid.Column>
                 </Grid.Column>
-                <Grid.Column className='category'>
+                <Grid.Column width={11}>
+                        {/*<ScatterMethods style={{width:'100%', height:'100%'}} data={scatterData} methodCounts={methodCounts}/>*/}
+                        {/*<HistoricalColumn style={{width:'100%', height:'100%'}} data={scatterData} methodCounts={methodCounts}/>*/}
+                        <MethodCallChart style={{width:'100%', height:'100%'}} chartData={scatterData} lineLimit={lineLimit} redraw={redraw} ratioCallForSecMethod={_self.ratioCallForSecMethod}></MethodCallChart>
+                </Grid.Column>
+            </Grid.Row>
 
-                    <div className='label'></div>
-                </Grid.Column>
-            </Grid.Row>
-
-            <Grid.Row columns={2}>
-                <Grid.Column className='category'>
-                    <div className='value'>32,159</div>
-                    <div className='label'>Current Connection</div>
-                </Grid.Column>
-                <Grid.Column className='category'>
-                    <InterpolNumber className='value' sId={'AvgConnect'} format={null}/>
-                    <div className='unit'>sec</div>
-                    <div className='label'>Average Connection</div>
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row columns={2}>
-                <Grid.Column className='category'>
-                    <div className='value'>3.7356</div>
-                    <div className='unit'>sec</div>
-                    <div className='label'>Up Time</div>
-                </Grid.Column>
-                <Grid.Column  className='category'>
-                    <div className='value'>2.0648</div>
-                    <div className='unit'>sec</div>
-                    <div className='label'>Down Time</div>
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row columns={2}>
-                <Grid.Column className='category'>
-                    <InterpolNumber className='value' sId={'RateOfFind'} format={null}/>
-                    <div className='unit'>per sec</div>
-                    <div className='label'>Rate of Find Cloudlet API</div>
-                </Grid.Column>
-                <Grid.Column className='category'>
-                    <div className='value'>77</div>
-                    <div className='label'>Total Number of Find Cloudlet API</div>
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row columns={2}>
-                <Grid.Column className='category'>
-                    <div className='value'>1.2845</div>
-                    <div className='unit'>per sec</div>
-                    <div className='label'>Rate of Location Verify API</div>
-                </Grid.Column>
-                <Grid.Column className='category'>
-                    <div className='value'>28,875</div>
-                    <div className='label'>Total Number of Location Verify API</div>
-                </Grid.Column>
-            </Grid.Row>
             {/* cpu memory usage */}
             <Grid.Row columns={3}>
                 <Grid.Column>
@@ -146,23 +118,20 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, fi
                     <CPUMEMUsage label="DISK" value={file}></CPUMEMUsage>
                 </Grid.Column>
             </Grid.Row>
+
             {/*Network I/O*/}
-            <Grid.Row columns={1}>
-                <Grid.Column width={6}>
-                    <Dropdown placeholder='Network I/O' fluid search selection options={dataOptions} />
-                </Grid.Column>
-            </Grid.Row>
             <Grid.Row columns={2}>
-                <Grid.Column width={5}>
+                <Grid.Column width={5} className='network_count'>
                     <Grid.Row>
-                        <NetworkInOutSimple type="in" cId="networkIn" colors={['#22cccc','#22cccc']} title="Network In" value={recv} unit="MB">></NetworkInOutSimple>
-                        <NetworkInOutSimple type="out" cId="networkOut" colors={['#6699ff','#6699ff']} title="Network Out" value={send} unit="MB">></NetworkInOutSimple>
+                        <Dropdown placeholder='Network I/O' fluid search selection options={dataOptions} />
+                        <NetworkInOutSimple type="in" cId="networkIn" colors={['#22cccc','#22cccc']} title="Network In" value={recv} unit="B">></NetworkInOutSimple>
+                        <NetworkInOutSimple type="out" cId="networkOut" colors={['#6699ff','#6699ff']} title="Network Out" value={send} unit="B">></NetworkInOutSimple>
                     </Grid.Row>
                 </Grid.Column>
                 <Grid.Column width={11}>
                     {/*<HighCharts chart="line" style={{height:'100%'}}/>*/}
                     {/*<BBLineChart chartData={network} series={networkSeries} lineLimit={lineLimit}/>*/}
-                    <TimeSeriesFlow style={{width:'100%', height:'160px'}} chartData={network} series={networkSeries} lineLimit={lineLimit} redraw={redraw}></TimeSeriesFlow>
+                    <TimeSeriesFlow style={{width:'100%', height:'100%'}} chartData={network} series={networkSeries} lineLimit={lineLimit} redraw={redraw}></TimeSeriesFlow>
                 </Grid.Column>
             </Grid.Row>
         </Grid>
@@ -170,6 +139,8 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, fi
 )
 
 let _self = null;
+var colors = ['#22cccc', '#6699ff','#aa77ff', '#ff8e06' ];
+var fontColor = 'rgba(255,255,255,.5)' ;
 class DeveloperSideInfo extends React.Component {
 
 
@@ -185,7 +156,9 @@ class DeveloperSideInfo extends React.Component {
             lineLimit:false,
             redraw:false, resetData:false,
             cloudletInfo:'Deutsche Telecom Barcelona MWC',
-            city:'Barcelona'
+            city:'Barcelona',
+            scatterData:[],
+            methodCounts: [{mtName:'',sum:0},{mtName:'',sum:0},{mtName:'',sum:0}]
         }
         this.dataArray = [];
         this.dataSeries = [];
@@ -214,7 +187,8 @@ class DeveloperSideInfo extends React.Component {
         }
 
         if(nextProps.data) {
-            this.setState({visible:(nextProps.sideVisible) ? true : false});
+
+            this.setState({visible:(nextProps.sideVisible && nextProps.city.name !== 'default') ? true : false});
             if(nextProps.data.cpuUsage) {
                 this.setState({cpu:nextProps.data.cpuUsage})
             }
@@ -285,6 +259,37 @@ class DeveloperSideInfo extends React.Component {
 
             }
 
+
+            if(nextProps.data && nextProps.data.methodCall) {
+                let methodName = ['FindCloudlet', 'RegisterClient', 'GetFqdnList']
+                let mthData = nextProps.data.methodCall;
+                let groupDev = aggregation.groupBy(mthData, 'dev')
+                let groupTime = aggregation.groupBy(mthData, 'time')
+                let timeKeys = Object.keys(groupTime);
+                let dataComp = [];
+                let summaryMth = [{mtName:'', sum:0},{mtName:'', sum:0},{mtName:'', sum:0}];
+                let devKeys = Object.keys(groupDev); // samsung, neon2...
+
+                methodName.map((name, i) => {
+                    // y array : method 당 호출 카운드
+                    let mthCount = 0;
+                    let mthTotalCount = 0;
+                    devKeys.map(dName => {
+                        groupDev[dName].map(obj => {
+                            if(obj.method === name) mthCount ++;
+                        })
+                        mthTotalCount += mthCount;
+                    })
+
+                    summaryMth[i]['mtName'] = name;
+                    summaryMth[i]['sum'] = mthTotalCount / 3600; //call every 60 secons
+
+                })
+
+                _self.setState({scatterData:nextProps.data, methodCounts:summaryMth})
+
+            }
+
         }
         if(nextProps.city) {
             let cdName = 'No Name of Cloudlet';
@@ -299,6 +304,10 @@ class DeveloperSideInfo extends React.Component {
 
             this.setState({cloudletInfo:cdName, city:(nextProps.city.name)?nextProps.city.name : this.state.city})
         }
+
+
+
+
 
     }
     handleClickBtn() {
@@ -316,7 +325,8 @@ class DeveloperSideInfo extends React.Component {
                                  cpu={this.state.cpu} mem={this.state.mem} file={this.state.file} recv={this.state.recv}
                                  send={this.state.send} network={this.state.network} networkSeries={this.state.networkSeries}
                                  lineLimit={this.state.lineLimit} redraw={this.state.redraw}
-                                 cloudletInfo={this.state.cloudletInfo}
+                                 cloudletInfo={this.state.cloudletInfo} scatterData={this.state.scatterData} methodCounts={this.state.methodCounts}
+                                 methodCall={this.state.methodCall}
                 />
             </div>
         )

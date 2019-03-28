@@ -19,6 +19,18 @@ import SiteFourPageFive from './siteFour_page_five';
 import SiteFourPageSix from './siteFour_page_six';
 import SiteFourPageSeven from './siteFour_page_seven';
 
+import SiteFourPageFlavor from './siteFour_page_flavor';
+import SiteFourPageUser from './siteFour_page_user';
+import SiteFourPageCluster from './siteFour_page_cluster';
+import SiteFourPageApps from './siteFour_page_apps';
+import SiteFourPageAppInst from './siteFour_page_appinst';
+import SiteFourPageClusterInst from './siteFour_page_clusterinst';
+import SiteFourPageCloudlet from './siteFour_page_cloudlet';
+import SiteFourPageAppAnaly from './siteFour_page_appanaly';
+import SiteFourPageCloudAnaly from './siteFour_page_cloudanaly';
+
+
+
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
@@ -36,20 +48,26 @@ class SiteFour extends React.Component {
             headerTitle:'',
             activeItem: 'Developers',
             page: 'pg=5',
-            email: store ? store.email : 'Administrator'
+            email: store ? store.email : 'Administrator',
+            role:'superuser' //db에서
         };
         this.headerH = 70;
         this.hgap = 0;
         this.menuItems = [
-            {label:'Flavors', icon:'free_breakfast'},
-            {label:'Clusters', icon:'developer_board'},
-            {label:'Operators', icon:'dvr'},
-            {label:'Cloudlets', icon:'cloud_queue'},
-            {label:'Cluster Instances', icon:'storage'},
-            {label:'Developers', icon:'developer_mode'},
+            {label:'Cluster Flavor', icon:'developer_board'},
+            {label:'Flavor', icon:'free_breakfast'},
+            {label:'Users', icon:'dvr'},
             {label:'Apps', icon:'apps'},
-            {label:'App Instances', icon:'storage'}
+            {label:'App Instances', icon:'storage'},
+            {label:'Cluster Instances', icon:'storage'},
+            {label:'App Analytics', icon:'insert_chart'},
+            {label:'Cloudlets', icon:'cloud_queue'},
+            {label:'Cloudlet Analytics', icon:'insert_chart'}
         ]
+        this.auth_one = [this.menuItems[0], this.menuItems[1], this.menuItems[2], this.menuItems[3], this.menuItems[4], this.menuItems[5], this.menuItems[6], this.menuItems[7], this.menuItems[8]] //MEXADMIN
+        this.auth_two = [this.menuItems[2], this.menuItems[3], this.menuItems[4], this.menuItems[5], this.menuItems[6], this.menuItems[7]] //DeveloperManager, DeveloperContributor, DeveloperViewer
+        this.auth_three = [this.menuItems[2], this.menuItems[7], this.menuItems[8]] //OperatorManager, OperatorContributor, OperatorViewer
+
     }
 
     //go to
@@ -137,24 +155,41 @@ class SiteFour extends React.Component {
                 <Grid.Row columns={2} className='view_contents'>
                     <Grid.Column width={2} className='view_left'>
                         <Menu secondary vertical className='view_left_menu'>
-                            {this.menuItems.map((item, i)=>(
-                                <Menu.Item
-                                    name={item.label}
-                                    active={activeItem === item.label}
-                                    onClick={() => this.handleItemClick(i, item.label)}
-                                >
-                                    <div className="left_menu_item">
+                            {
+                                (this.state.role === 'superuser')?
+                                    this.auth_one.map((item, i)=>(
+                                        <Menu.Item
+                                            name={item.label}
+                                            active={activeItem === item.label}
+                                            onClick={() => this.handleItemClick(i, item.label)}
+                                        >
+                                            <div className="left_menu_item">
+                                                <MaterialIcon icon={item.icon}/>
+                                                <div className='label'>{item.label}</div>
+                                            </div>
+                                        </Menu.Item>
+                                    ))
+                                :
+                                    this.auth_two.map((item, i)=>(
+                                        <Menu.Item
+                                        name={item.label}
+                                        active={activeItem === item.label}
+                                        onClick={() => this.handleItemClick(i, item.label)}
+                                        >
+                                        <div className="left_menu_item">
                                         <MaterialIcon icon={item.icon}/>
                                         <div className='label'>{item.label}</div>
-                                    </div>
-                                </Menu.Item>
-                            ))}
+                                        </div>
+                                        </Menu.Item>
+                                        /* 권한 설정 필요 */
+                                    ))
+                            }
                         </Menu>
                     </Grid.Column>
                     <Grid.Column width={14} style={{height:this.state.bodyHeight}} className='contents_body'>
                         <Grid.Row columns={2} className='content_title'>
-                            <Grid.Column width={8}>{this.state.headerTitle}</Grid.Column>
-                            <Grid.Column width={8}><Button color='teal' onClick={() => this.onHandleRegistry()}>New</Button></Grid.Column>
+                            <Grid.Column width={8} className='title_align'>{this.state.headerTitle}</Grid.Column>
+                            <Grid.Column width={8} className='title_align'><Button color='teal' onClick={() => this.onHandleRegistry()}>New</Button></Grid.Column>
                         </Grid.Row>
                         <Grid.Row className='site_content_body' style={{height:'100%'}}>
                             <Grid.Column style={{height:'100%'}}>
@@ -162,15 +197,15 @@ class SiteFour extends React.Component {
                                     { ({ width, height }) =>
                                         <div style={{width:width, height:height, display:'flex', overflow:'hidden'}}>
                                             {
-                                                (this.state.page === 'pg=0')?<SiteFourPageZero></SiteFourPageZero> :
-                                                (this.state.page === 'pg=1')?<SiteFourPageOne></SiteFourPageOne> :
-                                                (this.state.page === 'pg=2')?<SiteFourPageTwo></SiteFourPageTwo> :
-                                                (this.state.page === 'pg=3')?<SiteFourPageFour></SiteFourPageFour>:
-                                                    (this.state.page === 'pg=4')? <SiteFourPageSeven></SiteFourPageSeven> :
-                                                        (this.state.page === 'pg=5')?<SiteFourPageThree></SiteFourPageThree>:
-                                                            (this.state.page === 'pg=6')?<SiteFourPageFive></SiteFourPageFive> :
-                                                                (this.state.page === 'pg=7')?<SiteFourPageSix></SiteFourPageSix> :
-                                                                    (this.state.page === 'pg=8')?<SiteFourPageSeven></SiteFourPageSeven> : <div> </div>
+                                                (this.state.page === 'pg=0')?<SiteFourPageCluster></SiteFourPageCluster> :
+                                                (this.state.page === 'pg=1')?<SiteFourPageFlavor></SiteFourPageFlavor> :
+                                                (this.state.page === 'pg=2')?<SiteFourPageUser></SiteFourPageUser> : // 페이지 설정 안됨
+                                                (this.state.page === 'pg=3')?<SiteFourPageApps></SiteFourPageApps>:
+                                                (this.state.page === 'pg=4')? <SiteFourPageAppInst></SiteFourPageAppInst> :
+                                                (this.state.page === 'pg=5')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
+                                                (this.state.page === 'pg=6')?<SiteFourPageAppAnaly></SiteFourPageAppAnaly> : // 페이지 설정 안됨
+                                                (this.state.page === 'pg=7')?<SiteFourPageCloudlet></SiteFourPageCloudlet> :
+                                                (this.state.page === 'pg=8')?<SiteFourPageCloudAnaly></SiteFourPageCloudAnaly> : <div> </div> // 페이지 설정 안 됨
                                             }
                                         </div>
                                     }

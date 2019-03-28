@@ -113,10 +113,9 @@ let generateData = (datas) => {
             let ClusterInst=dataResult.cluster_inst_key.cluster_key.name || '-';
             let Mapped_ports= dataResult.mapped_ports || '-';
 
-            let newRegistKey = ['OperatorName', 'DeveloperName', 'CloudletName','AppName', 'Version' ];
+            let newRegistKey = ['OperatorName', 'DeveloperName', 'CloudletName','ClusterInst','AppName', 'Version' ];
 
             values.push({
-                Index:Index,
                 AppName:AppName,
                 DeveloperName:DeveloperName,
                 Version:Version,

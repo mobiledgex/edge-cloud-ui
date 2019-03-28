@@ -82,7 +82,17 @@ export function getStatusCPU(callback, every, stop) {
             });
     }
 
-    start();
+    //start();
+
+    axios.jsonp(url)
+        .then(response => response.json())
+        .then(function (response) {
+            responseData = FormatCPUMEMUsage(response)
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 
 }
 export function getStatusMEM(callback, every, stop) {
@@ -97,7 +107,17 @@ export function getStatusMEM(callback, every, stop) {
                 callback(responseData);
             });
     }
-    start();
+    //start();
+
+    axios.jsonp(url)
+        .then(response => response.json())
+        .then(function (response) {
+            responseData = FormatCPUMEMUsage(response)
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 }
 export function getStatusNET(callback, every, stop) {
 
@@ -130,7 +150,7 @@ export function getStatusNET(callback, every, stop) {
                 }
             });
     }
-    start();
+    //start();
 
 }
 export function getStatusFilesys(callback, every, stop) {
@@ -145,7 +165,17 @@ export function getStatusFilesys(callback, every, stop) {
                 callback(responseData);
             });
     }
-    start();
+    //start();
+
+    axios.jsonp(url)
+        .then(response => response.json())
+        .then(function (response) {
+            responseData = FormatFILEUsage(response)
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 }
 //////////////////////////////////
 // curl -X POST...
@@ -186,6 +216,7 @@ export function getPublicAccountKey(resource, rId, callback) {
     ///////////// Axios
     //https://www.npmjs.com/package/axios-jsonp-pro
     axios.jsonp(url)
+        .then(response => response.json())
     .then(function (response) {
         console.log('axios json p == '+JSON.stringify(response));
         callback(response)
@@ -209,6 +240,7 @@ export function postUserAccount(resource, userInfo, callback) {
     };
 
     axios.jsonp(url, params)
+        .then(response => response.json())
     .then(function (response) {
         console.log(JSON.stringify(response));
         callback(response)
@@ -221,6 +253,7 @@ export function getLoginStatus(resource, callback) {
     let url = gUrl+resource;
 
     axios.jsonp(url)
+        .then(response => response.json())
     .then(function (response) {
         console.log(JSON.stringify(response));
         callback(response)

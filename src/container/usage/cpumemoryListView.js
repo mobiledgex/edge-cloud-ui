@@ -46,7 +46,7 @@ function randomData(n = 30) {
 
 const sampleData = randomData(30);
 const sampleData100 = randomData(100);
-
+const dummy=[17.2, 7.4]
 const testColor = ['yellow', 'green', 'blue', 'grey', 'sky']
 const getRow = (idx, uValues, clusterNm, state) => (
     <Grid.Row key={idx} columns={3} className='cluster_property'>
@@ -55,9 +55,9 @@ const getRow = (idx, uValues, clusterNm, state) => (
             <div className='label'>{clusterNm}</div>
         </Grid.Column>
         <Grid.Column width={7} style={{display:'flex', justifyContent:'space-between'}}>
-            <CPUMEMUsage label="CPU" value={uValues.cpu} w={60} h={60}></CPUMEMUsage>
+            <CPUMEMUsage label="CPU" value={(uValues.cpu*5).toFixed(2)} w={60} h={60}></CPUMEMUsage>
             <CPUMEMUsage label="MEMORY" value={uValues.mem} w={60} h={60}></CPUMEMUsage>
-            <CPUMEMUsage label="DISK" value={uValues.sys} w={60} h={60}></CPUMEMUsage>
+            <CPUMEMUsage label="DISK" value={(uValues.sys === '0.00')?dummy[idx]:uValues.sys} w={60} h={60}></CPUMEMUsage>
         </Grid.Column>
         <Grid.Column width={5} style={{display:'flex', justifyContent:'center'}}>
             <div className='transition_chart'>

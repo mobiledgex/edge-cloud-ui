@@ -15,7 +15,7 @@ export default class InterpolNumber extends React.Component {
 
         }
         this.randomRange = 1000;
-        this.timeout = setTimeout(() => this.randomRange = 100000, 1500)
+        this.timeout = setTimeout(() => this.randomRange = 1000, 1500)
     }
     componentWillUnmount() {
         clearTimeout(this.timeout);
@@ -49,7 +49,8 @@ export default class InterpolNumber extends React.Component {
     }
 
 
-    getValue = () => ((this.props.value) ? this.props.value : Math.random() * this.randomRange)
+    //getValue = () => ((this.props.value) ? this.props.value : Math.random() * this.randomRange)
+    getValue = () => ((this.props.value) ? this.props.value : 0)
 
     render() {
         let { sId, value } = this.props;

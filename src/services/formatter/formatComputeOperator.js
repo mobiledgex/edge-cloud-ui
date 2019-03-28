@@ -55,7 +55,7 @@ let generateData = (datas) => {
             let OperatorName = dataResult.key.name || '-';
             let newRegistKey = ['OperatorName'];
 
-            values.push({Index:Index, OperatorName:OperatorName, Edit:newRegistKey})
+            values.push({OperatorName:OperatorName, Edit:newRegistKey})
         })
     } else {
         console.log('there is no result')

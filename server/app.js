@@ -1,13 +1,34 @@
+import qs from "qs";
+
+var fs = require('fs');
+var http = require('http');
+var https = require('https');
+var privateKey  = fs.readFileSync('mex-ca.key', 'utf8');
+var certificate = fs.readFileSync('mex-ca.crt', 'utf8');
+
+var credentials = {key: privateKey, cert: certificate};
+
+
+
+
+
+
+
+
+
 const express = require('express')
 const app = express()
 const port = 3030
+var moment = require('moment');
 const Influx = require('influxdb-nodejs');
-const client = new Influx('http://uiteam:$word@40.122.54.157:8086/metrics');
-const cluster = new Influx('http://uiteam:$word@40.122.54.157:8086/clusterstats');
-const fs = require('fs');
+const client = new Influx('http://uiteam:$word@mexdemo.influxdb.mobiledgex.net:8086/metrics');
+const cluster = new Influx('http://uiteam:$word@mexdemo.influxdb.mobiledgex.net:8086/clusterstats');
+
 const request = require('request');
 import session from 'express-session'
 import bodyParser from 'body-parser'
+import axios from 'axios-jsonp-pro';
+import QL from 'influx-ql'
 //
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -43,6 +64,76 @@ app.get('/cluster', (req, res, next) => {
         .then(data => res.json(data))
         .catch(err => next(err))
 })
+/******************************************************
+ * TOTAL COUNTS
+ * Page 2
+ *Total Number of FindCloudlet
+
+Total Number of VerifyLocation
+Total Number of RegisterClient
+Rate of FindCloudlet
+Rate of  VerifyLocation
+Rate of RegisterClient
+Predictive QoE
+
+http://yourDomain/total?methodName=FindCloudlet&cloudlet=barcelona-mexdemo
+ ******************************************************/
+ const retunDate = (str) => {
+     var year = str.substring(0, 4);
+     var month = str.substring(4, 6);
+     var day = str.substring(6, 8);
+     var hour = str.substring(8, 10);
+     var minute = str.substring(10, 12);
+     //var second = str.substring(12, 14);
+     var date = new Date(year, month-1, day, hour, minute);
+     return moment(date).format('YYYYMMDD hh:mm');
+ }
+
+ // http://yourdomain/total?service=frankfurt-cloudlet&fromTo=-32h&limit=30
+ app.get('/total', (req, res, next) => {
+     console.log('request total', req.query)
+
+
+     var date = new Date();
+     //var timeTo = date.toISOString()
+     date.setTime(date.getTime() - 60000) // -1000000 :
+     var timeFrom = date.toISOString()
+        console.log('q time= ', timeFrom)
+
+
+     let cloudletName = null;
+
+     let limit = null;
+     if(req.query.cloudlet){
+         cloudletName = req.query.cloudlet;
+
+     } else {
+         return;
+
+     }
+     if(req.query.limit){
+         limit = req.query.limit;
+     } else {
+         limit = 30;
+     }
+     client.query('dme-api')
+         .addFunction('*')
+         .where('cloudlet', cloudletName)
+         .where('time', timeFrom, '>')
+         .then(data => res.json(data))
+         .catch(err => next(err))
+ })
+app.get('/total2', function(req, res) {
+
+    client.query('dme-api')
+        .set({limit: 30})
+        .then(data => res.json(data))
+        .catch(err => next(err))
+})
+ /******************************************************/
+
+
+
 
 //curl -X POST "https://mexdemo.ctrl.mobiledgex.net:36001/show/cloudlet" -H "accept: application/json" -H "Content-Type: application/json" --cacert mex-ca.crt --key mex-client.key --cert mex-client.crt
 
@@ -81,7 +172,13 @@ curl -G 'http://40.122.54.157:8086/query'
 app.get('/timeCluster', (req, res, next) => {
 
 
+    var date = new Date();
+    var timeTo = date.toISOString()
+    date.setTime(date.getTime() - 1000000)
+    var timeFrom = date.toISOString()
 
+    console.log('request —— timeFrom', timeFrom, timeTo)
+    console.log('request timeCluster---------', req.query)
     let clusterName = ''
     if(req.query.cluster){
         clusterName = req.query.cluster;
@@ -96,7 +193,7 @@ app.get('/timeCluster', (req, res, next) => {
         .addFunction('recvBytes') //select "column"
         .addFunction('sendBytes') //select "column"
         .where('cluster', clusterName)
-        .set({limit: 30})
+        .where('time', timeFrom, '>')
         .then(
             data => res.json(data)
         )
@@ -120,10 +217,9 @@ app.get('/appInstance', (req, res, next) => {
         clusterName = 'tdg-barcelona-niantic';
     }
     cluster.query('crm-appinst') // from "table"
-        .addFunction('last', 'cpu') //select "column"
+        .addFunction('*') //select "column"
         .where('cluster', clusterName)
-        .where('app', '~ /neon2/')
-        .set({limit: 30})
+        .set({limit: 10})
         .then(
             data => res.json(data)
         )
@@ -131,21 +227,27 @@ app.get('/appInstance', (req, res, next) => {
 })
 
 app.get('/appInstanceList', (req, res, next) => {
+    var date = new Date();
+    var timeTo = date.toISOString()
+    //date.setTime(date.getTime() + (1*60*60*1000)); //1시간 차이남 ?
+    date.setTime(date.getTime() - 1000000)
+    var timeFrom = date.toISOString()
+
     let clusterName = '';
     let appName = '';
-    console.log('request appInstanceList—— cluster fix', req.query)
+    console.log('request appInstanceList—— times old n new', new Date(), timeFrom)
     if(req.query.cluster){
         clusterName = req.query.cluster;
         appName = req.query.app;
     }else{
         clusterName = 'tdg-barcelona-niantic';
-        appName = 'neon2-deployment-6885d6b975-hpxdb';
+        appName = '';
     }
     cluster.query('crm-appinst') // from "table"
         .addFunction('*') //select "column"
         .where('cluster', clusterName)
         .where('app', appName)
-        .set({limit: 30})
+        .where('time', timeFrom, '>')
         .then(
             data => res.json(data)
         )
@@ -163,20 +265,21 @@ curl -G 'http://mexdemo.influxdb.mobiledgex.net:8086/query'
 //일정 시간 간격으로 지표를 개별 요청
 app.get('/tcpudp', (req, res, next) => {
     let clusterName = '';
-    let columnName = '';
+    let appName = '';
     console.log('request tcp—— ', req.query)
     if(req.query.cluster){
         clusterName = req.query.cluster;
-        columnName = req.query.column;
+        appName = req.query.app;
     }else{
         clusterName = 'tdg-barcelona-niantic';
-        columnName = 'tcpConns';
+        appName = '';
     }
     cluster.query('crm-cluster') // from "table"
         .addFunction(columnName[0]) //select "column"
         .addFunction(columnName[1]) //select "column"
         .where('cluster', clusterName)
-        .set({limit: 30})
+        .where('app', appName)
+        .where('time', timeFrom, '>')
         .then(
             data => res.json(data)
         )
@@ -187,27 +290,36 @@ curl -G 'http://mexdemo.influxdb.mobiledgex.net:8086/query'
 --data-urlencode "u=uiteam"
 --data-urlencode "p=pa$$word"
 --data-urlencode "db=clusterstats"
---data-urlencode "q=select * from \"crm-cluster\" where \"cluster\" = 'tdg-barcelona-niantic' limit 1"
+--data-urlencode "q=select * from \"crm-appinst\" where \"app\" =~ /neon2/ AND \"cluster\" = 'tdg-barcelona-niantic' AND time > now() - 15m"
  */
 app.get('/tcpudpCluster', (req, res, next) => {
+    var date = new Date();
+    var timeTo = date.toISOString()
+    date.setTime(date.getTime() - 1000000)
+    var timeFrom = date.toISOString()
+
     let clusterName = '';
-    let limit = null;
+    let appName = '';
+
     console.log('request tcp——>>--->>--->>--->> ', req.query)
     if(req.query.cluster){
         clusterName = req.query.cluster;
+        appName = req.query.app;
     }else{
         clusterName = 'tdg-barcelona-niantic';
+        appName = '';
     }
-    if(req.query.limit) limit = parseInt(req.query.limit);
+
     cluster.query('crm-cluster') // from "table"
         .addFunction('*') //select "column"
         .where('cluster', clusterName)
-        .set({limit: (limit)?limit:1})
+        .where('time', timeFrom, '>')
         .then(
             data => res.json(data)
         )
         .catch(err => console.log(err))
 })
+
 
 /******************************************************
  * USER ACCOUNTS
@@ -305,4 +417,151 @@ app.post('/delete', function(req, res){
         res.json(body)
     });
 });
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
+/*****************************
+ * Start Controller Manager
+ ** ****************************/
+app.post('/masterControl', (req, res, next) => {
+    let serviceName = '';
+    let serviceBody = {};
+    if(req.body.service){
+        serviceName = req.body.service;
+        serviceBody = req.body.serviceBody;
+    }
+    console.log('Please waite loading token... ', serviceName)
+    axios.post('https://mexdemo.mc.mobiledgex.net:9900/api/v1/login', qs.stringify({
+        username: serviceBody.username,
+        password: serviceBody.password
+    }))
+        .then(function (response) {
+            console.log('success get pub token..', response.data)
+            if(response.data) {
+                res.json(response.data)
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
+});
+
+
+/*
+--auth-type=jwt --auth=$SUPERPASS
+ */
+app.post('/currentUser', (req, res, next) => {
+    let superpass = null;
+    if(req.body.serviceBody){
+        superpass = req.body.serviceBody.superuser;
+    }
+    console.log('***** get current user ... ', req.body.serviceBody)
+
+    if(req.body.serviceBody) {
+        axios.post(
+            'https://mexdemo.mc.mobiledgex.net:9900/api/v1/auth/user/current',
+            {},
+            {
+                headers: {
+                    'Authorization':`Bearer ${superpass}`}
+            }
+        )
+        .then(function (response) {
+            console.log('success get current user..', response.data)
+            res.json(response.data)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+});
+app.post('/showRole', (req, res, next) => {
+    let superpass = null;
+    if(req.body.serviceBody){
+        superpass = req.body.serviceBody.superuser;
+    }
+    console.log('***** get current user ... ', req.body.serviceBody)
+
+    if(req.body.serviceBody) {
+        axios.post(
+            'https://mexdemo.mc.mobiledgex.net:9900/api/v1/auth/role/show',
+            {},
+            {
+                headers: {
+                    'Authorization':`Bearer ${superpass}`}
+            }
+        )
+            .then(function (response) {
+                console.log('success get ..', response.data)
+                res.json(response.data)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+});
+app.post('/showOrg', (req, res, next) => {
+    let superpass = null;
+    if(req.body.serviceBody){
+        superpass = req.body.serviceBody.superuser;
+    }
+    console.log('***** get current user ... ', req.body.serviceBody)
+
+    if(req.body.serviceBody) {
+        axios.post(
+            'https://mexdemo.mc.mobiledgex.net:9900/api/v1/auth/org/show',
+            {},
+            {
+                headers: {
+                    'Authorization':`Bearer ${superpass}`}
+            }
+        )
+            .then(function (response) {
+                console.log('success get ..', response.data)
+                res.json(response.data)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+});
+
+app.post('/showController', (req, res, next) => {
+    let superpass = null;
+    if(req.body.serviceBody){
+        superpass = req.body.serviceBody.superuser;
+    }
+    console.log('***** get current user ... ', req.body.serviceBody)
+
+    if(req.body.serviceBody) {
+        axios.post(
+            'https://mexdemo.mc.mobiledgex.net:9900/api/v1/auth/controller/show',
+            {},
+            {
+                headers: {
+                    'Authorization':`Bearer ${superpass}`}
+            }
+        )
+            .then(function (response) {
+                console.log('success get ..', response.data)
+                res.json(response.data)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+});
+// http
+
+//app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
+
+// https
+
+//var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
+
+//httpServer.listen(8080);
+httpsServer.listen(port, () => console.log(`<< https >> app listening on port ${port}!`));

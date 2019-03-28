@@ -9,11 +9,12 @@ import FormatComputeApp from './formatter/formatComputeApp';
 import FormatComputeOper from './formatter/formatComputeOperator';
 import FormatComputeInst from './formatter/formatComputeInstance';
 import FormatMonitorCluster from "./formatter/formatMonitorCluster";
+import FormatApplicationInfo from "./formatter/formatApplicationInfo";
 
 let hostname = window.location.hostname;
 export function getOperator(resource, callback) {
 
-    fetch('http://'+hostname+':3030')
+    fetch('https://'+hostname+':3030')
         .then(response => response.json())
         .then(data => {
             console.log('infux data == ', data)
@@ -25,7 +26,7 @@ export function getOperator(resource, callback) {
 //curl -X POST "https://mexdemo.ctrl.mobiledgex.net:36001/show/cloudlet" -H "accept: application/json" -H "Content-Type: application/json" --cacert mex-ca.crt --key mex-client.key --cert mex-client.crt
 
 export function getClusterService(resource, callback) {
-    axios.get('http://'+hostname+':3030/compute?service='+resource)
+    axios.get('https://'+hostname+':3030/compute?service='+resource)
         .then(function (response) {
             let paseData = JSON.parse(JSON.stringify(response.data));
             let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
@@ -50,7 +51,7 @@ export function getClusterHealth(resource, callback) {
     let respCount = 0;
     let resResults = [];
     resource.map((rsName) => {
-        axios.get('http://'+hostname+':3030/timeCluster?cluster='+rsName)
+        axios.get('https://'+hostname+':3030/timeCluster?cluster='+rsName)
             .then(function (response) {
                 resResults = resResults.concat(FormatMonitorCluster(response))
                 if(respCount === reqCnt-1) {
@@ -68,56 +69,23 @@ export function getClusterHealth(resource, callback) {
 
 
 }
-export function getAppClusterInfo(cluster, app, callback) {
-    axios.get('http://'+hostname+':3030/appInstanceList?cluster='+cluster+'&app='+app)
+export function getAppClusterInfo(cluster, app, callback, self) {
+    axios.get('https://'+hostname+':3030/appInstanceList?cluster='+cluster+'&app='+app)
         .then(function (response) {
             let parseData = JSON.parse(JSON.stringify(response.data));
-            callback(parseData.results);
+            //callback(FormatApplicationInfo(parseData.results), self);
+            callback(parseData.results, self);
         })
         .catch(function (error) {
             console.log(error);
         });
 }
-export function getTcpUdpSeriesInfo(cluster, columns, callback) {
-    // axios.get('http://'+hostname+':3030/tcpudp?cluster='+cluster+'&column='+column)
-    //     .then(function (response) {
-    //         let parseData = JSON.parse(JSON.stringify(response.data));
-    //         callback(parseData.results);
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     });
-
-    let getCount = 0;
-    let results = [];
-    if(columns.length) {
-        columns.map((column) => {
-            console.log('getTcpUdp column ~~~    ~~~', column)
-
-        })
-        axios.get('http://'+hostname+':3030/tcpudpCluster?cluster='+cluster+'&limit='+50)
-            .then(function (response) {
-                console.log('getTcpUdp Info ~~~~~~~~~~~~~~~~~~~~~000000..,.', response)
-                let parseData = JSON.parse(JSON.stringify(response.data));
-                results.push(parseData.results);
-                console.log('adadaddd', getCount, columns.length)
-                callback(results);
-
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-    }
-}
-
-
-export function getTcpUdpClusterInfo(clusters, callback) {
+export function getAppClusterApp(clusters, callback) {
     let getCount = 0;
     let results = [];
     if(clusters.length) {
         clusters.map((cluster) => {
-            axios.get('http://'+hostname+':3030/tcpudpCluster?cluster='+cluster)
+            axios.get('https://'+hostname+':3030/appInstance?cluster='+cluster)
                 .then(function (response) {
                     let parseData = JSON.parse(JSON.stringify(response.data));
                     results.push(parseData.results);
@@ -134,5 +102,24 @@ export function getTcpUdpClusterInfo(clusters, callback) {
                 });
         })
     }
+}
+
+
+
+export function getTcpUdpClusterInfo(cluster, app, callback, self) {
+    let getCount = 0;
+
+    axios.get('https://'+hostname+':3030/tcpudpCluster?cluster='+cluster+'&app='+app)
+        .then(function (response) {
+            let parseData = JSON.parse(JSON.stringify(response.data));
+
+            callback(parseData, self);
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
 
 }

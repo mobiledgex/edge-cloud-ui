@@ -58,7 +58,7 @@ let generateData = (datas) => {
             let DISK = dataResult.disk || '-';
             let newRegistKey = ['FlavorName', 'RAM', 'VCPUS', 'DISK'];
 
-            values.push({Index:Index, FlavorName:FlavorName, RAM:RAM, VCPUS:VCPUS, DISK:DISK, Edit:newRegistKey})
+            values.push({FlavorName:FlavorName, RAM:RAM, VCPUS:VCPUS, DISK:DISK, Edit:newRegistKey})
         })
     } else {
         console.log('there is no result')

@@ -66,7 +66,7 @@ let generateData = (datas) => {
             let Deployment = dataResult.deployment || '-';
             let newRegistKey = ['AppName', 'DeveloperName', 'Version', 'Cluster', 'Deployment'];
 
-            values.push({Index:Index, AppName:AppName, DeveloperName:DeveloperName, Version:Version, Ip_access:Ip_access, Access_ports:Access_ports, Cluster:Cluster, Deployment:Deployment, Edit:newRegistKey})
+            values.push({AppName:AppName, DeveloperName:DeveloperName, Version:Version, Ip_access:Ip_access, Access_ports:Access_ports, Cluster:Cluster, Deployment:Deployment, Edit:newRegistKey})
         })
     } else {
         console.log('there is no result')

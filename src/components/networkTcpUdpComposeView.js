@@ -10,8 +10,8 @@ import * as utils from '../utils';
 import * as serviceCluster from "../services/service_clusters_service";
 
 let customMargin = {
-    l: 40,
-    r: 20,
+    l: 50,
+    r: 15,
     b: 35,
     t: 5,
     pad: 0
@@ -35,7 +35,7 @@ class NetworkTcpUdpComposeView extends React.Component {
                 { key: 'cc', value: 'cc', text: 'Cluster-C' },
                 ],
             optionTwo : [
-                { key: 'g1', value: 'neon2-deployment-6885d6b975-hpxdb', text: 'neon2' },
+                { key: 'g1', value: '', text: 'neon2' },
                 ],
             optionThree : [
                 { key: 'd1', value: 'd1', text: 'CPU/MEM' },
@@ -51,28 +51,28 @@ class NetworkTcpUdpComposeView extends React.Component {
             timeseriesData:[
                 [0,1,2,3,4,5],[2,3,4,5,6,7]
             ],
-            timeseriesCPUMEM:[
+            timeseriesSeries:[
                 ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
             ],
-            dataLabel:['tcpConns', 'tcpRetrans'],
+            dataLabel:['TCP conns', 'TCP retransmit'],
             timeseriesDataNET:[
                 [0,1,2,3,4,5],[2,3,4,5,6,7]
             ],
             timeseriesNET:[
                 ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
             ],
-            dataLabelNet:['udpSend','udpRecvErr', 'udpRecv'],
+            dataLabelNet:['UDP send','UDP receive error', 'UDP receive'],
             avgCpu:0.00,
             avgMem:0.00,
             avgNetIn:0.00,
             avgNetOut:0.00,
             applications:[],
             dropdownValueOne:'tdg-barcelona-niantic',
-            dropdownValueTwo:'neon2-deployment-6885d6b975-hpxdb',
+            dropdownValueTwo:null,
         }
         this.selectedCloudlet = 'barcelona-mexdemo';
         this.selectedCluster = 'tdg-barcelona-niantic';
-        this.selectedApp = 'neon2-deployment-6885d6b975-hpxdb';
+        this.selectedApp = '';
         this.selectedStatic = '';
         this.selectedPeriod = '';
         this.interval = null;
@@ -91,76 +91,62 @@ class NetworkTcpUdpComposeView extends React.Component {
     }
 
 
-    receiveAppCluster(result) {
+    receiveAppCluster(result, self) {
 
-        let resultArray = result;
-        //_self.props.handleInjectData({appClusterData:resultArray})
-        let newData = [[2,3,4,2,3,4],[6,5,6,5,6,7]];
-        let newData2 = [[2,3,4,2,3,4],[6,5,6,5,6,7]];
-        let newseries = [[0,1,2,3,4,5]];
-        let newseries2 = [[0,1,2,3,4,5]];
-        let avgCpu = 0.00;
-        let avgMem = 0.00;
-        let avgNetIn = 0.00;
-        let avgNetOut = 0.00;
-        if(result){
-            try {
-                result.map((data) => {
-                    data.series.map((item, i) => {
-                        newData[0] = item.values.map((value) => (
-                            Number(value[3]).toFixed(6) * 1000
-                        ))
-                        newData[1] = item.values.map((value) => (
-                            Number(value[5]) * 0.0000000001
-                        ))
-                        newseries[0] = item.values.map((value) => (
-                            value[0]
-                        ))
+        let tDatas = [[],[]];
+        let uDatas = [[],[],[]];
+        let series = [];
+        let netName = self.state.netName;
 
-                        newData2[0] = item.values.map((value) => (
-                            Number(value[6])
-                        ))
-                        newData2[1] = item.values.map((value) => (
-                            Number(value[7])
-                        ))
 
-                    })
+        if(result.results) {
+            result.results.map((clstData, i) => {
+                //console.log('clstdata..', clstData)
+                clstData.series.map((data) => {
+                    //console.log('data..', data)
+                    try{
+                        data.values.map((values) => {
+                            //console.log('value..', values)
+                            if(netName === 'TCP') {
+                                tDatas.map((d, j) => {
+                                        tDatas[j].push(values[7+j]);
+                                        if(j === 0) series.push(values[0])
+
+                                })
+                            } else {
+                                uDatas.map((d, j) => {
+
+                                        uDatas[j].push(values[9+j]);
+                                        if(j === 0) series.push(values[0])
+
+                                })
+                            }
+
+
+                        })
+                    }catch(e){
+                        console.log('error ----- database not found: clusterstats')
+                    }
+
                 })
-
-                avgCpu = utils.avg(newData[0]).toFixed(4);
-                avgMem = utils.avg(newData[1]).toFixed(4);
-                avgNetIn = utils.avg(newData2[0]);
-                avgNetOut = utils.avg(newData2[1]);
-
-                //console.log('avgs ==> ==> ', avgCpu, avgMem)
-                _self.setState({timeseriesDataCPUMEM:newData, timeseriesCPUMEM:newseries,timeseriesDataNET:newData2, timeseriesNET:newseries,
-                    avgCpu:Number(avgCpu), avgMem:Number(avgMem), avgNetIn:Number(avgNetIn), avgNetOut:Number(avgNetOut)
-                })
-            }catch(e){
-                console.log('error',e)
-            }
-
-            // if(nextProps.listCluster) {
-            //     let item = {};
-            //     let clusters = [];
-            //     nextProps.listCluster.map((clst) => {
-            //
-            //     })
-            // }
-
+            })
         }
+        let sData = (netName ===  'TCP' || netName === 'tcp') ? tDatas : uDatas;
+        //console.log('t data..',netName, 'data===', sData, series)
+        self.setState({timeseriesData:sData,timeseriesSeries:[series], netName:self.state.netName})
+
     }
 
-    getStatisticsData() {
+    getStatisticsData(self, props) {
         // 클러스터 이름으로 해당 앱의 리소스 정보 - 3Pg 우측상단 Application Statistics
-        //console.log('request data params =-=-=', this.selectedCluster, this.selectedApp)
-        if(this.selectedApp !== '') serviceCluster.getAppClusterInfo(this.selectedCluster,this.selectedApp, this.receiveAppCluster);
+        //if_self.selectedApp !== '') serviceCluster.getAppClusterInfo(this.selectedCluster,this.selectedApp, this.receiveAppCluster);
+        if(self.state.dropdownValueTwo !== '') serviceCluster.getTcpUdpClusterInfo(self.selectedCluster,self.state.dropdownValueTwo, self.receiveAppCluster, self);
     }
-    setDropdownApp() {
+    setDropdownApp(_applications, _self) {
         // 클러스터 / 어플리케이션
         let _optionTwo = [];
-        if(_self.state.applications) {
-            _self.state.applications.map((cld, i) => {
+        if(_applications) {
+            _applications.map((cld, i) => {
                 if(cld.cloudlet === _self.selectedCloudlet) {
                     cld.clusters.map((clst, j) => {
                         if(clst.cluster === _self.selectedCluster) {
@@ -171,29 +157,27 @@ class NetworkTcpUdpComposeView extends React.Component {
                                 itemOne.text = app;
                                 _optionTwo.push(itemOne);
                             })
-
-                            //_self.setState({dropdownValueTwo:clst.apps[0]})
-
                         }
                     })
                 }
             })
-            console.log('option twooooo', _optionTwo)
             _self.setState({optionTwo:_optionTwo})
-            _self.setState({dropdownValueTwo:'neon2-deployment-6885d6b975-hpxdb'})
-
+            _self.selectedApp = _optionTwo[0].value
+            setTimeout(()=>_self.setState({dropdownValueTwo:_optionTwo[0].value}), 3000)
         }
     }
     componentDidMount() {
-
+        let self = this;
         this.neterval = setInterval(()=> {
             //console.log('re start ==>==>==>', _self.selectedCluster)
-            _self.getStatisticsData();
+            if(self.state.dropdownValueTwo) self.getStatisticsData(self, self.props);
         }, 3000)
     }
     componentWillUnmount() {
         clearInterval(this.interval)
+        clearInterval(this.neterval)
         clearTimeout(this.intervalTime);
+
     }
 
 
@@ -203,7 +187,6 @@ class NetworkTcpUdpComposeView extends React.Component {
             this.setState({selectedCluster:nextProps.selectedCluster})
         }
         //
-        console.log('receive props..==**', nextProps.applications)
         let _optionOne = [];
         // 클러스터 리스트
         if(nextProps.applications) {
@@ -223,67 +206,30 @@ class NetworkTcpUdpComposeView extends React.Component {
             })
             this.setState({optionOne:_optionOne})
 
-            this.setState({applications:nextProps.applications})
+            this.setState({applications:nextProps.applications, netName:nextProps.netName})
         }
-        this.intervalTime = setTimeout(() => _self.setDropdownApp(), 2000)
 
-        console.log('===>>>>>>next props cluster app data ..', nextProps.tcpudpClusterData, nextProps.activeIndex, nextProps.netName)
+
+        //console.log('===>>>>>>next props cluster app data ..', nextProps.tcpudpClusterData, nextProps.activeIndex, nextProps.netName)
         //TODO:
-        let tDatas = [[],[]];
-        let uDatas = [[],[],[]];
-        let series = [];
-        let active = nextProps.activeIndex;
-        let netName = nextProps.netName;
 
 
-        if(nextProps.tcpudpClusterData) {
-            nextProps.tcpudpClusterData.map((clstData, i) => {
-                console.log('clstdata..', clstData)
-                clstData.map((data) => {
-                    console.log('data..', data.series)
-                    try{
-                        data.series.map((values) => {
-                            console.log('value..', values)
-                            if(netName === 'TCP') {
-                                tDatas.map((d, j) => {
-                                    values.values.map((vul) => {
-                                        tDatas[j].push(vul[7+j]);
-                                        if(j === 0) series.push(vul[0])
-                                    })
-                                })
-                            } else {
-                                uDatas.map((d, j) => {
-                                    values.values.map((vul) => {
-                                        uDatas[j].push(vul[9+j]);
-                                        if(j === 0) series.push(vul[0])
-                                    })
-                                })
-                            }
-
-
-                        })
-                    }catch(e){
-                        console.log('error ----- database not found: clusterstats')
-                    }
-
-                })
-            })
-        }
-        let sData = (netName ===  'TCP' || netName === 'tcp') ? tDatas : uDatas;
-        console.log('t data..', tDatas, uDatas)
-        this.setState({timeseriesData:sData,timeseriesCPUMEM:[series]})
-
+        this.setDropdownApp(nextProps.applications, this)
     }
 
     render() {
         const { width, height } = this.props.size
         return (
-            <Grid divided='vertically' className='panel_contents' style={{width:width, height:'87%'}}>
+            <Grid divided='vertically' className='panel_contents' style={{width:width, height:'94%'}}>
                 <SelectRangeTcpudp sid='rangeOne' optionOne={this.state.optionOne} optionTwo={this.state.optionTwo} optionThree={this.state.optionThree} optionFour={this.state.optionFour}
                              handleChange={this.handleChange} dropdownValueOne={this.state.dropdownValueOne} dropdownValueTwo={this.state.dropdownValueTwo}/>
                 <Grid.Row className='panel_charts'>
-                    <TimeSeries style={{width:'100%', height:'100%'}} chartData={this.state.timeseriesData} series={this.state.timeseriesCPUMEM} margin={customMargin}
-                                label={(this.props.netName === 'TCP')?this.state.dataLabel:this.state.dataLabelNet} error={(this.props.netName === 'TCP')?false:true}></TimeSeries>
+                    <Grid.Column>
+                        <TimeSeries style={{width:'100%', height:'100%'}} chartData={this.state.timeseriesData} series={this.state.timeseriesSeries} margin={customMargin} marginRight={15}
+                                    label={(this.state.netName === 'TCP')?this.state.dataLabel:this.state.dataLabelNet} error={(this.state.netName === 'TCP')?false:true}
+                                    showLegend={true} y3Position={0.85}
+                                    ></TimeSeries>
+                    </Grid.Column>
                 </Grid.Row>
             </Grid>
         )

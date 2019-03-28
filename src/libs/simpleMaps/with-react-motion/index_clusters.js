@@ -328,7 +328,7 @@ class ClustersMap extends Component {
     }
 
     render() {
-        const grdColors = ['#000000', '#00CC44', '#88ff00', '#FFEE00', '#FF7700', '#FF0022']
+        const grdColors = ['#000000', '#00CC44', '#88ff00', '#FFEE00', '#FF7700', '#FF0022', '#6c50ff']
         return (
             <div style={wrapperStyles}>
                 <div className="zoom-inout-reset-clusterMap" style={{left:8, bottom:4, position:'absolute', display:'block'}}>
@@ -347,7 +347,7 @@ class ClustersMap extends Component {
                 <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[4]} endColor={grdColors[4]} idCSS="levelFour" rotation={0}/>
                 <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[3]} endColor={grdColors[3]} idCSS="levelThree" rotation={0}/>
                 <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[2]} endColor={grdColors[2]} idCSS="levelTwo" rotation={0}/>
-                <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[1]} endColor={grdColors[1]} idCSS="levelOne" rotation={0}/>
+                <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[6]} endColor={grdColors[6]} idCSS="levelOne" rotation={0}/>
 
                 <ContainerDimensions>
                     { ({ width, height }) =>
@@ -392,8 +392,17 @@ class ClustersMap extends Component {
                                         <Markers>
                                             {(!this.state.detailMode) ?
                                                 this.state.cities.map((city, i) => (
-                                                    <Marker key={i} marker={city} onClick={ this.handleCityClick }>
-                                                        <circle
+                                                    <Marker className="markerTwo" key={i} marker={city} onClick={ this.handleCityClick }
+                                                            style={{
+                                                                default: { stroke: "#5b3f64" },
+                                                                hover: { stroke: "#FF5722" },
+                                                                pressed: { stroke: "#FF5722" },
+                                                            }}
+                                                    >
+
+
+
+                                                        <g className="st0"
                                                             class={(city.population > 35000000)?'levelFive':'levelOther'}
                                                             cx={0}
                                                             cy={0}
@@ -407,8 +416,27 @@ class ClustersMap extends Component {
                                                             }
                                                             stroke={styles.marker.stroke}
                                                             strokeWidth={styles.marker.strokeWidth}
-                                                        />
-                                                        <text textAnchor="middle" y={8} class="marker_value" style={{fontSize:24}}>
+                                                           transform={"translate(-25,-30)"}
+                                                        >
+                                                        	<g>
+                                                        		<path className="st1" d="M50.19,25.24c0,13.81-25,46.51-25,46.51s-25-32.7-25-46.51s11.19-25,25-25S50.19,11.43,50.19,25.24z"/>
+                                                        	</g>
+                                                        	<defs>
+                                                        		<filter id="Adobe_OpacityMaskFilter" filterUnits="userSpaceOnUse" x="0.19" y="0.24" width="50" height="71.51">
+                                                        				<feColorMatrix  type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0" color-interpolation-filters="sRGB" result="source"/>
+                                                        		</filter>
+                                                        	</defs>
+                                                        	<mask maskUnits="userSpaceOnUse" x="0.19" y="0.24" width="50" height="71.51" id="SVGID_1_">
+                                                        		<g className="st2">
+                                                        				<image style={{overflow:"visible"}} width="54" height="76" transform="matrix(1 0 0 1 -1.8067 -1.7591)"></image>
+                                                        		</g>
+                                                        	</mask>
+                                                        	<g className="st3">
+                                                        		<path class="st4" d="M50.19,25.24c0,13.81-25,46.51-25,46.51s-25-32.7-25-46.51s11.19-25,25-25S50.19,11.43,50.19,25.24z"/>
+                                                        	</g>
+                                                        </g>
+                                                        <text textAnchor="middle" y={8} className="marker_value"
+                                                              style={{fontSize: 24}}>
                                                             {city.cost}
                                                         </text>
                                                         {/*<text textAnchor="middle" class="marker_label" x={(city.markerOffsetX)?(city.markerOffsetX):0} y={(city.markerOffset)?(city.markerOffset):24}>*/}

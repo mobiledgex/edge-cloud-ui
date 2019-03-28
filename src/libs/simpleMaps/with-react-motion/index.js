@@ -6,7 +6,7 @@ import {
     Geographies,
     Geography,
     Markers,
-    Marker,
+    Marker,Annotations, Annotation
 } from "react-simple-maps";
 import { Button, Icon, List } from 'semantic-ui-react';
 import MaterialIcon from 'material-icons-react';
@@ -17,6 +17,7 @@ import * as d3 from 'd3';
 import { scaleLinear } from "d3-scale";
 import request from "axios";
 import ReactTooltip from 'react-tooltip';
+import uuid from "uuid";
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -59,6 +60,9 @@ const makeList = (obj) => (
     </List>
 
 )
+function annoteClick () {
+    console.log('on click annnnnnn')
+}
 class AnimatedMap extends Component {
     constructor() {
         super()
@@ -69,6 +73,17 @@ class AnimatedMap extends Component {
             cities:[],
             countries:[],
             citiesSecond:[],
+            citiesFake:[
+                <Annotation
+                    dx={ 40 }
+                    dy={ -30 }
+                    subject={ [ -61.5, 16.3 ] }
+                    strokeWidth={ 1 }
+                    stroke="#607D8B"
+                >
+                    <text>{ "Guadaloupe" }</text>
+                </Annotation>
+            ],
             detailMode:false,
             selectedCity:'barcelona',
             oldCountry:'',
@@ -91,13 +106,13 @@ class AnimatedMap extends Component {
         this.setState({
             zoom: this.state.zoom * 2
         })
-        this.props.parentProps.zoomIn(this.state.detailMode)
+
     }
     handleZoomOut() {
         this.setState({
             zoom: this.state.zoom / 2
         })
-        this.props.parentProps.zoomOut(this.state.detailMode)
+
     }
     handleReset() {
         this.setState({
@@ -105,7 +120,7 @@ class AnimatedMap extends Component {
             zoom: 1,
             detailMode:false
         })
-        this.props.parentProps.resetMap(false)
+        this.props.parentProps.resetMap(false, 'fromDetail')
     }
     /* example:
     {
@@ -121,22 +136,29 @@ class AnimatedMap extends Component {
     // 펼쳐진 지도( full screen map)
     handleCityClick(city) {
         this.setState({
-            zoom: 4,
+            zoom: this.state.zoom * 4,
             center: city.coordinates,
             detailMode:true
         })
-        this.props.parentProps.zoomIn(true)
 
-        if(d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
-            d3.selectAll('.rsm-markers').selectAll(".levelFive")
-                .transition()
-                .ease(d3.easeBack)
-                .attr("r", 5)
-        }
+        // if(d3.selectAll('.rsm-markers').selectAll(".levelFive")) {
+        //     d3.selectAll('.rsm-markers').selectAll(".levelFive")
+        //         .transition()
+        //         .ease(d3.easeBack)
+        //         .attr("r", 5)
+        // }
+        //
 
-        this.props.handleChangeCity(city)
+        console.log('marker on click...')
+
+        city['customId'] = uuid.v4();
+
+        _self.props.handleChangeCity(city)
 
 
+    }
+    handleAnnoteClick(value, evt) {
+        console.log('handleAnnoteClick..', value, evt)
     }
     handleGotoAnalysis(country) {
         if(this.props.parentProps) this.props.parentProps.gotoNext(country);
@@ -148,7 +170,7 @@ class AnimatedMap extends Component {
      */
     handleViewZone(country) {
         //change the data of detail Info
-        //console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++', country)
+        console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++', country)
         _self.setState({selectedCity: country.name})
         if(d3.selectAll('.detailMarker_'+_self.state.oldCountry)) {
             d3.selectAll('.detailMarker_'+_self.state.oldCountry)
@@ -285,7 +307,6 @@ class AnimatedMap extends Component {
         const x = evt.clientX
         const y = evt.clientY + window.pageYOffset
         let names = [];
-        console.log('maker..', marker)
         if(marker.name.length){
             names = makeList(marker.name)
         }
@@ -311,6 +332,183 @@ class AnimatedMap extends Component {
     }
 
 
+    drawZoomRect(target, self) {
+        var refresh = () => {
+
+        }
+        var margin = {top: 0, right: 12, bottom: 20, left: 60},
+            width = 960 - margin.left - margin.right,
+            height = 430 - margin.top - margin.bottom;
+
+
+        var xmin = 0,
+            xmax = 500,
+            ymin = 0,
+            ymax = 1000;
+
+        var x = d3.scaleLinear()
+            .domain([xmin+.5, xmax+.5])
+            .range([0.5, width+.5]);
+
+        var y = d3.scaleLinear()
+            .domain([ymin+.5, ymax+.5])
+            .range([height+.5, 0.5]);
+
+
+        var zoom = d3.zoom()
+            .scaleExtent([.001, Infinity]).on("zoom", refresh);
+
+        var zoomRect = false;
+        var e = self,
+            origin = d3.mouse(e),
+            rect = target.append("rect").attr("class", "zoom");
+        d3.select("body").classed("noselect", true);
+        origin[0] = Math.max(0, Math.min(width, origin[0]));
+        origin[1] = Math.max(0, Math.min(height, origin[1]));
+        d3.select(window)
+            .on("mousemove.zoomRect", function() {
+                var m = d3.mouse(e);
+                m[0] = Math.max(0, Math.min(width, m[0]));
+                m[1] = Math.max(0, Math.min(height, m[1]));
+                rect.attr("x", Math.min(origin[0], m[0]))
+                    .attr("y", Math.min(origin[1], m[1]))
+                    .attr("width", Math.abs(m[0] - origin[0]))
+                    .attr("height", Math.abs(m[1] - origin[1]));
+            })
+            .on("mouseup.zoomRect", function() {
+                d3.select(window).on("mousemove.zoomRect", null).on("mouseup.zoomRect", null);
+                d3.select("body").classed("noselect", false);
+                var m = d3.mouse(e);
+                m[0] = Math.max(0, Math.min(width, m[0]));
+                m[1] = Math.max(0, Math.min(height, m[1]));
+                if (m[0] !== origin[0] && m[1] !== origin[1]) {
+                    //zoom.x(x.domain([origin[0], m[0]].map(x.invert).sort(function(a,b) { return a - b;})))
+                    //.y(y.domain([origin[1], m[1]].map(y.invert).sort(function(a,b) { return a - b;})));
+
+
+
+                    //x.domain([origin[0], m[0]].map(x.invert, x));
+                    //y.domain([origin[1], m[1]].map(y.invert, y));
+
+
+                    var dx = m[0] - origin[0];
+                    var dy = m[1] - origin[1];
+                    var x = (origin[0] + m[0]) / 2;
+                    var y = (origin[1] + m[1]) / 2;
+
+                    var scale = Math.max(width / dx, height / dy);
+                    var translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+                    var zt = d3.zoomIdentity
+                    		.scale(scale)
+                    		.translate(-origin[0], translate[1]);
+
+                    console.log('scale  ', scale)
+
+                    //zoom.transform(d3.select("#main"), zt)
+
+                }
+                rect.remove();
+                refresh();
+            }, true);
+
+    }
+    removeZoomer() {
+
+    }
+    makeAnnotation() {
+        return (
+            <Annotations>
+                {
+                    !this.state.detailMode ?
+
+                            this.state.cities.map((city, i) => (
+                                <Annotation
+                                    dx={ 40 }
+                                    dy={ -30 }
+                                    subject={ [ -61.5, 16.3 ] }
+                                    strokeWidth={ 1 }
+                                    stroke="#607D8B"
+                                    onClick={this.handleAnnoteClick}
+                                >
+                                    <text>{ city }</text>
+                                </Annotation>
+                            ))
+                    :null
+                }
+            </Annotations>
+
+        )
+    }
+
+    makeMarkers() {
+        return (
+        <Markers>
+            {(!this.state.detailMode) ?
+                (this.state.cities) ?
+                    this.state.cities.map((city, i) => (
+                        <Marker key={i} marker={city}
+                                onClick={this.handleCityClick}
+                                onMouseMove={this.handleMoveMk}
+                                onMouseLeave={this.handleLeaveMk}
+                        >
+                            <text textAnchor="middle" y={3.5} className="marker_value">
+                                {city.cost}
+                            </text>
+                            <circle
+                                ref={ref => this.circle = ref} data-tip='tooltip' data-for='happyFace'
+                                class={(city.population > 35000000) ? 'levelFive' : 'levelOther'}
+                                cx={0}
+                                cy={0}
+                                r={cityScale(city.population)}
+                                fill={
+                                    (city.population > 35000000) ? 'url(#levelFive)' :
+                                        (city.population <= 35000000 && city.population > 30000000) ? 'url(#levelFour)' :
+                                            (city.population <= 30000000 && city.population > 25000000) ? 'url(#levelThree)' :
+                                                (city.population <= 25000000 && city.population > 20000000) ? 'url(#levelTwo)' :
+                                                    'url(#levelOne)'
+                                }
+                                stroke={styles.marker.stroke}
+                                strokeWidth={styles.marker.strokeWidth}
+                            />
+
+                            {/*<text textAnchor="middle" class="marker_label" x={(city.markerOffsetX)?(city.markerOffsetX):0} y={(city.markerOffset)?(city.markerOffset):24}>*/}
+                            {/*{city.name}*/}
+                            {/*</text>*/}
+                        </Marker>
+                    )) : null
+                :
+                this.state.cities.map((city, i) => (
+                    <Marker
+                        key={i}
+                        marker={city}
+                        onClick={this.handleViewZone}
+                    >
+                        <circle
+                            class={"detailMarker_" + city.name}
+                            cx={0}
+                            cy={0}
+                            r={5}
+                            opacity={1}
+                            fill={styles.marker.second.fill}
+                            stroke={styles.marker.second.stroke}
+                            strokeWidth={styles.marker.second.strokeWidth}
+                        />
+                        {/*<text*/}
+                            {/*class="marker_label"*/}
+                            {/*textAnchor="middle"*/}
+                            {/*x={city.offsets[0]}*/}
+                            {/*y={city.offsets[1]}*/}
+                        {/*>*/}
+                            {/*{city.name}*/}
+                        {/*</text>*/}
+                    </Marker>
+
+                ))
+            }
+
+        </Markers>)
+    }
     componentDidMount() {
 
         this.fetchCountry();
@@ -325,19 +523,48 @@ class AnimatedMap extends Component {
             _self.blinkAnimationMarker('rsm-markers', _self.dir)
         }, 900)
 
-        console.log('map did mount == ', _self.props.parentProps)
         if(_self.props.parentProps.tabIdx === 'pg=1'){
             _self.handleCityClick({ "name": this.state.selectedCity, "coordinates": [2.1734, 41.3851], "population": 37843000, "cost":3 });
         }
 
         _self.setState({oldCountry:this.state.selectedCity})
 
+
+        setTimeout(() => {
+
+            // var rsm = d3.select('.rsm-zoomable-group').on("mousedown", function() {
+            //     var self = this;
+            //     console.log('mouse down rsm-zoomable-group', this)
+            //     _self.drawZoomRect(d3.select('.rsm-zoomable-group'), self);
+            // }).on("mouseout", function() {
+            //     _self.removeZoomer();
+            // })
+
+
+            document.querySelector("text").addEventListener("click", function(event) {
+                // If the user clicked right on the SVG,
+                // this will never fire
+                console.log('on mouse down  annotation ..', event)
+            });
+        }, 1000)
+
+        //test
+
+
+
     }
     componentWillUnmount() {
         clearInterval(this.interval)
     }
     componentWillReceiveProps(nextProps, nextContext) {
-
+        console.log('++++++++++++++', nextProps)
+        if(!nextProps.parentProps.open){
+            // this.setState({
+            //     center: [0,20],
+            //     zoom: 1,
+            //     detailMode:false
+            // })
+        }
         this.fetchCities(nextProps.parentProps.data)
     }
 
@@ -408,74 +635,37 @@ class AnimatedMap extends Component {
                                                     />
                                                 ))}
                                         </Geographies>
-                                        <Markers>
-                                            {(!this.state.detailMode) ?
-                                                (this.state.cities)?
-                                                    this.state.cities.map((city, i) => (
-                                                        <Marker key={i} marker={city}
-                                                                onClick={ this.handleCityClick }
-                                                                onMouseMove={this.handleMoveMk}
-                                                                onMouseLeave={this.handleLeaveMk}
-                                                                >
-                                                            <text textAnchor="middle" y={3.5} className="marker_value">
-                                                                {city.cost}
-                                                            </text>
-                                                            <circle
-                                                                ref={ref => this.circle = ref}   data-tip='tooltip' data-for='happyFace'
-                                                                class={(city.population > 35000000)?'levelFive':'levelOther'}
-                                                                cx={0}
-                                                                cy={0}
-                                                                r={cityScale(city.population)}
-                                                                fill={
-                                                                    (city.population > 35000000)?'url(#levelFive)':
-                                                                        (city.population <= 35000000 &&  city.population > 30000000)?'url(#levelFour)':
-                                                                            (city.population <= 30000000 &&  city.population > 25000000)?'url(#levelThree)':
-                                                                                (city.population <= 25000000 &&  city.population > 20000000)?'url(#levelTwo)':
-                                                                                    'url(#levelOne)'
-                                                                }
-                                                                stroke={styles.marker.stroke}
-                                                                strokeWidth={styles.marker.strokeWidth}
-                                                            />
+                                        {this.makeMarkers()}
+                                        <Annotations>
+                                            {
+                                                this.state.detailMode ?
 
-                                                            {/*<text textAnchor="middle" class="marker_label" x={(city.markerOffsetX)?(city.markerOffsetX):0} y={(city.markerOffset)?(city.markerOffset):24}>*/}
-                                                                {/*{city.name}*/}
-                                                            {/*</text>*/}
-                                                        </Marker>
-                                                    )) : null
-                                                :
-                                                this.state.citiesSecond.map((city, i) => (
-                                                    <Marker
-                                                        key={i}
-                                                        marker={city}
-                                                        onClick={this.handleViewZone}
-                                                    >
-                                                        <circle
-                                                            class={"detailMarker_"+city.name}
-                                                            cx={0}
-                                                            cy={0}
-                                                            r={5}
-                                                            opacity={1}
-                                                            fill={styles.marker.second.fill}
-                                                            stroke={styles.marker.second.stroke}
-                                                            strokeWidth={styles.marker.second.strokeWidth}
-                                                        />
-                                                        <text
-                                                            class="marker_label"
-                                                            textAnchor="middle"
-                                                            x={city.offsets[0]}
-                                                            y={city.offsets[1]}
+                                                    this.state.cities.map((city, i) => (
+                                                        <Annotation
+                                                            key={i}
+                                                            dx={ -30 } dy={ 30+(i*30) }
+                                                            curve={0.5}
+                                                            zoom = {1}
+                                                            subject={ city['coordinates'] }
+                                                            strokeWidth={ 0.1 }
+                                                            stroke={'#AFAFAF'}
+                                                            style={{cursor:'pointer'}}
                                                         >
-                                                            {city.name}
-                                                        </text>
-                                                    </Marker>
-                                                ))
+                                                            <text className='annoteText'
+                                                                fill='#AFAFAF'
+                                                                  onClick={this.handleAnnoteClick.bind(this,city['name'][0])}
+                                                            >
+                                                                { city['name'][0] }
+                                                            </text>
+                                                        </Annotation>
+                                                    ))
+                                                    :null
                                             }
-                                        </Markers>
+                                        </Annotations>
 
                                     </ZoomableGroup>
                                 </ComposableMap>
                             )}
-
                         </Motion>
                     }
                 </ContainerDimensions>
@@ -483,7 +673,6 @@ class AnimatedMap extends Component {
         )
     }
 }
-
 
 const mapDispatchProps = (dispatch) => {
     return {

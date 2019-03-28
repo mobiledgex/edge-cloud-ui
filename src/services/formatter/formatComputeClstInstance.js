@@ -122,7 +122,6 @@ let generateData = (datas) => {
             ];
 
             values.push({
-                Index:Index,
                 ClusterName:ClusterName,
                 CloudletName:CloudletName,
                 OperatorName:OperatorName,

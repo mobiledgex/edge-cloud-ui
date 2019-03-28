@@ -24,10 +24,10 @@ const headerStyle = {
 var horizon = 6;
 var vertical = 13;
 var layout = [
-    {"w":6,"h":14,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Cluster Health"},
-    {"w":6,"h":14,"x":6,"y":0,"i":"1","moved":false,"static":false, "title":"Application Statistics"},
-    {"w":6,"h":7,"x":0,"y":15,"i":"2","moved":false,"static":false, "title":"Network I/O"},
-    {"w":6,"h":7,"x":6,"y":15,"i":"3","moved":false,"static":false, "title":"Network I/O"}];
+    {"w":6,"h":13,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Cluster Health"},
+    {"w":6,"h":13,"x":6,"y":0,"i":"1","moved":false,"static":false, "title":"Application Statistics"},
+    {"w":6,"h":8,"x":0,"y":13,"i":"2","moved":false,"static":false, "title":"Network I/O Trend"},
+    {"w":6,"h":8,"x":6,"y":13,"i":"3","moved":false,"static":false, "title":"Network I/O Trend"}];
 const panes = [
     { menuItem: 'TCP' },
     { menuItem: 'UDP' },
@@ -54,7 +54,8 @@ class AnalysticViewZone extends React.Component {
             tcpPositive:true,
             udpPositive:false,
             listCluster:null,
-            selectedCloudlet:'barcelona-mexdemo'
+            selectedCloudlet:'barcelona-mexdemo',
+            applications:null
         };
         this.state.optionOne = [
             {key:'itm_1', value:'cpu', text:'CPU Usage'},
@@ -72,9 +73,9 @@ class AnalysticViewZone extends React.Component {
         this.applications = [
             {cloudlet:'barcelona-mexdemo',
                 clusters:[
-                    {cluster:'tdg-barcelona-niantic', apps:['neon2-deployment-6885d6b975-hpxdb'], shortApps:['neon2']},
+                    {cluster:'tdg-barcelona-niantic', apps:[''], shortApps:['neon2']},
                     {cluster:'tdg-barcelona-mobiledgex-demoapp',
-                        apps:['mobiledgexsdkdemo-deployment-54bfd95f5f-ncs8q', 'facedetectiondemo-deployment-79547dc46b-b2v5n'],
+                        apps:[],
                         shortApps:['mobiledgexsdkdemo', 'facedetectiondemo']
                     }
                 ]
@@ -113,14 +114,14 @@ class AnalysticViewZone extends React.Component {
     )
     makeHeader_select =(title)=> (
         <Header className='panel_title'>
-            <div style={{display:'flex', flexGrow:14}}>{title}</div>
+            <div style={{display:'flex', flexGrow:8}}>{title}</div>
             <div style={{display:'flex', flexGrow:2, alignSelf:'flex-end'}} className='panel_title_filter'>
                 {/*<Dropdown placeholder='CPU Usage' fluid search selection options={this.state.optionOne} />*/}
             </div>
         </Header>
     )
     makeHeader_switch =(title, index)=> (
-        <Header className='panel_title' style={{display:'flex',flexDirection:'row'}}>
+        <Header className='panel_title'>
             <div style={{display:'flex', flexGrow:1}}>{title}</div>
             <div style={{display:'flex'}} className='panel_title_filter'>
                 <Button.Group className='tcpudpSwich'>
@@ -131,7 +132,7 @@ class AnalysticViewZone extends React.Component {
         </Header>
     )
 
-    generateDOM() {
+    generateDOM(_applications) {
 
         return layout.map((item, i) => (
             <div className="round_panel" key={i}>
@@ -141,11 +142,10 @@ class AnalysticViewZone extends React.Component {
                     (i === 3)? this.makeHeader_switch(item.title, 1) : this.makeHeader_noChild(item.title)
                 }
                 {
-                    (i === 0)? <CPUMEMListView listData={this.state.listData} cloudlets={this.cloudlets} clusters={this.clusters} applications={this.applications}></CPUMEMListView>
-                    : (i === 1)? <ApplicationView cloudlets={this.cloudlets} clusters={this.clusters} applications={this.applications} selectedCloudlet={this.state.selectedCloudlet}/>
-                    : (i === 2)? <NetworkTcpUdpComposeView applications={this.applications} selectedCloudlet={this.state.selectedCloudlet}  activeIndex={this.state.activeIndex} netName={'TCP'}/>
-                    : (i === 3)? <NetworkTcpUdpComposeView applications={this.applications} selectedCloudlet={this.state.selectedCloudlet}  activeIndex={this.state.activeIndex} netName={'UDP'}/>
-                    : (i === 4)? <NetworkTcpUdpView listData={this.state.tcpudpClusterData} activeIndex={this.state.activeIndex}></NetworkTcpUdpView>
+                    (i === 0)? <CPUMEMListView listData={this.state.listData} cloudlets={this.cloudlets} clusters={this.clusters} applications={_applications}></CPUMEMListView>
+                    : (i === 1)? <ApplicationView cloudlets={this.cloudlets} clusters={this.clusters} applications={_applications} selectedCloudlet={this.state.selectedCloudlet}/>
+                    : (i === 2)? <NetworkTcpUdpComposeView applications={_applications} selectedCloudlet={this.state.selectedCloudlet}  activeIndex={this.state.activeIndex} netName={'TCP'}/>
+                    : (i === 3)? <NetworkTcpUdpComposeView applications={_applications} selectedCloudlet={this.state.selectedCloudlet}  activeIndex={this.state.activeIndex} netName={'UDP'}/>
                     : <span>{item.i}</span>
                 }
             </div>
@@ -168,43 +168,58 @@ class AnalysticViewZone extends React.Component {
 
     }
 
-    receiveTcpUdp(result) {
-        console.log('receceive tcp-upd info <<<<<<<<====', result)
-        _self.props.handleInjectData({tcpudpClusterData:result})
-    }
 
-    receiveTcpUdpCluster(result) {
+    receiveClusterApp(result) {
 
+        let appIndex = null;
+        result.map((obj) => (
+            obj.map((obj2) => (
+                obj2.series.map((seri) => (
+                    seri.columns.map((column, i) => (
+                        (column === 'app')? appIndex = i : null
+                    ))
 
-        let clsdbArray = [];
-        if(result.length){
-            result.map((res, i) => {
-                let valueKeys = {clusterName:'',tcp:{tcpConns:'', tcpRetrans:''}, udp:{udpRecv:'', udpRecvErr:'', udpSend:''}};
-                res[0].series.map((ser) => {
-                    valueKeys.clusterName = ser.values[0][1];
-                    valueKeys.tcp.tcpConns = ser.values[0][7];
-                    valueKeys.tcp.tcpRetrans = ser.values[0][8];
-                    valueKeys.udp.udpRecv = ser.values[0][9];
-                    valueKeys.udp.udpSend = ser.values[0][11];
-                })
-                clsdbArray.push(valueKeys)
-            })
+                ))
+            ))
+        ))
+        console.log('app index = ', appIndex)
+        let appNames = [];
+        if(appIndex){
+            result.map((obj) => (
+                obj.map((obj2) => (
+                    obj2.series.map((seri, i) => (
+                        seri.values.map((value) => {
+                            appNames.push({app:value[appIndex], cluster:value[appIndex+1]})
+                        })
+
+                    ))
+                ))
+            ))
+            console.log('app names = ', appNames)
         }
 
+        //appName 중에  neon2 인것 찾기
+        let selectedApp = 'neon2';
 
-        _self.setState({tcpudpClusterData:clsdbArray})
+        appNames.map((obj) => {
+            if(obj.app.indexOf(selectedApp) > -1){
+                _self.applications[0].clusters[0].apps[0] = obj.app
+            }
+        })
+        console.log('set aplications ==', _self.applications, _self.state.applications)
+        _self.setState({applications:_self.applications})
 
     }
+
+
     componentDidMount() {
         _self.interval = setInterval(() => {
             serviceCluster.getClusterHealth(_self.clusters, _self.receiveClusterInfo)
         }, 3000)
 
+        // 클러스터에 해당하는 앱의 이름
+        serviceCluster.getAppClusterApp(this.clusters, _self.receiveClusterApp);
 
-        // TCP UDP 정보를 표현하기
-        serviceCluster.getTcpUdpSeriesInfo(this.clusters[0], [this.tcpudpCloumns[0],this.tcpudpCloumns[2]],this.receiveTcpUdp)
-        // 클러스터에 해당하는 tcp udp 정보
-        serviceCluster.getTcpUdpClusterInfo(this.clusters,this.receiveTcpUdpCluster)
 
         // _self.intervalTab = setInterval((e) => {
         //     _self.handleTabChange(e, (_self.state.activeIndex === 0)? {activeIndex:1} : {activeIndex:0})
@@ -222,7 +237,7 @@ class AnalysticViewZone extends React.Component {
                 onLayoutChange={this.onLayoutChange}
                 {...this.props}
             >
-                {this.generateDOM()}
+                {this.generateDOM(this.state.applications)}
             </ReactGridLayout>
         );
     }
@@ -244,5 +259,3 @@ const mapDispatchProps = (dispatch) => {
 };
 
 export default connect(null, mapDispatchProps)(AnalysticViewZone);
-
-

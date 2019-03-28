@@ -160,8 +160,8 @@ class NetworkIOView extends React.Component {
                     </Grid.Column>
                     <Grid.Column width={4}>
                         <Grid.Row>
-                            <NetworkInoutLegend type="in" colors={['#22cccc','#22cccc']} title="Network In" value={this.state.avgNetIn} unit="MB"></NetworkInoutLegend>
-                            <NetworkInoutLegend type="out" colors={['#6699ff','#6699ff']} title="Network Out" value={this.state.avgNetOut} unit="MB"></NetworkInoutLegend>
+                            <NetworkInoutLegend type="in" colors={['#22cccc','#22cccc']} title="Network In" value={this.state.avgNetIn} unit="B"></NetworkInoutLegend>
+                            <NetworkInoutLegend type="out" colors={['#6699ff','#6699ff']} title="Network Out" value={this.state.avgNetOut} unit="B"></NetworkInoutLegend>
                         </Grid.Row>
                     </Grid.Column>
                 </Grid.Row>

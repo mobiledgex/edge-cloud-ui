@@ -14,6 +14,7 @@ import DeleteItem from './deleteItem';
 import './styles.css';
 import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
 import * as service from "../services/service_compute_service";
+import PopDetailViewer from './popDetailViewer';
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -24,8 +25,8 @@ var horizon = 6;
 var vertical = 20;
 
 var layout = [
-    {"w":19,"h":9,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"LocationView"},
-    {"w":19,"h":11,"x":0,"y":9,"i":"1","moved":false,"static":false, "title":"Developer"},
+    {"w":24,"h":9,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"LocationView"},
+    {"w":24,"h":11,"x":0,"y":9,"i":"1","moved":false,"static":false, "title":"Developer"},
 ]
 const override = {
     display: 'fixed',
@@ -50,6 +51,7 @@ class MapWithListView extends React.Component {
         this.state = {
             layout,
             open: false,
+            openDetail:false,
             dimmer:true,
             activeItem:'',
             dummyData : [],
@@ -62,7 +64,9 @@ class MapWithListView extends React.Component {
             selectedItem:null,
             loading:false,
             openDelete:false,
-            tooltipMsg:'No Message'
+            tooltipMsg:'No Message',
+            tooltipVisible: false,
+            detailViewData:null,
         };
 
         _self = this;
@@ -71,8 +75,7 @@ class MapWithListView extends React.Component {
 
     onHandleClick(dim, data) {
         console.log('on handle click == ', data)
-        this.setState({ dimmer:dim, open: true, selected:data })
-        //this.props.handleChangeSite(data.children.props.to)
+        //this.setState({ dimmer:dim, open: true, selected:data })
     }
 
     show = (dim) => this.setState({ dimmer:dim, open: true })
@@ -80,7 +83,9 @@ class MapWithListView extends React.Component {
         this.setState({ open: false, openDelete: false })
         this.props.handleInjectDeveloper(null)
     }
-
+    closeDetail = () => {
+        this.setState({ openDetail: false })
+    }
     makeHeader_noChild =(title)=> (
         <Header className='panel_title'>{title}</Header>
     )
@@ -110,7 +115,7 @@ class MapWithListView extends React.Component {
         if (column !== clickedColumn) {
             this.setState({
                 column: clickedColumn,
-                data: _.sortBy(dummyData, [clickedColumn]),
+                dummyData: _.sortBy(dummyData, [clickedColumn]),
                 direction: 'ascending',
             })
 
@@ -118,16 +123,15 @@ class MapWithListView extends React.Component {
         }
 
         this.setState({
-            data: dummyData.reverse(),
+            dummyData: dummyData.reverse(),
             direction: direction === 'ascending' ? 'descending' : 'ascending',
         })
     }
     generateDOM(open, dimmer, width, height) {
-
         return layout.map((item, i) => (
 
             (i === 1)?
-                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
+                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%', height:'100%'}} >
 
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
                         {this.TableExampleVeryBasic(width, height, this.props.headerLayout)}
@@ -153,9 +157,8 @@ class MapWithListView extends React.Component {
                     </Table.Footer>
                 </div>
                 :
-                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
-                    <Header className='panel_title'>Clusters position on the Map</Header>
-                    <div className='panel_worldmap'>
+                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%', height:'100%'}} >
+                    <div className='panel_worldmap' style={{width:'100%', height:'100%'}}>
                         <ContainerOne ref={ref => this.container = ref} {...this.props} data={this.state.receivedData} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
                     </div>
 
@@ -200,6 +203,9 @@ class MapWithListView extends React.Component {
     onPortClick(a,b) {
         alert(b[a])
     }
+    detailView(item) {
+        this.setState({detailViewData:item, openDetail:true})
+    }
     TableExampleVeryBasic = (w, h, headL) => (
         <Table className="viewListTable" basic='very' striped celled fixed sortable ref={ref => this.viewListTable = ref} style={{width:'100%'}}>
             <Table.Header className="viewListTableHeader"  style={{width:'100%'}}>
@@ -224,7 +230,7 @@ class MapWithListView extends React.Component {
                                     </Table.Cell>
                                 :
                                 (value === 'CloudletLocation')?
-                                    <Table.Cell key={j} textAlign='left' onMouseOver={() => this.handleMouseOverCell(`Latitude : ${item[value].latitude} Longitude : ${item[value].longitude}`)}>
+                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} onMouseOver={() => this.handleMouseOverCell(`Latitude : ${item[value].latitude} Longitude : ${item[value].longitude}`)}  style={{cursor:'pointer'}}>
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                         {
                                             `Latitude : ${item[value].latitude}
@@ -233,7 +239,7 @@ class MapWithListView extends React.Component {
                                         </div>
                                     </Table.Cell>
                                 :
-                                    <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell}  onMouseOver={() => this.handleMouseOverCell(String(item[value]))}>
+                                    <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)}  onMouseOver={() => this.handleMouseOverCell(String(item[value]))}  style={{cursor:'pointer'}}>
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                         {String(item[value])}
                                         </div>
@@ -259,6 +265,15 @@ class MapWithListView extends React.Component {
         //reload data of dummyData that defined props devData
 
         _self.props.handleRefreshData({params:{state:'refresh'}})
+    }
+
+    componentDidMount() {
+        let self = this;
+        setTimeout(() => self.setState({tooltipVisible:true}), 1000)
+
+    }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log('-----component did update ------', prevState.dummyData, this.state.dummyData)
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -298,6 +313,7 @@ class MapWithListView extends React.Component {
                         >
                             {this.generateDOM(open, dimmer, width, height)}
                         </ReactGridLayout>
+
                         <div className="loadingBox">
                             <GridLoader
                                 sizeUnit={"px"}
@@ -306,11 +322,13 @@ class MapWithListView extends React.Component {
                                 loading={this.state.loading}
                             />
                         </div>
-
-                        <ReactTooltip className='customToolTip' id='happyFace' type='dark'>
-                            <span>{this.state.tooltipMsg}</span>
-                        </ReactTooltip>
-
+                        {(this.state.tooltipVisible) ?
+                            <ReactTooltip className='customToolTip' id='happyFace' type='dark'>
+                                <span>{this.state.tooltipMsg}</span>
+                            </ReactTooltip>
+                            : null
+                        }
+                        <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                     </div>
 
                 }

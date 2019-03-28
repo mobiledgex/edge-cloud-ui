@@ -70,6 +70,7 @@ exports.create_user = (req, res) => {
   console.log('req body==', req.body)
   let password =  req.body.password;
   let email =  req.body.email;
+  let role = req.body.role;
   let api_key =  req.headers.authorization
   console.log('api key = ', api_key)
 
@@ -116,6 +117,7 @@ exports.create_user = (req, res) => {
             resume : {
               loginTokens : [token_object]
             },
+            role: {type:role},
             email : {
               verificationTokens : [
                 {
@@ -165,7 +167,6 @@ exports.create_user = (req, res) => {
 
 // login with email and password
 exports.login_with_email_password = (req, res) => {
-  console.log('find body==', req.body)
   let password =  req.body.password;
   let email =  req.body.email;
   let api_key =  req.headers.authorization
@@ -178,7 +179,6 @@ exports.login_with_email_password = (req, res) => {
   let find_param = {
     'emails.address':email
   }
-  console.log('find param == ', find_param)
   let user_info = {};
   let login_token
 

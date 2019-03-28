@@ -21,11 +21,13 @@ export default class RegistNewItem extends React.Component {
             devOptionsThree:[],
             devOptionsFour:[],
             devOptionsFive:[],
+            devOptionsSix:[],
             dropdownValueOne:'',
             dropdownValueTwo:'',
             dropdownValueThree:'',
             dropdownValueFour:'',
             dropdownValueFive:'',
+            dropdownValueSix:'',
             cloudletResult:null,
             appResult:null,
         }
@@ -72,6 +74,10 @@ export default class RegistNewItem extends React.Component {
     handleChangeFive = (e, {value}) => {
         console.log('change input value is ==', value)
         this.setState({ dropdownValueFive: value })
+    }
+    handleChangeSix = (e, {value}) => {
+        console.log('change input value is ==', value)
+        this.setState({ dropdownValueSix: value })
     }
     setCloudletList = (operNm) => {
         let cl = [];
@@ -199,6 +205,8 @@ export default class RegistNewItem extends React.Component {
             <Dropdown placeholder='Select Cloudlet' fluid search selection options={this.state.devOptionsThree} value={this.state.dropdownValueThree} onChange={this.handleChangeThree} />
             : (key === 'AppName')?
             <Dropdown placeholder='Select AppName' fluid search selection options={this.state.devOptionsFour} value={this.state.dropdownValueFour} onChange={this.handleChangeFour} />
+            : (key === 'ClusterInst')?
+            <Dropdown placeholder='Select ClusterInst' fluid search selection options={this.state.devOptionsSix} value={this.state.dropdownValueSix} onChange={this.handleChangeSix} />
             : (key === 'Version')?
             <Dropdown placeholder='Select Version' fluid search selection options={this.state.devOptionsFive} value={this.state.dropdownValueFive} onChange={this.handleChangeFive} />
             :

@@ -179,12 +179,14 @@ class SiteThree extends React.Component {
                             </Header.Content>
                         </Header>
                         <div className='nav_filter'>
-                            <div className='title'>Operator</div>
-                            <Grid.Row columns={4} className='filter'>
+                            <Grid.Row columns={5} className='filter'>
+                                <Grid.Column>
+                                    <div className='title'>Operator</div>
+                                </Grid.Column>
                                 <Grid.Column>
                                     <Dropdown placeholder='Select Operator' fluid search selection options={this.state.devOptionsOne} value={this.state.dropdownValueOne} onChange={this.handleChangeOne}/>
                                 </Grid.Column>
-                                <Grid.Column width={2}>
+                                <Grid.Column>
                                     <div className='title'>Cloudlet</div>
                                 </Grid.Column>
                                 <Grid.Column>

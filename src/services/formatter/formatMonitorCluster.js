@@ -108,12 +108,17 @@ let generateData = (datas) => {
             if(dataSeries.length) {
                 dataSeries.map((item) => {
                     // time, cluster, cpu, disk, mem, recvBytes, sendBytes
+                    console.log('cluster health data ->->->->', item)
                     infoData = item['values'][item['values'].length - 1];
                     values.push({alarm:Math.round(infoData[2]),
                         dName:infoData[1],
                         values:{
                             time:infoData[0],
                             cluster:infoData[1],
+                            // cpu:parseFloat(infoData[2]).toFixed(2),
+                            // mem:parseFloat(infoData[4]).toFixed(2),
+                            // sys:parseFloat(infoData[3]).toFixed(2),
+
                             cpu:parseFloat(infoData[2]).toFixed(2),
                             mem:parseFloat(infoData[4]).toFixed(2),
                             sys:parseFloat(infoData[3]).toFixed(2),

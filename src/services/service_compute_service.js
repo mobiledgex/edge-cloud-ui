@@ -14,7 +14,7 @@ import FormatComputeClstInst from './formatter/formatComputeClstInstance';
 
 const hostname = window.location.hostname;
 export function getOperator(resource, callback) {
-    fetch('http://'+hostname+':3030')
+    fetch('https://'+hostname+':3030')
         .then(response => response.json())
         .then(data => {
             console.log('infux data == ', data)
@@ -63,7 +63,7 @@ export function getOperatorInfo(resource, callback) {
         });
 }
 export function getComputeService(resource, callback) {
-    axios.get('http://'+hostname+':3030/compute?service='+resource)
+    axios.get('https://'+hostname+':3030/compute?service='+resource)
         .then(function (response) {
             let paseData = JSON.parse(JSON.stringify(response.data));
             let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
@@ -87,7 +87,7 @@ export function getComputeService(resource, callback) {
 
 
 export function saveNewCompute(resource, body, callback) {
-    axios.post('http://'+hostname+':3030/register',qs.stringify({
+    axios.post('https://'+hostname+':3030/register',qs.stringify({
       service: resource,
         serviceBody:body
     }))
@@ -100,7 +100,7 @@ export function saveNewCompute(resource, body, callback) {
         });
 }
 export function deleteCompute(resource, body, callback) {
-    axios.post('http://'+hostname+':3030/delete',qs.stringify({
+    axios.post('https://'+hostname+':3030/delete',qs.stringify({
         service: resource,
         serviceBody:body
     }))

@@ -46,6 +46,7 @@ class TimeSeries extends React.Component {
                 type: 'scatter',
                 x: series,
                 y: item,
+                yaxis:(i === 0)?'y':(i === 1)?'y2':(i === 2)?'y3':'y',
                 name:(names && names.length>0)?names[i]:'',
                 line: {color: (this.props.error)?this.colorsErr[i]:this.colors[i],width:1},
                 marker:{size:5}
@@ -70,11 +71,15 @@ class TimeSeries extends React.Component {
                             layout={{
                                 title: null,
                                 autosize: false,
-                                width:width+this.props.marginRight,
+                                width:width-this.props.marginRight,
                                 height:height,
                                 margin:this.props.margin,
                                 paper_bgcolor: 'transparent',
                                 plot_bgcolor: 'transparent',
+                                legend: {
+                                    x: 1.05,
+                                    y: 1
+                                },
                                 xaxis: {
                                     showgrid: false,
                                     zeroline: true,
@@ -86,7 +91,8 @@ class TimeSeries extends React.Component {
                                     zerolinewidth: 1,
                                     linecolor: 'rgba(255,255,255,.2)',
                                     linewidth: 1,
-                                    color: 'rgba(255,255,255,.4)'
+                                    color: 'rgba(255,255,255,.4)',
+                                    domain: [0, 0.94]
                                 },
                                 yaxis: {
                                     showgrid: true,
@@ -118,10 +124,30 @@ class TimeSeries extends React.Component {
                                     linewidth: 1,
                                     color: 'rgba(255,255,255,.4)',
                                     overlaying: 'y',
-                                    side: 'right'
+                                    side: 'right',
+                                    position:this.props.y2Position,
+                                    range:this.props.y2Range
                                 },
-                                showlegend: true,
-
+                                yaxis3:{
+                                    showgrid: true,
+                                    zeroline: false,
+                                    showline: true,
+                                    mirror: 'ticks',
+                                    ticklen: 3,
+                                    tickcolor: 'rgba(0,0,0,0)',
+                                    gridcolor: 'rgba(255,255,255,.05)',
+                                    gridwidth:1,
+                                    zerolinecolor: 'rgba(255,255,255,0)',
+                                    zerolinewidth: 1,
+                                    linecolor: 'rgba(255,255,255,.2)',
+                                    linewidth: 1,
+                                    color: 'rgba(255,255,255,.4)',
+                                    overlaying: 'y',
+                                    side: 'right',
+                                    position:this.props.y3Position,
+                                    range:this.props.y3Range
+                                },
+                                showlegend: this.props.showLegend,
                                 points: {
                                     width: 1
                                 },
@@ -146,13 +172,18 @@ class TimeSeries extends React.Component {
 }
 TimeSeries.defaultProps = {
     margin: {
-        l: 40,
-        r: 20,
-        b: 40,
+        l: 50,
+        r: 15,
+        b: 35,
         t: 5,
         pad: 0
     },
-    marginRight:0
+    marginRight:0,
+    showLegend:false,
+    y2Range:null,
+    y3Range:null,
+    y2Position:null,
+    y3Position:null
 }
 
 

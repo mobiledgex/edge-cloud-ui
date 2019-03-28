@@ -2,17 +2,18 @@ import React from 'react';
 import { Grid, Dropdown } from 'semantic-ui-react'
 import sizeMe from 'react-sizeme'
 import NetworkInoutLegend from './network/networkInoutLegend';
-import TimeSeriesFlow from '../charts/plotly/timeseriesFlow';
+import TimeSeries from '../charts/plotly/timeseries';
 import * as serviceCluster from '../services/service_clusters_service';
 import {connect} from "react-redux";
 import * as utils from '../utils';
 import SelectRange from '../components/selectRange';
+import * as d3 from 'd3';
 
 let customMargin = {
-    l: 40,
-    r: 20,
+    l: 50,
+    r: 15,
     b: 35,
-    t: 2,
+    t: 5,
     pad: 0
 }
 var data = [
@@ -55,28 +56,28 @@ class ApplicationView extends React.Component {
             timeseriesCPUMEM:[
                 ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
             ],
-            dataLabel:['cpu', 'mem'],
+            dataLabel:['CPU', 'MEM'],
             timeseriesDataNET:[
                 [0,1,2,3,4,5],[2,3,4,5,6,7]
             ],
             timeseriesNET:[
                 ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
             ],
-            dataLabelNet:['REV', 'SND'],
+            dataLabelNet:['RCV', 'SND'],
             avgCpu:0.00,
             avgMem:0.00,
             avgNetIn:0.00,
             avgNetOut:0.00,
             applications:[],
             dropdownValueOne:'tdg-barcelona-niantic',
-            dropdownValueTwo:'neon2-deployment-6885d6b975-hpxdb',
+            dropdownValueTwo:'',
             dropdownValueCluster:'',
             dropdownValueApp:''
 
         }
         this.selectedCloudlet = 'barcelona-mexdemo';
         this.selectedCluster = 'tdg-barcelona-niantic';
-        this.selectedApp = 'neon2-deployment-6885d6b975-hpxdb';
+        this.selectedApp = '';
         this.selectedStatic = '';
         this.selectedPeriod = '';
         this.interval = null;
@@ -95,7 +96,26 @@ class ApplicationView extends React.Component {
     }
 
 
-    receiveAppCluster(result) {
+    /*
+    Starting number: 1500
+
+d3.format(",") : 1,500
+
+d3.format(".1f") : 1500.0
+
+d3.format(",.2f") : 1,500.00
+
+d3.format("s") : 1.5k
+
+d3.format(".1s") : 2k
+
+d3.format(".2s") : 1.5k
+
+function(d) { return "$" + d3.format(",.2f")(d); } : $1,500.00
+
+d3.format(",.2%") : 150,000.00%
+    */
+    receiveAppCluster(result, self) {
 
         let resultArray = result;
         //_self.props.handleInjectData({appClusterData:resultArray})
@@ -107,15 +127,18 @@ class ApplicationView extends React.Component {
         let avgMem = 0.00;
         let avgNetIn = 0.00;
         let avgNetOut = 0.00;
+
+        let kbFormat = d3.format('.2s')
+        console.log('result app cluster.........>>', result)
         if(result){
             try {
                 result.map((data) => {
                     data.series.map((item, i) => {
                         newData[0] = item.values.map((value) => (
-                            Number(value[3]).toFixed(6) * 1000
+                            Number(value[3])*5
                         ))
                         newData[1] = item.values.map((value) => (
-                            Number(value[5]) * 0.0000000001
+                            Number(value[5])
                         ))
                         newseries[0] = item.values.map((value) => (
                             value[0]
@@ -128,17 +151,24 @@ class ApplicationView extends React.Component {
                             Number(value[7])
                         ))
 
+
+
                     })
                 })
 
-                avgCpu = utils.avg(newData[0]).toFixed(4);
-                avgMem = utils.avg(newData[1]).toFixed(4);
-                avgNetIn = utils.avg(newData2[0]);
-                avgNetOut = utils.avg(newData2[1]);
+                avgCpu = newData[0][newData[0].length-1];
+                avgMem = newData[1][newData[1].length-1];
+                avgNetIn = newData2[0][newData2[0].length-1];
+                avgNetOut = newData2[1][newData2[0].length-1];
 
-                //console.log('avgs ==> ==> ', avgCpu, avgMem)
-                _self.setState({timeseriesDataCPUMEM:newData, timeseriesCPUMEM:newseries,timeseriesDataNET:newData2, timeseriesNET:newseries,
-                    avgCpu:Number(avgCpu), avgMem:Number(avgMem), avgNetIn:Number(avgNetIn), avgNetOut:Number(avgNetOut)
+                // avgCpu = (newData[0].length > 4)?newData[0][newData[0].length-1].toFixed(4):newData[0][newData[0].length-1];
+                // avgMem = (newData[1].length > 4)?newData[1][newData[0].length-1].toFixed(4):newData[1][newData[1].length-1];
+                // avgNetIn = (newData2[0].length > 4)?newData2[0][newData2[0].length-1].toFixed(4):newData2[0][newData2[0].length-1];
+                // avgNetOut = (newData2[1].length > 4)?newData2[1][newData2[1].length-1].toFixed(4):newData2[1][newData2[1].length-1];1
+
+                //console.log('avgs ==> ==> ', avgCpu, d3.format("s")(avgMem))
+                self.setState({timeseriesDataCPUMEM:newData, timeseriesCPUMEM:newseries,timeseriesDataNET:newData2, timeseriesNET:newseries,
+                    avgCpu:(avgCpu*5).toFixed(4), avgMem:d3.format(".2s")(avgMem), avgNetIn:d3.format(".2s")(avgNetIn), avgNetOut:d3.format(".2s")(avgNetOut)
                 })
             }catch(e){
                 console.log('error',e)
@@ -155,16 +185,16 @@ class ApplicationView extends React.Component {
         }
     }
 
-    getStatisticsData() {
+    getStatisticsData(self) {
         // 클러스터 이름으로 해당 앱의 리소스 정보 - 3Pg 우측상단 Application Statistics
         //console.log('request data params =-=-=', this.selectedCluster, this.selectedApp)
-        if(this.selectedApp !== '') serviceCluster.getAppClusterInfo(this.selectedCluster,this.selectedApp, this.receiveAppCluster);
+        if(self.state.dropdownValueTwo !== '') serviceCluster.getAppClusterInfo(self.selectedCluster,self.state.dropdownValueTwo, self.receiveAppCluster, self);
     }
-    setDropdownApp() {
+    setDropdownApp(_applications) {
         // 클러스터 / 어플리케이션
         let _optionTwo = [];
-        if(_self.state.applications) {
-            _self.state.applications.map((cld, i) => {
+        if(_applications) {
+            _applications.map((cld, i) => {
                 if(cld.cloudlet === _self.selectedCloudlet) {
                     cld.clusters.map((clst, j) => {
                         if(clst.cluster === _self.selectedCluster) {
@@ -175,28 +205,26 @@ class ApplicationView extends React.Component {
                                 itemOne.text = app;
                                 _optionTwo.push(itemOne);
                             })
-
-                            //_self.setState({dropdownValueTwo:clst.apps[0]})
-
                         }
                     })
                 }
             })
 
             _self.setState({optionTwo:_optionTwo})
-            setTimeout(()=>_self.setState({dropdownValueTwo:'neon2-deployment-6885d6b975-hpxdb'}), 3000)
-
+            this.selectedApp = _optionTwo[0].value
+            setTimeout(()=>_self.setState({dropdownValueTwo:_optionTwo[0].value}), 3000)
         }
     }
     componentDidMount() {
-
+        let self = this;
         this.neterval = setInterval(()=> {
             //console.log('re start ==>==>==>', _self.selectedCluster)
-            _self.getStatisticsData();
+            self.getStatisticsData(self);
         }, 3000)
     }
     componentWillUnmount() {
         clearInterval(this.interval)
+        clearInterval(this.neterval)
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -225,7 +253,7 @@ class ApplicationView extends React.Component {
 
             this.setState({applications:nextProps.applications})
         }
-        this.setDropdownApp()
+        this.setDropdownApp(nextProps.applications)
 
     }
 
@@ -233,35 +261,34 @@ class ApplicationView extends React.Component {
     render() {
         const { width, height } = this.props.size
         return (
-            <Grid divided='vertically' className='panel_contents'>
+            <Grid divided='vertically' className='panel_contents' style={{height:'97%'}}>
 
                 <SelectRange sid='rangeOne' optionOne={this.state.optionOne} optionTwo={this.state.optionTwo} optionThree={this.state.optionThree} optionFour={this.state.optionFour}
                              handleChange={this.handleChange} dropdownValueOne={this.state.dropdownValueOne} dropdownValueTwo={this.state.dropdownValueTwo}/>
-                <Grid.Row columns={2} className='panel_charts' style={{height:'215px'}}>
-
+                <Grid.Row columns={2} className='panel_charts' style={{height:'40%'}}>
                     <Grid.Column width={12}>
                         {/*<BBLineChart chartId='cpumem' w={width*(12/16)} h={height*0.35} chartData={this.state.timeseriesDataCPUMEM} series={[]}/>*/}
-                        <TimeSeriesFlow style={{width:'100%', height:'100%'}} chartData={this.state.timeseriesDataCPUMEM} series={this.state.timeseriesCPUMEM} margin={customMargin} label={this.state.dataLabel}></TimeSeriesFlow>
+                        <TimeSeries style={{width:'100%', height:'100%'}} chartData={this.state.timeseriesDataCPUMEM} series={this.state.timeseriesCPUMEM} margin={customMargin} label={this.state.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                     </Grid.Column>
                     <Grid.Column width={4}>
                         <Grid.Row>
-                            <NetworkInoutLegend type="in" colors={['#22cccc','#22cccc']} title="CPU(Average)"  unit="%" chartId='cpuAvg' value={this.state.avgCpu}></NetworkInoutLegend>
-                            <NetworkInoutLegend type="out" colors={['#6699ff','#6699ff']} title="MEMORY(Average)" unit="%" chartId='memAvg' value={this.state.avgMem}></NetworkInoutLegend>
+                            <NetworkInoutLegend type="in" colors={['#22cccc','#22cccc']} title="CPU"  unit="%" chartId='cpuAvg' value={this.state.avgCpu}></NetworkInoutLegend>
+                            <NetworkInoutLegend type="out" colors={['#6699ff','#6699ff']} title="MEMORY" unit="B" chartId='memAvg' value={this.state.avgMem}></NetworkInoutLegend>
                         </Grid.Row>
                     </Grid.Column>
                 </Grid.Row>
                 <div className='panel_line_h'/>
                 <SelectRange sid='rangeTwo' optionOne={this.state.optionOne} optionTwo={this.state.optionTwo} optionThree={this.state.optionThree} optionFour={this.state.optionFour}
                              handleChange={this.handleChange} dropdownValueOne={this.state.dropdownValueOne}  dropdownValueTwo={this.state.dropdownValueTwo}/>
-                <Grid.Row columns={2} className='panel_charts' style={{height:'215px'}}>
+                <Grid.Row columns={2} className='panel_charts' style={{height:'40%'}}>
 
                     <Grid.Column width={12}>
-                        <TimeSeriesFlow style={{width:'100%', height:'100%'}} chartData={this.state.timeseriesDataNET} series={this.state.timeseriesNET} margin={customMargin} label={this.state.dataLabelNet}></TimeSeriesFlow>
+                        <TimeSeries style={{width:'100%', height:'100%'}} chartData={this.state.timeseriesDataNET} series={this.state.timeseriesNET} margin={customMargin} label={this.state.dataLabelNet} yRange={[0.001, 0.009]}></TimeSeries>
                     </Grid.Column>
                     <Grid.Column width={4}>
                         <Grid.Row>
-                            <NetworkInoutLegend type="in" colors={['#22cccc','#22cccc']} title="Network In" value={this.state.avgNetIn} unit="MB"></NetworkInoutLegend>
-                            <NetworkInoutLegend type="out" colors={['#6699ff','#6699ff']} title="Network Out" value={this.state.avgNetOut} unit="MB"></NetworkInoutLegend>
+                            <NetworkInoutLegend type="in" colors={['#22cccc','#22cccc']} title="Network RCV" value={this.state.avgNetIn} unit="B"></NetworkInoutLegend>
+                            <NetworkInoutLegend type="out" colors={['#6699ff','#6699ff']} title="Network SND" value={this.state.avgNetOut} unit="B"></NetworkInoutLegend>
                         </Grid.Row>
                     </Grid.Column>
                 </Grid.Row>
