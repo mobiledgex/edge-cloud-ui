@@ -144,3 +144,21 @@
 - pm2 start --interpreter babel-node server.js
 
 
+### React 최적화방안
+- https://marmelab.com/blog/2017/02/06/react-is-slow-react-is-fast.html 
+
+
+### react drag rect zoom
+- http://bl.ocks.org/jasondavies/3689931 
+
+### popup
+
+
+### Login - JWT
+- jwt
+
+
+
+### Debugging in Intellij IDE
+- https로 실행되도록 설정
+- middle웨어 3030도 마찬가지로 크롬브라우져에서 탭을 옆에 생성하고 보안인증 허락

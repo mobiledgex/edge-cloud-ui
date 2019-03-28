@@ -5,8 +5,10 @@ import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
 import SelectFromTo from '../components/selectFromTo';
 import RegistNewItem from './registNewItem';
+import PopDetailViewer from './popDetailViewer';
 import './styles.css';
 import ContainerDimensions from 'react-container-dimensions'
+import _ from "lodash";
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -28,9 +30,11 @@ class DeveloperListView extends React.Component {
         this.state = {
             layout,
             open: false,
-            dimmer:true,
+            openDetail:false,
+            dimmer:false,
             activeItem:'',
             dummyData : [],
+            detailViewData:null,
             selected:{}
         };
 
@@ -42,12 +46,14 @@ class DeveloperListView extends React.Component {
         //this.props.handleChangeSite(data.children.props.to)
     }
 
-    show = (dim) => this.setState({ dimmer:dim, open: true })
+    show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
         this.setState({ open: false })
         this.props.handleInjectDeveloper(null)
     }
-
+    closeDetail = () => {
+        this.setState({ openDetail: false })
+    }
     makeHeader_noChild =(title)=> (
         <Header className='panel_title'>{title}</Header>
     )
@@ -114,14 +120,38 @@ class DeveloperListView extends React.Component {
 
         return layout
     }
+    handleSort = clickedColumn => () => {
+        const { column, dummyData, direction } = this.state
 
+        if (column !== clickedColumn) {
+            this.setState({
+                column: clickedColumn,
+                dummyData: _.sortBy(dummyData, [clickedColumn]),
+                direction: 'ascending',
+            })
+
+            return
+        }
+
+        this.setState({
+            dummyData: dummyData.reverse(),
+            direction: direction === 'ascending' ? 'descending' : 'ascending',
+        })
+    }
     makeHeader(_keys, headL) {
+        const { column, direction } = this.state
         let keys = Object.keys(_keys);
         let widthDefault = Math.round(16/keys.length);
         console.log('default width header -- ', widthDefault)
         return keys.map((key, i) => (
-            (i === keys.length -1) ? <Table.HeaderCell width={3}  textAlign='center'>{key}</Table.HeaderCell> :
-                <Table.HeaderCell textAlign='center' width={(headL)?headL[i]:widthDefault}>{key}</Table.HeaderCell>
+            (i === keys.length -1) ?
+                <Table.HeaderCell width={3} textAlign='center' sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
+                    {key}
+                </Table.HeaderCell>
+                :
+                <Table.HeaderCell textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
+                    {key}
+                </Table.HeaderCell>
         ));
     }
 
@@ -132,9 +162,12 @@ class DeveloperListView extends React.Component {
     onPortClick() {
 
     }
+    detailView(item) {
+        this.setState({detailViewData:item, openDetail:true})
+    }
     TableExampleVeryBasic = (w, h, headL) => (
-        <Table basic='very' striped celled fixed>
-            <Table.Header>
+        <Table className="viewListTable" basic='very' sortable striped celled fixed>
+            <Table.Header className="viewListTableHeader">
                 <Table.Row>
                     {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL):null}
                 </Table.Row>
@@ -156,7 +189,7 @@ class DeveloperListView extends React.Component {
                                         <Icon name='server' size='big' onClick={() => this.onPortClick(true, item)} style={{cursor:'pointer'}}></Icon>
                                     </Table.Cell>
                                 :
-                                    <Table.Cell key={j} textAlign='left'>{item[value]}</Table.Cell>
+                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={{cursor:'pointer'}}> {item[value]} </Table.Cell>
                             ))}
                         </Table.Row>
                     ))
@@ -190,6 +223,7 @@ class DeveloperListView extends React.Component {
                         >
                             {this.generateDOM(open, dimmer, width, height)}
                         </ReactGridLayout>
+                        <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                     </div>
                 }
             </ContainerDimensions>

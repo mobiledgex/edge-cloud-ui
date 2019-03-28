@@ -1,22 +1,22 @@
 import React from 'react';
 import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
-import DeveloperListView from '../container/developerListView';
+import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
-import MapWithListView from "./siteFour_page_six";
+import MapWithListView from "../container/mapWithListView";
+
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
-class SiteFourPageZero extends React.Component {
+class SiteFourPageCloudlet extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -31,7 +31,6 @@ class SiteFourPageZero extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [5,2,2,2,3]
     }
 
     //go to
@@ -60,7 +59,7 @@ class SiteFourPageZero extends React.Component {
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
-        this.getDataDeveloper();
+        this.getDataCloudlet();
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -68,18 +67,18 @@ class SiteFourPageZero extends React.Component {
 
     }
     receiveResult(result) {
-        console.log("receive == ", result)
+        console.log("receive cloudlet == ", result)
         _self.setState({devData:result})
     }
-    getDataDeveloper() {
-        services.getComputeService('flavor', this.receiveResult)
+    getDataCloudlet() {
+        services.getComputeService('cloudlet', this.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
 
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout}></MapWithListView>
 
         );
     }
@@ -95,4 +94,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageZero)));
+export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCloudlet)));

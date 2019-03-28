@@ -16,7 +16,7 @@ import MapWithListView from "./siteFour_page_six";
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
-class SiteFourPageZero extends React.Component {
+class SiteFourPageAppAnaly extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -60,7 +60,7 @@ class SiteFourPageZero extends React.Component {
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
-        this.getDataDeveloper();
+        //this.getDataDeveloper();
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -79,7 +79,7 @@ class SiteFourPageZero extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
+            <div>App Analytics...</div>
 
         );
     }
@@ -95,4 +95,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageZero)));
+export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageAppAnaly)));

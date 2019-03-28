@@ -16,7 +16,7 @@ import MapWithListView from "./siteFour_page_six";
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
-class SiteFourPageZero extends React.Component {
+class SiteFourPageFlavor extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -95,4 +95,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageZero)));
+export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageFlavor)));

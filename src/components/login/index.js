@@ -9,19 +9,20 @@ import Alert from 'react-s-alert';
 // API
 import * as MyAPI from '../utils/MyAPI'
 import { LOCAL_STRAGE_KEY } from '../utils/Settings'
+import * as serviceLogin from '../../services/service_login_api';
 /*
 
  */
 let self = null;
 
 const FormContainer = (props) => (
-    <Grid>
+    <Grid className="signUpBD">
         <Grid.Row>
             <span className='title'>User Login</span>
         </Grid.Row>
         <Grid.Row columns={2}>
             <Grid.Column>
-                <Input placeholder='ID' name='email' width ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput}></Input>
+                <Input placeholder='Username' name='email' width ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput}></Input>
             </Grid.Column>
             <Grid.Column >
                 <Input  placeholder='Password' name='password' type='password' ref={ipt=>{props.self.pwd = ipt}} onChange={props.self.onChangeInput}></Input>
@@ -29,6 +30,33 @@ const FormContainer = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Button  onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Log In</Button>
+        </Grid.Row>
+    </Grid>
+
+)
+const FormSignUpContainer = (props) => (
+    <Grid className="signUpBD">
+        <Grid.Row>
+            <span className='title'>Create New Account</span>
+        </Grid.Row>
+        <Grid.Row columns={2}>
+            <Grid.Column>
+                <Input placeholder='First Name' name='firstname' width ref={ipt=>{props.self.first = ipt}} onChange={props.self.onChangeInput}></Input>
+            </Grid.Column>
+            <Grid.Column >
+                <Input  placeholder='Last Name' name='lastname' ref={ipt=>{props.self.last = ipt}} onChange={props.self.onChangeInput}></Input>
+            </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+            <Grid.Column>
+                <Input style={{width:'100%'}} placeholder='Password' name='password' type='password' ref={ipt=>{props.self.pwd = ipt}} onChange={props.self.onChangeInput}></Input>
+            </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+            <Button  onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Sign Up</Button>
+        </Grid.Row>
+        <Grid.Row>
+            <div style={{fontStyle:'italic', textDecoration:'underline'}}>By clicking Sign Up, you agree to our <a href="#">Terms</a>, <a href="#">Data Policy</a>, and <a href="#">Cookies Policy</a>.</div>
         </Grid.Row>
     </Grid>
 
@@ -83,6 +111,7 @@ class Login extends Component {
         this.onFocusHandle = this.onFocusHandle.bind(this);
         this.onConfirm = this.onConfirm.bind(this);
         this.onSignOut = this.onSignOut.bind(this);
+        this.params = null;
     }
     componentDidMount() {
         //로컬 스토리지의 저장공간에서 로그인 유지 상태 확인
@@ -91,7 +120,7 @@ class Login extends Component {
 
     }
     componentWillReceiveProps (nextProps) {
-
+        console.log('user...', nextProps.user)
     }
     // shouldComponentUpdate(nextProps, nextState) {
     //     return (
@@ -115,6 +144,21 @@ class Login extends Component {
     }
     onChangeInput = (e, { name, value }) => {
         this.setState({ [name]: value })
+    }
+    receiveToken(result) {
+
+        console.log('receive token..', result.data)
+        if(result.data.token) {
+            console.log('success....receive token.....', result.data.token, 'self params == ', self.params)
+
+            self.params['superuserToken'] = result.data.token
+            self.props.mapDispatchToLoginWithPassword(self.params)
+        }
+    }
+    requestToken(self) {
+        serviceLogin.getMethodCall('requestToken', {username:self.state.email, password:self.state.password}, self.receiveToken)
+
+        //self.receiveToken({data:{token:'my test token'}})
     }
     onSubmit() {
 
@@ -141,12 +185,20 @@ class Login extends Component {
                         // success
                         const params = {
                             user: data.user,
-                            login_token: data.login_token,
-                            email:email
+                            login_token: data.login_token
+                        }
+                        //TODO: 2019-03-23
+                        global.userInfo = {
+                            username: email,
+                            password: password
                         }
 
+                        self.params = params;
+
                         localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(params))
-                        this.props.mapDispatchToLoginWithPassword(params)
+                        self.props.mapDispatchToLoginWithPassword(params)
+
+                        self.requestToken(self);
                         resolve()
                     }
                 })
@@ -172,8 +224,11 @@ class Login extends Component {
         return (
 
                 (this.state.session !== 'open') ?
+                    <Container>
+                        <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle}/>
+                        <FormSignUpContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle}/>
+                    </Container>
 
-                <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle}/>
 
                 :
                 (this.state.redirect) ?

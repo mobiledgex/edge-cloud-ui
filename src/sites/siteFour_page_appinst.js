@@ -1,22 +1,23 @@
 import React from 'react';
 import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
-import DeveloperListView from '../container/developerListView';
+
+import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
+import ContainerDimensions from 'react-container-dimensions'
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
-import MapWithListView from "./siteFour_page_six";
+import MapWithListView from "../container/mapWithListView";
 
 
-let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
+
 
 let _self = null;
-class SiteFourPageZero extends React.Component {
+class SiteFourPageAppInst extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -26,12 +27,11 @@ class SiteFourPageZero extends React.Component {
             contHeight:0,
             contWidth:0,
             bodyHeight:0,
-            activeItem: 'Developers',
             devData:[]
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [5,2,2,2,3]
+        this.headerLayout = [3,3,1,1,2,3,2,2,2];
     }
 
     //go to
@@ -60,33 +60,43 @@ class SiteFourPageZero extends React.Component {
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
-        this.getDataDeveloper();
+        this.getData();
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-
+        if(nextProps.stateChange) {
+            this.getData();
+        }
     }
     receiveResult(result) {
-        console.log("receive == ", result)
+        console.log("receive  == ", result)
         _self.setState({devData:result})
     }
-    getDataDeveloper() {
-        services.getComputeService('flavor', this.receiveResult)
+    getData() {
+        services.getComputeService('appinst', this.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
-
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
-
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} siteId='appinst'></MapWithListView>
         );
     }
 
 };
 
+const mapStateToProps = (state) => {
 
+    console.log('change --- --- --- --- -- ',state)
+    let stateChange = false;
+    if(state.receiveDataReduce.params && state.receiveDataReduce.params.state === 'refresh'){
+        stateChange = true;
+    }
+    return (stateChange)? {
+        stateChange: true
+    }:null;
+};
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
@@ -95,4 +105,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageZero)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageAppInst)));

@@ -100,6 +100,7 @@ class TimeSeriesFlow extends React.Component {
                                     linecolor: 'rgba(255,255,255,.2)',
                                     linewidth: 1,
                                     color: 'rgba(255,255,255,.4)'
+
                                 },
                                 yaxis2: {
                                     showgrid: true,
@@ -116,7 +117,9 @@ class TimeSeriesFlow extends React.Component {
                                     linewidth: 1,
                                     color: 'rgba(255,255,255,.4)',
                                     overlaying: 'y',
-                                    side: 'right'
+                                    side: 'right',
+
+
                                 },
                                 showlegend: false,
 

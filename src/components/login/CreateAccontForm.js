@@ -17,15 +17,17 @@ class CreateAccontForm extends Component {
   state = {
     email: '',
     password: '',
+    role: 'superuser'
   }
 
   onSubmit = () => {
 
-    const { email, password } = this.state
+    const { email, password, role } = this.state
 
     const params = {
       email: email,
       password: password,
+      role: role
     }
 
     // create account
@@ -46,7 +48,7 @@ class CreateAccontForm extends Component {
     })
     .then(() => {
       // redirect
-      this.props.history.push("/dashboard")
+      this.props.history.push("/")
     })
     .catch((err) => {
       console.log("err:", err)
@@ -97,7 +99,14 @@ class CreateAccontForm extends Component {
                 value={password}
                 placeholder='********' />
             </Grid.Column>
-
+            <Grid.Column textAlign='left' width={16}>
+              <label>Role</label>
+              <Input
+                  style={{width: '100%'}}
+                  name='role'
+                  value='superuser'
+                  placeholder='superuser' />
+            </Grid.Column>
             <Grid.Column width={16}>
               <Button
                 style={{width: '100%'}}
@@ -105,6 +114,7 @@ class CreateAccontForm extends Component {
                 disabled={this.state.loading}
                 type='submit'>Create an account</Button>
             </Grid.Column>
+
 
           </Grid>
 

@@ -1,6 +1,6 @@
 // you can change the port number at server/index.js
 const hostname = window.location.hostname;
-const api = "http://"+hostname+":3030"
+const api = "https://"+hostname+":3030"
 console.log('api address == >>', api)
 const API_KEY = '__api_key__'
 

@@ -27,7 +27,8 @@ You can request http get method like this :
 You need MongoDB. Here's an example of installing MongoDB on mac os X
 ```
 brew update   
-brew install mongodb  
+brew install mongodb
+cd server  
 mkdir mongodb_data  
 mongod --dbpath mongodb_data/ 
 ```
@@ -40,6 +41,7 @@ Create account DB :
 in new terminal window
 $ mongo
 > show dbs or show collections 
+> use mobiledgex
 > db.createCollection('mex-mwc-mongo')
 > use mex-mwc-mongo
 ```

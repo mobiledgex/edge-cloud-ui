@@ -31,7 +31,7 @@ class SiteFourPageFive extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [1,2,2,1,3,2,3,2,2];
+        this.headerLayout = [2,2,1,3,2,3,2,2];
     }
 
     //go to

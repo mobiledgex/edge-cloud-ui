@@ -1,3 +1,12 @@
+
+.st1{fill:rgba(255,255,255,0);}
+
+/*
+.st2{filter:url(#Adobe_OpacityMaskFilter);}
+.st3{mask:url(#SVGID_1_);}
+.st4{fill:#CCCCCC;}
+*/
+
 #legendEl {
     position:fixed;
     bottom: 2em;
@@ -27,4 +36,12 @@
     width: 32px;
     height: 32px;
     display: block;
+}
+/*g.rsm-annotation {*/
+    /*font-size: 6px;*/
+    /*color: rgba(255,255,255,.7);*/
+/*}*/
+
+.annoteText {
+    fill: #e6e6e6; stroke: #747474; stroke-width:2;  font-size: 3px; paint-order: stroke;
 }

@@ -16,7 +16,7 @@ import MapWithListView from "./siteFour_page_six";
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
-class SiteFourPageZero extends React.Component {
+class SiteFourPageCluster extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -31,7 +31,7 @@ class SiteFourPageZero extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [5,2,2,2,3]
+        this.headerLayout = [5,2]
     }
 
     //go to
@@ -54,7 +54,7 @@ class SiteFourPageZero extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
+        console.log('info..will mount page one  0000   ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
@@ -68,11 +68,11 @@ class SiteFourPageZero extends React.Component {
 
     }
     receiveResult(result) {
-        console.log("receive == ", result)
+        console.log("receive cluster== ", result)
         _self.setState({devData:result})
     }
     getDataDeveloper() {
-        services.getComputeService('flavor', this.receiveResult)
+        services.getComputeService('cluster', this.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -95,4 +95,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageZero)));
+export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCluster)));

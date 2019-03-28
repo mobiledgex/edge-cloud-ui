@@ -9,3 +9,8 @@
     fill: rgb(0, 0, 0);
     fill-opacity: 0.15 !important;
 }
+
+
+.modebar {
+    display: none !important;
+}
