@@ -186,9 +186,9 @@ class DeveloperSideInfo extends React.Component {
             this.setState({dataArray:[], dataSeries:[], network:[], networkSeries:[], city:(nextProps.city.name)?nextProps.city.name:nextProps.city})
         }
 
-        if(nextProps.data) {
+        this.setState({visible:(nextProps.sideVisible && nextProps.city.name !== 'default') ? true : false});
 
-            this.setState({visible:(nextProps.sideVisible && nextProps.city.name !== 'default') ? true : false});
+        if(nextProps.data) {
             if(nextProps.data.cpuUsage) {
                 this.setState({cpu:nextProps.data.cpuUsage})
             }
@@ -293,12 +293,6 @@ class DeveloperSideInfo extends React.Component {
         }
         if(nextProps.city) {
             let cdName = 'No Name of Cloudlet';
-            // switch(nextProps.city.name) {
-            //     case 'Barcelona': cdName = 'Deutsche Telecom Barcelona MWC'; break;
-            //     case 'frankfurt': cdName = 'Macrometa Franfrut MWC'; break;
-            //     case 'hamburg': cdName = 'Mexdemo Hamburg MWC'; break;
-            //     default : cdName = 'Deutsche Telecom Barcelona MWC'; break;
-            // }
 
             cdName = nextProps.city.name;
 

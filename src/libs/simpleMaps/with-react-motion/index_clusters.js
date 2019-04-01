@@ -394,6 +394,41 @@ class ClustersMap extends Component {
                                                 this.state.cities.map((city, i) => (
                                                     <Marker className="markerTwo" key={i} marker={city} onClick={ this.handleCityClick }
                                                             style={{
+                                                            }}
+                                                    >
+
+                                                        <g version="1.1" id="Layer_1" x="0px" y="0px"
+                                                             viewBox="0 0 50.57 34.37" style={{enableBackground:"new 0 0 50.57 34.37;"}}
+                                                            class={(city.population > 35000000)?'levelFive':'levelOther'}
+                                                            cx={0}
+                                                            cy={0}
+                                                            r={cityScale(city.population)}
+                                                            fill={
+                                                                (city.population > 35000000)?'url(#levelFive)':
+                                                                    (city.population <= 35000000 &&  city.population > 30000000)?'url(#levelFour)':
+                                                                        (city.population <= 30000000 &&  city.population > 25000000)?'url(#levelThree)':
+                                                                            (city.population <= 25000000 &&  city.population > 20000000)?'url(#levelTwo)':
+                                                                                'url(#levelOne)'
+                                                            }
+                                                            stroke={styles.marker.stroke}
+                                                            strokeWidth={styles.marker.strokeWidth}
+                                                            transform={"translate(-24,-18)"}
+                                                        >
+                                                            <path className="st1" d="M40.41,13.5C39.08,6.27,32.75,0.78,25.13,0.78c-6.07,0-11.32,3.48-13.88,8.54C4.99,10.04,0.13,15.35,0.13,21.8c0,6.9,5.56,12.49,12.44,12.56v0h27.11c5.77,0,10.45-4.68,10.45-10.45C50.13,18.4,45.84,13.88,40.41,13.5z"/>
+                                                        </g>
+                                                        <text textAnchor="middle" y={8} className="marker_value"
+                                                              style={{fontSize: 24}}>
+                                                            {city.cost}
+                                                        </text>
+                                                        {/*<text textAnchor="middle" class="marker_label" x={(city.markerOffsetX)?(city.markerOffsetX):0} y={(city.markerOffset)?(city.markerOffset):24}>*/}
+                                                            {/*{city.name}*/}
+                                                        {/*</text>*/}
+                                                    </Marker>
+                                                ))
+                                            /*{(!this.state.detailMode) ?
+                                                this.state.cities.map((city, i) => (
+                                                    <Marker className="markerTwo" key={i} marker={city} onClick={ this.handleCityClick }
+                                                            style={{
                                                                 default: { stroke: "#5b3f64" },
                                                                 hover: { stroke: "#FF5722" },
                                                                 pressed: { stroke: "#FF5722" },
@@ -439,11 +474,8 @@ class ClustersMap extends Component {
                                                               style={{fontSize: 24}}>
                                                             {city.cost}
                                                         </text>
-                                                        {/*<text textAnchor="middle" class="marker_label" x={(city.markerOffsetX)?(city.markerOffsetX):0} y={(city.markerOffset)?(city.markerOffset):24}>*/}
-                                                            {/*{city.name}*/}
-                                                        {/*</text>*/}
                                                     </Marker>
-                                                ))
+                                                ))*/
                                                 :
                                                 this.state.citiesSecond.map((city, i) => (
                                                     <Marker

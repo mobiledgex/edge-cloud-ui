@@ -9,27 +9,23 @@ var certificate = fs.readFileSync('mex-ca.crt', 'utf8');
 var credentials = {key: privateKey, cert: certificate};
 
 
-
-
-
-
-
-
-
 const express = require('express')
 const app = express()
 const port = 3030
 var moment = require('moment');
 const Influx = require('influxdb-nodejs');
-const client = new Influx('http://uiteam:$word@mexdemo.influxdb.mobiledgex.net:8086/metrics');
-const cluster = new Influx('http://uiteam:$word@mexdemo.influxdb.mobiledgex.net:8086/clusterstats');
+const client = new Influx('https://uiteam:$word@mexdemo.influxdb.mobiledgex.net:8086/metrics');
+const cluster = new Influx('https://uiteam:$word@mexdemo.influxdb.mobiledgex.net:8086/clusterstats');
 
 const request = require('request');
 import session from 'express-session'
 import bodyParser from 'body-parser'
-import axios from 'axios-jsonp-pro';
+//import axios from 'axios-jsonp-pro';
+import axios from 'axios-https-proxy-fix';
 import QL from 'influx-ql'
 //
+
+axios.defaults.withCredentials = true;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use( bodyParser.json() );
@@ -429,10 +425,18 @@ app.post('/masterControl', (req, res, next) => {
         serviceBody = req.body.serviceBody;
     }
     console.log('Please waite loading token... ', serviceName)
-    axios.post('https://mexdemo.mc.mobiledgex.net:9900/api/v1/login', qs.stringify({
+    axios.post('http://mexdemo.mc.mobiledgex.net:9900/api/v1/login', qs.stringify({
         username: serviceBody.username,
         password: serviceBody.password
-    }))
+        }),
+        {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+                "Content-Type":"application/json"
+        }}
+        )
         .then(function (response) {
             console.log('success get pub token..', response.data)
             if(response.data) {
@@ -444,6 +448,10 @@ app.post('/masterControl', (req, res, next) => {
         .catch(function (error) {
             console.log(error);
         });
+
+    ////
+
+
 
 
 });
@@ -465,6 +473,9 @@ app.post('/currentUser', (req, res, next) => {
             {},
             {
                 headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
+                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
                     'Authorization':`Bearer ${superpass}`}
             }
         )
@@ -473,7 +484,7 @@ app.post('/currentUser', (req, res, next) => {
             res.json(response.data)
         })
         .catch(function (error) {
-            console.log(error);
+            console.log("request error === "+error);
         });
     }
 });
@@ -556,12 +567,9 @@ app.post('/showController', (req, res, next) => {
 // http
 
 //app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-
+//var httpServer = http.createServer(app);
+//httpServer.listen(8080);
 
 // https
-
-//var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
-
-//httpServer.listen(8080);
 httpsServer.listen(port, () => console.log(`<< https >> app listening on port ${port}!`));

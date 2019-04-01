@@ -60,6 +60,7 @@ class SiteTwoPageOne extends React.Component  {
             search: true,
             searchQuery: null,
             value: [],
+            condition:null
 
         }
         this.timeout = null;
@@ -176,7 +177,7 @@ class SiteTwoPageOne extends React.Component  {
 
         let locationData = [];
         result.map((data, j) => {
-            locationData.push({ "name": [data[0]['CloudletName']],    "coordinates": [data[0]['CloudletLocation']['longitude'], data[0]['CloudletLocation']['latitude']], "population": 17843000, "cost":data[0]['Operator'] })
+            if(data) locationData.push({ "name": [data[0]['CloudletName']],    "coordinates": [data[0]['CloudletLocation']['longitude'], data[0]['CloudletLocation']['latitude']], "population": 17843000, "cost":data[0]['Operator'] })
         })
 
         console.log('location data ..... data ....data....', locationData)
@@ -281,11 +282,16 @@ class SiteTwoPageOne extends React.Component  {
     componentWillReceiveProps(nextProps) {
         console.log('mapStateToProps receive next props ------->>>>>>', nextProps)
         if(nextProps.city) {
-            console.log('change city >>-->> ', String(nextProps.city.name))
-            //this.setState({sideVisible:(this.state.zoom === 'in')?true:false})
+            console.log('change city >>-->> ', nextProps.city.detailMode)
+            if(nextProps.city.detailMode) {
+                this.setState({sideVisible:true})
+                return;
+            } else {
+                this.setState({sideVisible:false})
+            }
             let cityName = String(nextProps.city.name)
             if(cityName !== 'dashboard'){
-                this.zoomIn('', nextProps.city.name)
+                this.zoomIn(true, nextProps.city.name)
             } else {
                 console.log('city name .', nextProps.city.name)
             }
@@ -321,12 +327,14 @@ class SiteTwoPageOne extends React.Component  {
         _self.setState({zoom:'in'})
 
         let cities = [];
-        if(obj) {
+        if(obj !== 'default' && typeof obj === 'object') {
             obj.map((city) => {
                 cities.push(city.replace('  /  ', ''))
             })
 
             console.log('cities', cities, _self.state.cloudletsData)
+        } else {
+            cities.push(obj)
         }
 
 
@@ -355,6 +363,8 @@ class SiteTwoPageOne extends React.Component  {
         if(from === 'fromDetail') {
             _self.setState({locationData:_self.state.savelocationData});
             _self.setState({sideVisible:detailMode})
+        } else {
+            _self.zoomOut(false)
         }
         _self.forceUpdate();
     }
@@ -378,7 +388,7 @@ class SiteTwoPageOne extends React.Component  {
             _self.setState({locationData:_self.state.savelocationData});
         }
         _self.resetMap(false)
-        _self.setState({sideVisible:false})
+        _self.setState({sideVisible:false, condition:'one'})
 
         _self.forceUpdate();
 
@@ -386,8 +396,17 @@ class SiteTwoPageOne extends React.Component  {
     }
 
     // List of Developer
+    /**********************
+     * find the cloudlets filtered by Operator & Developer
+     * @param e
+     * @param value
+     */
     handleChangeTwo = (e, {value}) => {
         console.log('change2.. value', value)
+
+        _self.resetMap(false)
+        _self.setState({sideVisible:false})
+
         if(value === 'default'){
             _self.resetMap(false)
             _self.setState({sideVisible:false})
@@ -395,17 +414,38 @@ class SiteTwoPageOne extends React.Component  {
             //filtering by cloudlet name
             let groupby = aggregation.groupBy(_self.state.devGroup, 'developer')
             let filtered = [];
+            let cloudlets = [];
+
             groupby[value].map((obj) => {
-                if(_self.state.dropdownValueThree === obj.cloudlet && _self.state.dropdownValueOne === obj.operator){
-                    _self.state.cloudletsData.map((data) => {
-                        if(data.CloudletName === obj.cloudlet) {
-                            filtered.push(data)
+
+                // condition of..
+                if(_self.state.dropdownValueOne !== 'default') {
+
+                    if(_self.state.dropdownValueThree !== 'default') {
+
+                        // operator & cloudlet
+                        if(_self.state.dropdownValueOne === obj.operator && _self.state.dropdownValueThree === obj.cloudlet) {
+                            cloudlets.push(obj['cloudlet']);
                         }
-                    })
+
+                    } else {
+                        // operator
+                        if(_self.state.dropdownValueOne === obj.operator) {
+                            cloudlets.push(obj['cloudlet']);
+                        }
+                    }
                 }
-
-
             })
+
+
+            cloudlets.map((cld) => {
+                _self.state.cloudletsData.map((cloudlet) => {
+                    if(cloudlet['CloudletName'] === cld) {
+                        filtered.push(cloudlet)
+                    }
+                })
+            })
+
             console.log('groupy Developer..', groupby, groupby[value])
             if(filtered.length > 0) {
                 _self.setState({locationData:_self.setLocationGroupData(filtered)});
@@ -418,7 +458,7 @@ class SiteTwoPageOne extends React.Component  {
                 });
             }
         }
-        _self.setState({ dropdownValueTwo: value })
+        _self.setState({ dropdownValueTwo: value, condition:'two' })
         _self.forceUpdate();
     }
     handleChangeThree = (e, {value}) => {
@@ -426,6 +466,7 @@ class SiteTwoPageOne extends React.Component  {
             console.log('change2.. value', value)
             _self.setState({sideVisible:false})
         } else {
+            _self.setState({sideVisible:true})
             //filtering by cloudlet name
             let groupby = aggregation.groupBy(_self.state.cloudletsData, 'CloudletName')
             console.log('groupy cloudlet..', groupby, groupby[value])
@@ -440,7 +481,7 @@ class SiteTwoPageOne extends React.Component  {
                 });
             }
         }
-        _self.setState({ dropdownValueThree: value })
+        _self.setState({ dropdownValueThree: value, condition:'three' })
         _self.props.handleChangeCity({name:value})
         _self.forceUpdate();
     }
@@ -480,29 +521,15 @@ class SiteTwoPageOne extends React.Component  {
 
     }
     /*
-    fluid
-            selection
-            multiple={multiple}
-            search={search}
-            options={options}
-            value={value}
-            placeholder='Add Users'
-            onChange={this.handleChange}
-            onSearchChange={this.handleSearchChange}
-            disabled={isFetching}
-            loading={isFetching}
 
-            "isFetching": false,
-  "multiple": true,
-  "search": true,
-  "searchQuery": null,
-  "value": [],
      */
     render() {
         return (
             <div id="bodyCont" className='console_body'>
                 <div className='console_worldmap'>
-                    <ContainerOne ref={ref => this.container = ref} tabIdx={this.props.tabName} data={this.state.locationData} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}  open={this.state.sideVisible}></ContainerOne>
+                    <ContainerOne ref={ref => this.container = ref} tabIdx={this.props.tabName} data={this.state.locationData}
+                                  gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}
+                                  open={this.state.sideVisible} condition={this.state.condition}></ContainerOne>
                 </div>
 
                 <div className='console_nav_left'>

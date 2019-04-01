@@ -101,6 +101,7 @@ class AnimatedMap extends Component {
         this.dir = 1;
         this.interval = null;
         this.moveMouse = false;
+        this.detailZoom = 4;
     }
     handleZoomIn() {
         this.setState({
@@ -136,7 +137,7 @@ class AnimatedMap extends Component {
     // 펼쳐진 지도( full screen map)
     handleCityClick(city) {
         this.setState({
-            zoom: this.state.zoom * 4,
+            zoom: this.detailZoom,
             center: city.coordinates,
             detailMode:true
         })
@@ -152,13 +153,14 @@ class AnimatedMap extends Component {
         console.log('marker on click...')
 
         city['customId'] = uuid.v4();
-
+        city['detailMode'] = false;
         _self.props.handleChangeCity(city)
 
 
     }
-    handleAnnoteClick(value, evt) {
-        console.log('handleAnnoteClick..', value, evt)
+    handleAnnoteClick(value) {
+        console.log('handleAnnoteClick..', value['name'][0])
+        this.handleViewZone({name:value['name'][0]})
     }
     handleGotoAnalysis(country) {
         if(this.props.parentProps) this.props.parentProps.gotoNext(country);
@@ -179,7 +181,7 @@ class AnimatedMap extends Component {
                 .style("opacity",1)
         }
         _self.setState({oldCountry:country.name})
-
+        country['detailMode'] = true;
         _self.props.handleChangeCity(country)
     }
 
@@ -311,7 +313,7 @@ class AnimatedMap extends Component {
             names = makeList(marker.name)
         }
 
-        this.setState({tooltipMsg:(names.length>0) ? names : marker.name})
+        this.setState({tooltipMsg:(names.length>0) ? names : (this.props.parentProps.condition === 'two')?marker.name[0]:marker.name})
         if(!this.moveMouse){
             ReactTooltip.rebuild()
             ReactTooltip.show(this.circle)
@@ -416,30 +418,7 @@ class AnimatedMap extends Component {
     removeZoomer() {
 
     }
-    makeAnnotation() {
-        return (
-            <Annotations>
-                {
-                    !this.state.detailMode ?
 
-                            this.state.cities.map((city, i) => (
-                                <Annotation
-                                    dx={ 40 }
-                                    dy={ -30 }
-                                    subject={ [ -61.5, 16.3 ] }
-                                    strokeWidth={ 1 }
-                                    stroke="#607D8B"
-                                    onClick={this.handleAnnoteClick}
-                                >
-                                    <text>{ city }</text>
-                                </Annotation>
-                            ))
-                    :null
-                }
-            </Annotations>
-
-        )
-    }
 
     makeMarkers() {
         return (
@@ -558,12 +537,20 @@ class AnimatedMap extends Component {
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('++++++++++++++', nextProps)
-        if(!nextProps.parentProps.open){
-            // this.setState({
-            //     center: [0,20],
-            //     zoom: 1,
-            //     detailMode:false
-            // })
+        if(nextProps.parentProps.open){
+            if(nextProps.parentProps.data && nextProps.parentProps.data.length > 0) {
+                this.setState({
+                    zoom: this.detailZoom,
+                    center: nextProps.parentProps.data[0].coordinates,
+                    detailMode: true
+                })
+            }
+        } else {
+            this.setState({
+                zoom: 1,
+                center: [0,20],
+                detailMode: false
+            })
         }
         this.fetchCities(nextProps.parentProps.data)
     }
@@ -653,7 +640,7 @@ class AnimatedMap extends Component {
                                                         >
                                                             <text className='annoteText'
                                                                 fill='#AFAFAF'
-                                                                  onClick={this.handleAnnoteClick.bind(this,city['name'][0])}
+                                                                  onClick={(a, b) => this.handleAnnoteClick(city)}
                                                             >
                                                                 { city['name'][0] }
                                                             </text>
