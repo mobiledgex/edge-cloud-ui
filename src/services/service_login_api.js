@@ -53,6 +53,7 @@ export function getCurrentUserInfo(resource, body, callback, self) {
 
 }
 
+
 export function example(resource, body, callback) {
     axios.post('https://'+hostname+':3030/register',qs.stringify({
         service: resource,

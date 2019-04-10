@@ -10,3 +10,7 @@ export const REGIST_DEVELOPER = "REGIST_DEVELOPER";
 export const CHANGE_CITY = "CHANGE_CITY";
 export const LOGIN_WITH_EMAIL = 'LOGIN_WITH_EMAIL';
 export const REFRESH_DATA = 'REFRESH_DATA';
+export const BTN_MANAGEMENT = 'BTN_MANAGEMENT';
+export const COMPUTE_ITEM = 'COMPUTE_ITEM';
+export const CLICK_CITY_LIST = 'CLICK_CITY_LIST';
+export const USER_INFO = 'USER_INFO';

@@ -1,5 +1,4 @@
 
-//TODO:
 //tab 클릭 이벤트 받기 redux 구조
 //tab 클릭 이벤트 발생하면 페이지 넘기, 페이지 넘김 애니메이션 적용
 
@@ -8,15 +7,12 @@ import { Grid,Dropdown } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom';
 import Alert from 'react-s-alert';
 //
-import BubbleMaps from '../libs/simpleMaps/bubbles-map';
 import AnimatedMap from '../libs/simpleMaps/with-react-motion';
 import DeveloperSideInfo from '../container/developerSideInfo'
 //service
 import * as Service from '../services';
 import * as ComputeService from '../services/service_compute_service';
-import * as ServiceDme from '../services/service_dme_api';
 //
-import moment from 'moment';
 import * as aggregation from '../utils';
 //redux
 import { connect } from 'react-redux';
@@ -173,6 +169,35 @@ class SiteTwoPageOne extends React.Component  {
         return locationData;
     }
 
+    setAppinstGroupData(result) {
+        function reduceUp(value) {
+            return Math.round(value)
+        }
+        let locations = []
+
+        result.map((item) => {
+            _self.state.cloudletsData.map((cloudlet) => {
+                if(item.cloudlet === cloudlet.CloudletName) locations.push({'LAT':reduceUp(cloudlet.CloudletLocation.latitude), 'LON':reduceUp(cloudlet.CloudletLocation.longitude), 'cloudlet':cloudlet.CloudletName, 'application':item.app})
+            })
+        })
+
+        let locationData = [];
+
+        let groupbyData = aggregation.groupByCompare(locations, ['LAT','LON']);
+        console.log('grouby groupbyData = ', groupbyData)
+        let names = []
+        Object.keys(groupbyData).map((key, i) => {
+            names[i] = [];
+            groupbyData[key].map((data, j) => {
+                names[i].push(data['application']+'  /  ');
+                if(j === groupbyData[key].length -1) locationData.push({ "name": names[i],    "coordinates": [data['LON'], data['LAT']], "population": 17843000, "cost":groupbyData[key].length })
+            })
+
+        })
+        console.log('location data ..... data ....data....', locationData)
+        return locationData;
+    }
+
     setLocationData(result) {
 
         let locationData = [];
@@ -191,7 +216,7 @@ class SiteTwoPageOne extends React.Component  {
         // set developers to dropDown
         /////////////////////////////////
         let nameObj = result.map((item) => (
-            {operator:item.OperatorName, developer:item.DeveloperName, cloudlet:item.CloudletName}
+            {app:item.AppName, operator:item.OperatorName, developer:item.DeveloperName, cloudlet:item.CloudletName}
         ))
 
         // let nameObj = result.map((item) => (
@@ -246,8 +271,9 @@ class SiteTwoPageOne extends React.Component  {
             this.setState({sideVisible: false})
         }
 
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         //get info cloudlet
-        ComputeService.getComputeService('cloudlet', this.receiveCloudlet)
+        ComputeService.getMCService('ShowCloudlet',{token:store.userToken, region:'US'}, _self.receiveCloudlet)
 
         //get info appInstance
         ComputeService.getComputeService('appinst', this.receiveAppInst)
@@ -291,7 +317,7 @@ class SiteTwoPageOne extends React.Component  {
             }
             let cityName = String(nextProps.city.name)
             if(cityName !== 'dashboard'){
-                this.zoomIn(true, nextProps.city.name)
+                this.zoomIn(nextProps.city.detailMode, nextProps.city.name)
             } else {
                 console.log('city name .', nextProps.city.name)
             }
@@ -425,13 +451,17 @@ class SiteTwoPageOne extends React.Component  {
 
                         // operator & cloudlet
                         if(_self.state.dropdownValueOne === obj.operator && _self.state.dropdownValueThree === obj.cloudlet) {
-                            cloudlets.push(obj['cloudlet']);
+                            //TODO: 2019-04-02 setting name of app to
+
+
+
+                            cloudlets.push(obj);
                         }
 
                     } else {
                         // operator
                         if(_self.state.dropdownValueOne === obj.operator) {
-                            cloudlets.push(obj['cloudlet']);
+                            cloudlets.push(obj);
                         }
                     }
                 }
@@ -440,15 +470,15 @@ class SiteTwoPageOne extends React.Component  {
 
             cloudlets.map((cld) => {
                 _self.state.cloudletsData.map((cloudlet) => {
-                    if(cloudlet['CloudletName'] === cld) {
-                        filtered.push(cloudlet)
+                    if(cloudlet['CloudletName'] === cld['cloudlet']) {
+                        filtered.push(cld)
                     }
                 })
             })
 
             console.log('groupy Developer..', groupby, groupby[value])
             if(filtered.length > 0) {
-                _self.setState({locationData:_self.setLocationGroupData(filtered)});
+                _self.setState({locationData:_self.setAppinstGroupData(filtered)});
             } else {
                 let err = 'There is no result'
                 Alert.error(err, {
@@ -456,6 +486,7 @@ class SiteTwoPageOne extends React.Component  {
                     effect: 'slide',
                     timeout: 5000
                 });
+                _self.props.handleChangeCity({name:value})
             }
         }
         _self.setState({ dropdownValueTwo: value, condition:'two' })
@@ -529,7 +560,7 @@ class SiteTwoPageOne extends React.Component  {
                 <div className='console_worldmap'>
                     <ContainerOne ref={ref => this.container = ref} tabIdx={this.props.tabName} data={this.state.locationData}
                                   gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}
-                                  open={this.state.sideVisible} condition={this.state.condition}></ContainerOne>
+                                  zoom={this.state.zoom} condition={this.state.condition}></ContainerOne>
                 </div>
 
                 <div className='console_nav_left'>

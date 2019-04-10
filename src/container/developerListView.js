@@ -9,6 +9,8 @@ import PopDetailViewer from './popDetailViewer';
 import './styles.css';
 import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
+import * as reducer from '../utils'
+import MaterialIcon from "material-icons-react";
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -45,6 +47,11 @@ class DeveloperListView extends React.Component {
         this.setState({ dimmer:dim, open: true, selected:data })
         //this.props.handleChangeSite(data.children.props.to)
     }
+    onHandleClicAdd(dim, data) {
+        console.log('on handle click == ', data)
+        this.setState({ dimmer:dim, open: true, selected:data })
+        //this.props.handleChangeSite(data.children.props.to)
+    }
 
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
@@ -69,14 +76,24 @@ class DeveloperListView extends React.Component {
 
     InputExampleFluid = (value) => <Input fluid placeholder={(this.state.dimmer === 'blurring')? '' : value} />
 
-    generateDOM(open, dimmer, width, height) {
+    generateDOM(open, dimmer, width, height, hideHeader) {
+
+        //let keys = Object.keys(this.state.dummyData);
+        //hide column filtered...
+        //let filteredKeys = (hideHeader) ? reducer.filterDefine(keys, hideHeader) : keys;
+        let filteredDummyData = Object.assign([], this.state.dummyData);
+
+        if(hideHeader && filteredDummyData.length > 0) {
+            filteredDummyData  = reducer.filterDefineKey(filteredDummyData, hideHeader);
+        }
+        console.log('filteredDummyData -- ', filteredDummyData)
 
         return layout.map((item, i) => (
 
             (i === 0)?
                 <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
-                        {this.TableExampleVeryBasic(width, height, this.props.headerLayout)}
+                        {this.TableExampleVeryBasic(width, height, this.props.headerLayout, hideHeader, this.state.dummyData)}
                     </div>
 
                     <Table.Footer className='listPageContainer'>
@@ -138,13 +155,16 @@ class DeveloperListView extends React.Component {
             direction: direction === 'ascending' ? 'descending' : 'ascending',
         })
     }
-    makeHeader(_keys, headL) {
+    makeHeader(_keys, headL, visibles) {
         const { column, direction } = this.state
         let keys = Object.keys(_keys);
-        let widthDefault = Math.round(16/keys.length);
-        console.log('default width header -- ', widthDefault)
-        return keys.map((key, i) => (
-            (i === keys.length -1) ?
+        //hide column filtered...
+        let filteredKeys = (visibles) ? reducer.filterDefine(keys, visibles) : keys;
+
+        let widthDefault = Math.round(16/filteredKeys.length);
+        console.log('default width header -- ', widthDefault, filteredKeys)
+        return filteredKeys.map((key, i) => (
+            (i === filteredKeys.length -1) ?
                 <Table.HeaderCell width={3} textAlign='center' sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
                     {key}
                 </Table.HeaderCell>
@@ -165,23 +185,24 @@ class DeveloperListView extends React.Component {
     detailView(item) {
         this.setState({detailViewData:item, openDetail:true})
     }
-    TableExampleVeryBasic = (w, h, headL) => (
+    TableExampleVeryBasic = (w, h, headL, hideHeader, datas) => (
         <Table className="viewListTable" basic='very' sortable striped celled fixed>
             <Table.Header className="viewListTableHeader">
                 <Table.Row>
-                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL):null}
+                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hideHeader):null}
                 </Table.Row>
             </Table.Header>
 
             <Table.Body className="tbBodyList">
                 {
-                    this.state.dummyData.map((item, i) => (
+                    datas.map((item, i) => (
                         <Table.Row key={i}>
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
                                     <Table.Cell key={j} textAlign='center' style={{whiteSpace:'nowrap'}}>
-                                        <Button onClick={() => alert('Are you sure?')}>Delete</Button>
-                                        <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
+                                        <Button key={`key_${j}`} color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.onHandleClick(true, item)}>Edit</Button>
+                                        {(item['AdminUsername'])?<Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.onHandleClicAdd(true, item)}>Add User</Button>:null}
+                                        <Button disabled={this.props.dimmInfo.onlyView} onClick={() => alert('Are you sure?')}><Icon name={'trash alternate'}/></Button>
                                     </Table.Cell>
                                 :
                                 (value === 'Mapped_ports')?
@@ -210,6 +231,7 @@ class DeveloperListView extends React.Component {
 
     render() {
         const { open, dimmer } = this.state;
+        const { hideHeader } = this.props;
         return (
             <ContainerDimensions>
                 { ({ width, height }) =>
@@ -221,7 +243,7 @@ class DeveloperListView extends React.Component {
                             {...this.props}
                             style={{width:width, height:height-20}}
                         >
-                            {this.generateDOM(open, dimmer, width, height)}
+                            {this.generateDOM(open, dimmer, width, height, hideHeader)}
                         </ReactGridLayout>
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                     </div>
@@ -241,11 +263,22 @@ class DeveloperListView extends React.Component {
 
 const mapStateToProps = (state) => {
     let account = state.registryAccount.account;
+    let dimm =  state.btnMnmt;
     console.log('account -- '+account)
+    
+    let accountInfo = account ? account + Math.random()*10000 : null;
+    let dimmInfo = dimm ? dimm : null;
 
-    return (account)? {
-        accountInfo: account + Math.random()*10000
-    }:null;
+    return {
+        accountInfo,
+        dimmInfo
+    }
+    
+    // return (dimm) ? {
+    //     dimmInfo : dimm
+    // } : (account)? {
+    //     accountInfo: account + Math.random()*10000
+    // } : null;
 };
 const mapDispatchProps = (dispatch) => {
     return {

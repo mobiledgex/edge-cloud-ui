@@ -134,7 +134,7 @@ class MapWithListView extends React.Component {
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%', height:'100%'}} >
 
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
-                        {this.TableExampleVeryBasic(width, height, this.props.headerLayout)}
+                        {this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys)}
                     </div>
 
                     <Table.Footer className='listPageContainer'>
@@ -179,13 +179,14 @@ class MapWithListView extends React.Component {
         return layout
     }
 
-    makeHeader(_keys, headL) {
+    makeHeader(_keys, headL, hidden) {
         const { column, direction } = this.state
         let keys = Object.keys(_keys);
         let widthDefault = Math.round(16/keys.length);
         console.log('default width header -- ', widthDefault)
         return keys.map((key, i) => (
-            (i === keys.length -1) ?
+            (!( String(hidden).indexOf(key) > -1 ))?
+                (i === keys.length -1) ?
                 <Table.HeaderCell width={3} textAlign='center' sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
                     {key}
                 </Table.HeaderCell>
@@ -193,6 +194,8 @@ class MapWithListView extends React.Component {
                 <Table.HeaderCell textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
                     {key}
                 </Table.HeaderCell>
+            :
+                null
         ));
     }
 
@@ -206,11 +209,11 @@ class MapWithListView extends React.Component {
     detailView(item) {
         this.setState({detailViewData:item, openDetail:true})
     }
-    TableExampleVeryBasic = (w, h, headL) => (
+    TableExampleVeryBasic = (w, h, headL, hidden) => (
         <Table className="viewListTable" basic='very' striped celled fixed sortable ref={ref => this.viewListTable = ref} style={{width:'100%'}}>
             <Table.Header className="viewListTableHeader"  style={{width:'100%'}}>
                 <Table.Row onMouseOver={() => console.log('onMouseOver..')}>
-                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL):null}
+                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hidden):null}
                 </Table.Row>
             </Table.Header>
             <Table.Body className="tbBodyList">
@@ -220,8 +223,8 @@ class MapWithListView extends React.Component {
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
                                     <Table.Cell key={j} textAlign='center' style={{whiteSpace:'nowrap'}}>
-                                        <Button onClick={() => this.setState({openDelete: true, selected:item})}>Delete</Button>
-                                        <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
+                                        <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}>Delete</Button>
+                                        <Button disabled={this.props.dimmInfo.onlyView} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                     </Table.Cell>
                                 :
                                 (value === 'Mapped_ports')?
@@ -239,11 +242,13 @@ class MapWithListView extends React.Component {
                                         </div>
                                     </Table.Cell>
                                 :
+                                (!( String(hidden).indexOf(value) > -1 )) ?
                                     <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)}  onMouseOver={() => this.handleMouseOverCell(String(item[value]))}  style={{cursor:'pointer'}}>
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                         {String(item[value])}
                                         </div>
                                     </Table.Cell>
+                                : null
                             ))}
                         </Table.Row>
                     ))
@@ -277,12 +282,38 @@ class MapWithListView extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-                console.log('nextProps--------', nextProps)
+        console.log('nextProps--------', nextProps,this.props.clickCity)
+        let cityCoordinates = []
+        let filterList = []
+
+        const reduceUp = (value) => {
+            return Math.round(value)
+        }
+        
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
         if(nextProps.devData) {
             this.setState({dummyData:nextProps.devData})
+        }
+
+        nextProps.clickCity.map((item) => {
+            cityCoordinates.push(item.coordinates)
+        })
+        if(nextProps.clickCityList !== this.props.clickCity && cityCoordinates[0]) {
+            nextProps.devData.map((list)=>{
+                let arr = [];
+                arr.push(reduceUp(list.CloudletLocation.longitude))
+                arr.push(reduceUp(list.CloudletLocation.latitude))
+                if(arr[0] == cityCoordinates[0][0] && arr[1] == cityCoordinates[0][1]) {
+                    filterList.push(list)
+                }
+            })
+        }
+        if(nextProps.clickCity.length == 0) {
+            this.setState({dummyData:nextProps.devData})
+        } else {
+            this.setState({dummyData:filterList})
         }
 
     }
@@ -348,11 +379,23 @@ class MapWithListView extends React.Component {
 
 const mapStateToProps = (state) => {
     let account = state.registryAccount.account;
+    let dimm =  state.btnMnmt;
     console.log('account -- '+account)
+    console.log(state)
+    let accountInfo = account ? account + Math.random()*10000 : null;
+    let dimmInfo = dimm ? dimm : null;
 
-    return (account)? {
-        accountInfo: account + Math.random()*10000
-    }:null;
+    return {
+        accountInfo,
+        dimmInfo,
+        clickCity: state.clickCityList.list
+    }
+
+    // return (dimm) ? {
+    //     dimmInfo : dimm
+    // } : (account)? {
+    //     accountInfo: account + Math.random()*10000
+    // } : null;
 };
 const mapDispatchProps = (dispatch) => {
     return {

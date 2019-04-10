@@ -11,12 +11,13 @@ import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
 import MapWithListView from "./siteFour_page_six";
+import Alert from "react-s-alert";
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
-class SiteFourPageCloudAnaly extends React.Component {
+class SiteFourPageOrganization extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -31,7 +32,8 @@ class SiteFourPageCloudAnaly extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [5,2,2,2,3]
+        this.headerLayout = [2,2,2,2,2,2,2,2,4]
+        this.hideHeader = ['Address','Phone']
     }
 
     //go to
@@ -59,34 +61,53 @@ class SiteFourPageCloudAnaly extends React.Component {
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
-        console.log('info.. ', this.childFirst, this.childSecond)
-        //this.getDataDeveloper();
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        console.log('info.. store == ', store)
+        if(store.userToken) this.getDataDeveloper(store.userToken);
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
+        if(nextProps.userToken) {
+            this.getDataDeveloper(nextProps.userToken);
+        }
 
     }
-    receiveResult(result) {
-        console.log("receive == ", result)
-        _self.setState({devData:result})
+    receiveResult(result,resource, self) {
+        console.log("receive == ", result, resource, self)
+        if(result.error) {
+            Alert.error('Invalid or expired token', {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+        } else {
+            _self.setState({devData:result})
+
+        }
     }
-    getDataDeveloper() {
-        services.getComputeService('flavor', this.receiveResult)
+    getDataDeveloper(token) {
+        services.getMCService('showOrg',{token:token}, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
-
-            <div>Cloud Analytics...</div>
-
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader}></DeveloperListView>
+            // <DeveloperListView headerLayout={this.headerLayout}></DeveloperListView>
         );
     }
 
 };
 
-
+const mapStateToProps = (state) => {
+    console.log('props in userToken..', state)
+    return {
+        userToken : (state.user.userToken) ? state.userToken: null,
+        userInfo: state.user.user
+    }
+};
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
@@ -95,4 +116,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCloudAnaly)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageOrganization)));

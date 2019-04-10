@@ -1,67 +1,3 @@
-/*
-
-{
-            "result": {
-                "fields": [],
-                "key": {
-                    "operator_key": {
-                        "name": "azure"
-                    },
-                    "name": "westus2-mexdemo"
-                },
-                "access_uri": "",
-                "location": {
-                    "latitude": 47.6062,
-                    "longitude": -122.332,
-                    "horizontal_accuracy": 0,
-                    "vertical_accuracy": 0,
-                    "altitude": 0,
-                    "course": 0,
-                    "speed": 0,
-                    "timestamp": {
-                        "seconds": "0",
-                        "nanos": 0
-                    }
-                },
-                "ip_support": "IpSupportDynamic",
-                "static_ips": "",
-                "num_dynamic_ips": 10
-            }
-        }
-
-this.dummyData = [[
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo1",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"},
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo2",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"},
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo3",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"},
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo4",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"},
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo5",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"},
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo6",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"},
-            {"Index":"110", "id":"5011", "Developer Name":"Mobiledgex SDK Demo", "Application Name":"Face Detection Demo7",
-                "Version":"1.0", "Image Path":"mexdemo-hamburg-cloudlet.tdg.mobiledgex.net","Image Type":"ImageTypeDocker",
-                "URI":"mobiledgexsdkdemofacedectiondemo10.mexdemo-westindia-cloudlet.azure.mobiledgex.net", "Flavor":"x1.small",
-                "Cloudlet Key":"azure", "Cloudlet Name":"mexdemo-hamburg-cloudlet"}
-
-        ]
- */
-
 
 import * as moment from 'moment';
 let trimData = (datas) => {
@@ -79,20 +15,41 @@ let generateData = (datas) => {
     console.log('format data - ', datas)
     let result = datas;
     let values = [];
-    if(result){
-        result.map((data, i) => {
-            let Index = i;
-            let CloudletName = data.result.key.name || '-';
-            let Operator = data.result.key.operator_key.name || '-';
-            let CloudletLocation = data.result.location || '-';
-            //let Ip_support = data.result.ip_support || '-';
-            let newRegistKey = ['CloudletName', 'Operator', 'CloudletLocation'];
 
-            values.push({ CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Edit:newRegistKey})
+    //---------------
+
+    let toArray = datas.data.split('\n')
+
+    let toJson = toArray.map((str)=>(JSON.parse(str)))
+
+
+    if(toJson){
+        toJson.map((dataResult, i) => {
+            if(dataResult.message) {
+                //{"key":{"operator_key":{"name":"TIP"},"name":"mpk-tip"},
+                // "location":{"latitude":37.485,"longitude":-122.1475,"timestamp":{}},"ip_support":2,"num_dynamic_ips":5}
+
+                // create
+                //{"region":"local","cloudlet":{"key":{"operator_key":{"name":"bigwaves"},"name":"oceanview"},"location":{"latitude":1,"longitude":1,"timestamp":{}},"ip_support":2,"num_dynamic_ips":30}}
+            } else {
+                let Index = i;
+                let CloudletName = dataResult.key.name || '-';
+                let Operator = dataResult.key.operator_key.name || '-';
+                let CloudletLocation = dataResult.location || '-';
+                let Ip_support = dataResult.ip_support || '-';
+                let Num_dynamic_ips = dataResult.num_dynamic_ips || '-';
+                let newRegistKey = ['CloudletName', 'Operator', 'CloudletLocation', 'Region', 'Ip_support', 'Num_dynamic_ips'];
+
+                values.push({ CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Ip_support:Ip_support, Num_dynamic_ips:Num_dynamic_ips, Edit:newRegistKey})
+            }
+
         })
     } else {
         console.log('there is no result')
     }
+
+
+    //----------------
 
     //ascending or descending
 
@@ -112,8 +69,8 @@ const retunDate = (str) => {
     var date = new Date(year, month-1, day, hour, minute);
     return moment(date).format('hh:mm');
 }
-const formatComputeClouldlet = (props) => (
+const FormatComputeClouldlet = (props) => (
     generateData(props)
 )
 
-export default formatComputeClouldlet;
+export default FormatComputeClouldlet;

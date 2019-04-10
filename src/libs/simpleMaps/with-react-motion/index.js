@@ -313,7 +313,8 @@ class AnimatedMap extends Component {
             names = makeList(marker.name)
         }
 
-        this.setState({tooltipMsg:(names.length>0) ? names : (this.props.parentProps.condition === 'two')?marker.name[0]:marker.name})
+        //this.setState({tooltipMsg:(names.length>0) ? names : (this.props.parentProps.condition === 'two')?marker.name[0]:marker.name})
+        this.setState({tooltipMsg:(names.length>0) ? names : marker.name})
         if(!this.moveMouse){
             ReactTooltip.rebuild()
             ReactTooltip.show(this.circle)
@@ -537,21 +538,21 @@ class AnimatedMap extends Component {
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('++++++++++++++', nextProps)
-        if(nextProps.parentProps.open){
-            if(nextProps.parentProps.data && nextProps.parentProps.data.length > 0) {
-                this.setState({
-                    zoom: this.detailZoom,
-                    center: nextProps.parentProps.data[0].coordinates,
-                    detailMode: true
-                })
-            }
-        } else {
-            this.setState({
-                zoom: 1,
-                center: [0,20],
-                detailMode: false
-            })
-        }
+        // if(nextProps.parentProps.zoom === 'in'){
+        //     if(nextProps.parentProps.data && nextProps.parentProps.data.length > 0) {
+        //         this.setState({
+        //             zoom: this.detailZoom,
+        //             center: nextProps.parentProps.data[0].coordinates,
+        //             detailMode: true
+        //         })
+        //     }
+        // } else {
+        //     this.setState({
+        //         zoom: 1,
+        //         center: [0,20],
+        //         detailMode: false
+        //     })
+        // }
         this.fetchCities(nextProps.parentProps.data)
     }
 

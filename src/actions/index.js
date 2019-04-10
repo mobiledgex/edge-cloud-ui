@@ -80,3 +80,31 @@ export function refreshData ({ params }) {
         params
     }
 }
+export function btnManagement (view) {
+    console.log('BTN_MANAGEMENT == ', view)
+    return {
+        type: types.BTN_MANAGEMENT,
+        view
+    }
+}
+export function computeItem (item) {
+    console.log('COMPUTE_ITEM == ', item)
+    return {
+        type: types.COMPUTE_ITEM,
+        item
+    }
+}
+export function clickCityList (list) {
+    console.log('CLICK_CITY_LIST == ', list)
+    return {
+        type: types.CLICK_CITY_LIST,
+        list
+    }
+}
+export function userInfo (info) {
+    console.log('USER_INFO == ', info)
+    return {
+        type: types.USER_INFO,
+        info
+    }
+}

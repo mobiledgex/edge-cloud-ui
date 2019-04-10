@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 
 // semantic-ui
-import { Container, Form, Input, Button, Grid } from 'semantic-ui-react'
+import { Container, Form, Input, Button, Grid, Select } from 'semantic-ui-react'
 
 // API
 import * as MyAPI from '../utils/MyAPI'
@@ -17,7 +17,7 @@ class CreateAccontForm extends Component {
   state = {
     email: '',
     password: '',
-    role: 'superuser'
+    role: ''
   }
 
   onSubmit = () => {
@@ -38,7 +38,7 @@ class CreateAccontForm extends Component {
       // success
       const params = {
         user: data.user,
-        login_token: data.login_token,
+        login_token: data.login_token
       }
 
       localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(params))
@@ -68,6 +68,45 @@ class CreateAccontForm extends Component {
   render() {
 
     const { email, password } = this.state
+
+    //rest api 데이터 연동 예정(현재 http통신 X)
+    const roleOptions = [
+      {
+        key: 'MEXADMIN',
+        text: 'MEXADMIN',
+        value: 'MEXADMIN'
+      },
+      {
+        key: 'Developer Manager',
+        text: 'Developer Manager',
+        value: 'Developer Manager'
+      },
+      {
+        key: 'Developer Contributor',
+        text: 'Developer Contributor',
+        value: 'Developer Contributor'
+      },
+      {
+        key: 'Developer Viewer',
+        text: 'Developer Viewer',
+        value: 'Developer Viewer'
+      },
+      {
+        key: 'Operator Manager',
+        text: 'Operator Manager',
+        value: 'Operator Manager'
+      },
+      {
+        key: 'Operator Contributor',
+        text: 'Operator Contributor',
+        value: 'Operator Contributor'
+      },
+      {
+        key: 'Operator Viewer',
+        text: 'Operator Viewer',
+        value: 'Operator Viewer'
+      },
+    ]
 
     return(
       <Container text className='create_acount_form'>
@@ -101,11 +140,17 @@ class CreateAccontForm extends Component {
             </Grid.Column>
             <Grid.Column textAlign='left' width={16}>
               <label>Role</label>
-              <Input
+              {/* <Input
                   style={{width: '100%'}}
                   name='role'
                   value='superuser'
-                  placeholder='superuser' />
+                  placeholder='superuser' /> */}
+              <Select
+                placeholder='role'
+                name='role'
+                style={{width: '100%'}}
+                options = {roleOptions}
+                onChange={this.handleChange} />
             </Grid.Column>
             <Grid.Column width={16}>
               <Button

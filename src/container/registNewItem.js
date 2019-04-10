@@ -28,8 +28,39 @@ export default class RegistNewItem extends React.Component {
             dropdownValueFour:'',
             dropdownValueFive:'',
             dropdownValueSix:'',
+            dropdownValueOrgType:'',
+            dropdownValueOrgRole:'',
             cloudletResult:null,
             appResult:null,
+            devOptionsOrgType:[
+                {
+                    key:'Developer',
+                    value:'Developer',
+                    text:'Developer',
+                },
+                {
+                    key:'Operator',
+                    value:'Operator',
+                    text:'Operator',
+                }
+            ],
+            devOptionsOrgRole:[
+                {
+                    key:'Manager',
+                    value:'Manager',
+                    text:'Manager',
+                },
+                {
+                    key:'Contributor',
+                    value:'Contributor',
+                    text:'Contributor',
+                },
+                {
+                    key:'Viewer',
+                    value:'Viewer',
+                    text:'Viewer',
+                },
+            ],
         }
         _self = this;
     }
@@ -79,8 +110,25 @@ export default class RegistNewItem extends React.Component {
         console.log('change input value is ==', value)
         this.setState({ dropdownValueSix: value })
     }
+    handleChangeOrgType = (e, {value}) => {
+        console.log('change input value is ==', value)
+        this.setState({ dropdownValueOrgType: value })
+    }
+    handleChangeOrgRole = (e, {value}) => {
+        console.log('change input value is ==', value)
+        this.setState({ dropdownValueOrgRole: value })
+    }
+    handleChangeLong = (e, {value}) => {
+        console.log('change input value is ==', value)
+
+    }
+    handleChangeLat = (e, {value}) => {
+        console.log('change input value is ==', value)
+
+    }
     setCloudletList = (operNm) => {
         let cl = [];
+        if(!_self.state.cloudletResult) return;
         _self.state.cloudletResult[operNm].map((oper, i) => {
             if(i === 0) _self.setState({dropdownValueThree: oper.CloudletName})
             cl.push({ key: i, value: oper.CloudletName, text: oper.CloudletName })
@@ -183,6 +231,8 @@ export default class RegistNewItem extends React.Component {
         //playing spinner
         this.props.handleSpinner(true)
 
+        //TODO: 20190410 메뉴 별 구분 필요
+
         //close
         this.close();
     }
@@ -197,20 +247,31 @@ export default class RegistNewItem extends React.Component {
         // }, 2000)
     }
     InputExampleFluid = (value, i, key) => (
-        (key === 'OperatorName')?
+        (key === 'Operator')?
             <Dropdown placeholder='Select Operator' fluid search selection options={this.state.devOptionsOne} value={this.state.dropdownValueOne} onChange={this.handleChangeOne}/>
             : (key === 'DeveloperName')?
             <Dropdown placeholder='Select Developer' fluid search selection options={this.state.devOptionsTwo} value={this.state.dropdownValueTwo} onChange={this.handleChangeTwo} />
-            : (key === 'CloudletName')?
-            <Dropdown placeholder='Select Cloudlet' fluid search selection options={this.state.devOptionsThree} value={this.state.dropdownValueThree} onChange={this.handleChangeThree} />
+            //: (key === 'CloudletName')?
+            //<Dropdown placeholder='Select Cloudlet' fluid search selection options={this.state.devOptionsThree} value={this.state.dropdownValueThree} onChange={this.handleChangeThree} />
             : (key === 'AppName')?
             <Dropdown placeholder='Select AppName' fluid search selection options={this.state.devOptionsFour} value={this.state.dropdownValueFour} onChange={this.handleChangeFour} />
             : (key === 'ClusterInst')?
             <Dropdown placeholder='Select ClusterInst' fluid search selection options={this.state.devOptionsSix} value={this.state.dropdownValueSix} onChange={this.handleChangeSix} />
             : (key === 'Version')?
             <Dropdown placeholder='Select Version' fluid search selection options={this.state.devOptionsFive} value={this.state.dropdownValueFive} onChange={this.handleChangeFive} />
-            :
-            <Input ref={ref => this['input_'+i] = ref} onClick={(a)=>this.onClickInput(a,i)} fluid placeholder={(this.state.dimmer === 'blurring')? '' : value } onChange={this.handleChangeFive} />
+            : (key === 'Type')?
+            <Dropdown placeholder='Select Type' fluid search selection options={this.state.devOptionsOrgType} value={this.state.handleChangeOrgType} onChange={this.handleChangeOrgType} />
+            : (key === 'Role')?
+            <Dropdown placeholder='Select Role' fluid search selection options={this.state.devOptionsOrgRole} value={this.state.handleChangeOrgRole} onChange={this.handleChangeOrgRole} />
+            : (key === 'CloudletLocation')?
+            <Grid>
+                <Grid.Row columns={2}>
+                    <Grid.Column><span>Longitude</span><Input ref={ref => this['input_'+i] = ref} fluid onClick={(a)=>this.onClickInput(a,i)} placeholder={(this.state.dimmer === 'blurring')? '' : value } onChange={this.handleChangeLong} /></Grid.Column>
+                    <Grid.Column><span>Latitude</span><Input ref={ref => this['input_'+(i+100)] = ref} fluid onClick={(a)=>this.onClickInput(a,i)} placeholder={(this.state.dimmer === 'blurring')? '' : value } onChange={this.handleChangeLat} /></Grid.Column>
+                </Grid.Row>
+            </Grid>
+
+            : <Input ref={ref => this['input_'+i] = ref} onClick={(a)=>this.onClickInput(a,i)} fluid placeholder={(this.state.dimmer === 'blurring')? '' : value } onChange={this.handleChangeFive} />
     )
 
 //Object.keys(data[0]).map((key, i)=>(

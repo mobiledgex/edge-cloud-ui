@@ -35,7 +35,7 @@ let customMargin = {
 }
 let methodCounts = [{mtName:'',sum:0},{mtName:'',sum:0},{mtName:'',sum:0}]
 let dataOptions = [ { key: 'af', value: 'af', text: 'Disk W/R' },{ key: 'af2', value: 'af2', text: 'Network I/O' } ]
-const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, file, recv, send, network, networkSeries, lineLimit, redraw, cloudletInfo, scatterData, methodCounts }) => (
+const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, file, recv, send, network, networkSeries, lineLimit, redraw, cloudletInfo, scatterData, methodCounts, self }) => (
     <Sidebar
         as={Menu}
         animation={animation}
@@ -47,10 +47,13 @@ const VerticalSidebar = ({ animation, direction, visible, gotoNext, cpu, mem, fi
     >
         <Grid>
             <Grid.Row>
-                <Header>
-                    <Header.Content onClick={gotoNext}>
-                        {cloudletInfo}
-                        <MaterialIcon icon={'arrow_forward'} />
+                <Header style={{width:'100%'}}>
+                    <Header.Content className="next">
+                        <div style={{position:'relative'}} onClick={gotoNext}>
+                            {cloudletInfo}
+                            <MaterialIcon icon={'arrow_forward'} />
+                        </div>
+                        <div className="fold-icon" onClick={self.handleMinimize}><MaterialIcon icon={'arrow_right'} /></div>
                     </Header.Content>
                 </Header>
             </Grid.Row>
@@ -307,6 +310,9 @@ class DeveloperSideInfo extends React.Component {
     handleClickBtn() {
         _self.props.gotoNext();
     }
+    handleMinimize() {
+        _self.setState({visible: !_self.state.visible})
+    }
 
 
     render() {
@@ -320,7 +326,7 @@ class DeveloperSideInfo extends React.Component {
                                  send={this.state.send} network={this.state.network} networkSeries={this.state.networkSeries}
                                  lineLimit={this.state.lineLimit} redraw={this.state.redraw}
                                  cloudletInfo={this.state.cloudletInfo} scatterData={this.state.scatterData} methodCounts={this.state.methodCounts}
-                                 methodCall={this.state.methodCall}
+                                 methodCall={this.state.methodCall} self={this}
                 />
             </div>
         )

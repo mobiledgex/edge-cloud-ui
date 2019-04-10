@@ -10,6 +10,7 @@ var credentials = {key: privateKey, cert: certificate};
 
 
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const port = 3030
 var moment = require('moment');
@@ -20,13 +21,22 @@ const cluster = new Influx('https://uiteam:$word@mexdemo.influxdb.mobiledgex.net
 const request = require('request');
 import session from 'express-session'
 import bodyParser from 'body-parser'
-//import axios from 'axios-jsonp-pro';
 import axios from 'axios-https-proxy-fix';
-import QL from 'influx-ql'
-//
+import QL from 'influx-ql';
+
+//import axios from 'axios-jsonp-pro';
+
+
+///////////////////////////////////////////////////
+/**
+ * reference
+ * https://expressjs.com/en/resources/middleware/cors.html
+ **/
+///////////////////////////////////////////////////
 
 axios.defaults.withCredentials = true;
 
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use( bodyParser.json() );
 
@@ -34,15 +44,22 @@ app.use(session({
     secret: 'dog vs cat',
     resave: true,
     saveUninitialized: false,
+    rejectUnauthorized: false
 }))
 
 
 // Add headers
+// app.use(function (req, res, next) {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
+//     res.setHeader('Access-Control-Allow-Credentials', true);
+//     next();
+// });
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Headers', 'Origin', 'X-Requested-With,content-type,Accept');
     next();
 });
 
@@ -259,28 +276,28 @@ curl -G 'http://mexdemo.influxdb.mobiledgex.net:8086/query'
 --data-urlencode "q=select tcpConns from \"crm-cluster\" where \"cluster\" = 'tdg-barcelona-niantic'"
 */
 //일정 시간 간격으로 지표를 개별 요청
-app.get('/tcpudp', (req, res, next) => {
-    let clusterName = '';
-    let appName = '';
-    console.log('request tcp—— ', req.query)
-    if(req.query.cluster){
-        clusterName = req.query.cluster;
-        appName = req.query.app;
-    }else{
-        clusterName = 'tdg-barcelona-niantic';
-        appName = '';
-    }
-    cluster.query('crm-cluster') // from "table"
-        .addFunction(columnName[0]) //select "column"
-        .addFunction(columnName[1]) //select "column"
-        .where('cluster', clusterName)
-        .where('app', appName)
-        .where('time', timeFrom, '>')
-        .then(
-            data => res.json(data)
-        )
-        .catch(err => console.log(err))
-})
+// app.get('/tcpudp', (req, res, next) => {
+//     let clusterName = '';
+//     let appName = '';
+//     console.log('request tcp—— ', req.query)
+//     if(req.query.cluster){
+//         clusterName = req.query.cluster;
+//         appName = req.query.app;
+//     }else{
+//         clusterName = 'tdg-barcelona-niantic';
+//         appName = '';
+//     }
+//     cluster.query('crm-cluster') // from "table"
+//         .addFunction(columnName[0]) //select "column"
+//         .addFunction(columnName[1]) //select "column"
+//         .where('cluster', clusterName)
+//         .where('app', appName)
+//         .where('time', timeFrom, '>')
+//         .then(
+//             data => res.json(data)
+//         )
+//         .catch(err => console.log(err))
+// })
 /*
 curl -G 'http://mexdemo.influxdb.mobiledgex.net:8086/query'
 --data-urlencode "u=uiteam"
@@ -415,79 +432,24 @@ app.post('/delete', function(req, res){
 });
 
 /*****************************
+ * 2019 04 04 Post MWC
+ * mc.mobiledgex.net
  * Start Controller Manager
  ** ****************************/
-app.post('/masterControl', (req, res, next) => {
-    let serviceName = '';
-    let serviceBody = {};
-    if(req.body.service){
-        serviceName = req.body.service;
-        serviceBody = req.body.serviceBody;
-    }
-    console.log('Please waite loading token... ', serviceName)
-    axios.post('http://mexdemo.mc.mobiledgex.net:9900/api/v1/login', qs.stringify({
-        username: serviceBody.username,
-        password: serviceBody.password
-        }),
-        {
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-                "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                "Content-Type":"application/json"
-        }}
-        )
-        .then(function (response) {
-            console.log('success get pub token..', response.data)
-            if(response.data) {
-                res.json(response.data)
-            } else {
 
-            }
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+const apiMC = require('./routes/apiMC');
+app.post('/masterControl', apiMC.getToken);
+app.post('/createUser', apiMC.createUser);
+app.post('/showOrg', apiMC.showOrg);
+app.post('/ShowFlavor', apiMC.ShowFlavor);
+app.post('/ShowCloudlet', apiMC.ShowCloudlet);
+app.post('/CreateCloudlet', apiMC.CreateCloudlet);
+app.post('/showController', apiMC.showController);
 
-    ////
-
-
-
-
-});
-
-
+app.post('/currentUser', apiMC.currentUser);
 /*
 --auth-type=jwt --auth=$SUPERPASS
  */
-app.post('/currentUser', (req, res, next) => {
-    let superpass = null;
-    if(req.body.serviceBody){
-        superpass = req.body.serviceBody.superuser;
-    }
-    console.log('***** get current user ... ', req.body.serviceBody)
-
-    if(req.body.serviceBody) {
-        axios.post(
-            'https://mexdemo.mc.mobiledgex.net:9900/api/v1/auth/user/current',
-            {},
-            {
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-                    'Authorization':`Bearer ${superpass}`}
-            }
-        )
-        .then(function (response) {
-            console.log('success get current user..', response.data)
-            res.json(response.data)
-        })
-        .catch(function (error) {
-            console.log("request error === "+error);
-        });
-    }
-});
 app.post('/showRole', (req, res, next) => {
     let superpass = null;
     if(req.body.serviceBody){
@@ -497,7 +459,7 @@ app.post('/showRole', (req, res, next) => {
 
     if(req.body.serviceBody) {
         axios.post(
-            'https://mexdemo.mc.mobiledgex.net:9900/api/v1/auth/role/show',
+            mcUrl + '/api/v1/auth/role/show',
             {},
             {
                 headers: {
@@ -522,7 +484,7 @@ app.post('/showOrg', (req, res, next) => {
 
     if(req.body.serviceBody) {
         axios.post(
-            'https://mexdemo.mc.mobiledgex.net:9900/api/v1/auth/org/show',
+            mcUrl + '/api/v1/auth/org/show',
             {},
             {
                 headers: {
@@ -539,31 +501,7 @@ app.post('/showOrg', (req, res, next) => {
     }
 });
 
-app.post('/showController', (req, res, next) => {
-    let superpass = null;
-    if(req.body.serviceBody){
-        superpass = req.body.serviceBody.superuser;
-    }
-    console.log('***** get current user ... ', req.body.serviceBody)
 
-    if(req.body.serviceBody) {
-        axios.post(
-            'https://mexdemo.mc.mobiledgex.net:9900/api/v1/auth/controller/show',
-            {},
-            {
-                headers: {
-                    'Authorization':`Bearer ${superpass}`}
-            }
-        )
-            .then(function (response) {
-                console.log('success get ..', response.data)
-                res.json(response.data)
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
-});
 // http
 
 //app.listen(port, () => console.log(`Example app listening on port ${port}!`))

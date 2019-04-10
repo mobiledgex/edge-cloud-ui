@@ -6,7 +6,7 @@ import {
     Geographies,
     Geography,
     Markers,
-    Marker,
+    Marker, Annotations, Annotation
 } from "react-simple-maps"
 import { Button, Icon } from 'semantic-ui-react';
 import ContainerDimensions from 'react-container-dimensions'
@@ -56,7 +56,8 @@ class ClustersMap extends Component {
             detailMode:false,
             selectedCity:'Barcelona',
             oldCountry:'',
-            unselectCity:''
+            unselectCity:'',
+            clickCities:[]
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
@@ -87,6 +88,7 @@ class ClustersMap extends Component {
             zoom: zoomControls.zoom,
             detailMode:false
         })
+        this.props.handleChangeClickCity([]);
         this.props.parentProps.resetMap(false)
     }
     /* example:
@@ -115,11 +117,22 @@ class ClustersMap extends Component {
                 .ease(d3.easeBack)
                 .attr("r", markerSize[0])
         }
-
+        let clickMarker = [];
+        city.name.map((item, i) => {
+            clickMarker.push({ "name": item,    "coordinates": city.coordinates, "population": 17843000, "cost":1 })
+        })
+        this.setState({
+            clickCities:clickMarker
+        })
+        this.props.handleChangeClickCity(clickMarker);
         this.props.handleChangeCity(city)
-
-
     }
+
+    // map marker text click
+    handleAnnoteClick(city) {
+        console.log("@@@&&",city)
+    }
+
     handleGotoAnalysis(country) {
         if(this.props.parentProps) this.props.parentProps.gotoNext(country);
     }
@@ -288,8 +301,17 @@ class ClustersMap extends Component {
         function reduceUp(value) {
             return Math.round(value)
         }
+        const mapName = (item) => {
+            if (this.props.itemLabel == "Cloudlets") {
+                return item.CloudletName
+            } else if (this.props.itemLabel == "App Instances") {
+                return item.AppName
+            } else {
+                return
+            }
+        }
         let locations = data.map((item) => (
-            {LAT:reduceUp(item.CloudletLocation.latitude), LON:reduceUp(item.CloudletLocation.longitude), cloudlet:item.DeveloperName}
+            {LAT:reduceUp(item.CloudletLocation.latitude), LON:reduceUp(item.CloudletLocation.longitude), cloudlet:mapName(item)}
         ))
 
 
@@ -297,9 +319,18 @@ class ClustersMap extends Component {
 
         let groupbyData = aggregation.groupByCompare(locations, ['LAT','LON']);
 
+        const cloundletName = (key) => {
+            let nameArray = [];
+            groupbyData[key].map((item, i) => {
+                nameArray[i] = groupbyData[key][i]['cloudlet'];
+            })
+
+            return nameArray;
+        }
+
         console.log('data locations -- ', Object.keys(groupbyData))
         Object.keys(groupbyData).map((key) => {
-            locationData.push({ "name": "barcelona",    "coordinates": [groupbyData[key][0]['LON'], groupbyData[key][0]['LAT']], "population": 17843000, "cost":groupbyData[key].length })
+            locationData.push({ "name": cloundletName(key),    "coordinates": [groupbyData[key][0]['LON'], groupbyData[key][0]['LAT']], "population": 17843000, "cost":groupbyData[key].length })
         })
         //
         let cloudlet = data.map((item) => (
@@ -315,8 +346,6 @@ class ClustersMap extends Component {
         Object.keys(groupbyClData).map((key) => {
             cloudletData.push({ "name": key,    "coordinates": [groupbyClData[key][0]['LON'], groupbyClData[key][0]['LAT']], "population": 17843000, "cost":groupbyClData[key].length })
         })
-        //
-
 
         console.log('cloudletData  -- ', cloudletData)
         this.setState({
@@ -328,7 +357,7 @@ class ClustersMap extends Component {
     }
 
     render() {
-        const grdColors = ['#000000', '#00CC44', '#88ff00', '#FFEE00', '#FF7700', '#FF0022', '#6c50ff']
+        const grdColors = ['#000000', '#00CC44', '#88ff00', '#FFEE00', '#FF7700', '#FF0022', '#66CCFF', '#6c50ff']
         return (
             <div style={wrapperStyles}>
                 <div className="zoom-inout-reset-clusterMap" style={{left:8, bottom:4, position:'absolute', display:'block'}}>
@@ -348,6 +377,7 @@ class ClustersMap extends Component {
                 <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[3]} endColor={grdColors[3]} idCSS="levelThree" rotation={0}/>
                 <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[2]} endColor={grdColors[2]} idCSS="levelTwo" rotation={0}/>
                 <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[6]} endColor={grdColors[6]} idCSS="levelOne" rotation={0}/>
+                <RadialGradientSVG startColor={grdColors[0]} middleColor={grdColors[7]} endColor={grdColors[7]} idCSS="levelSeven" rotation={0}/>
 
                 <ContainerDimensions>
                     { ({ width, height }) =>
@@ -390,15 +420,14 @@ class ClustersMap extends Component {
                                                 ))}
                                         </Geographies>
                                         <Markers>
-                                            {(!this.state.detailMode) ?
+                                            {(this.props.itemLabel == "Cloudlets" && !this.state.detailMode) ?
                                                 this.state.cities.map((city, i) => (
                                                     <Marker className="markerTwo" key={i} marker={city} onClick={ this.handleCityClick }
-                                                            style={{
-                                                            }}
+                                                            style={{}}
                                                     >
 
                                                         <g version="1.1" id="Layer_1" x="0px" y="0px"
-                                                             viewBox="0 0 50.57 34.37" style={{enableBackground:"new 0 0 50.57 34.37;"}}
+                                                            viewBox="0 0 50.57 34.37" style={{enableBackground:"new 0 0 50.57 34.37;"}}
                                                             class={(city.population > 35000000)?'levelFive':'levelOther'}
                                                             cx={0}
                                                             cy={0}
@@ -410,11 +439,46 @@ class ClustersMap extends Component {
                                                                             (city.population <= 25000000 &&  city.population > 20000000)?'url(#levelTwo)':
                                                                                 'url(#levelOne)'
                                                             }
+
                                                             stroke={styles.marker.stroke}
                                                             strokeWidth={styles.marker.strokeWidth}
-                                                            transform={"translate(-24,-18)"}
+                                                            transform={"translate(-24,-19)"} mix-blend-mode="lighten"
                                                         >
-                                                            <path className="st1" d="M40.41,13.5C39.08,6.27,32.75,0.78,25.13,0.78c-6.07,0-11.32,3.48-13.88,8.54C4.99,10.04,0.13,15.35,0.13,21.8c0,6.9,5.56,12.49,12.44,12.56v0h27.11c5.77,0,10.45-4.68,10.45-10.45C50.13,18.4,45.84,13.88,40.41,13.5z"/>
+                                                            {/* 필터 innershadow */}
+                                                            <defs>
+                                                                <filter id="innershadow" x0="-50%" y0="-50%" width="200%" height="200%">
+                                                                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"></feGaussianBlur>
+                                                                    <feOffset dy="2" dx="3"></feOffset>
+                                                                    <feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite>
+
+                                                                    <feFlood flood-color={
+                                                                        (city.population > 35000000)?grdColors[5]:
+                                                                            (city.population <= 35000000 &&  city.population > 30000000)?grdColors[4]:
+                                                                                (city.population <= 30000000 &&  city.population > 25000000)?grdColors[3]:
+                                                                                    (city.population <= 25000000 &&  city.population > 20000000)?grdColors[2]:
+                                                                                        grdColors[6]}
+                                                                        flood-opacity="0.75"></feFlood>
+                                                                    <feComposite in2="shadowDiff" operator="in"></feComposite>
+                                                                    <feComposite in2="SourceGraphic" operator="over" result="firstfilter"></feComposite>
+
+
+                                                                    <feGaussianBlur in="firstfilter" stdDeviation="3" result="blur2"></feGaussianBlur>
+                                                                    <feOffset dy="-2" dx="-3"></feOffset>
+                                                                    <feComposite in2="firstfilter" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite>
+
+                                                                    <feFlood flood-color={
+                                                                        (city.population > 35000000)?grdColors[5]:
+                                                                            (city.population <= 35000000 &&  city.population > 30000000)?grdColors[4]:
+                                                                                (city.population <= 30000000 &&  city.population > 25000000)?grdColors[3]:
+                                                                                    (city.population <= 25000000 &&  city.population > 20000000)?grdColors[2]:
+                                                                                        grdColors[6]}
+                                                                        flood-opacity="0.75"></feFlood>
+                                                                    <feComposite in2="shadowDiff" operator="in"></feComposite>
+                                                                    <feComposite in2="firstfilter" operator="over"></feComposite>
+                                                                </filter>
+                                                            </defs>
+
+                                                            <path filter="url(#innershadow)" className="st1" d="M40.41,13.5C39.08,6.27,32.75,0.78,25.13,0.78c-6.07,0-11.32,3.48-13.88,8.54C4.99,10.04,0.13,15.35,0.13,21.8c0,6.9,5.56,12.49,12.44,12.56v0h27.11c5.77,0,10.45-4.68,10.45-10.45C50.13,18.4,45.84,13.88,40.41,13.5z"/>
                                                         </g>
                                                         <text textAnchor="middle" y={8} className="marker_value"
                                                               style={{fontSize: 24}}>
@@ -425,59 +489,74 @@ class ClustersMap extends Component {
                                                         {/*</text>*/}
                                                     </Marker>
                                                 ))
-                                            /*{(!this.state.detailMode) ?
+                                                :
+                                                (this.props.itemLabel == "App Instances" && !this.state.detailMode) ?
                                                 this.state.cities.map((city, i) => (
                                                     <Marker className="markerTwo" key={i} marker={city} onClick={ this.handleCityClick }
-                                                            style={{
-                                                                default: { stroke: "#5b3f64" },
-                                                                hover: { stroke: "#FF5722" },
-                                                                pressed: { stroke: "#FF5722" },
-                                                            }}
+                                                            style={{}}
                                                     >
 
+                                                        <g version="1.1" id="Layer_1" x="0px" y="0px"
+                                                           viewBox="0 0 50.27 72.03" style={{enableBackground:"new 0 0 50.27 72.03;"}}
+                                                           class={(city.population > 35000000)?'levelFive':'levelOther'}
+                                                           cx={0}
+                                                           cy={0}
+                                                           r={cityScale(city.population)}
+                                                           fill={
+                                                               (city.population > 35000000)?'url(#levelFive)':
+                                                                   (city.population <= 35000000 &&  city.population > 30000000)?'url(#levelFour)':
+                                                                       (city.population <= 30000000 &&  city.population > 25000000)?'url(#levelThree)':
+                                                                           (city.population <= 25000000 &&  city.population > 20000000)?'url(#levelTwo)':
+                                                                               'url(#levelSeven)'
+                                                           }
 
-
-                                                        <g className="st0"
-                                                            class={(city.population > 35000000)?'levelFive':'levelOther'}
-                                                            cx={0}
-                                                            cy={0}
-                                                            r={cityScale(city.population)}
-                                                            fill={
-                                                                (city.population > 35000000)?'url(#levelFive)':
-                                                                    (city.population <= 35000000 &&  city.population > 30000000)?'url(#levelFour)':
-                                                                        (city.population <= 30000000 &&  city.population > 25000000)?'url(#levelThree)':
-                                                                            (city.population <= 25000000 &&  city.population > 20000000)?'url(#levelTwo)':
-                                                                                'url(#levelOne)'
-                                                            }
-                                                            stroke={styles.marker.stroke}
-                                                            strokeWidth={styles.marker.strokeWidth}
-                                                           transform={"translate(-25,-30)"}
+                                                           stroke={styles.marker.stroke}
+                                                           strokeWidth={styles.marker.strokeWidth}
+                                                           transform={"translate(-24,-29)"} mix-blend-mode="lighten"
                                                         >
-                                                        	<g>
-                                                        		<path className="st1" d="M50.19,25.24c0,13.81-25,46.51-25,46.51s-25-32.7-25-46.51s11.19-25,25-25S50.19,11.43,50.19,25.24z"/>
-                                                        	</g>
-                                                        	<defs>
-                                                        		<filter id="Adobe_OpacityMaskFilter" filterUnits="userSpaceOnUse" x="0.19" y="0.24" width="50" height="71.51">
-                                                        				<feColorMatrix  type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0" color-interpolation-filters="sRGB" result="source"/>
-                                                        		</filter>
-                                                        	</defs>
-                                                        	<mask maskUnits="userSpaceOnUse" x="0.19" y="0.24" width="50" height="71.51" id="SVGID_1_">
-                                                        		<g className="st2">
-                                                        				<image style={{overflow:"visible"}} width="54" height="76" transform="matrix(1 0 0 1 -1.8067 -1.7591)"></image>
-                                                        		</g>
-                                                        	</mask>
-                                                        	<g className="st3">
-                                                        		<path class="st4" d="M50.19,25.24c0,13.81-25,46.51-25,46.51s-25-32.7-25-46.51s11.19-25,25-25S50.19,11.43,50.19,25.24z"/>
-                                                        	</g>
+                                                            <defs>
+                                                                <filter id="innershadow" x0="-50%" y0="-50%" width="200%" height="200%">
+                                                                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"></feGaussianBlur>
+                                                                    <feOffset dy="2" dx="3"></feOffset>
+                                                                    <feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite>
+
+                                                                    <feFlood flood-color={
+                                                                        (city.population > 35000000)?grdColors[5]:
+                                                                            (city.population <= 35000000 &&  city.population > 30000000)?grdColors[4]:
+                                                                                (city.population <= 30000000 &&  city.population > 25000000)?grdColors[3]:
+                                                                                    (city.population <= 25000000 &&  city.population > 20000000)?grdColors[2]:
+                                                                                        grdColors[7]}
+                                                                             flood-opacity="0.75"></feFlood>
+                                                                    <feComposite in2="shadowDiff" operator="in"></feComposite>
+                                                                    <feComposite in2="SourceGraphic" operator="over" result="firstfilter"></feComposite>
+
+
+                                                                    <feGaussianBlur in="firstfilter" stdDeviation="3" result="blur2"></feGaussianBlur>
+                                                                    <feOffset dy="-2" dx="-3"></feOffset>
+                                                                    <feComposite in2="firstfilter" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite>
+
+                                                                    <feFlood flood-color={
+                                                                        (city.population > 35000000)?grdColors[5]:
+                                                                            (city.population <= 35000000 &&  city.population > 30000000)?grdColors[4]:
+                                                                                (city.population <= 30000000 &&  city.population > 25000000)?grdColors[3]:
+                                                                                    (city.population <= 25000000 &&  city.population > 20000000)?grdColors[2]:
+                                                                                        grdColors[7]}
+                                                                             flood-opacity="0.75"></feFlood>
+                                                                    <feComposite in2="shadowDiff" operator="in"></feComposite>
+                                                                    <feComposite in2="firstfilter" operator="over"></feComposite>
+                                                                </filter>
+                                                            </defs>
+
+                                                            <path filter="url(#innershadow)" class="st2" d="M50.19,25.24c0,13.81-25,46.51-25,46.51s-25-32.7-25-46.51s11.19-25,25-25S50.19,11.43,50.19,25.24z"/>
                                                         </g>
                                                         <text textAnchor="middle" y={8} className="marker_value"
                                                               style={{fontSize: 24}}>
                                                             {city.cost}
                                                         </text>
                                                     </Marker>
-                                                ))*/
+                                                ))
                                                 :
-                                                this.state.citiesSecond.map((city, i) => (
+                                                this.state.clickCities.map((city, i) => (
                                                     <Marker
                                                         key={i}
                                                         marker={city}
@@ -494,19 +573,44 @@ class ClustersMap extends Component {
                                                             strokeWidth={styles.marker.second.strokeWidth}
                                                         />
 
-                                                        <text
+                                                        {/* <text
                                                             class="marker_label"
                                                             textAnchor="middle"
                                                             x={city.offsets[0]}
                                                             y={city.offsets[1]}
                                                         >
                                                             {city.name}
-                                                        </text>
+                                                        </text> */}
                                                     </Marker>
                                                 ))
                                             }
                                         </Markers>
+                                        <Annotations>
+                                            {
+                                                this.state.detailMode ?
 
+                                                    this.state.clickCities.map((city, i) => (
+                                                        <Annotation
+                                                            key={i}
+                                                            dx={ -30 } dy={ 30+(i*45) }
+                                                            curve={0.5}
+                                                            zoom = {1}
+                                                            subject={ city['coordinates'] }
+                                                            strokeWidth={ 0.1 }
+                                                            stroke={'#AFAFAF'}
+                                                            style={{cursor:'pointer'}}
+                                                        >
+                                                            <text className='annoteText'
+                                                                fill='#AFAFAF' style={{fontSize:7}}
+                                                                onClick={(a, b) => this.handleAnnoteClick(city)}
+                                                            >
+                                                                {city.name}
+                                                            </text>
+                                                        </Annotation>
+                                                    ))
+                                                    :null
+                                            }
+                                        </Annotations>
                                     </ZoomableGroup>
                                 </ComposableMap>
                             )}
@@ -524,14 +628,16 @@ class ClustersMap extends Component {
 const mapStateToProps = (state, ownProps) => {
     return {
         data: state.receiveDataReduce.data,
-        tabIdx: state.siteChanger.site.subPath
+        tabIdx: state.siteChanger.site.subPath,
+        itemLabel: state.computeItem.item
     };
 };
 const mapDispatchProps = (dispatch) => {
     return {
         handleInjectData: (data) => { dispatch(actions.setUser(data)) },
         handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
-        handleChangeCity: (data) => { dispatch(actions.changeCity(data)) }
+        handleChangeCity: (data) => { dispatch(actions.changeCity(data)) },
+        handleChangeClickCity: (data) => { dispatch(actions.clickCityList(data))}
     };
 };
 

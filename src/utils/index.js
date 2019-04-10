@@ -68,4 +68,28 @@ export const avg = (objectArray) => (
 )
 
 
+/*
+var arr = [1,2,'xxx','yyy']
+arr = arr.filter(function(e){ return e != 'xxx' });
+arr  // [1, 2, "yyy"]
+ */
+export const filterDefine = (objectArray, values) => {
+    values.map((filter) => {
+        objectArray = objectArray.filter(function (e) {
+            return e != filter
+        })
+    })
+    return objectArray;
 
+}
+export const filterDefineKey = (object, values) => {
+
+    object.map((obj) => {
+        values.map((filter) => {
+            delete obj[filter]
+        })
+    })
+
+    return object;
+
+}

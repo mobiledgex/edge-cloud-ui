@@ -48,17 +48,27 @@ let generateData = (datas) => {
     console.log('format data flavor- ', datas)
     let result = datas;
     let values = [];
-    if(result){
-        result.map((data, i) => {
-            let dataResult = data.result || '-';
-            let Index = i;
-            let FlavorName = dataResult.key.name || '-';
-            let RAM = dataResult.ram || '-';
-            let VCPUS = dataResult.vcpus || '-';
-            let DISK = dataResult.disk || '-';
-            let newRegistKey = ['FlavorName', 'RAM', 'VCPUS', 'DISK'];
+    //20190409 transition string to json
+    let toArray = datas.data.split('\n')
 
-            values.push({FlavorName:FlavorName, RAM:RAM, VCPUS:VCPUS, DISK:DISK, Edit:newRegistKey})
+    let toJson = toArray.map((str)=>(JSON.parse(str)))
+
+
+    if(toJson){
+        toJson.map((dataResult, i) => {
+            if(dataResult.message) {
+
+            } else {
+                let Index = i;
+                let FlavorName = dataResult.key.name || '-';
+                let RAM = dataResult.ram || '-';
+                let VCPUS = dataResult.vcpus || '-';
+                let DISK = dataResult.disk || '-';
+                let newRegistKey = ['FlavorName', 'RAM', 'VCPUS', 'DISK'];
+
+                values.push({FlavorName:FlavorName, RAM:RAM, VCPUS:VCPUS, DISK:DISK, Edit:newRegistKey})
+            }
+
         })
     } else {
         console.log('there is no result')
