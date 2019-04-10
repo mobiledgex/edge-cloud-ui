@@ -149,6 +149,7 @@ exports.create_user = (req, res) => {
 
         user_info._id = results._id;
         user_info.profile = results.profile;
+        user_info.role = results.services.role.type;
 
         // req.session.userId = user_info._id
         req.session.login_token = login_token // maybe not necessary
@@ -199,6 +200,7 @@ exports.login_with_email_password = (req, res) => {
           // set user info
           user_info._id = results._id;
           user_info.profile = results.profile;
+          user_info.role = results.services.role.type;
 
           let password2 = sha256(password)
 
@@ -360,6 +362,7 @@ exports.login_with_token = (req, res) => {
 
         user_info._id = results._id;
         user_info.profile = results.profile;
+        user_info.role = results.services.role.type;
 
         // set session
         req.session.login_token

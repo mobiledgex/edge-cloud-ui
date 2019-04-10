@@ -11,6 +11,7 @@ import FormatComputeApp from './formatter/formatComputeApp';
 import FormatComputeOper from './formatter/formatComputeOperator';
 import FormatComputeInst from './formatter/formatComputeInstance';
 import FormatComputeClstInst from './formatter/formatComputeClstInstance';
+import FormatComputeOrganization from './formatter/formatComputeOrganization';
 
 const hostname = window.location.hostname;
 export function getOperator(resource, callback) {
@@ -63,11 +64,45 @@ export function getOperatorInfo(resource, callback) {
         });
 }
 export function getComputeService(resource, callback) {
+    const orgDummy = [
+        {
+            result:{
+                type:'Developer',
+                username:'kunhee',
+                role:'viewer',
+                email:'khcho@naver.com',
+                organization:'BIC',
+                phone:'010-0000-0000'
+            }
+        },
+        {
+            result:{
+                type:'Developer',
+                username:'user1',
+                role:'contributor',
+                email:'user1@naver.com',
+                organization:'BIC',
+                phone:'010-1111-1111'
+            }
+        },
+        {
+            result:{
+                type:'Developer',
+                username:'user2',
+                role:'viewer',
+                email:'user2@naver.com',
+                organization:'BIC',
+                phone:'010-2222-2222'
+            }
+        },
+    ]
     axios.get('https://'+hostname+':3030/compute?service='+resource)
         .then(function (response) {
             let paseData = JSON.parse(JSON.stringify(response.data));
             let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
             console.log('response paseData  =-=-=-=-=-=-=-=-=-=--',resource, splitData );
+            console.log(splitData);
+            console.log(orgDummy);
             switch(resource){
                 case 'flavor': callback(FormatComputeFlavor(splitData)); break;
                 case 'cluster': callback(FormatComputeCluster(splitData)); break;
@@ -77,6 +112,7 @@ export function getComputeService(resource, callback) {
                 case 'app': callback(FormatComputeApp(splitData)); break;
                 case 'appinst': callback(FormatComputeInst(splitData)); break;
                 case 'clusterinst': callback(FormatComputeClstInst(splitData)); break;
+                case 'organization': callback(FormatComputeOrganization(orgDummy)); break;
             }
         })
         .catch(function (error) {
@@ -111,4 +147,36 @@ export function deleteCompute(resource, body, callback) {
         .catch(function (error) {
             console.log(error);
         });
+}
+
+
+export function getMCService(resource, body, callback, self) {
+
+    axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
+        service: resource,
+        serviceBody:body
+    }))
+        .then(function (response) {
+            let parseData = null;
+            if(response.data) {
+                parseData = JSON.parse(JSON.stringify(response));
+            } else {
+
+            }
+            console.log('parse data userinfo ===>>>>>>>>>> ', parseData)
+            if(parseData){
+                switch(resource){
+                    case 'showOrg': callback(FormatComputeOrganization(parseData)); break;
+                    case 'ShowFlavor': callback(FormatComputeFlavor(parseData)); break;
+                    case 'ShowCloudlet': callback(FormatComputeCloudlet(parseData)); break;
+                    case 'showController': callback(parseData); break;
+                }
+            }
+        })
+        .catch(function (error) {
+            console.log('error',error);
+            callback({error:error}, resource, self);
+        });
+
+
 }

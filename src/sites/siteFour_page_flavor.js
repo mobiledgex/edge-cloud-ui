@@ -11,6 +11,7 @@ import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
 import MapWithListView from "./siteFour_page_six";
+import Alert from "react-s-alert";
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
@@ -60,7 +61,18 @@ class SiteFourPageFlavor extends React.Component {
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
-        this.getDataDeveloper();
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        console.log('info.. store == ', store)
+        if(store.userToken) {
+            this.getDataDeveloper(store.userToken);
+        } else {
+            Alert.error('Invalid or expired token', {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+        }
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -69,10 +81,20 @@ class SiteFourPageFlavor extends React.Component {
     }
     receiveResult(result) {
         console.log("receive == ", result)
-        _self.setState({devData:result})
+        if(result.error) {
+            Alert.error(result.error, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+
+        } else {
+            _self.setState({devData:result})
+
+        }
     }
-    getDataDeveloper() {
-        services.getComputeService('flavor', this.receiveResult)
+    getDataDeveloper(token) {
+        services.getMCService('ShowFlavor',{token:token, region:'US'}, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;

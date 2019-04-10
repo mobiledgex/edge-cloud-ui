@@ -39,17 +39,27 @@ const FormSignUpContainer = (props) => (
         <Grid.Row>
             <span className='title'>Create New Account</span>
         </Grid.Row>
-        <Grid.Row columns={2}>
+        {/* <Grid.Row columns={2}>
             <Grid.Column>
                 <Input placeholder='First Name' name='firstname' width ref={ipt=>{props.self.first = ipt}} onChange={props.self.onChangeInput}></Input>
             </Grid.Column>
             <Grid.Column >
                 <Input  placeholder='Last Name' name='lastname' ref={ipt=>{props.self.last = ipt}} onChange={props.self.onChangeInput}></Input>
             </Grid.Column>
+        </Grid.Row> */}
+        <Grid.Row>
+            <Grid.Column>
+                <Input placeholder='username' name='username' style={{width:'100%'}} ref={ipt=>{props.self.username = ipt}} onChange={props.self.onChangeInput}></Input>
+            </Grid.Column>
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
                 <Input style={{width:'100%'}} placeholder='Password' name='password' type='password' ref={ipt=>{props.self.pwd = ipt}} onChange={props.self.onChangeInput}></Input>
+            </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+            <Grid.Column>
+                <Input placeholder='E-mail' name='email' style={{width:'100%'}} ref={ipt=>{props.self.email = ipt}} onChange={props.self.onChangeInput}></Input>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
@@ -105,7 +115,8 @@ class Login extends Component {
             mainPath:'/', subPath:'pg=0',
             loginBtnStyle:'loginBtn',
             email:'',
-            password:''
+            password:'',
+            username:''
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -151,7 +162,8 @@ class Login extends Component {
         if(result.data.token) {
             console.log('success....receive token.....', result.data.token, 'self params == ', self.params)
 
-            self.params['superuserToken'] = result.data.token
+            self.params['userToken'] = result.data.token
+            localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
             self.props.mapDispatchToLoginWithPassword(self.params)
         }
     }

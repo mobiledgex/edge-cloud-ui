@@ -39,10 +39,11 @@ Create account DB :
 
 ```javascript
 in new terminal window
+%%%% You did not below step, If you alredy created as doing registry 'createAccount' url
 $ mongo
 > show dbs or show collections 
-> use mobiledgex
-> db.createCollection('mex-mwc-mongo')
+> use mex-mwc-mongo
+> db.createCollection('users')
 > use mex-mwc-mongo
 ```
 

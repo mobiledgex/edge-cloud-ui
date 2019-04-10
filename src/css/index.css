@@ -161,7 +161,7 @@ body, button, input, optgroup, select, textarea,
     top: 45%;
     width: 910px;
     margin-left: -455px;
-    height: 324px;
+    height: 384px;
 }
 .intro_login .ui.grid.signUpBD:first-child{
     position: absolute;

@@ -10,6 +10,7 @@ import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
 import MapWithListView from "../container/mapWithListView";
+import Alert from "react-s-alert";
 
 
 
@@ -31,6 +32,7 @@ class SiteFourPageCloudlet extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
+        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips']
     }
 
     //go to
@@ -59,7 +61,18 @@ class SiteFourPageCloudlet extends React.Component {
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
-        this.getDataCloudlet();
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        console.log('info.. store == ', store)
+        if(store.userToken) {
+            this.getDataCloudlet(store.userToken);
+        } else {
+            Alert.error('Invalid or expired token', {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+        }
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -68,17 +81,28 @@ class SiteFourPageCloudlet extends React.Component {
     }
     receiveResult(result) {
         console.log("receive cloudlet == ", result)
-        _self.setState({devData:result})
+
+        if(result.error) {
+            Alert.error(result.error, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+
+        } else {
+            _self.setState({devData:result})
+
+        }
     }
-    getDataCloudlet() {
-        services.getComputeService('cloudlet', this.receiveResult)
+    getDataCloudlet(token) {
+        services.getMCService('ShowCloudlet',{token:token, region:'US'}, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
 
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout}></MapWithListView>
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys}></MapWithListView>
 
         );
     }

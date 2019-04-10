@@ -16,6 +16,7 @@ import HeaderGlobalMini from '../container/headerGlobalMini';
 import SiteOne from './siteOne';
 import * as serviceLogin from "../services/service_login_api";
 import {GridLoader} from "react-spinners";
+import Alert from 'react-s-alert';
 
 const pointMarkers = getMockData(0x97bcd8, 'point');
 
@@ -52,15 +53,22 @@ class EntranceGlobe extends Component {
         if(nextProps.user.login_token !== undefined) {
             this.setState({modalOpen: false})
             self.setState({loading:true})
+            Alert.info('Please wait !', {
+                position: 'top-right',
+                effect: 'bouncyflip',
+                timeout: 'none'
+            });
         } else {
             self.setState({loading:false})
             this.setState({modalOpen: true})
+
         }
 
         //
-        if(nextProps.user.superuserToken !== undefined) {
-            this.spuserToken = nextProps.user.superuserToken;
+        if(nextProps.user.userToken !== undefined) {
+            this.spuserToken = nextProps.user.userToken;
             this.setState({loading:false})
+            Alert.closeAll();
         }
 
     }
@@ -181,10 +189,6 @@ class EntranceGlobe extends Component {
                             <div className='intro_link'>
                                 <Button key='0' onClick={() => this.goToNext('/site2')}>MobiledgeX Monitoring</Button>
                                 <Button key='1' onClick={() => this.goToNext('/site4')}>MobiledgeX Compute</Button>
-                                <Button key='2' onClick={() => this.getInfoSuperuser('currentUser')}>Get Current User</Button>
-                                <Button key='3' onClick={() => this.getInfoSuperuser('showRole')}>Show Role</Button>
-                                <Button key='4' onClick={() => this.getInfoSuperuser('showOrg')}>Show Org</Button>
-                                <Button key='5' onClick={() => this.getInfoSuperuser('showController')}>Show Controller</Button>
                             </div>
                             }
 
@@ -196,6 +200,7 @@ class EntranceGlobe extends Component {
                                 color={'#70b2bc'}
                                 loading={this.state.loading}
                             />
+                            <Alert stack={{limit: 3}} />
                         </div>
                     </div>
                     :

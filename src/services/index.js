@@ -188,12 +188,6 @@ curl -X POST "https://mexdemo.ctrl.mobiledgex.net:36001/show/developer" -H "acce
 curl -X POST "https://mexdemo.ctrl.mobiledgex.net:36001/show/cluster" -H "accept: application/json" -H "Content-Type: application/json" --cacert mex-ca.crt --key mex-client.key --cert mex-client.crt
 */
 //////////////////////////////////
-let postUrl = 'https://mexdemo.ctrl.mobiledgex.net:36001/show/';
-
-export function getComputService() {
-
-
-}
 
 export function getPublicAccountKey(resource, rId, callback) {
 
