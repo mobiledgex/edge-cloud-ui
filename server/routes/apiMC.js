@@ -491,6 +491,24 @@ exports.addUserRole= (req, res) => {
     }
     console.log('add role to show me boddy-- ', params, '   token is ==',superpass)
     axios.post(mcUrl + '/api/v1/auth/role/adduser', qs.stringify(params),
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success create service', response.data)
+            if(response.data) {
+                res.json(response.data)
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+            console.log('error show ..', String(error));
+            res.json({error:String(error)})
+        });
+}
 
 //Create Flavor
 exports.CreateFlavor = (req, res) => {
