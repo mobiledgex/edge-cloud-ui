@@ -440,13 +440,24 @@ app.post('/delete', function(req, res){
 const apiMC = require('./routes/apiMC');
 app.post('/masterControl', apiMC.getToken);
 app.post('/createUser', apiMC.createUser);
+app.post('/createOrg', apiMC.CreateOrg);
 app.post('/showOrg', apiMC.showOrg);
 app.post('/ShowFlavor', apiMC.ShowFlavor);
+app.post('/ShowClusterFlavor', apiMC.ShowClusterFlavor);
+app.post('/ShowUsers', apiMC.ShowUsers);
 app.post('/ShowCloudlet', apiMC.ShowCloudlet);
-app.post('/CreateCloudlet', apiMC.CreateCloudlet);
 app.post('/showController', apiMC.showController);
+app.post('/ShowClusterInst', apiMC.ShowClusterInst);
+app.post('/ShowApps', apiMC.ShowApps);
+app.post('/ShowAppInst', apiMC.ShowAppInst);
+
+app.post('/create', apiMC.Create);
+app.post('/addUserRole', apiMC.addUserRole);
 
 app.post('/currentUser', apiMC.currentUser);
+
+app.post('/CreateFlavor', apiMC.CreateFlavor);
+
 /*
 --auth-type=jwt --auth=$SUPERPASS
  */

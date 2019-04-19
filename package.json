@@ -74,6 +74,7 @@
     "react-svg-pan-zoom": "^2.18.0",
     "react-tooltip": "^3.9.0",
     "redux": "^4.0.1",
+    "redux-form": "^8.2.0",
     "request": "^2.88.0",
     "semantic-ui-css": "^2.2.12",
     "semantic-ui-react": "^0.83.0",

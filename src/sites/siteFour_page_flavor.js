@@ -71,7 +71,7 @@ class SiteFourPageFlavor extends React.Component {
                 effect: 'slide',
                 timeout: 5000
             });
-            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+            //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         }
     }
     componentWillReceiveProps(nextProps) {

@@ -34,7 +34,8 @@ class EntranceGlobe extends Component {
             mouseEvent: null,
             loginState:'out',
             modalOpen: true,
-            loading:false
+            loading:false,
+            signup:false
         };
         self = this;
         this.spuserToken = null;
@@ -50,24 +51,24 @@ class EntranceGlobe extends Component {
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('new props... ', nextProps)
-        if(nextProps.user.login_token !== undefined) {
-            this.setState({modalOpen: false})
-            self.setState({loading:true})
-            Alert.info('Please wait !', {
-                position: 'top-right',
-                effect: 'bouncyflip',
-                timeout: 'none'
-            });
-        } else {
-            self.setState({loading:false})
-            this.setState({modalOpen: true})
-
-        }
+        // if(nextProps.user.login_token !== undefined) {
+        //     this.setState({modalOpen: false})
+        //     self.setState({loading:true})
+        //     Alert.info('Please wait !', {
+        //         position: 'top-right',
+        //         effect: 'bouncyflip',
+        //         timeout: 'none'
+        //     });
+        // } else {
+        //     self.setState({loading:false})
+        //     this.setState({modalOpen: true})
+        //
+        // }
 
         //
         if(nextProps.user.userToken !== undefined) {
             this.spuserToken = nextProps.user.userToken;
-            this.setState({loading:false})
+            this.setState({loading:false, modalOpen:false})
             Alert.closeAll();
         }
 
@@ -165,10 +166,18 @@ class EntranceGlobe extends Component {
                             onMarkerClick={this.handleMarkerClick}
                         />
 
+
+
+                        <Grid style={{backgroundColor:'transparent', width:230, height:100, position:'absolute', top:20, right:(this.state.modalOpen)?50:185, alignSelf:'center'}}>
+                            <Grid.Row columns={2}>
+                                <Grid.Column ><Button style={{width:'100%'}} onClick={() => this.setState({signup:false})}><span>Login</span></Button></Grid.Column>
+                                <Grid.Column><Button onClick={() => this.setState({signup:true, modalOpen:true})}><span>SignUp</span></Button></Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+
                         {!this.state.modalOpen &&
                         <HeaderGlobalMini></HeaderGlobalMini>
                         }
-
                         <Transition
                             component={false} // don't use a wrapping component
                             enter={{
@@ -182,7 +191,7 @@ class EntranceGlobe extends Component {
                         >
                             { this.state.modalOpen &&
                             <div className='intro_login'>
-                                <Login></Login>
+                                <Login signup={this.state.signup}></Login>
                             </div>
                             }
                             {!this.state.modalOpen &&

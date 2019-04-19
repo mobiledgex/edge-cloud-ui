@@ -32,15 +32,15 @@ class SiteFourPageOrganization extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [2,2,2,2,2,2,2,2,4]
-        this.hideHeader = ['Address','Phone']
+        this.headerLayout = [3,3,3,3,4]
+        //this.hideHeader = ['Address','Phone']
     }
 
     //go to
-    gotoPreview(site) {
+    gotoPreview(site, page) {
         //브라우져 입력창에 주소 기록
         let mainPath = site;
-        let subPath = 'pg=0';
+        let subPath = page;
         _self.props.history.push({
             pathname: mainPath,
             search: subPath,
@@ -81,7 +81,7 @@ class SiteFourPageOrganization extends React.Component {
                 effect: 'slide',
                 timeout: 5000
             });
-            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+            setTimeout(()=>_self.gotoPreview('/site4', 'page=newOrg'), 2000)
         } else {
             _self.setState({devData:result})
 

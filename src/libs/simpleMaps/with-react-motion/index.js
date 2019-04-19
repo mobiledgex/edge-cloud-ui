@@ -609,7 +609,7 @@ class AnimatedMap extends Component {
                                     }}
                                 >
                                     <ZoomableGroup center={[x,y]} zoom={zoom} disablePanning={false}>
-                                        <Geographies geography="/topojson-maps/world-110m.json">
+                                        <Geographies geography="./topojson-maps/world-110m.json">
                                             {(geographies, projection) =>
                                                 geographies.map((geography, i) => geography.id !== "010" && (
                                                     <Geography

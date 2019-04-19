@@ -33,6 +33,7 @@ class SiteFourPageCloudlet extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
         this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips']
+        this.userToken = null;
     }
 
     //go to
@@ -65,13 +66,14 @@ class SiteFourPageCloudlet extends React.Component {
         console.log('info.. store == ', store)
         if(store.userToken) {
             this.getDataCloudlet(store.userToken);
+            this.userToken = store.userToken;
         } else {
             Alert.error('Invalid or expired token', {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
             });
-            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+            //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         }
     }
     componentWillReceiveProps(nextProps) {
@@ -102,7 +104,7 @@ class SiteFourPageCloudlet extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys}></MapWithListView>
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken}></MapWithListView>
 
         );
     }

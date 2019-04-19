@@ -108,3 +108,17 @@ export function userInfo (info) {
         info
     }
 }
+export function mapCoordinatesLong (loc) {
+    console.log('MAP_COORDINATES_LONG == ', loc)
+    return {
+        type: types.MAP_COORDINATES_LONG,
+        loc
+    }
+}
+export function mapCoordinatesLat (loc) {
+    console.log('MAP_COORDINATES_LAT == ', loc)
+    return {
+        type: types.MAP_COORDINATES_LAT,
+        loc
+    }
+}

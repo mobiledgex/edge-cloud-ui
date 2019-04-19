@@ -31,7 +31,7 @@ class SiteFourPageUser extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [5,2,2,2,3]
+        this.headerLayout = [4,4,4,4]
     }
 
     //go to
@@ -60,7 +60,10 @@ class SiteFourPageUser extends React.Component {
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
-        //this.getDataDeveloper();
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        if(store.userToken) {
+            this.getDataDeveloper(store.userToken);
+        }
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -68,18 +71,18 @@ class SiteFourPageUser extends React.Component {
 
     }
     receiveResult(result) {
-        console.log("receive == ", result)
+        console.log("receive users == ", result)
         _self.setState({devData:result})
     }
-    getDataDeveloper() {
-        services.getComputeService('flavor', this.receiveResult)
+    getDataDeveloper(token) {
+        services.getMCService('ShowUsers',{token:token}, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
 
-            <div>Users...</div>
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
 
         );
     }

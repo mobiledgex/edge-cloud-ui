@@ -12,6 +12,7 @@ import FormatComputeOper from './formatter/formatComputeOperator';
 import FormatComputeInst from './formatter/formatComputeInstance';
 import FormatComputeClstInst from './formatter/formatComputeClstInstance';
 import FormatComputeOrganization from './formatter/formatComputeOrganization';
+import formatComputeUsers from './formatter/formatComputeUsers';
 
 const hostname = window.location.hostname;
 export function getOperator(resource, callback) {
@@ -123,7 +124,7 @@ export function getComputeService(resource, callback) {
 
 
 export function saveNewCompute(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/register',qs.stringify({
+    axios.post('https://'+hostname+':3030/create',qs.stringify({
       service: resource,
         serviceBody:body
     }))
@@ -168,7 +169,12 @@ export function getMCService(resource, body, callback, self) {
                 switch(resource){
                     case 'showOrg': callback(FormatComputeOrganization(parseData)); break;
                     case 'ShowFlavor': callback(FormatComputeFlavor(parseData)); break;
+                    case 'ShowClusterFlavor': callback(FormatComputeCluster(parseData)); break;
+                    case 'ShowUsers': callback(formatComputeUsers(parseData)); break;
                     case 'ShowCloudlet': callback(FormatComputeCloudlet(parseData)); break;
+                    case 'ShowClusterInst': callback(FormatComputeClstInst(parseData)); break;
+                    case 'ShowApps': callback(FormatComputeApp(parseData)); break;
+                    case 'ShowAppInst': callback(FormatComputeInst(parseData)); break;
                     case 'showController': callback(parseData); break;
                 }
             }

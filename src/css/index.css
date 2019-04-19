@@ -133,7 +133,7 @@ body, button, input, optgroup, select, textarea,
 }
 .intro_login {
     position: absolute;
-    top: 35%; /* login-signUp location vertical */
+    top: 50%; /* login-signUp location vertical */
     left: 50%;
     width: 456px; /* vertical */
     height: auto;
@@ -156,7 +156,7 @@ body, button, input, optgroup, select, textarea,
 }
 
 
-/* login-signUp location horizontal */
+/* login-signUp location horizontal
 .intro_login{
     top: 45%;
     width: 910px;
@@ -173,7 +173,7 @@ body, button, input, optgroup, select, textarea,
     top: 0;
     right: 0;
 }
-/* */
+*/
 
 .intro_login .ui.grid {
     margin: 1em 1em;
@@ -237,6 +237,30 @@ body, button, input, optgroup, select, textarea,
     right: 0;
     width: 200px;
     height: 70px;
+}
+
+/* form */
+
+.intro_login .ui.form .fields{
+    margin-bottom: 0;
+}
+
+.intro_login .ui.form.fieldForm {
+    padding: 0 1rem;
+}
+
+.intro_login .ui.form.fieldForm .fields .field{
+    padding-top: 0.714em;
+    padding-bottom: 0.714em;
+}
+
+.intro_login .ui.form.fieldForm .fields .field{
+    padding-top: 0.714em;
+    padding-bottom: 0.714em;
+}
+
+.intro_login .ui.form .inline.fields .field{
+    padding: 0.714em 1em;
 }
 
 
@@ -1073,7 +1097,6 @@ body, button, input, optgroup, select, textarea,
 }
 
 
-
 /* tooltip */
 .customToolTip {
     color: rgba(255,255,255,.8) !important;
@@ -1120,3 +1143,13 @@ rect.zoom {
     fill: rgba(19, 19, 19, 0.85);
     fill-opacity: 0.5;
 }
+
+.markBox {display:inline-block; margin-right: 10px;}
+.markBox .mark {display: inline-block; padding:3px 5px 1px; border-radius: 5px; color:#fff; font-size: 16px;}
+.markBox .mark.mark.markM {background-color:#BABC28; }
+.markBox .mark.mark.markC {background-color:#845224;}
+.markBox .mark.mark.markV {background-color:#535857;}
+.userNewMark {color:#fff; padding:1px 5px; background-color: rgba(85,153,0,1); border-radius: 3px; margin-right: 6px;}
+
+
+

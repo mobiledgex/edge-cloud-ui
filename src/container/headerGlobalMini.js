@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon, Label, Grid, Image, Popup } from 'semantic-ui-react';
+import {Button, Icon, Label, Grid, Image, Popup, Header, Divider} from 'semantic-ui-react';
 
 import MaterialIcon, {colorPalette} from 'material-icons-react';
 import { withRouter } from 'react-router-dom';
@@ -11,6 +11,7 @@ import * as actions from '../actions';
 import ClockComp from '../components/clock';
 import './styles.css';
 import * as Service from "../services";
+import {Modal} from "semantic-ui-react/dist/commonjs/modules/Modal";
 
 let _self = null;
 class headerGlobalMini extends React.Component {
@@ -20,7 +21,8 @@ class headerGlobalMini extends React.Component {
         this.onHandleClick = this.onHandleClick.bind(this);
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.state = {
-            email: store ? store.email : 'Administrator'
+            email: store ? store.email : 'Administrator',
+            openProfile:false
         }
     }
 
@@ -50,6 +52,23 @@ class headerGlobalMini extends React.Component {
             this.setState({email:nextProps.user.email})
         }
     }
+    profileView() {
+        this.setState({openProfile:true})
+    }
+    createUser() {
+        this.setState({})
+    }
+
+    menuAdmin = () => (
+        <Button.Group vertical>
+            <Button onClick={() => this.profileView()} >Your profile</Button>
+            <Button style={{height:10, padding:0, margin:0}}><Divider inverted style={{padding:2, margin:0}}></Divider></Button>
+            <Button style={{color:'#333333'}}>Help</Button>
+            <Button style={{}} onClick={() => this.createUser()}><div>Create User</div></Button>
+            <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{this.state.userName}</div><div>Logout</div></Button>
+        </Button.Group>
+
+    )
 
     render() {
         const imageProps = {
@@ -66,7 +85,9 @@ class headerGlobalMini extends React.Component {
                             <Image src='/assets/avatar/avatar_default.svg' avatar />
                             <span>{this.state.email}</span>
                         </div>}
-                        content={<Button content='Log out' onClick={() => this.gotoPreview('/logout')} />}
+                        content={
+                            this.menuAdmin()
+                            }
                         on='click'
                         position='bottom center'
                         className='gnb_logout'

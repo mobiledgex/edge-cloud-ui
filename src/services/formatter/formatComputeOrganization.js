@@ -19,14 +19,12 @@ let generateData = (datas) => {
             let Index = i;
             let Type = data.Type || '-';
             let AdminUsername = data.AdminUsername || '-';
-            let Username = data.Name || '-';
-            let Role = data.Role || '-';
-            let Email = data.email || '-';
+            let Organization = data.Name || '-';
             let Address = data.Address || '-';
-            let Phone = data.phone || '-';
-            let newRegistKey = ['AdminUsername', 'UserName','Type', 'Role','Email', 'Address', 'Phone'];
+            let Phone = data.Phone || '-';
+            let newRegistKey = ['Organization', 'Type', 'Phone', 'Address'];
 
-            values.push({AdminUsername:AdminUsername, Username:Username, Type:Type, Role:Role, Email:Email, Address:Address, Phone:Phone, Edit:newRegistKey})
+            values.push({Organization:Organization, Type:Type, Phone:Phone, Address:Address, Edit:newRegistKey})
         })
     } else {
         console.log('there is no result')

@@ -1,37 +1,3 @@
-/*
-{
-            "result": {
-                "fields": [],
-                "key": {
-                    "operator_key": {
-                        "name": "TDG"
-                    },
-                    "name": "bonn-niantic"
-                },
-                "access_uri": "",
-                "location": {
-                    "latitude": 50.737,
-                    "longitude": 7.098,
-                    "horizontal_accuracy": 0,
-                    "vertical_accuracy": 0,
-                    "altitude": 0,
-                    "course": 0,
-                    "speed": 0,
-                    "timestamp": {
-                        "seconds": "0",
-                        "nanos": 0
-                    }
-                },
-                "ip_support": "IpSupportDynamic",
-                "static_ips": "",
-                "num_dynamic_ips": 5
-            }
-        }
-//
-
- */
-
-
 import * as moment from 'moment';
 let trimData = (datas) => {
     let newData = datas.splice(0,1);
@@ -48,15 +14,26 @@ let generateData = (datas) => {
     console.log('format data cluster- ', datas)
     let result = datas;
     let values = [];
-    if(result){
-        result.map((data, i) => {
-            let dataResult = data.result || '-';
-            let Index = i;
-            let ClusterName = dataResult.key.name || '-';
-            let FlavorName = dataResult.default_flavor.name || '-';
-            let newRegistKey = ['ClusterName', 'FlavorName'];
+    //20190409 transition string to json
+    let toArray = datas.data.split('\n')
+    let toJson = toArray.map((str)=>(JSON.parse(str)))
+    console.log("tojson!!",toJson)
+    if(toJson){
+        toJson.map((dataResult, i) => {
+            if(dataResult.message) {
 
-            values.push({ClusterName:ClusterName, FlavorName:FlavorName, Edit:newRegistKey})
+            } else {
+            let Index = i;
+            let ClusterFlavor = dataResult.key.name  || '-';
+            let MasterFlavor = dataResult.master_flavor.name  || '-';
+            let NumberOfMasterNode = dataResult.num_masters  || '-';
+            let NodeFlavor = dataResult.node_flavor.name  || '-';
+            let NumberOfNode = dataResult.num_nodes || '-';
+            let MaximumNodes = dataResult.max_nodes || '-';
+
+            let newRegistKey = ['ClusterFlavor', 'MasterFlavor', 'NumberOfMasterNode', 'NodeFlavor', 'NumberOfNode', 'MaximumNodes'];
+            values.push({ClusterFlavor:ClusterFlavor, MasterFlavor:MasterFlavor, NumberOfMasterNode:NumberOfMasterNode, NodeFlavor:NodeFlavor, NumberOfNode:NumberOfNode, MaximumNodes:MaximumNodes, Edit:newRegistKey})
+            }
         })
     } else {
         console.log('there is no result')

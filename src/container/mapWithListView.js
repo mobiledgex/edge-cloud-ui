@@ -75,12 +75,12 @@ class MapWithListView extends React.Component {
 
     onHandleClick(dim, data) {
         console.log('on handle click == ', data)
-        //this.setState({ dimmer:dim, open: true, selected:data })
+        this.setState({ dimmer:dim, open: true, selected:data })
     }
 
     show = (dim) => this.setState({ dimmer:dim, open: true })
     close = () => {
-        this.setState({ open: false, openDelete: false })
+        this.setState({ open: false, openDelete: false, selected:{} })
         this.props.handleInjectDeveloper(null)
     }
     closeDetail = () => {
@@ -233,7 +233,7 @@ class MapWithListView extends React.Component {
                                     </Table.Cell>
                                 :
                                 (value === 'CloudletLocation')?
-                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} onMouseOver={() => this.handleMouseOverCell(`Latitude : ${item[value].latitude} Longitude : ${item[value].longitude}`)}  style={{cursor:'pointer'}}>
+                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)}  style={{cursor:'pointer'}}>
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                         {
                                             `Latitude : ${item[value].latitude}
@@ -243,7 +243,7 @@ class MapWithListView extends React.Component {
                                     </Table.Cell>
                                 :
                                 (!( String(hidden).indexOf(value) > -1 )) ?
-                                    <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)}  onMouseOver={() => this.handleMouseOverCell(String(item[value]))}  style={{cursor:'pointer'}}>
+                                    <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                         {String(item[value])}
                                         </div>
@@ -319,15 +319,15 @@ class MapWithListView extends React.Component {
     }
 
     render() {
-        const { open, dimmer, siteId } = this.state;
+        const { open, dimmer } = this.state;
         return (
             <ContainerDimensions>
                 { ({ width, height }) =>
                     <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
                         <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open}
                                        selected={this.state.selected} close={this.close} siteId={this.props.siteId}
-                                       handleSpinner={this.handleSpinner}
-                                       success={this.successfully}
+                                       handleSpinner={this.handleSpinner} userToken={this.props.userToken}
+                                       success={this.successfully} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}
                         />
 
                         <DeleteItem open={this.state.openDelete}

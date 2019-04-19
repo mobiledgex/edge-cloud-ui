@@ -6,6 +6,7 @@ const API_KEY = '__api_key__'
 
 const headers = {
   'Accept': 'application/json',
+    'Access-Control-Allow-Origin': '*',
   'Authorization': API_KEY
 }
 
