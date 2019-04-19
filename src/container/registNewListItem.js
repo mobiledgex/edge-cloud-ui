@@ -1,18 +1,22 @@
-import React from 'react';
-import {Button, Divider, Modal, Grid, Input, TextArea, Dropdown} from "semantic-ui-react";
+import React, { Fragment } from "react";
+import {Button, Form, Divider, Modal, Grid, Input, TextArea, Dropdown} from "semantic-ui-react";
+import { Field, reduxForm } from "redux-form";
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import RegistNewInput from "./registNewInput";
+import './styles.css';
+import RegistNewListInput from "./registNewListInput";
+
+import * as service from '../services/service_compute_service';
 
 //http://react-s-alert.jsdemo.be/
 import Alert from 'react-s-alert';
 
-import * as service from "../services/service_compute_service";
 import * as aggregate from "../utils";
 
+
 let _self = null;
-class RegistNewItem extends React.Component {
+class RegistNewListItem extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -20,10 +24,6 @@ class RegistNewItem extends React.Component {
             selected:{},
             open:false,
             dimmer:'',
-            locationLong:null,
-            locationLat:null,
-            locationLongLat:[],
-            toggle:false,
             devOptionsOne:[],
             devOptionsTwo:[],
             devOptionsThree:[],
@@ -70,7 +70,6 @@ class RegistNewItem extends React.Component {
                 },
             ],
         }
-        
         _self = this;
     }
 
@@ -84,35 +83,25 @@ class RegistNewItem extends React.Component {
         // cloudlet
         service.getComputeService('cloudlet', this.receiveCloudlet)
     }
-    componentDidUpdate(){
-        
-    }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('regist new item -- ', nextProps)
         if(nextProps.open) {
             this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
         }
-        if(this.state.open && !this.state.toggle){
-            let long = (nextProps.locLong.loc) ? nextProps.locLong.loc.props.placeholder : null;
-            let lat = (nextProps.locLat.loc) ? nextProps.locLat.loc.props.placeholder : null;
-            if(long && lat) {
-                this.locationValue(long,lat)
-            }
-            this.setState({toggle:true});
-        }
+
         let self = this;
         setTimeout(()=>{
-            //console.log('ddd=', self['input_0'])
-            //if(self['input_0']) self['input_0'].focus();
-        }, 1000)
+            console.log('ddd=', self['input_0'])
+            if(self['input_0']) self['input_0'].focus();
+        }, 2000)
     }
     handleChangeOne = (e, {value}) => {
-        console.log("operator@@@")
         this.setState({ dropdownValueOne: value })
         //reset list of sub dropwDown
         this.setCloudletList(value)
     }
     handleChangeTwo = (e, {value}) => {
+        console.log("setChangeTwo>>>")
         this.setState({ dropdownValueTwo: value })
         this.setAppList(value)
     }
@@ -139,39 +128,16 @@ class RegistNewItem extends React.Component {
         this.setState({ dropdownValueOrgRole: value })
     }
     handleChangeLong = (e, {value}) => {
-        console.log("longValue!@@",value)
-        if(value > 180 || value < -180) {
-            console.log("in",value)
-            alert("-180 ~ 180");
-            e.target.value=null;
-            return
-        }
-        this.setState({ locationLong: value })
-        if(value && this.state.locationLat) {
-            this.locationValue(value,this.state.locationLat)
-        }
-    }
-    handleChangeLat = (e, {value}) => {
-        if(value > 90 || value < -90) {
-            alert("-90 ~ 90");
-            e.target.value=null;
-            return
-        }
-        this.setState({ locationLat: value })
-        if(value && this.state.locationLong) {
-            this.locationValue(this.state.locationLong,value)
-        }
-    }
-    locationValue = (long,lat) => {
-        this.setState({ locationLongLat: [Number(long),Number(lat)] })
-    }
-
-    handleChangeLocate = (e, {value}) => {
         console.log('change input value is ==', value)
 
     }
-    resetLoc = () => {
-        this.setState({ locationLat: null,locationLong:null,toggle:false })
+    handleChangeLat = (e, {value}) => {
+        console.log('change input value is ==', value)
+
+    }
+    handleChangeLocate = (e, {value}) => {
+        console.log('change input value is ==', value)
+
     }
     setCloudletList = (operNm) => {
         let cl = [];
@@ -184,6 +150,7 @@ class RegistNewItem extends React.Component {
         _self.setState({devOptionsThree: cl})
     }
     setAppList = (devNm) => {
+        console.log("setAppList>>>>")
         let cl = [];
         let vr = [];
         _self.state.appResult[devNm].map((oper, i) => {
@@ -232,7 +199,7 @@ class RegistNewItem extends React.Component {
                 timeout: 5000,
                 offset: 100
             });
-            _self.props.handleSpinner(false)
+            //_self.props.handleSpinner(false)
             return;
         }
         let paseData = result.data;
@@ -280,10 +247,12 @@ class RegistNewItem extends React.Component {
             }
 
         }
-        _self.props.handleSpinner(false)
+       // _self.props.handleSpinner(false)
     }
 
-    onSubmit() {
+    onSubmit = () => {
+        console.log("ONSUBMIT@@")
+
         let serviceBody = {
             OperatorName:this.state.dropdownValueOne,
             DeveloperName:this.state.dropdownValueTwo,
@@ -292,31 +261,26 @@ class RegistNewItem extends React.Component {
             AppVer:this.state.dropdownValueFive};
 
         //playing spinner
-        this.props.handleSpinner(true)
+        //this.props.handleSpinner(true)
 
         //TODO: 20190410 메뉴 별 구분 필요
-        if(this.props.siteId === 'Cloudlet'){
-            //save to server
-            /*
-            http --auth-type=jwt --auth=$PASS POST https://mc.mobiledgex.net:9900/api/v1/auth/ctrl/CreateCloudlet
-            <<< '{"region":"US","cloudlet":{"key":{"operator_key":{"name":"bigwaves"},"name":"oceanview"},
-            "location":{"latitude":1,"longitude":1,"timestamp":{}},"ip_support":2,"num_dynamic_ips":30}}'
-
-             */
+        if(this.props.computeItem === 'Flavor'){
+            console.log("submitData@@",this.props.submitData)
+            const {FlavorName,RAM,VCPUS,DISK} = this.props.submitData.registNewListInput.values
             serviceBody = {
-                "token":this.props.userToken,
-                "params": {
-                    "region":"US",
-                    "cloudlet":{
-                        "key":{
-                            "operator_key":{"name":"bigwaves"},"name":"oceanview"
-                        },
-                        "location":{"latitude":37,"longitude":132,"timestamp":{}},
-                        "ip_support":2,"num_dynamic_ips":30
+                token:this.props.userToken,
+                params: {
+                    region:"US",
+                    flavor:{
+                        key:{name:FlavorName},
+                        ram:RAM,
+                        vcpus:VCPUS,
+                        disk:DISK
                     }
                 }
             }
-            service.saveNewCompute('CreateCloudlet', serviceBody, this.receiveSubmit)
+            service.getMCService('CreateFlavor',serviceBody, this.receiveSubmit)
+            console.log("ddddggg",serviceBody)
         }
         //close
         this.close();
@@ -332,13 +296,7 @@ class RegistNewItem extends React.Component {
         // }, 2000)
     }
 
-    longLocProps = (refVal) => {
-        if(refVal) this.props.handleMapLong(refVal);
-    }
-    latLocProps = (refVal) => {
-        if(refVal) this.props.handleMapLat(refVal);
-    }
-    
+
 
     render() {
         let {data, dimmer, selected} = this.props;
@@ -349,10 +307,9 @@ class RegistNewItem extends React.Component {
         let changeArr = [this.handleChangeOne, this.handleChangeTwo, this.handleChangeThree, this.handleChangeFour, this.handleChangeSix, this.handleChangeFive, this.handleChangeOrgType, this.handleChangeOrgRole]
         console.log('regKeys ===>>>', regKeys)
         return (
-            <RegistNewInput
+            <RegistNewListInput
                 handleSubmit={this.onSubmit}
-                data={data}
-                dimmer={dimmer}
+                data={data} dimmer={dimmer}
                 selected={selected}
                 regKeys={regKeys}
                 open={this.state.open}
@@ -360,27 +317,21 @@ class RegistNewItem extends React.Component {
                 option={optionArr}
                 value={valueArr}
                 change={changeArr}
-                longLoc={this.longLocProps}
-                latLoc={this.latLocProps}
-                zoomIn={this.props.zoomIn}
-                zoomOut={this.props.zoomOut}
-                resetMap={this.props.resetMap}
-                locationLongLat={this.state.locationLongLat}
-                resetLocation={this.resetLoc}
-                handleChangeLong={this.handleChangeLong}
-                handleChangeLat={this.handleChangeLat}
-                locationLong={this.state.locationLong}
-                locationLat={this.state.locationLat}
             >
-            </RegistNewInput>
+            </RegistNewListInput>
         )
     }
 }
 
+
 const mapStateToProps = (state) => {
+    console.log('props in Flavor..', state)
     return {
         locLong : state.mapCoordinatesLong?state.mapCoordinatesLong:null,
-        locLat : state.mapCoordinatesLat?state.mapCoordinatesLat:null
+        locLat : state.mapCoordinatesLat?state.mapCoordinatesLat:null,
+        computeItem : state.computeItem?state.computeItem.item:null,
+        userToken : state.user?state.user.userToken:null,
+        submitData : state.form?state.form : null
     }
 };
 
@@ -392,5 +343,4 @@ const mapDispatchProps = (dispatch) => {
 };
 
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(RegistNewItem));
-
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(RegistNewListItem));

@@ -7,57 +7,12 @@ import qs from "qs";
 let hostname = window.location.hostname;
 
 
-export function getMethodCall(resource, body, callback, self) {
-
-    axios.post('https://'+hostname+':3030/masterControl', qs.stringify({
-        service: resource,
-        serviceBody:body
-    }))
-        .then(function (response) {
-            let parseData = null;
-            if(response) {
-                parseData = JSON.parse(JSON.stringify(response));
-            } else {
-
-            }
-            console.log('parse data token===>>>>>>>>>> ', parseData)
-            if(parseData) callback(parseData, self);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-
-
-}
-
-export function getCurrentUserInfo(resource, body, callback, self) {
-
-    axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
-        service: resource,
-        serviceBody:body
-    }))
-        .then(function (response) {
-            let parseData = null;
-            if(response.data) {
-                parseData = JSON.parse(JSON.stringify(response));
-            } else {
-
-            }
-            console.log('parse data super user ===>>>>>>>>>> ', parseData)
-            if(parseData) callback(parseData, resource, self);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-
-
-}
 
 /*
 $ http POST 127.0.0.1:9900/api/v1/usercreate name=orgman passhash=pointyears email="orgman@bigorg.com"
 
  */
-export function createUser(resource, body, callback, self) {
+export function organize(resource, body, callback, self) {
 
     axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
         service: resource,

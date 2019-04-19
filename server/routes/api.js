@@ -173,7 +173,7 @@ exports.login_with_email_password = (req, res) => {
   let api_key =  req.headers.authorization
 
   if (api_key !== API_KEY){
-    res.json({ status: 'error', detail: 'api key is invalid 2' });
+    res.jsonp({ status: 'error', detail: 'api key is invalid 2' });
     return;
   }
 
@@ -249,7 +249,7 @@ exports.login_with_email_password = (req, res) => {
         // set session
         req.session.login_token
 
-        res.json({
+        res.jsonp({
           status: 'success',
           user: user_info,
           login_token: login_token,
@@ -257,7 +257,7 @@ exports.login_with_email_password = (req, res) => {
 
       })
       .catch((err) => {
-        res.json({status: 'error', detail: err})
+        res.jsonp({status: 'error', detail: err})
       })
 }
 

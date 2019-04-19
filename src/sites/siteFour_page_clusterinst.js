@@ -10,7 +10,8 @@ import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
 import DeveloperListView from '../container/developerListView';
-
+import MapWithListView from "../container/mapWithListView";
+import Alert from "react-s-alert";
 
 
 
@@ -25,11 +26,14 @@ class SiteFourPageClusterInst extends React.Component {
             contHeight:0,
             contWidth:0,
             bodyHeight:0,
-            devData:[]
+            devData:[],
+            clusterInstData:[],
+            cloudletData:[]
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [2,2,2,2,2,2,2]
+        this.headerLayout = [3,3,3,2,3,3];
+        //this.hiddenKeys = ['CloudletLocation']
     }
 
     //go to
@@ -58,7 +62,18 @@ class SiteFourPageClusterInst extends React.Component {
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
-        this.getData();
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        console.log('info.. store == ', store)
+        if(store.userToken) {
+            this.getDataDeveloper(store.userToken);
+        } else {
+            Alert.error('Invalid or expired token', {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+        }
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -66,19 +81,62 @@ class SiteFourPageClusterInst extends React.Component {
 
     }
     receiveResult(result) {
-        console.log("receive  == ", result)
-        _self.setState({devData:result})
+        //console.log("receive  == ", Object.keys(result[0]).indexOf('ClusterName'), result)
+
+
+        if(result.error) {
+            Alert.error(result.error, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+        } else {
+            //_self.setState({devData:result})
+        }
     }
-    getData() {
-        services.getComputeService('clusterinst', this.receiveResult)
+
+    receiveResultClusterInst(result) {
+        _self.groupJoin(result,'clusterInst')
+    }
+    receiveResultCloudlet(result) {
+        _self.groupJoin(result,'cloudlet')
+    }
+
+    groupJoin(result,cmpt){
+        
+
+        if(cmpt == 'clusterInst') this.setState({clusterInstData:result}) 
+        else if(cmpt == 'cloudlet') this.setState({cloudletData:result})
+        
+        
+        if(this.state.clusterInstData.length > 0 && this.state.cloudletData.length > 0) {
+            let clusterInst = this.state.clusterInstData;
+            let cloudlet = this.state.cloudletData;
+            let arr =[]
+            clusterInst.map((itemCinst,i) => {
+                cloudlet.map((itemClet,j) => {
+                    if(itemCinst.Cloudlet == itemClet.CloudletName) {
+                        itemCinst.CloudletLocation = itemClet.CloudletLocation;
+                    } 
+                })
+                arr.push(itemCinst)
+            })
+            _self.setState({devData:arr})
+        }
+    }
+    
+    getDataDeveloper(token) {
+        //services.getComputeService('clusterinst', this.receiveResult)
+        services.getMCService('ShowClusterInst',{token:token, region:'US'}, _self.receiveResultClusterInst)
+        services.getMCService('ShowCloudlet',{token:token, region:'US'}, _self.receiveResultCloudlet)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
 
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
-
+            //<DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} userToken={this.userToken}></MapWithListView>
         );
     }
 

@@ -12,7 +12,7 @@ import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
 import MapWithListView from "../container/mapWithListView";
-
+import Alert from "react-s-alert";
 
 
 
@@ -31,7 +31,8 @@ class SiteFourPageAppInst extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [3,3,1,1,2,3,2,2,2];
+        this.headerLayout = [3,3,2,2,2,3,2,2];
+        //this.hiddenKeys = ['CloudletLocation', 'URI', 'Mapped_ports']
     }
 
     //go to
@@ -60,21 +61,39 @@ class SiteFourPageAppInst extends React.Component {
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
-        this.getData();
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        console.log('info.. store == ', store)
+        if(store.userToken) {
+            this.getDataDeveloper(store.userToken);
+        } else {
+            Alert.error('Invalid or expired token', {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+        }
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-        if(nextProps.stateChange) {
-            this.getData();
-        }
+
     }
     receiveResult(result) {
-        console.log("receive  == ", result)
-        _self.setState({devData:result})
+        console.log("receive == ", result)
+        if(result.error) {
+            Alert.error(result.error, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+        } else {
+            _self.setState({devData:result})
+        }
     }
-    getData() {
-        services.getComputeService('appinst', this.receiveResult)
+    getDataDeveloper(token) {
+        //services.getComputeService('appinst', this.receiveResult)
+        services.getMCService('ShowAppInst',{token:token, region:'US'}, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;

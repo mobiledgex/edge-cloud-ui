@@ -10,6 +10,8 @@ import Alert from 'react-s-alert';
 import * as MyAPI from '../utils/MyAPI'
 import { LOCAL_STRAGE_KEY } from '../utils/Settings'
 import * as serviceLogin from '../../services/service_login_api';
+import RegistryUserForm from '../reduxForm/RegistryUserForm';
+import * as computeService from "../../services/service_compute_service";
 /*
 
  */
@@ -22,7 +24,7 @@ const FormContainer = (props) => (
         </Grid.Row>
         <Grid.Row columns={2}>
             <Grid.Column>
-                <Input placeholder='Username' name='email' width ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput}></Input>
+                <Input placeholder='Username' name='username' width ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput}></Input>
             </Grid.Column>
             <Grid.Column >
                 <Input  placeholder='Password' name='password' type='password' ref={ipt=>{props.self.pwd = ipt}} onChange={props.self.onChangeInput}></Input>
@@ -39,37 +41,24 @@ const FormSignUpContainer = (props) => (
         <Grid.Row>
             <span className='title'>Create New Account</span>
         </Grid.Row>
-        {/* <Grid.Row columns={2}>
-            <Grid.Column>
-                <Input placeholder='First Name' name='firstname' width ref={ipt=>{props.self.first = ipt}} onChange={props.self.onChangeInput}></Input>
-            </Grid.Column>
-            <Grid.Column >
-                <Input  placeholder='Last Name' name='lastname' ref={ipt=>{props.self.last = ipt}} onChange={props.self.onChangeInput}></Input>
-            </Grid.Column>
-        </Grid.Row> */}
-        <Grid.Row>
-            <Grid.Column>
-                <Input placeholder='username' name='username' style={{width:'100%'}} ref={ipt=>{props.self.username = ipt}} onChange={props.self.onChangeInput}></Input>
-            </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-            <Grid.Column>
-                <Input style={{width:'100%'}} placeholder='Password' name='password' type='password' ref={ipt=>{props.self.pwd = ipt}} onChange={props.self.onChangeInput}></Input>
-            </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-            <Grid.Column>
-                <Input placeholder='E-mail' name='email' style={{width:'100%'}} ref={ipt=>{props.self.email = ipt}} onChange={props.self.onChangeInput}></Input>
-            </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-            <Button  onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Sign Up</Button>
-        </Grid.Row>
+        <RegistryUserForm onSubmit={() => console.log('ProfileForm was submitted')}/>
         <Grid.Row>
             <div style={{fontStyle:'italic', textDecoration:'underline'}}>By clicking Sign Up, you agree to our <a href="#">Terms</a>, <a href="#">Data Policy</a>, and <a href="#">Cookies Policy</a>.</div>
         </Grid.Row>
     </Grid>
 
+)
+const SuccessMsg = (props) => (
+    <Grid className="signUpBD">
+        <Grid.Row>
+            <span className='title'>{String(props.msg)}</span>
+        </Grid.Row>
+
+        <Grid.Row>
+            <div style={{fontStyle:'italic', textDecoration:'underline'}}>Sign in with your account</div>
+            <Button><span>Login</span></Button>
+        </Grid.Row>
+    </Grid>
 )
 const validate = values => {
     const error= {};
@@ -116,7 +105,11 @@ class Login extends Component {
             loginBtnStyle:'loginBtn',
             email:'',
             password:'',
-            username:''
+            username:'',
+            successCreate:false,
+            errorCreate:false,
+            signup: false,
+            successMsg:'Success create new account'
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -131,7 +124,31 @@ class Login extends Component {
 
     }
     componentWillReceiveProps (nextProps) {
-        console.log('user...', nextProps.user)
+        console.log('submit props ---- ', nextProps)
+        if(nextProps.values) {
+            if(nextProps.submitSucceeded) {
+                let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+                if(store && store.userToken) {
+                }
+                serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email}, self.resultCreateUser, self)
+            }
+
+        }
+
+        if(nextProps.signup) {
+            if(this.state.errorCreate){
+                setTimeout(() => self.setState({successCreate:false, signup:true, errorCreate:false}), 3000);
+            } else {
+                this.setState({successCreate:false, signup:true});
+            }
+
+        } else {
+            this.setState({successCreate:false, signup:false});
+        }
+
+
+
+
     }
     // shouldComponentUpdate(nextProps, nextState) {
     //     return (
@@ -140,7 +157,13 @@ class Login extends Component {
     //     )
     // }
 
-
+    resultCreateUser(result) {
+        console.log('success create......', result.data, JSON.stringify(result.data), typeof result.data)
+        let message = (result.data.message)? result.data.message : null;
+        console.log('msg-',message)
+        //TODO 20190416 - redux
+        self.setState({successMsg:message ? message:self.state.successMsg, errorCreate: true, signup:true});
+    }
 
     onFocusHandle(value) {
         console.log('on focust button', value)
@@ -168,66 +191,68 @@ class Login extends Component {
         }
     }
     requestToken(self) {
-        serviceLogin.getMethodCall('requestToken', {username:self.state.email, password:self.state.password}, self.receiveToken)
+        serviceLogin.getMethodCall('requestToken', {username:self.state.username, password:self.state.password}, self.receiveToken)
 
         //self.receiveToken({data:{token:'my test token'}})
     }
     onSubmit() {
 
-        const { email, password } = this.state
+        const { username, password } = this.state
         const params = {
-            email: email,
+            email: username,
             password: password,
         }
+        self.params = params;
+        self.requestToken(self);
 
         // create account
-        MyAPI.signinWithPassword(params)
-            .then((data) => {
-
-                return new Promise((resolve, reject) => {
-
-                    if (data.status !== 'success'){
-                        let error_text = 'Error';
-                        if (data.detail){
-                            error_text = data.detail
-                        }
-                        reject(error_text)
-
-                    } else {
-                        // success
-                        const params = {
-                            user: data.user,
-                            login_token: data.login_token
-                        }
-                        //TODO: 2019-03-23
-                        global.userInfo = {
-                            username: email,
-                            password: password
-                        }
-
-                        self.params = params;
-
-                        localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(params))
-                        self.props.mapDispatchToLoginWithPassword(params)
-
-                        self.requestToken(self);
-                        resolve()
-                    }
-                })
-            })
-            .then(() => {
-                // redirect
-                //this.props.history.push("/dashboard")
-            })
-            .catch((err) => {
-                console.log("err:", err)
-
-                Alert.error(err, {
-                    position: 'top-right',
-                    effect: 'slide',
-                    timeout: 5000
-                });
-            })
+        // MyAPI.signinWithPassword(params)
+        //     .then((data) => {
+        //
+        //         return new Promise((resolve, reject) => {
+        //
+        //             if (data.status !== 'success'){
+        //                 let error_text = 'Error';
+        //                 if (data.detail){
+        //                     error_text = data.detail
+        //                 }
+        //                 reject(error_text)
+        //
+        //             } else {
+        //                 // success
+        //                 const params = {
+        //                     user: data.user,
+        //                     login_token: data.login_token
+        //                 }
+        //
+        //                 global.userInfo = {
+        //                     username: username,
+        //                     password: password
+        //                 }
+        //
+        //                 self.params = params;
+        //
+        //                 localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(params))
+        //                 self.props.mapDispatchToLoginWithPassword(params)
+        //
+        //                 self.requestToken(self);
+        //                 resolve()
+        //             }
+        //         })
+        //     })
+        //     .then(() => {
+        //         // redirect
+        //         //this.props.history.push("/dashboard")
+        //     })
+        //     .catch((err) => {
+        //         console.log("err:", err)
+        //
+        //         Alert.error(err, {
+        //             position: 'top-right',
+        //             effect: 'slide',
+        //             timeout: 5000
+        //         });
+        //     })
     }
     /* http://docs.nativebase.io/docs/examples/ReduxFormExample.html */
     render() {
@@ -237,8 +262,21 @@ class Login extends Component {
 
                 (this.state.session !== 'open') ?
                     <Container>
-                        <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle}/>
-                        <FormSignUpContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle}/>
+                        {
+                            (!this.state.signup)?
+                            <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle}/>
+
+                            :(this.state.signup)?
+                                (this.state.successCreate || this.state.errorCreate)?
+                                    <SuccessMsg msg={this.state.successMsg}></SuccessMsg>
+                                    :
+                                    <FormSignUpContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle}/>
+                            :
+                            <div></div>
+
+                        }
+
+
                     </Container>
 
 
@@ -255,12 +293,15 @@ class Login extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return state.form.profile
+        ? {
+            values: state.form.profile.values,
+            submitSucceeded: state.form.profile.submitSucceeded
+        }
+        : {};
+};
 
-function mapStateToProps ( {user} ) {
-    return {
-        user
-    }
-}
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},

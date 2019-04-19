@@ -1,5 +1,5 @@
 import React from 'react';
-import {Grid, Image, Header, Menu, Dropdown, Button, Popup, Divider, Modal, Item} from 'semantic-ui-react';
+import {Grid, Image, Header, Menu, Dropdown, Button, Popup, Divider, Modal, Item, Input} from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 
 import { withRouter } from 'react-router-dom';
@@ -10,14 +10,6 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import './siteThree.css';
 //pages
-import SiteFourPageZero from './siteFour_page_zero';
-import SiteFourPageOne from './siteFour_page_one';
-import SiteFourPageTwo from './siteFour_page_two';
-import SiteFourPageThree from './siteFour_page_three';
-import SiteFourPageFour from './siteFour_page_four';
-import SiteFourPageFive from './siteFour_page_five';
-import SiteFourPageSix from './siteFour_page_six';
-import SiteFourPageSeven from './siteFour_page_seven';
 
 import SiteFourPageFlavor from './siteFour_page_flavor';
 import SiteFourPageUser from './siteFour_page_user';
@@ -26,8 +18,8 @@ import SiteFourPageApps from './siteFour_page_apps';
 import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
-import SiteFourPageOrgabuzation from './siteFour_page_organization';
-import SiteFourCreateOper from '../container/siteFourCreateOper';
+import SiteFourPageOrganization from './siteFour_page_organization';
+import SiteFourPageCreateoper from './siteFour_page_createOper';
 
 import { LOCAL_STRAGE_KEY } from '../components/utils/Settings';
 
@@ -94,40 +86,59 @@ class SiteFour extends React.Component {
             bodyHeight:0,
             headerTitle:'',
             activeItem: 'Organization',
-            page: 'pg=org',
+            page: 'pg=0',
             email: store ? store.email : 'Administrator',
-            role:'', //db에서
+            role:'MEXADMIN', //db에서
             onlyView: false,
             userToken:null,
             profileViewData:null,
             openProfile:false,
             userName:'',
-            controllerRegions:null
+            controllerRegions:null,
+            regions:[]
         };
+        //this.controllerOptions({controllerRegions})
         this.headerH = 70;
         this.hgap = 0;
         this.menuItems = [
-            {label:'Organization', icon:'people', pg:'org'},
-            {label:'Flavor', icon:'free_breakfast', pg:0},
-            {label:'Cluster Flavor', icon:'developer_board', pg:1},
-            {label:'Users', icon:'dvr', pg:2},
-            {label:'Cloudlets', icon:'cloud_queue', pg:3},
-            {label:'Cluster Instances', icon:'storage', pg:4},
-            {label:'Apps', icon:'apps', pg:5},
-            {label:'App Instances', icon:'storage', pg:6}
+            {label:'Organization', icon:'people', pg:0},
+            {label:'Users', icon:'dvr', pg:1},
+            {label:'Cloudlets', icon:'cloud_queue', pg:2},
+            {label:'Flavor', icon:'free_breakfast', pg:3},
+            {label:'Cluster Flavor', icon:'developer_board', pg:4},
+            {label:'Cluster Instances', icon:'storage', pg:5},
+            {label:'Apps', icon:'apps', pg:6},
+            {label:'App Instances', icon:'storage', pg:7}
         ]
         // this.auth_one = [this.menuItems[0], this.menuItems[1], this.menuItems[2], this.menuItems[3], this.menuItems[4], this.menuItems[5], this.menuItems[6], this.menuItems[7]] //MEXADMIN
         // this.auth_two = [this.menuItems[0], this.menuItems[1], this.menuItems[2], this.menuItems[3], this.menuItems[4], this.menuItems[5], this.menuItems[6], this.menuItems[7]] //DeveloperManager, DeveloperContributor, DeveloperViewer
-        this.auth_three = [this.menuItems[2], this.menuItems[3]] //OperatorManager, OperatorContributor, OperatorViewer
+        this.auth_three = [this.menuItems[0], this.menuItems[1], this.menuItems[2]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
             {role:'MEXADMIN', view:[]},
             {role:'superadmin', view:[]},
-            {role:'Developer Manager', view:[0,1,3]},
+            {role:'Developer Manager', view:[1,2,3]},
             {role:'Developer Contributor', view:[0,1,2,3]},
             {role:'Developer Viewer', view:[0,1,2,3,4,5,6]},
             {role:'Operator Manager', view:[]},
-            {role:'Operator Contributor', view:[2]},
-            {role:'Operator Viewer', view:[2,3]},
+            {role:'Operator Contributor', view:[0]},
+            {role:'Operator Viewer', view:[0,1]}
+        ]
+        this.searchOptions = [
+            {
+                key:'UserName',
+                text:'UserName',
+                value:'UserName'
+            },
+            {
+                key:'Organization',
+                text:'Organization',
+                value:'Organization'
+            },
+            {
+                key:'TypeRole',
+                text:'TypeRole',
+                value:'TypeRole'
+            },
         ]
     }
     PopupExampleFlowing = () => (
@@ -174,6 +185,13 @@ class SiteFour extends React.Component {
         _self.props.handleChangeClickCity([]);
 
     }
+    gotoUrl(site, subPath) {
+        _self.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
+    }
     handleItemClick ( id, label, pg, role ) {
         _self.props.handleChangeViewBtn(false);
         _self.props.handleChangeClickCity([]);
@@ -199,6 +217,7 @@ class SiteFour extends React.Component {
         if(this.state.activeItem === 'Organization') {
 
             this.setState({page:'pg=newOrg'})
+            this.gotoUrl('/site4', 'pg=newOrg')
         } else {
 
             this.props.handleInjectDeveloper('newRegist');
@@ -211,12 +230,12 @@ class SiteFour extends React.Component {
     receiveResult(result) {
         console.log("controllerList",result.data);
         //this.setState({ controllerRegions:result.data })
-        _self.setState({controllerRegions: result.data})
+        _self.controllerOptions(result.data);
     }
     controllerOptions(option){
         let arr = []
-        if(option.controllerRegions) {
-            option.controllerRegions.map((item)=> {
+        if(option) {
+            option.map((item)=> {
                 arr.push({
                     key: item.Region,
                     text: item.Region,
@@ -225,7 +244,7 @@ class SiteFour extends React.Component {
                 })
             })
         }
-        return arr;
+        _self.setState({regions: arr})
     }
     menuAdmin = () => (
         <Button.Group vertical>
@@ -265,22 +284,28 @@ class SiteFour extends React.Component {
     }
     componentDidMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
-        console.log('info.. ', this.childFirst, this.childSecond)
-        this.setState({activeItem:'Organization', headerTitle:'Organization', role:store.user.role})
+        console.log('store.. ', store.user)
+        this.setState({activeItem:'Organization', headerTitle:'Organization', role:(store.user && store.user.role)?store.user.role:'MEXADMIN'})
         //get list of customer's info
         if(store.userToken) {
             Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
             computeService.getMCService('showController', {token:store.userToken}, this.receiveResult, this);
         }
+        //if there is no role
+
+            //show you create the organization view
+            this.setState({page:'pg=0'})
+            this.gotoUrl('/site4', 'pg=0')
+
         
     }
     componentWillReceiveProps(nextProps) {
         console.log("props!!!!",nextProps)
+
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         this.setState({userToken: nextProps.userToken})
-        this.setState({userName: nextProps.userInfo.info.Name})
-
+        this.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
     }
 
 
@@ -306,6 +331,10 @@ class SiteFour extends React.Component {
             </div>
         </Menu.Item>
     )
+
+    searchClick = (e) => {
+        console.log(e)
+    }
 
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -376,36 +405,48 @@ class SiteFour extends React.Component {
                         </Menu>
                     </Grid.Column>
                     <Grid.Column width={14} style={{height:this.state.bodyHeight}} className='contents_body'>
-                        <Grid.Row className='content_title'>
+                        <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
                             <Grid.Column className='title_align'>{this.state.headerTitle}</Grid.Column>
                             <Grid.Column className='title_align'>
-                                <Item style={{marginLeft:20}}>
+                                <Item style={{marginLeft:20, marginRight:10}}>
                                     <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
                                 </Item>
                             </Grid.Column>
                         </Grid.Row>
-                        <div style={{top:30, left:300, position:'absolute'}}>
-                            <Dropdown
-                                options={this.controllerOptions({controllerRegions})}
-                                defaultValue={options[1].value}
-                            />
-                        </div>
+                        {
+                            (this.state.headerTitle !== 'Organization' && this.state.headerTitle !== 'Users') ? 
+                            <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
+                                <Dropdown className='selection'
+                                    options={this.state.regions}
+                                    defaultValue={options[1].value}
+                                />
+                            </Grid.Row> 
+                            : null
+                        }
+                        {
+                            (this.state.headerTitle == 'Users') ? 
+                            <div style={{top:15, right:25, position:'absolute',zIndex:99}}>
+                                <Input action={{color:'teal', content:'Search', onClick: (e) => this.searchClick(e)}} style={{marginRight:'20px'}}  />
+                                <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} />
+                            </div>
+                            :
+                            null
+                        }
                         <Grid.Row className='site_content_body' style={{height:'100%'}}>
                             <Grid.Column style={{height:'100%'}}>
                                 <ContainerDimensions>
                                     { ({ width, height }) =>
                                         <div style={{width:width, height:height, display:'flex', overflow:'hidden'}}>
                                             {
-                                                (this.state.page === 'pg=org')?<SiteFourPageOrgabuzation userToken={this.state.userToken}></SiteFourPageOrgabuzation> :
-                                                (this.state.page === 'pg=0')?<SiteFourPageFlavor></SiteFourPageFlavor> :
-                                                (this.state.page === 'pg=1')?<SiteFourPageCluster></SiteFourPageCluster> :
-                                                (this.state.page === 'pg=2')?<SiteFourPageUser></SiteFourPageUser> : // 페이지 설정 안됨
-                                                (this.state.page === 'pg=3')?<SiteFourPageCloudlet></SiteFourPageCloudlet> :
-                                                (this.state.page === 'pg=4')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
-                                                (this.state.page === 'pg=5')?<SiteFourPageApps></SiteFourPageApps>:
-                                                (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
-                                                (this.state.page === 'pg=newOrg')? <SiteFourCreateOper></SiteFourCreateOper> : <div> </div>
-
+                                                (this.state.page === 'pg=0')?<SiteFourPageOrganization userToken={this.state.userToken}></SiteFourPageOrganization> :
+                                                (this.state.page === 'pg=1')?<SiteFourPageUser></SiteFourPageUser> :
+                                                (this.state.page === 'pg=2')?<SiteFourPageCloudlet></SiteFourPageCloudlet> :
+                                                (this.state.page === 'pg=3')?<SiteFourPageFlavor></SiteFourPageFlavor> :
+                                                (this.state.page === 'pg=4')?<SiteFourPageCluster></SiteFourPageCluster> :
+                                                (this.state.page === 'pg=5')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
+                                                (this.state.page === 'pg=6')?<SiteFourPageApps></SiteFourPageApps>:
+                                                (this.state.page === 'pg=7')? <SiteFourPageAppInst></SiteFourPageAppInst> :
+                                                (this.state.page === 'pg=newOrg')? <SiteFourPageCreateoper></SiteFourPageCreateoper> : <div> </div>
                                             }
                                         </div>
                                     }
@@ -422,11 +463,11 @@ class SiteFour extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    console.log('props in siteFour..', state)
+
     return {
-        viewBtn : state.btnMnmt,
+        viewBtn : state.btnMnmt?state.btnMnmt:null,
         userToken : (state.userToken) ? state.userToken: null,
-        userInfo : state.userInfo
+        userInfo : state.userInfo?state.userInfo:null
     }
 };
 

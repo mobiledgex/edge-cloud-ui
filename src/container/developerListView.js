@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
 import SelectFromTo from '../components/selectFromTo';
-import RegistNewItem from './registNewItem';
+import RegistNewListItem from './registNewListItem';
 import PopDetailViewer from './popDetailViewer';
+import PopUserViewer from './popUserViewer';
 import './styles.css';
 import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
@@ -37,7 +38,8 @@ class DeveloperListView extends React.Component {
             activeItem:'',
             dummyData : [],
             detailViewData:null,
-            selected:{}
+            selected:{},
+            openUser:false
         };
 
     }
@@ -60,6 +62,9 @@ class DeveloperListView extends React.Component {
     }
     closeDetail = () => {
         this.setState({ openDetail: false })
+    }
+    closeUser = () => {
+        this.setState({ openUser: false })
     }
     makeHeader_noChild =(title)=> (
         <Header className='panel_title'>{title}</Header>
@@ -183,8 +188,19 @@ class DeveloperListView extends React.Component {
 
     }
     detailView(item) {
-        this.setState({detailViewData:item, openDetail:true})
+        console.log("user >>>> ",item)
+        if(!item['UserName']){
+            this.setState({detailViewData:item, openDetail:true})
+        } else {
+            this.setState({detailViewData:item, openUser:true})
+        }
     }
+    roleMark = (role) => (
+        (role.indexOf('Manager')!==-1) ? <div className="mark markM">M</div> :
+        (role.indexOf('Contributor')!==-1) ? <div className="mark markC">C</div> :
+        (role.indexOf('Viewer')!==-1) ? <div className="mark markV">V</div> : <div></div>
+    )
+
     TableExampleVeryBasic = (w, h, headL, hideHeader, datas) => (
         <Table className="viewListTable" basic='very' sortable striped celled fixed>
             <Table.Header className="viewListTableHeader">
@@ -210,6 +226,19 @@ class DeveloperListView extends React.Component {
                                         <Icon name='server' size='big' onClick={() => this.onPortClick(true, item)} style={{cursor:'pointer'}}></Icon>
                                     </Table.Cell>
                                 :
+                                (value === 'UserName')?
+                                    <Table.Cell key={j} textAlign='left'>
+                                        <div className="left_menu_item" onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
+                                        <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {(i==0) ? <div className="userNewMark">{'New'}</div> : null} {item[value]}
+                                        </div>
+                                    </Table.Cell>
+                                :   
+                                (value === 'TypeRole')?
+                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
+                                        <div className="markBox">{this.roleMark(item[value])}</div>
+                                        {item[value]}
+                                    </Table.Cell>
+                                :  
                                     <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={{cursor:'pointer'}}> {item[value]} </Table.Cell>
                             ))}
                         </Table.Row>
@@ -236,7 +265,7 @@ class DeveloperListView extends React.Component {
             <ContainerDimensions>
                 { ({ width, height }) =>
                     <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
-                        <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>
+                        <RegistNewListItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>
                         <ReactGridLayout
                             layout={this.state.layout}
                             onLayoutChange={this.onLayoutChange}
@@ -246,6 +275,7 @@ class DeveloperListView extends React.Component {
                             {this.generateDOM(open, dimmer, width, height, hideHeader)}
                         </ReactGridLayout>
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
+                        <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                     </div>
                 }
             </ContainerDimensions>
