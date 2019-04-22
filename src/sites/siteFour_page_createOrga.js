@@ -18,7 +18,7 @@ import * as serviceOrganiz from "../services/service_organiz_api";
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
-class SiteFourPageCreateoper extends React.Component {
+class SiteFourPageCreateorga extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -78,7 +78,7 @@ class SiteFourPageCreateoper extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
         if(nextProps.stepOne && nextProps.stepOne.submitSucceeded) {
-            console.log('stream form siteFour_page_createOper.js   ### ', nextProps, nextProps.stepOne.values, " store is..",store)
+            console.log('stream form siteFour_page_createOrga.js   ### ', nextProps, nextProps.stepOne.values, " store is..",store)
             if(store && store.userToken) {
 
                 //내용저장하기
@@ -86,7 +86,7 @@ class SiteFourPageCreateoper extends React.Component {
                 http --auth-type=jwt --auth=$ORGMANTOKEN POST 127.0.0.1:9900/api/v1/auth/org/create
                 name=bigorg type=developer address="123 abc st" phone="123-456-1234"
                  */
-                if(this.state.step === 1) {
+                if(this.state.step === 1 && nextProps.stepOne.values) {
                     console.log(nextProps.stepOne.values)
                     serviceOrganiz.organize('createOrg',
                         {name:nextProps.stepOne.values.name, type:nextProps.stepOne.values.type.toLowerCase(), address:nextProps.stepOne.values.address, phone:nextProps.stepOne.values.phone,
@@ -105,7 +105,7 @@ class SiteFourPageCreateoper extends React.Component {
         org=bigorg username=worker1 role=DeveloperContributor
          */
         if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded) {
-            console.log('stream form siteFour_page_createOper.js  git to a role ... ', nextProps, nextProps.stepTwo.values)
+            console.log('stream form siteFour_page_createOrga.js  git to a role ... ', nextProps, nextProps.stepTwo.values)
             //{username: "inkikim", orgName: "bicinkiOrg", orgType: "Developer", selectRole: "Manager"}
             let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
             let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
@@ -120,7 +120,7 @@ class SiteFourPageCreateoper extends React.Component {
         }
 
     }
-    resultCreateOrg(result,resource, self) {
+    resultCreateOrg = (result,resource, self) => {
         console.log("receive == ", result, resource, self)
         if(result.data.error) {
             Alert.error(String(result.data.error), {
@@ -137,10 +137,10 @@ class SiteFourPageCreateoper extends React.Component {
                 timeout: 5000
             });
             //goto next step
-
+            this.setState({step:2})
         }
     }
-    resultGiveToRole(result,resource, self) {
+    resultGiveToRole = (result,resource, self) => {
         console.log("receive == ", result, resource, self)
         if(result.data.error) {
             Alert.error(String(result.data.error), {
@@ -157,7 +157,7 @@ class SiteFourPageCreateoper extends React.Component {
                 timeout: 5000
             });
             //goto next step
-
+            this.setState({step:3})
         }
     }
     receiveResult(result,resource, self) {
@@ -178,10 +178,10 @@ class SiteFourPageCreateoper extends React.Component {
         services.getMCService('showOrg',{token:token}, _self.receiveResult)
     }
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
+        const {shouldShowBox, shouldShowCircle, step} = this.state;
         const { activeItem } = this.state
         return (
-            <SiteFourOrgaStepView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader}></SiteFourOrgaStepView>
+            <SiteFourOrgaStepView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader} stepMove={this.state.step}></SiteFourOrgaStepView>
         );
     }
 
@@ -215,6 +215,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCreateoper)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCreateorga)));
 
 
