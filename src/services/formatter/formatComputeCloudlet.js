@@ -12,25 +12,26 @@ const numberDes =(a,b)=> (
 )
 
 let generateData = (datas) => {
-    console.log('format data - ', datas)
-    let result = datas;
+    console.log('format data cloudlet@@ - ', datas)
     let values = [];
-
-    //---------------
-
-    let toArray = datas.data.split('\n')
-    toArray.pop();
-
-    let toJson = toArray.map((str)=>(JSON.parse(str)))
-
+    let toArray = null;
+    let toJson = [];
+    if(datas.data) {
+        if(typeof datas.data === 'object') {
+            toJson.push((datas.data)?datas.data:{});
+        } else {
+            toArray = datas.data.split('\n')
+            toArray.pop();
+            toJson = toArray.map((str)=>(JSON.parse(str)))
+        }
+    }else {
+        toJson = null;
+    }
+    console.log("cloudlet tojson!!",toJson)
     if(toJson){
         toJson.map((dataResult, i) => {
             if(dataResult.message) {
-                //{"key":{"operator_key":{"name":"TIP"},"name":"mpk-tip"},
-                // "location":{"latitude":37.485,"longitude":-122.1475,"timestamp":{}},"ip_support":2,"num_dynamic_ips":5}
-
-                // create
-                //{"region":"local","cloudlet":{"key":{"operator_key":{"name":"bigwaves"},"name":"oceanview"},"location":{"latitude":1,"longitude":1,"timestamp":{}},"ip_support":2,"num_dynamic_ips":30}}
+                
             } else {
                 let Index = i;
                 let CloudletName = dataResult.key.name || '-';
@@ -45,7 +46,8 @@ let generateData = (datas) => {
 
         })
     } else {
-        console.log('there is no result')
+        let newRegistKey = ['CloudletName', 'Operator', 'CloudletLocation', 'Region', 'Ip_support', 'Num_dynamic_ips'];
+        values.push({CloudletName:'', Operator:'', CloudletLocation:'', Ip_support:'', Num_dynamic_ips:'', Edit:newRegistKey})
     }
 
 

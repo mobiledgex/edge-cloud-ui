@@ -63,13 +63,13 @@ const asyncComponent = getComponent => (
  */
 const DashboardContainer = ( props, props2) => {
 
-    console.log('페이지 이동 == '+props.mainPath, props2.location.search, 'routed = '+self.routed)
+    console.log('페이지 이동 =========== '+props.mainPath, props2.location.search, 'routed = '+self.routed)
     if(props.mainPath === '/') props.mainPath = '/site1';
     if(props2.location.search) props2.location.search = props2.location.search.replace('?', '')
     let _params = {mainPath:props.mainPath, subPath:(props2.match.params.page) ? props2.match.params.page : (props2.location.search) ? props2.location.search : 'pg=0'};
     global.areaCode = _params;
 
-
+    console.log('_params... ', _params)
     //단 한번만 라우터 정보 기록 - 랜더링 타이밍 무한루프 피함
     if(!self.routed){
         self.props.handleChangeSite({mainPath:_params.mainPath, subPath:_params.subPath})
@@ -111,6 +111,13 @@ const DashboardContainer = ( props, props2) => {
         history.location.search = subPath;
         props.mainPath = '/site1'
 
+    } else {
+        history.push({
+            pathname: _params.mainPath,
+            search: _params.subPath,
+            state: { some: 'state' }
+        });
+        history.location.search = _params.subPath;
     }
 
     return(
@@ -165,7 +172,7 @@ class App extends Component {
     componentDidMount() {
         let pathName = window.location.pathname;
         console.log('pathName = '+pathName)
-        // this.router.history.push(pathName);
+        //this.router.history.push(pathName);
 
         // Login check
         const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
@@ -209,7 +216,7 @@ class App extends Component {
                     <Route exact path='/site3/:page' component={DashboardContainer.bind(this, {mainPath:'/site3'})} />
                     <Route exact path='/site3' component={DashboardContainer.bind(this, {mainPath:'/site3'})} />
                     <Route exact path='/site4' component={DashboardContainer.bind(this, {mainPath:'/site4'})} />
-                    <Route exact path='/site4/:page' component={DashboardContainer.bind(this, {mainPath:'/site4'})} />
+                    <Route exact path='/site4/:page' component={DashboardContainer.bind(this, {mainPath:'/site4', ...history.location.search})} />
                     <Route exact path='/site5' component={DashboardContainer.bind(this, {mainPath:'/site5'})} />
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
 

@@ -16,6 +16,7 @@ let generateData = (datas) => {
     let values = [];
     //20190409 transition string to json
     let toArray = datas.data.split('\n')
+    toArray.pop();
     let toJson = toArray.map((str)=>(JSON.parse(str)))
     console.log("tojson!!",toJson)
     if(toJson){

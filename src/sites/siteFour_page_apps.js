@@ -9,13 +9,14 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
-import MapWithListView from "./siteFour_page_six";
+import MapWithListView from "../container/mapWithListView";
 import DeveloperListView from '../container/developerListView';
 import Alert from "react-s-alert";
 
 
 
 let _self = null;
+
 class SiteFourPageApps extends React.Component {
     constructor(props) {
         super(props);
@@ -31,8 +32,13 @@ class SiteFourPageApps extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [2,2,1,3,2,1,1,2,2];
+
+        this.headerLayout = [1,2,1,1,2,2,2,1,1];
         this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType']
+        this.userToken = null;
+
+        //
+
     }
 
     //go to
@@ -64,7 +70,8 @@ class SiteFourPageApps extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         console.log('info.. store == ', store)
         if(store.userToken) {
-            this.getDataDeveloper(store.userToken);
+            this.getDataDeveloper(store.userToken, this.props.region.value);
+            this.userToken = store.userToken;
         } else {
             Alert.error('Invalid or expired token', {
                 position: 'top-right',
@@ -77,9 +84,19 @@ class SiteFourPageApps extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        if(nextProps.receiveNewReg && nextProps.receiveNewReg.values) {
+            console.log('submit on...', nextProps.receiveNewReg.values)
+            //services.createNewApp('CreateApp', {params:nextProps.receiveNewReg.values, token:store.userToken, region:'US'}, _self.receiveResult)
+        }
+
+        if(nextProps.region.value) {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            this.getDataDeveloper(store.userToken, nextProps.region.value)
+        }
 
     }
-    receiveResult(result) {
+    receiveResult(result, region) {
         console.log("receive == ", result)
         if(result.error) {
             Alert.error(result.error, {
@@ -91,20 +108,45 @@ class SiteFourPageApps extends React.Component {
             _self.setState({devData:result})
         }
     }
-    getDataDeveloper(token) {
+    getDataDeveloper(token, region) {
         //services.getComputeService('app', this.receiveResult)
-        services.getMCService('ShowApps',{token:token, region:'US'}, _self.receiveResult)
+        if(region === 'All'){
+            services.getMCService('ShowApps',{token:token, region:['US', 'EU']}, _self.receiveResult)
+        } else {
+            services.getMCService('ShowApps',{token:token, region:region}, _self.receiveResult)
+        }
     }
+    /*
+
+     */
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} userToken={this.userToken}></DeveloperListView>
         );
     }
 
 };
 
+const mapStateToProps = (state) => {
+    console.log('props in state.form..', state.form, 'region === ', state.changeRegion)
+    let registNew= state.form.registNewListInput
+        ? {
+            values: state.form.registNewListInput.values,
+            submitSucceeded: state.form.registNewListInput.submitSucceeded
+        }
+        : {};
+    let region = state.changeRegion
+        ? {
+            value: state.changeRegion.region
+        }
+        : {};
+    return {
+        receiveNewReg:registNew,
+        region:region
+    }
+};
 
 const mapDispatchProps = (dispatch) => {
     return {
@@ -114,4 +156,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageApps)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageApps)));

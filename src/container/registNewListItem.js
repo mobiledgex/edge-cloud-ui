@@ -8,7 +8,6 @@ import './styles.css';
 import RegistNewListInput from "./registNewListInput";
 
 import * as service from '../services/service_compute_service';
-import * as serviceOrganiz from "../services/service_organiz_api";
 
 //http://react-s-alert.jsdemo.be/
 import Alert from 'react-s-alert';
@@ -75,14 +74,14 @@ class RegistNewListItem extends React.Component {
     }
 
     componentDidMount() {
-        // app
-        service.getComputeService('app', this.receiveApp)
-        // developer
-        service.getComputeService('developer', this.receiveDev)
-        // operator
-        service.getComputeService('operator', this.receiveOper)
-        // cloudlet
-        service.getComputeService('cloudlet', this.receiveCloudlet)
+        // // app
+        // service.getComputeService('app', this.receiveApp)
+        // // developer
+        // service.getComputeService('developer', this.receiveDev)
+        // // operator
+        // service.getComputeService('operator', this.receiveOper)
+        // // cloudlet
+        // service.getComputeService('cloudlet', this.receiveCloudlet)
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('regist new item -- ', nextProps)
@@ -97,40 +96,9 @@ class RegistNewListItem extends React.Component {
             if(self['input_0']) self['input_0'].focus();
         }, 2000)
 
-        if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded) {
-            console.log('stream form siteFour_page_createOrga.js  git to a role ... ', nextProps, nextProps.stepTwo.values)
-            //{username: "inkikim", orgName: "bicinkiOrg", orgType: "Developer", selectRole: "Manager"}
-            let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
-            let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
-            let _role = nextProps.stepTwo.values && nextProps.stepTwo.values.orgType+nextProps.stepTwo.values.selectRole || '';
-            serviceOrganiz.organize('addUserRole',
-                {
-                        username:_username,
-                        org:_org,
-                        role:_role,
-                        token:store.userToken
-                }, this.resultGiveToRole, this)
-        }
+        
     }
-    resultGiveToRole = (result,resource, self) => {
-        console.log("receive == ", result, resource, self)
-        if(result.data.error) {
-            Alert.error(String(result.data.error), {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-            //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
-        } else {
-
-            Alert.success('Success created organization', {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-            //popup close
-        }
-    }
+    
     handleChangeOne = (e, {value}) => {
         this.setState({ dropdownValueOne: value })
         //reset list of sub dropwDown
@@ -344,7 +312,7 @@ class RegistNewListItem extends React.Component {
         console.log('regKeys ===>>>', regKeys)
         return (
             <RegistNewListInput
-                handleSubmit={this.onSubmit}
+                onSubmit={() => console.log('on submit to form')}
                 data={data} dimmer={dimmer}
                 selected={selected}
                 regKeys={regKeys}

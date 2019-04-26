@@ -31,8 +31,6 @@
 
 
 
-
-
 /*Step*/
 
 .ui.steps{
@@ -123,6 +121,10 @@
 }
 
 
+.create-org .ui.grid .column .ui.form .fields > .ui.grid > .row:first-child {
+    display: none;
+}
+
 /* radio */
 
 .ui.grid .column .field .radio label{
@@ -171,6 +173,42 @@
     font-weight: normal;
 }
 
+/* ----- PopUp User ----- */
+
+.popup_user .ui.header {
+    display: none;
+}
+
+/*.popup_user .submitButtonGroup{*/
+/*    justify-content: center;*/
+/*}*/
+
+.popup_user .submitButtonGroup.orgButton.fields .field{
+    position: absolute;
+    top: 41.55rem;
+}
+
+.popup_user .submitButtonGroup.orgButton.fields .field .button{
+    padding: .7em 1.5em;
+
+}
+
+.popup_user .submitButtonGroup.orgButton.fields .field:last-child{
+    left:6.304em;
+}
+
+.popup_user .orgButton{
+    padding: 0;
+}
+
+.popup_user .step_side{
+    padding-top: 0;
+}
+
+.ui.modal>.actions.adduser-close{
+     text-align: right !important;
+ }
 
 
 .text-danger {color:#FF1902; }
+.s-alert-top-right {z-index: 9999;}

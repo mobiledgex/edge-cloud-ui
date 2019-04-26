@@ -28,53 +28,59 @@ const numberDes =(a,b)=> (
 
  */
 let generateData = (datas) => {
-    console.log('format data apps - ', datas)
-    let result = datas;
+    console.log('format data apps - ', JSON.stringify(datas.data))
     let values = [];
-    //20190409 transition string to json
     let toArray = null;
     let toJson = [];
-    if(typeof datas === 'object') {
+ 
+    if(typeof datas.data === 'object') {
         toJson.push((datas.data)?datas.data:{});
     } else {
         toArray = datas.data.split('\n')
+        toArray.pop();
         toJson = toArray.map((str)=>(JSON.parse(str)))
     }
-    console.log("tojson!!",toJson)
+
+    console.log("Apptojson!!",toJson)
     if(toJson){
         toJson.map((dataResult, i) => {
             if(dataResult.message) {
 
             } else {
+                console.log("gogogo@#@")
                 let Index = i;
+                let Region = dataResult.key.region || 'US';
                 let DeveloperName = dataResult.key.developer_key.name || '-';
                 let AppName = dataResult.key.name || '-';
                 let Version = dataResult.key.version || '-';
                 let ImagePath = dataResult.image_path || '-';
                 let DeploymentType = dataResult.deployment || '-';
+                let Command = dataResult.Command || '-';
+                let DeploymentMF = dataResult.deployment_manifest || '-';
                 let ImageType = dataResult.image_type || '-';
                 let DefaultFlavor = dataResult.default_flavor.name || '-';
                 let Ports = dataResult.access_ports || '-';
                 let Cluster = dataResult.cluster.name || '-';
-                let Command = dataResult.command || '-';
-                let DeploymentMF = dataResult.deployment_manifest || '-';
+                
+                let DeploymentGenerator = dataResult.deployment_generator || '-';
 
                 let newRegistKey = [
+                    'Region',
                     'DeveloperName',
                     'AppName',
                     'Version',
                     'ImagePath',
                     'DeploymentType',
-                    'DeploymentMF',
                     'ImageType',
-                    'ImagePath',
                     'DefaultFlavor',
                     'Ports',
                     'Cluster',
-                    'Command'
+                    'Command',
+                    'DeploymentMF',
                 ];
 
                 values.push({
+                    Region:Region,
                     DeveloperName:DeveloperName,
                     AppName:AppName,
                     Version:Version,
@@ -84,7 +90,7 @@ let generateData = (datas) => {
                     DefaultFlavor:DefaultFlavor,
                     Ports:Ports,
                     Cluster:Cluster,
-                    Command: Command,
+                    Command:Command,
                     DeploymentMF:DeploymentMF,
                     Edit:newRegistKey
                 })

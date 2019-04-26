@@ -217,41 +217,51 @@ class MapWithListView extends React.Component {
                 </Table.Row>
             </Table.Header>
             <Table.Body className="tbBodyList">
-                {
-                    this.state.dummyData.map((item, i) => (
-                        <Table.Row key={i}>
-                            {Object.keys(item).map((value, j) => (
-                                (value === 'Edit')?
-                                    <Table.Cell key={j} textAlign='center' style={{whiteSpace:'nowrap'}}>
-                                        <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}>Delete</Button>
-                                        <Button disabled={this.props.dimmInfo.onlyView} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
-                                    </Table.Cell>
-                                :
-                                (value === 'Mapped_ports')?
-                                    <Table.Cell key={j} textAlign='left'>
-                                        <Icon name='server' size='big' onClick={() => this.onPortClick(value, item)} style={{cursor:'pointer'}}></Icon>
-                                    </Table.Cell>
-                                :
-                                (value === 'CloudletLocation')?
-                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)}  style={{cursor:'pointer'}}>
-                                        <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
-                                        {
-                                            `Latitude : ${item[value].latitude}
-                                            Longitude : ${item[value].longitude}`
-                                        }
-                                        </div>
-                                    </Table.Cell>
-                                :
-                                (!( String(hidden).indexOf(value) > -1 )) ?
-                                    <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
-                                        <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
-                                        {String(item[value])}
-                                        </div>
-                                    </Table.Cell>
-                                : null
-                            ))}
-                        </Table.Row>
-                    ))
+                {   
+                
+                    //(!this.state.dummyData[0].ClusterName && !this.state.dummyData[0].Developer) ?
+                    //(this.state.dummyData[0][Object.keys(this.state.dummyData[0])[0]] !== "") ?
+                    ((this.state.dummyData[0])?this.state.dummyData[0][Object.keys(this.state.dummyData[0])[0]]:true) ?
+                        this.state.dummyData.map((item, i) => (
+                            <Table.Row key={i}>
+                                {Object.keys(item).map((value, j) => (
+                                    (value === 'Edit')?
+                                        <Table.Cell key={j} textAlign='center' style={{whiteSpace:'nowrap'}}>
+                                            <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}>Delete</Button>
+                                            <Button disabled key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
+                                        </Table.Cell>
+                                    :
+                                    (value === 'Mapped_ports')?
+                                        <Table.Cell key={j} textAlign='left'>
+                                            <Icon name='server' size='big' onClick={() => this.onPortClick(value, item)} style={{cursor:'pointer'}}></Icon>
+                                        </Table.Cell>
+                                    :
+                                    (value === 'CloudletLocation')?
+                                        <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)}  style={{cursor:'pointer'}}>
+                                            <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
+                                            {
+                                                `Latitude : ${item[value].latitude}
+                                                Longitude : ${item[value].longitude}`
+                                            }
+                                            </div>
+                                        </Table.Cell>
+                                    :
+                                    (!( String(hidden).indexOf(value) > -1 )) ?
+                                        <Table.Cell key={j} textAlign={(j === 0)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
+                                            <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
+                                            {String(item[value])}
+                                            </div>
+                                        </Table.Cell>
+                                    : null
+                                ))}
+                            </Table.Row>
+                        ))
+                    : <Table.Row>
+                        <Table.Cell colSpan={Object.keys(this.state.dummyData[0]).length} textAlign='center' style={{fontSize:'28px'}}>
+                            No Data
+                        </Table.Cell>
+                    </Table.Row>
+
                 }
             </Table.Body>
 

@@ -165,7 +165,7 @@ const SiteFourOrgaOne = props => {
             <Grid>
                 <Grid.Column width={11}>
                     <Form onSubmit={handleSubmit} className={"fieldForm"}>
-                        <Header>Create your organization.</Header>
+                        <Header>Create Your Organization.</Header>
                         <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
                             <Grid>
                                 <Grid.Row>

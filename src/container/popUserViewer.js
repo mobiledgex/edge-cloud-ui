@@ -50,7 +50,7 @@ export default class PopUserViewer extends React.Component {
 
         return (
             <Modal size={'tiny'} open={this.state.open} dimmer={false}>
-                <Modal.Header>Add User</Modal.Header>
+                <Modal.Header>User</Modal.Header>
                 <Modal.Content>
                     <Grid>
                         <Grid.Row >
@@ -60,12 +60,12 @@ export default class PopUserViewer extends React.Component {
                         </Grid.Row>
                         <Grid.Row >
                             <Grid.Column>
-                                <div style={{fontSize:'28px',borderBottom:'1px solid rgba(255,255,255,0.3)', padding:'10px 0'}}>{this.state.propsData.UserName}</div>
+                                <div style={{fontSize:'28px',borderBottom:'1px solid rgba(255,255,255,0.3)', padding:'10px 0'}}>{this.state.propsData.Username}</div>
                             </Grid.Column>
                         </Grid.Row>
                         {
                             Object.keys(this.state.propsData).map((key, i)=> (
-                                (key !== 'Edit' && key !== 'UserName')?
+                                (key !== 'Edit' && key !== 'Username')?
                                     <Grid.Row columns={2}>
                                         <Grid.Column width={5} className='detail_item'>
                                             <div>{key}</div>

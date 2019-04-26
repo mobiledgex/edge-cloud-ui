@@ -28,12 +28,22 @@ const numberDes =(a,b)=> (
  */
 let generateData = (datas) => {
     console.log('format data clusterinst - ', datas)
-    let result = datas;
     let values = [];
+    let toArray = null;
+    let toJson = [];
+    if(datas.data) {
+        if(typeof datas.data === 'object') {
+            toJson.push((datas.data)?datas.data:{});
+        } else {
+            toArray = datas.data.split('\n')
+            toArray.pop();
+            toJson = toArray.map((str)=>(JSON.parse(str)))
+        }
+    }else {
+        toJson = null;
+    }
     //20190409 transition string to json
-    let toArray = datas.data.split('\n')
-    toArray.pop();
-    let toJson = toArray.map((str)=>(JSON.parse(str)))
+    
     console.log("clusterinst tojson!!",toJson)
     if(toJson){
         toJson.map((dataResult, i) => {
@@ -46,21 +56,21 @@ let generateData = (datas) => {
                 let Operator = dataResult.key.cloudlet_key.operator_key.name  || '-';
                 let Cloudlet = dataResult.key.cloudlet_key.name  || '-';
                 let ClusterFlavor = dataResult.flavor.name || '-';
-                let NodeFlavor = dataResult.node_flavor || '';
-                let MasterFlavor = dataResult.master_flavor || '';
-                let State = dataResult.state || '';
-                let IPAccess = dataResult.ip_access || '-';
-                let Liveness = dataResult.liveness || '-';
+                // let NodeFlavor = dataResult.node_flavor || '';
+                // let MasterFlavor = dataResult.master_flavor || '';
+                // let State = dataResult.state || '';
+                // let IPAccess = dataResult.ip_access || '-';
+                // let Liveness = dataResult.liveness || '-';
                 let CloudletLocation = '-';
 
-                let newRegistKey = ['ClusterName', 'DeveloperName', 'Operator', 'Cloudlet', 'ClusterFlavor', 'IPAccess', 'CloudletLocation'];
-                values.push({ClusterName:ClusterName, Operator:Operator, Developer:DeveloperName, Cloudlet:Cloudlet,
-                    ClusterFlavor:ClusterFlavor, NodeFlavor:NodeFlavor, MasterFlavor:MasterFlavor, Liveness:Liveness, State:State,
-                    IPAccess:IPAccess, CloudletLocation:CloudletLocation, Edit:newRegistKey})
+                let newRegistKey = ['ClusterName', 'DeveloperName', 'Operator', 'Cloudlet', 'ClusterFlavor', 'CloudletLocation'];
+                values.push({ClusterName:ClusterName, Developer:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, ClusterFlavor:ClusterFlavor, CloudletLocation:CloudletLocation, Edit:newRegistKey})
             }
         })
     } else {
-        console.log('there is no result')
+        let newRegistKey = ['ClusterName', 'DeveloperName', 'Operator', 'Cloudlet', 'ClusterFlavor', 'CloudletLocation'];
+        //values.push({Edit:newRegistKey})
+        values.push({ClusterName:'', Developer:'', Operator:'', Cloudlet:'', ClusterFlavor:'', CloudletLocation:'', Edit:newRegistKey})
     }
 
     //ascending or descending

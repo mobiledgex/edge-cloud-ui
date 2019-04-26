@@ -361,7 +361,8 @@ class ClustersMap extends Component {
     }
 
     render() {
-        const grdColors = ['#000000', '#00CC44', '#88ff00', '#FFEE00', '#FF7700', '#FF0022', '#66CCFF', '#6c50ff', '#afb72a']
+        const grdColors = ['#000000', '#00CC44', '#88ff00', '#FFEE00', '#FF7700', '#FF0022',
+            '#66CCFF', 'rgb(255,120,165)', '#c3c257']
         return (
             <div style={wrapperStyles}>
                 <div className="zoom-inout-reset-clusterMap" style={{left:8, bottom:4, position:'absolute', display:'block'}}>

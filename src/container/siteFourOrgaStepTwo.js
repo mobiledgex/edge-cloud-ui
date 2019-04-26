@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import {Button, Form, Table, List, Grid, Card, Header} from "semantic-ui-react";
+import {Button, Form, Table, List, Grid, Card, Header, Image} from "semantic-ui-react";
 
 import { Field, reduxForm, initialize } from "redux-form";
 import MaterialIcon from "material-icons-react";
@@ -29,14 +29,14 @@ const validate = values => {
 const roles =
     {
         Developer: [
-            { Flavor:'View', ClusterFlavor:'View', Users:'Manage', Cloudlets:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
-            { Flavor:'View', ClusterFlavor:'View', Users:'View', Cloudlets:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
-            { Flavor:'View', ClusterFlavor:'View', Users:'View', Cloudlets:'View', ClusterInst:'View', Apps:'View', AppInst:'View'}
+            { Users:'Manage', Cloudlets:'View', Flavor:'View', ClusterFlavor:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
+            { Users:'View', Cloudlets:'View', Flavor:'View', ClusterFlavor:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
+            { Users:'View', Cloudlets:'View', Flavor:'View', ClusterFlavor:'View', ClusterInst:'View', Apps:'View', AppInst:'View'}
         ],
         Operator: [
-            { Flavor:'disabled', ClusterFlavor:'disabled', Users:'Manage', Cloudlets:'Manage', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
-            { Flavor:'disabled', ClusterFlavor:'disabled', Users:'View', Cloudlets:'View', ClusterInst:'Manage', Apps:'disabled', AppInst:'disabled'},
-            { Flavor:'disabled', ClusterFlavor:'disabled', Users:'View', Cloudlets:'View', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
+            { Users:'Manage', Cloudlets:'Manage', Flavor:'disabled', ClusterFlavor:'disabled', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
+            { Users:'View', Cloudlets:'View', Flavor:'disabled', ClusterFlavor:'disabled', ClusterInst:'Manage', Apps:'disabled', AppInst:'disabled'},
+            { Users:'View', Cloudlets:'View', Flavor:'disabled', ClusterFlavor:'disabled', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
         ]
     }
 
@@ -170,6 +170,30 @@ const makeListView = () => (
     </Table>
 )
 
+
+const userAvatar = [
+    'https://react.semantic-ui.com/images/avatar/large/matthew.png',
+    'https://react.semantic-ui.com/images/avatar/large/elliot.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/daniel.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/jenny.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/molly.png',
+    'https://react.semantic-ui.com/images/avatar/large/steve.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/helen.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/ade.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/nan.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/chris.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/veronika.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/stevie.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/justen.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/tom.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/christian.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/matt.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/joe.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/zoe.jpg',
+
+
+]
+
 const makeCardContent = (item, i, type) => (
     <Grid.Row>
         <Card>
@@ -219,15 +243,21 @@ class SiteFourOrgaTwo extends React.Component {
     render (){
         const { handleSubmit, reset, org, type } = this.props;
         let cType = type.substring(0,1).toUpperCase() + type.substring(1);
+        let avatarRandom = Math.floor(Math.random() * userAvatar.length)
         return (
             <Fragment>
                 <Grid>
                     <Grid.Row columns={2}>
                         <Grid.Column width={11}>
                             <Form onSubmit={handleSubmit} className={"fieldForm"}>
-                                <Header>Add user to the Organization!</Header>
+                                <Header>Add Users to Your Organization!</Header>
                                 <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
                                     <Grid>
+                                        <Grid.Row>
+                                            <Grid.Column>
+                                                <Image src={userAvatar[avatarRandom]} width='250px' centered bordered/>
+                                            </Grid.Column>
+                                        </Grid.Row>
                                         <Grid.Row>
                                             <Grid.Column width={5}>
                                                 <div>Username</div>

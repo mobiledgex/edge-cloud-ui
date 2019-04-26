@@ -1,7 +1,6 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
+import { Tab } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
-import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
 //redux
@@ -9,15 +8,15 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
-import MapWithListView from "../container/mapWithListView";
+
 import Alert from "react-s-alert";
+import RegistryInstViewer from "../container/registryInstViewer";
 
 
-
-let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
-class SiteFourPageCloudlet extends React.Component {
+
+class SiteFourPageAppInstReg extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -32,7 +31,8 @@ class SiteFourPageCloudlet extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips'];
+        this.headerLayout = [2,2,1,3,2,1,1,2,2];
+        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType']
         this.userToken = null;
     }
 
@@ -64,8 +64,12 @@ class SiteFourPageCloudlet extends React.Component {
         console.log('info.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         console.log('info.. store == ', store)
+
+
         if(store.userToken) {
-            this.getDataCloudlet(store.userToken);
+            if(this.props.region.value) {
+                this.getDataDeveloper(store.userToken, this.props.region.value)
+            }
             this.userToken = store.userToken;
         } else {
             Alert.error('Invalid or expired token', {
@@ -73,42 +77,55 @@ class SiteFourPageCloudlet extends React.Component {
                 effect: 'slide',
                 timeout: 5000
             });
-            //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         }
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
+
     }
     receiveResult(result) {
-        console.log("receive cloudlet == ", result)
-
+        console.log("receive == ", result)
         if(result.error) {
             Alert.error(result.error, {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
             });
-
         } else {
             _self.setState({devData:result})
-
         }
     }
-    getDataCloudlet(token) {
-        services.getMCService('ShowCloudlet',{token:token, region:'US'}, _self.receiveResult)
+    getDataDeveloper(token, region) {
+
+        //services.getMCService('ShowApps',{token:token, region:(region === 'All') ? 'US' : region}, _self.receiveResult)
     }
+
+    /*
+     */
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
 
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken}></MapWithListView>
-
+            <RegistryInstViewer devData={this.state.devData}/>
         );
     }
 
+};
+const mapStateToProps = (state) => {
+    console.log('props in region === ', state.changeRegion)
+    let region = state.changeRegion
+        ? {
+            value: state.changeRegion.region
+        }
+        : {};
+    return {
+
+        region:region
+    }
 };
 
 
@@ -120,4 +137,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCloudlet)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageAppInstReg)));

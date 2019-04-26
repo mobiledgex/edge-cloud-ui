@@ -155,7 +155,7 @@ const SiteFourOrgaThree = props => {
             <Grid>
                 <Grid.Column width={11}>
                     <Form>
-                        <Header>Congratulation! Start right now!</Header>
+                        <Header>Congratulation! Start Right Now!</Header>
                             <div className='orgButton' style={{width:'100%'}}>
                                 <Button type='submit' positive style={{width:'100%'}}>Check your Organization</Button>
                             </div>

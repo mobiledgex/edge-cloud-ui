@@ -35,8 +35,9 @@ export default class DeleteItem extends React.Component {
         let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
         console.log('response paseData  -',splitData );
 
-        if(splitData[2] && splitData[2]['result']) {
-            Alert.success(splitData[2]['result']['message'], {
+        //if(splitData[2] && splitData[2]['result']) {
+        if(result.data.indexOf('successfully') > -1) {
+            Alert.success(splitData[2].message, {
                 position: 'top-right',
                 effect: 'slide',
                 onShow: function () {
@@ -47,17 +48,6 @@ export default class DeleteItem extends React.Component {
                 offset: 100
             });
             _self.props.success();
-        } else {
-            Alert.error(splitData[0]['error']['message'], {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('aye!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
         }
         _self.props.handleSpinner(false)
     }
@@ -74,6 +64,7 @@ export default class DeleteItem extends React.Component {
         let select = this.props.selected;
         let region = this.props.region;
         let serviceBody = {}
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
 
         /*
@@ -111,25 +102,28 @@ export default class DeleteItem extends React.Component {
             }
          */
         let serviceNm = '';
-        if(this.props.siteId === 'clusterInst'){
+        if(this.props.siteId === 'ClusterInst'){
+            const {Cloudlet, ClusterFlavor, ClusterName, Developer, Operator} = this.props.selected
+            console.log("delete@!!@",this.props.selected)
             serviceNm = 'DeleteClusterInst';
             serviceBody = {
-                "key":
-                    {
-                        "cluster_key":{"name":select.ClusterName},
-                        "cloudlet_key":{"operator_key":{"name":select.Operator},"name":select.Cloudlet},
-                        "developer":select.Developer
-                    },
-                "flavor":{"name":select.ClusterFlavor},
-                "liveness":select.Liveness,
-                "state":select.State,
-                "ip_access":select.IPAccess,
-                "node_flavor":select.NodeFlavor,
-                "master_flavor":select.MasterFlavor
-            };
+                "token":store.userToken,
+                "params": {
+                    "region":"US",
+                    "clusterinst":{
+                        "key":{
+                            "cluster_key":{"name":ClusterName},
+                            "cloudlet_key":{"operator_key":{"name":Operator},"name":Cloudlet},
+                            "developer":Developer
+                        },
+                        "flavor":{"name":ClusterFlavor}
+                    }
+                }
+            }
         } else if(this.props.siteId === 'appinst') {
             serviceNm = 'DeleteAppInst'
         }
+        console.log("delete@@@",serviceNm,serviceBody)
         //service_compute_service
         service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
 

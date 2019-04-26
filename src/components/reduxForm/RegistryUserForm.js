@@ -85,8 +85,14 @@ const RegistryUserForm = props => {
                     <Field className={"fieldInput"}
                         component={renderInput}
                         name="password"
-                        type="input"
+                        type="password"
                         placeholder="Password"
+                    />
+                    <Field className={"fieldInput"}
+                           component={renderInput}
+                           name="confirmpassword"
+                           type="password"
+                           placeholder="Confirm Password"
                     />
                     <Field className={"fieldInput"}
                         component={renderInput}

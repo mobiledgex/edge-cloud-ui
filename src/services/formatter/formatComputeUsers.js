@@ -61,12 +61,12 @@ let generateData = (datas) => {
             } else {
                 let Index = i;
                 let Organization = dataResult.org || '-';
-                let UserName = dataResult.username || '-';
-                let TypeRole = dataResult.role || '-';
+                let Username = dataResult.username || '-';
+                let RoleType = dataResult.role || '-';
                 //let Email = dataResult.email || '-';
-                let newRegistKey = ['Organization', 'UserName', 'TypeRole'];
+                let newRegistKey = ['Organization', 'Username', 'Role Type'];
 
-                values.push({UserName:UserName, Organization:Organization, TypeRole:TypeRole, Edit:newRegistKey})
+                values.push({Username:Username, Organization:Organization, 'Role Type':RoleType, Edit:newRegistKey})
             }
 
         })

@@ -318,11 +318,7 @@ exports.ShowClusterInst = (req, res) => {
     )
         .then(function (response) {
             console.log('success show cluster instances', response.data)
-            if(response.data) {
-                res.json(response.data)
-            } else {
-
-            }
+            res.json(response.data)
         })
         .catch(function (error) {
             console.log('error show ..', String(error));
@@ -334,7 +330,7 @@ exports.ShowApps = (req, res) => {
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
-    let region = 'local'
+    let region = 'US'
     if(req.body.serviceBody){
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
@@ -403,6 +399,11 @@ exports.ShowAppInst = (req, res) => {
 "ip_support":2,
 "num_dynamic_ips":30}
 }
+biccluster3
+khcho
+TDG
+bonn-mexdemo
+x1.large
  */
 exports.Create = (req, res) => {
     let serviceName = '';
@@ -415,8 +416,8 @@ exports.Create = (req, res) => {
         superpass = req.body.serviceBody.token;
         service = req.body.service;
     }
-    console.log('show me boddy-- ', service, qs.stringify(params))
-    axios.post(mcUrl + '/api/v1/auth/ctrl/'+service, qs.stringify(params),
+    console.log('show me boddy@-- ', service,params)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/'+service, params,
         {
             headers: {
                 'Authorization':`Bearer ${superpass}`}
@@ -545,6 +546,95 @@ exports.CreateFlavor = (req, res) => {
         });
 }
 
+//Create
+/*
+{"region":"US",
+    "app":
+        {
+            "key":
+                {
+                "developer_key":{"name":"bigorg"},
+                "name":"bicTestApp","version":"1.0.0"
+                },
+            "image_path":"registry.mobiledgex.net:5000/mobiledgex/simapp",
+            "image_type":1,"access_ports":"udp:12001,tcp:80,http:7777",
+            "default_flavor":{"name":"x1.medium"},
+            "cluster":{"name":"biccluster"},
+            "command":"simapp -port 7777"
+        }
+}
+ */
+exports.CreateApp = (req, res) => {
+    let serviceName = '';
+    let params = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        params = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    params = JSON.stringify(params).replace('"1"', 1);
+    console.log('Create me app-- ', params, 'string...', JSON.stringify(params).replace('"1"', 1))
+    axios.post(mcUrl + '/api/v1/auth/ctrl/CreateApp', JSON.parse(params),
+
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+
+            console.log('success Create app', response.data)
+
+            if(response.data) {
+                res.json(response.data)
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+
+            console.log('error show ..', String(error));
+            res.json({error:String(error)})
+        });
+}
+exports.CreateAppInst = (req, res) => {
+    let serviceName = '';
+    let params = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        params = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+
+    console.log('Create me app inst-- ', params, 'string...', JSON.stringify(params))
+    axios.post(mcUrl + '/api/v1/auth/ctrl/CreateAppInst', params,
+
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+
+            console.log('success Create app', response.data)
+
+            if(response.data) {
+                res.json(response.data)
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+
+            console.log('error show ..', String(error));
+            res.json({error:String(error)})
+        });
+}
+
 
 exports.CreateClusterInst = (req, res) => {
     let serviceName = '';
@@ -557,7 +647,7 @@ exports.CreateClusterInst = (req, res) => {
         region = req.body.serviceBody.region;
     }
     console.log('Create me cluster inst-- ', serviceBody)
-    axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterInst', qs.stringify(serviceBody),
+    axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterInst', serviceBody,
 
         {
             headers: {
@@ -566,7 +656,7 @@ exports.CreateClusterInst = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Create', response.data)
+            console.log('success Create ClusterInst', response.data)
 
             if(response.data) {
                 res.json(response.data)
@@ -586,11 +676,12 @@ exports.DeleteService = (req, res) => {
     let superpass = '';
     let region = 'local'
     if(req.body.serviceBody){
-        serviceBody = req.body.serviceBody;
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'oper key == ', serviceBody.key.cloudlet_key.operator_key)
-    axios.post(mcUrl + '/api/v1/auth/ctrl/'+serviceName, qs.stringify(serviceBody),
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'oper key == ')
+    axios.post(mcUrl + '/api/v1/auth/ctrl/'+serviceName, serviceBody,
 
         {
             headers: {

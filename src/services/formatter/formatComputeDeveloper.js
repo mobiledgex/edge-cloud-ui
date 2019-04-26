@@ -48,12 +48,12 @@ let generateData = (datas) => {
         result.map((data, i) => {
             let Index = i;
             let DeveloperName = data.result.key.name || '-';
-            let UserName = data.result.username || '-';
+            let Username = data.result.username || '-';
             let Address = data.result.address || '-';
             let Email = data.result.email || '-';
-            let newRegistKey = ['DeveloperName', 'UserName', 'Address', 'Email'];
+            let newRegistKey = ['DeveloperName', 'Username', 'Address', 'Email'];
             //console.log('time -- '+time, 'score --'+score, 'instance -- '+instance)
-            values.push({DeveloperName:DeveloperName, UserName:UserName, Address:Address, Email:Email, Edit:newRegistKey})
+            values.push({DeveloperName:DeveloperName, Username:Username, Address:Address, Email:Email, Edit:newRegistKey})
         })
     } else {
         console.log('there is no result')

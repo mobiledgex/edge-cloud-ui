@@ -452,6 +452,8 @@ app.post('/ShowApps', apiMC.ShowApps);
 app.post('/ShowAppInst', apiMC.ShowAppInst);
 
 app.post('/create', apiMC.Create);
+app.post('/CreateApp', apiMC.CreateApp);
+app.post('/CreateAppInst', apiMC.CreateAppInst);
 app.post('/addUserRole', apiMC.addUserRole);
 
 app.post('/currentUser', apiMC.currentUser);
