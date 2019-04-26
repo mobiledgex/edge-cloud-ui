@@ -12,7 +12,7 @@ var credentials = {key: privateKey, cert: certificate};
 const express = require('express')
 const cors = require('cors')
 const app = express()
-const port = 3030
+var port = 3030
 var moment = require('moment');
 const Influx = require('influxdb-nodejs');
 const client = new Influx('https://uiteam:$word@mexdemo.influxdb.mobiledgex.net:8086/metrics');
@@ -526,5 +526,12 @@ app.post('/showOrg', (req, res, next) => {
 //httpServer.listen(8080);
 
 // https
+var host = '0.0.0.0';
+if(process.argv.length > 2) {
+	host = process.argv[2];
+	if(process.argv.length > 3) {
+		port = parseInt(process.argv[3], 10);
+	}
+}
 var httpsServer = https.createServer(credentials, app);
-httpsServer.listen(port, () => console.log(`<< https >> app listening on port ${port}!`));
+httpsServer.listen(port, host, () => console.log(`<< https >> app listening on ${host} port ${port}!`));
