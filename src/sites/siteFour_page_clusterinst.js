@@ -31,7 +31,7 @@ class SiteFourPageClusterInst extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [3,3,3,2,3,3];
+        this.headerLayout = [2,2,2,2,2,3,3];
         //this.hiddenKeys = ['CloudletLocation']
     }
 
@@ -135,7 +135,7 @@ class SiteFourPageClusterInst extends React.Component {
         return (
 
             //<DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} userToken={this.userToken} siteId='clusterInst' title='Cluster Instance' region='US'></MapWithListView>
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} title='Cluster Instance' region='US'></MapWithListView>
         );
     }
 

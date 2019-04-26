@@ -16,10 +16,12 @@ import mapCoordinatesLong from './mapCoordinatesLong';
 import mapCoordinatesLat from './mapCoordinatesLat';
 import showUserRole from './showUserRole';
 import selectOrg from './selectOrg';
+import searchValue from './searchValue';
+import changeRegion from './changeRegion';
 
 const reducers = combineReducers({
-    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce,
-    registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, form: formReducer
+    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion,
+    registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, searchValue, form: formReducer
 });
 
 export default reducers;

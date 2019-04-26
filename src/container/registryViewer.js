@@ -1,10 +1,11 @@
 import React from 'react';
-import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Divider, Container } from 'semantic-ui-react';
+import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
 import SelectFromTo from '../components/selectFromTo';
 import RegistNewListItem from './registNewListItem';
+import RegistNewListInput from './registNewListInput';
 import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
@@ -14,6 +15,7 @@ import _ from "lodash";
 import * as reducer from '../utils'
 import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
+import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -26,8 +28,27 @@ var layout = [
     {"w":19,"h":20,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Developer"},
 ]
 let _self = null;
+const colors = [
+    'red',
+    'orange',
+    'yellow',
+    'olive',
+    'green',
+    'teal',
+    'blue',
+    'violet',
+    'purple',
+    'pink',
+    'brown',
+    'grey',
+]
 
-class DeveloperListView extends React.Component {
+const panes = [
+    { menuItem: 'Application Settings', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'Docker deployment', render: () => <Tab.Pane attached={false} pId={1}>None</Tab.Pane> },
+    { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> },
+]
+class RegistryViewer extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -48,6 +69,24 @@ class DeveloperListView extends React.Component {
             resultData:null
 
         };
+        this.keysData = [
+            {
+                'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['All', 'US', 'EU']},
+                'DeveloperName':{label:'Organization Name', type:'RenderInput', necessary:true, tip:null, active:true},
+                'AppName':{label:'App Name', type:'RenderInput', necessary:true, tip:null, active:true},
+                'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:null, active:true},
+                'ImagePath':{label:'Image Path', type:'RenderInput', necessary:true, tip:null, active:true},
+                'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:null, active:true, items:['Docker', 'Kubernetes', 'VM']},
+                'ImageType':{label:'Image Type', type:'RenderInput', necessary:false, tip:'If Deployment Type Chosen as kubernetes, then image type is always ImageTypeDocker'},
+                'DefaultFlavor':{label:'Default Flavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:['m4.large','x1.medium', 'x1.small', 'x1.tiny']},
+                'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:null, active:true},
+                'Command':{label:'Command', type:'RenderInput', necessary:true, tip:'Please input a command that the container runs', active:true},
+                'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Specify either http url of the yaml or upload yaml file or helm chart', active:true},
+            },
+            {
+
+            }
+        ]
 
     }
 
@@ -65,7 +104,10 @@ class DeveloperListView extends React.Component {
         services.getMCService('ShowRole',{token:token}, this.receiveResult)
     }
     receiveResult = (result) => {
-        this.setState({orgData:result})
+        //this.setState({orgData:result})
+        
+        console.log('submit result...', result)
+        
     }
 
     onUseOrg(useData,key, evt) {
@@ -97,65 +139,32 @@ class DeveloperListView extends React.Component {
     closeAddUser = () => {
         this.setState({ openAdd: false })
     }
-    makeHeader_noChild =(title)=> (
-        <Header className='panel_title'>{title}</Header>
-    )
-    makeHeader_date =(title)=> (
-        <Header className='panel_title' style={{display:'flex',flexDirection:'row'}}>
-            <div style={{display:'flex', flexGrow:8}}>{title}</div>
-            <SelectFromTo style={{display:'flex', alignSelf:'flex-end'}}></SelectFromTo>
-        </Header>
-    )
-    makeHeader_select =(title)=> (
-        <Header className='panel_title'>{title}</Header>
-    )
 
-    InputExampleFluid = (value) => <Input fluid placeholder={(this.state.dimmer === 'blurring')? '' : value} />
 
-     generateDOM(open, dimmer, width, height, hideHeader) {
+    generateDOM(open, dimmer, width, height, data, keysData, hideHeader) {
+
+        let panelParams = {data:data, keys:keysData}
+
         return layout.map((item, i) => (
 
             (i === 0)?
-                <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
+                <div className="round_panel" key={i} style={{ width:width, minWidth:670, height:height, display:'flex', flexDirection:'column'}} >
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
-                        {this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)}
+
+                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} />
+
                     </div>
-
-                    <Table.Footer className='listPageContainer'>
-                        <Table.Row>
-                            <Table.HeaderCell colspan={100}>
-                                <Menu floated={'center'} pagination>
-                                    <Menu.Item as='a' icon>
-                                        <Icon name='chevron left' />
-                                    </Menu.Item>
-                                    <Menu.Item as='a' active={true}>1</Menu.Item>
-                                    <Menu.Item as='a'>2</Menu.Item>
-                                    <Menu.Item as='a'>3</Menu.Item>
-                                    <Menu.Item as='a'>4</Menu.Item>
-                                    <Menu.Item as='a' icon>
-                                        <Icon name='chevron right' />
-                                    </Menu.Item>
-                                </Menu>
-                            </Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Footer>
-
                 </div>
                 :
                 <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
                     <div style={{width:'100%', height:'100%', overflowY:'auto'}}>
-                        Map viewer
+
                     </div>
                 </div>
 
 
         ))
     }
-    /*
-    <div className="round_panel" key={i} style={{display:'flex'}}>
-                {this.TableExampleVeryBasic()}
-            </div>
-     */
 
     generateLayout() {
         const p = this.props;
@@ -209,7 +218,7 @@ class DeveloperListView extends React.Component {
     }
     detailView(item) {
         console.log("user >>>> ",item)
-        if(!item['Username']){
+        if(!item['UserName']){
             this.setState({detailViewData:item, openDetail:true})
         } else {
             this.setState({detailViewData:item, openUser:true})
@@ -223,64 +232,7 @@ class DeveloperListView extends React.Component {
         (role.indexOf('Operator')!==-1 && role.indexOf('Contributor')!==-1) ? <div className="mark markO markC">C</div> :
         (role.indexOf('Operator')!==-1 && role.indexOf('Viewer')!==-1) ? <div className="mark markO markV">V</div> : <div></div>
     )
-    TableExampleVeryBasic = (w, h, headL, hideHeader, datas) => (
-        <Table className="viewListTable" basic='very' sortable striped celled fixed>
-            <Table.Header className="viewListTableHeader">
-                <Table.Row>
-                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hideHeader):null}
-                </Table.Row>
-            </Table.Header>
 
-            <Table.Body className="tbBodyList">
-                {
-                    datas.map((item, i) => (
-                        <Table.Row key={i} id={'tbRow_'+i} style={{position:'relative'}}>
-                            {Object.keys(item).map((value, j) => (
-                                (value === 'Edit')?
-                                    <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
-                                        {(this.props.siteId == 'Organization')?
-                                            <Button color={(this.state.selectUse == i)?'teal' :''} onClick={(evt) => this.onUseOrg(item,i, evt)}>
-                                                <Icon name='check' />
-                                            </Button>:null}
-                                        <Button disabled key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
-                                        {(this.props.siteId == 'Organization')?<Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.onHandleClicAdd(true, item, i)}>Add User</Button>:null}
-                                        <Button disabled={this.props.dimmInfo.onlyView} onClick={() => alert('Are you sure?')}><Icon name={'trash alternate'}/></Button>
-                                    </Table.Cell>
-                                :
-                                (value === 'Mapped_ports')?
-                                    <Table.Cell key={j} textAlign='left'>
-                                        <Icon name='server' size='big' onClick={() => this.onPortClick(true, item)} style={{cursor:'pointer'}}></Icon>
-                                    </Table.Cell>
-                                :
-                                (value === 'Username')?
-                                    <Table.Cell key={j} textAlign='left'>
-                                        <div className="left_menu_item" onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
-                                        <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {(i==0) ? <div className="userNewMark">{'New'}</div> : null} {item[value]}
-                                        </div>
-                                    </Table.Cell>
-                                :   
-                                (value === 'Role Type')?
-                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
-                                        <div className="markBox">{this.roleMark(item[value])}</div>
-                                        {item[value]}
-                                    </Table.Cell>
-                                :
-                                (!( String(hideHeader).indexOf(value) > -1 )) ?
-                                <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0)?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
-                                        <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
-                                            {String(item[value])}
-                                        </div>
-                                    </Table.Cell>
-                                : null
-
-                            ))}
-                        </Table.Row>
-                    ))
-                }
-            </Table.Body>
-
-        </Table>
-    )
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(store.userToken) this.getDataDeveloper(store.userToken);
@@ -292,28 +244,34 @@ class DeveloperListView extends React.Component {
         }
         if(nextProps.devData) {
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+        } else {
+            this.setState({dummyData:this.keysData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         }
-        if(nextProps.searchValue) {
-            let searchData  = reducer.filterSearch(nextProps.devData,nextProps.searchValue);
-            this.setState({dummyData:searchData})
+
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+
+        if(nextProps.submitValues) {
+            console.log('submit on...', nextProps.submitValues)
+            services.createNewApp('CreateApp', {params:nextProps.submitValues, token:store.userToken}, _self.receiveResult)
         }
     }
 
     render() {
-        const { open, dimmer } = this.state;
+        const { open, dimmer, dummyData } = this.state;
         const { hiddenKeys } = this.props;
         return (
             <ContainerDimensions>
                 { ({ width, height }) =>
                     <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
-                        <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>
+                        {/*<RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>*/}
                         <ReactGridLayout
+                            draggableHandle
                             layout={this.state.layout}
                             onLayoutChange={this.onLayoutChange}
                             {...this.props}
                             style={{width:width, height:height-20}}
                         >
-                            {this.generateDOM(open, dimmer, width, height, hiddenKeys)}
+                            {this.generateDOM(open, dimmer, width, height, dummyData, this.keysData, hiddenKeys)}
                         </ReactGridLayout>
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                         <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
@@ -332,7 +290,20 @@ class DeveloperListView extends React.Component {
         width: 1600
     };
 }
-
+const createFormat = (data) => (
+    {
+        "region":data['Region'],
+        "app":
+            {
+                "key":{"developer_key":{"name":data['DeveloperName']},"name":data['AppName'],"version":data['Version']},
+                "image_path":data['ImagePath'],
+                "image_type":Number(1),
+                "access_ports":data['Ports'],
+                "default_flavor":{"name":data['DefaultFlavor']},
+                "deploymentType":data['DeploymentType']
+            }
+    }
+)
 const mapStateToProps = (state) => {
     console.log("store state:::",state);
     let account = state.registryAccount.account;
@@ -341,13 +312,18 @@ const mapStateToProps = (state) => {
     
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
+    let submitVal = null;
+    if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
+        let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
+        submitVal = createFormat(enableValue)
+    }
 
     return {
         accountInfo,
         dimmInfo,
         itemLabel: state.computeItem.item,
         userToken : (state.user.userToken) ? state.userToken: null,
-        searchValue : (state.searchValue.search) ? state.searchValue.search: null
+        submitValues: submitVal
     }
     
     // return (dimm) ? {
@@ -365,6 +341,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(DeveloperListView);
+export default connect(mapStateToProps, mapDispatchProps)(RegistryViewer);
 
 

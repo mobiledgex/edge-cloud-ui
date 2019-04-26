@@ -82,6 +82,15 @@ export const filterDefine = (objectArray, values) => {
     return objectArray;
 
 }
+export const filterDeleteKey = (object, prop) => {
+    const newObj = Object.keys(object).reduce((obj, key) => {
+        if (key !== prop) {
+            obj[key] = object[key]
+        }
+        return obj
+    }, {})
+    return newObj;
+}
 export const filterDefineKey = (object, values) => {
 
     object.map((obj) => {
@@ -93,3 +102,15 @@ export const filterDefineKey = (object, values) => {
     return object;
 
 }
+export const filterSearch = (data, searchValue) => {
+    let searchArr = []
+    
+    data.filter((item) => {
+        if(item.Username.indexOf(searchValue)!==-1){
+            searchArr.push(item);
+        }
+    })
+    return searchArr;
+
+}
+

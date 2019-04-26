@@ -124,7 +124,33 @@ export function getComputeService(resource, callback) {
 
 
 export function saveNewCompute(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/create',qs.stringify({
+    axios.post('https://'+hostname+':3030/create',{
+      service: resource,
+        serviceBody:body
+    })
+        .then(function (response) {
+            console.log('response  registry new obj result-',response);
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function createNewApp(resource, body, callback) {
+    axios.post('https://'+hostname+':3030/CreateApp',qs.stringify({
+      service: resource,
+        serviceBody:body
+    }))
+        .then(function (response) {
+            console.log('response  registry new obj result-',response);
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function createNewAppInst(resource, body, callback) {
+    axios.post('https://'+hostname+':3030/CreateAppInst',qs.stringify({
       service: resource,
         serviceBody:body
     }))
@@ -137,12 +163,25 @@ export function saveNewCompute(resource, body, callback) {
         });
 }
 export function deleteCompute(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/deleteService',qs.stringify({
+    axios.post('https://'+hostname+':3030/deleteService',{
         service: resource,
         serviceBody:body
-    }))
+    })
         .then(function (response) {
             console.log('response  registry new obj result-',response);
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function createNewClusterInst(resource, body, callback) {
+    axios.post('https://'+hostname+':3030/CreateClusterInst',{
+        service: resource,
+        serviceBody:body
+    })
+        .then(function (response) {
+            console.log('response clusterInst result-',response);
             callback(response)
         })
         .catch(function (error) {
@@ -152,17 +191,17 @@ export function deleteCompute(resource, body, callback) {
 
 
 export function getMCService(resource, body, callback, self) {
-
     axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
         service: resource,
         serviceBody:body
     }))
         .then(function (response) {
+            console.log("showInstName!!",response)
             let parseData = null;
             if(response.data) {
                 parseData = JSON.parse(JSON.stringify(response));
             } else {
-
+                parseData = response;
             }
             console.log('parse data userinfo ===>>>>>>>>>> ', parseData)
             if(parseData){

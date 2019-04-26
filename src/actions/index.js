@@ -136,3 +136,17 @@ export function selectOrganiz (org) {
         org
     }
 }
+export function searchValue (search) {
+    console.log('SEARCH_VALUE == ', search)
+    return {
+        type: types.SEARCH_VALUE,
+        search
+    }
+}
+export function changeRegion (region) {
+    console.log('CHANGE_REGION == ', region)
+    return {
+        type: types.CHANGE_REGION,
+        region
+    }
+}

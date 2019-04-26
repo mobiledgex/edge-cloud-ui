@@ -62,7 +62,7 @@ class headerGlobalMini extends React.Component {
     menuAdmin = () => (
         <Button.Group vertical>
             <Button onClick={() => this.profileView()} >Your profile</Button>
-            <Button style={{height:10, padding:0, margin:0}}><Divider inverted style={{padding:2, margin:0}}></Divider></Button>
+            {/*<Button style={{height:10, padding:0, margin:0}}><Divider inverted style={{padding:2, margin:0}}></Divider></Button>*/}
             <Button style={{color:'#333333'}}>Help</Button>
             <Button style={{}} onClick={() => this.createUser()}><div>Create User</div></Button>
             <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{this.state.userName}</div><div>Logout</div></Button>

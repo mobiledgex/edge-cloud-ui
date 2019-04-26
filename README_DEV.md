@@ -162,3 +162,8 @@
 ### Debugging in Intellij IDE
 - https로 실행되도록 설정
 - middle웨어 3030도 마찬가지로 크롬브라우져에서 탭을 옆에 생성하고 보안인증 허락
+
+
+### redux-form
+ - semantic ur + redux-form 
+   https://codesandbox.io/s/jn0w4mxm5 

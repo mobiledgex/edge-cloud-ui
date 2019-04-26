@@ -34,6 +34,8 @@ import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
 import SiteFourPageOrganization from './siteFour_page_organization';
+import SiteFourPageAppReg from './siteFour_page_appReg';
+import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
 
 import SiteFourPageCreateorga from './siteFour_page_createOrga';
 
@@ -42,6 +44,8 @@ import * as Service from '../services/service_login_api';
 
 import * as computeService from '../services/service_compute_service';
 import PopProfileViewer from '../container/popProfileViewer';
+import * as aggregation from "../utils";
+import Alert from "react-s-alert";
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 const locationOptions = [
@@ -111,13 +115,16 @@ class SiteFour extends React.Component {
             openProfile:false,
             userName:'',
             controllerRegions:null,
-            regions:[],
+            regions:[
+                { key: 1, text: 'All', value: 'All' },
+                { key: 2, text: 'US', value: 'US' },
+                { key: 3, text: 'EU', value: 'EU' }
+                ],
             nextPosX:window.innerWidth / 2 ,
             nextPosY:window.innerHeight / 2,
             nextOpacity:1,
             setMotion:defaultMotion,
             OrganizationName:'-'
-
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
@@ -128,8 +135,8 @@ class SiteFour extends React.Component {
         ]
         this.menuItems = [
             {label:'Cloudlets', icon:'cloud_queue', pg:2},
-            {label:'Flavor', icon:'free_breakfast', pg:3},
-            {label:'Cluster Flavor', icon:'developer_board', pg:4},
+            {label:'Flavors', icon:'free_breakfast', pg:3},
+            {label:'Cluster Flavors', icon:'developer_board', pg:4},
             {label:'Cluster Instances', icon:'storage', pg:5},
             {label:'Apps', icon:'apps', pg:6},
             {label:'App Instances', icon:'storage', pg:7}
@@ -148,9 +155,9 @@ class SiteFour extends React.Component {
         ]
         this.searchOptions = [
             {
-                key:'UserName',
-                text:'UserName',
-                value:'UserName'
+                key:'Username',
+                text:'Username',
+                value:'Username'
             },
             {
                 key:'Organization',
@@ -158,9 +165,9 @@ class SiteFour extends React.Component {
                 value:'Organization'
             },
             {
-                key:'TypeRole',
-                text:'TypeRole',
-                value:'TypeRole'
+                key:'RoleType',
+                text:'RoleType',
+                value:'RoleType'
             },
         ]
 
@@ -217,6 +224,7 @@ class SiteFour extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
+        _self.setState({ page:subPath})
     }
     handleItemClick ( id, label, pg, role ) {
         _self.props.handleChangeViewBtn(false);
@@ -241,11 +249,15 @@ class SiteFour extends React.Component {
 
     onHandleRegistry() {
         if(this.state.activeItem === 'Organization') {
-
             this.setState({page:'pg=newOrg'})
             this.gotoUrl('/site4', 'pg=newOrg')
+        } else if(this.state.activeItem === 'Apps') {
+            this.setState({page: 'pg=createApp'})
+            this.gotoUrl('/site4', 'pg=createApp')
+        } else if(this.state.activeItem === 'App Instances') {
+            this.setState({page:'pg=createAppInst'})
+            this.gotoUrl('/site4', 'pg=createAppInst')
         } else {
-
             this.props.handleInjectDeveloper('newRegist');
         }
     }
@@ -270,7 +282,8 @@ class SiteFour extends React.Component {
                 })
             })
         }
-        _self.setState({regions: arr})
+        //잠시 막음 : superuser 일 때만 데이터 불러옴.
+        //if(arr.length > 0) _self.setState({regions: arr})
     }
     menuAdmin = () => (
         <Button.Group vertical>
@@ -367,12 +380,12 @@ class SiteFour extends React.Component {
     )
 
     searchClick = (e) => {
-        console.log(e)
+        this.props.handleSearchValue(e.target.value)
     }
     makeGhost(elem, self) {
 
         let child = document.createElement('div')
-        child.style.cssText = 'position:absolute; width:100px; height:30px; opacity:0.8; left:0px; z-index:100; background:#aaaaaa; border-radius:5px';
+        child.style.cssText = 'position:absolute; width:100px; height:30px; line-height:30px; text-align:center; opacity:0.8; left:0px; z-index:100; background:#aaaaaa; border-radius:5px';
         child.innerHTML = '<div>CloudletName</div>'
         elem.appendChild(child);
         //
@@ -384,8 +397,13 @@ class SiteFour extends React.Component {
         let self = _self;
         this.setState({setMotion:defaultMotion})
         let nextPosX = 15
-        let nextPosY = 90;
+        let nextPosY = 180;
         setTimeout(() => self.setState({setMotion:{left: spring(nextPosX, self.speed),top: spring(nextPosY, self.speed), position: 'absolute', opacity:spring(0, self.speedOpacity)}}), 500);
+    }
+    onChangeRegion = (e, {value}) => {
+        console.log('region change...', value)
+        _self.props.handleChangeRegion(value)
+
     }
 
 
@@ -438,35 +456,6 @@ class SiteFour extends React.Component {
                 <Grid.Row columns={2} className='view_contents'>
                     <Grid.Column width={2} className='view_left'>
                         <Menu secondary vertical className='view_left_menu org_menu'>
-                            <Grid.Row>
-                                <Segment>
-                                    {this.state.OrganizationName}
-                                    <div className="markBox" style={{marginLeft:'1em'}}>
-                                        {
-                                            (this.props.userRole == 'DeveloperManager')?
-                                                <div className="mark markD markM">M</div>
-                                            :
-                                            (this.props.userRole == 'DeveloperContributor')?
-                                                <div className="mark markD markC">C</div>
-                                            :
-                                            (this.props.userRole == 'DeveloperViewer')?
-                                                <div className="mark markD markV">V</div>
-                                            :
-                                            (this.props.userRole == 'OperatorManager')?
-                                                <div className="mark markO markM">M</div>
-                                            :
-                                            (this.props.userRole == 'OperatorContributor')?
-                                                <div className="mark markO markC">C</div>
-                                            :
-                                            (this.props.userRole == 'OperatorViewer')?
-                                                <div className="mark markO markV">V</div>
-                                            :
-                                            <div></div>
-                                        }
-                                    </div>
-                                </Segment>
-
-                            </Grid.Row>
                             {
                                 (this.props.userRole)?
                                     this.OrgMenu.map((item, i)=>(
@@ -477,6 +466,34 @@ class SiteFour extends React.Component {
                                         this.menuItemView(item, i, activeItem)
                                     ))
                             }
+                            <Grid.Row>
+                                <Segment>
+                                    {this.state.OrganizationName}
+                                    <div className="markBox" style={{marginLeft:'1em'}}>
+                                        {
+                                            (this.props.userRole == 'DeveloperManager')?
+                                                <div className="mark markD markM">M</div>
+                                                :
+                                                (this.props.userRole == 'DeveloperContributor')?
+                                                    <div className="mark markD markC">C</div>
+                                                    :
+                                                    (this.props.userRole == 'DeveloperViewer')?
+                                                        <div className="mark markD markV">V</div>
+                                                        :
+                                                        (this.props.userRole == 'OperatorManager')?
+                                                            <div className="mark markO markM">M</div>
+                                                            :
+                                                            (this.props.userRole == 'OperatorContributor')?
+                                                                <div className="mark markO markC">C</div>
+                                                                :
+                                                                (this.props.userRole == 'OperatorViewer')?
+                                                                    <div className="mark markO markV">V</div>
+                                                                    :
+                                                                    <div></div>
+                                        }
+                                    </div>
+                                </Segment>
+                            </Grid.Row>
                         </Menu>
                         <Menu secondary vertical className='view_left_menu'>
                             {
@@ -501,19 +518,24 @@ class SiteFour extends React.Component {
                     </Grid.Column>
                     <Grid.Column width={14} style={{height:this.state.bodyHeight}} className='contents_body'>
                         <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
-                            <Grid.Column className='title_align'>{this.state.headerTitle}</Grid.Column>
-                            <Grid.Column className='title_align'>
-                                <Item style={{marginLeft:20, marginRight:10}}>
-                                    <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
-                                </Item>
-                            </Grid.Column>
+                            <Grid.Column className='title_align' style={{lineHeight:'36px'}}>{this.state.headerTitle}</Grid.Column>
+                            {
+                                (this.props.location.search !== 'pg=1') ? 
+                                <Grid.Column className='title_align'>
+                                    <Item style={{marginLeft:20, marginRight:10}}>
+                                        <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
+                                    </Item>
+                                </Grid.Column>
+                                : null
+                            }
                         </Grid.Row>
                         {
                             (this.state.headerTitle !== 'Organization' && this.state.headerTitle !== 'Users') ?
                             <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
                                 <Dropdown className='selection'
                                     options={this.state.regions}
-                                    defaultValue={options[1].value}
+                                    defaultValue={this.state.regions[0].value}
+                                    onChange={this.onChangeRegion}
                                 />
                             </Grid.Row>
                             : null
@@ -521,7 +543,7 @@ class SiteFour extends React.Component {
                         {
                             (this.state.headerTitle == 'Users') ?
                             <div style={{top:15, right:25, position:'absolute',zIndex:99}}>
-                                <Input action={{color:'teal', content:'Search', onClick: (e) => this.searchClick(e)}} style={{marginRight:'20px'}}  />
+                                <Input icon='search' placeholder='Search Username' style={{marginRight:'20px'}}  onChange={this.searchClick} />
                                 <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} />
                             </div>
                             :
@@ -541,7 +563,9 @@ class SiteFour extends React.Component {
                                                 (this.state.page === 'pg=5')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
                                                 (this.state.page === 'pg=6')?<SiteFourPageApps></SiteFourPageApps>:
                                                 (this.state.page === 'pg=7')? <SiteFourPageAppInst></SiteFourPageAppInst> :
-                                                (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> : <div> </div>
+                                                (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
+                                                (this.state.page === 'pg=createApp')? <SiteFourPageAppReg></SiteFourPageAppReg> :
+                                                (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg></SiteFourPageAppInstReg> : <div> </div>
                                             }
                                         </div>
                                     }
@@ -580,6 +604,8 @@ const mapDispatchProps = (dispatch) => {
         handleChangeComputeItem: (data) => { dispatch(actions.computeItem(data))},
         handleChangeClickCity: (data) => { dispatch(actions.clickCityList(data))},
         handleUserInfo: (data) => { dispatch(actions.userInfo(data))},
+        handleSearchValue: (data) => {dispatch(actions.searchValue(data))},
+        handleChangeRegion: (data) => {dispatch(actions.changeRegion(data))}
     };
 };
 

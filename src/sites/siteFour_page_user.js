@@ -31,7 +31,7 @@ class SiteFourPageUser extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [4,4,4,4]
+        this.headerLayout = [3,5,3,5]
     }
 
     //go to
@@ -72,7 +72,8 @@ class SiteFourPageUser extends React.Component {
     }
     receiveResult(result) {
         console.log("receive users == ", result)
-        _self.setState({devData:result})
+        let reverseResult = result.reverse();
+        _self.setState({devData:reverseResult})
     }
     getDataDeveloper(token) {
         services.getMCService('ShowUsers',{token:token}, _self.receiveResult)

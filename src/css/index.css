@@ -125,6 +125,24 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 
 
+/* Form */
+.ui.segment.active.tab{
+    background: none;
+}
+
+.grid_table .ui.secondary.inverted.pointing.menu{
+    background-color: #292c33;
+    border-bottom: 2px solid rgba(255,255,255,.125);
+}
+
+
+.grid_table .ui.secondary.inverted.pointing.menu .item.active{
+    border-bottom: 2px solid rgba(136,221,0,.9) !important;
+    color: rgba(136,221,0,.9) !important;
+}
+
+
+
 
 /* intro page style */
 .intro_logo {
@@ -141,7 +159,7 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 .intro_login {
     position: absolute;
-    top: 50%; /* login-signUp location vertical */
+    top: 45%; /* login-signUp location vertical */
     left: 50%;
     width: 456px; /* vertical */
     height: auto;
@@ -705,7 +723,8 @@ body, button, input, textarea, optgroup, select, textarea,
 
 .ui.secondary.menu.view_left_menu.org_menu .row{
     border: none;
-    margin-bottom: 1em;
+    padding-top: 0.2em;
+    padding-bottom: 1em;
     background: none;
     color: rgba(255,255,255,.7);
 }
@@ -953,6 +972,7 @@ body, button, input, textarea, optgroup, select, textarea,
     font-size: 2em;
     font-weight: 300;
     padding: 10px 10px 0 10px;
+    height: 46px;
 }
 .content_title div {
     display: inline-block !important;
