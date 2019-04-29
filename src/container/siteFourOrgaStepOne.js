@@ -219,7 +219,6 @@ const SiteFourOrgaOne = props => {
                             </Grid>
                         </Form.Group>
                         <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row'}}>
-                            <Form.Button onClick={reset}>Reset</Form.Button>
                             <Form.Button positive primary>Continue</Form.Button>
                         </Form.Group>
                     </Form>

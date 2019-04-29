@@ -175,6 +175,32 @@ export function deleteCompute(resource, body, callback) {
             console.log(error);
         });
 }
+export function deleteUser(resource, body, callback) {
+    axios.post('https://'+hostname+':3030/deleteUser',{
+        service: resource,
+        serviceBody:body
+    })
+        .then(function (response) {
+            console.log('response  registry new obj result-',response);
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function deleteOrg(resource, body, callback) {
+    axios.post('https://'+hostname+':3030/deleteOrg',{
+        service: resource,
+        serviceBody:body
+    })
+        .then(function (response) {
+            console.log('response  registry new obj result-',response);
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
 export function createNewClusterInst(resource, body, callback) {
     axios.post('https://'+hostname+':3030/CreateClusterInst',{
         service: resource,

@@ -8,6 +8,8 @@ import RegistNewListItem from './registNewListItem';
 import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
+import DeleteItem from './deleteItem';
+import { GridLoader } from 'react-spinners';
 import './styles.css';
 import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
@@ -45,8 +47,9 @@ class DeveloperListView extends React.Component {
             openUser:false,
             orgData:{},
             selectUse:null,
-            resultData:null
-
+            resultData:null,
+            openDelete:false,
+            loading:false
         };
 
     }
@@ -85,7 +88,7 @@ class DeveloperListView extends React.Component {
     
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
-        this.setState({ open: false })
+        this.setState({ open: false, openDelete: false, selected:{} })
         this.props.handleInjectDeveloper(null)
     }
     closeDetail = () => {
@@ -244,7 +247,7 @@ class DeveloperListView extends React.Component {
                                             </Button>:null}
                                         <Button disabled key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                         {(this.props.siteId == 'Organization')?<Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.onHandleClicAdd(true, item, i)}>Add User</Button>:null}
-                                        <Button disabled={this.props.dimmInfo.onlyView} onClick={() => alert('Are you sure?')}><Icon name={'trash alternate'}/></Button>
+                                        <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
                                     </Table.Cell>
                                 :
                                 (value === 'Mapped_ports')?
@@ -281,6 +284,14 @@ class DeveloperListView extends React.Component {
 
         </Table>
     )
+    handleSpinner(value) {
+        _self.setState({loading:value})
+    }
+    successfully(msg) {
+        //reload data of dummyData that defined props devData
+
+        //_self.props.handleRefreshData({params:{state:'refresh'}})
+    }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(store.userToken) this.getDataDeveloper(store.userToken);
@@ -307,6 +318,13 @@ class DeveloperListView extends React.Component {
                 { ({ width, height }) =>
                     <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
                         <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>
+                        
+                        <DeleteItem open={this.state.openDelete}
+                                    selected={this.state.selected} close={this.close} siteId={this.props.siteId}
+                                    handleSpinner={this.handleSpinner}
+                                    success={this.successfully}
+                        ></DeleteItem>
+                        
                         <ReactGridLayout
                             layout={this.state.layout}
                             onLayoutChange={this.onLayoutChange}
@@ -315,6 +333,14 @@ class DeveloperListView extends React.Component {
                         >
                             {this.generateDOM(open, dimmer, width, height, hiddenKeys)}
                         </ReactGridLayout>
+                        <div className="loadingBox">
+                            <GridLoader
+                                sizeUnit={"px"}
+                                size={20}
+                                color={'#70b2bc'}
+                                loading={this.state.loading}
+                            />
+                        </div>
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                         <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                         <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
@@ -361,7 +387,8 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
-        handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))}
+        handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
+        handleRefreshData: (data) => { dispatch(actions.refreshData(data))}
     };
 };
 

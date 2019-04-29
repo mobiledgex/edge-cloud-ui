@@ -33,8 +33,8 @@ class SiteFourPageApps extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
 
-        this.headerLayout = [1,2,1,1,2,2,2,1,1];
-        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType']
+        this.headerLayout = [1,2,2,2,2,2,2,3];
+        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster']
         this.userToken = null;
 
         //

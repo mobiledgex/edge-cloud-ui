@@ -128,7 +128,6 @@ const ProfileForm = props => {
 
                 <Form.Group inline>
                     <Form.Button primary>Submit</Form.Button>
-                    <Form.Button onClick={reset}>Reset</Form.Button>
                 </Form.Group>
             </Form>
         </Fragment>

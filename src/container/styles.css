@@ -121,7 +121,7 @@
 }
 
 
-.create-org .ui.grid .column .ui.form .fields > .ui.grid > .row:first-child {
+.create-org .ui.grid .column .ui.form .fields > .ui.grid > .row.avatar_img {
     display: none;
 }
 
@@ -191,10 +191,6 @@
 .popup_user .submitButtonGroup.orgButton.fields .field .button{
     padding: .7em 1.5em;
 
-}
-
-.popup_user .submitButtonGroup.orgButton.fields .field:last-child{
-    left:6.304em;
 }
 
 .popup_user .orgButton{
