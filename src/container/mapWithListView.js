@@ -227,8 +227,8 @@ class MapWithListView extends React.Component {
                                 {Object.keys(item).map((value, j) => (
                                     (value === 'Edit')?
                                         <Table.Cell key={j} textAlign='center' style={{whiteSpace:'nowrap'}}>
-                                            <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}>Delete</Button>
                                             <Button disabled key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
+                                            <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
                                         </Table.Cell>
                                     :
                                     (value === 'Mapped_ports')?
@@ -247,7 +247,7 @@ class MapWithListView extends React.Component {
                                         </Table.Cell>
                                     :
                                     (!( String(hidden).indexOf(value) > -1 )) ?
-                                        <Table.Cell key={j} textAlign={(j === 0)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
+                                        <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
                                             <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                             {String(item[value])}
                                             </div>

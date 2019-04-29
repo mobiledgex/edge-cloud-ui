@@ -80,7 +80,7 @@ class RegistryViewer extends React.Component {
                 'ImageType':{label:'Image Type', type:'RenderInput', necessary:false, tip:'If Deployment Type Chosen as kubernetes, then image type is always ImageTypeDocker'},
                 'DefaultFlavor':{label:'Default Flavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:['m4.large','x1.medium', 'x1.small', 'x1.tiny']},
                 'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:null, active:true},
-                'Command':{label:'Command', type:'RenderInput', necessary:true, tip:'Please input a command that the container runs', active:true},
+                'Command':{label:'Command', type:'RenderInput', necessary:false, tip:'Please input a command that the container runs', active:true},
                 'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Specify either http url of the yaml or upload yaml file or helm chart', active:true},
             },
             {

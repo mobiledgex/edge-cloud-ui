@@ -124,7 +124,8 @@ class SiteFour extends React.Component {
             nextPosY:window.innerHeight / 2,
             nextOpacity:1,
             setMotion:defaultMotion,
-            OrganizationName:'-'
+            OrganizationName:'-',
+            adminShow:false
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
@@ -216,7 +217,8 @@ class SiteFour extends React.Component {
         _self.props.history.location.search = subPath;
         _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
         _self.props.handleChangeClickCity([]);
-
+        _self.props.handleSelectOrg('-')
+        _self.props.handleUserRole('')
     }
     gotoUrl(site, subPath) {
         _self.props.history.push({
@@ -230,10 +232,11 @@ class SiteFour extends React.Component {
         _self.props.handleChangeViewBtn(false);
         _self.props.handleChangeClickCity([]);
         _self.props.handleChangeComputeItem(label);
+        console.log(pg,"::##:",this.state.adminShow)
         this.auth_list.map((item) => {
             if(item.role == role) {
                 item.view.map((item) => {
-                    if(item == pg){
+                    if(item == pg && !this.state.adminShow){
                         _self.props.handleChangeViewBtn(true)
                     }
                 })
@@ -269,6 +272,15 @@ class SiteFour extends React.Component {
         console.log("controllerList",result.data);
         //this.setState({ controllerRegions:result.data })
         _self.controllerOptions(result.data);
+    }
+    receiveAdminInfo = (result) => {
+        console.log("adminInfo@@@",result.data);
+        result.data.map((item,i) => {
+            if(item.role.indexOf('Admin') > -1){
+                console.log("admin@@@@")
+                this.setState({adminShow:true});
+            }
+        })
     }
     controllerOptions(option){
         let arr = []
@@ -316,6 +328,9 @@ class SiteFour extends React.Component {
     openModalCreate() {
 
     }
+    getAdminInfo(token) {
+        computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
+    }
     componentWillMount() {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -336,6 +351,7 @@ class SiteFour extends React.Component {
             this.setState({page:'pg=0'})
             this.gotoUrl('/site4', 'pg=0')
 
+        this.getAdminInfo(store.userToken);
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
             _self.makeGhost(elem, _self)
@@ -420,6 +436,9 @@ class SiteFour extends React.Component {
                         </Header>
                     </Grid.Column>
                     <Grid.Column width={6} className='navbar_right'>
+                        <div style={{cursor:'pointer'}} onClick={() => window.location.reload()}>
+                            <MaterialIcon icon={'refresh'} />
+                        </div>
                         <div style={{cursor:'pointer'}} onClick={() => this.gotoPreview('/site1')}>
                             <MaterialIcon icon={'public'} />
                         </div>
@@ -605,7 +624,9 @@ const mapDispatchProps = (dispatch) => {
         handleChangeClickCity: (data) => { dispatch(actions.clickCityList(data))},
         handleUserInfo: (data) => { dispatch(actions.userInfo(data))},
         handleSearchValue: (data) => {dispatch(actions.searchValue(data))},
-        handleChangeRegion: (data) => {dispatch(actions.changeRegion(data))}
+        handleChangeRegion: (data) => {dispatch(actions.changeRegion(data))},
+        handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
+        handleUserRole: (data) => { dispatch(actions.showUserRole(data))}
     };
 };
 

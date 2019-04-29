@@ -25,6 +25,7 @@ let generateData = (datas) => {
 
             } else {
             let Index = i;
+            let Region = dataResult.key.region || 'US';
             let ClusterFlavor = dataResult.key.name  || '-';
             let MasterFlavor = dataResult.master_flavor.name  || '-';
             let NumberOfMasterNode = dataResult.num_masters  || '-';
@@ -32,8 +33,8 @@ let generateData = (datas) => {
             let NumberOfNode = dataResult.num_nodes || '-';
             let MaximumNodes = dataResult.max_nodes || '-';
 
-            let newRegistKey = ['ClusterFlavor', 'MasterFlavor', 'NumberOfMasterNode', 'NodeFlavor', 'NumberOfNode', 'MaximumNodes'];
-            values.push({ClusterFlavor:ClusterFlavor, MasterFlavor:MasterFlavor, NumberOfMasterNode:NumberOfMasterNode, NodeFlavor:NodeFlavor, NumberOfNode:NumberOfNode, MaximumNodes:MaximumNodes, Edit:newRegistKey})
+            let newRegistKey = ['Region', 'ClusterFlavor', 'MasterFlavor', 'NumberOfMasterNode', 'NodeFlavor', 'NumberOfNode', 'MaximumNodes'];
+            values.push({Region:Region, ClusterFlavor:ClusterFlavor, MasterFlavor:MasterFlavor, NumberOfMasterNode:NumberOfMasterNode, NodeFlavor:NodeFlavor, NumberOfNode:NumberOfNode, MaximumNodes:MaximumNodes, Edit:newRegistKey})
             }
         })
     } else {

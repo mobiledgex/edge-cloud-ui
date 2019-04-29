@@ -25,6 +25,7 @@ let generateData = (datas) => {
 
             } else {
                 let Index = i;
+                let Region = dataResult.key.region || 'US';
                 let DeveloperName = dataResult.key.app_key.developer_key.name  || '-';
                 let AppName = dataResult.key.app_key.name  || '-';
                 let Version = dataResult.key.app_key.version  || '-';
@@ -38,6 +39,7 @@ let generateData = (datas) => {
 
 
                 let newRegistKey = [
+                    'Region',
                     'DeveloperName',
                     'AppName',
                     'Version',
@@ -48,6 +50,7 @@ let generateData = (datas) => {
                 ];
 
                 values.push({
+                    Region:Region,
                     DeveloperName:DeveloperName,
                     AppName:AppName,
                     Version:Version,

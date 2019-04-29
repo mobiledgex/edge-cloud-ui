@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import {Button, Form, Table, List, Grid, Card, Header, Image} from "semantic-ui-react";
 
-import { Field, reduxForm, initialize } from "redux-form";
+import {Field, reduxForm, initialize, reset} from "redux-form";
 import MaterialIcon from "material-icons-react";
 import './styles.css';
 
@@ -194,6 +194,8 @@ const userAvatar = [
 
 ]
 
+let avatarRandom = Math.floor(Math.random() * userAvatar.length);
+
 const makeCardContent = (item, i, type) => (
     <Grid.Row>
         <Card>
@@ -211,9 +213,11 @@ const makeCardContent = (item, i, type) => (
     </Grid.Row>
 )
 
+let _self = null;
 class SiteFourOrgaTwo extends React.Component {
     constructor(props) {
         super(props);
+        _self = this;
         this.state = {
             typeValue:''
         };
@@ -237,23 +241,28 @@ class SiteFourOrgaTwo extends React.Component {
     componentWillReceiveProps(nextProps) {
         console.log("twoProps",nextProps)
     }
-    
 
+
+
+    onHandleSubmit(a,b) {
+        console.log('a, b', a, b)
+        _self.props.handleSubmit();
+        setTimeout(() => this.props.dispatch(reset('orgaStepTwo')),1000);
+    }
     
     render (){
         const { handleSubmit, reset, org, type } = this.props;
         let cType = type.substring(0,1).toUpperCase() + type.substring(1);
-        let avatarRandom = Math.floor(Math.random() * userAvatar.length)
         return (
             <Fragment>
                 <Grid>
                     <Grid.Row columns={2}>
                         <Grid.Column width={11}>
-                            <Form onSubmit={handleSubmit} className={"fieldForm"}>
+                            <Form onSubmit={this.onHandleSubmit} className={"fieldForm"}>
                                 <Header>Add Users to Your Organization!</Header>
                                 <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
                                     <Grid>
-                                        <Grid.Row>
+                                        <Grid.Row className='avatar_img'>
                                             <Grid.Column>
                                                 <Image src={userAvatar[avatarRandom]} width='250px' centered bordered/>
                                             </Grid.Column>
@@ -320,7 +329,6 @@ class SiteFourOrgaTwo extends React.Component {
 
                                 <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
                                     {/*<Form.Button >Preview</Form.Button>*/}
-                                    <Form.Button onClick={reset}>Reset</Form.Button>
                                     <Form.Button primary positive>Add</Form.Button>
                                 </Form.Group>
                             </Form>

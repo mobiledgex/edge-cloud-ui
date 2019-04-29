@@ -464,6 +464,8 @@ app.post('/CreateClusterInst', apiMC.CreateClusterInst);
 app.post('/ShowRole', apiMC.ShowRole);
 /////
 app.post('/deleteService', apiMC.DeleteService);
+app.post('/deleteUser', apiMC.DeleteUser);
+app.post('/deleteOrg', apiMC.DeleteOrg);
 /*
 --auth-type=jwt --auth=$SUPERPASS
  */
@@ -528,10 +530,10 @@ app.post('/showOrg', (req, res, next) => {
 // https
 var host = '0.0.0.0';
 if(process.argv.length > 2) {
-	host = process.argv[2];
-	if(process.argv.length > 3) {
-		port = parseInt(process.argv[3], 10);
-	}
+    host = process.argv[2];
+    if(process.argv.length > 3) {
+        port = parseInt(process.argv[3], 10);
+    }
 }
 var httpsServer = https.createServer(credentials, app);
 httpsServer.listen(port, host, () => console.log(`<< https >> app listening on ${host} port ${port}!`));

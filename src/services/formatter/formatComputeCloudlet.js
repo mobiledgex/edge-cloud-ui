@@ -34,20 +34,21 @@ let generateData = (datas) => {
                 
             } else {
                 let Index = i;
+                let Region = dataResult.key.region || 'US';
                 let CloudletName = dataResult.key.name || '-';
                 let Operator = dataResult.key.operator_key.name || '-';
                 let CloudletLocation = dataResult.location || '-';
                 let Ip_support = dataResult.ip_support || '-';
                 let Num_dynamic_ips = dataResult.num_dynamic_ips || '-';
-                let newRegistKey = ['CloudletName', 'Operator', 'CloudletLocation', 'Region', 'Ip_support', 'Num_dynamic_ips'];
+                let newRegistKey = ['Region', 'CloudletName', 'Operator', 'CloudletLocation', 'Region', 'Ip_support', 'Num_dynamic_ips'];
 
-                values.push({ CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Ip_support:Ip_support, Num_dynamic_ips:Num_dynamic_ips, Edit:newRegistKey})
+                values.push({Region:Region,  CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Ip_support:Ip_support, Num_dynamic_ips:Num_dynamic_ips, Edit:newRegistKey})
             }
 
         })
     } else {
-        let newRegistKey = ['CloudletName', 'Operator', 'CloudletLocation', 'Region', 'Ip_support', 'Num_dynamic_ips'];
-        values.push({CloudletName:'', Operator:'', CloudletLocation:'', Ip_support:'', Num_dynamic_ips:'', Edit:newRegistKey})
+        let newRegistKey = ['Region', 'CloudletName', 'Operator', 'CloudletLocation', 'Region', 'Ip_support', 'Num_dynamic_ips'];
+        values.push({Region:'', CloudletName:'', Operator:'', CloudletLocation:'', Ip_support:'', Num_dynamic_ips:'', Edit:newRegistKey})
     }
 
 

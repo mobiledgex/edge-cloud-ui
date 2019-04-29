@@ -89,7 +89,7 @@ let generateData = (datas) => {
                     ImageType:ImageType,
                     DefaultFlavor:DefaultFlavor,
                     Ports:Ports,
-                    Cluster:Cluster,
+                    //Cluster:Cluster,
                     Command:Command,
                     DeploymentMF:DeploymentMF,
                     Edit:newRegistKey

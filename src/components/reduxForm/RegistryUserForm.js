@@ -103,7 +103,6 @@ const RegistryUserForm = props => {
                 </Form.Group>
                 <Form.Group className={"submitButtonGroup"} id={"submitButtonGroup"} inline style={{flexDirection:'column', marginBottom:0}}>
                     <Form.Button primary>Sign Up</Form.Button>
-                    <Form.Button onClick={reset}>Reset</Form.Button>
                 </Form.Group>
             </Form>
         </Fragment>

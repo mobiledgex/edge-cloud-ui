@@ -33,9 +33,7 @@ export default class DeleteItem extends React.Component {
         console.log('registry delete ... success result..', result.data)
         let paseData = result.data;
         let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
-        console.log('response paseData  -',splitData );
 
-        //if(splitData[2] && splitData[2]['result']) {
         if(result.data.indexOf('successfully') > -1) {
             Alert.success(splitData[2].message, {
                 position: 'top-right',
@@ -50,6 +48,25 @@ export default class DeleteItem extends React.Component {
             _self.props.success();
         }
         _self.props.handleSpinner(false)
+    }
+
+    receiveUserSubmit(result) {
+        console.log('user delete ... success result..', result.data)
+        
+        if(result.data.message) {
+            Alert.success(result.data.message, {
+                position: 'top-right',
+                effect: 'slide',
+                onShow: function () {
+                    console.log('aye!')
+                },
+                beep: true,
+                timeout: 5000,
+                offset: 100
+            });
+            _self.props.success();
+        }
+        //_self.props.handleSpinner(false)
     }
 
     closeDeleteModal(confirm) {
@@ -67,44 +84,9 @@ export default class DeleteItem extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
 
-        /*
-        http --auth-type=jwt --auth=$ORGMANTOKEN POST 127.0.0.1:9900/api/v1/auth/ctrl/CreateClusterInst
-        <<< '{
-        "region":"local",
-        "clusterinst":{"key":{"cluster_key":{"name":"bigclust"},
-        "cloudlet_key":{"operator_key":{"name":"bigwaves"},"name":"oceanview"},"developer":"bigorg"},
-        "flavor":{"name":"x1.medium"}
-        }}'
-
-
-            Cloudlet: "bonn-mexdemo"
-            CloudletLocation: {latitude: 37, longitude: 132, timestamp: {…}}
-            ClusterFlavor: "x1.medium"
-            ClusterName: "macrometa"
-            Edit: (7) ["ClusterName", "DeveloperName", "Operator", "Cloudlet", "ClusterFlavor", "IPAccess", "CloudletLocation"]
-            IPAccess: 3
-            Operator: "TDG"
-
-
-            {
-                "key":
-                {
-                    "cluster_key":{"name":"biccluster"},
-                    "cloudlet_key":{"operator_key":{"name":"TDG"},"name":"bonn-mexdemo"},
-                    "developer":"bicinkiOrg"
-                },
-                "flavor":{"name":"x1.medium"},
-                "liveness":1,
-                "state":5,
-                "ip_access":3,
-                "node_flavor":"m4.small",
-                "master_flavor":"m4.small"
-            }
-         */
         let serviceNm = '';
         if(this.props.siteId === 'ClusterInst'){
             const {Cloudlet, ClusterFlavor, ClusterName, Developer, Operator} = this.props.selected
-            console.log("delete@!!@",this.props.selected)
             serviceNm = 'DeleteClusterInst';
             serviceBody = {
                 "token":store.userToken,
@@ -120,15 +102,65 @@ export default class DeleteItem extends React.Component {
                     }
                 }
             }
+            service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
         } else if(this.props.siteId === 'appinst') {
+            const {DeveloperName, AppName, Version, Operator, Cloudlet, ClusterInst} = this.props.selected
             serviceNm = 'DeleteAppInst'
+            serviceBody = {
+                "token":store.userToken,
+                "params": {
+                    "region":"US",
+                    "appinst":{
+                        "key":{
+                            "app_key":{"developer_key":{"name":DeveloperName},"name":AppName,"version":Version},
+                            "cloudlet_key":{"operator_key":{"name":Operator},"name":Cloudlet}
+                        },
+                        "cluster_inst_key":{
+                            "cluster_key":{"name":ClusterInst},
+                            "cloudlet_key":{"operator_key":{"name":Operator},"name":Cloudlet}
+                        }
+                    }
+                }
+            }
+            service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
+        } else if(this.props.siteId === 'User') {
+            let userArr = [];
+            Object.values(this.props.selected).map((item,i) => {
+                userArr.push(item);
+            })
+            serviceNm = 'removeuser'
+            serviceBody = {
+                "token":store.userToken,
+                "params": {
+                    "org":userArr[1],
+                    "username":userArr[0],
+                    "role":userArr[2]
+                }
+            }
+            service.deleteUser(serviceNm, serviceBody, this.receiveUserSubmit)
+        } else if(this.props.siteId === 'Organization') {
+            const {Organization, Type, Address, Phone} = this.props.selected
+            serviceNm = 'delete'
+            serviceBody = {
+                "token":store.userToken,
+                "params": {
+                    "name":Organization,
+                    "type":Type,
+                    "address":Address,
+                    "phone":Phone
+                }
+            }
+            service.deleteOrg(serviceNm, serviceBody, this.receiveUserSubmit)
         }
+
+
+
         console.log("delete@@@",serviceNm,serviceBody)
         //service_compute_service
         service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
 
         //playing spinner
-        this.props.handleSpinner(true)
+        //this.props.handleSpinner(true)
     }
 
     /** ************************ **/

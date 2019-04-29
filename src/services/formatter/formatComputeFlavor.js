@@ -45,13 +45,21 @@ const numberDes =(a,b)=> (
 )
 
 let generateData = (datas) => {
-    console.log('format data flavor- ', datas)
-    let result = datas;
+    console.log('format data Flavor - ', datas)
     let values = [];
-    //20190409 transition string to json
-    let toArray = datas.data.split('\n')
-    toArray.pop();
-    let toJson = toArray.map((str)=>(JSON.parse(str)))
+    let toArray = null;
+    let toJson = [];
+    if(datas.data) {
+        if(typeof datas.data === 'object') {
+            toJson.push((datas.data)?datas.data:{});
+        } else {
+            toArray = datas.data.split('\n')
+            toArray.pop();
+            toJson = toArray.map((str)=>(JSON.parse(str)))
+        }
+    }else {
+        toJson = null;
+    }
 
 
     if(toJson){
@@ -60,18 +68,21 @@ let generateData = (datas) => {
 
             } else {
                 let Index = i;
+                let Region = dataResult.key.region || 'US';
                 let FlavorName = dataResult.key.name || '-';
                 let RAM = dataResult.ram || '-';
                 let VCPUS = dataResult.vcpus || '-';
                 let DISK = dataResult.disk || '-';
-                let newRegistKey = ['FlavorName', 'RAM', 'VCPUS', 'DISK'];
+                let newRegistKey = ['Region', 'FlavorName', 'RAM', 'VCPUS', 'DISK'];
 
-                values.push({FlavorName:FlavorName, RAM:RAM, VCPUS:VCPUS, DISK:DISK, Edit:newRegistKey})
+                values.push({Region:Region, FlavorName:FlavorName, RAM:RAM, VCPUS:VCPUS, DISK:DISK, Edit:newRegistKey})
             }
 
         })
     } else {
-        console.log('there is no result')
+        let newRegistKey = ['Region', 'FlavorName', 'RAM', 'VCPUS', 'DISK'];
+        //values.push({Edit:newRegistKey})
+        values.push({Region:'', FlavorName:'', RAM:'', VCPUS:'', DISK:'', Edit:newRegistKey})
     }
 
     //ascending or descending
