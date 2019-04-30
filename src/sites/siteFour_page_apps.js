@@ -90,16 +90,16 @@ class SiteFourPageApps extends React.Component {
             //services.createNewApp('CreateApp', {params:nextProps.receiveNewReg.values, token:store.userToken, region:'US'}, _self.receiveResult)
         }
 
-        if(nextProps.region.value) {
-            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            this.getDataDeveloper(store.userToken, nextProps.region.value)
-        }
+        // if(nextProps.region.value) {
+        //     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        //     this.getDataDeveloper(store.userToken, nextProps.region.value)
+        // }
         
-        if(nextProps.computeRefresh.compute) {
-            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            this.getDataDeveloper(store.userToken);
-            this.props.handleComputeRefresh(false);
-        }
+        // if(nextProps.computeRefresh.compute) {
+        //     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        //     this.getDataDeveloper(store.userToken);
+        //     this.props.handleComputeRefresh(false);
+        // }
 
     }
     receiveResult = (result, region) => {
