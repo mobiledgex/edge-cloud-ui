@@ -33,6 +33,7 @@ class SiteFourPageCloudlet extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
         this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips'];
+        this.headerLayout = [1,4,4,4];
         this.userToken = null;
     }
 
@@ -80,8 +81,15 @@ class SiteFourPageCloudlet extends React.Component {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
+        if(nextProps.computeRefresh.compute) {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            this.getDataCloudlet(store.userToken);
+            this.props.handleComputeRefresh(false);
+        }
+
     }
-    receiveResult(result) {
+    receiveResult = (result) => {
+        this.props.handleLoadingSpinner(false);
         console.log("receive cloudlet == ", result)
 
         if(result.error) {
@@ -97,27 +105,34 @@ class SiteFourPageCloudlet extends React.Component {
         }
     }
     getDataCloudlet(token) {
-        services.getMCService('ShowCloudlet',{token:token, region:'US'}, _self.receiveResult)
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        services.getMCService('ShowCloudlet',{token:store.userToken, region:'US'}, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
 
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken}></MapWithListView>
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataCloudlet}></MapWithListView>
 
         );
     }
 
 };
 
-
+const mapStateToProps = (state) => {
+    return {
+        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null
+    }
+};
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCloudlet)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCloudlet)));

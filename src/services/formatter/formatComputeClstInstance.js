@@ -60,18 +60,18 @@ let generateData = (datas) => {
                 // let NodeFlavor = dataResult.node_flavor || '';
                 // let MasterFlavor = dataResult.master_flavor || '';
                 // let State = dataResult.state || '';
-                // let IPAccess = dataResult.ip_access || '-';
+                let IpAccess = dataResult.ip_access || '-';
                 // let Liveness = dataResult.liveness || '-';
                 let CloudletLocation = '-';
 
-                let newRegistKey = ['Region', 'ClusterName', 'DeveloperName', 'Operator', 'Cloudlet', 'ClusterFlavor', 'CloudletLocation'];
-                values.push({Region:Region, ClusterName:ClusterName, Developer:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, ClusterFlavor:ClusterFlavor, CloudletLocation:CloudletLocation, Edit:newRegistKey})
+                let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'ClusterFlavor', 'IpAccess', 'CloudletLocation'];
+                values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, ClusterFlavor:ClusterFlavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, Edit:newRegistKey})
             }
         })
     } else {
-        let newRegistKey = ['Region', 'ClusterName', 'DeveloperName', 'Operator', 'Cloudlet', 'ClusterFlavor', 'CloudletLocation'];
+        let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'ClusterFlavor', 'IpAccess', 'CloudletLocation'];
         //values.push({Edit:newRegistKey})
-        values.push({Region:'', ClusterName:'', Developer:'', Operator:'', Cloudlet:'', ClusterFlavor:'', CloudletLocation:'', Edit:newRegistKey})
+        values.push({Region:'', ClusterName:'', OrganizationName:'', Operator:'', Cloudlet:'', ClusterFlavor:'', IpAccess:'', CloudletLocation:'', Edit:newRegistKey})
     }
 
     //ascending or descending

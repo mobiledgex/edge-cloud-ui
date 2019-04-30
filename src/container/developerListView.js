@@ -9,7 +9,6 @@ import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import DeleteItem from './deleteItem';
-import { GridLoader } from 'react-spinners';
 import './styles.css';
 import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
@@ -48,8 +47,7 @@ class DeveloperListView extends React.Component {
             orgData:{},
             selectUse:null,
             resultData:null,
-            openDelete:false,
-            loading:false
+            openDelete:false
         };
 
     }
@@ -219,6 +217,7 @@ class DeveloperListView extends React.Component {
         }
     }
     roleMark = (role) => (
+        (role.indexOf('Admin')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markD markM">S</div> :
         (role.indexOf('Developer')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markD markM">M</div> :
         (role.indexOf('Developer')!==-1 && role.indexOf('Contributor')!==-1) ? <div className="mark markD markC">C</div> :
         (role.indexOf('Developer')!==-1 && role.indexOf('Viewer')!==-1) ? <div className="mark markD markV">V</div> :
@@ -269,7 +268,7 @@ class DeveloperListView extends React.Component {
                                     </Table.Cell>
                                 :
                                 (!( String(hideHeader).indexOf(value) > -1 )) ?
-                                <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0)?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
+                                <Table.Cell key={j} textAlign={(value === 'Region')?'center':(value === 'Organization')?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                             {String(item[value])}
                                         </div>
@@ -284,9 +283,6 @@ class DeveloperListView extends React.Component {
 
         </Table>
     )
-    handleSpinner(value) {
-        _self.setState({loading:value})
-    }
     successfully(msg) {
         //reload data of dummyData that defined props devData
 
@@ -317,12 +313,11 @@ class DeveloperListView extends React.Component {
             <ContainerDimensions>
                 { ({ width, height }) =>
                     <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
-                        <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>
+                        <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
                         
                         <DeleteItem open={this.state.openDelete}
                                     selected={this.state.selected} close={this.close} siteId={this.props.siteId}
-                                    handleSpinner={this.handleSpinner}
-                                    success={this.successfully}
+                                    success={this.successfully} refresh={this.props.dataRefresh}
                         ></DeleteItem>
                         
                         <ReactGridLayout
@@ -333,14 +328,6 @@ class DeveloperListView extends React.Component {
                         >
                             {this.generateDOM(open, dimmer, width, height, hiddenKeys)}
                         </ReactGridLayout>
-                        <div className="loadingBox">
-                            <GridLoader
-                                sizeUnit={"px"}
-                                size={20}
-                                color={'#70b2bc'}
-                                loading={this.state.loading}
-                            />
-                        </div>
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                         <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                         <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>

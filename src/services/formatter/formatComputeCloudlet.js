@@ -40,14 +40,14 @@ let generateData = (datas) => {
                 let CloudletLocation = dataResult.location || '-';
                 let Ip_support = dataResult.ip_support || '-';
                 let Num_dynamic_ips = dataResult.num_dynamic_ips || '-';
-                let newRegistKey = ['Region', 'CloudletName', 'Operator', 'CloudletLocation', 'Region', 'Ip_support', 'Num_dynamic_ips'];
+                let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
 
                 values.push({Region:Region,  CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Ip_support:Ip_support, Num_dynamic_ips:Num_dynamic_ips, Edit:newRegistKey})
             }
 
         })
     } else {
-        let newRegistKey = ['Region', 'CloudletName', 'Operator', 'CloudletLocation', 'Region', 'Ip_support', 'Num_dynamic_ips'];
+        let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
         values.push({Region:'', CloudletName:'', Operator:'', CloudletLocation:'', Ip_support:'', Num_dynamic_ips:'', Edit:newRegistKey})
     }
 

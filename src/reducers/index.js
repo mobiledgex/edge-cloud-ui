@@ -18,10 +18,12 @@ import showUserRole from './showUserRole';
 import selectOrg from './selectOrg';
 import searchValue from './searchValue';
 import changeRegion from './changeRegion';
+import computeRefresh from './computeRefresh';
+import loadingSpinner from './loadingSpinner';
 
 const reducers = combineReducers({
     videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion,
-    registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, searchValue, form: formReducer
+    registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, searchValue, computeRefresh, loadingSpinner, form: formReducer
 });
 
 export default reducers;

@@ -150,3 +150,17 @@ export function changeRegion (region) {
         region
     }
 }
+export function computeRefresh (compute) {
+    console.log('COMPUTE_REFRESH == ', compute)
+    return {
+        type: types.COMPUTE_REFRESH,
+        compute
+    }
+}
+export function loadingSpinner (loading) {
+    console.log('LOADING_SPINNER == ', loading)
+    return {
+        type: types.LOADING_SPINNER,
+        loading
+    }
+}

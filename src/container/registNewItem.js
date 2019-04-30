@@ -303,8 +303,9 @@ class RegistNewItem extends React.Component {
     }
     receiveSubmit(result) {
         console.log('registry new ... success result..', result.data)
-        if(result.error) {
-            Alert.error(result.error, {
+        _self.props.handleLoadingSpinner(false);
+        if(result.data.error) {
+            Alert.error(result.data.error, {
                 position: 'top-right',
                 effect: 'slide',
                 onShow: function () {
@@ -314,15 +315,9 @@ class RegistNewItem extends React.Component {
                 timeout: 5000,
                 offset: 100
             });
-            _self.props.handleSpinner(false)
             return;
-        }
-        let paseData = result.data;
-        let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
-        console.log('response paseData  -',splitData );
-
-        if(splitData[2] && splitData[2]['result']) {
-            Alert.success(splitData[2]['result']['message'], {
+        } else {
+            Alert.success('SUCCESS', {
                 position: 'top-right',
                 effect: 'slide',
                 onShow: function () {
@@ -332,64 +327,107 @@ class RegistNewItem extends React.Component {
                 timeout: 5000,
                 offset: 100
             });
-            //create success !!!
-            if(splitData[2]['result']['message'] === 'Created successfully') {
-                _self.props.success()
-            }
-        } else {
-            if(splitData[0]['error']) {
-                Alert.error(splitData[0]['error']['message'], {
-                    position: 'top-right',
-                    effect: 'slide',
-                    onShow: function () {
-                        console.log('aye!')
-                    },
-                    beep: true,
-                    timeout: 5000,
-                    offset: 100
-                });
-            } else {
-                Alert.error(splitData[0]['message'], {
-                    position: 'top-right',
-                    effect: 'slide',
-                    onShow: function () {
-                        console.log('aye!')
-                    },
-                    beep: true,
-                    timeout: 5000,
-                    offset: 100
-                });
-            }
-
         }
-        _self.props.handleSpinner(false)
+        // let paseData = result.data;
+        // let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
+        // console.log('response paseData  -',splitData );
+
+        // if(splitData[2] && splitData[2]['result']) {
+        //     Alert.success(splitData[2]['result']['message'], {
+        //         position: 'top-right',
+        //         effect: 'slide',
+        //         onShow: function () {
+        //             console.log('aye!')
+        //         },
+        //         beep: true,
+        //         timeout: 5000,
+        //         offset: 100
+        //     });
+        //     //create success !!!
+        //     if(splitData[2]['result']['message'] === 'Created successfully') {
+        //         _self.props.success()
+        //     }
+        // } else {
+        //     if(splitData[0]['error']) {
+        //         Alert.error(splitData[0]['error']['message'], {
+        //             position: 'top-right',
+        //             effect: 'slide',
+        //             onShow: function () {
+        //                 console.log('aye!')
+        //             },
+        //             beep: true,
+        //             timeout: 5000,
+        //             offset: 100
+        //         });
+        //     } else {
+        //         Alert.error(splitData[0]['message'], {
+        //             position: 'top-right',
+        //             effect: 'slide',
+        //             onShow: function () {
+        //                 console.log('aye!')
+        //             },
+        //             beep: true,
+        //             timeout: 5000,
+        //             offset: 100
+        //         });
+        //     }
+
+        // }
     }
 
     onSubmit = () => {
         let serviceBody = {}
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        //playing spinner
-        //this.props.handleSpinner(true)
-        //console.log("siteId@@@",this.props)
+        console.log("siteId@@@",this.props.computeItem)
+        this.props.handleLoadingSpinner(true);
+        setTimeout(() => {
+            this.props.handleLoadingSpinner(false);
+        },3000);
         //TODO: 20190410 메뉴 별 구분 필요
         if(this.props.computeItem === 'Cluster Instances'){
             console.log("submitData@@",this.props.submitData)
-            const {Cloudlet, ClusterFlavor, ClusterName, DeveloperName, Operator} = this.props.submitData.registNewInput.values
+            const {Cloudlet, ClusterFlavor, ClusterName, DeveloperName, Operator, Region, IpAccess} = this.props.submitData.registNewInput.values
             serviceBody = {
                 "token":store.userToken,
                 "params": {
-                    "region":"US",
+                    "region":Region,
                     "clusterinst":{
                         "key":{
                             "cluster_key":{"name":ClusterName},
                             "cloudlet_key":{"operator_key":{"name":Operator},"name":Cloudlet},
                             "developer":DeveloperName
                         },
-                        "flavor":{"name":ClusterFlavor}
+                        "flavor":{"name":ClusterFlavor},
+                        "ip_access":Number(IpAccess)
                     }
                 }
             }
+            //this.props.handleLoadingSpinner(true);
             service.createNewClusterInst('CreateClusterInst', serviceBody, this.receiveSubmit)
+        } else if(this.props.computeItem === 'Cloudlets') {
+            console.log("submitCloudlet@@",this.props.submitData)
+            const {CloudletName, OperatorName, Longitude, Latitude, Ip_support, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
+            serviceBody = {
+                "token":store.userToken,
+                "params": {
+                    "region":Region,
+                    "cloudlet":{
+                        "key":{
+                            "operator_key":{"name":OperatorName},
+                            "name":CloudletName
+                        },
+                        "location":{
+                            "latitude":Number(Latitude),
+                            "longitude":Number(Longitude),
+                            "timestamp":{}
+                        },
+                        "ip_support":Number(Ip_support),
+                        "num_dynamic_ips":Number(Num_dynamic_ips)
+                    }
+                }
+            }
+            //this.props.handleLoadingSpinner(true);
+            service.createNewCloudlet('CreateCloudlet', serviceBody, this.receiveSubmit)
         }
         //close
         //this.close();
@@ -467,6 +505,7 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleMapLong: (data) => { dispatch(actions.mapCoordinatesLong(data))},
         handleMapLat: (data) => { dispatch(actions.mapCoordinatesLat(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 

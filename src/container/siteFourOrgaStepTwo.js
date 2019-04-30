@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import {Button, Form, Table, List, Grid, Card, Header, Image} from "semantic-ui-react";
-
+import { connect } from 'react-redux';
+import * as actions from '../actions';
 import {Field, reduxForm, initialize, reset} from "redux-form";
 import MaterialIcon from "material-icons-react";
 import './styles.css';
@@ -244,10 +245,20 @@ class SiteFourOrgaTwo extends React.Component {
 
 
 
-    onHandleSubmit(a,b) {
-        console.log('a, b', a, b)
+    onHandleSubmit = () => {
+        console.log("ADDSUER@@@@")
+        this.props.handleLoadingSpinner(true);
         _self.props.handleSubmit();
-        setTimeout(() => this.props.dispatch(reset('orgaStepTwo')),1000);
+        setTimeout(() => {
+            _self.props.dispatch(reset('orgaStepTwo'));
+            //this.props.handleLoadingSpinner(false);
+        },1000);
+        
+    }
+
+    continueClick = (e) => {
+        e.preventDefault();
+        this.props.nextstep(3)
     }
     
     render (){
@@ -330,6 +341,8 @@ class SiteFourOrgaTwo extends React.Component {
                                 <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
                                     {/*<Form.Button >Preview</Form.Button>*/}
                                     <Form.Button primary positive>Add</Form.Button>
+                                    <Form.Button onClick={this.continueClick}>Continue</Form.Button>
+
                                 </Form.Group>
                             </Form>
                         </Grid.Column>
@@ -345,6 +358,17 @@ class SiteFourOrgaTwo extends React.Component {
         
     }
 };
+
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+    };
+};
+
+SiteFourOrgaTwo = connect(
+    null,
+    mapDispatchProps
+)(SiteFourOrgaTwo);
 
 export default reduxForm({
     form: "orgaStepTwo",

@@ -31,7 +31,7 @@ class SiteFourPageUser extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [3,5,3,5]
+        this.headerLayout = [4,4,4,3]
     }
 
     //go to
@@ -69,34 +69,48 @@ class SiteFourPageUser extends React.Component {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
+        if(nextProps.computeRefresh.compute) {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            this.getDataDeveloper(store.userToken);
+            this.props.handleComputeRefresh(false);
+        }
     }
-    receiveResult(result) {
+    receiveResult = (result) => {
+        this.props.handleLoadingSpinner(false);
         console.log("receive users == ", result)
         let reverseResult = result.reverse();
         _self.setState({devData:reverseResult})
     }
     getDataDeveloper(token) {
-        services.getMCService('ShowUsers',{token:token}, _self.receiveResult)
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        services.getMCService('ShowUsers',{token:store.userToken}, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
 
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'User'} ></DeveloperListView>
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'User'} dataRefresh={this.getDataDeveloper}></DeveloperListView>
 
         );
     }
 
 };
 
+const mapStateToProps = (state) => {
+    return {
+        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null
+    }
+};
 
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageUser)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageUser)));

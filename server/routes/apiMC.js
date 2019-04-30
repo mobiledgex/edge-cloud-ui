@@ -522,7 +522,7 @@ exports.CreateFlavor = (req, res) => {
         region = req.body.serviceBody.region;
     }
     console.log('Create me flavor-- ', serviceBody)
-    axios.post(mcUrl + '/api/v1/auth/ctrl/CreateFlavor', qs.stringify(serviceBody),
+    axios.post(mcUrl + '/api/v1/auth/ctrl/CreateFlavor', serviceBody,
 
         {
             headers: {
@@ -532,6 +532,78 @@ exports.CreateFlavor = (req, res) => {
         .then(function (response) {
 
             console.log('success Create flavor', response.data)
+
+            if(response.data) {
+                res.json(response.data)
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+
+            console.log('error show ..', String(error));
+            res.json({error:String(error)})
+        });
+}
+
+//Create Cluster Flavor
+exports.CreateClusterFlavor = (req, res) => {
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    console.log('Create me flavor-- ', serviceBody)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterFlavor', serviceBody,
+
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+
+            console.log('success Create clusterFlavor', response.data)
+
+            if(response.data) {
+                res.json(response.data)
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+
+            console.log('error show ..', String(error));
+            res.json({error:String(error)})
+        });
+}
+
+//Create Cloudlet
+exports.CreateCloudlet = (req, res) => {
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    console.log('Create me cloudlet-- ', serviceBody)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudlet', serviceBody,
+
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+
+            console.log('success Create cloudlet', response.data)
 
             if(response.data) {
                 res.json(response.data)
@@ -575,7 +647,7 @@ exports.CreateApp = (req, res) => {
         region = req.body.serviceBody.region;
     }
     params = JSON.stringify(params).replace('"1"', 1);
-    console.log('Create me app-- ', params, 'string...', JSON.stringify(params).replace('"1"', 1))
+    console.log('Create me app-- ', params, 'string...', JSON.stringify(params).replace('"1"', 1), 'token = ', superpass)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateApp', JSON.parse(params),
 
         {

@@ -173,6 +173,12 @@
     font-weight: normal;
 }
 
+/*.round_panel .ui.checkbox .box:before, .round_panel .ui.checkbox label:before{*/
+/*    background-color: rgba(0,0,0,.3);*/
+/*    border: solid 1px rgba(255,255,255,.2);*/
+/*    color: rgba(255,255,255,.6);*/
+/*}*/
+
 /* ----- PopUp User ----- */
 
 .popup_user .ui.header {
@@ -191,6 +197,10 @@
 .popup_user .submitButtonGroup.orgButton.fields .field .button{
     padding: .7em 1.5em;
 
+}
+
+.popup_user .submitButtonGroup.orgButton.fields .field:last-child .button{
+    display: none;
 }
 
 .popup_user .orgButton{

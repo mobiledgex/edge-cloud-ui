@@ -16,6 +16,7 @@ import * as reducer from '../utils'
 import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
 import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";
+import Alert from "react-s-alert";
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -66,38 +67,43 @@ class RegistryInstViewer extends React.Component {
             openUser:false,
             orgData:{},
             selectUse:null,
-            resultData:null
+            resultData:null,
+            cloudlets:[],
+            operators:[],
+            clustinst:[],
+            apps:[],
+            keysData:[
+                {
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
+                    'DeveloperName':{label:'Organization Name', type:'RenderInput', necessary:true, tip:null, active:true},
+                    'AppName':{label:'App Name', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
+                    'Version':{label:'App Version', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
+                    'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
+                    'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
+                    'AutoClusterInst':{label:'Auto-ClusterInt', type:'RenderCheckbox', necessary:false, tip:'When checked, this will inherit settings from application settings'},
+                    'ClusterInst':{label:'ClusterInst', type:'RenderSelect', necessary:true,
+                        tip:' When selecting clusterinst, default flavor and ipaccess specified in app setting gets overridden',
+                        active:true, items:['mexdemo-app-cluster','biccluster', 'MEX-cluset3', 'MEX-cluset4']},
+                },
+                {
+
+                }
+            ],
+            fakeData:[
+                {
+                    'Region':'US',
+                    'DeveloperName':'',
+                    'AppName':'',
+                    'Version':'',
+                    'Operator':'',
+                    'Cloudlet':'',
+                    'AutoClusterInst':'',
+                    'ClusterInst':'',
+                }
+            ]
+
 
         };
-        this.keysData = [
-            {
-                'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['All', 'US', 'EU']},
-                'DeveloperName':{label:'Developer Name', type:'RenderInput', necessary:true, tip:null, active:true},
-                'AppName':{label:'App Name', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
-                'Version':{label:'App Version', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
-                'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
-                'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
-                'AutoClusterInst':{label:'Auto-ClusterInt', type:'RenderCheckbox', necessary:false, tip:'When checked, this will inherit settings from application settings'},
-                'ClusterInst':{label:'ClusterInst', type:'RenderSelect', necessary:true,
-                    tip:' When selecting clusterinst, default flavor and ipaccess specified in app setting gets overridden',
-                    active:true, items:['mexdemo-app-cluster','biccluster', 'MEX-cluset3', 'MEX-cluset4']},
-            },
-            {
-
-            }
-        ]
-        this.fakeData = [
-            {
-                'Region':'US',
-                'DeveloperName':'',
-                'AppName':'',
-                'Version':'',
-                'Operator':'',
-                'Cloudlet':'',
-                'AutoClusterInst':'',
-                'ClusterInst':'',
-            }
-        ]
 
     }
 
@@ -112,13 +118,63 @@ class RegistryInstViewer extends React.Component {
         //this.props.handleChangeSite(data.children.props.to)
     }
     getDataDeveloper(token) {
-        services.getMCService('ShowRole',{token:token}, this.receiveResult)
+        //get data cloudlet list , app list
+        services.getMCService('ShowCloudlet',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultCloudlet)
+        services.getMCService('ShowApps',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultApp)
+        services.getMCService('ShowClusterInst',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultClusterInst)
     }
-    receiveResult = (result) => {
-        //this.setState({orgData:result})
-        
-        console.log('submit result...', result)
-        
+    receiveResultCloudlet = (result) => {
+        if(result.error){
+
+        } else {
+            let operatorGroup = reducer.groupBy(result, 'Operator')
+            console.log('submit receiveResultCloudlet 1...', operatorGroup)
+            let keys = Object.keys(operatorGroup);
+            let assObj = Object.assign([], this.state.keysData);
+            assObj[0].Operator.items = keys;
+            this.setState({keysData:assObj, operators:operatorGroup})
+        }
+        // set list of operators
+        if(this.props.devData.length > 0) {
+            this.setState({dummyData:this.props.devData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
+        } else {
+            this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
+        }
+
+    }
+    receiveResultApp = (result) => {
+        if(result.error) {
+            Alert.error(String(result.error), {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+        } else {
+
+            let appGroup = reducer.groupBy(result, 'AppName')
+            console.log('submit receiveResultApp 2...', appGroup)
+            let keys = Object.keys(appGroup);
+            let assObj = Object.assign([], this.state.keysData);
+            assObj[0].AppName.items = keys;
+            this.setState({keysData:assObj, apps:appGroup})
+        }
+    }
+    receiveResultClusterInst = (result) => {
+        if(result.error) {
+            Alert.error(String(result.error), {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+        } else {
+
+            let clinstGroup = reducer.groupBy(result, 'ClusterName')
+            console.log('submit clinstGroup 2...', clinstGroup)
+            let keys = Object.keys(clinstGroup);
+            let assObj = Object.assign([], this.state.keysData);
+            assObj[0].ClusterInst.items = keys;
+            this.setState({keysData:assObj, clustinst:clinstGroup})
+        }
     }
 
     onUseOrg(useData,key, evt) {
@@ -192,11 +248,7 @@ class RegistryInstViewer extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(store.userToken) this.getDataDeveloper(store.userToken);
         console.log('nextProps inst...nextProps.devData=',this.props.devData)
-        if(this.props.devData.length > 0) {
-            this.setState({dummyData:this.props.devData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
-        } else {
-            this.setState({dummyData:this.fakeData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
-        }
+
     }
     componentWillReceiveProps(nextProps, nextContext) {
 
@@ -206,7 +258,7 @@ class RegistryInstViewer extends React.Component {
         if(nextProps.devData.length > 1) {
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         } else {
-            this.setState({dummyData:this.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+            this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         }
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -214,6 +266,25 @@ class RegistryInstViewer extends React.Component {
         if(nextProps.submitValues) {
             console.log('submit on...', nextProps.submitValues)
             services.createNewAppInst('CreateAppInst', {params:nextProps.submitValues, token:store.userToken}, _self.receiveResult)
+        }
+
+        /************
+         * set list of cloudlet
+         * **********/
+        if(nextProps.selectedOperator) {
+            let assObj = Object.assign([], this.state.keysData);
+            assObj[0].Cloudlet.items = this.state.operators[nextProps.selectedOperator].map((cld) => (cld.CloudletName));
+            this.setState({keysData:assObj})
+
+        }
+        /************
+         * set list of version
+         * **********/
+        if(nextProps.selectedApp) {
+            let assObj = Object.assign([], this.state.keysData);
+            assObj[0].Version.items = this.state.apps[nextProps.selectedApp].map((cld) => (cld.Version));
+            this.setState({keysData:assObj})
+
         }
     }
 
@@ -232,7 +303,7 @@ class RegistryInstViewer extends React.Component {
                             {...this.props}
                             style={{width:width, height:height-20}}
                         >
-                            {this.generateDOM(open, dimmer, width, height, dummyData, this.keysData, hiddenKeys)}
+                            {this.generateDOM(open, dimmer, width, height, dummyData, this.state.keysData, hiddenKeys)}
                         </ReactGridLayout>
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                         <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
@@ -291,17 +362,48 @@ const mapStateToProps = (state) => {
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
-    if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
-        let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
-        submitVal = createFormat(enableValue)
+    let selectedCloudlet = null;
+    let selectedOperator = null;
+    let selectedApp = null;
+
+    if(state.form.createAppFormDefault) {
+        if(state.form.createAppFormDefault.values.Cloudlet !== "") {
+            selectedCloudlet = state.form.createAppFormDefault.values.Cloudlet;
+        }
+        if(state.form.createAppFormDefault.values.Operator !== "") {
+            selectedOperator = state.form.createAppFormDefault.values.Operator;
+        }
+        if(state.form.createAppFormDefault.values.AppName !== "") {
+            selectedApp = state.form.createAppFormDefault.values.AppName;
+        }
+        // if(state.form.createAppFormDefault.values.AppName !== "") {
+        //     selectedApp = state.form.createAppFormDefault.values.AppName;
+        // }
+
+
+        if(state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
+            let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
+            submitVal = createFormat(enableValue)
+        }
     }
+
+
+    let region = state.changeRegion
+        ? {
+            value: state.changeRegion.region
+        }
+        : {};
 
     return {
         accountInfo,
         dimmInfo,
         itemLabel: state.computeItem.item,
         userToken : (state.user.userToken) ? state.userToken: null,
-        submitValues: submitVal
+        submitValues: submitVal,
+        region: region.value,
+        selectedApp: selectedApp,
+        selectedCloudlet: selectedCloudlet,
+        selectedOperator: selectedOperator
     }
     
     // return (dimm) ? {

@@ -81,7 +81,7 @@ let generateData = (datas) => {
 
                 values.push({
                     Region:Region,
-                    DeveloperName:DeveloperName,
+                    OrganizationName:DeveloperName,
                     AppName:AppName,
                     Version:Version,
                     ImagePath:ImagePath,

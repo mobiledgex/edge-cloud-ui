@@ -1,12 +1,14 @@
 import React from 'react';
 import {Button, Divider, Modal, Grid, Input, TextArea, Dropdown} from "semantic-ui-react";
-
+import { connect } from 'react-redux';
+import * as actions from '../actions';
+import { withRouter } from 'react-router-dom';
 import * as service from "../services/service_compute_service";
 import * as aggregate from "../utils";
 import Alert from "react-s-alert";
 
 let _self = null;
-export default class DeleteItem extends React.Component {
+class DeleteItem extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -29,12 +31,14 @@ export default class DeleteItem extends React.Component {
      * delete selected item
      * @param result
      ***************************/
-    receiveSubmit(result) {
+    receiveSubmit = (result) => {
+        this.props.handleLoadingSpinner(false);
+        this.props.refresh()
         console.log('registry delete ... success result..', result.data)
         let paseData = result.data;
         let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
 
-        if(result.data.indexOf('successfully') > -1) {
+        if(result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
             Alert.success(splitData[2].message, {
                 position: 'top-right',
                 effect: 'slide',
@@ -47,12 +51,31 @@ export default class DeleteItem extends React.Component {
             });
             _self.props.success();
         }
-        _self.props.handleSpinner(false)
     }
 
-    receiveUserSubmit(result) {
-        console.log('user delete ... success result..', result.data)
-        
+    receiveListSubmit = (result) => {
+        this.props.handleLoadingSpinner(false);
+        this.props.refresh()
+        console.log('registry delete ... success result..', result.data)
+        if(result.data.message.indexOf('ok') > -1) {
+            Alert.success("Deletion!", {
+                position: 'top-right',
+                effect: 'slide',
+                onShow: function () {
+                    console.log('aye!')
+                },
+                beep: true,
+                timeout: 5000,
+                offset: 100
+            });
+            _self.props.success();
+        }
+    }
+
+    receiveUserSubmit = (result) => {
+        this.props.handleLoadingSpinner(false);
+        console.log('user delete ... success result..', result.data);
+        _self.props.refresh();
         if(result.data.message) {
             Alert.success(result.data.message, {
                 position: 'top-right',
@@ -66,7 +89,6 @@ export default class DeleteItem extends React.Component {
             });
             _self.props.success();
         }
-        //_self.props.handleSpinner(false)
     }
 
     closeDeleteModal(confirm) {
@@ -82,16 +104,19 @@ export default class DeleteItem extends React.Component {
         let region = this.props.region;
         let serviceBody = {}
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
+        this.props.handleLoadingSpinner(true);
+        setTimeout(() => {
+            this.props.handleLoadingSpinner(false);
+        },3000);
 
         let serviceNm = '';
         if(this.props.siteId === 'ClusterInst'){
-            const {Cloudlet, ClusterFlavor, ClusterName, Developer, Operator} = this.props.selected
+            const {Cloudlet, ClusterFlavor, ClusterName, Developer, Operator, Region} = this.props.selected
             serviceNm = 'DeleteClusterInst';
             serviceBody = {
                 "token":store.userToken,
                 "params": {
-                    "region":"US",
+                    "region":Region,
                     "clusterinst":{
                         "key":{
                             "cluster_key":{"name":ClusterName},
@@ -104,15 +129,15 @@ export default class DeleteItem extends React.Component {
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
         } else if(this.props.siteId === 'appinst') {
-            const {DeveloperName, AppName, Version, Operator, Cloudlet, ClusterInst} = this.props.selected
+            const {OrganizationName, AppName, Version, Operator, Cloudlet, ClusterInst, Region} = this.props.selected
             serviceNm = 'DeleteAppInst'
             serviceBody = {
                 "token":store.userToken,
                 "params": {
-                    "region":"US",
+                    "region":Region,
                     "appinst":{
                         "key":{
-                            "app_key":{"developer_key":{"name":DeveloperName},"name":AppName,"version":Version},
+                            "app_key":{"developer_key":{"name":OrganizationName},"name":AppName,"version":Version},
                             "cloudlet_key":{"operator_key":{"name":Operator},"name":Cloudlet}
                         },
                         "cluster_inst_key":{
@@ -151,13 +176,78 @@ export default class DeleteItem extends React.Component {
                 }
             }
             service.deleteOrg(serviceNm, serviceBody, this.receiveUserSubmit)
+        } else if(this.props.siteId === 'Flavors') {
+            const {FlavorName, Region} = this.props.selected
+            serviceNm = 'DeleteFlavor'
+            serviceBody = {
+                "token":store.userToken,
+                "params": {
+                    "region":Region,
+                    "flavor":{
+                        "key":{"name":FlavorName}
+                    }
+                }
+            }
+            service.deleteCompute(serviceNm, serviceBody, this.receiveListSubmit)
+        } else if(this.props.siteId === 'ClusterFlavors') {
+            const {ClusterFlavor, Region} = this.props.selected
+            serviceNm = 'DeleteClusterFlavor'
+            serviceBody = {
+                "token":store.userToken,
+                "params": {
+                    "region":Region,
+                    "clusterflavor":{
+                        "key":{"name":ClusterFlavor}
+                    }
+                }
+            }
+            service.deleteCompute(serviceNm, serviceBody, this.receiveListSubmit)
+        } else if(this.props.siteId === 'Cloudlet') {
+            const {CloudletName, Operator, Region} = this.props.selected
+            serviceNm = 'DeleteCloudlet'
+            serviceBody = {
+                "token":store.userToken,
+                "params": {
+                    "region":Region,
+                    "cloudlet":{
+                        "key":{
+                            "operator_key":{"name":Operator},
+                            "name":CloudletName
+                        }
+                    }
+                }
+            }
+            service.deleteCompute(serviceNm, serviceBody, this.receiveListSubmit)
+        } else if(this.props.siteId === 'App') {
+            console.log("select@@@##",this.props.selected)
+            const {OrganizationName, AppName, Version, Region, ImagePath, ImageType, Ports, DefaultFlavor, DeploymentType} = this.props.selected
+            serviceNm = 'DeleteApp'
+            serviceBody = {
+                "token":store.userToken,
+                "params": {
+                    "region":Region,
+                    "app":{
+                        "key":{
+                            "developer_key":{"name":OrganizationName},
+                            "name":AppName,
+                            "version":Version
+                        }
+                        // "image_path":ImagePath,
+                        // "image_type":Number(ImageType),
+                        // "access_ports":Ports,
+                        // "default_flavor":{"name":DefaultFlavor},
+                        // "deploymentType":DeploymentType
+                    }
+                }
+            }
+            service.deleteCompute(serviceNm, serviceBody, this.receiveListSubmit)
         }
-
+        
 
 
         console.log("delete@@@",serviceNm,serviceBody)
         //service_compute_service
-        service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
+        //service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
 
         //playing spinner
         //this.props.handleSpinner(true)
@@ -200,3 +290,11 @@ export default class DeleteItem extends React.Component {
 }
 
 
+
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+    };
+};
+
+export default withRouter(connect(null, mapDispatchProps)(DeleteItem));

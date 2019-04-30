@@ -6,7 +6,6 @@ import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux';
 import RGL, { WidthProvider } from "react-grid-layout";
 import ContainerDimensions from 'react-container-dimensions';
-import { GridLoader } from 'react-spinners';
 import * as actions from '../actions';
 import SelectFromTo from '../components/selectFromTo';
 import RegistNewItem from './registNewItem';
@@ -62,7 +61,6 @@ class MapWithListView extends React.Component {
             column:null,
             isDraggable: false,
             selectedItem:null,
-            loading:false,
             openDelete:false,
             tooltipMsg:'No Message',
             tooltipVisible: false,
@@ -247,7 +245,7 @@ class MapWithListView extends React.Component {
                                         </Table.Cell>
                                     :
                                     (!( String(hidden).indexOf(value) > -1 )) ?
-                                        <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
+                                        <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
                                             <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                             {String(item[value])}
                                             </div>
@@ -257,7 +255,7 @@ class MapWithListView extends React.Component {
                             </Table.Row>
                         ))
                     : <Table.Row>
-                        <Table.Cell colSpan={Object.keys(this.state.dummyData[0]).length} textAlign='center' style={{fontSize:'28px'}}>
+                        <Table.Cell colSpan={Object.keys(this.state.dummyData[0]).length} textAlign='center' style={{fontSize:'1em'}}>
                             No Data
                         </Table.Cell>
                     </Table.Row>
@@ -267,9 +265,6 @@ class MapWithListView extends React.Component {
 
         </Table>
     )
-    handleSpinner(value) {
-        _self.setState({loading:value})
-    }
     handleMouseOverCell(value) {
         console.log('mouse over cell ', value, 'tooltip = ', this.tooltipref)
         this.setState({tooltipMsg:value})
@@ -336,14 +331,13 @@ class MapWithListView extends React.Component {
                     <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
                         <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open}
                                        selected={this.state.selected} close={this.close} siteId={this.props.siteId}
-                                       handleSpinner={this.handleSpinner} userToken={this.props.userToken}
+                                       userToken={this.props.userToken}
                                        success={this.successfully} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}
                         />
 
                         <DeleteItem open={this.state.openDelete}
                                     selected={this.state.selected} close={this.close} siteId={this.props.siteId}
-                                    handleSpinner={this.handleSpinner}
-                                    success={this.successfully}
+                                    success={this.successfully} refresh={this.props.dataRefresh}
                         ></DeleteItem>
 
                         <ReactGridLayout
@@ -354,15 +348,6 @@ class MapWithListView extends React.Component {
                         >
                             {this.generateDOM(open, dimmer, width, height)}
                         </ReactGridLayout>
-
-                        <div className="loadingBox">
-                            <GridLoader
-                                sizeUnit={"px"}
-                                size={20}
-                                color={'#70b2bc'}
-                                loading={this.state.loading}
-                            />
-                        </div>
                         {(this.state.tooltipVisible) ?
                             <ReactTooltip className='customToolTip' id='happyFace' type='dark'>
                                 <span>{this.state.tooltipMsg}</span>

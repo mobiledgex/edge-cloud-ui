@@ -994,6 +994,16 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 
 
+/* .user_search .input */
+.user_search .ui.input {
+    background-color: rgba(0,0,0,0.6) !important;
+    font-weight: normal;
+    display: inline-block;
+    min-width: 160px !important;
+    margin: 0 .357em;
+    color: rgba(255,255,255,.6) !important
+}
+
 
 /* grid table style */
 .contents_body .grid_table {

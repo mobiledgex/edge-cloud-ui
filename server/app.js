@@ -459,6 +459,8 @@ app.post('/addUserRole', apiMC.addUserRole);
 app.post('/currentUser', apiMC.currentUser);
 
 app.post('/CreateFlavor', apiMC.CreateFlavor);
+app.post('/CreateClusterFlavor', apiMC.CreateClusterFlavor);
+app.post('/CreateCloudlet', apiMC.CreateCloudlet);
 app.post('/CreateClusterInst', apiMC.CreateClusterInst);
 
 app.post('/ShowRole', apiMC.ShowRole);

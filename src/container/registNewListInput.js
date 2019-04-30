@@ -9,7 +9,7 @@ import '../css/index.css';
 const renderSelect = field => (
     <Form.Select
         name={field.input.name}
-        //onChange={(e, { field }) => field.input.onChange(field.value)}
+        onChange={(e, { value }) => field.input.onChange(value)}
         //onChange={field.input.onChange(field.value)}
         options={field.options}
         placeholder={field.placeholder}
@@ -45,7 +45,11 @@ class registNewListInput extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            typeValue:''
+            typeValue:'',
+            regionStatic:[
+                {key: 1, value: "US", text: "US"},
+                {key: 2, value: "EU", text: "EU"}
+            ]
         };
 
     }
@@ -57,7 +61,7 @@ class registNewListInput extends React.Component {
     }
 
     componentDidMount() {
-        this.handleInitialize(this.props.data);
+        //this.handleInitialize(this.props.data);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -87,24 +91,12 @@ class registNewListInput extends React.Component {
                                                 </Grid.Column>
                                                 <Grid.Column width={11}>
                                                 {
-                                                    (key === 'Operator')?
-                                                    <Field component={renderSelect} placeholder='Select Operator' name='Operator' options={option[0]} value={value[0]} />
-                                                    : (key === 'DeveloperName')?
-                                                    <Field component={renderInput} type="input" name='DeveloperName' disabled={true} />
-                                                    : (key === 'Cloudlet')?
-                                                    <Field component={renderSelect} placeholder='Select Cloudlet' name='Cloudlet' options={this.props.cloudArr} value={value[2]} />
-                                                    : (key === 'AppName')?
-                                                    <Field component={renderSelect} placeholder='Select AppName' name='AppName' options={option[3]} value={value[3]} change={change[3]}/>
-                                                    : (key === 'Version')?
-                                                    <Field component={renderSelect} placeholder='Select Version' name='Version' options={option[4]} value={value[4]} change={change[4]}/>
-                                                    : (key === 'ClusterInst')?
-                                                    <Field component={renderSelect} placeholder='Select ClusterInst' name='ClusterInst' options={option[5]} value={value[5]} change={change[5]}/>
-                                                    : (key === 'Type')?
-                                                    <Field component={renderSelect} placeholder='Select Type' name='Type' options={option[6]} value={value[6]} change={change[6]}/>
-                                                    : (key === 'Role')?
-                                                    <Field component={renderSelect} placeholder='Select Role' name='DeveloperName' options={option[7]} value={value[7]} change={change[7]}/>
-                                                    : (key === 'ClusterFlavor')?
-                                                    <Field component={renderSelect} placeholder='Select ClusterFlavor' name='ClusterFlavor' options={option[8]} value={value[8]} />
+                                                    (key === 'MasterFlavor')?
+                                                    <Field component={renderSelect} placeholder='Select MasterFlavor' name='MasterFlavor' options={option[0]} value={value[0]} />
+                                                    : (key === 'NodeFlavor')?
+                                                    <Field component={renderSelect} placeholder='Select NodeFlavor' name='NodeFlavor' options={option[0]} value={value[0]} />
+                                                    : (key === 'Region')?
+                                                    <Field component={renderSelect} placeholder='Select Region' name='Region' options={this.state.regionStatic} />
                                                     :
                                                     <Field component={renderInput} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } />
                                                 }

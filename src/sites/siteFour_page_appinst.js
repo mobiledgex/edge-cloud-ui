@@ -2,10 +2,8 @@ import React from 'react';
 import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 
-import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
-import ContainerDimensions from 'react-container-dimensions'
+
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -78,8 +76,14 @@ class SiteFourPageAppInst extends React.Component {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
+        if(nextProps.computeRefresh.compute) {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            this.getDataDeveloper(store.userToken);
+            this.props.handleComputeRefresh(false);
+        }
     }
-    receiveResult(result) {
+    receiveResult = (result) => {
+        this.props.handleLoadingSpinner(false);
         console.log("receive == ", result)
         if(result.error) {
             Alert.error(result.error, {
@@ -93,7 +97,7 @@ class SiteFourPageAppInst extends React.Component {
     }
     getDataDeveloper(token) {
         //services.getComputeService('appinst', this.receiveResult)
-        services.getMCService('ShowAppInst',{token:token, region:'US'}, _self.receiveResult)
+        services.showAppInst('ShowAppInst',{token:token, region:'US'}, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -112,15 +116,19 @@ const mapStateToProps = (state) => {
     if(state.receiveDataReduce.params && state.receiveDataReduce.params.state === 'refresh'){
         stateChange = true;
     }
-    return (stateChange)? {
-        stateChange: true
-    }:null;
+
+    return {
+        stateChange:stateChange,
+        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null
+    }
 };
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 

@@ -15,9 +15,20 @@ let generateData = (datas) => {
     let result = datas;
     let values = [];
     //20190409 transition string to json
-    let toArray = datas.data.split('\n')
-    toArray.pop();
-    let toJson = toArray.map((str)=>(JSON.parse(str)))
+    let toArray = null;
+    let toJson = null;
+    if(typeof datas.data === 'object'){
+
+    } else {
+        toArray = datas.data.split('\n')
+        toArray.pop();
+    }
+    if(toArray) {
+        toJson = toArray.map((str)=>(JSON.parse(str)))
+    } else {
+        toJson = [];
+        toJson.push(datas.data)
+    }
     console.log("tojson!!",toJson)
     if(toJson){
         toJson.map((dataResult, i) => {
@@ -51,7 +62,7 @@ let generateData = (datas) => {
 
                 values.push({
                     Region:Region,
-                    DeveloperName:DeveloperName,
+                    OrganizationName:DeveloperName,
                     AppName:AppName,
                     Version:Version,
                     Operator:Operator,

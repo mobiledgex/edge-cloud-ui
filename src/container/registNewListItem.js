@@ -40,6 +40,7 @@ class RegistNewListItem extends React.Component {
             dropdownValueOrgRole:'',
             cloudletResult:null,
             appResult:null,
+            devOptionsMF:[],
             devOptionsOrgType:[
                 {
                     key:'Developer',
@@ -70,18 +71,18 @@ class RegistNewListItem extends React.Component {
                 },
             ],
         }
+
         _self = this;
     }
 
     componentDidMount() {
-        // // app
-        // service.getComputeService('app', this.receiveApp)
-        // // developer
-        // service.getComputeService('developer', this.receiveDev)
-        // // operator
-        // service.getComputeService('operator', this.receiveOper)
-        // // cloudlet
-        // service.getComputeService('cloudlet', this.receiveCloudlet)
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+       
+        // clusterFlavor
+        
+        if(this.props.computeItem == "Cluster Flavors") {
+            service.getMCService('ShowFlavor',{token:store.userToken,region:'US'}, _self.receiveMF)
+        }
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('regist new item -- ', nextProps)
@@ -179,6 +180,13 @@ class RegistNewListItem extends React.Component {
                 { key: i, value: oper.DeveloperName, text: oper.DeveloperName }
             ))})
     }
+    //190429
+    receiveMF(result) {
+        console.log('receive MF ==>>>>>>>>>>>> ', result)
+        _self.setState({devOptionsMF: result.map((item, i) => (
+            { key: i, value: item.FlavorName, text: item.FlavorName }
+        ))})
+    }
 
     receiveCloudlet(result) {
         let groupByOper = aggregate.groupBy(result, 'Operator')
@@ -190,28 +198,15 @@ class RegistNewListItem extends React.Component {
         let groupByOper = aggregate.groupBy(result, 'DeveloperName')
         _self.setState({appResult:groupByOper})
     }
-    receiveSubmit(result) {
+    receiveSubmit = (result) => {
         console.log('registry new ... success result..', result.data)
-        if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('error!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
-            //_self.props.handleSpinner(false)
-            return;
-        }
+        this.props.handleLoadingSpinner(false);
         let paseData = result.data;
-        let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
-        console.log('response paseData  -',splitData );
+        // let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
+        console.log('response paseData  -',paseData );
 
-        if(splitData[2] && splitData[2]['result']) {
-            Alert.success(splitData[2]['result']['message'], {
+        if(paseData.message.indexOf('ok') > -1) {
+            Alert.success("Created successfully", {
                 position: 'top-right',
                 effect: 'slide',
                 onShow: function () {
@@ -222,69 +217,71 @@ class RegistNewListItem extends React.Component {
                 offset: 100
             });
             //create success !!!
-            if(splitData[2]['result']['message'] === 'Created successfully') {
-                _self.props.success()
-            }
+            // if(splitData[2]['result']['message'] === 'Created successfully') {
+            //     _self.props.success()
+            // }
+            this.props.refresh()
         } else {
-            if(splitData[0]['error']) {
-                Alert.error(splitData[0]['error']['message'], {
-                    position: 'top-right',
-                    effect: 'slide',
-                    onShow: function () {
-                        console.log('aye!')
-                    },
-                    beep: true,
-                    timeout: 5000,
-                    offset: 100
-                });
-            } else {
-                Alert.error(splitData[0]['message'], {
-                    position: 'top-right',
-                    effect: 'slide',
-                    onShow: function () {
-                        console.log('aye!')
-                    },
-                    beep: true,
-                    timeout: 5000,
-                    offset: 100
-                });
-            }
-
+            Alert.error(paseData.message, {
+                position: 'top-right',
+                effect: 'slide',
+                onShow: function () {
+                    console.log('aye!')
+                },
+                beep: true,
+                timeout: 5000,
+                offset: 100
+            });
         }
-       // _self.props.handleSpinner(false)
+       //_self.props.handleSpinner(false)
     }
 
     onSubmit = () => {
         console.log("ONSUBMIT@@")
-
-        let serviceBody = {
-            OperatorName:this.state.dropdownValueOne,
-            DeveloperName:this.state.dropdownValueTwo,
-            CloudletName:this.state.dropdownValueThree,
-            AppName:this.state.dropdownValueFour,
-            AppVer:this.state.dropdownValueFive};
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        console.log("computeItem@@@",this.props.computeItem)
+        let serviceBody = {};
 
         //playing spinner
         //this.props.handleSpinner(true)
 
         //TODO: 20190410 메뉴 별 구분 필요
-        if(this.props.computeItem === 'Flavor'){
+        if(this.props.computeItem === 'Flavors'){
             console.log("submitData@@",this.props.submitData)
-            const {FlavorName,RAM,VCPUS,DISK} = this.props.submitData.registNewListInput.values
+            const {FlavorName,RAM,VCPUS,DISK,Region} = this.props.submitData.registNewListInput.values
             serviceBody = {
-                token:this.props.userToken,
-                params: {
-                    region:"US",
-                    flavor:{
-                        key:{name:FlavorName},
-                        ram:RAM,
-                        vcpus:VCPUS,
-                        disk:DISK
+                "token":store.userToken,
+                "params": {
+                    "region":Region,
+                    "flavor":{
+                        "key":{"name":FlavorName},
+                        "ram":Number(RAM),
+                        "vcpus":Number(VCPUS),
+                        "disk":Number(DISK)
                     }
                 }
             }
-            service.getMCService('CreateFlavor',serviceBody, this.receiveSubmit)
-            console.log("ddddggg",serviceBody)
+            this.props.handleLoadingSpinner(true);
+            service.createNewFlavor('CreateFlavor',serviceBody, this.receiveSubmit)
+        } else if(this.props.computeItem === 'Cluster Flavors'){
+            const {ClusterFlavor,MasterFlavor,NumberOfMasterNode,NodeFlavor,NumberOfNode,MaximumNodes,Region} = this.props.submitData.registNewListInput.values;
+
+            serviceBody = {
+                "token":store.userToken,
+                "params": {
+                    "region":Region,
+                    "clusterflavor":{
+                        "key":{"name":ClusterFlavor},
+                        "node_flavor":{"name":NodeFlavor},
+                        "master_flavor":{"name":MasterFlavor},
+                        "num_nodes":Number(NumberOfNode),
+                        "max_nodes":Number(MaximumNodes),
+                        "num_masters":Number(NumberOfMasterNode)
+                    }
+                }
+            }
+            this.props.handleLoadingSpinner(true);
+            service.createNewClusterFlavor('CreateClusterFlavor',serviceBody, this.receiveSubmit)
         }
         //close
         this.close();
@@ -306,13 +303,13 @@ class RegistNewListItem extends React.Component {
         let {data, dimmer, selected} = this.props;
         let regKeys = (data[0])?data[0]['Edit']:null;
         
-        let optionArr = [this.state.devOptionsOne, this.state.devOptionsTwo, this.state.devOptionsThree, this.state.devOptionsFour, this.state.devOptionsSix, this.state.devOptionsFive, this.state.devOptionsOrgType, this.state.devOptionsOrgRole]
-        let valueArr = [this.state.dropdownValueOne, this.state.dropdownValueTwo, this.state.dropdownValueThree, this.state.dropdownValueFour, this.state.dropdownValueSix, this.state.dropdownValueFive, this.state.handleChangeOrgType, this.state.handleChangeOrgRole]
-        let changeArr = [this.handleChangeOne, this.handleChangeTwo, this.handleChangeThree, this.handleChangeFour, this.handleChangeSix, this.handleChangeFive, this.handleChangeOrgType, this.handleChangeOrgRole]
+        let optionArr = [this.state.devOptionsMF]
+        let valueArr = [this.state.dropdownValueMF]
+        let changeArr = [this.handleChangeMF]
         console.log('regKeys ===>>>', regKeys)
         return (
             <RegistNewListInput
-                onSubmit={() => console.log('on submit to form')}
+                handleSubmit={this.onSubmit}
                 data={data} dimmer={dimmer}
                 selected={selected}
                 regKeys={regKeys}
@@ -350,6 +347,7 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleMapLong: (data) => { dispatch(actions.mapCoordinatesLong(data))},
         handleMapLat: (data) => { dispatch(actions.mapCoordinatesLat(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 

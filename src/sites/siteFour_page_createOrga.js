@@ -151,13 +151,13 @@ class SiteFourPageCreateorga extends React.Component {
             //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         } else {
 
-            Alert.success('Success created organization', {
+            Alert.success('Success AddUser', {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
             });
             //goto next step
-            this.setState({step:3})
+            //this.setState({step:3})
         }
     }
     receiveResult(result,resource, self) {
@@ -211,7 +211,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 
