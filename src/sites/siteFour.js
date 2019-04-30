@@ -24,6 +24,7 @@ import {Motion, spring} from "react-motion";
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import './siteThree.css';
+import {GridLoader} from "react-spinners";
 
 //pages
 import SiteFourPageFlavor from './siteFour_page_flavor';
@@ -46,6 +47,8 @@ import * as computeService from '../services/service_compute_service';
 import PopProfileViewer from '../container/popProfileViewer';
 import * as aggregation from "../utils";
 import Alert from "react-s-alert";
+
+
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 const locationOptions = [
@@ -422,13 +425,25 @@ class SiteFour extends React.Component {
 
     }
 
-
+    computeRefresh = () => {
+        //window.location.reload()
+        this.props.handleLoadingSpinner(true);
+        this.props.handleComputeRefresh(true)
+    }
 
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem, controllerRegions } = this.state
         return (
             <Grid className='view_body'>
+                <div className="loadingBox" style={{zIndex:9999}}>
+                    <GridLoader
+                        sizeUnit={"px"}
+                        size={25}
+                        color={'#70b2bc'}
+                        loading={this.props.loadingSpinner}
+                    />
+                </div>
                 <Grid.Row className='gnb_header'>
                     <Grid.Column width={10} className='navbar_left'>
                         <Header>
@@ -436,7 +451,7 @@ class SiteFour extends React.Component {
                         </Header>
                     </Grid.Column>
                     <Grid.Column width={6} className='navbar_right'>
-                        <div style={{cursor:'pointer'}} onClick={() => window.location.reload()}>
+                        <div style={{cursor:'pointer'}} onClick={this.computeRefresh}>
                             <MaterialIcon icon={'refresh'} />
                         </div>
                         <div style={{cursor:'pointer'}} onClick={() => this.gotoPreview('/site1')}>
@@ -551,6 +566,7 @@ class SiteFour extends React.Component {
                         {
                             (this.state.headerTitle !== 'Organization' && this.state.headerTitle !== 'Users') ?
                             <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
+                                <label style={{padding:'0 10px'}}>Region</label>
                                 <Dropdown className='selection'
                                     options={this.state.regions}
                                     defaultValue={this.state.regions[0].value}
@@ -561,7 +577,7 @@ class SiteFour extends React.Component {
                         }
                         {
                             (this.state.headerTitle == 'Users') ?
-                            <div style={{top:15, right:25, position:'absolute',zIndex:99}}>
+                            <div className='user_search' style={{top:15, right:25, position:'absolute',zIndex:99}}>
                                 <Input icon='search' placeholder='Search Username' style={{marginRight:'20px'}}  onChange={this.searchClick} />
                                 <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} />
                             </div>
@@ -604,13 +620,15 @@ class SiteFour extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-
+    console.log("siteFour@@@stateRedux ::: ",state)
     return {
         viewBtn : state.btnMnmt?state.btnMnmt:null,
         userToken : (state.userToken) ? state.userToken: null,
         userInfo : state.userInfo?state.userInfo:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
-        selectOrg : state.selectOrg.org?state.selectOrg.org:null
+        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
+        loadingSpinner : state.loadingSpinner.loading?state.loadingSpinner.loading:null,
+
     }
 };
 
@@ -626,7 +644,9 @@ const mapDispatchProps = (dispatch) => {
         handleSearchValue: (data) => {dispatch(actions.searchValue(data))},
         handleChangeRegion: (data) => {dispatch(actions.changeRegion(data))},
         handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data))}
+        handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 

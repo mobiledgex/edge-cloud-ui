@@ -215,6 +215,48 @@ export function createNewClusterInst(resource, body, callback) {
         });
 }
 
+export function createNewFlavor(resource, body, callback) {
+    axios.post('https://'+hostname+':3030/CreateFlavor',{
+        service: resource,
+        serviceBody:body
+    })
+        .then(function (response) {
+            console.log('response flavor result-',response);
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+export function createNewClusterFlavor(resource, body, callback) {
+    axios.post('https://'+hostname+':3030/CreateClusterFlavor',{
+        service: resource,
+        serviceBody:body
+    })
+        .then(function (response) {
+            console.log('response clusterFlavor result-',response);
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+export function createNewCloudlet(resource, body, callback) {
+    axios.post('https://'+hostname+':3030/CreateCloudlet',{
+        service: resource,
+        serviceBody:body
+    })
+        .then(function (response) {
+            console.log('response cloudlet result-',response);
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
 
 export function getMCService(resource, body, callback, self) {
     axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
@@ -252,6 +294,31 @@ export function getMCService(resource, body, callback, self) {
 
 
 }
+export function showAppInst(resource, body, callback, self) {
+    axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
+        service: resource,
+        serviceBody:body
+    }))
+        .then(function (response) {
+            console.log("showInstName!!",response)
+            let parseData = null;
+            if(response.data) {
+                parseData = JSON.parse(JSON.stringify(response));
+            } else {
+                parseData = response;
+            }
+            console.log('parse data userinfo ===>>>>>>>>>> ', parseData)
+            callback(FormatComputeInst(parseData))
+        })
+        .catch(function (error) {
+            console.log('error',error);
+            callback({error:error}, resource, self);
+        });
+
+
+}
+
+
 export function getControlService(resource, body, callback, self) {
 
     axios.post('https://'+hostname+':3030/'+resource, qs.stringify({

@@ -31,7 +31,7 @@ class SiteFourPageClusterInst extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [1,2,2,2,2,3,3];
+        this.headerLayout = [1,3,2,2,2,2,2,2];
         //this.hiddenKeys = ['CloudletLocation']
     }
 
@@ -78,6 +78,11 @@ class SiteFourPageClusterInst extends React.Component {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
+        if(nextProps.computeRefresh.compute) {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            this.getDataDeveloper(store.userToken);
+            this.props.handleComputeRefresh(false);
+        }
     }
     receiveResult(result) {
         console.log("receive  == ", Object.keys(result[0]).indexOf('ClusterName'), result)
@@ -102,11 +107,12 @@ class SiteFourPageClusterInst extends React.Component {
     }
 
     groupJoin(result,cmpt){
-        
+
+        console.log('cluster inst show app list.. ', result, cmpt)
+        this.props.handleLoadingSpinner(false);
 
         if(cmpt == 'clusterInst') this.setState({clusterInstData:result}) 
         else if(cmpt == 'cloudlet') this.setState({cloudletData:result})
-        
         
         if(this.state.clusterInstData.length > 0 && this.state.cloudletData.length > 0) {
             let clusterInst = this.state.clusterInstData;
@@ -125,9 +131,9 @@ class SiteFourPageClusterInst extends React.Component {
     }
     
     getDataDeveloper(token) {
-        //services.getComputeService('clusterinst', this.receiveResult)
-        services.getMCService('ShowClusterInst',{token:token, region:'US'}, _self.receiveResultClusterInst)
-        services.getMCService('ShowCloudlet',{token:token, region:'US'}, _self.receiveResultCloudlet)
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        services.getMCService('ShowClusterInst',{token:store.userToken, region:'US'}, _self.receiveResultClusterInst)
+        services.getMCService('ShowCloudlet',{token:store.userToken, region:'US'}, _self.receiveResultCloudlet)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -135,19 +141,25 @@ class SiteFourPageClusterInst extends React.Component {
         return (
 
             //<DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} title='Cluster Instance' region='US'></MapWithListView>
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} title='Cluster Instance' region='US' dataRefresh={this.getDataDeveloper}></MapWithListView>
         );
     }
 
 };
 
-
+const mapStateToProps = (state) => {
+    return {
+        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null
+    }
+};
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInst)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInst)));

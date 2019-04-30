@@ -52,7 +52,17 @@ class registNewInput extends React.Component {
         this.state = {
             typeValue:'',
             cloudletLong:"",
-            cloudletLat:""
+            cloudletLat:"",
+            regionStatic:[
+                {key: 1, value: "US", text: "US"},
+                {key: 2, value: "EU", text: "EU"}
+            ],
+            ipAccessStatic:[
+                {key: 1, value: 1, text: "IpAccessUnknown"},
+                {key: 2, value: 2, text: "IpAccessDedicated"},
+                {key: 3, value: 3, text: "IpAccessDedicatedOrShared"},
+                {key: 4, value: 4, text: "IpAccessShared"}
+            ]
         };
 
     }
@@ -60,7 +70,7 @@ class registNewInput extends React.Component {
     handleInitialize = () => {
         if(this.props.defaultValue){
             const initData = {
-                "DeveloperName": this.props.defaultValue.Organization
+                "OrganizationName": this.props.defaultValue.Organization
             };
             this.props.initialize(initData);
         }
@@ -72,7 +82,7 @@ class registNewInput extends React.Component {
 
     componentWillReceiveProps(nextProps) {        
         console.log("nextProps@@",nextProps)
-        if(nextProps.locationLong && nextProps.locationLat){
+        if(nextProps.locationLong || nextProps.locationLat){
             this.props.dispatch(change('registNewInput', 'Longitude', nextProps.locationLong));
             this.props.dispatch(change('registNewInput', 'Latitude', nextProps.locationLat));
         }
@@ -102,12 +112,12 @@ class registNewInput extends React.Component {
                                                 {
                                                     (key === 'Operator')?
                                                     <Field component={renderSelect} placeholder='Select Operator' name='Operator' options={option[0]} value={value[0]} />
-                                                    : (key === 'DeveloperName')?
-                                                    <Field component={renderInput} type="input" name='DeveloperName' disabled={true} />
+                                                    : (key === 'OrganizationName')?
+                                                    <Field component={renderInput} type="input" name='OrganizationName' disabled={true} />
                                                     : (key === 'Cloudlet')?
                                                     <Field component={renderSelect} placeholder='Select Cloudlet' name='Cloudlet' options={this.props.cloudArr} value={value[2]} />
-                                                    : (key === 'AppName')?
-                                                    <Field component={renderSelect} placeholder='Select AppName' name='AppName' options={option[3]} value={value[3]} change={change[3]}/>
+                                                    : (key === 'Region')?
+                                                    <Field component={renderSelect} placeholder='Select Region' name='Region' options={this.state.regionStatic} />
                                                     : (key === 'Version')?
                                                     <Field component={renderSelect} placeholder='Select Version' name='Version' options={option[4]} value={value[4]} change={change[4]}/>
                                                     : (key === 'ClusterInst')?
@@ -118,6 +128,8 @@ class registNewInput extends React.Component {
                                                     <Field component={renderSelect} placeholder='Select Role' name='DeveloperName' options={option[7]} value={value[7]} change={change[7]}/>
                                                     : (key === 'ClusterFlavor')?
                                                     <Field component={renderSelect} placeholder='Select ClusterFlavor' name='ClusterFlavor' options={option[8]} value={value[8]} />
+                                                    : (key === 'IpAccess')?
+                                                    <Field component={renderSelect} placeholder='Select IpAccess' name='IpAccess' options={this.state.ipAccessStatic} />
                                                     : (key === 'CloudletLocation')?
                                                     <Grid>
                                                         <Grid.Row columns={2}>

@@ -99,9 +99,16 @@ class SiteFourOrgaStepView extends React.Component {
         }
     }
 
+    nextstep = (num) => {
+        this.setState({step:num})
+    }
+    changeOrg = () => {
+        this.props.handleChangeSite({mainPath:"/site4", subPath: "pg=0"});
+    }
+
     makeSteps = () => (
 
-        <Item className='content create-org' style={{margin:'20px auto 20px auto', maxWidth:1200}}>
+        <Item className='content create-org' style={{margin:'30px auto 0px auto', maxWidth:1200}}>
             <div className='content_title' style={{padding:'0px 0px 10px 0'}}>Create new Organization</div>
 
             <Step.Group stackable='tablet' style={{width:'100%'}}>
@@ -120,8 +127,8 @@ class SiteFourOrgaStepView extends React.Component {
 
             {
                 (this.state.step ==1) ? <SiteFourOrgaOne onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator}></SiteFourOrgaOne> :
-                    (this.state.step ==2) ? <SiteFourOrgaTwo onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName}></SiteFourOrgaTwo> :
-                        (this.state.step ==3) ? <SiteFourOrgaThree onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator}></SiteFourOrgaThree> : null
+                    (this.state.step ==2) ? <SiteFourOrgaTwo nextstep={this.nextstep} onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName}></SiteFourOrgaTwo> :
+                        (this.state.step ==3) ? <SiteFourOrgaThree changeOrg={this.changeOrg} onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator}></SiteFourOrgaThree> : null
             }
 
         </Item>
@@ -240,7 +247,8 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
+        handleChangeComputeItem: (data) => { dispatch(actions.computeItem(data))}
     };
 };
 

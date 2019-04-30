@@ -89,7 +89,7 @@ class SiteFourPageAppReg extends React.Component {
     receiveResult(result) {
         console.log("receive == ", result)
         if(result.error) {
-            Alert.error(result.error, {
+            Alert.error(result.error.message, {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000

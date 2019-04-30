@@ -16,6 +16,7 @@ import * as reducer from '../utils'
 import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
 import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";
+import Alert from "react-s-alert";
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -71,20 +72,36 @@ class RegistryViewer extends React.Component {
         };
         this.keysData = [
             {
-                'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['All', 'US', 'EU']},
+                'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
                 'DeveloperName':{label:'Organization Name', type:'RenderInput', necessary:true, tip:null, active:true},
+                'OrganizationName':{label:'Organization Name', type:'RenderInput', necessary:true, tip:null, active:true},
                 'AppName':{label:'App Name', type:'RenderInput', necessary:true, tip:null, active:true},
                 'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:null, active:true},
                 'ImagePath':{label:'Image Path', type:'RenderInput', necessary:true, tip:null, active:true},
                 'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:null, active:true, items:['Docker', 'Kubernetes', 'VM']},
                 'ImageType':{label:'Image Type', type:'RenderInput', necessary:false, tip:'If Deployment Type Chosen as kubernetes, then image type is always ImageTypeDocker'},
                 'DefaultFlavor':{label:'Default Flavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:['m4.large','x1.medium', 'x1.small', 'x1.tiny']},
-                'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:null, active:true},
+                'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:'Like this udp:12001,tcp:80,http:7777', active:true, items:null},
                 'Command':{label:'Command', type:'RenderInput', necessary:false, tip:'Please input a command that the container runs', active:true},
                 'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Specify either http url of the yaml or upload yaml file or helm chart', active:true},
             },
             {
 
+            }
+        ]
+        this.fakeData = [
+            {
+                'Region':'US',
+                'DeveloperName':'',
+                'AppName':'',
+                'Version':'',
+                'ImagePath':'',
+                'DeploymentType':'',
+                'ImageType':'',
+                'DefaultFlavor':'',
+                'Ports':'',
+                'Command':'',
+                'DeploymentMF':'',
             }
         ]
 
@@ -101,13 +118,30 @@ class RegistryViewer extends React.Component {
         //this.props.handleChangeSite(data.children.props.to)
     }
     getDataDeveloper(token) {
-        services.getMCService('ShowRole',{token:token}, this.receiveResult)
+        //TODO: - get data cloudlet list , app list
+        //services.getMCService('ShowCloudlet',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultCloudlet)
+        //services.getMCService('ShowApps',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultApp)
     }
-    receiveResult = (result) => {
+    receiveResultCloudlet = (result) => {
         //this.setState({orgData:result})
-        
-        console.log('submit result...', result)
-        
+        console.log('submit result 1...', result)
+    }
+    receiveResultApp = (result) => {
+        //this.setState({orgData:result})
+        console.log('submit result 2...', result)
+    }
+    receiveResult (result) {
+        console.log('result creat app ...', result.data.error)
+        Alert.error(result.data.error, {
+            position: 'top-right',
+            effect: 'slide',
+            onShow: function () {
+                console.log('aye!')
+            },
+            beep: true,
+            timeout: 5000,
+            offset: 100
+        });
     }
 
     onUseOrg(useData,key, evt) {
@@ -235,23 +269,37 @@ class RegistryViewer extends React.Component {
 
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) this.getDataDeveloper(store.userToken);
+        if(store.userToken) {
+            this.getDataDeveloper(store.userToken);
+
+        } else {
+            alert('Session Expired')
+        }
+        if(this.props.devData.length > 0) {
+            this.setState({dummyData:this.props.devData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
+        } else {
+            this.setState({dummyData:this.fakeData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
+        }
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('nextProps',nextProps,this.props.siteId)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-        if(nextProps.devData) {
+
+        ////////
+        if(nextProps.devData.length > 1) {
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         } else {
-            this.setState({dummyData:this.keysData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+            this.setState({dummyData:this.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         }
+        ///////
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
         if(nextProps.submitValues) {
             console.log('submit on...', nextProps.submitValues)
+            //TODO: // 20190430 add spinner...(loading)
             services.createNewApp('CreateApp', {params:nextProps.submitValues, token:store.userToken}, _self.receiveResult)
         }
     }
@@ -317,13 +365,19 @@ const mapStateToProps = (state) => {
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
         submitVal = createFormat(enableValue)
     }
+    let region = state.changeRegion
+        ? {
+            value: state.changeRegion.region
+        }
+        : {};
 
     return {
         accountInfo,
         dimmInfo,
         itemLabel: state.computeItem.item,
         userToken : (state.user.userToken) ? state.userToken: null,
-        submitValues: submitVal
+        submitValues: submitVal,
+        region: region
     }
     
     // return (dimm) ? {

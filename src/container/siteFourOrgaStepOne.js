@@ -23,8 +23,11 @@ const validate = values => {
     } else if (Number(values.age) < 18) {
         errors.age = 'Sorry, you must be at least 18 years old'
     }
-    if (!values.organizationName) {
-        errors.organizationName = 'Required'
+    if (!values.type) {
+        errors.type = 'Required'
+    }
+    if (!values.name) {
+        errors.name = 'Required'
     }
     if (!values.address) {
         errors.address = 'Required'
@@ -89,6 +92,7 @@ const items = [
 
 const renderCheckbox = field => (
     <Form.Checkbox
+        style={{height:'33px', paddingTop:'10px'}}
         checked={!!field.input.value}
         name={field.input.name}
         label={field.label}
@@ -97,12 +101,16 @@ const renderCheckbox = field => (
 );
 
 const renderRadio = field => (
-    <Form.Radio
-        checked={field.input.value === field.radioValue}
-        label={field.label}
-        name={field.input.name}
-        onChange={(e, { checked }) => field.input.onChange(field.radioValue)}
-    />
+    <div>
+        <Form.Radio
+            style={{height: '38px', paddingTop: '10px'}}
+            checked={field.input.value === field.radioValue}
+            label={field.label}
+            name={field.input.name}
+            onChange={(e, { checked }) => field.input.onChange(field.radioValue)}
+        />
+        {field.meta.touched && ((field.meta.error && <span className="text-danger">{field.meta.error}</span>) || (field.meta.warning && <span>{field.meta.warning}</span>))}
+    </div>
 );
 
 const renderSelect = field => (
@@ -136,7 +144,7 @@ const renderInput = ({ input, placeholder, type, meta: { touched, error, warning
 );
 const typeOperator = (selected, value) => (
 
-    <Grid columns={2} style={{lineHeight:'38px'}}>
+    <Grid columns={2}>
         <Grid.Column>
             <Field
                 component={renderRadio}

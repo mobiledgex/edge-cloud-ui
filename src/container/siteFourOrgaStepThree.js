@@ -147,28 +147,39 @@ const renderInput = field => (
 //         </Card>
 //     </Grid.Column>
 // )
-const SiteFourOrgaThree = props => {
-    const { handleSubmit, reset } = props;
+class SiteFourOrgaThree extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            
+        };
+       
+    }
+    changeOrg = () => {
+        this.props.changeOrg()
+    }
 
-    return (
-        <Fragment>
-            <Grid>
-                <Grid.Column width={11}>
-                    <Form>
-                        <Header>Congratulation! Start Right Now!</Header>
-                            <div className='orgButton' style={{width:'100%'}}>
-                                <Button type='submit' positive style={{width:'100%'}}>Check your Organization</Button>
-                            </div>
-                            <div className='orgButton' style={{width:'100%'}}>
-                                <Button type='submit' positive  style={{width:'100%'}}>Check User</Button>
-                            </div>
-                    </Form>
-                </Grid.Column>
-                <Grid.Column width={5}>
-                </Grid.Column>
-            </Grid>
-        </Fragment>
-    );
+    render (){
+        return (
+            <Fragment>
+                <Grid>
+                    <Grid.Column width={11}>
+                        <Form>
+                            <Header>Congratulation! Start Right Now!</Header>
+                                <div className='orgButton' style={{width:'100%'}}>
+                                    <Button onClick={this.changeOrg} type='submit' positive style={{width:'100%'}}>Check your Organization</Button>
+                                </div>
+                                {/*<div className='orgButton' style={{width:'100%'}}>*/}
+                                {/*    <Button type='submit' positive  style={{width:'100%'}}>Check User</Button>*/}
+                                {/*</div>*/}
+                        </Form>
+                    </Grid.Column>
+                    <Grid.Column width={5}>
+                    </Grid.Column>
+                </Grid>
+            </Fragment>
+        )
+    } 
 };
 
 export default reduxForm({

@@ -68,12 +68,19 @@ class SiteFourPageOrganization extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-        if(nextProps.userToken) {
-            this.getDataDeveloper(nextProps.userToken);
+        // if(nextProps.userToken) {
+        //     this.getDataDeveloper(nextProps.userToken);
+        // }
+        // console.log(nextProps.computeRefresh)
+        if(nextProps.computeRefresh.compute) {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            this.getDataDeveloper(store.userToken);
+            this.props.handleComputeRefresh(false);
         }
 
     }
-    receiveResult(result,resource, self) {
+    receiveResult = (result,resource, self) => {
+        this.props.handleLoadingSpinner(false);
         console.log("receive == ", result, resource, self)
         if(result.error) {
             Alert.error('Invalid or expired token', {
@@ -93,13 +100,14 @@ class SiteFourPageOrganization extends React.Component {
         }
     }
     getDataDeveloper(token) {
-        services.getMCService('showOrg',{token:token}, _self.receiveResult)
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        services.getMCService('showOrg',{token:store.userToken}, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader} siteId={"Organization"}></DeveloperListView>
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader} siteId={"Organization"} dataRefresh={this.getDataDeveloper}></DeveloperListView>
             // <DeveloperListView headerLayout={this.headerLayout}></DeveloperListView>
         );
     }
@@ -110,14 +118,17 @@ const mapStateToProps = (state) => {
     console.log('props in userToken..', state)
     return {
         userToken : (state.user.userToken) ? state.userToken: null,
-        userInfo: state.user.user
+        userInfo: state.user.user,
+        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null
     }
 };
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 

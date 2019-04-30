@@ -36,6 +36,7 @@ const makeOption =(options)=> (
 
 const renderCheckbox = field => (
     <Form.Checkbox
+        style={{height:'33px', paddingTop:'10px'}}
         checked={!!field.input.value}
         name={field.input.name}
         label={field.label}
@@ -45,6 +46,7 @@ const renderCheckbox = field => (
 
 const renderRadio = field => (
     <Form.Radio
+        style={{height: '38px', paddingTop: '10px'}}
         checked={field.input.value === field.radioValue}
         label={field.label}
         name={field.input.name}
@@ -178,13 +180,13 @@ class SiteFourCreateFormDefault extends React.Component {
         return (
 
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
-                <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>App Settings</Header>
+                <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>
                 <Fragment >
                     <Form onSubmit={(a,b) => this.onHandleSubmit(a,b)} className={"fieldForm"} >
                         <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
                             <Grid columns={2}>
                                 {
-                                    (regKeys && regKeys.length) ?
+                                    (regKeys && regKeys.length > 0) ?
                                         regKeys.map((key, i) => (
 
                                             (this.getLabel(key, pId))?

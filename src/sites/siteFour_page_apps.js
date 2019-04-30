@@ -33,7 +33,7 @@ class SiteFourPageApps extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
 
-        this.headerLayout = [1,2,2,2,2,2,2,3];
+        this.headerLayout = [1,2,2,1,2,2,3,3];
         this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster']
         this.userToken = null;
 
@@ -94,9 +94,16 @@ class SiteFourPageApps extends React.Component {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             this.getDataDeveloper(store.userToken, nextProps.region.value)
         }
+        
+        if(nextProps.computeRefresh.compute) {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            this.getDataDeveloper(store.userToken);
+            this.props.handleComputeRefresh(false);
+        }
 
     }
-    receiveResult(result, region) {
+    receiveResult = (result, region) => {
+        this.props.handleLoadingSpinner(false);
         console.log("receive == ", result)
         if(result.error) {
             Alert.error(result.error, {
@@ -144,7 +151,8 @@ const mapStateToProps = (state) => {
         : {};
     return {
         receiveNewReg:registNew,
-        region:region
+        region:region,
+        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null
     }
 };
 
@@ -152,7 +160,9 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 
