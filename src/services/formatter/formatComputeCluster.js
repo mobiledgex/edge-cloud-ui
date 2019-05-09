@@ -10,14 +10,22 @@ const numberDes =(a,b)=> (
     b-a
 )
 
-let generateData = (datas) => {
+let generateData = (datas,body) => {
     console.log('format data cluster- ', datas)
-    let result = datas.data;
     let values = [];
-    //20190409 transition string to json
-    let toArray = datas.data.split('\n')
-    toArray.pop();
-    let toJson = toArray.map((str)=>(JSON.parse(str)))
+    let toArray = null;
+    let toJson = [];
+    if(datas.data) {
+        if(typeof datas.data === 'object') {
+            toJson.push((datas.data)?datas.data:{});
+        } else {
+            toArray = datas.data.split('\n')
+            toArray.pop();
+            toJson = toArray.map((str)=>(JSON.parse(str)))
+        }
+    }else {
+        toJson = null;
+    }
     console.log("tojson!!",toJson)
     if(toJson){
         toJson.map((dataResult, i) => {
@@ -25,20 +33,21 @@ let generateData = (datas) => {
 
             } else {
             let Index = i;
-            let Region = dataResult.key.region || 'US';
-            let ClusterFlavor = dataResult.key.name  || '-';
-            let MasterFlavor = dataResult.master_flavor.name  || '-';
-            let NumberOfMasterNode = dataResult.num_masters  || '-';
-            let NodeFlavor = dataResult.node_flavor.name  || '-';
-            let NumberOfNode = dataResult.num_nodes || '-';
-            let MaximumNodes = dataResult.max_nodes || '-';
+            let Region = body.region || '-';
+            let ClusterFlavor = dataResult.data.key.name  || '-';
+            let MasterFlavor = dataResult.data.master_flavor.name  || '-';
+            let NumberOfMasterNode = dataResult.data.num_masters  || '-';
+            let NodeFlavor = dataResult.data.node_flavor.name  || '-';
+            let NumberOfNode = dataResult.data.num_nodes || '-';
+            let MaximumNodes = dataResult.data.max_nodes || '-';
 
             let newRegistKey = ['Region', 'ClusterFlavor', 'MasterFlavor', 'NumberOfMasterNode', 'NodeFlavor', 'NumberOfNode', 'MaximumNodes'];
             values.push({Region:Region, ClusterFlavor:ClusterFlavor, MasterFlavor:MasterFlavor, NumberOfMasterNode:NumberOfMasterNode, NodeFlavor:NodeFlavor, NumberOfNode:NumberOfNode, MaximumNodes:MaximumNodes, Edit:newRegistKey})
             }
         })
     } else {
-        console.log('there is no result')
+        let newRegistKey = ['Region', 'ClusterFlavor', 'MasterFlavor', 'NumberOfMasterNode', 'NodeFlavor', 'NumberOfNode', 'MaximumNodes'];
+        values.push({Region:'', ClusterFlavor:'', MasterFlavor:'', NumberOfMasterNode:'', NodeFlavor:'', NumberOfNode:'', MaximumNodes:'', Edit:newRegistKey})
     }
 
     //ascending or descending
@@ -59,8 +68,8 @@ const retunDate = (str) => {
     var date = new Date(year, month-1, day, hour, minute);
     return moment(date).format('hh:mm');
 }
-const FormatComputeCluster = (props) => (
-    generateData(props)
+const FormatComputeCluster = (props,body) => (
+    generateData(props,body)
 )
 
 export default FormatComputeCluster;

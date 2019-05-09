@@ -434,8 +434,8 @@ class ClustersMap extends Component {
                                                     >
 
                                                         <g version="1.1" id="Layer_1" x="0px" y="0px"
-                                                            viewBox="0 0 50 50" style={{enableBackground:"new 0 0 50 50;"}}
-                                                            class={(city.population > 35000000)?'levelFive':'levelOther'}
+                                                            viewBox="0 0 50 50" style={{enableBackground:"new 0 0 50 50"}}
+                                                            className={(city.population > 35000000)?'levelFive':'levelOther'}
                                                             cx={0}
                                                             cy={0}
                                                             r={cityScale(city.population)}
@@ -499,8 +499,8 @@ class ClustersMap extends Component {
                                                     >
 
                                                         <g version="1.1" id="Layer_1" x="0px" y="0px"
-                                                           viewBox="0 0 50 50" style={{enableBackground:"new 0 0 50 50;"}}
-                                                           class={(city.population > 35000000)?'levelFive':'levelOther'}
+                                                           viewBox="0 0 50 50" style={{enableBackground:"new 0 0 50 50"}}
+                                                           className={(city.population > 35000000)?'levelFive':'levelOther'}
                                                            cx={0}
                                                            cy={0}
                                                            r={cityScale(city.population)}
@@ -561,8 +561,8 @@ class ClustersMap extends Component {
                                                     >
 
                                                         <g version="1.1" id="Layer_1" x="0px" y="0px"
-                                                           viewBox="0 0 50 50" style={{enableBackground:"new 0 0 50 50;"}}
-                                                           class={(city.population > 35000000)?'levelFive':'levelOther'}
+                                                           viewBox="0 0 50 50" style={{enableBackground:"new 0 0 50 50"}}
+                                                           className={(city.population > 35000000)?'levelFive':'levelOther'}
                                                            cx={0}
                                                            cy={0}
                                                            r={cityScale(city.population)}
@@ -606,7 +606,7 @@ class ClustersMap extends Component {
                                                                     <feComposite in2="firstfilter" operator="over"></feComposite>
                                                                 </filter>
                                                             </defs>
-                                                            <path filter="url(#innershadow)" class="st2" d="M 20.832031 8.332031 L 8.332031 8.332031 C 6.042969 8.332031 4.1875 10.207031 4.1875 12.5 L 4.167969 37.5 C 4.167969 39.792969 6.042969 41.667969 8.332031 41.667969 L 41.667969 41.667969 C 43.957031 41.667969 45.832031 39.792969 45.832031 37.5 L 45.832031 16.667969 C 45.832031 14.375 43.957031 12.5 41.667969 12.5 L 25 12.5 Z M 20.832031 8.332031 "/>
+                                                            <path filter="url(#innershadow)" className="st2" d="M 20.832031 8.332031 L 8.332031 8.332031 C 6.042969 8.332031 4.1875 10.207031 4.1875 12.5 L 4.167969 37.5 C 4.167969 39.792969 6.042969 41.667969 8.332031 41.667969 L 41.667969 41.667969 C 43.957031 41.667969 45.832031 39.792969 45.832031 37.5 L 45.832031 16.667969 C 45.832031 14.375 43.957031 12.5 41.667969 12.5 L 25 12.5 Z M 20.832031 8.332031 "/>
                                                             {/*<path filter="url(#innershadow)" class="st2" d="M50.19,25.24c0,13.81-25,46.51-25,46.51s-25-32.7-25-46.51s11.19-25,25-25S50.19,11.43,50.19,25.24z"/>*/}
                                                         </g>
                                                         <text textAnchor="middle" y={8} className="marker_value"
@@ -623,7 +623,7 @@ class ClustersMap extends Component {
                                                         onClick={this.handleViewZone}
                                                     >
                                                         <circle
-                                                            class={"detailMarker_"+city.name}
+                                                            className={"detailMarker_"+city.name}
                                                             cx={0}
                                                             cy={0}
                                                             r={markerSize[0]}

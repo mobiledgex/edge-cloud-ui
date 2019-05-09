@@ -164,3 +164,10 @@ export function loadingSpinner (loading) {
         loading
     }
 }
+export function showFlavor (flavor) {
+
+    return {
+        type: types.SHOW_FLAVOR,
+        flavor
+    }
+}

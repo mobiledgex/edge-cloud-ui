@@ -1,13 +1,13 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-    region: 'All'
+    flavor: null
 };
-export default function changeRegion( state = initialState, action) {
+export default function showFlavor( state = initialState, action) {
     switch( action.type ) {
-        case types.CHANGE_REGION :
+        case types.SHOW_FLAVOR :
             return Object.assign({}, state, {
-                region:action.region
+                flavor:action.flavor
             })
             break;
         default:

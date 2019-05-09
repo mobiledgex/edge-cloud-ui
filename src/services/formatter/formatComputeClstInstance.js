@@ -51,17 +51,17 @@ let generateData = (datas) => {
 
             } else {
                 let Index = i;
-                let Region = dataResult.key.region || 'US';
-                let ClusterName = dataResult.key.cluster_key.name  || '-';
-                let DeveloperName = dataResult.key.developer || '-';
-                let Operator = dataResult.key.cloudlet_key.operator_key.name  || '-';
-                let Cloudlet = dataResult.key.cloudlet_key.name  || '-';
-                let ClusterFlavor = dataResult.flavor.name || '-';
-                // let NodeFlavor = dataResult.node_flavor || '';
-                // let MasterFlavor = dataResult.master_flavor || '';
-                // let State = dataResult.state || '';
-                let IpAccess = dataResult.ip_access || '-';
-                // let Liveness = dataResult.liveness || '-';
+                let Region = dataResult.data.key.region || 'US';
+                let ClusterName = dataResult.data.key.cluster_key.name  || '-';
+                let DeveloperName = dataResult.data.key.developer || '-';
+                let Operator = dataResult.data.key.cloudlet_key.operator_key.name  || '-';
+                let Cloudlet = dataResult.data.key.cloudlet_key.name  || '-';
+                let ClusterFlavor = dataResult.data.flavor.name || '-';
+                // let NodeFlavor = dataResult.data.node_flavor || '';
+                // let MasterFlavor = dataResult.data.master_flavor || '';
+                // let State = dataResult.data.state || '';
+                let IpAccess = dataResult.data.ip_access || '-';
+                // let Liveness = dataResult.data.liveness || '-';
                 let CloudletLocation = '-';
 
                 let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'ClusterFlavor', 'IpAccess', 'CloudletLocation'];

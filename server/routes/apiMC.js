@@ -6,7 +6,7 @@ import axios from "axios-https-proxy-fix";
 import qs from "qs";
 
 const API_KEY = '__apiMC_key__'
-const mcUrl = 'https://mc.mobiledgex.net:9900';
+let mcUrl = 'https://mc.mobiledgex.net:9900';
 // create user
 exports.getToken = (req, res) => {
   let serviceName = '';
@@ -844,6 +844,7 @@ exports.DeleteOrg = (req, res) => {
             res.json({error:String(error)})
         });
 }
+
 /**
  * code by kunhee(190419)
  * http --auth-type=jwt --auth=$ORGMANTOKEN POST 127.0.0.1:9900/api/v1/auth/role/assignment/show

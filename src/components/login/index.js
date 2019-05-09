@@ -163,6 +163,9 @@ class Login extends Component {
         console.log('success create......', result.data, JSON.stringify(result.data), typeof result.data)
         let message = (result.data.message)? result.data.message : null;
         console.log('msg-',message)
+        if(message.indexOf('duplicate') > -1){
+            message = 'Already exist ID!'
+        }
         //TODO 20190416 - redux
         self.setState({successMsg:message ? message:self.state.successMsg, errorCreate: true, signup:true});
     }

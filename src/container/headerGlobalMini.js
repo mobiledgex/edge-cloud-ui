@@ -12,6 +12,7 @@ import ClockComp from '../components/clock';
 import './styles.css';
 import * as Service from "../services";
 import {Modal} from "semantic-ui-react/dist/commonjs/modules/Modal";
+import PopSettingViewer from "../sites/siteFour";
 
 let _self = null;
 class headerGlobalMini extends React.Component {
@@ -22,7 +23,8 @@ class headerGlobalMini extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.state = {
             email: store ? store.email : 'Administrator',
-            openProfile:false
+            openProfile:false,
+            openSettings:false
         }
     }
 
@@ -55,6 +57,12 @@ class headerGlobalMini extends React.Component {
     profileView() {
         this.setState({openProfile:true})
     }
+    settingsView() {
+        this.setState({openSettings:true})
+    }
+    closeSettings = () => {
+        this.setState({openSettings:false})
+    }
     createUser() {
         this.setState({})
     }
@@ -63,7 +71,7 @@ class headerGlobalMini extends React.Component {
         <Button.Group vertical>
             <Button onClick={() => this.profileView()} >Your profile</Button>
             {/*<Button style={{height:10, padding:0, margin:0}}><Divider inverted style={{padding:2, margin:0}}></Divider></Button>*/}
-            <Button style={{color:'#333333'}}>Help</Button>
+            <Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>
             <Button style={{}} onClick={() => this.createUser()}><div>Create User</div></Button>
             <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{this.state.userName}</div><div>Logout</div></Button>
         </Button.Group>
@@ -93,6 +101,7 @@ class headerGlobalMini extends React.Component {
                         className='gnb_logout'
                     />
                 </div>
+                <PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')}></PopSettingViewer>
             </div>
         )
     }

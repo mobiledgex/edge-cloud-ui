@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {Button, Form, Item, Message, Divider, Modal, List, Grid, Card, Dropdown, Input} from "semantic-ui-react";
-import { Field, reduxForm, initialize, change } from "redux-form";
+import { Field, reduxForm, initialize, change, reset } from "redux-form";
 import MaterialIcon from "../sites/siteFour_page_createOrga";
 import './styles.css';
 import EditMap from '../libs/simpleMaps/with-react-motion/editMap';
@@ -58,10 +58,10 @@ class registNewInput extends React.Component {
                 {key: 2, value: "EU", text: "EU"}
             ],
             ipAccessStatic:[
-                {key: 1, value: 1, text: "IpAccessUnknown"},
-                {key: 2, value: 2, text: "IpAccessDedicated"},
-                {key: 3, value: 3, text: "IpAccessDedicatedOrShared"},
-                {key: 4, value: 4, text: "IpAccessShared"}
+                {key: 1, value: "IpAccessUnknown", text: "IpAccessUnknown"},
+                {key: 2, value: "IpAccessDedicated", text: "IpAccessDedicated"},
+                {key: 3, value: "IpAccessDedicatedOrShared", text: "IpAccessDedicatedOrShared"},
+                {key: 4, value: "IpAccessShared", text: "IpAccessShared"}
             ]
         };
 
@@ -74,6 +74,11 @@ class registNewInput extends React.Component {
             };
             this.props.initialize(initData);
         }
+    }
+    
+    handleRegionChange = (e) => {
+        this.props.getOptionData(e)
+        this.props.dispatch(reset('registNewInput'));
     }
 
     componentDidMount() {
@@ -104,7 +109,7 @@ class registNewInput extends React.Component {
                                     {
                                         (data.length > 0)?
                                         regKeys.map((key, i)=>(
-                                            <Grid.Row columns={2}>
+                                            <Grid.Row key={i} columns={2}>
                                                 <Grid.Column width={5} className='detail_item'>
                                                     <div>{key}</div>
                                                 </Grid.Column>
@@ -117,7 +122,7 @@ class registNewInput extends React.Component {
                                                     : (key === 'Cloudlet')?
                                                     <Field component={renderSelect} placeholder='Select Cloudlet' name='Cloudlet' options={this.props.cloudArr} value={value[2]} />
                                                     : (key === 'Region')?
-                                                    <Field component={renderSelect} placeholder='Select Region' name='Region' options={this.state.regionStatic} />
+                                                    <Field component={renderSelect} placeholder='Select Region' name='Region' options={this.state.regionStatic} onChange={this.handleRegionChange} />
                                                     : (key === 'Version')?
                                                     <Field component={renderSelect} placeholder='Select Version' name='Version' options={option[4]} value={value[4]} change={change[4]}/>
                                                     : (key === 'ClusterInst')?

@@ -85,7 +85,7 @@ class registNewListInput extends React.Component {
                                     {
                                         (data.length > 0)?
                                         regKeys.map((key, i)=>(
-                                            <Grid.Row columns={2}>
+                                            <Grid.Row key={i} columns={2}>
                                                 <Grid.Column width={5} className='detail_item'>
                                                     <div>{key}</div>
                                                 </Grid.Column>

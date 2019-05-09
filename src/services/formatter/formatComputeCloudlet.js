@@ -1,4 +1,3 @@
-
 import * as moment from 'moment';
 let trimData = (datas) => {
     let newData = datas.splice(0,1);
@@ -11,7 +10,7 @@ const numberDes =(a,b)=> (
     b-a
 )
 
-let generateData = (datas) => {
+let generateData = (datas,body) => {
     console.log('format data cloudlet@@ - ', datas)
     let values = [];
     let toArray = null;
@@ -27,19 +26,19 @@ let generateData = (datas) => {
     }else {
         toJson = null;
     }
-    console.log("cloudlet tojson!!",toJson)
+    console.log("cloudlet tojson!!",toJson,body)
     if(toJson){
         toJson.map((dataResult, i) => {
             if(dataResult.message) {
                 
             } else {
                 let Index = i;
-                let Region = dataResult.key.region || 'US';
-                let CloudletName = dataResult.key.name || '-';
-                let Operator = dataResult.key.operator_key.name || '-';
-                let CloudletLocation = dataResult.location || '-';
-                let Ip_support = dataResult.ip_support || '-';
-                let Num_dynamic_ips = dataResult.num_dynamic_ips || '-';
+                let Region = body.region || '-';
+                let CloudletName = dataResult.data.key.name || '-';
+                let Operator = dataResult.data.key.operator_key.name || '-';
+                let CloudletLocation = dataResult.data.location || '-';
+                let Ip_support = dataResult.data.ip_support || '-';
+                let Num_dynamic_ips = dataResult.data.num_dynamic_ips || '-';
                 let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
 
                 values.push({Region:Region,  CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Ip_support:Ip_support, Num_dynamic_ips:Num_dynamic_ips, Edit:newRegistKey})
@@ -72,8 +71,8 @@ const retunDate = (str) => {
     var date = new Date(year, month-1, day, hour, minute);
     return moment(date).format('hh:mm');
 }
-const FormatComputeClouldlet = (props) => (
-    generateData(props)
+const FormatComputeClouldlet = (props,body) => (
+    generateData(props,body)
 )
 
 export default FormatComputeClouldlet;

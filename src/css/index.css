@@ -723,7 +723,6 @@ body, button, input, textarea, optgroup, select, textarea,
 
 .ui.secondary.menu.view_left_menu.org_menu .row{
     border: none;
-    padding-top: 0.2em;
     padding-bottom: 1em;
     background: none;
     color: rgba(255,255,255,.7);
@@ -1219,6 +1218,15 @@ rect.zoom {
     padding-bottom: 3px;
     font-size: 16px;
 }
+.markBox .mark.type {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.markBox .mark.markA {
+    border-radius: 5px;
+}
 
 .markBox .mark.markD {
     border-radius: 5px;
@@ -1228,6 +1236,9 @@ rect.zoom {
     border-radius: 50%;
 }
 
+.markBox .mark.markA.markS {
+    background-color: rgba(136,221,0,.9);
+}
 .markBox .mark.markD.markM {
     background-color: rgba(255, 247, 2, 0.7);
 }

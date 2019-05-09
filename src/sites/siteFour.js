@@ -37,14 +37,14 @@ import SiteFourPageCloudlet from './siteFour_page_cloudlet';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
 import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
-
 import SiteFourPageCreateorga from './siteFour_page_createOrga';
+import SiteFourPageClusterFlavorReg from './siteFour_page_clusterFlavorReg';
 
 import { LOCAL_STRAGE_KEY } from '../components/utils/Settings';
 import * as Service from '../services/service_login_api';
-
 import * as computeService from '../services/service_compute_service';
 import PopProfileViewer from '../container/popProfileViewer';
+import PopSettingViewer from '../container/popSettingViewer';
 import * as aggregation from "../utils";
 import Alert from "react-s-alert";
 
@@ -92,7 +92,7 @@ const options = [
         text: 'EU',
         value: 'EU',
         content: 'EU',
-    },
+    }
 ]
 let defaultMotion = {left: window.innerWidth/2,top: window.innerHeight/2, position: 'absolute', opacity:1}
 let _self = null;
@@ -128,7 +128,8 @@ class SiteFour extends React.Component {
             nextOpacity:1,
             setMotion:defaultMotion,
             OrganizationName:'-',
-            adminShow:false
+            adminShow:false,
+            openSettings:false
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
@@ -211,17 +212,19 @@ class SiteFour extends React.Component {
         //브라우져 입력창에 주소 기록
         let mainPath = site;
         let subPath = 'pg=0';
+        _self.props.handleChangeViewBtn(false)
+        
+        //_self.props.handleChangeClickCity([]);
+        _self.props.handleSelectOrg('-')
+        _self.props.handleUserRole('')
+
         _self.props.history.push({
             pathname: mainPath,
             search: subPath,
             state: { some: 'state' }
         });
-        _self.props.handleChangeViewBtn(false)
         _self.props.history.location.search = subPath;
         _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
-        _self.props.handleChangeClickCity([]);
-        _self.props.handleSelectOrg('-')
-        _self.props.handleUserRole('')
     }
     gotoUrl(site, subPath) {
         _self.props.history.push({
@@ -263,6 +266,12 @@ class SiteFour extends React.Component {
         } else if(this.state.activeItem === 'App Instances') {
             this.setState({page:'pg=createAppInst'})
             this.gotoUrl('/site4', 'pg=createAppInst')
+        } else if(this.state.activeItem === '') {
+            this.setState({page:'pg=createAppInst'})
+            this.gotoUrl('/site4', 'pg=createAppInst')
+        } else if(this.state.activeItem === 'Cluster Flavors') {
+            this.setState({page:'pg=createClusterFlavor'})
+            this.gotoUrl('/site4', 'pg=createClusterFlavor')
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
@@ -278,12 +287,17 @@ class SiteFour extends React.Component {
     }
     receiveAdminInfo = (result) => {
         console.log("adminInfo@@@",result.data);
-        result.data.map((item,i) => {
-            if(item.role.indexOf('Admin') > -1){
-                console.log("admin@@@@")
-                this.setState({adminShow:true});
-            }
-        })
+        if(result.error) {
+
+        } else {
+            result.data.map((item,i) => {
+                if(item.role.indexOf('Admin') > -1){
+                    console.log("admin@@@@")
+                    this.setState({adminShow:true});
+                }
+            })
+        }
+
     }
     controllerOptions(option){
         let arr = []
@@ -304,7 +318,7 @@ class SiteFour extends React.Component {
         <Button.Group vertical>
             <Button onClick={() => this.profileView()} >Your profile</Button>
             {/*<Button style={{height:10, padding:0, margin:0}}><Divider inverted style={{padding:2, margin:0}}></Divider></Button>*/}
-            <Button style={{color:'#333333'}}>Help</Button>
+            <Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>
             <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{this.state.userName}</div><div>Logout</div></Button>
         </Button.Group>
 
@@ -355,9 +369,12 @@ class SiteFour extends React.Component {
             this.gotoUrl('/site4', 'pg=0')
 
         this.getAdminInfo(store.userToken);
+
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
-            _self.makeGhost(elem, _self)
+            if(elem){ 
+                _self.makeGhost(elem, _self)
+            }
         }, 4000)
     }
     componentWillReceiveProps(nextProps) {
@@ -372,6 +389,13 @@ class SiteFour extends React.Component {
             this.resetMotion()
             setTimeout(() => _self.setState({OrganizationName:nextProps.selectOrg.Organization}), 1000)
         }
+        /**
+         * setting url of data Rest
+         **/
+        if(nextProps.userSetting) {
+            Service.setDomain(nextProps.userSetting)
+            computeService.setDomain(nextProps.userSetting)
+        }
     }
 
 
@@ -383,10 +407,17 @@ class SiteFour extends React.Component {
     profileView() {
         this.setState({openProfile:true})
     }
+    settingsView() {
+        this.setState({openSettings:true})
+    }
+    closeSettings = () => {
+        this.setState({openSettings:false})
+    }
 
     //compute page menu view
     menuItemView = (item, i, activeItem) => (
         <Menu.Item
+            key={i}
             name={item.label}
             active={activeItem === item.label}
             onClick={() => this.handleItemClick(i, item.label, item.pg, this.props.userRole)}
@@ -484,6 +515,7 @@ class SiteFour extends React.Component {
                             <span>Support</span>
                         </div>
 
+                        <PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')}></PopSettingViewer>
                         <PopProfileViewer data={this.props.userInfo.info} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>
                     </Grid.Column>
                 </Grid.Row>
@@ -502,30 +534,38 @@ class SiteFour extends React.Component {
                             }
                             <Grid.Row>
                                 <Segment>
-                                    {this.state.OrganizationName}
-                                    <div className="markBox" style={{marginLeft:'1em'}}>
-                                        {
-                                            (this.props.userRole == 'DeveloperManager')?
-                                                <div className="mark markD markM">M</div>
-                                                :
-                                                (this.props.userRole == 'DeveloperContributor')?
-                                                    <div className="mark markD markC">C</div>
-                                                    :
-                                                    (this.props.userRole == 'DeveloperViewer')?
-                                                        <div className="mark markD markV">V</div>
-                                                        :
-                                                        (this.props.userRole == 'OperatorManager')?
-                                                            <div className="mark markO markM">M</div>
+                                    <Grid>
+                                        <Grid.Row columns={2}>
+                                            <Grid.Column width={11} style={{lineHeight:'24px'}}>
+                                                {this.state.OrganizationName}
+                                            </Grid.Column>
+                                            <Grid.Column width={5}>
+                                                <div className="markBox">
+                                                    {
+                                                        (this.props.userRole == 'DeveloperManager')?
+                                                            <div className="mark markD markM">M</div>
                                                             :
-                                                            (this.props.userRole == 'OperatorContributor')?
-                                                                <div className="mark markO markC">C</div>
+                                                            (this.props.userRole == 'DeveloperContributor')?
+                                                                <div className="mark markD markC">C</div>
                                                                 :
-                                                                (this.props.userRole == 'OperatorViewer')?
-                                                                    <div className="mark markO markV">V</div>
+                                                                (this.props.userRole == 'DeveloperViewer')?
+                                                                    <div className="mark markD markV">V</div>
                                                                     :
-                                                                    <div></div>
-                                        }
-                                    </div>
+                                                                    (this.props.userRole == 'OperatorManager')?
+                                                                        <div className="mark markO markM">M</div>
+                                                                        :
+                                                                        (this.props.userRole == 'OperatorContributor')?
+                                                                            <div className="mark markO markC">C</div>
+                                                                            :
+                                                                            (this.props.userRole == 'OperatorViewer')?
+                                                                                <div className="mark markO markV">V</div>
+                                                                                :
+                                                                                <div></div>
+                                                    }
+                                                </div>
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                    </Grid>
                                 </Segment>
                             </Grid.Row>
                         </Menu>
@@ -600,7 +640,8 @@ class SiteFour extends React.Component {
                                                 (this.state.page === 'pg=7')? <SiteFourPageAppInst></SiteFourPageAppInst> :
                                                 (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                 (this.state.page === 'pg=createApp')? <SiteFourPageAppReg></SiteFourPageAppReg> :
-                                                (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg></SiteFourPageAppInstReg> : <div> </div>
+                                                (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg></SiteFourPageAppInstReg> :
+                                                (this.state.page === 'pg=createClusterFlavor')? <SiteFourPageClusterFlavorReg></SiteFourPageClusterFlavorReg> : <div> </div>
                                             }
                                         </div>
                                     }
@@ -620,7 +661,7 @@ class SiteFour extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    console.log("siteFour@@@stateRedux ::: ",state)
+    console.log("siteFour@@@stateRedux ::: ",state.form.registUserSetting)
     return {
         viewBtn : state.btnMnmt?state.btnMnmt:null,
         userToken : (state.userToken) ? state.userToken: null,
@@ -628,7 +669,7 @@ const mapStateToProps = (state) => {
         userRole : state.showUserRole?state.showUserRole.role:null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         loadingSpinner : state.loadingSpinner.loading?state.loadingSpinner.loading:null,
-
+        userSetting : state.form.registUserSetting ? state.form.registUserSetting.values : null
     }
 };
 

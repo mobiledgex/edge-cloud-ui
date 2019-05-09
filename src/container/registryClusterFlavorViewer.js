@@ -11,9 +11,9 @@ import './styles.css';
 import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
-import MaterialIcon from "material-icons-react";
-import * as services from '../services/service_compute_service';
-import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";
+
+import * as service from '../services/service_compute_service';
+import SiteFourCreateFlavorForm from "./siteFourCreateFlavorForm";
 import Alert from "react-s-alert";
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -43,11 +43,11 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Instance deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
-    // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
-    // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
+    { menuItem: 'k8s deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFlavorForm data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
+    { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
-class RegistryInstViewer extends React.Component {
+class RegistryClusterFlavorViewer extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -73,15 +73,12 @@ class RegistryInstViewer extends React.Component {
             keysData:[
                 {
                     'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
-                    'DeveloperName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:null, active:true},
-                    'AppName':{label:'App Name', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
-                    'Version':{label:'App Version', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
-                    'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
-                    'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
-                    'AutoClusterInst':{label:'Auto-ClusterInt', type:'RenderCheckbox', necessary:false, tip:'When checked, this will inherit settings from application settings'},
-                    'ClusterInst':{label:'ClusterInst', type:'RenderSelect', necessary:true,
-                        tip:' When selecting clusterinst, default flavor and ipaccess specified in app setting gets overridden',
-                        active:true, items:['mexdemo-app-cluster','biccluster', 'MEX-cluset3', 'MEX-cluset4']},
+                    'ClusterFlavor':{label:'Cluster Flaver', type:'RenderInput', necessary:true, tip:null, active:true},
+                    'MasterFlavor':{label:'MasterFlavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
+                    'NumberOfMasterNode':{label:'NumberOfMasterNode', type:'RenderInput', necessary:true, tip:null, active:true, items:[null]},
+                    'NodeFlavor':{label:'NodeFlavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
+                    'NumberOfNode':{label:'NumberOfNode', type:'RenderInput', necessary:true, tip:null, active:true, items:[null]},
+                    'MaximumNodes':{label:'MaximumNodes', type:'RenderInput', necessary:false, tip:'When checked, this will inherit settings from application settings'}
                 },
                 {
 
@@ -90,13 +87,12 @@ class RegistryInstViewer extends React.Component {
             fakeData:[
                 {
                     'Region':'US',
-                    'DeveloperName':'',
-                    'AppName':'',
-                    'Version':'',
-                    'Operator':'',
-                    'Cloudlet':'',
-                    'AutoClusterInst':'',
-                    'ClusterInst':'',
+                    'ClusterFlavor':'',
+                    'MasterFlavor':'',
+                    'NumberOfMasterNode':'',
+                    'NodeFlavor':'',
+                    'NumberOfNode':'',
+                    'MaximumNodes':''
                 }
             ]
 
@@ -115,65 +111,8 @@ class RegistryInstViewer extends React.Component {
         this.setState({ dimmer:dim, openAdd: true, selected:data })
         //this.props.handleChangeSite(data.children.props.to)
     }
-    getDataDeveloper(token) {
-        //get data cloudlet list , app list
-        services.getMCService('ShowCloudlet',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultCloudlet)
-        services.getMCService('ShowApps',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultApp)
-        services.getMCService('ShowClusterInst',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultClusterInst)
-    }
-    receiveResultCloudlet = (result) => {
-        if(result.error){
 
-        } else {
-            let operatorGroup = reducer.groupBy(result, 'Operator')
-            console.log('submit receiveResultCloudlet 1...', operatorGroup)
-            let keys = Object.keys(operatorGroup);
-            let assObj = Object.assign([], this.state.keysData);
-            assObj[0].Operator.items = keys;
-            this.setState({keysData:assObj, operators:operatorGroup})
-        }
-        // set list of operators
-        if(this.props.devData.length > 0) {
-            this.setState({dummyData:this.props.devData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
-        } else {
-            this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
-        }
 
-    }
-    receiveResultApp = (result) => {
-        if(result.error) {
-            Alert.error(String(result.error), {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-        } else {
-
-            let appGroup = reducer.groupBy(result, 'AppName')
-            console.log('submit receiveResultApp 2...', appGroup)
-            let keys = Object.keys(appGroup);
-            let assObj = Object.assign([], this.state.keysData);
-            assObj[0].AppName.items = keys;
-            this.setState({keysData:assObj, apps:appGroup})
-        }
-    }
-    receiveResultClusterInst = (result) => {
-        if(result.error) {
-            Alert.error(String(result.error), {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-        } else {
-
-            let clinstGroup = reducer.groupBy(result, 'ClusterName')
-            console.log('submit clinstGroup 2...', clinstGroup)
-            let keys = Object.keys(clinstGroup);
-            let assObj = Object.assign([], this.state.keysData);
-            assObj[0].ClusterInst.items = keys;
-            this.setState({keysData:assObj, clustinst:clinstGroup})
-        }
-    }
 
     onUseOrg(useData,key, evt) {
         console.log(useData,this.state.orgData.data,key)
@@ -242,17 +181,18 @@ class RegistryInstViewer extends React.Component {
         console.log('changed layout = ', JSON.stringify(layout))
     }
 
-    componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) this.getDataDeveloper(store.userToken);
-        console.log('nextProps inst...nextProps.devData=',this.props.devData);
-        /************
-         * set Organization Name
-         * **********/
-        let assObj = Object.assign([], this.state.fakeData);
-        assObj[0].DeveloperName = (this.props.selectOrg.Organization);
-        this.setState({fakeData:assObj})
+    setFildData() {
+        //
+        if(_self.props.devData.length > 0) {
+            _self.setState({dummyData:_self.props.devData, resultData:(!_self.state.resultData)?_self.props.devData:_self.state.resultData})
+        } else {
+            _self.setState({dummyData:_self.state.fakeData, resultData:(!_self.state.resultData)?_self.props.devData:_self.state.resultData})
+        }
+    }
 
+    componentDidMount() {
+
+        this.setFildData();
     }
     componentWillReceiveProps(nextProps, nextContext) {
 
@@ -267,30 +207,40 @@ class RegistryInstViewer extends React.Component {
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
+        let serviceBody = {};
+
         if(nextProps.submitValues) {
             console.log('submit on...', nextProps.submitValues)
-            services.createNewAppInst('CreateAppInst', {params:nextProps.submitValues, token:store.userToken}, _self.receiveResult)
+            console.log("submitData@@",nextProps.submitData)
+            const {FlavorName,RAM,VCPUS,DISK,Region} = this.propsnextProps.submitData.registNewListInput.values
+            serviceBody = {
+                "token":store.userToken,
+                "params": {
+                    "region":Region,
+                    "flavor":{
+                        "key":{"name":FlavorName},
+                        "ram":Number(RAM),
+                        "vcpus":Number(VCPUS),
+                        "disk":Number(DISK)
+                    }
+                }
+            }
+            this.props.handleLoadingSpinner(true);
+            service.createNewFlavor('CreateFlavor',serviceBody, this.receiveSubmit)
         }
 
         /************
-         * set list of cloudlet
+         * set list of flavors
          * **********/
-        if(nextProps.selectedOperator) {
+        if(nextProps.flavors) {
+            let flavorGroup = reducer.groupBy(nextProps.flavors, 'FlavorName');
+            let flavorKeys = Object.keys(flavorGroup);
             let assObj = Object.assign([], this.state.keysData);
-            assObj[0].Cloudlet.items = this.state.operators[nextProps.selectedOperator].map((cld) => (cld.CloudletName));
+            assObj[0].MasterFlavor.items = flavorKeys;
+            assObj[0].NodeFlavor.items = flavorKeys;
             this.setState({keysData:assObj})
 
         }
-        /************
-         * set list of version
-         * **********/
-        if(nextProps.selectedApp) {
-            let assObj = Object.assign([], this.state.keysData);
-            assObj[0].Version.items = this.state.apps[nextProps.selectedApp].map((cld) => (cld.Version));
-            this.setState({keysData:assObj})
-
-        }
-
 
     }
 
@@ -329,20 +279,7 @@ class RegistryInstViewer extends React.Component {
     };
 }
 /*
-{
-    "region":"US",
-    "appinst":
-    {
-        "key":{
-            "app_key":{"developer_key":{"name":"bicinkiOrg"},"name":"myapp","version":"1.0.0"},
-            "cloudlet_key":{"operator_key":{"name":"TDG"},"name":"bonn-mexdemo"}
-        },
-        "cluster_inst_key":{
-            "cluster_key":{"name":"mexdemo-app-cluster"},
-            "cloudlet_key":{"operator_key":{"name":"TDG"},"name":"bonn-mexdemo"}
-        }
-    }
-}
+
  */
 const createFormat = (data) => (
     {
@@ -371,6 +308,7 @@ const mapStateToProps = (state) => {
     let selectedCloudlet = null;
     let selectedOperator = null;
     let selectedApp = null;
+    let flavors = null;
 
     if(state.form.createAppFormDefault) {
         if(state.form.createAppFormDefault.values.Cloudlet !== "") {
@@ -400,6 +338,7 @@ const mapStateToProps = (state) => {
         }
         : {};
 
+
     return {
         accountInfo,
         dimmInfo,
@@ -407,10 +346,7 @@ const mapStateToProps = (state) => {
         userToken : (state.user.userToken) ? state.userToken: null,
         submitValues: submitVal,
         region: region.value,
-        selectedApp: selectedApp,
-        selectedCloudlet: selectedCloudlet,
-        selectedOperator: selectedOperator,
-        selectOrg : state.selectOrg.org?state.selectOrg.org:null
+        flavors: (state.showFlavor) ? state.showFlavor.flavor : null
     }
     
     // return (dimm) ? {
@@ -428,6 +364,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(RegistryInstViewer);
+export default connect(mapStateToProps, mapDispatchProps)(RegistryClusterFlavorViewer);
 
 

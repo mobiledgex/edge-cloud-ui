@@ -42,15 +42,19 @@ class EntranceGlobe extends Component {
     }
 
     componentDidMount() {
-        console.log('user info entranceGlobal ...', this.props.user)
-        
-
-        if(this.props.user.login_token) {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT).userToken : null
+        console.log('user info entranceGlobal ...', this.props,store)
+        if(store) {
             this.setState({modalOpen: false})
         }
+        // && this.props.params.mainPath=='/logout'
+        
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('new props... ', nextProps)
+        if(nextProps.user.userToken) {
+            this.setState({modalOpen: false})
+        }
         // if(nextProps.user.login_token !== undefined) {
         //     this.setState({modalOpen: false})
         //     self.setState({loading:true})
@@ -66,11 +70,11 @@ class EntranceGlobe extends Component {
         // }
 
         //
-        if(nextProps.user.userToken !== undefined) {
-            this.spuserToken = nextProps.user.userToken;
-            this.setState({loading:false, modalOpen:false})
-            Alert.closeAll();
-        }
+        // if(nextProps.user.userToken !== undefined) {
+        //     this.spuserToken = nextProps.user.userToken;
+        //     this.setState({loading:false, modalOpen:false})
+        //     Alert.closeAll();
+        // }
 
     }
 
@@ -119,7 +123,7 @@ class EntranceGlobe extends Component {
         const { user } = this.props
 
         const param = {
-            login_token: user.login_token
+            login_token: user.userToken
         }
 
         MyAPI.logout(param)

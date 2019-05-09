@@ -27,7 +27,7 @@ const numberDes =(a,b)=> (
   deployment_generator: 'kubernetes-basic' }
 
  */
-let generateData = (datas) => {
+let generateData = (datas,body) => {
     console.log('format data apps - ', JSON.stringify(datas.data))
     let values = [];
     let toArray = null;
@@ -49,18 +49,18 @@ let generateData = (datas) => {
             } else {
                 console.log("gogogo@#@")
                 let Index = i;
-                let Region = dataResult.key.region || 'US';
-                let DeveloperName = dataResult.key.developer_key.name || '-';
-                let AppName = dataResult.key.name || '-';
-                let Version = dataResult.key.version || '-';
-                let ImagePath = dataResult.image_path || '-';
-                let DeploymentType = dataResult.deployment || '-';
-                let Command = dataResult.Command || '-';
-                let DeploymentMF = dataResult.deployment_manifest || '-';
-                let ImageType = dataResult.image_type || '-';
-                let DefaultFlavor = dataResult.default_flavor.name || '-';
-                let Ports = dataResult.access_ports || '-';
-                let Cluster = dataResult.cluster.name || '-';
+                let Region = body.region || '-';
+                let DeveloperName = dataResult.data.key.developer_key.name || '-';
+                let AppName = dataResult.data.key.name || '-';
+                let Version = dataResult.data.key.version || '-';
+                let ImagePath = dataResult.data.image_path || '-';
+                let DeploymentType = dataResult.data.deployment || '-';
+                let Command = dataResult.data.Command || '-';
+                let DeploymentMF = dataResult.data.deployment_manifest || '-';
+                let ImageType = dataResult.data.image_type || '-';
+                let DefaultFlavor = dataResult.data.default_flavor.name || '-';
+                let Ports = dataResult.data.access_ports || '-';
+                let Cluster = dataResult.data.cluster.name || '-';
                 
                 let DeploymentGenerator = dataResult.deployment_generator || '-';
 
@@ -118,8 +118,8 @@ const retunDate = (str) => {
     var date = new Date(year, month-1, day, hour, minute);
     return moment(date).format('hh:mm');
 }
-const formatComputeApp = (props) => (
-    generateData(props)
+const formatComputeApp = (props,body) => (
+    generateData(props,body)
 )
 
 export default formatComputeApp;

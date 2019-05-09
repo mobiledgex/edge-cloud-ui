@@ -10,7 +10,7 @@ const numberDes =(a,b)=> (
     b-a
 )
 
-let generateData = (datas) => {
+let generateData = (datas,body) => {
     console.log('format data appinst- ', datas)
     let result = datas;
     let values = [];
@@ -36,15 +36,15 @@ let generateData = (datas) => {
 
             } else {
                 let Index = i;
-                let Region = dataResult.key.region || 'US';
-                let DeveloperName = dataResult.key.app_key.developer_key.name  || '-';
-                let AppName = dataResult.key.app_key.name  || '-';
-                let Version = dataResult.key.app_key.version  || '-';
-                let Operator = dataResult.key.cloudlet_key.operator_key.name  || '-';
-                let Cloudlet = dataResult.key.cloudlet_key.name  || '-';
-                let ClusterInst = dataResult.cluster_inst_key.cluster_key.name || '-';
+                let Region = body.region || '-';
+                let DeveloperName = dataResult.data.key.app_key.developer_key.name  || '-';
+                let AppName = dataResult.data.key.app_key.name  || '-';
+                let Version = dataResult.data.key.app_key.version  || '-';
+                let Operator = dataResult.data.key.cloudlet_key.operator_key.name  || '-';
+                let Cloudlet = dataResult.data.key.cloudlet_key.name  || '-';
+                let ClusterInst = dataResult.data.cluster_inst_key.cluster_key.name || '-';
 
-                let CloudletLocation=dataResult.cloudlet_loc || '-';
+                let CloudletLocation=dataResult.data.cloudlet_loc || '-';
                 let URI = dataResult.uri || '-';
                 let Mapped_ports= dataResult.mapped_ports || '-';
 
@@ -95,8 +95,8 @@ const retunDate = (str) => {
     var date = new Date(year, month-1, day, hour, minute);
     return moment(date).format('hh:mm');
 }
-const FormatComputeInst = (props) => (
-    generateData(props)
+const FormatComputeInst = (props,body) => (
+    generateData(props,body)
 )
 
 export default FormatComputeInst;

@@ -64,7 +64,7 @@ class MapWithListView extends React.Component {
             openDelete:false,
             tooltipMsg:'No Message',
             tooltipVisible: false,
-            detailViewData:null,
+            detailViewData:null
         };
 
         _self = this;
@@ -74,6 +74,22 @@ class MapWithListView extends React.Component {
     onHandleClick(dim, data) {
         console.log('on handle click == ', data)
         this.setState({ dimmer:dim, open: true, selected:data })
+    }
+
+
+    onItemOver(itemData,key, evt) {
+        console.log('11',itemData,'22',this.state,'33',key)
+
+        this.setState({selectedItem:key})
+        // this.state.orgData.data.map((item,i) => {
+        //     if(item.org == useData.Organization) {
+        //         console.log('item role =',item.role)
+        //         this.props.handleUserRole(item.role)
+        //     }
+        // })
+
+        // this.props.handleSelectOrg(useData)
+
     }
 
     show = (dim) => this.setState({ dimmer:dim, open: true })
@@ -185,11 +201,11 @@ class MapWithListView extends React.Component {
         return keys.map((key, i) => (
             (!( String(hidden).indexOf(key) > -1 ))?
                 (i === keys.length -1) ?
-                <Table.HeaderCell width={3} textAlign='center' sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
+                <Table.HeaderCell key={i} width={3} textAlign='center' sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
+                <Table.HeaderCell key={i} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
                     {key}
                 </Table.HeaderCell>
             :
@@ -224,18 +240,18 @@ class MapWithListView extends React.Component {
                             <Table.Row key={i}>
                                 {Object.keys(item).map((value, j) => (
                                     (value === 'Edit')?
-                                        <Table.Cell key={j} textAlign='center' style={{whiteSpace:'nowrap'}}>
+                                        <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Button disabled key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                             <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
                                         </Table.Cell>
                                     :
                                     (value === 'Mapped_ports')?
-                                        <Table.Cell key={j} textAlign='left'>
+                                        <Table.Cell key={j} textAlign='left' style={(this.state.selectedItem == i)?{background:'#444'} :null} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Icon name='server' size='big' onClick={() => this.onPortClick(value, item)} style={{cursor:'pointer'}}></Icon>
                                         </Table.Cell>
                                     :
                                     (value === 'CloudletLocation')?
-                                        <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)}  style={{cursor:'pointer'}}>
+                                        <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                             {
                                                 `Latitude : ${item[value].latitude}
@@ -244,8 +260,13 @@ class MapWithListView extends React.Component {
                                             </div>
                                         </Table.Cell>
                                     :
+                                    (value === 'IpAccess')?
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                            {(item[value] == 1)? "IpAccessUnknown" : (item[value] == 2)? "IpAccessDedicated" : (item[value] == 3)? "IpAccessDedicatedOrShared" : (item[value] == 4)? "IpAccessShared" : "-"}
+                                        </Table.Cell>
+                                    :
                                     (!( String(hidden).indexOf(value) > -1 )) ?
-                                        <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
+                                        <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                             {String(item[value])}
                                             </div>

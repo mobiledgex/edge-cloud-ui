@@ -471,57 +471,56 @@ app.post('/deleteOrg', apiMC.DeleteOrg);
 /*
 --auth-type=jwt --auth=$SUPERPASS
  */
-app.post('/showRole', (req, res, next) => {
-    let superpass = null;
-    if(req.body.serviceBody){
-        superpass = req.body.serviceBody.superuser;
-    }
-    console.log('***** get current user ... ', req.body.serviceBody)
-
-    if(req.body.serviceBody) {
-        axios.post(
-            mcUrl + '/api/v1/auth/role/show',
-            {},
-            {
-                headers: {
-                    'Authorization':`Bearer ${superpass}`}
-            }
-        )
-            .then(function (response) {
-                console.log('success get ..', response.data)
-                res.json(response.data)
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
-});
-app.post('/showOrg', (req, res, next) => {
-    let superpass = null;
-    if(req.body.serviceBody){
-        superpass = req.body.serviceBody.superuser;
-    }
-    console.log('***** get current user ... ', req.body.serviceBody)
-
-    if(req.body.serviceBody) {
-        axios.post(
-            mcUrl + '/api/v1/auth/org/show',
-            {},
-            {
-                headers: {
-                    'Authorization':`Bearer ${superpass}`}
-            }
-        )
-            .then(function (response) {
-                console.log('success get ..', response.data)
-                res.json(response.data)
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
-});
-
+// app.post('/showRole', (req, res, next) => {
+//     let superpass = null;
+//     if(req.body.serviceBody){
+//         superpass = req.body.serviceBody.superuser;
+//     }
+//     console.log('***** get current user ... ', req.body.serviceBody)
+//
+//     if(req.body.serviceBody) {
+//         axios.post(
+//             mcUrl + '/api/v1/auth/role/show',
+//             {},
+//             {
+//                 headers: {
+//                     'Authorization':`Bearer ${superpass}`}
+//             }
+//         )
+//             .then(function (response) {
+//                 console.log('success get ..', response.data)
+//                 res.json(response.data)
+//             })
+//             .catch(function (error) {
+//                 console.log(error);
+//             });
+//     }
+// });
+// app.post('/showOrg', (req, res, next) => {
+//     let superpass = null;
+//     if(req.body.serviceBody){
+//         superpass = req.body.serviceBody.superuser;
+//     }
+//     console.log('***** get current user ... ', req.body.serviceBody)
+//
+//     if(req.body.serviceBody) {
+//         axios.post(
+//             mcUrl + '/api/v1/auth/org/show',
+//             {},
+//             {
+//                 headers: {
+//                     'Authorization':`Bearer ${superpass}`}
+//             }
+//         )
+//             .then(function (response) {
+//                 console.log('success get ..', response.data)
+//                 res.json(response.data)
+//             })
+//             .catch(function (error) {
+//                 console.log(error);
+//             });
+//     }
+// });
 
 // http
 
