@@ -15,6 +15,7 @@ import userInfo from './userInfo';
 import mapCoordinatesLong from './mapCoordinatesLong';
 import mapCoordinatesLat from './mapCoordinatesLat';
 import showUserRole from './showUserRole';
+import showFlavor from './showFlavor';
 import selectOrg from './selectOrg';
 import searchValue from './searchValue';
 import changeRegion from './changeRegion';
@@ -22,7 +23,7 @@ import computeRefresh from './computeRefresh';
 import loadingSpinner from './loadingSpinner';
 
 const reducers = combineReducers({
-    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion,
+    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor,
     registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, searchValue, computeRefresh, loadingSpinner, form: formReducer
 });
 

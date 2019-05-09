@@ -5,13 +5,18 @@ import FormatDmeMethod from "./formatter/formatDmeMethod";
 import qs from "qs";
 
 let hostname = window.location.hostname;
+let serviceDomain = 'https://mc.mobiledgex.net:9900';
 
+export function setDomain(domain) {
+    serviceDomain = domain;
+}
 
 export function getMethodCall(resource, body, callback, self) {
 
     axios.post('https://'+hostname+':3030/masterControl', qs.stringify({
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     }))
         .then(function (response) {
             let parseData = null;
@@ -34,7 +39,8 @@ export function getCurrentUserInfo(resource, body, callback, self) {
 
     axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     }))
         .then(function (response) {
             let parseData = null;
@@ -61,7 +67,8 @@ export function createUser(resource, body, callback, self) {
 
     axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     }))
         .then(function (response) {
             let parseData = null;
@@ -87,11 +94,11 @@ export function createUser(resource, body, callback, self) {
 
 }
 
-
 export function example(resource, body, callback) {
     axios.post('https://'+hostname+':3030/register',qs.stringify({
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     }))
         .then(function (response) {
             console.log('response  registry new obj result-',response);

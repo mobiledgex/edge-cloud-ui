@@ -91,11 +91,11 @@ class RegistNewListItem extends React.Component {
             this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
         }
 
-        let self = this;
-        setTimeout(()=>{
-            console.log('ddd=', self['input_0'])
-            if(self['input_0']) self['input_0'].focus();
-        }, 2000)
+        // let self = this;
+        // setTimeout(()=>{
+        //     console.log('ddd=', self['input_0'])
+        //     if(self['input_0']) self['input_0'].focus();
+        // }, 2000)
 
         
     }

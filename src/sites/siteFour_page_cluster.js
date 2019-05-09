@@ -64,7 +64,7 @@ class SiteFourPageCluster extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         console.log('info.. store == ', store)
         if(store.userToken) {
-            this.getDataDeveloper();
+            this.getDataDeveloper(this.props.changeRegion);
         } else {
             Alert.error('Invalid or expired token', {
                 position: 'top-right',
@@ -79,12 +79,16 @@ class SiteFourPageCluster extends React.Component {
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
         if(nextProps.computeRefresh.compute) {
-            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            this.getDataDeveloper(store.userToken);
+            this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
+        }
+        if(this.props.changeRegion !== nextProps.changeRegion){
+            console.log("regionChange@@@@")
+            this.getDataDeveloper(nextProps.changeRegion);
         }
     }
     receiveResult = (result) => {
+        let join = this.state.devData.concat(result);
         this.props.handleLoadingSpinner(false);
         console.log("receive cluster== ", result)
         if(result.error) {
@@ -95,13 +99,21 @@ class SiteFourPageCluster extends React.Component {
             });
 
         } else {
-            _self.setState({devData:result})
+            _self.setState({devData:join})
 
         }
     }
-    getDataDeveloper() {
+    getDataDeveloper(region) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        services.getMCService('ShowClusterFlavor',{token:store.userToken, region:'US'}, _self.receiveResult)
+        let rgn = ['US','EU'];
+        this.setState({devData:[]})
+        console.log("changeRegion###@@",_self.props.changeRegion)
+        if(region !== 'All'){
+            rgn = [region]
+        }
+        rgn.map((item) => {
+            services.getMCService('ShowClusterFlavor',{token:store.userToken, region:item}, _self.receiveResult)
+        })
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -117,7 +129,8 @@ class SiteFourPageCluster extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null
+        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
+        changeRegion : state.changeRegion.region?state.changeRegion.region:null
     }
 };
 const mapDispatchProps = (dispatch) => {

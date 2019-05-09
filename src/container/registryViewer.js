@@ -3,9 +3,7 @@ import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
-import SelectFromTo from '../components/selectFromTo';
-import RegistNewListItem from './registNewListItem';
-import RegistNewListInput from './registNewListInput';
+
 import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
@@ -46,8 +44,8 @@ const colors = [
 
 const panes = [
     { menuItem: 'Application Settings', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
-    { menuItem: 'Docker deployment', render: () => <Tab.Pane attached={false} pId={1}>None</Tab.Pane> },
-    { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> },
+    { menuItem: 'Docker deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'VM deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
 ]
 class RegistryViewer extends React.Component {
     constructor(props) {
@@ -73,8 +71,7 @@ class RegistryViewer extends React.Component {
         this.keysData = [
             {
                 'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
-                'DeveloperName':{label:'Organization Name', type:'RenderInput', necessary:true, tip:null, active:true},
-                'OrganizationName':{label:'Organization Name', type:'RenderInput', necessary:true, tip:null, active:true},
+                'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:null, active:true},
                 'AppName':{label:'App Name', type:'RenderInput', necessary:true, tip:null, active:true},
                 'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:null, active:true},
                 'ImagePath':{label:'Image Path', type:'RenderInput', necessary:true, tip:null, active:true},
@@ -92,7 +89,7 @@ class RegistryViewer extends React.Component {
         this.fakeData = [
             {
                 'Region':'US',
-                'DeveloperName':'',
+                'OrganizationName':'',
                 'AppName':'',
                 'Version':'',
                 'ImagePath':'',
@@ -104,6 +101,8 @@ class RegistryViewer extends React.Component {
                 'DeploymentMF':'',
             }
         ]
+        //this.hiddenKeys = ['CloudletLocation', 'URI', 'Mapped_ports']
+
 
     }
 
@@ -268,6 +267,7 @@ class RegistryViewer extends React.Component {
     )
 
     componentDidMount() {
+
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(store.userToken) {
             this.getDataDeveloper(store.userToken);
@@ -280,6 +280,15 @@ class RegistryViewer extends React.Component {
         } else {
             this.setState({dummyData:this.fakeData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
         }
+
+        /************
+         * set Organization Name
+         * **********/
+        let assObj = Object.assign([], this.fakeData);
+        assObj[0].OrganizationName = (this.props.selectOrg.Organization);
+        console.log("jjjjkkkkkk",this.props.selectOrg.Organization);
+        this.setState({fakeData:assObj});
+
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('nextProps',nextProps,this.props.siteId)
@@ -377,7 +386,9 @@ const mapStateToProps = (state) => {
         itemLabel: state.computeItem.item,
         userToken : (state.user.userToken) ? state.userToken: null,
         submitValues: submitVal,
-        region: region
+        region: region,
+        selectOrg : state.selectOrg.org?state.selectOrg.org:null
+
     }
     
     // return (dimm) ? {

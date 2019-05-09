@@ -4,25 +4,32 @@ import { Form, Message } from "semantic-ui-react";
 import './styles.css';
 
 const validate = values => {
-  const errors = {}
-  if (!values.username) {
-    errors.username = 'Required'
-  } else if (values.username.length > 15) {
-    errors.username = 'Must be 15 characters or less'
-  }
-  if (!values.email) {
-    errors.email = 'Required'
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-    errors.email = 'Invalid email address'
-  }
-  if (!values.age) {
-    errors.age = 'Required'
-  } else if (isNaN(Number(values.age))) {
-    errors.age = 'Must be a number'
-  } else if (Number(values.age) < 18) {
-    errors.age = 'Sorry, you must be at least 18 years old'
-  }
-  return errors
+    console.log("signupVali@@",values)
+    const errors = {}
+    if (!values.username) {
+        errors.username = 'Required'
+    }
+
+    if (!values.password) {
+        errors.password = 'Required'
+    } else if (values.password.length < 8) {
+        errors.password = 'Must be at least 8 characters'
+    }
+
+    if (!values.confirmpassword) {
+        errors.confirmpassword = 'Required'
+    } else if (values.password !== values.confirmpassword) {
+        errors.confirmpassword = 'password and confirmpassword do not match'
+    }
+
+
+    if (!values.email) {
+        errors.email = 'Required'
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+        errors.email = 'Invalid email address'
+    }
+   
+    return errors
 }
 
 const renderCheckbox = field => (
@@ -62,12 +69,15 @@ const renderTextArea = field => (
     />
 );
 const renderInput = field => (
-    <Form.Input
-        {...field.input}
-        type={field.type}
-        label={field.label}
-        placeholder={field.placeholder}
-    />
+    <div>
+        <Form.Input
+            {...field.input}
+            type={field.type}
+            label={field.label}
+            placeholder={field.placeholder}
+        />
+        {field.meta.touched && ((field.meta.error && <span className="text-danger login-danger">{field.meta.error}</span>) || (field.meta.warning && <span>{field.meta.warning}</span>))}
+    </div>
 );
 const RegistryUserForm = props => {
     const { handleSubmit, reset } = props;
@@ -110,5 +120,6 @@ const RegistryUserForm = props => {
 };
 
 export default reduxForm({
-    form: "profile"
+    form: "profile",
+    validate
 })(RegistryUserForm);

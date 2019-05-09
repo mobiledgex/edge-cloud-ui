@@ -35,8 +35,8 @@ const makeOption =(options)=> (
 )
 
 const renderCheckbox = field => (
-    <Form.Checkbox
-        style={{height:'33px', paddingTop:'10px'}}
+    <Form.Checkbox toggle
+        style={{height:'33px', paddingTop:'8px'}}
         checked={!!field.input.value}
         name={field.input.name}
         label={field.label}
@@ -78,6 +78,15 @@ const renderInput = field => (
         type={field.type}
         label={field.label}
         placeholder={field.placeholder}
+    />
+);
+const renderInputDisabled = field => (
+    <Form.Input
+        {...field.input}
+        type={field.type}
+        label={field.label}
+        placeholder={field.placeholder}
+        disabled
     />
 );
 
@@ -222,6 +231,15 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             value={data[key]}
                                                             name={key}
                                                             />
+                                                        :
+                                                        (fieldKeys[pId][key]['type'] === 'RenderInputDisabled') ?
+                                                        <Field
+                                                            disabled
+                                                            component={renderInputDisabled}
+                                                            type="input"
+                                                            name={key}
+                                                            value={data[key]}
+                                                            placeholder={(dimmer === 'blurring') ? data[key] : data[key]}/>
                                                         :
                                                         <Field
                                                             component={renderInput}

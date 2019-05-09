@@ -57,9 +57,14 @@ class DeveloperListView extends React.Component {
         this.setState({ dimmer:dim, open: true, selected:data })
         //this.props.handleChangeSite(data.children.props.to)
     }
-    onHandleClicAdd(dim, data) {
+    onHandleClickAdd(dim, data) {
         console.log('on handle click == ', data)
         this.setState({ dimmer:dim, openAdd: true, selected:data })
+        //this.props.handleChangeSite(data.children.props.to)
+    }
+    onHandleClickAddApp(dim, data) {
+        console.log('on handle click == ', data)
+        this.setState()
         //this.props.handleChangeSite(data.children.props.to)
     }
     getDataDeveloper(token) {
@@ -191,11 +196,11 @@ class DeveloperListView extends React.Component {
         console.log('default width header -- ', widthDefault, filteredKeys)
         return filteredKeys.map((key, i) => (
             (i === filteredKeys.length -1) ?
-                <Table.HeaderCell width={3} textAlign='center' sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
+                <Table.HeaderCell key={i} width={3} textAlign='center' sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
+                <Table.HeaderCell key={i} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
                     {key}
                 </Table.HeaderCell>
         ));
@@ -217,13 +222,17 @@ class DeveloperListView extends React.Component {
         }
     }
     roleMark = (role) => (
-        (role.indexOf('Admin')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markD markM">S</div> :
+        (role.indexOf('Admin')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markA markS">S</div> :
         (role.indexOf('Developer')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markD markM">M</div> :
         (role.indexOf('Developer')!==-1 && role.indexOf('Contributor')!==-1) ? <div className="mark markD markC">C</div> :
         (role.indexOf('Developer')!==-1 && role.indexOf('Viewer')!==-1) ? <div className="mark markD markV">V</div> :
         (role.indexOf('Operator')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markO markM">M</div> :
         (role.indexOf('Operator')!==-1 && role.indexOf('Contributor')!==-1) ? <div className="mark markO markC">C</div> :
         (role.indexOf('Operator')!==-1 && role.indexOf('Viewer')!==-1) ? <div className="mark markO markV">V</div> : <div></div>
+    )
+    typeMark = (type) => (
+        (type.indexOf('developer')!==-1) ? <div className="mark type markD markM"></div> :
+            (type.indexOf('operator')!==-1) ? <div className="mark type markO markM"></div> : <div></div>
     )
     TableExampleVeryBasic = (w, h, headL, hideHeader, datas) => (
         <Table className="viewListTable" basic='very' sortable striped celled fixed>
@@ -245,8 +254,22 @@ class DeveloperListView extends React.Component {
                                                 <Icon name='check' />
                                             </Button>:null}
                                         <Button disabled key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
-                                        {(this.props.siteId == 'Organization')?<Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.onHandleClicAdd(true, item, i)}>Add User</Button>:null}
+                                        {(this.props.siteId == 'Organization')?
+                                            <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.onHandleClickAdd(true, item, i)}>
+                                                Add User
+                                            </Button>:null}
+                                        {(this.props.siteId == 'App')?
+                                            <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.onHandleClickAddApp(true, item, i)}>
+                                                Add
+                                            </Button>:null}
                                         <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
+
+                                    </Table.Cell>
+                                :
+                                (value === 'Type')?
+                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} >
+                                        {/*<div className="markBox">{this.typeMark(item[value])}</div>*/}
+                                        <span style={(item[value] == 'developer')?{color:'#9b9979'}:{color:'#7d969b'}}>{item[value]}</span>
                                     </Table.Cell>
                                 :
                                 (value === 'Mapped_ports')?
@@ -262,13 +285,13 @@ class DeveloperListView extends React.Component {
                                     </Table.Cell>
                                 :   
                                 (value === 'Role Type')?
-                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
+                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
                                         <div className="markBox">{this.roleMark(item[value])}</div>
                                         {item[value]}
                                     </Table.Cell>
                                 :
                                 (!( String(hideHeader).indexOf(value) > -1 )) ?
-                                <Table.Cell key={j} textAlign={(value === 'Region')?'center':(value === 'Organization')?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
+                                    <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                             {String(item[value])}
                                         </div>

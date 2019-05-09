@@ -17,6 +17,7 @@ export const USER_INFO = 'USER_INFO';
 export const MAP_COORDINATES_LONG = 'MAP_COORDINATES_LONG';
 export const MAP_COORDINATES_LAT = 'MAP_COORDINATES_LAT';
 export const SHOW_USER_ROLE = 'SHOW_USER_ROLE';
+export const SHOW_FLAVOR = 'SHOW_FLAVOR';
 export const SELECT_ORG = 'SELECT_ORG';
 export const SEARCH_VALUE = 'SEARCH_VALUE';
 export const CHANGE_REGION = 'CHANGE_REGION';

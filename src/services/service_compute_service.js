@@ -15,6 +15,11 @@ import FormatComputeOrganization from './formatter/formatComputeOrganization';
 import formatComputeUsers from './formatter/formatComputeUsers';
 
 const hostname = window.location.hostname;
+let serviceDomain = 'https://mc.mobiledgex.net:9900';
+
+export function setDomain(domain) {
+    serviceDomain = domain;
+}
 export function getOperator(resource, callback) {
     fetch('https://'+hostname+':3030')
         .then(response => response.json())
@@ -125,8 +130,9 @@ export function getComputeService(resource, callback) {
 
 export function saveNewCompute(resource, body, callback) {
     axios.post('https://'+hostname+':3030/create',{
-      service: resource,
-        serviceBody:body
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
     })
         .then(function (response) {
             console.log('response  registry new obj result-',response);
@@ -138,8 +144,9 @@ export function saveNewCompute(resource, body, callback) {
 }
 export function createNewApp(resource, body, callback) {
     axios.post('https://'+hostname+':3030/CreateApp',qs.stringify({
-      service: resource,
-        serviceBody:body
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
     }))
         .then(function (response) {
             console.log('response  registry new obj result-',response);
@@ -151,8 +158,9 @@ export function createNewApp(resource, body, callback) {
 }
 export function createNewAppInst(resource, body, callback) {
     axios.post('https://'+hostname+':3030/CreateAppInst',qs.stringify({
-      service: resource,
-        serviceBody:body
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
     }))
         .then(function (response) {
             console.log('response  registry new obj result-',response);
@@ -165,7 +173,8 @@ export function createNewAppInst(resource, body, callback) {
 export function deleteCompute(resource, body, callback) {
     axios.post('https://'+hostname+':3030/deleteService',{
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     })
         .then(function (response) {
             console.log('response  registry new obj result-',response);
@@ -178,7 +187,8 @@ export function deleteCompute(resource, body, callback) {
 export function deleteUser(resource, body, callback) {
     axios.post('https://'+hostname+':3030/deleteUser',{
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     })
         .then(function (response) {
             console.log('response  registry new obj result-',response);
@@ -191,7 +201,8 @@ export function deleteUser(resource, body, callback) {
 export function deleteOrg(resource, body, callback) {
     axios.post('https://'+hostname+':3030/deleteOrg',{
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     })
         .then(function (response) {
             console.log('response  registry new obj result-',response);
@@ -204,7 +215,8 @@ export function deleteOrg(resource, body, callback) {
 export function createNewClusterInst(resource, body, callback) {
     axios.post('https://'+hostname+':3030/CreateClusterInst',{
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     })
         .then(function (response) {
             console.log('response clusterInst result-',response);
@@ -218,7 +230,8 @@ export function createNewClusterInst(resource, body, callback) {
 export function createNewFlavor(resource, body, callback) {
     axios.post('https://'+hostname+':3030/CreateFlavor',{
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     })
         .then(function (response) {
             console.log('response flavor result-',response);
@@ -232,7 +245,8 @@ export function createNewFlavor(resource, body, callback) {
 export function createNewClusterFlavor(resource, body, callback) {
     axios.post('https://'+hostname+':3030/CreateClusterFlavor',{
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     })
         .then(function (response) {
             console.log('response clusterFlavor result-',response);
@@ -246,7 +260,8 @@ export function createNewClusterFlavor(resource, body, callback) {
 export function createNewCloudlet(resource, body, callback) {
     axios.post('https://'+hostname+':3030/CreateCloudlet',{
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     })
         .then(function (response) {
             console.log('response cloudlet result-',response);
@@ -261,7 +276,8 @@ export function createNewCloudlet(resource, body, callback) {
 export function getMCService(resource, body, callback, self) {
     axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     }))
         .then(function (response) {
             console.log("showInstName!!",response)
@@ -271,17 +287,17 @@ export function getMCService(resource, body, callback, self) {
             } else {
                 parseData = response;
             }
-            console.log('parse data userinfo ===>>>>>>>>>> ', parseData)
+            console.log('parse data userinfo ===>>>>>>>>>> ', parseData,body)
             if(parseData){
                 switch(resource){
                     case 'showOrg': callback(FormatComputeOrganization(parseData)); break;
-                    case 'ShowFlavor': callback(FormatComputeFlavor(parseData)); break;
-                    case 'ShowClusterFlavor': callback(FormatComputeCluster(parseData)); break;
+                    case 'ShowFlavor': callback(FormatComputeFlavor(parseData,body)); break;
+                    case 'ShowClusterFlavor': callback(FormatComputeCluster(parseData,body)); break;
                     case 'ShowUsers': callback(formatComputeUsers(parseData)); break;
-                    case 'ShowCloudlet': callback(FormatComputeCloudlet(parseData)); break;
-                    case 'ShowClusterInst': callback(FormatComputeClstInst(parseData)); break;
-                    case 'ShowApps': callback(FormatComputeApp(parseData)); break;
-                    case 'ShowAppInst': callback(FormatComputeInst(parseData)); break;
+                    case 'ShowCloudlet': callback(FormatComputeCloudlet(parseData,body)); break;
+                    case 'ShowClusterInst': callback(FormatComputeClstInst(parseData,body)); break;
+                    case 'ShowApps': callback(FormatComputeApp(parseData,body)); break;
+                    case 'ShowAppInst': callback(FormatComputeInst(parseData,body)); break;
                     case 'showController': callback(parseData); break;
                     case 'ShowRole': callback(parseData); break;
                 }
@@ -297,7 +313,8 @@ export function getMCService(resource, body, callback, self) {
 export function showAppInst(resource, body, callback, self) {
     axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     }))
         .then(function (response) {
             console.log("showInstName!!",response)
@@ -323,7 +340,8 @@ export function getControlService(resource, body, callback, self) {
 
     axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
         service: resource,
-        serviceBody:body
+        serviceBody:body,
+        serviceDomain:serviceDomain
     }))
         .then(function (response) {
             let parseData = null;

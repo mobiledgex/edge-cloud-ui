@@ -89,20 +89,24 @@ class SiteFourPageApps extends React.Component {
             console.log('submit on...', nextProps.receiveNewReg.values)
             //services.createNewApp('CreateApp', {params:nextProps.receiveNewReg.values, token:store.userToken, region:'US'}, _self.receiveResult)
         }
+        if(this.props.region.value !== nextProps.region.value){
+            console.log("regionChange@@@@")
+            this.getDataDeveloper(store.userToken, nextProps.region.value);
+        }
 
         // if(nextProps.region.value) {
         //     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         //     this.getDataDeveloper(store.userToken, nextProps.region.value)
         // }
         
-        // if(nextProps.computeRefresh.compute) {
-        //     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        //     this.getDataDeveloper(store.userToken);
-        //     this.props.handleComputeRefresh(false);
-        // }
+        if(nextProps.computeRefresh.compute) {
+            this.getDataDeveloper(store.userToken,nextProps.region.value);
+            this.props.handleComputeRefresh(false);
+        }
 
     }
     receiveResult = (result, region) => {
+        let join = this.state.devData.concat(result);
         this.props.handleLoadingSpinner(false);
         console.log("receive == ", result)
         if(result.error) {
@@ -112,16 +116,19 @@ class SiteFourPageApps extends React.Component {
                 timeout: 5000
             });
         } else {
-            _self.setState({devData:result})
+            _self.setState({devData:join})
         }
     }
     getDataDeveloper(token, region) {
         //services.getComputeService('app', this.receiveResult)
-        if(region === 'All'){
-            services.getMCService('ShowApps',{token:token, region:['US', 'EU']}, _self.receiveResult)
-        } else {
-            services.getMCService('ShowApps',{token:token, region:region}, _self.receiveResult)
-        }
+        let rgn = ['US','EU'];
+        this.setState({devData:[]})
+        if(region !== 'All'){
+            rgn = [region]
+        } 
+        rgn.map((item) => {
+            services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)
+        })
     }
     /*
 

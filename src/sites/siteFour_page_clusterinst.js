@@ -31,7 +31,7 @@ class SiteFourPageClusterInst extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [1,3,2,2,2,2,2,2];
+        this.headerLayout = [1,2,2,2,2,2,3,2];
         //this.hiddenKeys = ['CloudletLocation']
     }
 
@@ -64,14 +64,14 @@ class SiteFourPageClusterInst extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         console.log('info.. store == ', store)
         if(store.userToken) {
-            this.getDataDeveloper(store.userToken);
+            this.getDataDeveloper(this.props.changeRegion);
         } else {
             Alert.error('Invalid or expired token', {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
             });
-            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+            //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         }
     }
     componentWillReceiveProps(nextProps) {
@@ -79,14 +79,16 @@ class SiteFourPageClusterInst extends React.Component {
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
         if(nextProps.computeRefresh.compute) {
-            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            this.getDataDeveloper(store.userToken);
+            this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
+        }
+        if(this.props.changeRegion !== nextProps.changeRegion){
+            console.log("regionChange@@@@")
+            this.getDataDeveloper(nextProps.changeRegion);
         }
     }
     receiveResult(result) {
-        console.log("receive  == ", Object.keys(result[0]).indexOf('ClusterName'), result)
-
+        let join = this.state.devData.concat(result);
 
         if(result.error) {
             Alert.error(result.error, {
@@ -95,7 +97,7 @@ class SiteFourPageClusterInst extends React.Component {
                 timeout: 5000
             });
         } else {
-            _self.setState({devData:result})
+            _self.setState({devData:join})
         }
     }
 
@@ -130,10 +132,17 @@ class SiteFourPageClusterInst extends React.Component {
         }
     }
     
-    getDataDeveloper(token) {
+    getDataDeveloper(region) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        services.getMCService('ShowClusterInst',{token:store.userToken, region:'US'}, _self.receiveResultClusterInst)
-        services.getMCService('ShowCloudlet',{token:store.userToken, region:'US'}, _self.receiveResultCloudlet)
+        let rgn = ['US','EU'];
+        this.setState({devData:[]})
+        if(region !== 'All'){
+            rgn = [region]
+        }  
+        rgn.map((item) => {
+            services.getMCService('ShowClusterInst',{token:store.userToken, region:item}, _self.receiveResultClusterInst)
+            services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
+        })
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -149,7 +158,8 @@ class SiteFourPageClusterInst extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null
+        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
+        changeRegion : state.changeRegion.region?state.changeRegion.region:null
     }
 };
 const mapDispatchProps = (dispatch) => {
