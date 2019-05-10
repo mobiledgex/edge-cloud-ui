@@ -111,7 +111,7 @@ class DeleteItem extends React.Component {
 
         let serviceNm = '';
         if(this.props.siteId === 'ClusterInst'){
-            const {Cloudlet, ClusterFlavor, ClusterName, Developer, Operator, Region} = this.props.selected
+            const {Cloudlet, ClusterFlavor, ClusterName, OrganizationName, Operator, Region} = this.props.selected
             serviceNm = 'DeleteClusterInst';
             serviceBody = {
                 "token":store.userToken,
@@ -121,7 +121,7 @@ class DeleteItem extends React.Component {
                         "key":{
                             "cluster_key":{"name":ClusterName},
                             "cloudlet_key":{"operator_key":{"name":Operator},"name":Cloudlet},
-                            "developer":Developer
+                            "developer":OrganizationName
                         },
                         "flavor":{"name":ClusterFlavor}
                     }

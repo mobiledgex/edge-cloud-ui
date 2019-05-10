@@ -41,7 +41,7 @@ let generateData = (datas,body) => {
         toJson = toArray.map((str)=>(JSON.parse(str)))
     }
 
-    console.log("Apptojson!!",toJson)
+    console.log("Apptojson!!",toJson, body)
     if(toJson){
         toJson.map((dataResult, i) => {
             if(dataResult.message) {
@@ -49,7 +49,7 @@ let generateData = (datas,body) => {
             } else {
                 console.log("gogogo@#@")
                 let Index = i;
-                let Region = body.region || '-';
+                let Region = body.region || body.params.region || '-';
                 let DeveloperName = dataResult.data.key.developer_key.name || '-';
                 let AppName = dataResult.data.key.name || '-';
                 let Version = dataResult.data.key.version || '-';
@@ -60,6 +60,7 @@ let generateData = (datas,body) => {
                 let ImageType = dataResult.data.image_type || '-';
                 let DefaultFlavor = dataResult.data.default_flavor.name || '-';
                 let Ports = dataResult.data.access_ports || '-';
+                let IpAccess = dataResult.data.IpAccess || '-';
                 let Cluster = dataResult.data.cluster.name || '-';
                 
                 let DeploymentGenerator = dataResult.deployment_generator || '-';
@@ -74,7 +75,8 @@ let generateData = (datas,body) => {
                     'ImageType',
                     'DefaultFlavor',
                     'Ports',
-                    'Cluster',
+                    'IpAccess',
+                    //'Cluster',
                     'Command',
                     'DeploymentMF',
                 ];
@@ -89,6 +91,7 @@ let generateData = (datas,body) => {
                     ImageType:ImageType,
                     DefaultFlavor:DefaultFlavor,
                     Ports:Ports,
+                    IpAccess:IpAccess,
                     //Cluster:Cluster,
                     Command:Command,
                     DeploymentMF:DeploymentMF,

@@ -43,9 +43,9 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'k8s deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFlavorForm data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
-    { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
-    { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
+    { menuItem: 'k8s Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFlavorForm data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
+    // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
 class RegistryClusterFlavorViewer extends React.Component {
     constructor(props) {

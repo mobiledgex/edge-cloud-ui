@@ -198,7 +198,7 @@ class App extends Component {
         //     DashboardContainer({mainPath:nextProps.siteName.site.mainPath}, {match:params})
         // }
         if(nextProps.siteName) {
-            this.setState({selectedCloudlet:nextProps.siteName.cloudlet})
+            //this.setState({selectedCloudlet:nextProps.siteName.cloudlet})
         }
 
     }

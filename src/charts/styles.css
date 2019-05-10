@@ -1,9 +1,9 @@
-circle {
+.chart-circle circle {
     fill: #efefef;
     opacity: 0.3;
     stroke: white;
 }
-text {
+.chart-circle text {
     font-family: "Helvetica Neue", Helvetica, sans-serif;
     fill: white;
     font-size: 10px;

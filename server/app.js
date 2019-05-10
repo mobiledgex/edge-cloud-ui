@@ -449,6 +449,7 @@ app.post('/ShowCloudlet', apiMC.ShowCloudlet);
 app.post('/showController', apiMC.showController);
 app.post('/ShowClusterInst', apiMC.ShowClusterInst);
 app.post('/ShowApps', apiMC.ShowApps);
+app.post('/ShowApp', apiMC.ShowApp);
 app.post('/ShowAppInst', apiMC.ShowAppInst);
 
 app.post('/create', apiMC.Create);

@@ -9,10 +9,10 @@ export default class SiteFourCreateFlavorForm extends React.PureComponent {
         return (
             <Grid>
                 <Grid.Row columns={2}>
-                    <Grid.Column width={9}>
+                    <Grid.Column width={10}>
                         <SiteFourCreateFormDefault data={this.props.data} pId={0} onSubmit={() => console.log('submit form')}></SiteFourCreateFormDefault>
                     </Grid.Column>
-                    <Grid.Column width={7}>
+                    <Grid.Column width={6}>
                         <div style={{display:'flex', justifyContent:'center', alignItems:'center', height:'100%'}}>
                             <BubbleGroup></BubbleGroup>
                         </div>

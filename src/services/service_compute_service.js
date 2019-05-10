@@ -18,6 +18,7 @@ const hostname = window.location.hostname;
 let serviceDomain = 'https://mc.mobiledgex.net:9900';
 
 export function setDomain(domain) {
+    console.log('reset service domain ---- ', domain)
     serviceDomain = domain;
 }
 export function getOperator(resource, callback) {
@@ -143,11 +144,11 @@ export function saveNewCompute(resource, body, callback) {
         });
 }
 export function createNewApp(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/CreateApp',qs.stringify({
+    axios.post('https://'+hostname+':3030/CreateApp',{
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
-    }))
+    })
         .then(function (response) {
             console.log('response  registry new obj result-',response);
             callback(response)
@@ -274,6 +275,7 @@ export function createNewCloudlet(resource, body, callback) {
 
 
 export function getMCService(resource, body, callback, self) {
+    console.log('parse data get mc service ===>>>>>>>>>> ', resource, serviceDomain)
     axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
         service: resource,
         serviceBody:body,
@@ -287,7 +289,7 @@ export function getMCService(resource, body, callback, self) {
             } else {
                 parseData = response;
             }
-            console.log('parse data userinfo ===>>>>>>>>>> ', parseData,body)
+
             if(parseData){
                 switch(resource){
                     case 'showOrg': callback(FormatComputeOrganization(parseData)); break;
@@ -297,6 +299,7 @@ export function getMCService(resource, body, callback, self) {
                     case 'ShowCloudlet': callback(FormatComputeCloudlet(parseData,body)); break;
                     case 'ShowClusterInst': callback(FormatComputeClstInst(parseData,body)); break;
                     case 'ShowApps': callback(FormatComputeApp(parseData,body)); break;
+                    case 'ShowApp': callback(FormatComputeApp(parseData,body)); break;
                     case 'ShowAppInst': callback(FormatComputeInst(parseData,body)); break;
                     case 'showController': callback(parseData); break;
                     case 'ShowRole': callback(parseData); break;

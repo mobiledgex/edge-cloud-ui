@@ -88,7 +88,7 @@ class MapWithListView extends React.Component {
         //     }
         // })
 
-        // this.props.handleSelectOrg(useData)
+        // this.props.handleBlinkMark(true)
 
     }
 
@@ -417,7 +417,9 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleRefreshData: (data) => { dispatch(actions.refreshData(data))}
+        handleRefreshData: (data) => { dispatch(actions.refreshData(data))},
+        handleBlinkMark: (data) => { dispatch(actions.blinkMark(data))}
+
     };
 };
 

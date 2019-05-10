@@ -43,7 +43,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Instance deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
