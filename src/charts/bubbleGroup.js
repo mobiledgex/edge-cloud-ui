@@ -70,7 +70,7 @@ export default class BubbleGroup extends React.PureComponent {
 
     render() {
         return (
-            <svg width="320" height="320">
+            <svg className="chart-circle" width="320" height="320">
                 <g></g>
             </svg>
         )

@@ -171,3 +171,10 @@ export function showFlavor (flavor) {
         flavor
     }
 }
+export function blinkMark (blink) {
+    console.log('BLINK_MARK == ', blink)
+    return {
+        type: types.BLINK_MARK,
+        blink
+    }
+}

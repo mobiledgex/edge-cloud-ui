@@ -30,6 +30,9 @@ const FormContainer = (props) => (
                 <Input  placeholder='Password' name='password' type='password' ref={ipt=>{props.self.pwd = ipt}} onChange={props.self.onChangeInput}></Input>
             </Grid.Column>
         </Grid.Row>
+        <div className="loginValidation">
+            {props.login_danger}
+        </div>
         <Grid.Row>
             <Button  onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Log In</Button>
         </Grid.Row>
@@ -111,7 +114,8 @@ class Login extends Component {
             successCreate:false,
             errorCreate:false,
             signup: false,
-            successMsg:'Success create new account'
+            successMsg:'Success create new account',
+            loginDanger:''
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -193,6 +197,13 @@ class Login extends Component {
             self.params['userToken'] = result.data.token
             localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
             self.props.mapDispatchToLoginWithPassword(self.params)
+        } else {
+            //display error message
+            Alert.error(result.data.message, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
         }
     }
     requestToken(self) {
@@ -201,8 +212,14 @@ class Login extends Component {
         //self.receiveToken({data:{token:'my test token'}})
     }
     onSubmit() {
-
         const { username, password } = this.state
+        if(!username && !password) {
+            self.setState({loginDanger:'Insert Username and password'});
+        } else if(!username) {
+            self.setState({loginDanger:'Insert Username'});
+        } else if(!password) {
+            self.setState({loginDanger:'Insert Password'});
+        }
         const params = {
             email: username,
             password: password,
@@ -269,7 +286,7 @@ class Login extends Component {
                     <Container>
                         {
                             (!this.state.signup)?
-                            <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle}/>
+                            <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger}/>
 
                             :(this.state.signup)?
                                 (this.state.successCreate || this.state.errorCreate)?

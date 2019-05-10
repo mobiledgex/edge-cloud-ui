@@ -15,6 +15,7 @@ import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
 import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";
 import Alert from "react-s-alert";
+import * as service from "../services/service_compute_service";
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -43,9 +44,9 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'Application Settings', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
-    { menuItem: 'Docker deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
-    { menuItem: 'VM deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'k8s Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} getOptionData={props.regionF} flavorData={props.devOptionsF} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'Docker Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'VM Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
 ]
 class RegistryViewer extends React.Component {
     constructor(props) {
@@ -65,20 +66,21 @@ class RegistryViewer extends React.Component {
             openUser:false,
             orgData:{},
             selectUse:null,
-            resultData:null
-
+            resultData:null,
+            devOptionsF:[]
         };
         this.keysData = [
             {
-                'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
+                'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
                 'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:null, active:true},
                 'AppName':{label:'App Name', type:'RenderInput', necessary:true, tip:null, active:true},
                 'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:null, active:true},
                 'ImagePath':{label:'Image Path', type:'RenderInput', necessary:true, tip:null, active:true},
                 'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:null, active:true, items:['Docker', 'Kubernetes', 'VM']},
                 'ImageType':{label:'Image Type', type:'RenderInput', necessary:false, tip:'If Deployment Type Chosen as kubernetes, then image type is always ImageTypeDocker'},
-                'DefaultFlavor':{label:'Default Flavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:['m4.large','x1.medium', 'x1.small', 'x1.tiny']},
-                'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:'Like this udp:12001,tcp:80,http:7777', active:true, items:null},
+                'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:null, active:true},
+                'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:'Like this udp:12001,tcp:80,http:7777', active:true, items:['tcp', 'udp']},
+                'IpAccess':{label:'Ip Access', type:'IpSelect', necessary:false, tip:null, active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
                 'Command':{label:'Command', type:'RenderInput', necessary:false, tip:'Please input a command that the container runs', active:true},
                 'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Specify either http url of the yaml or upload yaml file or helm chart', active:true},
             },
@@ -88,7 +90,7 @@ class RegistryViewer extends React.Component {
         ]
         this.fakeData = [
             {
-                'Region':'US',
+                'Region':'',
                 'OrganizationName':'',
                 'AppName':'',
                 'Version':'',
@@ -97,6 +99,7 @@ class RegistryViewer extends React.Component {
                 'ImageType':'',
                 'DefaultFlavor':'',
                 'Ports':'',
+                'IpAccess':'',
                 'Command':'',
                 'DeploymentMF':'',
             }
@@ -176,7 +179,7 @@ class RegistryViewer extends React.Component {
 
     generateDOM(open, dimmer, width, height, data, keysData, hideHeader) {
 
-        let panelParams = {data:data, keys:keysData}
+        let panelParams = {data:data, keys:keysData, regionF:this.getOptionData, devOptionsF:this.state.devOptionsF}
 
         return layout.map((item, i) => (
 
@@ -266,6 +269,24 @@ class RegistryViewer extends React.Component {
         (role.indexOf('Operator')!==-1 && role.indexOf('Viewer')!==-1) ? <div className="mark markO markV">V</div> : <div></div>
     )
 
+    getOptionData = (region) => {
+        console.log('computeItem@@',this.props.computeItem)
+        if(this.props.computeItem == "Apps") {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            // clusterFlavor
+            service.getMCService('ShowFlavor',{token:store.userToken,region:region}, _self.receiveF)
+        }
+    }
+
+    receiveF(result) {
+        console.log('receive Flavor ==>>>>>>>>>>>> ', result)
+        let arr = []
+        result.map((item,i) => {
+            arr.push(item.FlavorName)
+        })
+        _self.setState({devOptionsF: arr});
+    }
+
     componentDidMount() {
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -307,9 +328,14 @@ class RegistryViewer extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
         if(nextProps.submitValues) {
+            let serviceBody = {}
             console.log('submit on...', nextProps.submitValues)
             //TODO: // 20190430 add spinner...(loading)
-            services.createNewApp('CreateApp', {params:nextProps.submitValues, token:store.userToken}, _self.receiveResult)
+            serviceBody = {
+                "token":store.userToken,
+                "params": nextProps.submitValues
+            }
+            services.createNewApp('CreateApp', serviceBody, _self.receiveResult)
         }
     }
 
@@ -352,15 +378,21 @@ const createFormat = (data) => (
         "region":data['Region'],
         "app":
             {
-                "key":{"developer_key":{"name":data['DeveloperName']},"name":data['AppName'],"version":data['Version']},
+                "key":{"developer_key":{"name":data['OrganizationName']},"name":data['AppName'],"version":data['Version']},
                 "image_path":data['ImagePath'],
-                "image_type":Number(1),
-                "access_ports":data['Ports'],
+                "image_type":Number(data['ImageType']),
+                "access_ports":data['Portsselect']+":"+data['Ports'],
                 "default_flavor":{"name":data['DefaultFlavor']},
-                "deploymentType":data['DeploymentType']
+                "cluster":{"name":""},
+                "ipaccess":data['IpAccess'],
+                "command":data['Command'],
+                "deploymentType":data['DeploymentMF']
             }
     }
 )
+//'{"region":"US","app":{"key":{"developer_key":{"name":"kgh0505"},"name":"kghtest22","version":"1.0.0"},
+//"image_path":"registry.mobiledgex.net:5000/mobiledgex/simapp",
+//"image_type":1,"access_ports":"udp:12001,tcp:80,http:7777","default_flavor":{"name":"x1.medium"},"cluster":{"name":""},"ipaccess":"IpAccessShared","command":"test","deployment_manifest":"test1111"}}'
 const mapStateToProps = (state) => {
     console.log("store state:::",state);
     let account = state.registryAccount.account;
@@ -371,8 +403,10 @@ const mapStateToProps = (state) => {
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
+        console.log("state.form.createAppFormDefault.values@@",state.form.createAppFormDefault.values)
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
         submitVal = createFormat(enableValue)
+        console.log("submitVal@@@@",submitVal)
     }
     let region = state.changeRegion
         ? {
@@ -387,7 +421,8 @@ const mapStateToProps = (state) => {
         userToken : (state.user.userToken) ? state.userToken: null,
         submitValues: submitVal,
         region: region,
-        selectOrg : state.selectOrg.org?state.selectOrg.org:null
+        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
+        computeItem : state.computeItem?state.computeItem.item:null,
 
     }
     

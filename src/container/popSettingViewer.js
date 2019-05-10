@@ -32,9 +32,11 @@ class PopSettingViewer extends React.Component {
         super();
         this.state = {
             open:false,
+            opened:false,
             dimmer:'',
             listOfDetail:null,
-            regKeys:[]
+            regKeys:[],
+            defaultUrl:'https://mc.mobiledgex.net:9900'
         }
         _self = this;
     }
@@ -43,22 +45,24 @@ class PopSettingViewer extends React.Component {
     handleInitialize() {
 
         const initData = {
-            "userURL": "https://mc.mobiledgex.net:9900",
+            "userURL": this.state.defaultUrl,
         };
 
         this.props.initialize(initData);
     }
-    onHandleSubmit = (a,b,c) => {
-        alert(a,b,c)
-        console.log('+++++++++on handle submit popSettingViewer+++++', a,b,c)
+    onHandleSubmit =(a,b)=> {
+        console.log('+++++++++on handle submit popSettingViewer+++++', _self.props.userURL, a, b)
         _self.props.handleSubmit();
         setTimeout(() => {
-            _self.props.dispatch(reset('registUserSetting'));
             _self.props.dispatch(initialize('registUserSetting', {
-                submitSucceeded: false,
+                submitSucceeded: false
             }))
+            _self.handleInitialize();
         },1000);
 
+    }
+    close() {
+        this.setState({open:false})
     }
 
     componentDidMount() {
@@ -66,84 +70,88 @@ class PopSettingViewer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('regist new item -- ', nextProps)
-        if(nextProps.open) {
-            this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
-            if(nextProps.data){
-                this.setState({regKeys:Object.keys(nextProps.data)})
-            }
+        console.log('regist new item -- ', nextProps, nextProps.usrUrl)
+        // if(nextProps.open) {
+        //     this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
+        //     if(nextProps.data){
+        //         this.setState({regKeys:Object.keys(nextProps.data)})
+        //     }
+        //     this.forceUpdate()
+        // }
+
+        if(nextProps.data){
+            this.setState({regKeys:Object.keys(nextProps.data), defaultUrl:nextProps.usrUrl})
         }
 
     }
 
 
-    close() {
-
-        this.setState({ open: false })
-        this.props.close(false)
-
-    }
-
     makeForm = (regKeys) => (
+        <Form onSubmit={this.onHandleSubmit} className={"fieldForm"}>
+            <Form.Group>
+                <Grid style={{width:'100%'}}>
+                {
+                    regKeys.map((key, i) => (
+                        <Grid.Row columns={2}>
+                            <Grid.Column width={5} className='detail_item'>
+                                <div>{key}</div>
+                            </Grid.Column>
+                            <Grid.Column width={11}>
 
-        regKeys.map((key, i)=>(
-            <Grid.Row columns={2}>
-                <Grid.Column width={5} className='detail_item'>
-                    <div>{key}</div>
-                </Grid.Column>
-                <Grid.Column width={11}>
+                                <Field
+                                    component={renderInput}
+                                    type="input"
+                                    name="userURL"
+                                    value={"https://mc.mobiledgex.net:9900"}
+                                />
 
-                        <Field
-                            component={renderInput}
-                            type="input"
-                            name="userURL"
-                            value={"https://mc.mobiledgex.net:9900"}
-                        />
-
-                </Grid.Column>
-                <Divider vertical></Divider>
-            </Grid.Row>
-        ))
+                            </Grid.Column>
+                            <Divider vertical></Divider>
+                        </Grid.Row>
+                    ))
+                }
+                </Grid>
+            </Form.Group>
+            <Form.Group>
+                <Grid>
+                    <Grid.Row columns={2}>
+                        <Grid.Column>
+                            <Button onClick={() => this.close()}>
+                                Cancel
+                            </Button>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Button
+                                primary
+                                positive
+                                icon='checkmark'
+                                labelPosition='right'
+                                content="Save"
+                                type="submit"
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </Form.Group>
+        </Form>
     )
 
 
     render() {
-        const { handleSubmit, dimmer } = this.props;
+        const { handleSubmit, reset, dimmer } = this.props;
         return (
-            <Fragment>
-            <Form onSubmit={_self.onHandleSubmit} className={"fieldForm"}>
-                <Form.Group>
-                    <Modal size={'small'} open={this.state.open} dimmer={false}>
-                        <Modal.Header>Settings</Modal.Header>
-                        <Modal.Content>
-                            <Grid divided>
 
-                                {
-                                    this.makeForm(this.state.regKeys)
-                                }
+            <Modal size={'small'} open={this.props.open} dimmer={false}>
+                <Modal.Header>Settings</Modal.Header>
+                <Modal.Content>
 
-                            </Grid>
-                        </Modal.Content>
-                        <Modal.Actions>
+                        {
+                            this.makeForm(this.state.regKeys)
+                        }
 
-                                <Button onClick={() => this.close()}>
-                                    Cancel
-                                </Button>
-                                <Button
-                                    primary
-                                    onClick={handleSubmit}
-                                    positive
-                                    icon='checkmark'
-                                    labelPosition='right'
-                                    content="Save"
-                                    type="submit"
-                                />
+                </Modal.Content>
+            </Modal>
 
-                        </Modal.Actions>
-                    </Modal>
-                </Form.Group>
-            </Form>
-            </Fragment>
         )
     }
 }
@@ -151,6 +159,6 @@ class PopSettingViewer extends React.Component {
 
 export default reduxForm({
     form: "registUserSetting",
-    enableReinitialize: true
+    enableReinitialize: false
 })(PopSettingViewer);
 

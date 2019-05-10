@@ -23,3 +23,4 @@ export const SEARCH_VALUE = 'SEARCH_VALUE';
 export const CHANGE_REGION = 'CHANGE_REGION';
 export const COMPUTE_REFRESH = 'COMPUTE_REFRESH';
 export const LOADING_SPINNER = 'LOADING_SPINNER';
+export const BLINK_MARK = 'BLINK_MARK';

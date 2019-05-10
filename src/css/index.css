@@ -1267,5 +1267,38 @@ rect.zoom {
     margin-right: 6px;
 }
 
+.loginValidation {
+    font-size: 17px;
+    color:#FF1902;
+}
 
+.loading {
+    display: none;
+}
 
+.removePorts {
+    font-size: 25px;
+    font-weight: bold;
+    position: relative;
+    top: 8px;
+    right: 7px;
+    cursor: pointer;
+    transition: .1s linear;
+}
+.removePorts:hover {
+    color:#fff;
+}
+.addPortMapping {
+    font-size: 16px;
+    cursor: pointer;
+    color:#fff;
+    padding:8px 16px;
+    border-radius: 20px;
+    background:#666;
+    user-select: none;
+    margin: 20px 0 15px 15px;
+    transition: .1s linear;
+}
+.addPortMapping:hover {
+    background:#777;
+}

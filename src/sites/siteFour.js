@@ -129,7 +129,8 @@ class SiteFour extends React.Component {
             setMotion:defaultMotion,
             OrganizationName:'-',
             adminShow:false,
-            openSettings:false
+            openSettings:false,
+            userURL:''
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
@@ -346,7 +347,7 @@ class SiteFour extends React.Component {
 
     }
     getAdminInfo(token) {
-        computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
+        //computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
     }
     componentWillMount() {
         console.log('info..will mount ', this.columnLeft)
@@ -392,9 +393,11 @@ class SiteFour extends React.Component {
         /**
          * setting url of data Rest
          **/
-        if(nextProps.userSetting) {
-            Service.setDomain(nextProps.userSetting)
-            computeService.setDomain(nextProps.userSetting)
+        if(nextProps.userSetting && nextProps.userSetting.submitSucceeded) {
+            console.log('user setting...', nextProps.userSetting)
+            Service.setDomain(nextProps.userSetting.userURL)
+            computeService.setDomain(nextProps.userSetting.userURL)
+            this.setState({openSettings:false, userURL:nextProps.userSetting.userURL})
         }
     }
 
@@ -473,7 +476,9 @@ class SiteFour extends React.Component {
                         size={25}
                         color={'#70b2bc'}
                         loading={this.props.loadingSpinner}
+                        //loading={true}
                     />
+                    <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
                 </div>
                 <Grid.Row className='gnb_header'>
                     <Grid.Column width={10} className='navbar_left'>
@@ -514,10 +519,10 @@ class SiteFour extends React.Component {
                         <div>
                             <span>Support</span>
                         </div>
-
-                        <PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')}></PopSettingViewer>
-                        <PopProfileViewer data={this.props.userInfo.info} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>
                     </Grid.Column>
+                    <PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')} usrUrl={this.state.userURL}></PopSettingViewer>
+                    <PopProfileViewer data={this.props.userInfo.info} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>
+
                 </Grid.Row>
                 <Grid.Row columns={2} className='view_contents'>
                     <Grid.Column width={2} className='view_left'>
@@ -662,6 +667,7 @@ class SiteFour extends React.Component {
 
 const mapStateToProps = (state) => {
     console.log("siteFour@@@stateRedux ::: ",state.form.registUserSetting)
+
     return {
         viewBtn : state.btnMnmt?state.btnMnmt:null,
         userToken : (state.userToken) ? state.userToken: null,
@@ -669,7 +675,12 @@ const mapStateToProps = (state) => {
         userRole : state.showUserRole?state.showUserRole.role:null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         loadingSpinner : state.loadingSpinner.loading?state.loadingSpinner.loading:null,
-        userSetting : state.form.registUserSetting ? state.form.registUserSetting.values : null
+        userSetting : state.form.registUserSetting
+            ? {
+                userURL: state.form.registUserSetting.values.userURL,
+                submitSucceeded: state.form.registUserSetting.submitSucceeded
+            }
+            : {}
     }
 };
 
