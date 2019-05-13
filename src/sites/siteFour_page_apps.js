@@ -145,14 +145,17 @@ class SiteFourPageApps extends React.Component {
             services.getMCService('ShowApp',serviceBody, _self.receiveResult)
         })
     }
-    /*
+    
+    getDataDeveloperSub = () => {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        this.getDataDeveloper(store.userToken, this.props.region.value);
+    }
 
-     */
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} userToken={this.userToken}></DeveloperListView>
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></DeveloperListView>
         );
     }
 

@@ -1,5 +1,19 @@
 import React, { Fragment } from "react";
-import {Button, Form, Item, Message, Divider, Modal, List, Grid, Card, Dropdown, Input} from "semantic-ui-react";
+import {
+    Button,
+    Form,
+    Item,
+    Message,
+    Divider,
+    Modal,
+    List,
+    Grid,
+    Card,
+    Dropdown,
+    Input,
+    Popup,
+    Icon
+} from "semantic-ui-react";
 import { Field, reduxForm, initialize, change, reset } from "redux-form";
 import MaterialIcon from "../sites/siteFour_page_createOrga";
 import './styles.css';
@@ -58,14 +72,26 @@ class registNewInput extends React.Component {
                 {key: 2, value: "EU", text: "EU"}
             ],
             ipAccessStatic:[
-                {key: 1, value: "IpAccessUnknown", text: "IpAccessUnknown"},
-                {key: 2, value: "IpAccessDedicated", text: "IpAccessDedicated"},
-                {key: 3, value: "IpAccessDedicatedOrShared", text: "IpAccessDedicatedOrShared"},
-                {key: 4, value: "IpAccessShared", text: "IpAccessShared"}
+                {key: 0, value: "0", text: "IpAccessUnknown"},
+                {key: 1, value: "1", text: "IpAccessDedicated"},
+                {key: 2, value: "2", text: "IpAccessDedicatedOrShared"},
+                {key: 3, value: "3", text: "IpAccessShared"}
             ]
         };
 
     }
+
+    getHelpPopup =(key)=> (
+        (key === 'CloudletName' || key === 'Operator' || key === 'OperatorName' || key === 'ClusterName' || key === 'OrganizationName') ? false
+        :
+        <Popup
+            trigger={<Icon name='question circle outline' size='large' style={{lineHeight: '38px'}}/>}
+            content={key}
+            // content={this.state.tip}
+            // style={style}
+            inverted
+        />
+    )
 
     handleInitialize = () => {
         if(this.props.defaultValue){
@@ -105,15 +131,15 @@ class registNewInput extends React.Component {
                             <Modal.Header>Settings</Modal.Header>
                             <Modal.Content>
                                 <div style={{display:'flex', flexDirection:'row', width:'100%'}}>
-                                    <Grid divided style={{width:800}}>
+                                    <Grid divided style={{width:1000}}>
                                     {
                                         (data.length > 0)?
                                         regKeys.map((key, i)=>(
-                                            <Grid.Row key={i} columns={2}>
+                                            <Grid.Row key={i} columns={3}>
                                                 <Grid.Column width={5} className='detail_item'>
                                                     <div>{key}</div>
                                                 </Grid.Column>
-                                                <Grid.Column width={11}>
+                                                <Grid.Column width={9}>
                                                 {
                                                     (key === 'Operator')?
                                                     <Field component={renderSelect} placeholder='Select Operator' name='Operator' options={option[0]} value={value[0]} />
@@ -131,8 +157,8 @@ class registNewInput extends React.Component {
                                                     <Field component={renderSelect} placeholder='Select Type' name='Type' options={option[6]} value={value[6]} change={change[6]}/>
                                                     : (key === 'Role')?
                                                     <Field component={renderSelect} placeholder='Select Role' name='DeveloperName' options={option[7]} value={value[7]} change={change[7]}/>
-                                                    : (key === 'ClusterFlavor')?
-                                                    <Field component={renderSelect} placeholder='Select ClusterFlavor' name='ClusterFlavor' options={option[8]} value={value[8]} />
+                                                    : (key === 'Flavor')?
+                                                    <Field component={renderSelect} placeholder='Select Flavor' name='Flavor' options={option[8]} value={value[8]} />
                                                     : (key === 'IpAccess')?
                                                     <Field component={renderSelect} placeholder='Select IpAccess' name='IpAccess' options={this.state.ipAccessStatic} />
                                                     : (key === 'CloudletLocation')?
@@ -145,6 +171,9 @@ class registNewInput extends React.Component {
                                                     :
                                                     <Field component={renderInput} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } />
                                                 }
+                                                </Grid.Column>
+                                                <Grid.Column width={2}>
+                                                    {this.getHelpPopup(key)}
                                                 </Grid.Column>
                                                 <Divider vertical></Divider>
                                             </Grid.Row>

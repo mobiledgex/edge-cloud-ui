@@ -21,9 +21,10 @@ import searchValue from './searchValue';
 import changeRegion from './changeRegion';
 import computeRefresh from './computeRefresh';
 import loadingSpinner from './loadingSpinner';
+import loginMode from './loginMode';
 
 const reducers = combineReducers({
-    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor,
+    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor, loginMode,
     registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, searchValue, computeRefresh, loadingSpinner, form: formReducer
 });
 

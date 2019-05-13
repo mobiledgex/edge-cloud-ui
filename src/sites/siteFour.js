@@ -347,7 +347,7 @@ class SiteFour extends React.Component {
 
     }
     getAdminInfo(token) {
-        //computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
+        computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
     }
     componentWillMount() {
         console.log('info..will mount ', this.columnLeft)
@@ -364,10 +364,10 @@ class SiteFour extends React.Component {
             computeService.getMCService('showController', {token:store.userToken}, this.receiveResult, this);
         }
         //if there is no role
-
+            //site1으로 이동할 수 없는 문제로 아래 코드 주석처리 by inki
             //show you create the organization view
-            this.setState({page:'pg=0'})
-            this.gotoUrl('/site4', 'pg=0')
+            //this.setState({page:'pg=0'})
+            //this.gotoUrl('/site4', 'pg=0')
 
         this.getAdminInfo(store.userToken);
 
@@ -490,7 +490,7 @@ class SiteFour extends React.Component {
                         <div style={{cursor:'pointer'}} onClick={this.computeRefresh}>
                             <MaterialIcon icon={'refresh'} />
                         </div>
-                        <div style={{cursor:'pointer'}} onClick={() => this.gotoPreview('/site1')}>
+                        <div style={{cursor:'pointer'}} onClick={() => this.gotoUrl('/site1','pg=0')}>
                             <MaterialIcon icon={'public'} />
                         </div>
                         <div style={{cursor:'pointer'}} onClick={() => console.log('')}>
@@ -594,6 +594,9 @@ class SiteFour extends React.Component {
                                 null
                             }
                         </Menu>
+                        <div style={{position:'fixed', bottom:10, color:'rgba(255,255,255,.2)'}}>
+                            version 0.7.5
+                        </div>
                     </Grid.Column>
                     <Grid.Column width={14} style={{height:this.state.bodyHeight}} className='contents_body'>
                         <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>

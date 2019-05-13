@@ -44,9 +44,9 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'k8s Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} getOptionData={props.regionF} flavorData={props.devOptionsF} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
-    { menuItem: 'Docker Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
-    { menuItem: 'VM Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} getOptionData={props.regionF} flavorData={props.devOptionsF} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    // { menuItem: 'Docker Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    // { menuItem: 'VM Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
 ]
 class RegistryViewer extends React.Component {
     constructor(props) {
@@ -67,7 +67,8 @@ class RegistryViewer extends React.Component {
             orgData:{},
             selectUse:null,
             resultData:null,
-            devOptionsF:[]
+            devOptionsF:[],
+            loopCancel:true
         };
         this.keysData = [
             {
@@ -75,12 +76,12 @@ class RegistryViewer extends React.Component {
                 'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:null, active:true},
                 'AppName':{label:'App Name', type:'RenderInput', necessary:true, tip:null, active:true},
                 'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:null, active:true},
-                'ImagePath':{label:'Image Path', type:'RenderInput', necessary:true, tip:null, active:true},
-                'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:null, active:true, items:['Docker', 'Kubernetes', 'VM']},
+                'ImagePath':{label:'Image Path', type:'RenderInput', necessary:true, tip:'aaa', active:true},
+                'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'aaa', active:true, items:['Docker', 'Kubernetes', 'VM']},
                 'ImageType':{label:'Image Type', type:'RenderInput', necessary:false, tip:'If Deployment Type Chosen as kubernetes, then image type is always ImageTypeDocker'},
-                'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:null, active:true},
+                'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'aaa', active:true},
                 'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:'Like this udp:12001,tcp:80,http:7777', active:true, items:['tcp', 'udp']},
-                'IpAccess':{label:'Ip Access', type:'IpSelect', necessary:false, tip:null, active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
+                'IpAccess':{label:'Ip Access', type:'IpSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
                 'Command':{label:'Command', type:'RenderInput', necessary:false, tip:'Please input a command that the container runs', active:true},
                 'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Specify either http url of the yaml or upload yaml file or helm chart', active:true},
             },
@@ -134,16 +135,33 @@ class RegistryViewer extends React.Component {
     }
     receiveResult (result) {
         console.log('result creat app ...', result.data.error)
-        Alert.error(result.data.error, {
-            position: 'top-right',
-            effect: 'slide',
-            onShow: function () {
-                console.log('aye!')
-            },
-            beep: true,
-            timeout: 5000,
-            offset: 100
-        });
+        _self.props.handleLoadingSpinner(false);
+        if(result.data.error) {
+            Alert.error(result.data.error, {
+                position: 'top-right',
+                effect: 'slide',
+                onShow: function () {
+                    console.log('error!')
+                },
+                beep: true,
+                timeout: 5000,
+                offset: 100
+            });
+            return;
+        } else {
+            //this.props.gotoApp();
+            Alert.success('SUCCESS', {
+                position: 'top-right',
+                effect: 'slide',
+                onShow: function () {
+                    console.log('aye!')
+                },
+                beep: true,
+                timeout: 5000,
+                offset: 100
+            });
+            //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=6'})
+        }
     }
 
     onUseOrg(useData,key, evt) {
@@ -287,6 +305,12 @@ class RegistryViewer extends React.Component {
         _self.setState({devOptionsF: arr});
     }
 
+    loadingBox = (serviceBody) => {
+        this.setState({loopCancel:false});
+        _self.props.handleLoadingSpinner(true);
+        services.createNewApp('CreateApp', serviceBody, _self.receiveResult)
+    }
+
     componentDidMount() {
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -312,7 +336,7 @@ class RegistryViewer extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('nextProps',nextProps,this.props.siteId)
+        console.log('nextPropsapp@@',nextProps.submitValues)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -335,7 +359,8 @@ class RegistryViewer extends React.Component {
                 "token":store.userToken,
                 "params": nextProps.submitValues
             }
-            services.createNewApp('CreateApp', serviceBody, _self.receiveResult)
+            if(this.state.loopCancel) this.loadingBox(serviceBody);
+            
         }
     }
 
@@ -381,7 +406,7 @@ const createFormat = (data) => (
                 "key":{"developer_key":{"name":data['OrganizationName']},"name":data['AppName'],"version":data['Version']},
                 "image_path":data['ImagePath'],
                 "image_type":Number(data['ImageType']),
-                "access_ports":data['Portsselect']+":"+data['Ports'],
+                "access_ports":accessport(data),
                 "default_flavor":{"name":data['DefaultFlavor']},
                 "cluster":{"name":""},
                 "ipaccess":data['IpAccess'],
@@ -390,6 +415,21 @@ const createFormat = (data) => (
             }
     }
 )
+// access_ports combine
+const accessport = (data) => {
+    let key = Object.keys(data);
+    let num = 0;
+    let portSum = '';
+    key.map((item,i) => {
+        if(item.includes('Portsselect')){
+            portSum = portSum + data['Portsselect_'+num]+":"+data['Ports_'+num]+',';
+            num++;
+        }
+    })
+    portSum = portSum.substr(0, portSum.length -1)
+    return portSum;
+}
+
 //'{"region":"US","app":{"key":{"developer_key":{"name":"kgh0505"},"name":"kghtest22","version":"1.0.0"},
 //"image_path":"registry.mobiledgex.net:5000/mobiledgex/simapp",
 //"image_type":1,"access_ports":"udp:12001,tcp:80,http:7777","default_flavor":{"name":"x1.medium"},"cluster":{"name":""},"ipaccess":"IpAccessShared","command":"test","deployment_manifest":"test1111"}}'
@@ -437,7 +477,8 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
-        handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))}
+        handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 
