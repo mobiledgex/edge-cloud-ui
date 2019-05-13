@@ -26,13 +26,15 @@ const numberDes =(a,b)=> (
     "master_flavor":"m4.small"
 }
  */
-let generateData = (datas) => {
+let generateData = (datas,body) => {
     console.log('format data clusterinst - ', datas)
     let values = [];
     let toArray = null;
     let toJson = [];
+    let ipaccessArr = ['IpAccessUnknown','IpAccessDedicated','IpAccessDedicatedOrShared','IpAccessShared'];
     if(datas.data) {
         if(typeof datas.data === 'object') {
+            console.log("datas.data@@@",datas.data)
             toJson.push((datas.data)?datas.data:{});
         } else {
             toArray = datas.data.split('\n')
@@ -51,27 +53,25 @@ let generateData = (datas) => {
 
             } else {
                 let Index = i;
-                let Region = dataResult.data.key.region || 'US';
+                let Region = body.region || '-';
                 let ClusterName = dataResult.data.key.cluster_key.name  || '-';
                 let DeveloperName = dataResult.data.key.developer || '-';
                 let Operator = dataResult.data.key.cloudlet_key.operator_key.name  || '-';
                 let Cloudlet = dataResult.data.key.cloudlet_key.name  || '-';
-                let ClusterFlavor = dataResult.data.flavor.name || '-';
-                // let NodeFlavor = dataResult.data.node_flavor || '';
-                // let MasterFlavor = dataResult.data.master_flavor || '';
-                // let State = dataResult.data.state || '';
-                let IpAccess = dataResult.data.ip_access || '-';
-                // let Liveness = dataResult.data.liveness || '-';
+                let Flavor = dataResult.data.flavor.name || '-';
+                let NodeFlavor = dataResult.data.node_flavor || '';
+                let MasterFlavor = dataResult.data.master_flavor || '';
+                let IpAccess = ipaccessArr[dataResult.data.ip_access] || '-';
                 let CloudletLocation = '-';
 
-                let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'ClusterFlavor', 'IpAccess', 'CloudletLocation'];
-                values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, ClusterFlavor:ClusterFlavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, Edit:newRegistKey})
+                let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'NumberOfMaster', 'NumberOfNode', 'CloudletLocation'];
+                values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, Edit:newRegistKey})
             }
         })
     } else {
-        let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'ClusterFlavor', 'IpAccess', 'CloudletLocation'];
+        let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'NumberOfMaster', 'NumberOfNode', 'CloudletLocation'];
         //values.push({Edit:newRegistKey})
-        values.push({Region:'', ClusterName:'', OrganizationName:'', Operator:'', Cloudlet:'', ClusterFlavor:'', IpAccess:'', CloudletLocation:'', Edit:newRegistKey})
+        values.push({Region:'', ClusterName:'', OrganizationName:'', Operator:'', Cloudlet:'', Flavor:'', IpAccess:'', CloudletLocation:'', Edit:newRegistKey})
     }
 
     //ascending or descending
@@ -92,8 +92,8 @@ const retunDate = (str) => {
     var date = new Date(year, month-1, day, hour, minute);
     return moment(date).format('hh:mm');
 }
-const FormatComputeClstInst = (props) => (
-    generateData(props)
+const FormatComputeClstInst = (props,body) => (
+    generateData(props,body)
 )
 
 export default FormatComputeClstInst;

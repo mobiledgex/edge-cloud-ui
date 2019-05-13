@@ -58,7 +58,9 @@ class ClustersMap extends Component {
             oldCountry:'',
             unselectCity:'',
             clickCities:[],
-            name:''
+            //blink
+            keyName:''
+            //-blink
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)
@@ -135,37 +137,22 @@ class ClustersMap extends Component {
     handleAnnoteClick(city) {
         console.log("@@@&&",city)
     }
-
+    //blink
     onMarkOver(city,key, evt) {
-        console.log('11',city,'22',this.state,'33',key)
-
         this.setState({
-            name: city.name
+            keyName: 'blinkMark'+key
         })
 
-        //
-        //         // if(d3.selectAll('.st1').selectAll(":hover")) {
-        //         //     d3.selectAll('.st1').selectAll(":hover")
-        //         //         .transition()
-        //         //         .ease(d3.easeBack)
-        //         //         .attr("r", markerSize[0])
-        //         //
-        //         // }
-        //
-        //         // if(city) {
-        //         //     city.name.map((item, i) => {
-        //         //         clickMarker.push({ "name": item,    "coordinates": city.coordinates, "population": 17843000, "cost":1 })
-        //         //     })
-        //         // }
-        //         // this.setState({
-        //         //     clickCities:clickMarker
-        //         // })
-        //         // this.props.handleChangeClickCity(clickMarker);
-        //         // this.props.handleChangeCity(city)
-
+        console.log('11',city,'22',this.state,'33',key,this.state.keyName)
 
 
     }
+    onMarkOut(city,key, evt) {
+        this.setState({
+            keyName: ''
+        })
+    }
+    //-blink
 
     handleGotoAnalysis(country) {
         if(this.props.parentProps) this.props.parentProps.gotoNext(country);
@@ -281,14 +268,16 @@ class ClustersMap extends Component {
         //         .style("opacity",alpha)
         // }
 
-        if(d3.selectAll('.'+id).selectAll((this.state.name !== '')?'.'+this.state.name:null)) {
-            d3.selectAll('.'+id).selectAll((this.state.name !== '')?'.'+this.state.name:null)
+        //blink
+        if(d3.selectAll('.'+id).selectAll((this.state.keyName !== '')?'.'+this.state.keyName:null)) {
+            d3.selectAll('.'+id).selectAll((this.state.keyName !== '')?'.'+this.state.keyName:null)
                 .transition()
                 .duration(durate)
                 .ease(d3.easeBack)
                 .attr("r", radius)
                 .style("opacity",alpha)
         }
+        //-blink
 
         if(d3.selectAll('.detailMarker_'+_self.state.selectedCity)) {
             d3.selectAll('.detailMarker_'+_self.state.selectedCity)
@@ -479,12 +468,14 @@ class ClustersMap extends Component {
                                             {(this.props.itemLabel == "Cloudlets" && !this.state.detailMode) ?
                                                 this.state.cities.map((city, i) => (
                                                     <Marker className="markerTwo" key={i} marker={city} onClick={ this.handleCityClick }
-                                                            style={{}} onMouseOver={(evt) => this.onMarkOver(city,i, evt)}
+                                                            style={{}}
                                                     >
 
                                                         <g version="1.1" id="Layer_1" x="0px" y="0px"
                                                             viewBox="0 0 50 50" style={{enableBackground:"new 0 0 50 50"}}
-                                                            className={[(city.name == this.state.name)?this.state.name:null, (city.population > 35000000)?'levelFive':'levelOther'].join(' ')}
+                                                            //blink
+                                                            className={[('blinkMark' + i == this.state.keyName)?this.state.keyName:null, (city.population > 35000000)?'levelFive':'levelOther'].join(' ')}
+                                                            //-blink
                                                             cx={0}
                                                             cy={0}
                                                             r={cityScale(city.population)}
@@ -496,7 +487,10 @@ class ClustersMap extends Component {
                                                             strokeWidth={styles.marker.strokeWidth}
                                                             transform={"translate(-24,-18)"} mix-blend-mode="lighten"
 
+                                                            //blink
                                                            onMouseOver={(evt) => this.onMarkOver(city,i, evt)}
+                                                           onMouseOut={(evt) => this.onMarkOut(city,i, evt)}
+                                                            //-blink
                                                         >
                                                             {/* 필터 innershadow */}
                                                             <defs>
@@ -544,17 +538,85 @@ class ClustersMap extends Component {
                                                         {/*</text>*/}
                                                     </Marker>
                                                 ))
+                                                : (this.props.itemLabel == "Cluster Instances" && !this.state.detailMode) ?
+                                                this.state.cities.map((city, i) => (
+                                                    <Marker className="markerTwo" key={i} marker={city} onClick={ this.handleCityClick }
+                                                            style={{}}
+                                                    >
+                                                        <g version="1.1" id="Layer_1" x="0px" y="0px"
+                                                           viewBox="0 0 50 50" style={{enableBackground:"new 0 0 50 50"}}
+                                                            //blink
+                                                           className={[('blinkMark' + i == this.state.keyName)?this.state.keyName:null, (city.population > 35000000)?'levelFive':'levelOther'].join(' ')}
+                                                            //-blink                                                           cx={0}
+                                                           cy={0}
+                                                           r={cityScale(city.population)}
+                                                           fill={
+                                                               'url(#levelBg)'
+                                                               // '#394251'
+                                                           }
+                                                           stroke={styles.marker.stroke}
+                                                           strokeWidth={styles.marker.strokeWidth}
+                                                           transform={"translate(-25,-27)"} mix-blend-mode="lighten"
+
+                                                            //blink
+                                                           onMouseOver={(evt) => this.onMarkOver(city,i, evt)}
+                                                           onMouseOut={(evt) => this.onMarkOut(city,i, evt)}
+                                                            //-blink
+                                                        >
+                                                            <defs>
+                                                                <filter id="innershadow" x0="-50%" y0="-50%" width="200%" height="200%">
+                                                                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"></feGaussianBlur>
+                                                                    <feOffset dy="2" dx="3"></feOffset>
+                                                                    <feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite>
+
+                                                                    <feFlood flood-color={
+                                                                        (city.population > 35000000)?grdColors[5]:
+                                                                            (city.population <= 35000000 &&  city.population > 30000000)?grdColors[4]:
+                                                                                (city.population <= 30000000 &&  city.population > 25000000)?grdColors[3]:
+                                                                                    (city.population <= 25000000 &&  city.population > 20000000)?grdColors[2]:
+                                                                                            grdColors[8]}
+                                                                             flood-opacity="1"></feFlood>
+                                                                    <feComposite in2="shadowDiff" operator="in"></feComposite>
+                                                                    <feComposite in2="SourceGraphic" operator="over" result="firstfilter"></feComposite>
+
+                                                                    <feGaussianBlur in="firstfilter" stdDeviation="3" result="blur2"></feGaussianBlur>
+                                                                    <feOffset dy="-2" dx="-3"></feOffset>
+                                                                    <feComposite in2="firstfilter" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite>
+
+                                                                    <feFlood flood-color={
+                                                                        (city.population > 35000000)?grdColors[5]:
+                                                                            (city.population <= 35000000 &&  city.population > 30000000)?grdColors[4]:
+                                                                                (city.population <= 30000000 &&  city.population > 25000000)?grdColors[3]:
+                                                                                    (city.population <= 25000000 &&  city.population > 20000000)?grdColors[2]:
+                                                                                        grdColors[8]}
+                                                                             flood-opacity="1"></feFlood>
+                                                                    <feComposite in2="shadowDiff" operator="in"></feComposite>
+                                                                    <feComposite in2="firstfilter" operator="over"></feComposite>
+                                                                </filter>
+                                                            </defs>
+                                                            <path filter="url(#innershadow)" className="st2" d="M 20.832031 8.332031 L 8.332031 8.332031 C 6.042969 8.332031 4.1875 10.207031 4.1875 12.5 L 4.167969 37.5 C 4.167969 39.792969 6.042969 41.667969 8.332031 41.667969 L 41.667969 41.667969 C 43.957031 41.667969 45.832031 39.792969 45.832031 37.5 L 45.832031 16.667969 C 45.832031 14.375 43.957031 12.5 41.667969 12.5 L 25 12.5 Z M 20.832031 8.332031 ">
+                                                                {/*<animateTransform attributeName="transform" type="scale" additive="sum" from="1 1" to="1.5 1.5" begin="0s" dur="1.2s" repeatCount="indefinite"></animateTransform>*/}
+                                                            </path>
+                                                            {/*<path filter="url(#innershadow)" class="st2" d="M50.19,25.24c0,13.81-25,46.51-25,46.51s-25-32.7-25-46.51s11.19-25,25-25S50.19,11.43,50.19,25.24z"/>*/}
+                                                        </g>
+                                                        <text textAnchor="middle" y={8} className="marker_value"
+                                                              style={{fontSize: 24}}>
+                                                            {city.cost}
+                                                        </text>
+                                                    </Marker>
+                                                ))
                                                 :
                                                 (this.props.itemLabel == "App Instances" && !this.state.detailMode) ?
                                                 this.state.cities.map((city, i) => (
                                                     <Marker className="markerTwo" key={i} marker={city} onClick={ this.handleCityClick }
-                                                            style={{}}  onMouseOver={(evt) => this.onMarkOver(city,i, evt)}
+                                                            style={{}}
                                                     >
 
                                                         <g version="1.1" id="Layer_1" x="0px" y="0px"
                                                            viewBox="0 0 50 50" style={{enableBackground:"new 0 0 50 50"}}
-                                                           className={(city.population > 35000000)?'levelFive':'levelOther'}
-                                                           cx={0}
+                                                            //blink
+                                                           className={[('blinkMark' + i == this.state.keyName)?this.state.keyName:null, (city.population > 35000000)?'levelFive':'levelOther'].join(' ')}
+                                                            //-blink                                                           cx={0}
                                                            cy={0}
                                                            r={cityScale(city.population)}
                                                            fill={
@@ -565,7 +627,10 @@ class ClustersMap extends Component {
                                                            strokeWidth={styles.marker.strokeWidth}
                                                            transform={"translate(-17,-21)"} mix-blend-mode="lighten"
 
+                                                            //blink
                                                            onMouseOver={(evt) => this.onMarkOver(city,i, evt)}
+                                                           onMouseOut={(evt) => this.onMarkOut(city,i, evt)}
+                                                            //-blink
                                                         >
                                                             <defs>
                                                                 <filter id="innershadow" x0="-50%" y0="-50%" width="200%" height="200%">
@@ -603,72 +668,6 @@ class ClustersMap extends Component {
                                                                 {/*<animateTransform attributeName="transform" type="scale" additive="sum" from="1 1" to="1.5 1.5" begin="0s" dur="1.2s" repeatCount="indefinite"></animateTransform>*/}
                                                             </path>
 
-                                                        </g>
-                                                        <text textAnchor="middle" y={8} className="marker_value"
-                                                              style={{fontSize: 24}}>
-                                                            {city.cost}
-                                                        </text>
-                                                    </Marker>
-                                                ))
-                                                :
-                                                (this.props.itemLabel == "Cluster Instances" && !this.state.detailMode) ?
-                                                this.state.cities.map((city, i) => (
-                                                    <Marker className="markerTwo" key={i} marker={city} onClick={ this.handleCityClick }
-                                                            style={{}}  onMouseOver={(evt) => this.onMarkOver(city,i, evt)}
-                                                    >
-
-                                                        <g version="1.1" id="Layer_1" x="0px" y="0px"
-                                                           viewBox="0 0 50 50" style={{enableBackground:"new 0 0 50 50"}}
-                                                           className={(city.population > 35000000)?'levelFive':'levelOther'}
-                                                           cx={0}
-                                                           cy={0}
-                                                           r={cityScale(city.population)}
-                                                           fill={
-                                                               'url(#levelBg)'
-                                                               // '#394251'
-                                                           }
-                                                           stroke={styles.marker.stroke}
-                                                           strokeWidth={styles.marker.strokeWidth}
-                                                           transform={"translate(-25,-27)"} mix-blend-mode="lighten"
-
-                                                           onMouseOver={(evt) => this.onMarkOver(city,i, evt)}
-                                                        >
-                                                            <defs>
-                                                                <filter id="innershadow" x0="-50%" y0="-50%" width="200%" height="200%">
-                                                                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"></feGaussianBlur>
-                                                                    <feOffset dy="2" dx="3"></feOffset>
-                                                                    <feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite>
-
-                                                                    <feFlood flood-color={
-                                                                        (city.population > 35000000)?grdColors[5]:
-                                                                            (city.population <= 35000000 &&  city.population > 30000000)?grdColors[4]:
-                                                                                (city.population <= 30000000 &&  city.population > 25000000)?grdColors[3]:
-                                                                                    (city.population <= 25000000 &&  city.population > 20000000)?grdColors[2]:
-                                                                                        grdColors[8]}
-                                                                             flood-opacity="1"></feFlood>
-                                                                    <feComposite in2="shadowDiff" operator="in"></feComposite>
-                                                                    <feComposite in2="SourceGraphic" operator="over" result="firstfilter"></feComposite>
-
-
-                                                                    <feGaussianBlur in="firstfilter" stdDeviation="3" result="blur2"></feGaussianBlur>
-                                                                    <feOffset dy="-2" dx="-3"></feOffset>
-                                                                    <feComposite in2="firstfilter" operator="arithmetic" k2="-1" k3="1" result="shadowDiff"></feComposite>
-
-                                                                    <feFlood flood-color={
-                                                                        (city.population > 35000000)?grdColors[5]:
-                                                                            (city.population <= 35000000 &&  city.population > 30000000)?grdColors[4]:
-                                                                                (city.population <= 30000000 &&  city.population > 25000000)?grdColors[3]:
-                                                                                    (city.population <= 25000000 &&  city.population > 20000000)?grdColors[2]:
-                                                                                        grdColors[8]}
-                                                                             flood-opacity="1"></feFlood>
-                                                                    <feComposite in2="shadowDiff" operator="in"></feComposite>
-                                                                    <feComposite in2="firstfilter" operator="over"></feComposite>
-                                                                </filter>
-                                                            </defs>
-                                                            <path filter="url(#innershadow)" className="st2" d="M 20.832031 8.332031 L 8.332031 8.332031 C 6.042969 8.332031 4.1875 10.207031 4.1875 12.5 L 4.167969 37.5 C 4.167969 39.792969 6.042969 41.667969 8.332031 41.667969 L 41.667969 41.667969 C 43.957031 41.667969 45.832031 39.792969 45.832031 37.5 L 45.832031 16.667969 C 45.832031 14.375 43.957031 12.5 41.667969 12.5 L 25 12.5 Z M 20.832031 8.332031 ">
-                                                                {/*<animateTransform attributeName="transform" type="scale" additive="sum" from="1 1" to="1.5 1.5" begin="0s" dur="1.2s" repeatCount="indefinite"></animateTransform>*/}
-                                                            </path>
-                                                            {/*<path filter="url(#innershadow)" class="st2" d="M50.19,25.24c0,13.81-25,46.51-25,46.51s-25-32.7-25-46.51s11.19-25,25-25S50.19,11.43,50.19,25.24z"/>*/}
                                                         </g>
                                                         <text textAnchor="middle" y={8} className="marker_value"
                                                               style={{fontSize: 24}}>

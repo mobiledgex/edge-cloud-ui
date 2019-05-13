@@ -161,7 +161,7 @@ class SiteFourCreateFormDefault extends React.Component {
     }
 
     getLabel (key, pId) {
-        console.log('key - ', key, 'pid -', pId, 'value-', this.state.fieldKeys[pId])
+        // console.log('key - ', key, 'pid -', pId, 'value-', this.state.fieldKeys[pId])
         return (this.state.fieldKeys && this.state.fieldKeys[pId][key]) ? this.state.fieldKeys[pId][key]['label'] : null
     }
     getNecessary (key, pId) {
@@ -176,8 +176,7 @@ class SiteFourCreateFormDefault extends React.Component {
             inverted
         />
     )
-    onHandleSubmit(a,b) {
-        console.log('a, b', a, b)
+    onHandleSubmit() {
         this.props.handleSubmit();
         setTimeout(() => this.props.dispatch(reset('createAppFormDefault')),1000);
     }
@@ -187,11 +186,16 @@ class SiteFourCreateFormDefault extends React.Component {
         this.props.dispatch(reset('createAppFormDefault'));
     }
 
-    AddPorts = () => {
+    AddPorts = (e) => {
+        e.preventDefault();
         this.setState({portArray:this.state.portArray.concat('item')})
     }
     RemovePorts = (e) => {
-        console.log(e)
+        let arr = this.state.portArray;
+        if(arr.length > 1) {
+            arr.pop()
+        }
+        this.setState({portArray:arr}); 
     }
 
     
@@ -205,7 +209,7 @@ class SiteFourCreateFormDefault extends React.Component {
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
                 <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>
                 <Fragment >
-                    <Form onSubmit={(a,b) => this.onHandleSubmit(a,b)} className={"fieldForm"} >
+                    <Form onSubmit={() => this.onHandleSubmit()} className={"fieldForm"} >
                         <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
                             <Grid columns={2}>
                                 {
@@ -286,8 +290,9 @@ class SiteFourCreateFormDefault extends React.Component {
                                                         <Grid>
                                                             {
                                                                 this.state.portArray.map((item,i) => (
+
                                                                     <Grid.Row key={i} columns={3} style={{paddingBottom:'0px'}}>
-                                                                        <Grid.Column width={7}>
+                                                                        <Grid.Column width={10}>
                                                                             <Field
                                                                                 component={renderInput}
                                                                                 type="input"
@@ -295,7 +300,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                                 //value={data[key]}
                                                                                 />
                                                                         </Grid.Column>
-                                                                        <Grid.Column width={8}>
+                                                                        <Grid.Column width={5}>
                                                                             <Field
                                                                                 component={renderSelect}
                                                                                 placeholder={'Select port'}
@@ -306,12 +311,18 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                                 />
                                                                         </Grid.Column>
                                                                         <Grid.Column width={1}>
-                                                                            <div className='removePorts' onClick={this.RemovePorts}>X</div>
+                                                                            {/*<Button onClick={this.RemovePorts} sttle={{width:'100%'}}>Delete</Button>*/}
+                                                                            <div className='removePorts' onClick={this.RemovePorts}><i className="material-icons">clear</i></div>
                                                                         </Grid.Column>
                                                                     </Grid.Row>
                                                                 ))
                                                             }
-                                                            <div className="addPortMapping" onClick={this.AddPorts}>+ Add Port Mapping</div>
+                                                            <Grid.Row>
+                                                                <Grid.Column>
+                                                                    <Button positive onClick={this.AddPorts}>Add Port Mapping</Button>
+                                                                    {/*<div className="addPortMapping" onClick={this.AddPorts}>+ Add Port Mapping</div>*/}
+                                                                </Grid.Column>
+                                                            </Grid.Row>
                                                         </Grid>
                                                         :
                                                         <Field

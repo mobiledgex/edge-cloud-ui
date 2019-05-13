@@ -35,7 +35,16 @@ class SiteFourPageAppReg extends React.Component {
         this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster']
         this.userToken = null;
     }
-
+    gotoApp() {
+        let mainPath = '/site4';
+        let subPath = 'pg=6';
+        _self.props.history.push({
+            pathname: mainPath,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+    }
     //go to
     gotoPreview(site) {
         //브라우져 입력창에 주소 기록
@@ -110,7 +119,7 @@ class SiteFourPageAppReg extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <RegistryViewer devData={this.state.devData}/>
+            <RegistryViewer devData={this.state.devData} gotoApp={this.gotoApp}/>
         );
     }
 

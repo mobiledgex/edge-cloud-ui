@@ -93,6 +93,36 @@ export function createUser(resource, body, callback, self) {
 
 
 }
+export function resetPassword(resource, body, callback, self) {
+
+    axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    }))
+        .then(function (response) {
+            let parseData = null;
+            if(response) {
+                parseData = JSON.parse(JSON.stringify(response.data));
+            } else {
+
+            }
+            console.log('parse data reset password ===>>>>>>>>>> ', parseData)
+            if(parseData) {
+                if(parseData.message){
+                    console.log(parseData.message)
+                    callback(parseData, resource, self);
+                } else {
+                }
+            }
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
+}
 
 export function example(resource, body, callback) {
     axios.post('https://'+hostname+':3030/register',qs.stringify({

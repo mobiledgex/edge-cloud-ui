@@ -227,7 +227,10 @@ class MapWithListView extends React.Component {
         <Table className="viewListTable" basic='very' striped celled fixed sortable ref={ref => this.viewListTable = ref} style={{width:'100%'}}>
             <Table.Header className="viewListTableHeader"  style={{width:'100%'}}>
                 <Table.Row onMouseOver={() => console.log('onMouseOver..')}>
-                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hidden):null}
+                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hidden):
+                        <Table.HeaderCell textAlign='center'>
+                            No Data
+                        </Table.HeaderCell>}
                 </Table.Row>
             </Table.Header>
             <Table.Body className="tbBodyList">
@@ -262,7 +265,8 @@ class MapWithListView extends React.Component {
                                     :
                                     (value === 'IpAccess')?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            {(item[value] == 1)? "IpAccessUnknown" : (item[value] == 2)? "IpAccessDedicated" : (item[value] == 3)? "IpAccessDedicatedOrShared" : (item[value] == 4)? "IpAccessShared" : "-"}
+                                            {(item[value] == 0)? "IpAccessUnknown" : (item[value] == 1)? "IpAccessDedicated" : (item[value] == 2)? "IpAccessDedicatedOrShared" : (item[value] == 3)? "IpAccessShared" : item[value]}
+                                            {/*{item[value]}*/}
                                         </Table.Cell>
                                     :
                                     (!( String(hidden).indexOf(value) > -1 )) ?
@@ -353,7 +357,7 @@ class MapWithListView extends React.Component {
                         <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open}
                                        selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                                        userToken={this.props.userToken}
-                                       success={this.successfully} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}
+                                       success={this.successfully} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap} refresh={this.props.dataRefresh}
                         />
 
                         <DeleteItem open={this.state.openDelete}

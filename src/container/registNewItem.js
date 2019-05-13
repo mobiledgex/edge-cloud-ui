@@ -284,7 +284,7 @@ class RegistNewItem extends React.Component {
     receiveCF(result) {
         console.log('receive CF ==>>>>>>>>>>>> ', result)
         _self.setState({devOptionsCF: result.map((item, i) => (
-            { key: i, value: item.ClusterFlavor, text: item.ClusterFlavor }
+            { key: i, value: item.FlavorName, text: item.FlavorName }
         ))})
     }
 
@@ -299,32 +299,34 @@ class RegistNewItem extends React.Component {
         _self.setState({appResult:groupByOper})
     }
     receiveSubmit(result) {
-        console.log('registry new ... success result..', result.data)
+        console.log('registry new ... success result@..', result.data)
         _self.props.handleLoadingSpinner(false);
-        if(result.data.error) {
-            Alert.error(result.data.error, {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('error!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
-            return;
-        } else {
-            Alert.success('SUCCESS', {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('aye!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
-        }
+        _self.props.refresh()
+        //데모용 잠시 막아놓음_190513
+        // if(result.data.error) {
+        //     Alert.error(result.data.error, {
+        //         position: 'top-right',
+        //         effect: 'slide',
+        //         onShow: function () {
+        //             console.log('error!')
+        //         },
+        //         beep: true,
+        //         timeout: 5000,
+        //         offset: 100
+        //     });
+        //     return;
+        // } else {
+        //     Alert.success('SUCCESS', {
+        //         position: 'top-right',
+        //         effect: 'slide',
+        //         onShow: function () {
+        //             console.log('aye!')
+        //         },
+        //         beep: true,
+        //         timeout: 5000,
+        //         offset: 100
+        //     });
+        // }
     }
 
     onSubmit = () => {
@@ -332,13 +334,13 @@ class RegistNewItem extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         console.log("siteId@@@",this.props.computeItem)
         this.props.handleLoadingSpinner(true);
-        setTimeout(() => {
-            this.props.handleLoadingSpinner(false);
-        },3000);
+        // setTimeout(() => {
+        //     this.props.handleLoadingSpinner(false);
+        // },3000);
         //TODO: 20190410 메뉴 별 구분 필요
         if(this.props.computeItem === 'Cluster Instances'){
             console.log("submitData@@",this.props.submitData)
-            const {Cloudlet, ClusterFlavor, ClusterName, OrganizationName, Operator, Region, IpAccess} = this.props.submitData.registNewInput.values
+            const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, NumberOfMaster, NumberOfNode} = this.props.submitData.registNewInput.values
             serviceBody = {
                 "token":store.userToken,
                 "params": {
@@ -349,8 +351,10 @@ class RegistNewItem extends React.Component {
                             "cloudlet_key":{"operator_key":{"name":Operator},"name":Cloudlet},
                             "developer":OrganizationName
                         },
-                        "flavor":{"name":ClusterFlavor},
-                        "ipaccess":IpAccess
+                        "flavor":{"name":Flavor},
+                        "ip_access":Number(IpAccess),
+                        "num_masters":Number(NumberOfMaster),
+                        "num_nodes":Number(NumberOfNode)
                     }
                 }
             }
@@ -407,8 +411,8 @@ class RegistNewItem extends React.Component {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // operator, cloudlet
             service.getMCService('ShowCloudlet',{token:store.userToken,region:region}, _self.receiveOper)
-            // clusterFlavor
-            service.getMCService('ShowClusterFlavor',{token:store.userToken,region:region}, _self.receiveCF)
+            // Flavor
+            service.getMCService('ShowFlavor',{token:store.userToken,region:region}, _self.receiveCF)
         }
     }
     

@@ -70,6 +70,7 @@ class RegistryInstViewer extends React.Component {
             operators:[],
             clustinst:[],
             apps:[],
+            loopCancel:true,
             keysData:[
                 {
                     'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
@@ -117,9 +118,19 @@ class RegistryInstViewer extends React.Component {
     }
     getDataDeveloper(token) {
         //get data cloudlet list , app list
-        services.getMCService('ShowCloudlet',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultCloudlet)
-        services.getMCService('ShowApps',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultApp)
-        services.getMCService('ShowClusterInst',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultClusterInst)
+        // let rgn = ['US','EU'];
+        // if(this.props.region !== 'All'){
+        //     rgn = [this.props.region]
+        // } 
+        // rgn.map((item) => {
+        //     services.getMCService('ShowCloudlet',{token:token,region:item}, this.receiveResultCloudlet)
+        //     services.getMCService('ShowApps',{token:token,region:item}, this.receiveResultApp)
+        //     services.getMCService('ShowClusterInst',{token:token,region:item}, this.receiveResultClusterInst)
+        // })
+        services.getMCService('ShowCloudlet',{token:token,region:'US'}, this.receiveResultCloudlet)
+        services.getMCService('ShowApps',{token:token,region:'US'}, this.receiveResultApp)
+        services.getMCService('ShowClusterInst',{token:token,region:'US'}, this.receiveResultClusterInst)
+        
     }
     receiveResultCloudlet = (result) => {
         if(result.error){
@@ -172,6 +183,37 @@ class RegistryInstViewer extends React.Component {
             let assObj = Object.assign([], this.state.keysData);
             assObj[0].ClusterInst.items = keys;
             this.setState({keysData:assObj, clustinst:clinstGroup})
+        }
+    }
+
+    receiveResult (result) {
+        console.log('result creat app ...', result.data.error)
+        _self.props.handleLoadingSpinner(false);
+        if(result.data.error) {
+            Alert.error(result.data.error, {
+                position: 'top-right',
+                effect: 'slide',
+                onShow: function () {
+                    console.log('error!')
+                },
+                beep: true,
+                timeout: 5000,
+                offset: 100
+            });
+            return;
+        } else {
+            //this.props.gotoApp();
+            Alert.success('SUCCESS', {
+                position: 'top-right',
+                effect: 'slide',
+                onShow: function () {
+                    console.log('aye!')
+                },
+                beep: true,
+                timeout: 5000,
+                offset: 100
+            });
+            //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=6'})
         }
     }
 
@@ -242,6 +284,13 @@ class RegistryInstViewer extends React.Component {
         console.log('changed layout = ', JSON.stringify(layout))
     }
 
+    loadingBox = (params,tokens) => {
+        this.setState({loopCancel:false});
+        _self.props.handleLoadingSpinner(true);
+        // services.createNewApp('CreateApp', serviceBody, _self.receiveResult)
+        services.createNewAppInst('CreateAppInst', {params:params, token:tokens}, _self.receiveResult)
+    }
+
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(store.userToken) this.getDataDeveloper(store.userToken);
@@ -269,7 +318,8 @@ class RegistryInstViewer extends React.Component {
 
         if(nextProps.submitValues) {
             console.log('submit on...', nextProps.submitValues)
-            services.createNewAppInst('CreateAppInst', {params:nextProps.submitValues, token:store.userToken}, _self.receiveResult)
+            if(this.state.loopCancel) this.loadingBox(nextProps.submitValues,store.userToken);
+            // services.createNewAppInst('CreateAppInst', {params:nextProps.submitValues, token:store.userToken}, _self.receiveResult)
         }
 
         /************
@@ -424,7 +474,8 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
-        handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))}
+        handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 

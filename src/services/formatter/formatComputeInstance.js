@@ -74,7 +74,27 @@ let generateData = (datas,body) => {
             }
         })
     } else {
-        console.log('there is no result')
+        let newRegistKey = [
+            'Region',
+            'DeveloperName',
+            'AppName',
+            'Version',
+            'Operator',
+            'Cloudlet',
+            'ClusterInst',
+            'CloudletLocation'
+        ];
+        values.push({
+            Region:'',
+            OrganizationName:'',
+            AppName:'',
+            Version:'',
+            Operator:'',
+            Cloudlet:'',
+            ClusterInst:'',
+            CloudletLocation:'',
+            Edit:newRegistKey
+        })
     }
 
     //ascending or descending

@@ -152,8 +152,8 @@ class EntranceGlobe extends Component {
         this.setState({clickedMarker, mouseEvent});
     };
 
-    handleClickLogin() {
-        this.setState({modalOpen:false, loginState:'in'})
+    handleClickLogin(mode) {
+        this.props.handleChangeLoginMode(mode)
     }
     render() {
         const {clickedMarker, hoveredMarker, mouseEvent} = this.state;
@@ -175,8 +175,8 @@ class EntranceGlobe extends Component {
                         {(this.state.modalOpen)?
                             <Grid style={{backgroundColor:'transparent', width:230, height:100, position:'absolute', top:20, right:(this.state.modalOpen)?50:185, alignSelf:'center'}}>
                             <Grid.Row columns={2}>
-                                <Grid.Column ><Button onClick={() => this.setState({signup:false})}><span>Login</span></Button></Grid.Column>
-                                <Grid.Column><Button onClick={() => this.setState({signup:true, modalOpen:true})}><span>SignUp</span></Button></Grid.Column>
+                                <Grid.Column><Button onClick={() => this.handleClickLogin('login')}><span>Login</span></Button></Grid.Column>
+                                <Grid.Column><Button onClick={() => this.handleClickLogin('signup')}><span>SignUp</span></Button></Grid.Column>
                             </Grid.Row>
                         </Grid>
                         :<div></div>}
@@ -236,7 +236,9 @@ function mapStateToProps ( {user} ) {
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleChangeTab: (data) => { dispatch(actions.changeTab(data))}
+        handleChangeTab: (data) => { dispatch(actions.changeTab(data))},
+        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))},
+
     };
 };
 

@@ -238,7 +238,8 @@ class DeveloperListView extends React.Component {
         <Table className="viewListTable" basic='very' sortable striped celled fixed>
             <Table.Header className="viewListTableHeader">
                 <Table.Row>
-                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hideHeader):null}
+                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hideHeader):
+                        <Table.HeaderCell textAlign='center'>No Data</Table.HeaderCell>}
                 </Table.Row>
             </Table.Header>
 
@@ -288,6 +289,12 @@ class DeveloperListView extends React.Component {
                                     <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
                                         <div className="markBox">{this.roleMark(item[value])}</div>
                                         {item[value]}
+                                    </Table.Cell>
+                                :
+                                (value === 'IpAccess')?
+                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} >
+                                        {(item[value] == 0)? "IpAccessUnknown" : (item[value] == 1)? "IpAccessDedicated" : (item[value] == 2)? "IpAccessDedicatedOrShared" : (item[value] == 3)? "IpAccessShared" : item[value]}
+                                        {/*{item[value]}*/}
                                     </Table.Cell>
                                 :
                                 (!( String(hideHeader).indexOf(value) > -1 )) ?

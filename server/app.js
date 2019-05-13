@@ -348,6 +348,7 @@ app.post('/account/login_with_email_password', apiu.login_with_email_password);
 app.post('/account/login_with_token', apiu.login_with_token);
 app.post('/account/logout', apiu.logout)
 
+
 /******************************************************
  * Create new Application
  ******************************************************/
@@ -469,6 +470,9 @@ app.post('/ShowRole', apiMC.ShowRole);
 app.post('/deleteService', apiMC.DeleteService);
 app.post('/deleteUser', apiMC.DeleteUser);
 app.post('/deleteOrg', apiMC.DeleteOrg);
+
+// mc-dev
+app.post('/passwordresetrequest', apiMC.ResetPassword)
 /*
 --auth-type=jwt --auth=$SUPERPASS
  */

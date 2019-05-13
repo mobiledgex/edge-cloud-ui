@@ -39,7 +39,7 @@ class DeleteItem extends React.Component {
         let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
 
         if(result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
-            Alert.success(splitData[2].message, {
+            Alert.success("Deletion!", {
                 position: 'top-right',
                 effect: 'slide',
                 onShow: function () {
@@ -105,13 +105,14 @@ class DeleteItem extends React.Component {
         let serviceBody = {}
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.props.handleLoadingSpinner(true);
-        setTimeout(() => {
-            this.props.handleLoadingSpinner(false);
-        },3000);
+        // setTimeout(() => {
+        //     this.props.handleLoadingSpinner(false);
+        // },3000);
 
         let serviceNm = '';
         if(this.props.siteId === 'ClusterInst'){
-            const {Cloudlet, ClusterFlavor, ClusterName, OrganizationName, Operator, Region} = this.props.selected
+            const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region} = this.props.selected
+            console.log("clusterInst@@@@",this.props.selected);
             serviceNm = 'DeleteClusterInst';
             serviceBody = {
                 "token":store.userToken,
@@ -123,7 +124,7 @@ class DeleteItem extends React.Component {
                             "cloudlet_key":{"operator_key":{"name":Operator},"name":Cloudlet},
                             "developer":OrganizationName
                         },
-                        "flavor":{"name":ClusterFlavor}
+                        "flavor":{"name":Flavor}
                     }
                 }
             }

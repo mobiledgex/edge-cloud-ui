@@ -36,8 +36,49 @@ const FormContainer = (props) => (
         <Grid.Row>
             <Button  onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Log In</Button>
         </Grid.Row>
+        <Grid.Row>
+            <div style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer'}} onClick={() => props.self.setState({forgotPass:true})}>Forgot Password?</div>
+        </Grid.Row>
     </Grid>
 
+)
+const FormForgotPass = (props) => (
+    <Grid className="signUpBD">
+        <Grid.Row>
+            <span className='title'>Reset your password</span>
+        </Grid.Row>
+        <Grid.Row>
+            <span>Enter your email address and we will <br/> send you a link to reset your password.</span>
+        </Grid.Row>
+        <Grid.Row>
+            <Grid.Column>
+                <Input placeholder='Enter your email address' name='email' width ref={ipt=>{props.self.email = ipt}} onChange={props.self.onChangeInput}></Input>
+            </Grid.Column>
+        </Grid.Row>
+        <div className="loginValidation">
+            {props.login_danger}
+        </div>
+        <Grid.Row>
+            <Button  onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Password reset email</Button>
+        </Grid.Row>
+
+    </Grid>
+)
+const ForgotMessage = (props) => (
+    <Grid className="signUpBD">
+        <Grid.Row>
+            <span className='title'>Reset your password</span>
+        </Grid.Row>
+        <Grid.Row>
+            <span>Check your email for a link to reset your password. <br/>
+                If it doesn’t appear within a few minutes, <br/>
+                check your spam folder.</span>
+        </Grid.Row>
+        <Grid.Row>
+            <Button  onFocus={() => props.self && props.self.onFocusHandle(true)} onfocusout={() => props.self && props.self.onFocusHandle(false)} onClick={() => props.self.returnSignin()}>Return to sign in</Button>
+        </Grid.Row>
+
+    </Grid>
 )
 const FormSignUpContainer = (props) => (
     <Grid className="signUpBD">
@@ -46,7 +87,7 @@ const FormSignUpContainer = (props) => (
         </Grid.Row>
         <RegistryUserForm onSubmit={() => console.log('ProfileForm was submitted')}/>
         <Grid.Row>
-            <div style={{fontStyle:'italic', textDecoration:'underline'}}>By clicking Sign Up, you agree to our <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Terms</a>, <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Data Policy</a>, and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Cookies Policy</a>.</div>
+            <div style={{fontStyle:'italic', textDecoration:'underline'}}>By clicking SignUp, you agree to our <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Terms</a>, <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Data Policy</a>, and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Cookies Policy</a>.</div>
         </Grid.Row>
     </Grid>
 
@@ -115,7 +156,9 @@ class Login extends Component {
             errorCreate:false,
             signup: false,
             successMsg:'Success create new account',
-            loginDanger:''
+            loginDanger:'',
+            forgotPass:false,
+            forgotMessage:false
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -141,16 +184,18 @@ class Login extends Component {
 
         }
 
-        if(nextProps.signup) {
+        if(nextProps.loginMode === 'login') {
             if(this.state.errorCreate){
-                setTimeout(() => self.setState({successCreate:false, signup:true, errorCreate:false}), 3000);
+                setTimeout(() => self.setState({successCreate:false, signup:true, errorCreate:false, forgotMessage:false, forgotPass:false}), 3000);
             } else {
-                this.setState({successCreate:false, signup:true});
+                this.setState({successCreate:false, signup:false, forgotMessage:false, forgotPass:false});
             }
 
-        } else {
-            this.setState({successCreate:false, signup:false});
+        } else if(nextProps.loginMode === 'signup'){
+            this.setState({successCreate:false, signup:true, forgotMessage:false, forgotPass:false});
         }
+
+
 
 
 
@@ -206,10 +251,27 @@ class Login extends Component {
             });
         }
     }
+    receiveForgoten(result) {
+        Alert.success('Success ', {
+            position: 'top-right',
+            effect: 'slide',
+            timeout: 5000
+        });
+        self.setState({forgotPass: false, forgotMessage: true})
+    }
+    returnSignin() {
+        setTimeout(()=>self.setState({forgotPass:false, forgotMessage:false, signup:false}), 1000)
+    }
     requestToken(self) {
         serviceLogin.getMethodCall('requestToken', {username:self.state.username, password:self.state.password}, self.receiveToken)
 
         //self.receiveToken({data:{token:'my test token'}})
+    }
+    onSendEmail() {
+        serviceLogin.resetPassword('passwordresetrequest',
+            {email:self.state.email,
+                callbackurl : "https://console.mobiledgex.net/passwordreset"
+            }, self.receiveForgoten)
     }
     onSubmit() {
         const { username, password } = this.state
@@ -277,6 +339,7 @@ class Login extends Component {
         //     })
     }
     /* http://docs.nativebase.io/docs/examples/ReduxFormExample.html */
+    //
     render() {
         const { reset, data, loginState } = this.props;
         console.log(this.state.session, this.state.redirect)
@@ -285,23 +348,20 @@ class Login extends Component {
                 (this.state.session !== 'open') ?
                     <Container>
                         {
-                            (!this.state.signup)?
-                            <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger}/>
-
+                            (this.state.forgotPass) ?
+                                <FormForgotPass self={this} message={this.state.forgotMessage}/>
+                            :(this.state.forgotMessage)?
+                                <ForgotMessage self={this}/>
                             :(this.state.signup)?
                                 (this.state.successCreate || this.state.errorCreate)?
-                                    <SuccessMsg msg={this.state.successMsg}></SuccessMsg>
+                                    <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
                                     :
                                     <FormSignUpContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle}/>
                             :
-                            <div></div>
+                                <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger}/>
 
                         }
-
-
                     </Container>
-
-
                 :
                 (this.state.redirect) ?
                 <Redirect push to={this.state.directLink} />
@@ -316,12 +376,13 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => {
-    return state.form.profile
-        ? {
-            values: state.form.profile.values,
-            submitSucceeded: state.form.profile.submitSucceeded
+                                let profile = state.form.profile;
+                                let loginmode = state.loginMode;
+    return {
+            values: profile ? profile.values : null,
+            submitSucceeded: profile ? profile.submitSucceeded : null,
+            loginMode: loginmode ? loginmode.mode : {}
         }
-        : {};
 };
 
 const mapDispatchProps = (dispatch) => {

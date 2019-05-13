@@ -132,17 +132,21 @@ class SiteFourPageClusterInst extends React.Component {
         }
     }
     
-    getDataDeveloper(region) {
+    getDataDeveloper = (region) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let rgn = ['US','EU'];
         this.setState({devData:[]})
         if(region !== 'All'){
             rgn = [region]
-        }  
+        } 
+        console.log("dsssd@@",region,rgn)
         rgn.map((item) => {
             services.getMCService('ShowClusterInst',{token:store.userToken, region:item}, _self.receiveResultClusterInst)
             services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
         })
+    }
+    getDataDeveloperSub = () => {
+        this.getDataDeveloper('All');
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -150,7 +154,7 @@ class SiteFourPageClusterInst extends React.Component {
         return (
 
             //<DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} title='Cluster Instance' region='US' dataRefresh={this.getDataDeveloper}></MapWithListView>
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} title='Cluster Instance' region='US' dataRefresh={this.getDataDeveloperSub}></MapWithListView>
         );
     }
 

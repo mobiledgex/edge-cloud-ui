@@ -178,3 +178,10 @@ export function blinkMark (blink) {
         blink
     }
 }
+export function changeLoginMode (mode) {
+    console.log('LOGIN_MODE == ', mode)
+    return {
+        type: types.LOGIN_MODE,
+        mode
+    }
+}
