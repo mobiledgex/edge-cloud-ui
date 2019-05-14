@@ -44,7 +44,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} getOptionData={props.regionF} flavorData={props.devOptionsF} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} getOptionData={props.regionf} flavorData={props.devoptionsf} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'VM Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
 ]
@@ -67,7 +67,7 @@ class RegistryViewer extends React.Component {
             orgData:{},
             selectUse:null,
             resultData:null,
-            devOptionsF:[],
+            devoptionsf:[],
             loopCancel:true
         };
         this.keysData = [
@@ -197,7 +197,7 @@ class RegistryViewer extends React.Component {
 
     generateDOM(open, dimmer, width, height, data, keysData, hideHeader) {
 
-        let panelParams = {data:data, keys:keysData, regionF:this.getOptionData, devOptionsF:this.state.devOptionsF}
+        let panelParams = {data:data, keys:keysData, regionf:this.getOptionData, devoptionsf:this.state.devoptionsf}
 
         return layout.map((item, i) => (
 
@@ -302,7 +302,7 @@ class RegistryViewer extends React.Component {
         result.map((item,i) => {
             arr.push(item.FlavorName)
         })
-        _self.setState({devOptionsF: arr});
+        _self.setState({devoptionsf: arr});
     }
 
     loadingBox = (serviceBody) => {
@@ -405,13 +405,14 @@ const createFormat = (data) => (
             {
                 "key":{"developer_key":{"name":data['OrganizationName']},"name":data['AppName'],"version":data['Version']},
                 "image_path":data['ImagePath'],
+                "deploymentType":data['DeploymentType'],
                 "image_type":Number(data['ImageType']),
                 "access_ports":accessport(data),
                 "default_flavor":{"name":data['DefaultFlavor']},
                 "cluster":{"name":""},
                 "ipaccess":data['IpAccess'],
                 "command":data['Command'],
-                "deploymentType":data['DeploymentMF']
+                "deploymentMF":data['DeploymentMF']
             }
     }
 )

@@ -34,6 +34,12 @@ const makeOption =(options)=> (
     ))
 )
 
+const makeOptionNumber =(options)=> (
+    options.map((value,i) =>(
+        {key:i, text:value, value:i}
+    ))
+)
+
 const renderCheckbox = field => (
     <Form.Checkbox toggle
         style={{height:'33px', paddingTop:'8px'}}
@@ -60,6 +66,17 @@ const renderSelect = field => (
         name={field.input.name}
         onChange={(e, { value }) => field.input.onChange(value)}
         options={makeOption(field.options)}
+        placeholder={field.placeholder}
+        value={field.input.value}
+    />
+);
+
+const renderSelectNumber = field => (
+    <Form.Select
+        label={field.label}
+        name={field.input.name}
+        onChange={(e, { value }) => field.input.onChange(value)}
+        options={makeOptionNumber(field.options)}
         placeholder={field.placeholder}
         value={field.input.value}
     />
@@ -217,7 +234,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                         regKeys.map((key, i) => (
 
                                             (this.getLabel(key, pId))?
-                                            <Grid.Row columns={3}>
+                                            <Grid.Row columns={3} key={i}>
 
                                                 <Grid.Column width={4} className='detail_item'>
                                                     <div>{this.getLabel(key, pId)}{this.getNecessary(key, pId)}</div>
@@ -245,7 +262,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                         :
                                                         (fieldKeys[pId][key]['type'] === 'IpSelect') ?
                                                         <Field
-                                                            component={renderSelect}
+                                                            component={renderSelectNumber}
                                                             placeholder={'Select IpAccess'}
                                                             value={data[key]}
                                                             options={fieldKeys[pId][key]['items']}
