@@ -173,6 +173,11 @@ body, button, input, textarea, optgroup, select, textarea,
     font-size: 1.5em;
     line-height: 1em;
 }
+.intro_login .login-text {
+    width: 100%;
+    padding: 0 1rem;
+    text-align: left;
+}
 .intro_login .ui.grid.signUpBD{
     width: 426px;
     border: solid 1px rgba(0,170,255,.05);
@@ -180,6 +185,8 @@ body, button, input, textarea, optgroup, select, textarea,
     background-color: rgba(0,170,255,.15);
     padding: 0.714em 0;
 }
+
+
 
 
 /* login-signUp location horizontal
@@ -268,7 +275,7 @@ body, button, input, textarea, optgroup, select, textarea,
 /* form */
 
 .intro_login .ui.form .fields{
-    margin-bottom: 0;
+    margin: 0;
 }
 
 .intro_login .ui.form.fieldForm {

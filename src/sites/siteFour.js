@@ -481,12 +481,12 @@ class SiteFour extends React.Component {
                     <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
                 </div>
                 <Grid.Row className='gnb_header'>
-                    <Grid.Column width={10} className='navbar_left'>
+                    <Grid.Column width={8} className='navbar_left'>
                         <Header>
                             <Header.Content onClick={() => this.gotoPreview('/site1')}  className='brand' />
                         </Header>
                     </Grid.Column>
-                    <Grid.Column width={6} className='navbar_right'>
+                    <Grid.Column width={8} className='navbar_right'>
                         <div style={{cursor:'pointer'}} onClick={this.computeRefresh}>
                             <MaterialIcon icon={'refresh'} />
                         </div>
@@ -594,7 +594,7 @@ class SiteFour extends React.Component {
                                 null
                             }
                         </Menu>
-                        <div style={{position:'fixed', bottom:10, color:'rgba(255,255,255,.2)'}}>
+                        <div style={{position:'fixed', bottom:10, color:'rgba(255,255,255,.2)'}} onClick={() => console.log(this.props.userInfo)}>
                             version 0.7.5
                         </div>
                     </Grid.Column>

@@ -56,8 +56,9 @@ class DeleteItem extends React.Component {
     receiveListSubmit = (result) => {
         this.props.handleLoadingSpinner(false);
         this.props.refresh()
-        console.log('registry delete ... success result..', result.data)
+        console.log('registry delete ... success result..', result.data, result.data.message.indexOf('ok'))
         if(result.data.message.indexOf('ok') > -1) {
+            console.log("deleteSuccess@@")
             Alert.success("Deletion!", {
                 position: 'top-right',
                 effect: 'slide',
