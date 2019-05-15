@@ -22,12 +22,14 @@ const FormContainer = (props) => (
         <Grid.Row>
             <span className='title'>User Login</span>
         </Grid.Row>
-        <Grid.Row columns={2}>
+        <Grid.Row>
             <Grid.Column>
-                <Input placeholder='Username or Email' name='username' width ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput}></Input>
+                <Input style={{width:'100%'}} placeholder='Username or Email' name='username' width ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput}></Input>
             </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
             <Grid.Column >
-                <Input  placeholder='Password' name='password' type='password' ref={ipt=>{props.self.pwd = ipt}} onChange={props.self.onChangeInput}></Input>
+                <Input style={{width:'100%'}} placeholder='Password' name='password' type='password' ref={ipt=>{props.self.pwd = ipt}} onChange={props.self.onChangeInput}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -59,7 +61,7 @@ const FormForgotPass = (props) => (
             {props.login_danger}
         </div>
         <Grid.Row>
-            <Button  onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Password reset email</Button>
+            <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Password reset email</Button>
         </Grid.Row>
 
     </Grid>
@@ -73,7 +75,7 @@ const ForgotMessage = (props) => (
             <span className="login-text">Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.</span>
         </Grid.Row>
         <Grid.Row>
-            <Button  onFocus={() => props.self && props.self.onFocusHandle(true)} onfocusout={() => props.self && props.self.onFocusHandle(false)} onClick={() => props.self.returnSignin()}>Return to sign in</Button>
+            <Button onFocus={() => props.self && props.self.onFocusHandle(true)} onfocusout={() => props.self && props.self.onFocusHandle(false)} onClick={() => props.self.returnSignin()}>Return to sign in</Button>
         </Grid.Row>
 
     </Grid>

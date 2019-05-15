@@ -251,7 +251,13 @@ class EditMap extends Component {
 
     componentWillReceiveProps(nextProps) {
         console.log("location@@$$$",nextProps)
-        this.handleCityLocation(nextProps.locationLongLat)
+        if(nextProps.locationLongLat) {
+            this.handleCityLocation(nextProps.locationLongLat)
+        } else {
+            this.handleReset()
+            this.setState({clickCities:[]})
+        }
+        
         // let data = nextProps.devData;
         // function reduceUp(value) {
         //     return Math.round(value)

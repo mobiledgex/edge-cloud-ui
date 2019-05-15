@@ -658,7 +658,7 @@ exports.CreateCloudlet = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({'message':'ok'})
             }
         })
         .catch(function (error) {
@@ -822,7 +822,7 @@ exports.DeleteService = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({'message':'ok'})
             }
         })
         .catch(function (error) {

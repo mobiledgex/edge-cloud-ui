@@ -182,30 +182,35 @@ class RegistNewItem extends React.Component {
     }
     handleChangeLong = (e, {value}) => {
         console.log("longValue!@@",value)
-        if(value > 180 || value < -180) {
-            console.log("in",value)
+        let onlyNum = value.replace(/[^0-9]/g,'')
+        if(onlyNum > 180 || onlyNum < -180) {
+            console.log("in",onlyNum)
             alert("-180 ~ 180");
             e.target.value=null;
             return
         }
-        this.setState({ locationLong: value })
-        if(value && this.state.locationLat) {
-            this.locationValue(value,this.state.locationLat)
-        }
+        this.setState({ locationLong: onlyNum })
+        this.locationValue(onlyNum,this.state.locationLat)
     }
     handleChangeLat = (e, {value}) => {
-        if(value > 90 || value < -90) {
+        console.log("latValue!@@",value)
+        let onlyNum = value.replace(/[^0-9]/g,'')
+        if(onlyNum > 90 || onlyNum < -90) {
             alert("-90 ~ 90");
             e.target.value=null;
             return
         }
-        this.setState({ locationLat: value })
-        if(value && this.state.locationLong) {
-            this.locationValue(this.state.locationLong,value)
-        }
+        this.setState({ locationLat: onlyNum })
+        this.locationValue(this.state.locationLong,onlyNum)
     }
     locationValue = (long,lat) => {
-        this.setState({ locationLongLat: [Number(long),Number(lat)] })
+        console.log("locationGo@@",long,lat)
+        if(long && lat){
+            this.setState({ locationLongLat: [Number(long),Number(lat)] })
+        } else {
+            this.setState({ locationLongLat: null })
+        }
+        //this.setState({ locationLongLat: [Number(long),Number(lat)] })
     }
 
     handleChangeLocate = (e, {value}) => {
@@ -329,6 +334,36 @@ class RegistNewItem extends React.Component {
         // }
     }
 
+    receiveSubmitCloudlet(result) {
+        console.log('registry new ... success resultcloudlet@..', result.data)
+        _self.props.handleLoadingSpinner(false);
+        _self.props.refresh()
+        if(result.data.error) {
+            Alert.error(result.data.error, {
+                position: 'top-right',
+                effect: 'slide',
+                onShow: function () {
+                    console.log('error!')
+                },
+                beep: true,
+                timeout: 5000,
+                offset: 100
+            });
+            return;
+        } else {
+            Alert.success('SUCCESS', {
+                position: 'top-right',
+                effect: 'slide',
+                onShow: function () {
+                    console.log('aye!')
+                },
+                beep: true,
+                timeout: 5000,
+                offset: 100
+            });
+        }
+    }
+
     onSubmit = () => {
         let serviceBody = {}
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -383,7 +418,7 @@ class RegistNewItem extends React.Component {
                 }
             }
             //this.props.handleLoadingSpinner(true);
-            service.createNewCloudlet('CreateCloudlet', serviceBody, this.receiveSubmit)
+            service.createNewCloudlet('CreateCloudlet', serviceBody, this.receiveSubmitCloudlet)
         }
         //close
         //this.close();

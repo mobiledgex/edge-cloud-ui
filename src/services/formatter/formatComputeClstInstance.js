@@ -64,12 +64,12 @@ let generateData = (datas,body) => {
                 let IpAccess = ipaccessArr[dataResult.data.ip_access] || '-';
                 let CloudletLocation = '-';
 
-                let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'NumberOfMaster', 'NumberOfNode', 'CloudletLocation'];
+                let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'Number_of_Master', 'Number_of_Node', 'CloudletLocation'];
                 values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, Edit:newRegistKey})
             }
         })
     } else {
-        let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'NumberOfMaster', 'NumberOfNode', 'CloudletLocation'];
+        let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'Number_of_Master', 'Number_of_Node', 'CloudletLocation'];
         //values.push({Edit:newRegistKey})
         values.push({Region:'', ClusterName:'', OrganizationName:'', Operator:'', Cloudlet:'', Flavor:'', IpAccess:'', CloudletLocation:'', Edit:newRegistKey})
     }

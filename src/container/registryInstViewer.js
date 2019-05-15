@@ -82,7 +82,7 @@ class RegistryInstViewer extends React.Component {
                     'AutoClusterInst':{label:'Auto-ClusterInt', type:'RenderCheckbox', necessary:false, tip:'When checked, this will inherit settings from application settings'},
                     'ClusterInst':{label:'ClusterInst', type:'RenderSelect', necessary:true,
                         tip:' When selecting clusterinst, default flavor and ipaccess specified in app setting gets overridden',
-                        active:true, items:['mexdemo-app-cluster','biccluster', 'MEX-cluset3', 'MEX-cluset4']},
+                        active:true, items:[null]},
                 },
                 {
 
@@ -340,8 +340,22 @@ class RegistryInstViewer extends React.Component {
             this.setState({keysData:assObj})
 
         }
-
-
+        
+        //set list of clusterInst filter
+        if(nextProps.submitData.createAppFormDefault.values.Operator && nextProps.submitData.createAppFormDefault.values.Cloudlet) {
+            let keys = Object.keys(this.state.clustinst);
+            let arr = []
+            let assObj = Object.assign([], this.state.keysData);
+            keys.map((item,i) => {
+                this.state.clustinst[item].map((items,j) => {
+                    if(items.Operator == nextProps.submitData.createAppFormDefault.values.Operator && items.Cloudlet == nextProps.submitData.createAppFormDefault.values.Cloudlet) {
+                        arr.push(item);
+                    }
+                })
+            })
+            assObj[0].ClusterInst.items = arr;
+            this.setState({keysData:assObj})
+        }
     }
 
     render() {
@@ -460,7 +474,8 @@ const mapStateToProps = (state) => {
         selectedApp: selectedApp,
         selectedCloudlet: selectedCloudlet,
         selectedOperator: selectedOperator,
-        selectOrg : state.selectOrg.org?state.selectOrg.org:null
+        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
+        submitData : state.form?state.form : null,
     }
     
     // return (dimm) ? {

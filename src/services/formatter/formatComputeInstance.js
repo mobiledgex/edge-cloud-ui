@@ -45,6 +45,7 @@ let generateData = (datas,body) => {
                 let ClusterInst = dataResult.data.cluster_inst_key.cluster_key.name || '-';
 
                 let CloudletLocation=dataResult.data.cloudlet_loc || '-';
+                //let State = dataResult.uri || '-';
                 let URI = dataResult.uri || '-';
                 let Mapped_ports= dataResult.mapped_ports || '-';
 

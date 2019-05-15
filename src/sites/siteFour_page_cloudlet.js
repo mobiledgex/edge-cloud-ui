@@ -107,7 +107,7 @@ class SiteFourPageCloudlet extends React.Component {
 
         }
     }
-    getDataDeveloper(region) {
+    getDataDeveloper = (region) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let rgn = ['US','EU'];
         this.setState({devData:[]})
@@ -119,12 +119,15 @@ class SiteFourPageCloudlet extends React.Component {
             services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult)
         })
     }
+    getDataDeveloperSub = () => {
+        this.getDataDeveloper('All');
+    }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
 
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloper}></MapWithListView>
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></MapWithListView>
 
         );
     }

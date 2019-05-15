@@ -64,8 +64,7 @@ class DeveloperListView extends React.Component {
     }
     onHandleClickAddApp(dim, data) {
         console.log('on handle click == ', data)
-        this.setState()
-        //this.props.handleChangeSite(data.children.props.to)
+        this.setState({page:'pg=createAppInst'})
     }
     getDataDeveloper(token) {
         services.getMCService('ShowRole',{token:token}, this.receiveResult)
@@ -238,8 +237,7 @@ class DeveloperListView extends React.Component {
         <Table className="viewListTable" basic='very' sortable striped celled fixed>
             <Table.Header className="viewListTableHeader">
                 <Table.Row>
-                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hideHeader):
-                        <Table.HeaderCell textAlign='center'>No Data</Table.HeaderCell>}
+                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hideHeader):null}
                 </Table.Row>
             </Table.Header>
 
@@ -261,7 +259,7 @@ class DeveloperListView extends React.Component {
                                             </Button>:null}
                                         {(this.props.siteId == 'App')?
                                             <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.onHandleClickAddApp(true, item, i)}>
-                                                Add
+                                                Launch
                                             </Button>:null}
                                         <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 

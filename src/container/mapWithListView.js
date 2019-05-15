@@ -227,10 +227,7 @@ class MapWithListView extends React.Component {
         <Table className="viewListTable" basic='very' striped celled fixed sortable ref={ref => this.viewListTable = ref} style={{width:'100%'}}>
             <Table.Header className="viewListTableHeader"  style={{width:'100%'}}>
                 <Table.Row onMouseOver={() => console.log('onMouseOver..')}>
-                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hidden):
-                        <Table.HeaderCell textAlign='center'>
-                            No Data
-                        </Table.HeaderCell>}
+                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hidden):null}
                 </Table.Row>
             </Table.Header>
             <Table.Body className="tbBodyList">
@@ -281,7 +278,7 @@ class MapWithListView extends React.Component {
                         ))
                     : <Table.Row>
                         <Table.Cell colSpan={Object.keys(this.state.dummyData[0]).length} textAlign='center' style={{fontSize:'1em'}}>
-                            No Data
+                            -
                         </Table.Cell>
                     </Table.Row>
 
