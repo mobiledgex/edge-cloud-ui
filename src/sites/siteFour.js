@@ -12,7 +12,7 @@ import {
     Item,
     Input,
     Segment,
-    Table
+    Table, Icon
 } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 
@@ -111,7 +111,7 @@ class SiteFour extends React.Component {
             activeItem: 'Organization',
             page: 'pg=0',
             email: store ? store.email : 'Administrator',
-            role:'MEXADMIN', //db에서
+            role: '', //db에서
             onlyView: false,
             userToken:null,
             profileViewData:null,
@@ -148,7 +148,10 @@ class SiteFour extends React.Component {
             {label:'App Instances', icon:'storage', pg:7}
         ]
         this.auth_three = [this.menuItems[0], this.menuItems[1], this.menuItems[2]] //OperatorManager, OperatorContributor, OperatorViewer
-        this.auth_default = [{label:'Organization', icon:'people', pg:0}]
+        this.auth_default = [
+            {label:'Organization', icon:'people', pg:0},
+            {label:'Users', icon:'dvr', pg:1}
+        ]
         this.auth_list = [
             {role:'MEXADMIN', view:[]},
             {role:'superadmin', view:[]},
@@ -343,6 +346,21 @@ class SiteFour extends React.Component {
         </Button.Group>
 
     )
+
+    getHelpPopup =(key)=> (
+        <Popup
+            trigger={<Icon name='question circle outline' size='small' style={{marginTop:0,paddingLeft:10}}/>}
+            content=
+                {(key=='Organization')? 'Click New button & create your organization to Start!'
+                 :
+                 key
+                }
+            // content={this.state.tip}
+            // style={style}
+            inverted
+        />
+    )
+
     openModalCreate() {
 
     }
@@ -357,7 +375,7 @@ class SiteFour extends React.Component {
     componentDidMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         console.log('store.. ', store.user)
-        this.setState({activeItem:'Organization', headerTitle:'Organization', role:(store.user && store.user.role)?store.user.role:'MEXADMIN'})
+        this.setState({activeItem:'Organization', headerTitle:'Organization', role:(store.user && store.user.role)?store.user.role:''})
         //get list of customer's info
         if(store.userToken) {
             Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
@@ -399,6 +417,9 @@ class SiteFour extends React.Component {
             computeService.setDomain(nextProps.userSetting.userURL)
             this.setState({openSettings:false, userURL:nextProps.userSetting.userURL})
         }
+
+        this.setState({role: (this.state.userName == 'mexadmin') ? "MEXADMIN" : null})  //MEXADMIN ROLE
+
     }
 
 
@@ -547,6 +568,9 @@ class SiteFour extends React.Component {
                                             <Grid.Column width={5}>
                                                 <div className="markBox">
                                                     {
+                                                        (this.state.role == 'MEXADMIN')?
+                                                            null
+                                                        :
                                                         (this.props.userRole == 'DeveloperManager')?
                                                             <div className="mark markD markM">M</div>
                                                             :
@@ -576,7 +600,7 @@ class SiteFour extends React.Component {
                         </Menu>
                         <Menu secondary vertical className='view_left_menu'>
                             {
-                                (this.props.userRole == 'MEXADMIN' || this.props.userRole == 'superuser')?
+                                (this.state.role == 'MEXADMIN' || this.props.userRole == 'MEXADMIN' || this.props.userRole == 'superuser')?
                                     this.menuItems.map((item, i)=>(
                                         this.menuItemView(item, i, activeItem)
                                     ))
@@ -594,8 +618,10 @@ class SiteFour extends React.Component {
                                 null
                             }
                         </Menu>
-                        <div style={{position:'fixed', bottom:10, color:'rgba(255,255,255,.2)'}} onClick={() => console.log(this.props.userInfo)}>
-                            version 0.7.5
+                        <div style={{position:'fixed', bottom:10, color:'rgba(255,255,255,.2)'}} onClick={() => console.log(this.props.userInfo,this.state)}>
+                            {
+                                (this.state.role == 'MEXADMIN')? 'version 0.7.5' : null
+                            }
                         </div>
                     </Grid.Column>
                     <Grid.Column width={14} style={{height:this.state.bodyHeight}} className='contents_body'>
@@ -610,6 +636,9 @@ class SiteFour extends React.Component {
                                 </Grid.Column>
                                 : null
                             }
+                            <div style={{position:'absolute', top:25, right:35}}>
+                                {this.getHelpPopup(this.state.headerTitle)}
+                            </div>
                         </Grid.Row>
                         {
                             (this.state.headerTitle !== 'Organization' && this.state.headerTitle !== 'Users') ?
@@ -625,7 +654,7 @@ class SiteFour extends React.Component {
                         }
                         {
                             (this.state.headerTitle == 'Users') ?
-                            <div className='user_search' style={{top:15, right:25, position:'absolute',zIndex:99}}>
+                            <div className='user_search' style={{top:15, right:75, position:'absolute',zIndex:99}}>
                                 <Input icon='search' placeholder='Search Username' style={{marginRight:'20px'}}  onChange={this.searchClick} />
                                 <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} />
                             </div>

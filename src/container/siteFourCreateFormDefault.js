@@ -254,7 +254,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                         (fieldKeys[pId][key]['type'] === 'RenderSelect') ?
                                                         <Field
                                                             component={renderSelect}
-                                                            placeholder={'Select DeploymentType'}
+                                                            placeholder={'Select '+key}
                                                             value={data[key]}
                                                             options={fieldKeys[pId][key]['items']}
                                                             name={key}

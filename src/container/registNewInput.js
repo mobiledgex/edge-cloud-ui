@@ -116,6 +116,9 @@ class registNewInput extends React.Component {
         if(nextProps.locationLong || nextProps.locationLat){
             this.props.dispatch(change('registNewInput', 'Longitude', nextProps.locationLong));
             this.props.dispatch(change('registNewInput', 'Latitude', nextProps.locationLat));
+        } else {
+            this.props.dispatch(change('registNewInput', 'Longitude', null));
+            this.props.dispatch(change('registNewInput', 'Latitude', null));
         }
     }
 
@@ -131,7 +134,7 @@ class registNewInput extends React.Component {
                             <Modal.Header>Settings</Modal.Header>
                             <Modal.Content>
                                 <div style={{display:'flex', flexDirection:'row', width:'100%'}}>
-                                    <Grid divided style={{width:1000}}>
+                                    <Grid divided style={{width:800}}>
                                     {
                                         (data.length > 0)?
                                         regKeys.map((key, i)=>(
@@ -164,8 +167,8 @@ class registNewInput extends React.Component {
                                                     : (key === 'CloudletLocation')?
                                                     <Grid>
                                                         <Grid.Row columns={2}>
-                                                            <Grid.Column><span>Longitude</span><Field ref={longLoc} name='Longitude' component={renderLocationInput} placeholder={(dimmer === 'blurring')? '' : (selected[key]) ? selected[key].longitude : null } change={handleChangeLong} value={locationLong}  /></Grid.Column>
-                                                            <Grid.Column><span>Latitude</span><Field ref={latLoc} name='Latitude' component={renderLocationInput} placeholder={(dimmer === 'blurring')? '' : (selected[key]) ? selected[key].latitude : null } change={handleChangeLat} value={locationLat}/></Grid.Column>
+                                                            <Grid.Column><span>Longitude</span><Field ref={longLoc} name='Longitude' component={renderLocationInput} placeholder={(dimmer === 'blurring')? '' : (selected[key]) ? selected[key].longitude : null } change={handleChangeLong} /></Grid.Column>
+                                                            <Grid.Column><span>Latitude</span><Field ref={latLoc} name='Latitude' component={renderLocationInput} placeholder={(dimmer === 'blurring')? '' : (selected[key]) ? selected[key].latitude : null } change={handleChangeLat} /></Grid.Column>
                                                         </Grid.Row>
                                                     </Grid>
                                                     :
