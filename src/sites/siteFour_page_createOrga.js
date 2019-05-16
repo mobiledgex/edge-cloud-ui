@@ -30,7 +30,8 @@ class SiteFourPageCreateorga extends React.Component {
             bodyHeight:0,
             activeItem: 'Developers',
             devData:[],
-            step:1
+            step:1,
+            loopCancel:true
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -78,35 +79,19 @@ class SiteFourPageCreateorga extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
         if(nextProps.stepOne && nextProps.stepOne.submitSucceeded) {
-            console.log('stream form siteFour_page_createOrga.js   ### ', nextProps, nextProps.stepOne.values, " store is..",store)
-            if(store && store.userToken) {
-
-                //내용저장하기
-                /*
-                http --auth-type=jwt --auth=$ORGMANTOKEN POST 127.0.0.1:9900/api/v1/auth/org/create
-                name=bigorg type=developer address="123 abc st" phone="123-456-1234"
-                 */
-                if(this.state.step === 1 && nextProps.stepOne.values) {
-                    console.log(nextProps.stepOne.values)
-                    serviceOrganiz.organize('createOrg',
+            if(this.state.loopCancel && store.userToken) {
+                this.setState({loopCancel:false});
+                _self.props.handleLoadingSpinner(true);
+                serviceOrganiz.organize('createOrg',
                         {name:nextProps.stepOne.values.name, type:nextProps.stepOne.values.type.toLowerCase(), address:nextProps.stepOne.values.address, phone:nextProps.stepOne.values.phone,
                             token:store.userToken}, this.resultCreateOrg, this)
-                }
-            } else {
-                Alert.error('Invalid or expired token', {
-                    position: 'top-right',
-                    effect: 'slide',
-                    timeout: 5000
-                });
             }
-
         }
         /*
         org=bigorg username=worker1 role=DeveloperContributor
          */
         if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded) {
             console.log('stream form siteFour_page_createOrga.js  git to a role ... ', nextProps, nextProps.stepTwo.values)
-            //{username: "inkikim", orgName: "bicinkiOrg", orgType: "Developer", selectRole: "Manager"}
             let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
             let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
             let _role = nextProps.stepTwo.values && nextProps.stepTwo.values.orgType+nextProps.stepTwo.values.selectRole || '';
@@ -122,7 +107,9 @@ class SiteFourPageCreateorga extends React.Component {
     }
     resultCreateOrg = (result,resource, self) => {
         console.log("receive == ", result, resource, self)
+        _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
+            this.setState({loopCancel:true});
             Alert.error(String(result.data.error), {
                 position: 'top-right',
                 effect: 'slide',
@@ -142,6 +129,7 @@ class SiteFourPageCreateorga extends React.Component {
     }
     resultGiveToRole = (result,resource, self) => {
         console.log("receive == ", result, resource, self)
+        _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
             Alert.error(String(result.data.error), {
                 position: 'top-right',
@@ -176,6 +164,11 @@ class SiteFourPageCreateorga extends React.Component {
     }
     getDataDeveloper(token) {
         services.getMCService('showOrg',{token:token}, _self.receiveResult)
+    }
+    loadingBox = () => {
+        this.setState({loopCancel:false});
+        _self.props.handleLoadingSpinner(true);
+        // services.createNewApp('CreateApp', serviceBody, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle, step} = this.state;

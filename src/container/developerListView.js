@@ -248,7 +248,7 @@ class DeveloperListView extends React.Component {
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
                                     <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
-                                        {(this.props.siteId == 'Organization')?
+                                        {(this.props.siteId == 'Organization' && this.props.userRole !== 'AdminManager')?
                                             <Button color={(this.state.selectUse == i)?'teal' :''} onClick={(evt) => this.onUseOrg(item,i, evt)}>
                                                 <Icon name='check' />
                                             </Button>:null}
@@ -388,7 +388,8 @@ const mapStateToProps = (state) => {
         dimmInfo,
         itemLabel: state.computeItem.item,
         userToken : (state.user.userToken) ? state.userToken: null,
-        searchValue : (state.searchValue.search) ? state.searchValue.search: null
+        searchValue : (state.searchValue.search) ? state.searchValue.search: null,
+        userRole : state.showUserRole?state.showUserRole.role:null,
     }
     
     // return (dimm) ? {

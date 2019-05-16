@@ -127,7 +127,7 @@ class SiteFour extends React.Component {
             nextPosY:window.innerHeight / 2,
             nextOpacity:1,
             setMotion:defaultMotion,
-            OrganizationName:'-',
+            OrganizationName:'',
             adminShow:false,
             openSettings:false,
             userURL:''
@@ -153,8 +153,7 @@ class SiteFour extends React.Component {
             {label:'Users', icon:'dvr', pg:1}
         ]
         this.auth_list = [
-            {role:'MEXADMIN', view:[]},
-            {role:'superadmin', view:[]},
+            {role:'AdminManager', view:[]},
             {role:'DeveloperManager', view:[2,3,4]},
             {role:'DeveloperContributor', view:[1,2,3,4]},
             {role:'DeveloperViewer', view:[1,2,3,4,5,6,7]},
@@ -219,7 +218,7 @@ class SiteFour extends React.Component {
         _self.props.handleChangeViewBtn(false)
         
         //_self.props.handleChangeClickCity([]);
-        _self.props.handleSelectOrg('-')
+        _self.props.handleSelectOrg('')
         _self.props.handleUserRole('')
 
         _self.props.history.push({
@@ -290,14 +289,14 @@ class SiteFour extends React.Component {
         _self.controllerOptions(result.data);
     }
     receiveAdminInfo = (result) => {
-        console.log("adminInfo@@@",result.data);
+        console.log("adminInfo@@@",result.data,this.props,this.state);
         if(result.error) {
 
         } else {
             result.data.map((item,i) => {
                 if(item.role.indexOf('Admin') > -1){
-                    console.log("admin@@@@")
                     this.setState({adminShow:true});
+                    this.props.handleUserRole(item.role);
                 }
             })
         }
@@ -365,6 +364,8 @@ class SiteFour extends React.Component {
 
     }
     getAdminInfo(token) {
+        Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
+        computeService.getMCService('showController', {token:token}, this.receiveResult, this);
         computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
     }
     componentWillMount() {
@@ -374,13 +375,14 @@ class SiteFour extends React.Component {
     }
     componentDidMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
+        console.log("stateProps@@",this.props,this.state)
         console.log('store.. ', store.user)
-        this.setState({activeItem:'Organization', headerTitle:'Organization', role:(store.user && store.user.role)?store.user.role:''})
+        this.setState({activeItem:'Organization', headerTitle:'Organization'})
         //get list of customer's info
-        if(store.userToken) {
-            Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
-            computeService.getMCService('showController', {token:store.userToken}, this.receiveResult, this);
-        }
+        // if(store.userToken) {
+        //     Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
+        //     computeService.getMCService('showController', {token:store.userToken}, this.receiveResult, this);
+        // }
         //if there is no role
             //site1으로 이동할 수 없는 문제로 아래 코드 주석처리 by inki
             //show you create the organization view
@@ -403,10 +405,14 @@ class SiteFour extends React.Component {
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         this.setState({userToken: nextProps.userToken})
         this.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
+        this.setState({role: (nextProps.userRole) ? nextProps.userRole : null})
         if(nextProps.selectOrg && nextProps.location.search === 'pg=0') {
             console.log('nextProps.selectOr -- ', nextProps.selectOrg)
             this.resetMotion()
             setTimeout(() => _self.setState({OrganizationName:nextProps.selectOrg.Organization}), 1000)
+        }
+        if(nextProps.userRole && nextProps.userRole == 'AdminManager'){
+            this.setState({OrganizationName:nextProps.userRole})
         }
         /**
          * setting url of data Rest
@@ -417,8 +423,6 @@ class SiteFour extends React.Component {
             computeService.setDomain(nextProps.userSetting.userURL)
             this.setState({openSettings:false, userURL:nextProps.userSetting.userURL})
         }
-
-        this.setState({role: (this.state.userName == 'mexadmin') ? "MEXADMIN" : null})  //MEXADMIN ROLE
 
     }
 
@@ -444,7 +448,7 @@ class SiteFour extends React.Component {
             key={i}
             name={item.label}
             active={activeItem === item.label}
-            onClick={() => this.handleItemClick(i, item.label, item.pg, this.props.userRole)}
+            onClick={() => this.handleItemClick(i, item.label, item.pg, this.state.role)}
         >
             <div className="left_menu_item">
                 <MaterialIcon icon={item.icon}/>
@@ -491,7 +495,7 @@ class SiteFour extends React.Component {
         const { activeItem, controllerRegions } = this.state
         return (
             <Grid className='view_body'>
-                <div className="loadingBox" style={{zIndex:9999}}>
+                <div className="loadingBox" style={{zIndex:99999}}>
                     <GridLoader
                         sizeUnit={"px"}
                         size={25}
@@ -549,7 +553,7 @@ class SiteFour extends React.Component {
                     <Grid.Column width={2} className='view_left'>
                         <Menu secondary vertical className='view_left_menu org_menu'>
                             {
-                                (this.props.userRole)?
+                                (this.state.role)?
                                     this.OrgMenu.map((item, i)=>(
                                         this.menuItemView(item, i, activeItem)
                                     ))
@@ -568,25 +572,25 @@ class SiteFour extends React.Component {
                                             <Grid.Column width={5}>
                                                 <div className="markBox">
                                                     {
-                                                        (this.state.role == 'MEXADMIN')?
+                                                        (this.state.role == 'AdminManager')?
                                                             null
                                                         :
-                                                        (this.props.userRole == 'DeveloperManager')?
+                                                        (this.state.role == 'DeveloperManager')?
                                                             <div className="mark markD markM">M</div>
                                                             :
-                                                            (this.props.userRole == 'DeveloperContributor')?
+                                                            (this.state.role == 'DeveloperContributor')?
                                                                 <div className="mark markD markC">C</div>
                                                                 :
-                                                                (this.props.userRole == 'DeveloperViewer')?
+                                                                (this.state.role == 'DeveloperViewer')?
                                                                     <div className="mark markD markV">V</div>
                                                                     :
-                                                                    (this.props.userRole == 'OperatorManager')?
+                                                                    (this.state.role == 'OperatorManager')?
                                                                         <div className="mark markO markM">M</div>
                                                                         :
-                                                                        (this.props.userRole == 'OperatorContributor')?
+                                                                        (this.state.role == 'OperatorContributor')?
                                                                             <div className="mark markO markC">C</div>
                                                                             :
-                                                                            (this.props.userRole == 'OperatorViewer')?
+                                                                            (this.state.role == 'OperatorViewer')?
                                                                                 <div className="mark markO markV">V</div>
                                                                                 :
                                                                                 <div></div>
@@ -600,17 +604,17 @@ class SiteFour extends React.Component {
                         </Menu>
                         <Menu secondary vertical className='view_left_menu'>
                             {
-                                (this.state.role == 'MEXADMIN' || this.props.userRole == 'MEXADMIN' || this.props.userRole == 'superuser')?
+                                (this.state.role == 'AdminManager')?
                                     this.menuItems.map((item, i)=>(
                                         this.menuItemView(item, i, activeItem)
                                     ))
                                 :
-                                (this.props.userRole == 'DeveloperManager' || this.props.userRole == 'DeveloperContributor' || this.props.userRole == 'DeveloperViewer')?
+                                (this.state.role == 'DeveloperManager' || this.state.role == 'DeveloperContributor' || this.state.role == 'DeveloperViewer')?
                                     this.menuItems.map((item, i)=>(
                                         this.menuItemView(item, i, activeItem)
                                     ))
                                 :
-                                (this.props.userRole == 'OperatorManager' || this.props.userRole == 'OperatorContributor' || this.props.userRole == 'OperatorViewer')?
+                                (this.state.role == 'OperatorManager' || this.state.role == 'OperatorContributor' || this.state.role == 'OperatorViewer')?
                                     this.auth_three.map((item, i)=>(
                                         this.menuItemView(item, i, activeItem)
                                     ))
@@ -620,7 +624,7 @@ class SiteFour extends React.Component {
                         </Menu>
                         <div style={{position:'fixed', bottom:10, color:'rgba(255,255,255,.2)'}} onClick={() => console.log(this.props.userInfo,this.state)}>
                             {
-                                (this.state.role == 'MEXADMIN')? 'version 0.7.5' : null
+                                (this.state.role == 'AdminManager')? 'version 0.7.5' : null
                             }
                         </div>
                     </Grid.Column>
@@ -698,7 +702,7 @@ class SiteFour extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    console.log("siteFour@@@stateRedux ::: ",state.form.registUserSetting)
+    console.log("siteFour@@@stateRedux ::: ",state)
 
     return {
         viewBtn : state.btnMnmt?state.btnMnmt:null,

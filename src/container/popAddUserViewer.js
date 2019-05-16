@@ -6,6 +6,7 @@ import Alert from 'react-s-alert';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
+import {GridLoader} from "react-spinners";
 import './styles.css';
 let _self = null;
 class PopAddUserViewer extends React.Component {
@@ -35,25 +36,25 @@ class PopAddUserViewer extends React.Component {
             this.setState({open:nextProps.open, dimmer:nextProps.dimmer, typeOperator:nextProps.data['Type'], organization:nextProps.data['Organization']});
         }
         if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded) {
-            console.log('stream form siteFour_page_createOrga.js  git to a role ... ', nextProps, nextProps.stepTwo.values)
-            //{username: "inkikim", orgName: "bicinkiOrg", orgType: "Developer", selectRole: "Manager"}
-            let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
-            let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
-            let _role = nextProps.stepTwo.values && nextProps.stepTwo.values.orgType+nextProps.stepTwo.values.selectRole || '';
-            serviceOrganiz.organize('addUserRole',
-                {
-                        username:_username,
-                        org:_org,
-                        role:_role,
-                        token:store.userToken
-                }, this.resultGiveToRole, this)
+                console.log('stream form siteFour_page_createOrga.js  git to a role view ... ', nextProps, nextProps.stepTwo.values)
+                //{username: "inkikim", orgName: "bicinkiOrg", orgType: "Developer", selectRole: "Manager"}
+                let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
+                let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
+                let _role = nextProps.stepTwo.values && nextProps.stepTwo.values.orgType+nextProps.stepTwo.values.selectRole || '';
+                serviceOrganiz.organize('addUserRole',
+                    {
+                            username:_username,
+                            org:_org,
+                            role:_role,
+                            token:store.userToken
+                    }, this.resultGiveToRole, this)
+            
         }
-        
-
     }
 
     resultGiveToRole = (result,resource, self) => {
         console.log("receive == ", result, resource, self)
+        _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
             Alert.error(String(result.data.error), {
                 position: 'top-right',
@@ -64,7 +65,7 @@ class PopAddUserViewer extends React.Component {
             //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         } else {
 
-            Alert.success('Success created organization', {
+            Alert.success('Success AddUser', {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
@@ -108,6 +109,16 @@ class PopAddUserViewer extends React.Component {
                         {/*</Grid.Row>*/}
                         {this.setForms()}
                     </Grid>
+                    <div className="loadingBox" style={{zIndex:99999}}>
+                        <GridLoader
+                            sizeUnit={"px"}
+                            size={30}
+                            color={'#70b2bc'}
+                            loading={this.props.loadingSpinner}
+                            //loading={true}
+                        />
+                        <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
+                    </div>
                 </Modal.Content>
                 <Modal.Actions  className='adduser-close'>
                     <Button onClick={() => this.close()} style={{}}>
@@ -128,13 +139,14 @@ const mapStateToProps = (state) => {
     }
     : {};
     return {
-        stepTwo:formStepTwo
+        stepTwo:formStepTwo,
+        loadingSpinner : state.loadingSpinner.loading?state.loadingSpinner.loading:null,
     }
 };
 
 const mapDispatchProps = (dispatch) => {
     return {
-        
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 

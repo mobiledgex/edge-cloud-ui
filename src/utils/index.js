@@ -16,7 +16,7 @@ export const groupByCompare = (objectArray, properties) => (
         let key1 = obj[properties[0]];
         let key2 = obj[properties[1]];
         let key = [properties[0]]+':'+key1 + [properties[1]]+':'+key2
-        console.log('reduce key-', key)
+        // console.log('reduce key-', key)
         if(!accumulator[key]) {
             accumulator[key] = [];
         }

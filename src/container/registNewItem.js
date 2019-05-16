@@ -83,7 +83,9 @@ class RegistNewItem extends React.Component {
 
         // developer(Organization)
         //service.getMCService('showOrg',{token:store.userToken}, _self.receiveDev)
-
+        if(this.props.userRole == 'AdminManager') {
+            this.getOrgData()
+        }
         
     }
     componentDidUpdate(){
@@ -94,9 +96,7 @@ class RegistNewItem extends React.Component {
         if(nextProps.open) {
             this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
         }
-        if(nextProps.selectOrg) {
-            this.setState({devOptionsDeveloper:nextProps.selectOrg.Organization});
-        }
+        
         if(nextProps.submitData.registNewInput) {
             
             let cnArr = [];
@@ -182,7 +182,11 @@ class RegistNewItem extends React.Component {
     }
     handleChangeLong = (e, {value}) => {
         console.log("longValue!@@",value)
-        let onlyNum = value.replace(/[^0-9]/g,'')
+        if(value == '-') {
+            this.setState({ locationLong: value })
+            return
+        }
+        let onlyNum = value;
         if(onlyNum > 180 || onlyNum < -180) {
             console.log("in",onlyNum)
             alert("-180 ~ 180");
@@ -194,7 +198,11 @@ class RegistNewItem extends React.Component {
     }
     handleChangeLat = (e, {value}) => {
         console.log("latValue!@@",value)
-        let onlyNum = value.replace(/[^0-9]/g,'')
+        if(value == '-') {
+            this.setState({ locationLat: value })
+            return
+        }
+        let onlyNum = value;
         if(onlyNum > 90 || onlyNum < -90) {
             alert("-90 ~ 90");
             e.target.value=null;
@@ -303,6 +311,12 @@ class RegistNewItem extends React.Component {
         let groupByOper = aggregate.groupBy(result, 'DeveloperName')
         _self.setState({appResult:groupByOper})
     }
+    receiveOrg(result) {
+        console.log('receive Org ==>>>>>>>>>>>> ', result)
+        _self.setState({devOptionsDeveloper: result.map((item, i) => (
+            { key: i, value: item.Organization, text: item.Organization }
+        ))})
+    }
     receiveSubmit(result) {
         console.log('registry new ... success result@..', result.data)
         _self.props.handleLoadingSpinner(false);
@@ -375,7 +389,7 @@ class RegistNewItem extends React.Component {
         //TODO: 20190410 메뉴 별 구분 필요
         if(this.props.computeItem === 'Cluster Instances'){
             console.log("submitData@@",this.props.submitData)
-            const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, NumberOfMaster, NumberOfNode} = this.props.submitData.registNewInput.values
+            const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, Number_of_Master, Number_of_Node} = this.props.submitData.registNewInput.values
             serviceBody = {
                 "token":store.userToken,
                 "params": {
@@ -388,8 +402,8 @@ class RegistNewItem extends React.Component {
                         },
                         "flavor":{"name":Flavor},
                         "ip_access":Number(IpAccess),
-                        "num_masters":Number(NumberOfMaster),
-                        "num_nodes":Number(NumberOfNode)
+                        "num_masters":Number(Number_of_Master),
+                        "num_nodes":Number(Number_of_Node)
                     }
                 }
             }
@@ -450,6 +464,13 @@ class RegistNewItem extends React.Component {
             service.getMCService('ShowFlavor',{token:store.userToken,region:region}, _self.receiveCF)
         }
     }
+
+    getOrgData = () => {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            // Organization
+            service.getMCService('showOrg',{token:store.userToken}, this.receiveOrg)
+        
+    }
     
 
     render() {
@@ -498,7 +519,8 @@ const mapStateToProps = (state) => {
         locLat : state.mapCoordinatesLat?state.mapCoordinatesLat:null,
         submitData : state.form?state.form : null,
         computeItem : state.computeItem?state.computeItem.item:null,
-        selectOrg : state.selectOrg.org?state.selectOrg.org:null
+        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
+        userRole : state.showUserRole?state.showUserRole.role:null,
     }
 };
 

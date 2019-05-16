@@ -120,30 +120,36 @@ class SiteFourPageApps extends React.Component {
         }
     }
     getDataDeveloper(token, region) {
-        //services.getComputeService('app', this.receiveResult)
         let rgn = ['US','EU'];
         let serviceBody = {}
         this.setState({devData:[]})
         if(region !== 'All'){
             rgn = [region]
         } 
-        
-        rgn.map((item) => {
-            serviceBody = {
-                "token":token,
-                "params": {
-                    "region":item,
-                    "app":{
-                        "key":{
-                            "developer_key":{"name":this.props.selectOrg.Organization},
+
+        if(this.props.userRole == 'AdminManager') {
+            rgn.map((item) => {
+                // All show app
+                services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)
+            })
+        } else {
+            rgn.map((item) => {
+                serviceBody = {
+                    "token":token,
+                    "params": {
+                        "region":item,
+                        "app":{
+                            "key":{
+                                "developer_key":{"name":this.props.selectOrg.Organization},
+                            }
                         }
                     }
                 }
-            }
-            //services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)
-            // org별 show app
-            services.getMCService('ShowApp',serviceBody, _self.receiveResult)
-        })
+                // org별 show app
+                services.getMCService('ShowApp',serviceBody, _self.receiveResult)
+            })
+        }
+        
     }
     
     getDataDeveloperSub = () => {
@@ -179,6 +185,7 @@ const mapStateToProps = (state) => {
         region:region,
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
+        userRole : state.showUserRole?state.showUserRole.role:null,
     }
 };
 

@@ -44,7 +44,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} getOptionData={props.regionf} flavorData={props.devoptionsf} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} getOptionData={props.regionf} flavorData={props.devoptionsf} getUserRole={props.userrole} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'VM Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
 ]
@@ -136,6 +136,7 @@ class RegistryViewer extends React.Component {
     receiveResult (result) {
         console.log('result creat app ...', result.data.error)
         _self.props.handleLoadingSpinner(false);
+        this.setState({loopCancel:true});
         if(result.data.error) {
             Alert.error(result.data.error, {
                 position: 'top-right',
@@ -197,7 +198,7 @@ class RegistryViewer extends React.Component {
 
     generateDOM(open, dimmer, width, height, data, keysData, hideHeader) {
 
-        let panelParams = {data:data, keys:keysData, regionf:this.getOptionData, devoptionsf:this.state.devoptionsf}
+        let panelParams = {data:data, keys:keysData, regionf:this.getOptionData, devoptionsf:this.state.devoptionsf, userrole:this.props.userRole}
 
         return layout.map((item, i) => (
 
@@ -330,13 +331,13 @@ class RegistryViewer extends React.Component {
          * set Organization Name
          * **********/
         let assObj = Object.assign([], this.fakeData);
-        assObj[0].OrganizationName = (this.props.selectOrg.Organization);
-        console.log("jjjjkkkkkk",this.props.selectOrg.Organization);
+        assObj[0].OrganizationName = (this.props.selectOrg)?this.props.selectOrg.Organization:'';
+        console.log("jjjjkkkkkk",assObj);
         this.setState({fakeData:assObj});
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('nextPropsapp@@',nextProps.submitValues)
+        console.log('nextPropsapp@@',nextProps)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -464,7 +465,7 @@ const mapStateToProps = (state) => {
         region: region,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         computeItem : state.computeItem?state.computeItem.item:null,
-
+        userRole : state.showUserRole?state.showUserRole.role:null,
     }
     
     // return (dimm) ? {
