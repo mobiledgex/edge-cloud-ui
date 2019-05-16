@@ -4,6 +4,7 @@ import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup
 
 import { Field, reduxForm, initialize, reset } from "redux-form";
 import MaterialIcon from "material-icons-react";
+import * as services from '../services/service_compute_service';
 import './styles.css';
 
 const validate = values => {
@@ -135,7 +136,8 @@ class SiteFourCreateFormDefault extends React.Component {
             regKey:null,
             fieldKeys:null,
             dataInit:false,
-            portArray:['item']
+            portArray:['item'],
+            orgArr:[]
         };
 
     }
@@ -163,6 +165,10 @@ class SiteFourCreateFormDefault extends React.Component {
                 this.setState({dataInit:true})
             }
         }
+        if(this.props.getUserRole == 'AdminManager') {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            services.getMCService('showOrg',{token:store.userToken}, this.receiveResult)
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -175,6 +181,8 @@ class SiteFourCreateFormDefault extends React.Component {
                 this.setState({dataInit:true})
             }
         }
+        
+        
     }
 
     getLabel (key, pId) {
@@ -214,10 +222,17 @@ class SiteFourCreateFormDefault extends React.Component {
         }
         this.setState({portArray:arr}); 
     }
-
+    receiveResult = (result) => {
+        let arr = [];
+        console.log("receive == ", result)
+        result.map((item,i) => {
+            arr.push(item.Organization);
+        })
+        this.setState({orgArr:arr});
+    }
     
     render (){
-        const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId } = this.props;
+        const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
         const { data, regKeys, fieldKeys } = this.state;
         console.log("data@fo@@",data, regKeys, fieldKeys)
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
@@ -295,13 +310,21 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             />
                                                         :
                                                         (fieldKeys[pId][key]['type'] === 'RenderInputDisabled') ?
-                                                        <Field
-                                                            disabled
-                                                            component={renderInputDisabled}
-                                                            type="input"
-                                                            name={key}
-                                                            value={data[key]}
-                                                            />
+                                                            (getUserRole == 'AdminManager') ?
+                                                                <Field
+                                                                    component={renderSelect}
+                                                                    placeholder={'Select OrganizationName'}
+                                                                    options={this.state.orgArr}
+                                                                    name={key}
+                                                                    onChange={()=>console.log('onChange text..')}/>
+                                                            :
+                                                                <Field
+                                                                    disabled
+                                                                    component={renderInputDisabled}
+                                                                    type="input"
+                                                                    name={key}
+                                                                    value={data[key]}
+                                                                    />
                                                         :
                                                         (fieldKeys[pId][key]['type'] === 'CustomPorts') ?
                                                         <Grid>

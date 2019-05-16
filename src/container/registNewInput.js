@@ -147,7 +147,10 @@ class registNewInput extends React.Component {
                                                     (key === 'Operator')?
                                                     <Field component={renderSelect} placeholder='Select Operator' name='Operator' options={option[0]} value={value[0]} />
                                                     : (key === 'OrganizationName')?
-                                                    <Field component={renderInput} type="input" name='OrganizationName' disabled={true} />
+                                                        (this.props.defaultValue) ?
+                                                            <Field component={renderInput} type="input" name='OrganizationName' disabled={true} />
+                                                        :
+                                                            <Field component={renderSelect} placeholder='Select OrganizationName' name='OrganizationName' options={option[1]} />
                                                     : (key === 'Cloudlet')?
                                                     <Field component={renderSelect} placeholder='Select Cloudlet' name='Cloudlet' options={this.props.cloudArr} value={value[2]} />
                                                     : (key === 'Region')?

@@ -22,7 +22,8 @@ class DeleteItem extends React.Component {
             dropdownValueTwo:'',
             showWarning:false,
             closeOnEscape:true,
-            closeOnDimmerClick:true
+            closeOnDimmerClick:true,
+            deleteName:''
         }
         _self = this;
     }
@@ -257,8 +258,18 @@ class DeleteItem extends React.Component {
 
     /** ************************ **/
     componentWillReceiveProps(nextProps, nextContext) {
+        
         if(nextProps.open){
+            let name = '';
             this.setState({showWarning:nextProps.open})
+            if(nextProps.siteId == 'Organization') name = nextProps.selected.Organization
+            else if(nextProps.siteId == 'User') name = nextProps.selected.Username
+            else if(nextProps.siteId == 'Cloudlet') name = nextProps.selected.CloudletName
+            else if(nextProps.siteId == 'Flavors') name = nextProps.selected.FlavorName
+            else if(nextProps.siteId == 'ClusterInst') name = nextProps.selected.ClusterName
+            else if(nextProps.siteId == 'App') name = nextProps.selected.AppName
+            else if(nextProps.siteId == 'appinst') name = nextProps.selected.AppName
+            this.setState({deleteName:name})
         }
     }
 
@@ -272,7 +283,7 @@ class DeleteItem extends React.Component {
             >
                 <Modal.Header>{`Delete ${this.props.siteId}`}</Modal.Header>
                 <Modal.Content>
-                    <p>{`Are you sure you want to delete ${this.props.siteId}`}</p>
+                    <p>{'Are you sure you want to delete '}<b>{this.state.deleteName}</b></p>
                 </Modal.Content>
                 <Modal.Actions>
                     <Button onClick={() => this.closeDeleteModal('no')} negative>

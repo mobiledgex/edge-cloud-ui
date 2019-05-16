@@ -43,7 +43,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} getUserRole={props.userrole} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
@@ -189,6 +189,7 @@ class RegistryInstViewer extends React.Component {
     receiveResult (result) {
         console.log('result creat app ...', result.data.error)
         _self.props.handleLoadingSpinner(false);
+        this.setState({loopCancel:true});
         if(result.data.error) {
             Alert.error(result.data.error, {
                 position: 'top-right',
@@ -250,7 +251,7 @@ class RegistryInstViewer extends React.Component {
 
     generateDOM(open, dimmer, width, height, data, keysData, hideHeader) {
 
-        let panelParams = {data:data, keys:keysData}
+        let panelParams = {data:data, keys:keysData, userrole:this.props.userRole}
 
         return layout.map((item, i) => (
 
@@ -285,6 +286,7 @@ class RegistryInstViewer extends React.Component {
     }
 
     loadingBox = (params,tokens) => {
+        console.log("loadingbox in#@")
         this.setState({loopCancel:false});
         _self.props.handleLoadingSpinner(true);
         // services.createNewApp('CreateApp', serviceBody, _self.receiveResult)
@@ -299,7 +301,7 @@ class RegistryInstViewer extends React.Component {
          * set Organization Name
          * **********/
         let assObj = Object.assign([], this.state.fakeData);
-        assObj[0].DeveloperName = (this.props.selectOrg.Organization);
+        assObj[0].DeveloperName = (this.props.selectOrg)?this.props.selectOrg.Organization:'';
         this.setState({fakeData:assObj})
 
     }
@@ -476,6 +478,7 @@ const mapStateToProps = (state) => {
         selectedOperator: selectedOperator,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         submitData : state.form?state.form : null,
+        userRole : state.showUserRole?state.showUserRole.role:null,
     }
     
     // return (dimm) ? {
