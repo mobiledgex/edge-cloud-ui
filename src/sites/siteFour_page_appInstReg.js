@@ -66,19 +66,19 @@ class SiteFourPageAppInstReg extends React.Component {
         console.log('info.. store == ', store)
 
 
-        if(store.userToken) {
-            if(this.props.region.value) {
-                this.getDataDeveloper(store.userToken, this.props.region.value)
-            }
-            this.userToken = store.userToken;
-        } else {
-            Alert.error('Invalid or expired token', {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
-        }
+        // if(store.userToken) {
+        //     if(this.props.region.value) {
+        //         this.getDataDeveloper(store.userToken, this.props.region.value)
+        //     }
+        //     this.userToken = store.userToken;
+        // } else {
+        //     Alert.error('Invalid or expired token', {
+        //         position: 'top-right',
+        //         effect: 'slide',
+        //         timeout: 5000
+        //     });
+        //     setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+        // }
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -98,10 +98,10 @@ class SiteFourPageAppInstReg extends React.Component {
             _self.setState({devData:result})
         }
     }
-    getDataDeveloper(token, region) {
+    // getDataDeveloper(token, region) {
 
-        //services.getMCService('ShowApps',{token:token, region:(region === 'All') ? 'US' : region}, _self.receiveResult)
-    }
+    //     //services.getMCService('ShowApps',{token:token, region:(region === 'All') ? 'US' : region}, _self.receiveResult)
+    // }
 
     /*
      */

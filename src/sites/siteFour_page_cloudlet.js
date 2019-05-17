@@ -68,13 +68,6 @@ class SiteFourPageCloudlet extends React.Component {
         if(store.userToken) {
             this.getDataDeveloper(this.props.changeRegion);
             this.userToken = store.userToken;
-        } else {
-            Alert.error('Invalid or expired token', {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-            //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         }
     }
     componentWillReceiveProps(nextProps) {

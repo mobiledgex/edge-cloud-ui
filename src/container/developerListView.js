@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Divider, Container } from 'semantic-ui-react';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -24,7 +25,7 @@ const headerStyle = {
 var horizon = 6;
 var vertical = 20;
 var layout = [
-    {"w":19,"h":20,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Developer"},
+    {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":8,"minH":5,"moved":false,"static":false, "title":"Developer"},
 ]
 let _self = null;
 
@@ -51,7 +52,17 @@ class DeveloperListView extends React.Component {
         };
 
     }
-
+///////페이지 기능 안 됨
+    gotoUrl(site, subPath) {
+        console.log('999',_self.props.history)
+        _self.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:site, subPath: subPath})
+    }
+///////
     onHandleClick(dim, data) {
         console.log('on handle click == ', data)
         this.setState({ dimmer:dim, open: true, selected:data })
@@ -258,8 +269,8 @@ class DeveloperListView extends React.Component {
                                                 Add User
                                             </Button>:null}
                                         {(this.props.siteId == 'App')?
-                                            <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.onHandleClickAddApp(true, item, i)}>
-                                                Launch
+                                            <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.gotoUrl('/site4', 'pg=createAppInst')}>
+                                            Launch
                                             </Button>:null}
                                         <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
@@ -408,6 +419,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(DeveloperListView);
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(DeveloperListView));
 
 

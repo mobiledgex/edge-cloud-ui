@@ -185,3 +185,10 @@ export function changeLoginMode (mode) {
         mode
     }
 }
+export function creatingSpinner (creating) {
+    console.log('CREATING_SPINNER == ', creating)
+    return {
+        type: types.CREATING_SPINNER,
+        creating
+    }
+}
