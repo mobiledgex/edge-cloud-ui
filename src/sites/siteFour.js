@@ -24,7 +24,7 @@ import {Motion, spring} from "react-motion";
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import './siteThree.css';
-import {GridLoader} from "react-spinners";
+import {GridLoader, PulseLoader} from "react-spinners";
 
 //pages
 import SiteFourPageFlavor from './siteFour_page_flavor';
@@ -256,7 +256,7 @@ class SiteFour extends React.Component {
             search: "pg="+pg
         });
         _self.props.history.location.search = "pg="+pg;
-        this.setState({ page:'pg='+pg, activeItem: label, headerTitle:label })
+        _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label })
     }
 
     onHandleRegistry() {
@@ -321,7 +321,7 @@ class SiteFour extends React.Component {
         <Button.Group vertical>
             <Button onClick={() => this.profileView()} >Your profile</Button>
             {/*<Button style={{height:10, padding:0, margin:0}}><Divider inverted style={{padding:2, margin:0}}></Divider></Button>*/}
-            <Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>
+            {(this.state.role == 'AdminManager')? <Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button> : null}
             <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{this.state.userName}</div><div>Logout</div></Button>
         </Button.Group>
 
@@ -424,6 +424,9 @@ class SiteFour extends React.Component {
             this.setState({openSettings:false, userURL:nextProps.userSetting.userURL})
         }
 
+        // if(nextProps.creatingSpinner) {
+        //     this.getIntervalData('All');            
+        // }
     }
 
 
@@ -490,6 +493,25 @@ class SiteFour extends React.Component {
         this.props.handleComputeRefresh(true)
     }
 
+    getIntervalData = (region) => {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let rgn = ['US','EU'];
+        if(region !== 'All'){
+            rgn = [region]
+        } 
+        setInterval(() =>{
+            console.log("interval@@@@");
+            rgn.map((item) => {
+                computeService.getMCService('ShowClusterInst',{token:store.userToken, region:item}, _self.receiveResultClusterInst)
+            })
+        }, 10000);
+        
+    }
+
+    receiveResultClusterInst(result) {
+        console.log("result@@@@",result)
+    }
+
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem, controllerRegions } = this.state
@@ -505,13 +527,23 @@ class SiteFour extends React.Component {
                     />
                     <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
                 </div>
+                <div className="creatingBox">
+                    <PulseLoader
+                        sizeUnit={"px"}
+                        size={20}
+                        color={'#70b2bc'}
+                        loading={this.props.creatingSpinner}
+                        //loading={true}
+                    />
+                    <span className={this.props.creatingSpinner ? '' : 'create'} style={{fontSize:'18px', color:'#70b2bc'}}>Creating...</span>
+                </div>
                 <Grid.Row className='gnb_header'>
-                    <Grid.Column width={8} className='navbar_left'>
+                    <Grid.Column width={6} className='navbar_left'>
                         <Header>
                             <Header.Content onClick={() => this.gotoPreview('/site1')}  className='brand' />
                         </Header>
                     </Grid.Column>
-                    <Grid.Column width={8} className='navbar_right'>
+                    <Grid.Column width={10} className='navbar_right'>
                         <div style={{cursor:'pointer'}} onClick={this.computeRefresh}>
                             <MaterialIcon icon={'refresh'} />
                         </div>
@@ -550,7 +582,7 @@ class SiteFour extends React.Component {
 
                 </Grid.Row>
                 <Grid.Row columns={2} className='view_contents'>
-                    <Grid.Column width={2} className='view_left'>
+                    <Grid.Column mobile={4} tablet={4} computer={2} className='view_left'>
                         <Menu secondary vertical className='view_left_menu org_menu'>
                             {
                                 (this.state.role)?
@@ -572,8 +604,7 @@ class SiteFour extends React.Component {
                                             <Grid.Column width={5}>
                                                 <div className="markBox">
                                                     {
-                                                        (this.state.role == 'AdminManager')?
-                                                            null
+                                                        (this.state.role == 'AdminManager')? null
                                                         :
                                                         (this.state.role == 'DeveloperManager')?
                                                             <div className="mark markD markM">M</div>
@@ -622,13 +653,13 @@ class SiteFour extends React.Component {
                                 null
                             }
                         </Menu>
-                        <div style={{position:'fixed', bottom:10, color:'rgba(255,255,255,.2)'}} onClick={() => console.log(this.props.userInfo,this.state)}>
+                        <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}} onClick={() => console.log(this.props.userInfo,this.state)}>
                             {
-                                (this.state.role == 'AdminManager')? 'version 0.7.5' : null
+                                (this.state.role == 'AdminManager')? 'version 0.7.6' : null
                             }
                         </div>
                     </Grid.Column>
-                    <Grid.Column width={14} style={{height:this.state.bodyHeight}} className='contents_body'>
+                    <Grid.Column mobile={12} tablet={12} computer={14} style={{height:this.state.bodyHeight}} className='contents_body'>
                         <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
                             <Grid.Column className='title_align' style={{lineHeight:'36px'}}>{this.state.headerTitle}</Grid.Column>
                             {
@@ -711,6 +742,7 @@ const mapStateToProps = (state) => {
         userRole : state.showUserRole?state.showUserRole.role:null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         loadingSpinner : state.loadingSpinner.loading?state.loadingSpinner.loading:null,
+        creatingSpinner : state.creatingSpinner.creating?state.creatingSpinner.creating:null,
         userSetting : state.form.registUserSetting
             ? {
                 userURL: state.form.registUserSetting.values.userURL,
@@ -734,7 +766,8 @@ const mapDispatchProps = (dispatch) => {
         handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
         handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))}
     };
 };
 

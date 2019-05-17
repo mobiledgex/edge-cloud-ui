@@ -59,13 +59,15 @@ let generateData = (datas,body) => {
                 let Operator = dataResult.data.key.cloudlet_key.operator_key.name  || '-';
                 let Cloudlet = dataResult.data.key.cloudlet_key.name  || '-';
                 let Flavor = dataResult.data.flavor.name || '-';
-                let NodeFlavor = dataResult.data.node_flavor || '';
-                let MasterFlavor = dataResult.data.master_flavor || '';
                 let IpAccess = ipaccessArr[dataResult.data.ip_access] || '-';
+                let NodeFlavor = dataResult.data.node_flavor || '';
+                let NumMasters = dataResult.data.num_masters || '';
+                let NumNodes = dataResult.data.num_nodes || '';
+                let State = dataResult.data.state || '';
                 let CloudletLocation = '-';
 
                 let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'Number_of_Master', 'Number_of_Node', 'CloudletLocation'];
-                values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, Edit:newRegistKey})
+                values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, State:State, CloudletLocation:CloudletLocation, Edit:newRegistKey})
             }
         })
     } else {

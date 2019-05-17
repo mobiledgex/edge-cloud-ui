@@ -24,7 +24,7 @@ const headerStyle = {
 var horizon = 6;
 var vertical = 20;
 var layout = [
-    {"w":19,"h":20,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Developer"},
+    {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":8,"minH":5,"moved":false,"static":false, "title":"Developer"},
 ]
 let _self = null;
 const colors = [

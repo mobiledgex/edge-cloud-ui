@@ -24,8 +24,8 @@ var horizon = 6;
 var vertical = 20;
 
 var layout = [
-    {"w":24,"h":9,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"LocationView"},
-    {"w":24,"h":11,"x":0,"y":9,"i":"1","moved":false,"static":false, "title":"Developer"},
+    {"w":24,"h":9,"x":0,"y":0,"i":"0","minW":5,"minH":8,"moved":false,"static":false, "title":"LocationView"},
+    {"w":24,"h":11,"x":0,"y":9,"i":"1","minW":8,"minH":6,"moved":false,"static":false, "title":"Developer"},
 ]
 const override = {
     display: 'fixed',
@@ -263,6 +263,12 @@ class MapWithListView extends React.Component {
                                     (value === 'IpAccess')?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             {(item[value] == 0)? "IpAccessUnknown" : (item[value] == 1)? "IpAccessDedicated" : (item[value] == 2)? "IpAccessDedicatedOrShared" : (item[value] == 3)? "IpAccessShared" : item[value]}
+                                            {/*{item[value]}*/}
+                                        </Table.Cell>
+                                    :
+                                    (value === 'State')?
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                            {(item[value] == 3)? "Creating" : (item[value] == 5)? "Ready" : item[value]}
                                             {/*{item[value]}*/}
                                         </Table.Cell>
                                     :

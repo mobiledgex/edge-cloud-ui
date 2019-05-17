@@ -72,13 +72,6 @@ class SiteFourPageApps extends React.Component {
         if(store.userToken) {
             this.getDataDeveloper(store.userToken, this.props.region.value);
             this.userToken = store.userToken;
-        } else {
-            Alert.error('Invalid or expired token', {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         }
     }
     componentWillReceiveProps(nextProps) {

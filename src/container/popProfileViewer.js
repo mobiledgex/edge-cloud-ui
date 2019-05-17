@@ -26,7 +26,7 @@ export default class PopProfileViewer extends React.Component {
             if(nextProps.data){
                 regKeys = Object.keys(nextProps.data)
                 component = regKeys.map((key, i)=>(
-                    <Grid.Row columns={2}>
+                    <Grid.Row columns={2} key={i}>
                         <Grid.Column width={5} className='detail_item'>
                             <div>{key}</div>
                         </Grid.Column>
