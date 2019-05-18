@@ -6,7 +6,7 @@ import axios from "axios-https-proxy-fix";
 import qs from "qs";
 
 const API_KEY = '__apiMC_key__'
-let mcUrl = 'https://mc.mobiledgex.net:9900';
+let mcUrl = process.env.MC_URL || 'https://mc.mobiledgex.net:9900';
 let mcDevUrl = 'https://mc-dev.mobiledgex.net:9900';
 // create user
 exports.getToken = (req, res) => {
