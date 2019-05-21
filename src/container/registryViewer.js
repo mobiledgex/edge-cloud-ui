@@ -81,7 +81,7 @@ class RegistryViewer extends React.Component {
                 'ImageType':{label:'Image Type', type:'RenderInput', necessary:false, tip:'If Deployment Type Chosen as kubernetes, then image type is always ImageTypeDocker'},
                 'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'aaa', active:true},
                 'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:'Like this udp:12001,tcp:80,http:7777', active:true, items:['tcp', 'udp']},
-                'IpAccess':{label:'Ip Access', type:'IpSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
+                // 'IpAccess':{label:'Ip Access', type:'IpSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
                 'Command':{label:'Command', type:'RenderInput', necessary:false, tip:'Please input a command that the container runs', active:true},
                 'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Specify either http url of the yaml or upload yaml file or helm chart', active:true},
             },
@@ -100,7 +100,7 @@ class RegistryViewer extends React.Component {
                 'ImageType':'',
                 'DefaultFlavor':'',
                 'Ports':'',
-                'IpAccess':'',
+                // 'IpAccess':'',
                 'Command':'',
                 'DeploymentMF':'',
             }
@@ -411,9 +411,9 @@ const createFormat = (data) => (
                 "access_ports":accessport(data),
                 "default_flavor":{"name":data['DefaultFlavor']},
                 "cluster":{"name":""},
-                "ipaccess":data['IpAccess'],
+                // "ipaccess":data['IpAccess'],
                 "command":data['Command'],
-                "deploymentMF":data['DeploymentMF']
+                "deployment_manifest":data['DeploymentMF']
             }
     }
 )

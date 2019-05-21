@@ -207,7 +207,7 @@ export function deleteOrg(resource, body, callback) {
     })
         .then(function (response) {
             console.log('response  registry new obj result-',response);
-            callback(response)
+            callback(response,body)
         })
         .catch(function (error) {
             console.log(error);

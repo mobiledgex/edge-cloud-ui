@@ -319,8 +319,22 @@ class RegistNewItem extends React.Component {
     }
     receiveSubmit(result) {
         console.log('registry new ... success result@..', result.data)
-        _self.props.handleLoadingSpinner(false);
-        _self.props.refresh()
+        // if(result.data.error) {
+        //     // _self.props.handleCreatingSpinner(false);
+        //     Alert.error(result.data.error, {
+        //         position: 'top-right',
+        //         effect: 'slide',
+        //         onShow: function () {
+        //             console.log('error!')
+        //         },
+        //         beep: true,
+        //         timeout: 5000,
+        //         offset: 100
+        //     });
+        //     return;
+        // }
+        //_self.props.handleLoadingSpinner(false);
+        //_self.props.refresh()
         //데모용 잠시 막아놓음_190513
         // if(result.data.error) {
         //     Alert.error(result.data.error, {
@@ -382,7 +396,7 @@ class RegistNewItem extends React.Component {
         let serviceBody = {}
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         console.log("siteId@@@",this.props.computeItem)
-        this.props.handleLoadingSpinner(true);
+        //this.props.handleLoadingSpinner(true);
         // setTimeout(() => {
         //     this.props.handleLoadingSpinner(false);
         // },3000);
@@ -390,6 +404,7 @@ class RegistNewItem extends React.Component {
         if(this.props.computeItem === 'Cluster Instances'){
             console.log("submitData@@",this.props.submitData)
             const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, Number_of_Master, Number_of_Node} = this.props.submitData.registNewInput.values
+            this.props.handleCreatingSpinner(true);
             serviceBody = {
                 "token":store.userToken,
                 "params": {
@@ -412,6 +427,7 @@ class RegistNewItem extends React.Component {
         } else if(this.props.computeItem === 'Cloudlets') {
             console.log("submitCloudlet@@",this.props.submitData)
             const {CloudletName, OperatorName, Longitude, Latitude, Ip_support, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
+            this.props.handleLoadingSpinner(true);
             serviceBody = {
                 "token":store.userToken,
                 "params": {
@@ -528,7 +544,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleMapLong: (data) => { dispatch(actions.mapCoordinatesLong(data))},
         handleMapLat: (data) => { dispatch(actions.mapCoordinatesLat(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))}
     };
 };
 
