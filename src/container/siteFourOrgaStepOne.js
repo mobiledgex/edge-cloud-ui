@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
-import {Button, Form, Item, Message, List, Grid, Card, Header} from "semantic-ui-react";
-import { Field, reduxForm } from "redux-form";
+import {Button, Form, Item, Message, List, Grid, Card, Header, Image} from "semantic-ui-react";
+import {Field, reduxForm, reset} from "redux-form";
 import MaterialIcon from "../sites/siteFour_page_createOrga";
 import './styles.css';
 
@@ -90,6 +90,7 @@ const items = [
     },
 ]
 
+
 const renderCheckbox = field => (
     <Form.Checkbox
         style={{height:'33px', paddingTop:'10px'}}
@@ -164,80 +165,204 @@ const typeOperator = (selected, value) => (
     </Grid>
 )
 
+let _self = null;
+class SiteFourOrgaOne extends React.Component {
+    constructor(props) {
+        super(props);
+        _self = this;
+        this.state = {
+            typeValue:''
+        };
 
-const SiteFourOrgaOne = props => {
-    const { handleSubmit, reset, type } = props;
+    }
 
-    return (
-        <Fragment>
-            <Grid>
-                <Grid.Column width={11}>
-                    <Form onSubmit={handleSubmit} className={"fieldForm"}>
-                        <Header>Create Your Organization.</Header>
-                        <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
-                            <Grid>
-                                <Grid.Row>
-                                    <Grid.Column width={5}>
-                                        <div>Type</div>
-                                    </Grid.Column>
-                                    <Grid.Column width={11}>
-                                        {typeOperator(type)}
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                        </Form.Group>
-                        <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
-                            <Grid>
-                                <Grid.Row>
-                                    <Grid.Column width={5}>
-                                        <div>OrganizationName</div>
-                                    </Grid.Column>
-                                    <Grid.Column width={11}>
-                                        <Field
-                                            component={renderInput}
-                                            name="name"
-                                            type="input"
-                                        />
-                                    </Grid.Column>
-                                </Grid.Row>
-                                <Grid.Row>
-                                    <Grid.Column width={5}>
-                                        <div>Address</div>
-                                    </Grid.Column>
-                                    <Grid.Column width={11}>
-                                        <Field
-                                            component={renderInput}
-                                            name="address"
-                                            type="input"
-                                        />
-                                    </Grid.Column>
-                                </Grid.Row>
-                                <Grid.Row>
-                                    <Grid.Column width={5}>
-                                        <div>Phone</div>
-                                    </Grid.Column>
-                                    <Grid.Column width={11}>
-                                        <Field
-                                            component={renderInput}
-                                            name="phone"
-                                            type="input"
-                                        />
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                        </Form.Group>
-                        <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row'}}>
-                            <Form.Button positive primary>Continue</Form.Button>
-                        </Form.Group>
-                    </Form>
-                </Grid.Column>
-                <Grid.Column width={5}>
-                </Grid.Column>
-            </Grid>
+    handleInitialize() {
+        let cType = this.props.type.substring(0,1).toUpperCase() + this.props.type.substring(1);
+        const initData = {
+            "orgName": this.props.org,
+            "orgType": cType
+        };
 
-        </Fragment>
-    );
+        this.props.initialize(initData);
+    }
+
+    componentDidMount() {
+        this.handleInitialize();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log("twoProps",nextProps)
+    }
+
+
+
+    onHandleSubmit = () => {
+        console.log("ADDSUER@@@@")
+        this.props.handleLoadingSpinner(true);
+        _self.props.handleSubmit();
+        setTimeout(() => {
+            _self.props.dispatch(reset('orgaStepTwo'));
+            //this.props.handleLoadingSpinner(false);
+        },1000);
+
+    }
+
+    cancelClick = (e) => {
+        e.preventDefault();
+        this.props.changeOrg()
+    }
+
+    render (){
+        const { handleSubmit, reset, org, type } = this.props;
+        return (
+            <Fragment>
+                <Grid>
+                    <Grid.Column width={11}>
+                        <Form onSubmit={handleSubmit} className={"fieldForm"}>
+                            <Header>Create Your Organization.</Header>
+                            <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column width={5}>
+                                            <div>Type</div>
+                                        </Grid.Column>
+                                        <Grid.Column width={11}>
+                                            {typeOperator(type)}
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
+                            </Form.Group>
+                            <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column width={5}>
+                                            <div>OrganizationName</div>
+                                        </Grid.Column>
+                                        <Grid.Column width={11}>
+                                            <Field
+                                                component={renderInput}
+                                                name="name"
+                                                type="input"
+                                            />
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                    <Grid.Row>
+                                        <Grid.Column width={5}>
+                                            <div>Address</div>
+                                        </Grid.Column>
+                                        <Grid.Column width={11}>
+                                            <Field
+                                                component={renderInput}
+                                                name="address"
+                                                type="input"
+                                            />
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                    <Grid.Row>
+                                        <Grid.Column width={5}>
+                                            <div>Phone</div>
+                                        </Grid.Column>
+                                        <Grid.Column width={11}>
+                                            <Field
+                                                component={renderInput}
+                                                name="phone"
+                                                type="input"
+                                            />
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
+                            </Form.Group>
+                            <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row'}}>
+                                <Form.Button onClick={this.cancelClick}>Cancel</Form.Button>
+                                <Form.Button positive primary>Continue</Form.Button>
+                            </Form.Group>
+                        </Form>
+                    </Grid.Column>
+                    <Grid.Column width={5}>
+                    </Grid.Column>
+                </Grid>
+
+            </Fragment>
+        )
+
+    }
 };
+
+
+// const SiteFourOrgaOne = props => {
+//     const { handleSubmit, reset, type } = props;
+//
+//     return (
+//         <Fragment>
+//             <Grid>
+//                 <Grid.Column width={11}>
+//                     <Form onSubmit={handleSubmit} className={"fieldForm"}>
+//                         <Header>Create Your Organization.</Header>
+//                         <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
+//                             <Grid>
+//                                 <Grid.Row>
+//                                     <Grid.Column width={5}>
+//                                         <div>Type</div>
+//                                     </Grid.Column>
+//                                     <Grid.Column width={11}>
+//                                         {typeOperator(type)}
+//                                     </Grid.Column>
+//                                 </Grid.Row>
+//                             </Grid>
+//                         </Form.Group>
+//                         <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
+//                             <Grid>
+//                                 <Grid.Row>
+//                                     <Grid.Column width={5}>
+//                                         <div>OrganizationName</div>
+//                                     </Grid.Column>
+//                                     <Grid.Column width={11}>
+//                                         <Field
+//                                             component={renderInput}
+//                                             name="name"
+//                                             type="input"
+//                                         />
+//                                     </Grid.Column>
+//                                 </Grid.Row>
+//                                 <Grid.Row>
+//                                     <Grid.Column width={5}>
+//                                         <div>Address</div>
+//                                     </Grid.Column>
+//                                     <Grid.Column width={11}>
+//                                         <Field
+//                                             component={renderInput}
+//                                             name="address"
+//                                             type="input"
+//                                         />
+//                                     </Grid.Column>
+//                                 </Grid.Row>
+//                                 <Grid.Row>
+//                                     <Grid.Column width={5}>
+//                                         <div>Phone</div>
+//                                     </Grid.Column>
+//                                     <Grid.Column width={11}>
+//                                         <Field
+//                                             component={renderInput}
+//                                             name="phone"
+//                                             type="input"
+//                                         />
+//                                     </Grid.Column>
+//                                 </Grid.Row>
+//                             </Grid>
+//                         </Form.Group>
+//                         <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row'}}>
+//                             <Form.Button onClick={cancelevent}>Cancel</Form.Button>
+//                             <Form.Button positive primary>Continue</Form.Button>
+//                         </Form.Group>
+//                     </Form>
+//                 </Grid.Column>
+//                 <Grid.Column width={5}>
+//                 </Grid.Column>
+//             </Grid>
+//
+//         </Fragment>
+//     );
+// };
 
 export default reduxForm({
     form: "orgaStepOne",

@@ -74,9 +74,9 @@ class DeleteItem extends React.Component {
         }
     }
 
-    receiveUserSubmit = (result) => {
+    receiveUserSubmit = (result,body) => {
         this.props.handleLoadingSpinner(false);
-        console.log('user delete ... success result..', result.data);
+        console.log('user delete ... success result..', result.data, body.params.name,':::',this.props.selectOrg);
         _self.props.refresh();
         if(result.data.message) {
             Alert.success(result.data.message, {
@@ -90,6 +90,10 @@ class DeleteItem extends React.Component {
                 offset: 100
             });
             _self.props.success();
+        }
+        if(this.props.siteId === 'Organization' && body.params.name == this.props.selectOrg.Organization) {
+            this.props.handleSelectOrg('-')
+            this.props.handleUserRole('')
         }
     }
 
@@ -302,12 +306,20 @@ class DeleteItem extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    console.log("siteFour@@@stateRedux ::: ",state)
 
+    return {
+        selectOrg : state.selectOrg.org?state.selectOrg.org:null
+    }
+};
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
+        handleUserRole: (data) => { dispatch(actions.showUserRole(data))}
     };
 };
 
-export default withRouter(connect(null, mapDispatchProps)(DeleteItem));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(DeleteItem));

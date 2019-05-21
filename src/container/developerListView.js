@@ -139,8 +139,8 @@ class DeveloperListView extends React.Component {
 
                     <Table.Footer className='listPageContainer'>
                         <Table.Row>
-                            <Table.HeaderCell colspan={100}>
-                                <Menu floated={'center'} pagination>
+                            <Table.HeaderCell>
+                                <Menu pagination>
                                     <Menu.Item as='a' icon>
                                         <Icon name='chevron left' />
                                     </Menu.Item>
@@ -260,7 +260,7 @@ class DeveloperListView extends React.Component {
                                 (value === 'Edit')?
                                     <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
                                         {(this.props.siteId == 'Organization' && this.props.userRole !== 'AdminManager')?
-                                            <Button color={(this.state.selectUse == i)?'teal' :''} onClick={(evt) => this.onUseOrg(item,i, evt)}>
+                                            <Button color={(this.state.selectUse == i)?'teal' :null} onClick={(evt) => this.onUseOrg(item,i, evt)}>
                                                 <Icon name='check' />
                                             </Button>:null}
                                         <Button disabled key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
@@ -300,12 +300,6 @@ class DeveloperListView extends React.Component {
                                         {item[value]}
                                     </Table.Cell>
                                 :
-                                (value === 'IpAccess')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} >
-                                        {(item[value] == 0)? "IpAccessUnknown" : (item[value] == 1)? "IpAccessDedicated" : (item[value] == 2)? "IpAccessDedicatedOrShared" : (item[value] == 3)? "IpAccessShared" : item[value]}
-                                        {/*{item[value]}*/}
-                                    </Table.Cell>
-                                :
                                 (!( String(hideHeader).indexOf(value) > -1 )) ?
                                     <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
@@ -319,7 +313,7 @@ class DeveloperListView extends React.Component {
                     ))
                 }
             </Table.Body>
-
+            
         </Table>
     )
     successfully(msg) {

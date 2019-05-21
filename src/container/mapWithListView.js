@@ -153,8 +153,8 @@ class MapWithListView extends React.Component {
 
                     <Table.Footer className='listPageContainer'>
                         <Table.Row>
-                            <Table.HeaderCell colspan={100}>
-                                <Menu floated={'center'} pagination>
+                            <Table.HeaderCell>
+                                <Menu pagination>
                                     <Menu.Item as='a' icon>
                                         <Icon name='chevron left' />
                                     </Menu.Item>

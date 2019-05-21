@@ -230,6 +230,11 @@ class SiteFourCreateFormDefault extends React.Component {
         })
         this.setState({orgArr:arr});
     }
+
+    cancelClick = (e) => {
+        e.preventDefault();
+        // 기능 추가
+    }
     
     render (){
         const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
@@ -387,6 +392,11 @@ class SiteFourCreateFormDefault extends React.Component {
                         <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
                             <Form.Group inline>
                                 {/*<Button onClick={()=>this.onHandleReset()}>Reset</Button>*/}
+                                <span style={{marginRight:'1em'}}>
+                                    <Button onClick={this.cancelClick}>
+                                        Cancel
+                                    </Button>
+                                </span>
                                 <Button
                                     primary
                                     positive

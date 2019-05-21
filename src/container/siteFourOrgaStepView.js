@@ -1,5 +1,6 @@
 import React from 'react';
 import { Item, Step, Icon, Modal, Grid, Header, Button, Table, Menu, Input, Divider, Container } from 'semantic-ui-react';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -15,7 +16,6 @@ import MaterialIcon from "material-icons-react";
 import SiteFourOrgaOne from "./siteFourOrgaStepOne";
 import SiteFourOrgaTwo from "./siteFourOrgaStepTwo";
 import SiteFourOrgaThree from "./siteFourOrgaStepThree";
-
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -63,6 +63,7 @@ class SiteFourOrgaStepView extends React.Component {
         };
 
     }
+
 
     onHandleClick(dim, data) {
         console.log('on handle click == ', data)
@@ -126,7 +127,7 @@ class SiteFourOrgaStepView extends React.Component {
             </Step.Group>
 
             {
-                (this.state.step ==1) ? <SiteFourOrgaOne onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator}></SiteFourOrgaOne> :
+                (this.state.step ==1) ? <SiteFourOrgaOne changeOrg={this.changeOrg} onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator}></SiteFourOrgaOne> :
                     (this.state.step ==2) ? <SiteFourOrgaTwo nextstep={this.nextstep} onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName}></SiteFourOrgaTwo> :
                         (this.state.step ==3) ? <SiteFourOrgaThree changeOrg={this.changeOrg} onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator}></SiteFourOrgaThree> : null
             }
@@ -252,4 +253,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(SiteFourOrgaStepView);
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourOrgaStepView));

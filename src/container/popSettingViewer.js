@@ -88,23 +88,21 @@ class PopSettingViewer extends React.Component {
 
     makeForm = (regKeys) => (
         <Form onSubmit={this.onHandleSubmit} className={"fieldForm"}>
-            <Form.Group>
-                <Grid style={{width:'100%'}}>
+            <Form.Group  style={{margin:0, width: '100%'}}>
+                <Grid style={{width:'100%', margin:'-1rem 0 -1rem 0'}}>
                 {
                     regKeys.map((key, i) => (
-                        <Grid.Row columns={2}>
+                        <Grid.Row columns={2} key={i}>
                             <Grid.Column width={5} className='detail_item'>
                                 <div>{key}</div>
                             </Grid.Column>
                             <Grid.Column width={11}>
-
                                 <Field
                                     component={renderInput}
                                     type="input"
                                     name="userURL"
                                     value={"https://mc.mobiledgex.net:9900"}
                                 />
-
                             </Grid.Column>
                             <Divider vertical></Divider>
                         </Grid.Row>
@@ -112,27 +110,24 @@ class PopSettingViewer extends React.Component {
                 }
                 </Grid>
             </Form.Group>
-            <Form.Group>
-                <Grid>
-                    <Grid.Row columns={2}>
-                        <Grid.Column>
-                            <Button onClick={() => this.close()}>
-                                Cancel
-                            </Button>
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Button
-                                primary
-                                positive
-                                icon='checkmark'
-                                labelPosition='right'
-                                content="Save"
-                                type="submit"
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </Form.Group>
+        </Form>
+    )
+
+    makebutton = (regKeys) => (
+        <Form onSubmit={this.onHandleSubmit} className={"fieldForm"}>
+            <Modal.Actions>
+                <Button onClick={() => this.close()}>
+                    Cancel
+                </Button>
+                <Button
+                    primary
+                    positive
+                    icon='checkmark'
+                    labelPosition='right'
+                    content="Save"
+                    type="submit"
+                />
+            </Modal.Actions>
         </Form>
     )
 
@@ -143,13 +138,16 @@ class PopSettingViewer extends React.Component {
 
             <Modal size={'small'} open={this.props.open} dimmer={false}>
                 <Modal.Header>Settings</Modal.Header>
-                <Modal.Content>
-
-                        {
-                            this.makeForm(this.state.regKeys)
-                        }
-
+                <Modal.Content style={{padding:'1.5rem 0.5rem 1.5rem 0.5rem'}}>
+                    {
+                        this.makeForm(this.state.regKeys)
+                    }
                 </Modal.Content>
+                <Modal.Actions>
+                    {
+                        this.makebutton(this.state.regKeys)
+                    }
+                </Modal.Actions>
             </Modal>
 
         )

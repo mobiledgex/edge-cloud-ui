@@ -55,12 +55,12 @@ let generateData = (datas,body) => {
                 let Version = dataResult.data.key.version || '-';
                 let ImagePath = dataResult.data.image_path || '-';
                 let DeploymentType = dataResult.data.deployment || '-';
-                let Command = dataResult.data.Command || '-';
+                let Command = dataResult.data.command || '-';
                 let DeploymentMF = dataResult.data.deployment_manifest || '-';
                 let ImageType = dataResult.data.image_type || '-';
                 let DefaultFlavor = dataResult.data.default_flavor.name || '-';
                 let Ports = dataResult.data.access_ports || '-';
-                let IpAccess = dataResult.data.IpAccess || '-';
+                // let IpAccess = dataResult.data.IpAccess || '-';
                 let Cluster = dataResult.data.cluster.name || '-';
                 
                 let DeploymentGenerator = dataResult.deployment_generator || '-';
@@ -75,7 +75,7 @@ let generateData = (datas,body) => {
                     'ImageType',
                     'DefaultFlavor',
                     'Ports',
-                    'IpAccess',
+                    // 'IpAccess',
                     //'Cluster',
                     'Command',
                     'DeploymentMF',
@@ -91,7 +91,7 @@ let generateData = (datas,body) => {
                     ImageType:ImageType,
                     DefaultFlavor:DefaultFlavor,
                     Ports:Ports,
-                    IpAccess:IpAccess,
+                    // IpAccess:IpAccess,
                     //Cluster:Cluster,
                     Command:Command,
                     DeploymentMF:DeploymentMF,

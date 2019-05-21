@@ -74,26 +74,6 @@ const locationOptions = [
     { key: 'Turkish', text: 'Turkish', value: 'Turkish' },
     { key: 'Vietnamese', text: 'Vietnamese', value: 'Vietnamese' },
 ]
-const options = [
-    {
-        key: 'local',
-        text: 'local',
-        value: 'local',
-        content: 'local',
-    },
-    {
-        key: 'US',
-        text: 'US',
-        value: 'US',
-        content: 'US',
-    },
-    {
-        key: 'EU',
-        text: 'EU',
-        value: 'EU',
-        content: 'EU',
-    }
-]
 let defaultMotion = {left: window.innerWidth/2,top: window.innerHeight/2, position: 'absolute', opacity:1}
 let _self = null;
 class SiteFour extends React.Component {
@@ -130,7 +110,9 @@ class SiteFour extends React.Component {
             OrganizationName:'',
             adminShow:false,
             openSettings:false,
-            userURL:''
+            userURL:'',
+            createState:'',
+            toggleState:true
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
@@ -142,10 +124,9 @@ class SiteFour extends React.Component {
         this.menuItems = [
             {label:'Cloudlets', icon:'cloud_queue', pg:2},
             {label:'Flavors', icon:'free_breakfast', pg:3},
-            {label:'Cluster Flavors', icon:'developer_board', pg:4},
-            {label:'Cluster Instances', icon:'storage', pg:5},
-            {label:'Apps', icon:'apps', pg:6},
-            {label:'App Instances', icon:'storage', pg:7}
+            {label:'Cluster Instances', icon:'storage', pg:4},
+            {label:'Apps', icon:'apps', pg:5},
+            {label:'App Instances', icon:'storage', pg:6}
         ]
         this.auth_three = [this.menuItems[0], this.menuItems[1], this.menuItems[2]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_default = [
@@ -154,9 +135,9 @@ class SiteFour extends React.Component {
         ]
         this.auth_list = [
             {role:'AdminManager', view:[]},
-            {role:'DeveloperManager', view:[2,3,4]},
-            {role:'DeveloperContributor', view:[1,2,3,4]},
-            {role:'DeveloperViewer', view:[1,2,3,4,5,6,7]},
+            {role:'DeveloperManager', view:[2,3]},
+            {role:'DeveloperContributor', view:[1,2,3]},
+            {role:'DeveloperViewer', view:[1,2,3,4,5,6]},
             {role:'OperatorManager', view:[]},
             {role:'OperatorContributor', view:[1]},
             {role:'OperatorViewer', view:[1,2]}
@@ -272,9 +253,6 @@ class SiteFour extends React.Component {
         } else if(this.state.activeItem === '') {
             this.setState({page:'pg=createAppInst'})
             this.gotoUrl('/site4', 'pg=createAppInst')
-        } else if(this.state.activeItem === 'Cluster Flavors') {
-            this.setState({page:'pg=createClusterFlavor'})
-            this.gotoUrl('/site4', 'pg=createClusterFlavor')
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
@@ -388,7 +366,8 @@ class SiteFour extends React.Component {
             //show you create the organization view
             //this.setState({page:'pg=0'})
             //this.gotoUrl('/site4', 'pg=0')
-
+            //this.gotoPreview('/site4');
+        this.props.history.location.search = "pg=0";
         this.getAdminInfo(store.userToken);
 
         setTimeout(() => {
@@ -406,7 +385,7 @@ class SiteFour extends React.Component {
         this.setState({userToken: nextProps.userToken})
         this.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
         this.setState({role: (nextProps.userRole) ? nextProps.userRole : null})
-        if(nextProps.selectOrg && nextProps.location.search === 'pg=0') {
+        if(nextProps.selectOrg !== this.props.selectOrg && nextProps.location.search === 'pg=0') {
             console.log('nextProps.selectOr -- ', nextProps.selectOrg)
             this.resetMotion()
             setTimeout(() => _self.setState({OrganizationName:nextProps.selectOrg.Organization}), 1000)
@@ -424,9 +403,10 @@ class SiteFour extends React.Component {
             this.setState({openSettings:false, userURL:nextProps.userSetting.userURL})
         }
 
-        // if(nextProps.creatingSpinner) {
-        //     this.getIntervalData('All');            
-        // }
+        if(nextProps.creatingSpinner && this.state.toggleState) {
+            this.getIntervalData();
+            this.setState({toggleState:false})
+        }
     }
 
 
@@ -457,6 +437,7 @@ class SiteFour extends React.Component {
                 <MaterialIcon icon={item.icon}/>
                 <div className='label'>{item.label}</div>
             </div>
+
         </Menu.Item>
     )
 
@@ -494,22 +475,42 @@ class SiteFour extends React.Component {
     }
 
     getIntervalData = (region) => {
+        console.log("gogogogog@@@")
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let rgn = ['US','EU'];
         if(region !== 'All'){
             rgn = [region]
         } 
-        setInterval(() =>{
+        setTimeout(() =>{
             console.log("interval@@@@");
-            rgn.map((item) => {
-                computeService.getMCService('ShowClusterInst',{token:store.userToken, region:item}, _self.receiveResultClusterInst)
-            })
-        }, 10000);
+            //rgn.map((item) => {
+                computeService.getMCService('ShowClusterInst',{token:store.userToken, region:'US'}, _self.receiveResultClusterInst)
+            //})
+        }, 20000);
         
     }
 
-    receiveResultClusterInst(result) {
-        console.log("result@@@@",result)
+    receiveResultClusterInst = (result) => {
+        console.log("result@@@@",result,this.state.createState)
+        if(!this.state.createState){
+            result.map((item) => {
+                if(item.State == 3){
+                    this.setState({createState:item.ClusterName});
+                    return;
+                }
+            })
+            this.getIntervalData();
+        } else {
+            result.map((item) => {
+                if(item.ClusterName == this.state.createState && item.State == 5) {
+                    this.props.handleCreatingSpinner(false);
+                    this.setState({toggleState:true});
+                } else if(item.ClusterName == this.state.createState && item.State !== 5) {
+                    this.getIntervalData();
+                }
+            })
+        }
+        
     }
 
     render() {
@@ -527,7 +528,7 @@ class SiteFour extends React.Component {
                     />
                     <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
                 </div>
-                <div className="creatingBox">
+                {/* <div className="creatingBox">
                     <PulseLoader
                         sizeUnit={"px"}
                         size={20}
@@ -536,7 +537,18 @@ class SiteFour extends React.Component {
                         //loading={true}
                     />
                     <span className={this.props.creatingSpinner ? '' : 'create'} style={{fontSize:'18px', color:'#70b2bc'}}>Creating...</span>
+                </div> */}
+                <div className="loadingBox" style={{zIndex:99999}}>
+                    <GridLoader
+                        sizeUnit={"px"}
+                        size={25}
+                        color={'#70b2bc'}
+                        loading={this.props.creatingSpinner}
+                        //loading={true}
+                    />
+                    <span className={this.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
                 </div>
+ 
                 <Grid.Row className='gnb_header'>
                     <Grid.Column width={6} className='navbar_left'>
                         <Header>
@@ -652,10 +664,11 @@ class SiteFour extends React.Component {
                                 :
                                 null
                             }
+
                         </Menu>
                         <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}} onClick={() => console.log(this.props.userInfo,this.state)}>
                             {
-                                (this.state.role == 'AdminManager')? 'version 0.7.6' : null
+                                (this.state.role == 'AdminManager')? 'version 0.7.7' : null
                             }
                         </div>
                     </Grid.Column>
@@ -706,10 +719,9 @@ class SiteFour extends React.Component {
                                                 (this.state.page === 'pg=1')?<SiteFourPageUser></SiteFourPageUser> :
                                                 (this.state.page === 'pg=2')?<SiteFourPageCloudlet></SiteFourPageCloudlet> :
                                                 (this.state.page === 'pg=3')?<SiteFourPageFlavor></SiteFourPageFlavor> :
-                                                (this.state.page === 'pg=4')?<SiteFourPageCluster></SiteFourPageCluster> :
-                                                (this.state.page === 'pg=5')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
-                                                (this.state.page === 'pg=6')?<SiteFourPageApps></SiteFourPageApps>:
-                                                (this.state.page === 'pg=7')? <SiteFourPageAppInst></SiteFourPageAppInst> :
+                                                (this.state.page === 'pg=4')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
+                                                (this.state.page === 'pg=5')?<SiteFourPageApps></SiteFourPageApps>:
+                                                (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
                                                 (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                 (this.state.page === 'pg=createApp')? <SiteFourPageAppReg></SiteFourPageAppReg> :
                                                 (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg></SiteFourPageAppInstReg> :
