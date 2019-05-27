@@ -127,7 +127,7 @@ const style = {
     padding:'2em'
 }
 
-class SiteFourCreateFormDefault extends React.Component {
+class SiteFourCreateFormAppDefault extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -172,7 +172,7 @@ class SiteFourCreateFormDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("SiteFourCreateFormDefault --> ",nextProps)
+        console.log("SiteFourCreateFormAppDefault --> ",nextProps)
         if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
@@ -201,31 +201,12 @@ class SiteFourCreateFormDefault extends React.Component {
             inverted
         />
     )
-    onHandleSubmit=(a,b)=> {
+    onHandleSubmit() {
         this.props.handleSubmit();
-        setTimeout(() => {
-            this.props.dispatch(initialize('createAppFormDefault', {
-                submitSucceeded: false
-            }))
-            //this.props.dispatch(reset('createAppFormDefault'))
-        },100);
-    }
-    onFormState=(a,b)=> {
-        alert('onForm state',a,b)
-
-    }
-    onHandleChange(a,b,c){
-        if(a === 'Region'){
-            this.props.onChangeState(a)
-        } else if(a === 'OrganizationName') {
-            this.props.onChangeState(a)
-        } else {
-            this.props.onChangeState(a)
-        }
+        setTimeout(() => this.props.dispatch(reset('createAppFormDefault')),1000);
     }
 
     handleRegionChange = (e) => {
-        alert(e)
         this.props.getOptionData(e)
         this.props.dispatch(reset('createAppFormDefault'));
     }
@@ -265,7 +246,7 @@ class SiteFourCreateFormDefault extends React.Component {
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
                 <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>
                 <Fragment >
-                    <Form onSubmit={this.onHandleSubmit} getFormState={this.onFormState} className={"fieldForm"} >
+                    <Form onSubmit={() => this.onHandleSubmit()} className={"fieldForm"} >
                         <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
                             <Grid columns={2}>
                                 {
@@ -288,6 +269,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             value={data[key] || ''}
                                                             name={key}
                                                             onChange={()=>console.log('onChange text..')}/>
+
                                                         :
                                                         (fieldKeys[pId][key]['type'] === 'RenderSelect') ?
                                                         <Field
@@ -296,9 +278,35 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             value={data[key]}
                                                             options={fieldKeys[pId][key]['items']}
                                                             name={key}
-                                                            onChange={()=>this.onHandleChange(key)}/>
+                                                            onChange={()=>console.log('onChange text..')}/>
                                                         :
-
+                                                        (fieldKeys[pId][key]['type'] === 'IpSelect') ?
+                                                        <Field
+                                                            component={renderSelectNumber}
+                                                            placeholder={'Select IpAccess'}
+                                                            value={data[key]}
+                                                            options={fieldKeys[pId][key]['items']}
+                                                            name={key}
+                                                            onChange={()=>console.log('onChange text..')}/>
+                                                        :
+                                                        (fieldKeys[pId][key]['type'] === 'FlavorSelect') ?
+                                                        <Field
+                                                            component={renderSelect}
+                                                            placeholder={'Select Flavor'}
+                                                            value={data[key]}
+                                                            options={this.props.flavorData}
+                                                            name={key}
+                                                            onChange={()=>console.log('onChange text..')}/>
+                                                        :
+                                                        (fieldKeys[pId][key]['type'] === 'RegionSelect') ?
+                                                        <Field
+                                                            component={renderSelect}
+                                                            placeholder={'Select Region'}
+                                                            value={data[key]}
+                                                            options={fieldKeys[pId][key]['items']}
+                                                            name={key}
+                                                            onChange={this.handleRegionChange} />
+                                                        :
                                                         (fieldKeys[pId][key]['type'] === 'RenderCheckbox') ?
                                                         <Field
                                                             component={renderCheckbox}
@@ -367,11 +375,10 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             type="input"
                                                             name={key}
                                                             value={data[key]}
-                                                            onChange={()=>this.onHandleChange(key)}
                                                             />
                                                     }
                                                 </Grid.Column>
-                                                <Grid.Column width={1} style={{padding:0}}>
+                                                <Grid.Column width={1}>
                                                 {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
 
                                                 </Grid.Column>
@@ -411,4 +418,4 @@ class SiteFourCreateFormDefault extends React.Component {
 export default reduxForm({
     form: "createAppFormDefault",
     enableReinitialize: true,
-})(SiteFourCreateFormDefault);
+})(SiteFourCreateFormAppDefault);

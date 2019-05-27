@@ -115,7 +115,7 @@ class SiteFourOrgaStepView extends React.Component {
             <Step.Group stackable='tablet' style={{width:'100%'}}>
                 {
                     stepData.map((item,i) => (
-                        <Step active={this.onChangeActive(i)} >
+                        <Step active={this.onChangeActive(i)} key={i} >
                             <Icon name='info circle' />
                             <Step.Content>
                                 <Step.Title>{item.step}</Step.Title>

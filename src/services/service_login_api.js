@@ -78,7 +78,15 @@ export function createUser(resource, body, callback, self) {
 
             }
             console.log('parse data super user ===>>>>>>>>>> ', parseData)
-            if(parseData) {
+            if(parseData.data) {
+                if(typeof parseData.data === 'string' && parseData.data.indexOf("}{") > 0) {
+                    parseData.data.replace("}{", "},{")
+                    parseData.data = JSON.parse(parseData.data)
+                } else {
+
+                }
+                callback(parseData, resource, self);
+            } else {
                 if(parseData.message){
 
                 } else {
@@ -108,6 +116,42 @@ export function resetPassword(resource, body, callback, self) {
 
             }
             console.log('parse data reset password ===>>>>>>>>>> ', parseData)
+            if(parseData) {
+                if(parseData.message){
+                    console.log(parseData.message)
+                    callback(parseData, resource, self);
+                } else {
+                }
+            }
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
+}
+
+/*
+http POST 127.0.0.1:9900/api/v1/resendverify
+email=me@gmail.com
+callbackurl="https://console.mobiledgex.net/verify"
+ */
+export function resendVerify(resource, body, callback, self) {
+
+    axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    }))
+        .then(function (response) {
+            let parseData = null;
+            if(response) {
+                parseData = JSON.parse(JSON.stringify(response.data));
+            } else {
+
+            }
+            console.log('parse data result send mail ===>>>>>>>>>> ', parseData)
             if(parseData) {
                 if(parseData.message){
                     console.log(parseData.message)

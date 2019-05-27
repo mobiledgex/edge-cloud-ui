@@ -4,7 +4,7 @@ import { Form, Message } from "semantic-ui-react";
 import './styles.css';
 
 const validate = values => {
-    // console.log("signupVali@@",values)
+    console.log("signupVali@@",values)
     const errors = {}
     if (!values.username) {
         errors.username = 'Required'
@@ -82,7 +82,7 @@ const renderInput = field => (
 
 let _props = null;
 let _self = null;
-class RegistryUserForm extends React.Component{
+class RegistryResetForm extends React.Component{
     constructor() {
         super();
         _self = this;
@@ -106,12 +106,6 @@ class RegistryUserForm extends React.Component{
                     <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
                         <Field className={"fieldInput"}
                                component={renderInput}
-                               name="username"
-                               type="input"
-                               placeholder="Username"
-                        />
-                        <Field className={"fieldInput"}
-                               component={renderInput}
                                name="password"
                                type="password"
                                placeholder="Password"
@@ -122,15 +116,9 @@ class RegistryUserForm extends React.Component{
                                type="password"
                                placeholder="Confirm Password"
                         />
-                        <Field className={"fieldInput"}
-                               component={renderInput}
-                               name="email"
-                               type="email"
-                               placeholder="Email"
-                        />
                     </Form.Group>
                     <Form.Group className={"submitButtonGroup"} id={"submitButtonGroup"} inline style={{flexDirection:'column', marginBottom:0}}>
-                        <Form.Button primary>Sign Up</Form.Button>
+                        <Form.Button primary>Update New Password</Form.Button>
                     </Form.Group>
                 </Form>
             </Fragment>
@@ -143,4 +131,4 @@ export default reduxForm({
     form: "profile",
     validate,
     enableReinitialize: false
-})(RegistryUserForm);
+})(RegistryResetForm);

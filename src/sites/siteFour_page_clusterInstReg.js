@@ -1,21 +1,23 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
+import { Tab } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
-
 import { withRouter } from 'react-router-dom';
-
+import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
-import MapWithListView from "../container/mapWithListView";
+
 import Alert from "react-s-alert";
+import RegistryClusterInstViewer from "../container/registryClusterInstViewer";
+import * as reducer from "../utils";
 
 
 
 let _self = null;
-class SiteFourPageAppInst extends React.Component {
+
+class SiteFourPageClusterInstReg extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -25,12 +27,18 @@ class SiteFourPageAppInst extends React.Component {
             contHeight:0,
             contWidth:0,
             bodyHeight:0,
-            devData:[]
+            activeItem: 'Developers',
+            devData:[],
+            cloudlets:[],
+            operators:[],
+            clustinst:[],
+            apps:[],
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [1,2,2,1,2,2,2,2];
-        //this.hiddenKeys = ['CloudletLocation', 'URI', 'Mapped_ports']
+        this.headerLayout = [2,2,1,3,2,1,1,2,2];
+        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType']
+        this.userToken = null;
     }
 
     //go to
@@ -61,26 +69,30 @@ class SiteFourPageAppInst extends React.Component {
         console.log('info.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         console.log('info.. store == ', store)
+
+
         if(store.userToken) {
-            this.getDataDeveloper(this.props.changeRegion);
+            if(this.props.region.value) {
+                this.getDataDeveloper(store.userToken, this.props.region.value)
+            }
+            this.userToken = store.userToken;
+        } else {
+            Alert.error('Invalid or expired token', {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         }
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
-        if(nextProps.computeRefresh.compute) {
-            this.getDataDeveloper(nextProps.changeRegion);
-            this.props.handleComputeRefresh(false);
-        }
-        if(this.props.changeRegion !== nextProps.changeRegion){
-            this.getDataDeveloper(nextProps.changeRegion);
-        }
+
     }
-    receiveResult = (result) => {
-        let join = this.state.devData.concat(result);
-        this.props.handleLoadingSpinner(false);
-        console.log("receive == ", result)
+    receiveResult(result) {
+        console.log("clusterFlavorReg receive == ", result)
         if(result.error) {
             Alert.error(result.error, {
                 position: 'top-right',
@@ -88,53 +100,48 @@ class SiteFourPageAppInst extends React.Component {
                 timeout: 5000
             });
         } else {
-            _self.setState({devData:join})
+            _self.props.handleInjectFlavor(result)
         }
     }
-    getDataDeveloper = (region) => {
-        console.log("appinst@@gogo")
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let rgn = ['US','EU'];
-        this.setState({devData:[]})
-        if(region !== 'All'){
-            rgn = [region]
-        }  
-        rgn.map((item) => {
-            services.getMCService('ShowAppInst',{token:store.userToken, region:item}, _self.receiveResult)
-        })
+
+    getDataDeveloper(token, region) {
+
+        services.getMCService('ShowFlavor',{token:token, region:(region === 'All') ? 'US' : region}, _self.receiveResult)
     }
+
+    /*
+     */
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} siteId='appinst' dataRefresh={this.getDataDeveloper}></MapWithListView>
+
+            <RegistryClusterInstViewer devData={this.state.devData}/>
         );
     }
 
 };
-
 const mapStateToProps = (state) => {
-
-    console.log('change --- --- --- --- -- ',state)
-    let stateChange = false;
-    if(state.receiveDataReduce.params && state.receiveDataReduce.params.state === 'refresh'){
-        stateChange = true;
-    }
-
+    console.log('props in region === ', state.changeRegion)
+    let region = state.changeRegion
+        ? {
+            value: state.changeRegion.region
+        }
+        : {};
     return {
-        stateChange:stateChange,
-        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
-        changeRegion : state.changeRegion.region?state.changeRegion.region:null
+
+        region:region
     }
 };
+
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleInjectFlavor: (data) => { dispatch(actions.showFlavor(data))}
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageAppInst)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInstReg)));

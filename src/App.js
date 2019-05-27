@@ -24,7 +24,8 @@ import SiteThree from "./sites/siteThree";
 import SiteFour from "./sites/siteFour";
 import CreateAccount from './components/login/CreateAccont';
 import history from './history';
-
+import VerifyContent from './container/verifyContent';
+import ResetPassContent from './container/resetPassContent';
 
 let self = null;
 
@@ -99,7 +100,7 @@ const DashboardContainer = ( props, props2) => {
 
     const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
     console.log('storage data == ', storage_data)
-    if (!storage_data && props.mainPath !== '/createAccount') {
+    if (!storage_data && props.mainPath !== '/createAccount' && props.mainPath !== '/verify' && props.mainPath !== '/passwordreset') {
         let mainPath = '/site1';
         let subPath = 'pg=1';
         console.log('history..props history..............', history)
@@ -131,6 +132,8 @@ const DashboardContainer = ( props, props2) => {
                 {props.mainPath === '/site3' && <SiteThree params={_params} history={(props2.history)?props2.history:null} selectedCloudlet={self.state.selectedCloudlet}/>}
                 {props.mainPath === '/site4' && <SiteFour params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/createAccount' && <CreateAccount params={_params} history={(props2.history)?props2.history:null}/>}
+                {props.mainPath === '/passwordreset' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} reset={true}/>}
+                {props.mainPath === '/verify' && <VerifyContent params={_params} history={(props2.history)?props2.history:null}/>}
             <Alert stack={{limit: 3}} />
         </div>
         :
@@ -219,6 +222,8 @@ class App extends Component {
                     <Route exact path='/site4/:page' component={DashboardContainer.bind(this, {mainPath:'/site4', ...history.location.search})} />
                     <Route exact path='/site5' component={DashboardContainer.bind(this, {mainPath:'/site5'})} />
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
+                    <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
+                    <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
 
                 </div>
             </Router>

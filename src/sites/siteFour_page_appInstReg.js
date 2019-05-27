@@ -6,7 +6,6 @@ import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as services from '../services/service_compute_service';
 import './siteThree.css';
 
 import Alert from "react-s-alert";

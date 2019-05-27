@@ -9,35 +9,43 @@ var data = {
             "name": "B1",
             "children": [
                 {
-                    "name": "C1",
+                    "name": "Master",
+                    "value": 400
+                },
+                {
+                    "name": "Node",
                     "value": 200
                 },
                 {
-                    "name": "C2",
-                    "value": 300
-                },
-                {
-                    "name": "C3",
+                    "name": "Node",
                     "value": 200
                 },
                 {
-                    "name": "C4",
+                    "name": "Node",
                     "value": 200
                 },
                 {
-                    "name": "C5",
+                    "name": "Node",
                     "value": 200
                 }
             ]
-        },
-        {
-            "name": "B2",
-            "value": 200
         }
     ]
 };
-export default class BubbleGroup extends React.PureComponent {
+export default class BubbleGroup extends React.Component {
+
+
     componentDidMount() {
+        this.makeNode();
+    }
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.clearNode();
+        this.makeNode();
+    }
+    makeNode() {
+        if(this.props.data) {
+            data = this.props.data;
+        }
         var packLayout = d3.pack()
             .size([300, 300]);
 
@@ -59,6 +67,8 @@ export default class BubbleGroup extends React.PureComponent {
         nodes
             .append('circle')
             .attr('r', function(d) { return d.r; })
+            .style('fill', function(d) { return d.data.color; })
+            .style('opacity', 0.6)
 
         nodes
             .append('text')
@@ -67,10 +77,17 @@ export default class BubbleGroup extends React.PureComponent {
                 return d.children === undefined ? d.data.name : '';
             })
     }
+    clearNode() {
+        var nodes = d3.select('svg g')
+            .selectAll('g')
+            .remove()
 
+
+    }
     render() {
         return (
-            <svg className="chart-circle" width="320" height="320">
+            <svg className="chart-circle" width="300" height="300">
+                <text>{this.props.data ? this.props.data.name : ''}</text>
                 <g></g>
             </svg>
         )

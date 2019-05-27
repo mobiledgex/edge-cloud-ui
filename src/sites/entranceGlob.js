@@ -15,8 +15,10 @@ import HeaderGlobalMini from '../container/headerGlobalMini';
 
 import SiteOne from './siteOne';
 import * as serviceLogin from "../services/service_login_api";
+
 import {GridLoader} from "react-spinners";
 import Alert from 'react-s-alert';
+
 
 const pointMarkers = getMockData(0x97bcd8, 'point');
 
@@ -35,7 +37,8 @@ class EntranceGlobe extends Component {
             loginState:'out',
             modalOpen: true,
             loading:false,
-            signup:false
+            signup:false,
+            openProfile:false
         };
         self = this;
         this.spuserToken = null;
@@ -46,15 +49,21 @@ class EntranceGlobe extends Component {
         console.log('user info entranceGlobal ...', this.props,store)
         if(store) {
             this.setState({modalOpen: false})
+
         }
         // && this.props.params.mainPath=='/logout'
-        
+        if(this.props.params.mainPath === '/passwordreset') {
+            this.setState({modalOpen: true})
+            this.props.handleChangeLoginMode('resetPass')
+        }
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('new props... ', nextProps)
         if(nextProps.user.userToken) {
             this.setState({modalOpen: false})
         }
+
+
         // if(nextProps.user.login_token !== undefined) {
         //     this.setState({modalOpen: false})
         //     self.setState({loading:true})
@@ -75,6 +84,8 @@ class EntranceGlobe extends Component {
         //     this.setState({loading:false, modalOpen:false})
         //     Alert.closeAll();
         // }
+
+
 
     }
 
@@ -104,6 +115,7 @@ class EntranceGlobe extends Component {
         }
         self.setState({loading:false})
     }
+
     getInfoSuperuser(service) {
         console.log('start get current user info..', self.spuserToken, global.userInfo)
 
@@ -139,6 +151,14 @@ class EntranceGlobe extends Component {
         this.setState({modalOpen:true})
 
     }
+    //close profile popup
+    closeProfile = () => {
+        this.setState({ openProfile: false })
+    }
+
+    profileView() {
+        this.setState({openProfile:true})
+    }
     handleMarkerMouseover = (mouseEvent, hoveredMarker) => {
         this.setState({hoveredMarker, mouseEvent});
     };
@@ -153,7 +173,8 @@ class EntranceGlobe extends Component {
     };
 
     handleClickLogin(mode) {
-        this.props.handleChangeLoginMode(mode)
+        self.setState({modalOpen: true})
+        setTimeout(() => self.props.handleChangeLoginMode(mode), 500);
     }
     render() {
         const {clickedMarker, hoveredMarker, mouseEvent} = this.state;
@@ -182,7 +203,7 @@ class EntranceGlobe extends Component {
                         :<div></div>}
 
                         {!this.state.modalOpen &&
-                        <HeaderGlobalMini></HeaderGlobalMini>
+                        <HeaderGlobalMini handleClickLogin={this.handleClickLogin}></HeaderGlobalMini>
                         }
                         <Transition
                             component={false} // don't use a wrapping component
@@ -217,6 +238,7 @@ class EntranceGlobe extends Component {
                             />
                             <Alert stack={{limit: 3}} />
                         </div>
+
                     </div>
                     :
                     <div style={{width:'100%', height:'100%'}}>
@@ -228,9 +250,10 @@ class EntranceGlobe extends Component {
         )
     }
 }
-function mapStateToProps ( {user} ) {
+function mapStateToProps ( state ) {
     return {
-        user
+        user:state.user,
+        userInfo : state.userInfo?state.userInfo:null,
     }
 }
 const mapDispatchProps = (dispatch) => {
@@ -238,7 +261,7 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleChangeTab: (data) => { dispatch(actions.changeTab(data))},
         handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))},
-
+        handleUserInfo: (data) => { dispatch(actions.userInfo(data))},
     };
 };
 

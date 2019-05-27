@@ -65,7 +65,7 @@ class PopAddUserViewer extends React.Component {
             //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         } else {
 
-            Alert.success('Success AddUser', {
+            Alert.success('Success Add User', {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Icon, Label, Grid, Image, Popup, Header, Divider} from 'semantic-ui-react';
+import {Button, Image, Popup} from 'semantic-ui-react';
 
 import MaterialIcon, {colorPalette} from 'material-icons-react';
 import { withRouter } from 'react-router-dom';
@@ -7,12 +7,10 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-
-import ClockComp from '../components/clock';
+import * as Service from '../services/service_login_api';
 import './styles.css';
-import * as Service from "../services";
-import {Modal} from "semantic-ui-react/dist/commonjs/modules/Modal";
-import PopSettingViewer from "../sites/siteFour";
+import PopSettingViewer from '../container/popSettingViewer';
+import PopProfileViewer from '../container/popProfileViewer';
 
 let _self = null;
 class headerGlobalMini extends React.Component {
@@ -24,7 +22,8 @@ class headerGlobalMini extends React.Component {
         this.state = {
             email: store ? store.email : 'Administrator',
             openProfile:false,
-            openSettings:false
+            openSettings:false,
+            userInfo:{info:[]}
         }
     }
 
@@ -38,7 +37,8 @@ class headerGlobalMini extends React.Component {
         this.props.history.push({
             pathname: mainPath,
             search: subPath,
-            state: { some: 'state' }
+            state: { some: 'state' },
+            userInfo:{info:null}
         });
         this.props.history.location.search = subPath;
         this.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
@@ -53,9 +53,20 @@ class headerGlobalMini extends React.Component {
         if(nextProps.user) {
             this.setState({email:nextProps.user.email})
         }
+        if(nextProps.userInfo) {
+            this.setState({userInfo:nextProps.userInfo})
+        }
+    }
+    receiveCurrentUser(result) {
+        console.log("receive user info...", result.data)
+        _self.setState({userInfo:result.data})
     }
     profileView() {
-        this.setState({openProfile:true})
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store.userToken;
+        Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
+
+        this.setState({openProfile:true, openSettings:false})
     }
     settingsView() {
         this.setState({openSettings:true})
@@ -66,13 +77,16 @@ class headerGlobalMini extends React.Component {
     createUser() {
         this.setState({})
     }
+    resetPassword() {
+        this.props.handleClickLogin('forgot')
+    }
 
     menuAdmin = () => (
         <Button.Group vertical>
             <Button onClick={() => this.profileView()} >Your profile</Button>
             {/*<Button style={{height:10, padding:0, margin:0}}><Divider inverted style={{padding:2, margin:0}}></Divider></Button>*/}
-            <Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>
-            <Button style={{}} onClick={() => this.createUser()}><div>Create User</div></Button>
+            {/*<Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>*/}
+            <Button style={{color:'#333333'}} onClick={() => this.resetPassword()} >Reset Password</Button>
             <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{this.state.userName}</div><div>Logout</div></Button>
         </Button.Group>
 
@@ -101,21 +115,24 @@ class headerGlobalMini extends React.Component {
                         className='gnb_logout'
                     />
                 </div>
+                <PopProfileViewer data={this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>
                 <PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')}></PopSettingViewer>
             </div>
         )
     }
 }
 
-function mapStateToProps ( {user} ) {
+function mapStateToProps ( state ) {
     return {
-        user
+        user:state.user,
+        userInfo : state.userInfo?state.userInfo:null,
     }
 }
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))}
+        handleInjectData: (data) => { dispatch(actions.injectData(data))},
+        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))}
     };
 };
 

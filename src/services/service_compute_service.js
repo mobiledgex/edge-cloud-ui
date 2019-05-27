@@ -303,12 +303,21 @@ export function getMCService(resource, body, callback, self) {
                     case 'ShowAppInst': callback(FormatComputeInst(parseData,body)); break;
                     case 'showController': callback(parseData); break;
                     case 'ShowRole': callback(parseData); break;
+                    case 'UpdateVerify': callback(parseData); break;
+                    case 'ResetPassword': callback(parseData); break;
                 }
             }
         })
         .catch(function (error) {
-            console.log('error',error);
-            callback({error:error}, resource, self);
+            try {
+                if(String(error).indexOf('Network Error') > -1){
+                    console.log("NETWORK ERROR@@@@@");
+                } else {
+                    callback({error:error}, resource, self);
+                }
+            } catch(e) {
+                console.log('any error ??? ')
+            }
         });
 
 

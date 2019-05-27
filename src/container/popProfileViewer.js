@@ -45,7 +45,6 @@ export default class PopProfileViewer extends React.Component {
 
     close() {
         this.setState({ open: false })
-        this.props.close()
     }
 
 

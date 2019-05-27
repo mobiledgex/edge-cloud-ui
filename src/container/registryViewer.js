@@ -13,7 +13,7 @@ import _ from "lodash";
 import * as reducer from '../utils'
 import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
-import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";
+import SiteFourCreateFormAppDefault from "./siteFourCreateFormAppDefault";
 import Alert from "react-s-alert";
 import * as service from "../services/service_compute_service";
 const ReactGridLayout = WidthProvider(RGL);
@@ -44,9 +44,9 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} getOptionData={props.regionf} flavorData={props.devoptionsf} getUserRole={props.userrole} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
-    // { menuItem: 'Docker Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
-    // { menuItem: 'VM Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getOptionData={props.regionf} flavorData={props.devoptionsf} getUserRole={props.userrole} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    // { menuItem: 'Docker Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    // { menuItem: 'VM Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
 ]
 class RegistryViewer extends React.Component {
     constructor(props) {

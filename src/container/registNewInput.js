@@ -178,7 +178,7 @@ class registNewInput extends React.Component {
                                                     <Field component={renderInput} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } />
                                                 }
                                                 </Grid.Column>
-                                                <Grid.Column width={2}>
+                                                <Grid.Column width={2} style={{padding:0}}>
                                                     {this.getHelpPopup(key)}
                                                 </Grid.Column>
                                                 <Divider vertical></Divider>
