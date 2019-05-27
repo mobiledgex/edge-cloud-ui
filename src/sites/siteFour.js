@@ -597,22 +597,22 @@ class SiteFour extends React.Component {
                         />
                         {/* 프로필 */}
                         <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false} userURL={this.state.userURL}/>
-                        <Popup
-                            trigger={<div style={{cursor:'pointer'}}>
-                                <Image src='/assets/avatar/avatar_default.svg' avatar />
-                                <span>{this.state.email}</span>
-                            </div>}
-                            content={this.menuAdmin()}
-                            on='click'
-                            position='bottom center'
-                            className='gnb_logout'
-                        />
+                        {/*<Popup*/}
+                        {/*    trigger={<div style={{cursor:'pointer'}}>*/}
+                        {/*        <Image src='/assets/avatar/avatar_default.svg' avatar />*/}
+                        {/*        <span>{this.state.email}</span>*/}
+                        {/*    </div>}*/}
+                        {/*    content={this.menuAdmin()}*/}
+                        {/*    on='click'*/}
+                        {/*    position='bottom center'*/}
+                        {/*    className='gnb_logout'*/}
+                        {/*/>*/}
                         <div>
                             <span>Support</span>
                         </div>
                     </Grid.Column>
-                    <PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')} usrUrl={this.state.userURL}></PopSettingViewer>
-                    <PopProfileViewer data={this.props.userInfo.info} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>
+                    {/*<PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')} usrUrl={this.state.userURL}></PopSettingViewer>*/}
+                    {/*<PopProfileViewer data={this.props.userInfo.info} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>*/}
 
                 </Grid.Row>
                 <Grid.Row columns={2} className='view_contents'>
@@ -777,12 +777,12 @@ const mapStateToProps = (state) => {
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         loadingSpinner : state.loadingSpinner.loading?state.loadingSpinner.loading:null,
         creatingSpinner : state.creatingSpinner.creating?state.creatingSpinner.creating:null,
-        userSetting : state.form.registUserSetting
-            ? {
-                userURL: state.form.registUserSetting.values.userURL,
-                submitSucceeded: state.form.registUserSetting.submitSucceeded
-            }
-            : {}
+        // userSetting : state.form.registUserSetting
+        //     ? {
+        //         userURL: state.form.registUserSetting.values.userURL,
+        //         submitSucceeded: state.form.registUserSetting.submitSucceeded
+        //     }
+        //     : {}
     }
 };
 

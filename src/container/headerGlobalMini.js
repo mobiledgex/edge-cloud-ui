@@ -64,9 +64,6 @@ class headerGlobalMini extends React.Component {
         _self.setState({userInfo: result.data})
     }
 
-    closeProfile = () => {
-    this.setState({ openProfile: false })
-    }
 
     profileView() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -76,7 +73,10 @@ class headerGlobalMini extends React.Component {
         this.setState({openProfile:true, openSettings:false})
     }
     settingsView() {
-        this.setState({openSettings:true})
+        this.setState({openProfile:false, openSettings:true})
+    }
+    closeProfile = () => {
+        this.setState({ openProfile: false })
     }
     closeSettings = () => {
         this.setState({openSettings:false})
@@ -93,17 +93,14 @@ class headerGlobalMini extends React.Component {
             <Button onClick={() => this.profileView()} >Your profile</Button> {/*동작안함*/}
             {/*<Button style={{height:10, padding:0, margin:0}}><Divider inverted style={{padding:2, margin:0}}></Divider></Button>*/}
 
-            {/*<Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>*/}
-            {/*{(this.props.location.pathname !== "/site4")?*/}
-            {/*<Fragment>*/}
-            {/*    <Button style={{color:'#333333'}} onClick={() => this.resetPassword()} >Reset Password</Button>*/}
-            {/*    <Button style={{}} onClick={() => this.createUser()}><div>Create User</div></Button> /!*동작안함*!/*/}
-            {/*</Fragment>*/}
-            {/*:*/}
-            {/*null}*/}
+            <Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>
+            {(this.props.location.pathname !== "/site4")?
+            <Button style={{color:'#333333'}} onClick={() => this.resetPassword()} >Reset Password</Button>
+            :
+            null}
 
             {/*<Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>*/}
-            <Button style={{color:'#333333'}} onClick={() => this.resetPassword()} >Reset Password</Button>
+            {/*<Button style={{color:'#333333'}} onClick={() => this.resetPassword()} >Reset Password</Button>*/}
 
             <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{this.state.userName}</div><div>Logout</div></Button>
         </Button.Group>
@@ -137,7 +134,7 @@ class headerGlobalMini extends React.Component {
 
                 {/*<PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')} usrUrl={this.props.userURL}></PopSettingViewer>*/}
                 {/*<PopProfileViewer data={this.props.data} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>*/}
-                <PopProfileViewer data={this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>
+                <PopProfileViewer data={this.props.data} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>
 
                 <PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')}></PopSettingViewer>
 

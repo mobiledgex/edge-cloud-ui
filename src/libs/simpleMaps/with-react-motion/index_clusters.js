@@ -621,7 +621,7 @@ const MarkerComponent = (self, city, i, config) => (
            transform={config.transform} mix-blend-mode="lighten"
 
         >
-            {/* 필터 innershadow */}
+            {/* 필터 InnerGlow */}
             <defs>
                 <filter id="InnerGlow" color-interpolation-filters="sRGB">
                     <feGaussianBlur id="GaussianBlur" result="GaussianBlurResult" stdDeviation="8">
@@ -638,6 +638,7 @@ const MarkerComponent = (self, city, i, config) => (
                     <feComposite id="GaussianBlur" in2="SourceGraphic" result="CompositeResult3" operator="in" in="BlendResult1"/>
                 </filter>
             </defs>
+            {/* 필터 innershadow */}
             <defs>
                 <filter id="innershadow" x0="-50%" y0="-50%" width="200%" height="200%">
                     <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"></feGaussianBlur>
