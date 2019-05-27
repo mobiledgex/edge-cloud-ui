@@ -688,7 +688,7 @@ class SiteFour extends React.Component {
                         </Menu>
                         <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
                             {
-                                (this.state.role == 'AdminManager')? 'version 0.7.8' : null
+                                (this.state.role == 'AdminManager')? 'version 0.7.7' : null
                             }
                         </div>
                     </Grid.Column>
