@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import { Grid, Button, Container, Input, Label } from 'semantic-ui-react';
+import {Grid, Button, Container, Input, Label, Popup} from 'semantic-ui-react';
 import { spring } from 'react-motion'
 import Transition from 'react-motion-ui-pack'
 import React3DGlobe from '../libs/react3dglobe';
@@ -18,6 +18,7 @@ import * as serviceLogin from "../services/service_login_api";
 
 import {GridLoader} from "react-spinners";
 import Alert from 'react-s-alert';
+import PopSettingViewer from "../container/popSettingViewer";
 
 
 const pointMarkers = getMockData(0x97bcd8, 'point');
@@ -194,7 +195,7 @@ class EntranceGlobe extends Component {
 
 
                         {(this.state.modalOpen)?
-                            <Grid style={{backgroundColor:'transparent', width:230, height:100, position:'absolute', top:20, right:(this.state.modalOpen)?50:185, alignSelf:'center'}}>
+                        <Grid style={{backgroundColor:'transparent', width:230, height:100, position:'absolute', top:20, right:(this.state.modalOpen)?50:185, alignSelf:'center'}}>
                             <Grid.Row columns={2}>
                                 <Grid.Column><Button onClick={() => this.handleClickLogin('login')}><span>Login</span></Button></Grid.Column>
                                 <Grid.Column><Button onClick={() => this.handleClickLogin('signup')}><span>SignUp</span></Button></Grid.Column>
@@ -203,7 +204,13 @@ class EntranceGlobe extends Component {
                         :<div></div>}
 
                         {!this.state.modalOpen &&
-                        <HeaderGlobalMini handleClickLogin={this.handleClickLogin}></HeaderGlobalMini>
+
+                        <div className='intro_gnb_header'>
+                            <div className='navbar_right'>
+                                <HeaderGlobalMini handleClickLogin={this.handleClickLogin} email={this.state.email} dimmer={false}></HeaderGlobalMini>
+                            </div>
+                            <PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')}></PopSettingViewer>
+                        </div>
                         }
                         <Transition
                             component={false} // don't use a wrapping component

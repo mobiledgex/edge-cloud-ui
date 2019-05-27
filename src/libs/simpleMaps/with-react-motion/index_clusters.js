@@ -623,6 +623,22 @@ const MarkerComponent = (self, city, i, config) => (
         >
             {/* 필터 innershadow */}
             <defs>
+                <filter id="InnerGlow" color-interpolation-filters="sRGB">
+                    <feGaussianBlur id="GaussianBlur" result="GaussianBlurResult" stdDeviation="8">
+                    </feGaussianBlur>
+                    <feComposite id="Composite1" in2="GaussianBlurResult" result="CompositeResult1" in="SourceGraphic" operator="in"/>
+
+                    <feFlood id="Flood" result="FloodResult" in="CompositeResult3" flood-opacity="1" flood-color={
+                        (city.population > 35000000)?grdColors[5]:
+                            (city.population <= 35000000 &&  city.population > 30000000)?grdColors[4]:
+                                (city.population <= 30000000 &&  city.population > 25000000)?grdColors[3]:
+                                    (city.population <= 25000000 &&  city.population > 20000000)?grdColors[2]:
+                                        grdColors[6]}/>
+                    <feBlend id="Blend" in2="FloodResult" mode="normal" in="CompositeResult1" result="BlendResult1"/>
+                    <feComposite id="GaussianBlur" in2="SourceGraphic" result="CompositeResult3" operator="in" in="BlendResult1"/>
+                </filter>
+            </defs>
+            <defs>
                 <filter id="innershadow" x0="-50%" y0="-50%" width="200%" height="200%">
                     <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"></feGaussianBlur>
                     <feOffset dy="2" dx="3"></feOffset>

@@ -1,5 +1,5 @@
-import React from 'react';
-import {Button, Image, Popup} from 'semantic-ui-react';
+import React, {Fragment} from 'react';
+import {Button, Grid, Image, Popup} from 'semantic-ui-react';
 
 import MaterialIcon, {colorPalette} from 'material-icons-react';
 import { withRouter } from 'react-router-dom';
@@ -10,7 +10,9 @@ import * as actions from '../actions';
 import * as Service from '../services/service_login_api';
 import './styles.css';
 import PopSettingViewer from '../container/popSettingViewer';
+// import PopProfileViewer from "./popProfileViewer";
 import PopProfileViewer from '../container/popProfileViewer';
+
 
 let _self = null;
 class headerGlobalMini extends React.Component {
@@ -59,8 +61,13 @@ class headerGlobalMini extends React.Component {
     }
     receiveCurrentUser(result) {
         console.log("receive user info...", result.data)
-        _self.setState({userInfo:result.data})
+        _self.setState({userInfo: result.data})
     }
+
+    closeProfile = () => {
+    this.setState({ openProfile: false })
+    }
+
     profileView() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store.userToken;
@@ -83,10 +90,21 @@ class headerGlobalMini extends React.Component {
 
     menuAdmin = () => (
         <Button.Group vertical>
-            <Button onClick={() => this.profileView()} >Your profile</Button>
+            <Button onClick={() => this.profileView()} >Your profile</Button> {/*동작안함*/}
             {/*<Button style={{height:10, padding:0, margin:0}}><Divider inverted style={{padding:2, margin:0}}></Divider></Button>*/}
+
+            {/*<Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>*/}
+            {/*{(this.props.location.pathname !== "/site4")?*/}
+            {/*<Fragment>*/}
+            {/*    <Button style={{color:'#333333'}} onClick={() => this.resetPassword()} >Reset Password</Button>*/}
+            {/*    <Button style={{}} onClick={() => this.createUser()}><div>Create User</div></Button> /!*동작안함*!/*/}
+            {/*</Fragment>*/}
+            {/*:*/}
+            {/*null}*/}
+
             {/*<Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>*/}
             <Button style={{color:'#333333'}} onClick={() => this.resetPassword()} >Reset Password</Button>
+
             <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{this.state.userName}</div><div>Logout</div></Button>
         </Button.Group>
 
@@ -100,13 +118,15 @@ class headerGlobalMini extends React.Component {
         }
 
         return (
-            <div className='intro_gnb_header'>
-                <div className='navbar_right'>
+            <Fragment>
                     <Popup
-                        trigger={<div style={{cursor:'pointer'}}>
-                            <Image src='/assets/avatar/avatar_default.svg' avatar />
-                            <span>{this.state.email}</span>
-                        </div>}
+                        trigger={
+                            <div style={{cursor:'pointer'}}>
+                                <Image src='/assets/avatar/avatar_default.svg' avatar />
+                                <span>
+                                    {(this.props.location.pathname === "/site4")? this.props.email :this.state.email}
+                                </span>
+                            </div>}
                         content={
                             this.menuAdmin()
                             }
@@ -114,10 +134,14 @@ class headerGlobalMini extends React.Component {
                         position='bottom center'
                         className='gnb_logout'
                     />
-                </div>
+
+                {/*<PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')} usrUrl={this.props.userURL}></PopSettingViewer>*/}
+                {/*<PopProfileViewer data={this.props.data} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>*/}
                 <PopProfileViewer data={this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>
+
                 <PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')}></PopSettingViewer>
-            </div>
+
+            </Fragment>
         )
     }
 }

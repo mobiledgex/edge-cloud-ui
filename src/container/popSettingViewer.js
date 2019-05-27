@@ -42,13 +42,6 @@ class PopSettingViewer extends React.Component {
         _self = this;
     }
     getDomain() {
-        let savedDomain = localStorage.getItem('domainData');
-        if(savedDomain.mcDomain) {
-            return savedDomain.mcDomain
-        } else {
-
-        }
-
         if (hostname.indexOf('stage') > 0) {
             return 'https://mc-stage.mobiledgex.com:9900'
         } else if (hostname.indexOf('dev') > 0) {
@@ -83,7 +76,7 @@ class PopSettingViewer extends React.Component {
             _self.props.dispatch(initialize('registUserSetting', {
                 submitSucceeded: false
             }))
-            _self.handleInitialize();
+            //_self.handleInitialize();
         },1000);
 
     }
@@ -92,7 +85,7 @@ class PopSettingViewer extends React.Component {
     }
 
     componentDidMount() {
-        this.handleInitialize();
+        //this.handleInitialize();
     }
 
     componentWillReceiveProps(nextProps, nextContext) {

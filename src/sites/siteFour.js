@@ -25,6 +25,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import './siteThree.css';
 import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
+import HeaderGlobalMini from '../container/headerGlobalMini';
 
 //pages
 import SiteFourPageFlavor from './siteFour_page_flavor';
@@ -585,7 +586,6 @@ class SiteFour extends React.Component {
                         <div style={{cursor:'pointer'}} onClick={() => console.log('')}>
                             <MaterialIcon icon={'notifications_none'} />
                         </div>
-
                         <Popup
                             trigger={<div style={{cursor:'pointer'}} onClick={() => console.log('')}>
                                 <MaterialIcon icon={'add'} />
@@ -595,6 +595,8 @@ class SiteFour extends React.Component {
                             position='bottom center'
                             className='gnb_logout'
                         />
+                        {/* 프로필 */}
+                        <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false} userURL={this.state.userURL}/>
                         <Popup
                             trigger={<div style={{cursor:'pointer'}}>
                                 <Image src='/assets/avatar/avatar_default.svg' avatar />
@@ -688,7 +690,7 @@ class SiteFour extends React.Component {
                         </Menu>
                         <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
                             {
-                                (this.state.role == 'AdminManager')? 'version 0.7.7' : null
+                                (this.state.role == 'AdminManager')? 'version 0.7.8' : null
                             }
                         </div>
                     </Grid.Column>
