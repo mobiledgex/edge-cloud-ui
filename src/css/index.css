@@ -125,22 +125,59 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 
 
-/* Form */
+ /*Form*/
 .ui.segment.active.tab{
-    background: none;
-}
+     background: none;
+ }
 
 .grid_table .ui.secondary.inverted.pointing.menu{
     background-color: #292c33;
     border-bottom: 2px solid rgba(255,255,255,.125);
 }
 
-
 .grid_table .ui.secondary.inverted.pointing.menu .item.active{
     border-bottom: 2px solid rgba(136,221,0,.9) !important;
     color: rgba(136,221,0,.9) !important;
 }
 
+/*.ui.segment.active.tab .ui.menu{*/
+/*    border: 1px solid rgba(255,255,255,.2);*/
+/*    background-color: rgba(0,0,0,.3);*/
+
+/*}*/
+
+/*.ui.segment.active.tab .ui.menu .item{*/
+/*    color: rgba(255,255,255,.6);*/
+/*}*/
+
+/*.ui.segment.active.tab .ui.menu .active.item{*/
+/*    border-color: rgba(136,221,0,.9);*/
+/*    color: rgba(136,221,0,.9);*/
+/*    !*background-color: rgba(42,50,66,1);*!*/
+/*}*/
+
+/*.ui.segment.active.tab .ui.menu .item:before{*/
+/*    background-color: rgba(255,255,255,.2);*/
+
+/*}*/
+
+.ui.segment.active.tab .ui.attached.tabular.menu{
+    border-bottom: 1px solid rgba(255,255,255,.2);
+}
+
+.ui.segment.active.tab .ui.attached.tabular.menu .item{
+    color: rgba(255,255,255,.6);
+}
+.ui.segment.active.tab .ui.attached.tabular.menu .active.item{
+    border-color: rgba(255,255,255,.2);
+    background-color: #292c33;
+    color: rgba(136,221,0,.9);
+}
+.ui.segment.active.tab .ui.segment.active.tab{
+    background-color: #292c33;
+    border: 1px solid rgba(255,255,255,.2);
+    border-top: none;
+}
 
 
 
@@ -175,8 +212,11 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 .intro_login .login-text {
     width: 100%;
-    padding: 0 1rem;
+    padding: 0 1rem 1rem 1rem;
     text-align: left;
+}
+.intro_login .login-text:last-child {
+    padding: 0 1rem;
 }
 .intro_login .ui.grid.signUpBD{
     width: 426px;
@@ -715,7 +755,8 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 .view_left {
     background-color: #292c33;
-    /*min-width: 180px; !* minWidth *!*/
+    /*min-width: 200px; !* minWidth *!*/
+    max-width: 280px; /* minWidth */
     border: 0;
     border-radius:0;
     padding: 10px;

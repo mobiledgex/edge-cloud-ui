@@ -317,7 +317,7 @@ class EditMap extends Component {
     }
     componentWillUnmount() {
         clearInterval(this.interval)
-        this.props.resetLocation();
+        this.props.resetLocation && this.props.resetLocation();
     }
 
     render() {

@@ -40,15 +40,14 @@ let generateData = (datas,body) => {
                 let DeveloperName = dataResult.data.key.app_key.developer_key.name  || '-';
                 let AppName = dataResult.data.key.app_key.name  || '-';
                 let Version = dataResult.data.key.app_key.version  || '-';
-                let Operator = dataResult.data.key.cloudlet_key.operator_key.name  || '-';
-                let Cloudlet = dataResult.data.key.cloudlet_key.name  || '-';
-                let ClusterInst = dataResult.data.cluster_inst_key.cluster_key.name || '-';
+                let Operator = dataResult.data.key.cluster_inst_key.cloudlet_key.operator_key.name  || '-';
+                let Cloudlet = dataResult.data.key.cluster_inst_key.cloudlet_key.name  || '-';
+                let ClusterInst = dataResult.data.key.cluster_inst_key.cluster_key.name || '-';
 
                 let CloudletLocation=dataResult.data.cloudlet_loc || '-';
                 //let State = dataResult.uri || '-';
                 let URI = dataResult.uri || '-';
                 let Mapped_ports= dataResult.mapped_ports || '-';
-
 
                 let newRegistKey = [
                     'Region',

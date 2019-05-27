@@ -6,10 +6,12 @@ import axios from "axios-https-proxy-fix";
 import qs from "qs";
 
 const API_KEY = '__apiMC_key__'
-let mcUrl = process.env.MC_URL || 'https://mc.mobiledgex.net:9900';
-let mcDevUrl = 'https://mc-dev.mobiledgex.net:9900';
+let mcUrl = 'https://mc.mobiledgex.net:9900';
+let mcDevUrl = 'https://mc-stage.mobiledgex.net:9900';
+console.log("how fast...", process.env.MC_URL)
 // create user
 exports.getToken = (req, res) => {
+    mcUrl = process.env.MC_URL;
   let serviceName = '';
   let serviceBody = {};
 
@@ -38,10 +40,20 @@ exports.getToken = (req, res) => {
           res.json(error.response.data)
       });
 }
-
+/*
+http -j POST 127.0.0.1:9900/api/v1/usercreate name=me email=me@gmail.com
+passhash=test1234
+verify:='{
+    "callbackurl": "http://console.mobiledgex.net/verify",
+    "operatingsystem":"mac OSX",
+    "browser":"httpie",
+    "clientip":"127.0.0.1"
+}'
+ */
 exports.createUser = (req, res) => {
-  let serviceName = '';
-  let serviceBody = {};
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
   if(req.body.serviceBody){
         serviceBody = req.body.serviceBody;
         mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
@@ -50,7 +62,11 @@ exports.createUser = (req, res) => {
   axios.post(mcUrl + '/api/v1/usercreate', qs.stringify({
         name: serviceBody.name,
         passhash: serviceBody.password,
-        email: serviceBody.email
+        email: serviceBody.email,
+        callbackurl: "http://console.mobiledgex.net/verify",
+        operatingsystem:"mac OSX",
+        browser:"httpie",
+        clientip:"127.0.0.1"
       }),
 
   )
@@ -71,6 +87,7 @@ exports.createUser = (req, res) => {
 
 
 exports.currentUser = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -103,6 +120,7 @@ exports.currentUser = (req, res) => {
 }
 
 exports.showController = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -135,15 +153,15 @@ exports.showController = (req, res) => {
 }
 
 exports.showOrg = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
     if(req.body.serviceBody){
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
-    console.log('show org-- ', serviceBody)
+    console.log('show org-- ', serviceBody, 'mc_url = ', mcUrl,'process.env.MC_URL = ', process.env.MC_URL)
     axios.post(mcUrl + '/api/v1/auth/org/show', qs.stringify({
 
         }),
@@ -173,6 +191,7 @@ http --auth-type=jwt --auth=$SUPERPASS POST 127.0.0.1:9900/api/v1/auth/ctrl/Show
  */
 //Flavor
 exports.ShowFlavor = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -181,7 +200,6 @@ exports.ShowFlavor = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('show me flavor-- ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowFlavor', qs.stringify({
@@ -207,6 +225,7 @@ exports.ShowFlavor = (req, res) => {
 }
 //Cluster Flavor
 exports.ShowClusterFlavor = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -215,7 +234,6 @@ exports.ShowClusterFlavor = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('show me cluster flavor-- ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowClusterFlavor', qs.stringify({
@@ -241,13 +259,13 @@ exports.ShowClusterFlavor = (req, res) => {
 }
 //Users
 exports.ShowUsers = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
     if(req.body.serviceBody){
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('show me users -- ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/role/showuser', qs.stringify({
@@ -273,6 +291,7 @@ exports.ShowUsers = (req, res) => {
 }
 //cloudlet
 exports.ShowCloudlet = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -281,7 +300,6 @@ exports.ShowCloudlet = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('show me cloudlet-- ', serviceBody, 'domain url==',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowCloudlet', qs.stringify({
@@ -307,6 +325,7 @@ exports.ShowCloudlet = (req, res) => {
 }
 //Cluster instances
 exports.ShowClusterInst = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -315,7 +334,6 @@ exports.ShowClusterInst = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('show me cluster instances-- ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowClusterInst', qs.stringify({
@@ -337,6 +355,7 @@ exports.ShowClusterInst = (req, res) => {
 }
 //Apps
 exports.ShowApps = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -345,7 +364,6 @@ exports.ShowApps = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('show me app-- ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowApp', qs.stringify({
@@ -371,6 +389,7 @@ exports.ShowApps = (req, res) => {
 }
 //Organization App
 exports.ShowApp = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -379,7 +398,6 @@ exports.ShowApp = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('show me app-- ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowApp', serviceBody,
@@ -403,6 +421,7 @@ exports.ShowApp = (req, res) => {
 }
 //app instances
 exports.ShowAppInst = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -411,7 +430,6 @@ exports.ShowAppInst = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('show me appinst-- ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowAppInst', qs.stringify({
@@ -459,7 +477,6 @@ exports.Create = (req, res) => {
         params = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         service = req.body.service;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('show me boddy@-- ', service,params)
     axios.post(mcUrl + '/api/v1/auth/ctrl/'+service, params,
@@ -495,7 +512,6 @@ exports.CreateOrg= (req, res) => {
         params.phone = req.body.serviceBody.phone;
         superpass = req.body.serviceBody.token;
         service = req.body.service;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('create organiz show me boddy-- ', params, '   token is ==',superpass)
     axios.post(mcUrl + '/api/v1/auth/org/create', qs.stringify(params),
@@ -534,7 +550,6 @@ exports.addUserRole= (req, res) => {
         params.role = req.body.serviceBody.role;
         superpass = req.body.serviceBody.token;
         service = req.body.service;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('add role to show me boddy-- ', params, '   token is ==',superpass)
     axios.post(mcUrl + '/api/v1/auth/role/adduser', qs.stringify(params),
@@ -567,7 +582,6 @@ exports.CreateFlavor = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('Create me flavor-- ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateFlavor', serviceBody,
@@ -604,7 +618,6 @@ exports.CreateClusterFlavor = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('Create me flavor-- ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterFlavor', serviceBody,
@@ -641,7 +654,6 @@ exports.CreateCloudlet = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('Create me cloudlet-- ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudlet', serviceBody,
@@ -695,7 +707,6 @@ exports.CreateApp = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     //params = JSON.stringify(params).replace('"1"', 1);
     console.log('Create me app-- ', serviceBody)
@@ -731,7 +742,6 @@ exports.CreateAppInst = (req, res) => {
         params = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
 
     console.log('Create me app inst-- ', params, 'string...', JSON.stringify(params))
@@ -770,9 +780,8 @@ exports.CreateClusterInst = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
-    console.log('Create me cluster inst-- ', serviceBody)
+    console.log('Create me cluster inst-- ', JSON.stringify(serviceBody))
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterInst', serviceBody,
 
         {
@@ -793,7 +802,7 @@ exports.CreateClusterInst = (req, res) => {
         .catch(function (error) {
 
             console.log('error show ..', String(error));
-            res.json({error:String(error)})
+            res.json({message:String(error)})
         });
 }
 exports.DeleteService = (req, res) => {
@@ -805,7 +814,6 @@ exports.DeleteService = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/ctrl/'+serviceName, serviceBody,
@@ -840,7 +848,6 @@ exports.DeleteUser = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/role/'+serviceName, serviceBody,
@@ -875,7 +882,6 @@ exports.DeleteOrg = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/org/'+serviceName, serviceBody,
@@ -917,7 +923,6 @@ exports.ResetPassword = (req, res) => {
     if(req.body.serviceBody){
         serviceBody = req.body.serviceBody;
         serviceName = req.body.service;
-        mcUrl = mcDevUrl;
     }
     console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
@@ -929,6 +934,86 @@ exports.ResetPassword = (req, res) => {
                 res.json({message:'Success'})
             } else {
 
+            }
+        })
+        .catch(function (error) {
+
+            console.log('error show ..', String(error));
+            res.json({error:String(error)})
+        });
+}
+exports.UpdatePassword = (req, res) => {
+    let serviceName = '';
+    let serviceBody = {};
+
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody;
+        serviceName = req.body.service;
+    }
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
+    axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
+        .then(function (response) {
+
+            console.log('success update pass ', response.statusText)
+
+            if(response.statusText === 'OK') {
+                res.json({message:'Success'})
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+
+            console.log('error show ..', String(error));
+            res.json({error:String(error)})
+        });
+}
+exports.ResendVerify = (req, res) => {
+    let serviceName = '';
+    let serviceBody = {};
+
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody;
+        serviceName = req.body.service;
+    }
+    console.log('Resend verify --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
+    axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
+        .then(function (response) {
+
+            console.log('success send email ', response.statusText)
+
+            if(response.statusText === 'OK') {
+                res.json({message:'Success'})
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+
+            console.log('error show ..', String(error));
+            res.json({error:String(error)})
+        });
+}
+exports.UpdateVerify = (req, res) => {
+    let serviceName = '';
+    let serviceBody = {};
+    let token = '';
+
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody;
+        serviceName = req.body.serviceBody.service;
+        token = req.body.serviceBody.token;
+    }
+    console.log('Update verify == ', serviceName, 'serviceBody == ', serviceBody, 'token=', token)
+    axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
+        .then(function (response) {
+
+            console.log('success verify email ', response.data)
+
+            if(response.statusText === 'OK') {
+                res.json({message:response.data.message})
+            } else {
+                res.json({error:'Retry'})
             }
         })
         .catch(function (error) {
@@ -953,7 +1038,6 @@ exports.ShowRole = (req, res) => {
     if(req.body.serviceBody){
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
-        mcUrl = req.body.serviceDomain ? req.body.serviceDomain : mcUrl;
     }
     console.log('show role-- ', serviceBody)
     axios.post(mcUrl + '/api/v1/auth/role/assignment/show', qs.stringify({}),

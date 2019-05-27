@@ -241,6 +241,16 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
  }
 
 
+/* clusterInst chart *//
+.chart-tab{
+    margin:0;
+    justify-content:center;
+    background-color:rgba(0,0,0,.3);
+}
+
+
+
+
 .text-danger {color:#FF1902; }
 .login-danger {display: block; text-align: left; text-indent: 15px;}
 .s-alert-top-right {z-index: 9999;}

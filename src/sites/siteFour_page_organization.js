@@ -62,7 +62,7 @@ class SiteFourPageOrganization extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        console.log('info.. store == ', store)
+        // console.log('info.. store == ', store)
         if(store.userToken) this.getDataDeveloper(store.userToken);
     }
     componentWillReceiveProps(nextProps) {

@@ -24,7 +24,7 @@ import {Motion, spring} from "react-motion";
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import './siteThree.css';
-import {GridLoader, PulseLoader} from "react-spinners";
+import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
 
 //pages
 import SiteFourPageFlavor from './siteFour_page_flavor';
@@ -39,6 +39,7 @@ import SiteFourPageAppReg from './siteFour_page_appReg';
 import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
 import SiteFourPageCreateorga from './siteFour_page_createOrga';
 import SiteFourPageClusterFlavorReg from './siteFour_page_clusterFlavorReg';
+import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 
 import { LOCAL_STRAGE_KEY } from '../components/utils/Settings';
 import * as Service from '../services/service_login_api';
@@ -222,6 +223,7 @@ class SiteFour extends React.Component {
         _self.props.handleChangeViewBtn(false);
         _self.props.handleChangeClickCity([]);
         _self.props.handleChangeComputeItem(label);
+        _self.props.handleSearchValue('')
         console.log(pg,"::##:",this.state.adminShow)
         this.auth_list.map((item) => {
             if(item.role == role) {
@@ -253,6 +255,12 @@ class SiteFour extends React.Component {
         } else if(this.state.activeItem === '') {
             this.setState({page:'pg=createAppInst'})
             this.gotoUrl('/site4', 'pg=createAppInst')
+        } else if(this.state.activeItem === 'Cluster Flavors') {
+            this.setState({page:'pg=createClusterFlavor'})
+            this.gotoUrl('/site4', 'pg=createClusterFlavor')
+        } else if(this.state.activeItem === 'Cluster Instances') {
+            this.setState({page:'pg=createClusterInst'})
+            this.gotoUrl('/site4', 'pg=createClusterInst')
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
@@ -328,7 +336,7 @@ class SiteFour extends React.Component {
         <Popup
             trigger={<Icon name='question circle outline' size='small' style={{marginTop:0,paddingLeft:10}}/>}
             content=
-                {(key=='Organization')? 'Click New button & create your organization to Start!'
+                {(key=='Organization')? 'Click New button to create your organization!'
                  :
                  key
                 }
@@ -373,7 +381,7 @@ class SiteFour extends React.Component {
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
             if(elem){ 
-                _self.makeGhost(elem, _self)
+                //_self.makeGhost(elem, _self)
             }
         }, 4000)
     }
@@ -436,6 +444,17 @@ class SiteFour extends React.Component {
             <div className="left_menu_item">
                 <MaterialIcon icon={item.icon}/>
                 <div className='label'>{item.label}</div>
+                {(activeItem === item.label)?
+                    <div style={{position:'absolute', right:'10px', top:'center'}}>
+                        <ClipLoader
+                            size={20}
+                            sizeUnit={'px'}
+                            color={'rgba(136,221,0,.85)'}
+                            loading={this.props.loadingSpinner}
+                            // loading={true}
+                        />
+                    </div>
+                :null}
             </div>
 
         </Menu.Item>
@@ -494,7 +513,7 @@ class SiteFour extends React.Component {
         console.log("result@@@@",result,this.state.createState)
         if(!this.state.createState){
             result.map((item) => {
-                if(item.State == 3){
+                if(item.State == 'Creating'){
                     this.setState({createState:item.ClusterName});
                     return;
                 }
@@ -502,10 +521,10 @@ class SiteFour extends React.Component {
             this.getIntervalData();
         } else {
             result.map((item) => {
-                if(item.ClusterName == this.state.createState && item.State == 5) {
+                if(item.ClusterName == this.state.createState && item.State == 'Ready') {
                     this.props.handleCreatingSpinner(false);
                     this.setState({toggleState:true});
-                } else if(item.ClusterName == this.state.createState && item.State !== 5) {
+                } else if(item.ClusterName == this.state.createState && item.State !== 'Ready') {
                     this.getIntervalData();
                 }
             })
@@ -524,6 +543,7 @@ class SiteFour extends React.Component {
                         size={25}
                         color={'#70b2bc'}
                         loading={this.props.loadingSpinner}
+                        //loading={this.props.creatingSpinner}
                         //loading={true}
                     />
                     <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
@@ -594,7 +614,7 @@ class SiteFour extends React.Component {
 
                 </Grid.Row>
                 <Grid.Row columns={2} className='view_contents'>
-                    <Grid.Column mobile={4} tablet={4} computer={2} className='view_left'>
+                    <Grid.Column mobile={4} tablet={4} computer={3} className='view_left'>
                         <Menu secondary vertical className='view_left_menu org_menu'>
                             {
                                 (this.state.role)?
@@ -666,13 +686,13 @@ class SiteFour extends React.Component {
                             }
 
                         </Menu>
-                        <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}} onClick={() => console.log(this.props.userInfo,this.state)}>
+                        <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
                             {
                                 (this.state.role == 'AdminManager')? 'version 0.7.7' : null
                             }
                         </div>
                     </Grid.Column>
-                    <Grid.Column mobile={12} tablet={12} computer={14} style={{height:this.state.bodyHeight}} className='contents_body'>
+                    <Grid.Column mobile={12} tablet={12} computer={13} style={{height:this.state.bodyHeight}} className='contents_body'>
                         <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
                             <Grid.Column className='title_align' style={{lineHeight:'36px'}}>{this.state.headerTitle}</Grid.Column>
                             {
@@ -725,7 +745,7 @@ class SiteFour extends React.Component {
                                                 (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                 (this.state.page === 'pg=createApp')? <SiteFourPageAppReg></SiteFourPageAppReg> :
                                                 (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg></SiteFourPageAppInstReg> :
-                                                (this.state.page === 'pg=createClusterFlavor')? <SiteFourPageClusterFlavorReg></SiteFourPageClusterFlavorReg> : <div> </div>
+                                                (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> : <div> </div>
                                             }
                                         </div>
                                     }

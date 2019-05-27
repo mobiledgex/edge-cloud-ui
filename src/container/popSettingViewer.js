@@ -27,6 +27,7 @@ const renderTextArea = field => (
 
 
 let _self = null;
+const hostname = window.location.hostname;
 class PopSettingViewer extends React.Component {
     constructor() {
         super();
@@ -36,9 +37,29 @@ class PopSettingViewer extends React.Component {
             dimmer:'',
             listOfDetail:null,
             regKeys:[],
-            defaultUrl:'https://mc.mobiledgex.net:9900'
+            defaultUrl:this.getDomain()
         }
         _self = this;
+    }
+    getDomain() {
+        let savedDomain = localStorage.getItem('domainData');
+        if(savedDomain.mcDomain) {
+            return savedDomain.mcDomain
+        } else {
+
+        }
+
+        if (hostname.indexOf('stage') > 0) {
+            return 'https://mc-stage.mobiledgex.com:9900'
+        } else if (hostname.indexOf('dev') > 0) {
+            return 'https://mc-dev.mobiledgex.com:9900'
+        } else if (hostname === 'localhost' ){
+            return 'https://mc-stage.mobiledgex.com:9900'
+            }
+        else {
+            return 'https://mc.mobiledgex.com:9900'
+        }
+
     }
 
 
@@ -50,8 +71,13 @@ class PopSettingViewer extends React.Component {
 
         this.props.initialize(initData);
     }
+    handleChange = (e, { name, value }) => {
+        this.setState({ [name]: value })
+    }
     onHandleSubmit =(a,b)=> {
+
         console.log('+++++++++on handle submit popSettingViewer+++++', _self.props.userURL, a, b)
+        localStorage.setItem('domainData', JSON.stringify({"mcDomain":_self.props.userURL}));
         _self.props.handleSubmit();
         setTimeout(() => {
             _self.props.dispatch(initialize('registUserSetting', {
@@ -70,7 +96,7 @@ class PopSettingViewer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('regist new item -- ', nextProps, nextProps.usrUrl)
+        console.log('regist new item -- ', nextProps)
         // if(nextProps.open) {
         //     this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
         //     if(nextProps.data){
@@ -80,14 +106,13 @@ class PopSettingViewer extends React.Component {
         // }
 
         if(nextProps.data){
-            this.setState({regKeys:Object.keys(nextProps.data), defaultUrl:nextProps.usrUrl})
+            this.setState({regKeys:Object.keys(nextProps.data), open:nextProps.open})
         }
 
     }
 
 
     makeForm = (regKeys) => (
-        <Form onSubmit={this.onHandleSubmit} className={"fieldForm"}>
             <Form.Group  style={{margin:0, width: '100%'}}>
                 <Grid style={{width:'100%', margin:'-1rem 0 -1rem 0'}}>
                 {
@@ -101,7 +126,8 @@ class PopSettingViewer extends React.Component {
                                     component={renderInput}
                                     type="input"
                                     name="userURL"
-                                    value={"https://mc.mobiledgex.net:9900"}
+                                    value={_self.getDomain()}
+                                    onChange={this.handleChange}
                                 />
                             </Grid.Column>
                             <Divider vertical></Divider>
@@ -110,12 +136,10 @@ class PopSettingViewer extends React.Component {
                 }
                 </Grid>
             </Form.Group>
-        </Form>
     )
 
     makebutton = (regKeys) => (
-        <Form onSubmit={this.onHandleSubmit} className={"fieldForm"}>
-            <Modal.Actions>
+            <Form.Group>
                 <Button onClick={() => this.close()}>
                     Cancel
                 </Button>
@@ -127,8 +151,7 @@ class PopSettingViewer extends React.Component {
                     content="Save"
                     type="submit"
                 />
-            </Modal.Actions>
-        </Form>
+            </Form.Group>
     )
 
 
@@ -136,18 +159,18 @@ class PopSettingViewer extends React.Component {
         const { handleSubmit, reset, dimmer } = this.props;
         return (
 
-            <Modal size={'small'} open={this.props.open} dimmer={false}>
+            <Modal size={'small'} open={this.state.open} dimmer={false}>
                 <Modal.Header>Settings</Modal.Header>
                 <Modal.Content style={{padding:'1.5rem 0.5rem 1.5rem 0.5rem'}}>
+                    <Form onSubmit={this.onHandleSubmit} className={"fieldForm"}>
                     {
                         this.makeForm(this.state.regKeys)
                     }
-                </Modal.Content>
-                <Modal.Actions>
                     {
                         this.makebutton(this.state.regKeys)
                     }
-                </Modal.Actions>
+                    </Form>
+                </Modal.Content>
             </Modal>
 
         )

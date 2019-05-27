@@ -201,6 +201,7 @@ class RegistNewListItem extends React.Component {
     receiveSubmit = (result) => {
         console.log('registry new ... success result..', result.data)
         this.props.handleLoadingSpinner(false);
+        this.props.refresh('All')
         let paseData = result.data;
         // let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
         console.log('response paseData  -',paseData );
@@ -220,7 +221,7 @@ class RegistNewListItem extends React.Component {
             // if(splitData[2]['result']['message'] === 'Created successfully') {
             //     _self.props.success()
             // }
-            this.props.refresh()
+            
         } else {
             Alert.error(paseData.message, {
                 position: 'top-right',

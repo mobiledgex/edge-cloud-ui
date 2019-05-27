@@ -31,7 +31,7 @@ class SiteFourPageClusterInst extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [1,2,2,1,2,2,2,1,2];
+        this.headerLayout = [1,2,2,1,2,1,2,1,2,2];
         //this.hiddenKeys = ['CloudletLocation']
     }
 
@@ -154,6 +154,7 @@ class SiteFourPageClusterInst extends React.Component {
 };
 
 const mapStateToProps = (state) => {
+
     return {
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
         changeRegion : state.changeRegion.region?state.changeRegion.region:null

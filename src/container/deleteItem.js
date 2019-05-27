@@ -34,7 +34,7 @@ class DeleteItem extends React.Component {
      ***************************/
     receiveSubmit = (result) => {
         this.props.handleLoadingSpinner(false);
-        this.props.refresh()
+        this.props.refresh('All')
         console.log('registry delete ... success result..', result.data)
         let paseData = result.data;
         let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
@@ -56,8 +56,8 @@ class DeleteItem extends React.Component {
 
     receiveListSubmit = (result) => {
         this.props.handleLoadingSpinner(false);
-        this.props.refresh()
-        console.log('registry delete ... success result..', result.data, result.data.message.indexOf('ok'))
+        this.props.refresh('All')
+        console.log('registry delete ... success result..', result.data)
         if(result.data.message.indexOf('ok') > -1) {
             console.log("deleteSuccess@@")
             Alert.success("Deletion!", {
@@ -76,8 +76,8 @@ class DeleteItem extends React.Component {
 
     receiveUserSubmit = (result,body) => {
         this.props.handleLoadingSpinner(false);
+        _self.props.refresh('All');
         console.log('user delete ... success result..', result.data, body.params.name,':::',this.props.selectOrg);
-        _self.props.refresh();
         if(result.data.message) {
             Alert.success(result.data.message, {
                 position: 'top-right',
@@ -91,7 +91,7 @@ class DeleteItem extends React.Component {
             });
             _self.props.success();
         }
-        if(this.props.siteId === 'Organization' && body.params.name == this.props.selectOrg.Organization) {
+        if(this.props.siteId === 'Organization' && body.params.name == (this.props.selectOrg.Organization)?this.props.selectOrg.Organization:null) {
             this.props.handleSelectOrg('-')
             this.props.handleUserRole('')
         }
@@ -145,12 +145,13 @@ class DeleteItem extends React.Component {
                     "appinst":{
                         "key":{
                             "app_key":{"developer_key":{"name":OrganizationName},"name":AppName,"version":Version},
-                            "cloudlet_key":{"operator_key":{"name":Operator},"name":Cloudlet}
+                            "cluster_inst_key":{
+                                "cloudlet_key":{"name":Cloudlet,"operator_key":{"name":Operator}},
+                                "cluster_key":{"name":ClusterInst},
+                                "developer":OrganizationName
+                            }
                         },
-                        "cluster_inst_key":{
-                            "cluster_key":{"name":ClusterInst},
-                            "cloudlet_key":{"operator_key":{"name":Operator},"name":Cloudlet}
-                        }
+                        
                     }
                 }
             }

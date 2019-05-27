@@ -56,7 +56,6 @@ class MapWithListView extends React.Component {
             dummyData : [],
             selected:{},
             sideVisible:null,
-            receivedData:null,
             direction:null,
             column:null,
             isDraggable: false,
@@ -173,7 +172,7 @@ class MapWithListView extends React.Component {
                 :
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%', height:'100%'}} >
                     <div className='panel_worldmap' style={{width:'100%', height:'100%'}}>
-                        <ContainerOne ref={ref => this.container = ref} {...this.props} data={this.state.receivedData} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
+                        <ContainerOne ref={ref => this.container = ref} {...this.props} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
                     </div>
 
                 </div>
@@ -201,7 +200,7 @@ class MapWithListView extends React.Component {
         return keys.map((key, i) => (
             (!( String(hidden).indexOf(key) > -1 ))?
                 (i === keys.length -1) ?
-                <Table.HeaderCell key={i} width={3} textAlign='center' sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
+                <Table.HeaderCell key={i} width={3} textAlign='center' sorted={column === key ? direction : null}>
                     {key}
                 </Table.HeaderCell>
                 :
@@ -263,12 +262,6 @@ class MapWithListView extends React.Component {
                                     (value === 'IpAccess')?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             {(item[value] == 0)? "IpAccessUnknown" : (item[value] == 1)? "IpAccessDedicated" : (item[value] == 2)? "IpAccessDedicatedOrShared" : (item[value] == 3)? "IpAccessShared" : item[value]}
-                                            {/*{item[value]}*/}
-                                        </Table.Cell>
-                                    :
-                                    (value === 'State')?
-                                        <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            {(item[value] == 3)? "Creating" : (item[value] == 5)? "Ready" : item[value]}
                                             {/*{item[value]}*/}
                                         </Table.Cell>
                                     :
@@ -376,12 +369,7 @@ class MapWithListView extends React.Component {
                         >
                             {this.generateDOM(open, dimmer, width, height)}
                         </ReactGridLayout>
-                        {(this.state.tooltipVisible) ?
-                            <ReactTooltip className='customToolTip' id='happyFace' type='dark'>
-                                <span>{this.state.tooltipMsg}</span>
-                            </ReactTooltip>
-                            : null
-                        }
+
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                     </div>
 

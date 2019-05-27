@@ -88,7 +88,6 @@ class AnimatedMap extends Component {
             selectedCity:'barcelona',
             oldCountry:'',
             unselectCity:'',
-            ReactTooltip:'No Message'
         }
         this.handleZoomIn = this.handleZoomIn.bind(this)
         this.handleZoomOut = this.handleZoomOut.bind(this)

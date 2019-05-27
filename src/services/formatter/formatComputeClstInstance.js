@@ -59,7 +59,7 @@ let generateData = (datas,body) => {
                 let Operator = dataResult.data.key.cloudlet_key.operator_key.name  || '-';
                 let Cloudlet = dataResult.data.key.cloudlet_key.name  || '-';
                 let Flavor = dataResult.data.flavor.name || '-';
-                let IpAccess = ipaccessArr[dataResult.data.ip_access] || '-';
+                let IpAccess = dataResult.data.ip_access || '-';
                 let NodeFlavor = dataResult.data.node_flavor || '';
                 let NumMasters = dataResult.data.num_masters || '';
                 let NumNodes = dataResult.data.num_nodes || '';

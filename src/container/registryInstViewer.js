@@ -13,7 +13,7 @@ import _ from "lodash";
 import * as reducer from '../utils'
 import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
-import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";
+import SiteFourCreateFormAppDefault from "./siteFourCreateFormAppDefault";
 import Alert from "react-s-alert";
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -43,7 +43,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormDefault data={props} pId={0} getUserRole={props.userrole} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getUserRole={props.userrole} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
@@ -416,12 +416,12 @@ const createFormat = (data) => (
         "appinst":{
             "key":{
                 "app_key":{"developer_key":{"name":data['DeveloperName']},"name":data['AppName'],"version":data['Version']},
-                "cloudlet_key":{"operator_key":{"name":data['Operator']},"name":data['Cloudlet']}
+                "cluster_inst_key":{
+                    "cloudlet_key":{"name":data['Cloudlet'],"operator_key":{"name":data['Operator']}},
+                    "cluster_key":{"name":data['ClusterInst']},
+                    "developer":data['DeveloperName']
+                }
             },
-            "cluster_inst_key":{
-                "cluster_key":{"name":data['ClusterInst']},
-                "cloudlet_key":{"operator_key":{"name":data['Operator']},"name":data['Cloudlet']}
-            }
         }
     }
 )

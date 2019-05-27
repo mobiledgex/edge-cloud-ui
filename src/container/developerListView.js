@@ -88,14 +88,19 @@ class DeveloperListView extends React.Component {
         console.log(useData,this.state.orgData.data,key)
 
         this.setState({selectUse:key})
-        this.state.orgData.data.map((item,i) => {
-            if(item.org == useData.Organization) {
-                console.log('item role =',item.role)
-                this.props.handleUserRole(item.role)
-            }
-        })
+        if(this.state.orgData.data) {
+            this.state.orgData.data.map((item,i) => {
+                if(item.org == useData.Organization) {
+                    console.log('item role =',item.role)
+                    this.props.handleUserRole(item.role)
+                }
+            })
 
-        this.props.handleSelectOrg(useData)
+            this.props.handleSelectOrg(useData)
+        } else {
+            console.log('Error: There is no orgData')
+        }
+
         
     }
     
@@ -206,7 +211,7 @@ class DeveloperListView extends React.Component {
         console.log('default width header -- ', widthDefault, filteredKeys)
         return filteredKeys.map((key, i) => (
             (i === filteredKeys.length -1) ?
-                <Table.HeaderCell key={i} width={3} textAlign='center' sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
+                <Table.HeaderCell key={i} width={3} textAlign='center' sorted={column === key ? direction : null}>
                     {key}
                 </Table.HeaderCell>
                 :

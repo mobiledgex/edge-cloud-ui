@@ -1,3 +1,4 @@
+var MC_URL = process.env.MC_URL;
 import qs from "qs";
 
 var fs = require('fs');
@@ -339,14 +340,14 @@ app.get('/tcpudpCluster', (req, res, next) => {
  ******************************************************/
 
 
-const apiu = require('./routes/api');
-app.get('/account', apiu.echo);
-
-app.post('/account', apiu.echo);
-app.post('/account/create_user', apiu.create_user);
-app.post('/account/login_with_email_password', apiu.login_with_email_password);
-app.post('/account/login_with_token', apiu.login_with_token);
-app.post('/account/logout', apiu.logout)
+// const apiu = require('./routes/api');
+// app.get('/account', apiu.echo);
+//
+// app.post('/account', apiu.echo);
+// app.post('/account/create_user', apiu.create_user);
+// app.post('/account/login_with_email_password', apiu.login_with_email_password);
+// app.post('/account/login_with_token', apiu.login_with_token);
+// app.post('/account/logout', apiu.logout)
 
 
 /******************************************************
@@ -439,8 +440,12 @@ app.post('/delete', function(req, res){
  ** ****************************/
 
 const apiMC = require('./routes/apiMC');
+apiMC.MC_URL = process.env.MC_URL;
 app.post('/masterControl', apiMC.getToken);
 app.post('/createUser', apiMC.createUser);
+app.post('/UpdateVerify', apiMC.UpdateVerify);
+app.post('/ResendVerify', apiMC.ResendVerify);
+
 app.post('/createOrg', apiMC.CreateOrg);
 app.post('/showOrg', apiMC.showOrg);
 app.post('/ShowFlavor', apiMC.ShowFlavor);
@@ -473,6 +478,7 @@ app.post('/deleteOrg', apiMC.DeleteOrg);
 
 // mc-dev
 app.post('/passwordresetrequest', apiMC.ResetPassword)
+app.post('/newpass', apiMC.UpdatePassword)
 /*
 --auth-type=jwt --auth=$SUPERPASS
  */
@@ -533,6 +539,7 @@ app.post('/passwordresetrequest', apiMC.ResetPassword)
 //var httpServer = http.createServer(app);
 //httpServer.listen(8080);
 
+
 // https
 var host = '0.0.0.0';
 if(process.argv.length > 2) {
@@ -542,4 +549,4 @@ if(process.argv.length > 2) {
     }
 }
 var httpsServer = https.createServer(credentials, app);
-httpsServer.listen(port, host, () => console.log(`<< https >> app listening on ${host} port ${port}!`));
+httpsServer.listen(port, host, () => console.log(`<< https >> app listening on ${host} port ${port}! MC_URL = ${MC_URL}`));
