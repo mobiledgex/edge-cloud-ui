@@ -44,8 +44,8 @@ let generateData = (datas,body) => {
     console.log("Apptojson!!",toJson, body)
     if(toJson){
         toJson.map((dataResult, i) => {
-            if(dataResult.message) {
-
+            if(dataResult.error || dataResult.message) {
+                console.log("error")
             } else {
                 console.log("gogogo@#@")
                 let Index = i;

@@ -51,7 +51,7 @@ verify:='{
 }'
  */
 exports.createUser = (req, res) => {
-    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
   if(req.body.serviceBody){
@@ -87,7 +87,7 @@ exports.createUser = (req, res) => {
 
 
 exports.currentUser = (req, res) => {
-    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -120,7 +120,7 @@ exports.currentUser = (req, res) => {
 }
 
 exports.showController = (req, res) => {
-    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -153,7 +153,7 @@ exports.showController = (req, res) => {
 }
 
 exports.showOrg = (req, res) => {
-    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -172,15 +172,15 @@ exports.showOrg = (req, res) => {
     )
         .then(function (response) {
             console.log('success show org', response.data)
-            if(response.data) {
+            if(response.data && response.data.length > 0) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'There is no data'})
             }
         })
         .catch(function (error) {
             console.log('error show org..', String(error));
-            res.json({error:'Request failed'})
+            res.json({error:'There is no data'})
         });
 }
 
@@ -191,7 +191,7 @@ http --auth-type=jwt --auth=$SUPERPASS POST 127.0.0.1:9900/api/v1/auth/ctrl/Show
  */
 //Flavor
 exports.ShowFlavor = (req, res) => {
-    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -225,7 +225,7 @@ exports.ShowFlavor = (req, res) => {
 }
 //Cluster Flavor
 exports.ShowClusterFlavor = (req, res) => {
-    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -259,7 +259,7 @@ exports.ShowClusterFlavor = (req, res) => {
 }
 //Users
 exports.ShowUsers = (req, res) => {
-    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -291,7 +291,7 @@ exports.ShowUsers = (req, res) => {
 }
 //cloudlet
 exports.ShowCloudlet = (req, res) => {
-    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -325,7 +325,7 @@ exports.ShowCloudlet = (req, res) => {
 }
 //Cluster instances
 exports.ShowClusterInst = (req, res) => {
-    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -353,9 +353,41 @@ exports.ShowClusterInst = (req, res) => {
             res.json({error:'Request failed'})
         });
 }
+//Organization AppInst
+exports.ShowClusterInsts = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'US'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    console.log('show me clusterInst-- ', serviceBody)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/ShowClusterInst', serviceBody,
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success show clusterInsts', response.data)
+            if(response.data) {
+                res.json(response.data)
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+            console.log('error show ..', String(error));
+            res.json({error:'Request failed'})
+        });
+}
 //Apps
 exports.ShowApps = (req, res) => {
-    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -389,7 +421,7 @@ exports.ShowApps = (req, res) => {
 }
 //Organization App
 exports.ShowApp = (req, res) => {
-    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -421,7 +453,7 @@ exports.ShowApp = (req, res) => {
 }
 //app instances
 exports.ShowAppInst = (req, res) => {
-    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -453,6 +485,38 @@ exports.ShowAppInst = (req, res) => {
             res.json({error:'Request failed'})
         });
 }
+//Organization AppInst
+exports.ShowAppInsts = (req, res) => {
+    mcUrl = process.env.MC_URL && process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'US'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    console.log('show me appInst-- ', serviceBody)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/ShowAppInst', serviceBody,
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success show appInsts', response.data)
+            if(response.data) {
+                res.json(response.data)
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+            console.log('error show ..', String(error));
+            res.json({error:'Request failed'})
+        });
+}
 /*
 {
 "region":"local",
@@ -468,6 +532,7 @@ bonn-mexdemo
 x1.large
  */
 exports.Create = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -500,6 +565,7 @@ exports.Create = (req, res) => {
 }
 
 exports.CreateOrg= (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -513,7 +579,7 @@ exports.CreateOrg= (req, res) => {
         superpass = req.body.serviceBody.token;
         service = req.body.service;
     }
-    console.log('create organiz show me boddy-- ', params, '   token is ==',superpass)
+    console.log('create organiz show me boddy-- ', params, '   token is ==',superpass, 'mc_url = ', mcUrl)
     axios.post(mcUrl + '/api/v1/auth/org/create', qs.stringify(params),
         {
             headers: {
@@ -539,6 +605,7 @@ http --auth-type=jwt --auth=$ORGMANTOKEN POST 127.0.0.1:9900/api/v1/auth/role/ad
 org=bigorg username=worker1 role=DeveloperContributor
  */
 exports.addUserRole= (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -574,6 +641,7 @@ exports.addUserRole= (req, res) => {
 
 //Create Flavor
 exports.CreateFlavor = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -610,6 +678,7 @@ exports.CreateFlavor = (req, res) => {
 
 //Create Cluster Flavor
 exports.CreateClusterFlavor = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -646,6 +715,7 @@ exports.CreateClusterFlavor = (req, res) => {
 
 //Create Cloudlet
 exports.CreateCloudlet = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -699,6 +769,7 @@ exports.CreateCloudlet = (req, res) => {
 }
  */
 exports.CreateApp = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -734,6 +805,7 @@ exports.CreateApp = (req, res) => {
         });
 }
 exports.CreateAppInst = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let params = {};
     let superpass = '';
@@ -771,6 +843,7 @@ exports.CreateAppInst = (req, res) => {
 
 
 exports.CreateClusterInst = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -806,6 +879,7 @@ exports.CreateClusterInst = (req, res) => {
         });
 }
 exports.DeleteService = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -834,12 +908,17 @@ exports.DeleteService = (req, res) => {
             }
         })
         .catch(function (error) {
-
+            console.log("errorDesc1",error.response.data)
             console.log('error show ..', String(error));
-            res.json({error:String(error)})
+            if(error.response.data.message == 'ClusterInst in use by Application Instance' || error.response.data.message == 'rpc error: code = Unknown desc = Application in use by static Application Instance') {
+                res.json({error:error.response.data.message})
+            } else {
+                res.json({error:String(error)})
+            }
         });
 }
 exports.DeleteUser = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -874,6 +953,7 @@ exports.DeleteUser = (req, res) => {
         });
 }
 exports.DeleteOrg = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -917,6 +997,7 @@ operatingsystem="mac OSX"
 browser=httpie clientip=127.0.0.1
  */
 exports.ResetPassword = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
 
@@ -924,7 +1005,7 @@ exports.ResetPassword = (req, res) => {
         serviceBody = req.body.serviceBody;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
+    console.log('reset password --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
@@ -943,6 +1024,7 @@ exports.ResetPassword = (req, res) => {
         });
 }
 exports.UpdatePassword = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
 
@@ -950,7 +1032,7 @@ exports.UpdatePassword = (req, res) => {
         serviceBody = req.body.serviceBody;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
+    console.log('update password --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
@@ -969,6 +1051,7 @@ exports.UpdatePassword = (req, res) => {
         });
 }
 exports.ResendVerify = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
 
@@ -995,6 +1078,7 @@ exports.ResendVerify = (req, res) => {
         });
 }
 exports.UpdateVerify = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let token = '';
@@ -1032,6 +1116,7 @@ exports.UpdateVerify = (req, res) => {
  */
 
 exports.ShowRole = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
@@ -1040,7 +1125,7 @@ exports.ShowRole = (req, res) => {
         superpass = req.body.serviceBody.token;
     }
     console.log('show role-- ', serviceBody)
-    axios.post(mcUrl + '/api/v1/auth/role/assignment/show', qs.stringify({}),
+    axios.post(mcUrl + '/api/v1/auth/role/assignment/show', {},
             {
                 headers: {
                     'Authorization':`Bearer ${superpass}`}

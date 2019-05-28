@@ -49,11 +49,11 @@ let generateData = (datas,body) => {
     console.log("clusterinst tojson!!",toJson)
     if(toJson){
         toJson.map((dataResult, i) => {
-            if(dataResult.message) {
-
+            if(dataResult.error || dataResult.message) {
+                console.log("error")
             } else {
                 let Index = i;
-                let Region = body.region || '-';
+                let Region = body.region || body.params.region || '-';
                 let ClusterName = dataResult.data.key.cluster_key.name  || '-';
                 let DeveloperName = dataResult.data.key.developer || '-';
                 let Operator = dataResult.data.key.cloudlet_key.operator_key.name  || '-';

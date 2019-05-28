@@ -458,8 +458,6 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
-        handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };

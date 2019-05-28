@@ -454,9 +454,11 @@ app.post('/ShowUsers', apiMC.ShowUsers);
 app.post('/ShowCloudlet', apiMC.ShowCloudlet);
 app.post('/showController', apiMC.showController);
 app.post('/ShowClusterInst', apiMC.ShowClusterInst);
+app.post('/ShowClusterInsts', apiMC.ShowClusterInsts);
 app.post('/ShowApps', apiMC.ShowApps);
 app.post('/ShowApp', apiMC.ShowApp);
 app.post('/ShowAppInst', apiMC.ShowAppInst);
+app.post('/ShowAppInsts', apiMC.ShowAppInsts);
 
 app.post('/create', apiMC.Create);
 app.post('/CreateApp', apiMC.CreateApp);

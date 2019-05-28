@@ -30,8 +30,8 @@ let generateData = (datas,body) => {
     console.log('format data toJson - ', toJson,body.region)
     if(toJson){
         toJson.map((dataResult, i) => {
-            if(dataResult.message) {
-
+            if(dataResult.error || dataResult.message) {
+                console.log("error")
             } else {
                 let Index = i;
                 let Region = body.region || '-';

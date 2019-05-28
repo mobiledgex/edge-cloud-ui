@@ -35,7 +35,14 @@ class SiteFourPageOrganization extends React.Component {
         this.headerLayout = [2,2,3,3,6]
         //this.hideHeader = ['Address','Phone']
     }
-
+    gotoUrl(site, subPath) {
+        _self.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
+        _self.setState({ page:subPath})
+    }
     //go to
     gotoPreview(site, page) {
         //브라우져 입력창에 주소 기록
@@ -68,35 +75,34 @@ class SiteFourPageOrganization extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-        // if(nextProps.userToken) {
-        //     this.getDataDeveloper(nextProps.userToken);
-        // }
-        // console.log(nextProps.computeRefresh)
+
         if(nextProps.computeRefresh.compute) {
-            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            this.getDataDeveloper(store.userToken);
+            //let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            //this.getDataDeveloper(store.userToken);
             this.props.handleComputeRefresh(false);
         }
 
     }
     receiveResult = (result,resource, self) => {
         this.props.handleLoadingSpinner(false);
+
         console.log("receive == ", result, resource, self)
         if(result.error) {
-            Alert.error('Invalid or expired token', {
+            Alert.error('There is no data', {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
             });
-            setTimeout(()=>_self.gotoPreview('/site4', 'page=newOrg'), 2000)
+            //setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
+            _self.gotoUrl('/site4', 'pg=newOrg')
         } else {
-            _self.setState({devData:result})
-            //TODO: 20190419 save orgizations name to localstore
-            let orgData = [];
-            result.map((item)=>{
-                if(item.Type === 'operator') orgData.push(item.Organization)
-            })
-            localStorage.setItem('organization', JSON.stringify({"list":orgData}));
+
+            if(result.length === 0) {
+                _self.gotoUrl('/site4', 'pg=newOrg')
+            } else {
+                _self.setState({devData:result})
+            }
+
         }
     }
     getDataDeveloper(token) {

@@ -121,21 +121,6 @@ class RegistryClusterInstViewer extends React.Component {
     }
 
 
-
-    onUseOrg(useData,key, evt) {
-        console.log(useData,this.state.orgData.data,key)
-
-        this.setState({selectUse:key})
-        this.state.orgData.data.map((item,i) => {
-            if(item.org == useData.Organization) {
-                console.log('item role =',item.role)
-                this.props.handleUserRole(item.role)
-            }
-        })
-
-        this.props.handleSelectOrg(useData)
-        
-    }
     
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
@@ -155,7 +140,7 @@ class RegistryClusterInstViewer extends React.Component {
 
     generateDOM(open, dimmer, width, height, data, keysData, hideHeader, region) {
 
-        let panelParams = {data:data, keys:keysData, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:this.props.userRole}
+        let panelParams = {data:data, keys:keysData, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
 
         return layout.map((item, i) => (
 
@@ -242,7 +227,7 @@ class RegistryClusterInstViewer extends React.Component {
          * set Organization Name
          * **********/
         let assObj = Object.assign([], this.state.fakeData);
-        assObj[0].OrganizationName = (this.props.selectOrg)?this.props.selectOrg.Organization:'';
+        assObj[0].OrganizationName = localStorage.selectOrg;
         console.log("jjjjkkkkkk",assObj);
         this.setState({fakeData:assObj});
     }
@@ -434,8 +419,6 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
-        handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))}
     };

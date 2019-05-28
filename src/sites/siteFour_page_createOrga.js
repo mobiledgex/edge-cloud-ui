@@ -151,11 +151,11 @@ class SiteFourPageCreateorga extends React.Component {
     receiveResult(result,resource, self) {
         console.log("receive == ", result, resource, self)
         if(result.error) {
-            Alert.error('Invalid or expired token', {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            // Alert.error('Invalid or expired token', {
+            //     position: 'top-right',
+            //     effect: 'slide',
+            //     timeout: 5000
+            // });
             //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         } else {
             _self.setState({devData:result})

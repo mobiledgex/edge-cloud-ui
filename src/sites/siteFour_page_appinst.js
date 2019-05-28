@@ -60,7 +60,7 @@ class SiteFourPageAppInst extends React.Component {
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        console.log('info.. store == ', store)
+        console.log('info.. store == ', store,this.props.changeRegion)
         if(store.userToken) {
             this.getDataDeveloper(this.props.changeRegion);
         }
@@ -95,13 +95,36 @@ class SiteFourPageAppInst extends React.Component {
         console.log("appinst@@gogo")
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let rgn = ['US','EU'];
+        let serviceBody = {}
         this.setState({devData:[]})
         if(region !== 'All'){
             rgn = [region]
         }  
-        rgn.map((item) => {
-            services.getMCService('ShowAppInst',{token:store.userToken, region:item}, _self.receiveResult)
-        })
+ 
+        if(localStorage.selectRole == 'AdminManager') {
+            rgn.map((item) => {
+                // All show appInst
+                services.getMCService('ShowAppInst',{token:store.userToken, region:item}, _self.receiveResult)
+            })
+        } else {
+            rgn.map((item) => {
+                serviceBody = {
+                    "token":store.userToken,
+                    "params": {
+                        "region":item,
+                        "appinst":{
+                            "key":{
+                                "app_key": {
+                                    "developer_key":{"name":localStorage.selectOrg},
+                                }
+                            }
+                        }
+                    }
+                }
+                // org별 show appInst
+                services.getMCService('ShowAppInsts',serviceBody, _self.receiveResult)
+            })
+        }
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -124,7 +147,9 @@ const mapStateToProps = (state) => {
     return {
         stateChange:stateChange,
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
-        changeRegion : state.changeRegion.region?state.changeRegion.region:null
+        changeRegion : state.changeRegion.region?state.changeRegion.region:null,
+        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
+        userRole : state.showUserRole?state.showUserRole.role:null,
     }
 };
 const mapDispatchProps = (dispatch) => {

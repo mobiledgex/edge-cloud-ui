@@ -83,7 +83,7 @@ class RegistNewItem extends React.Component {
 
         // developer(Organization)
         //service.getMCService('showOrg',{token:store.userToken}, _self.receiveDev)
-        if(this.props.userRole == 'AdminManager') {
+        if(localStorage.selectRole == 'AdminManager') {
             this.getOrgData()
         }
         
@@ -520,7 +520,6 @@ class RegistNewItem extends React.Component {
                 handleChangeLat={this.handleChangeLat}
                 locationLong={this.state.locationLong}
                 locationLat={this.state.locationLat}
-                defaultValue={this.props.selectOrg}
                 cloudArr={this.state.cloudletList}
                 getOptionData={this.getOptionData}
             >

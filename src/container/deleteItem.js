@@ -36,10 +36,15 @@ class DeleteItem extends React.Component {
         this.props.handleLoadingSpinner(false);
         this.props.refresh('All')
         console.log('registry delete ... success result..', result.data)
-        let paseData = result.data;
-        let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
-
-        if(result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
+        
+        console.log("deleteCluster@@@",result.data)
+        if(result.data.error == "ClusterInst in use by Application Instance") {
+            Alert.error(result.data.error, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+        } else if (result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
             Alert.success("Deletion!", {
                 position: 'top-right',
                 effect: 'slide',
@@ -52,13 +57,21 @@ class DeleteItem extends React.Component {
             });
             _self.props.success();
         }
+
+        
     }
 
     receiveListSubmit = (result) => {
         this.props.handleLoadingSpinner(false);
         this.props.refresh('All')
         console.log('registry delete ... success result..', result.data)
-        if(result.data.message.indexOf('ok') > -1) {
+        if(result.data.error == "rpc error: code = Unknown desc = Application in use by static Application Instance") {
+            Alert.error(result.data.error, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+        } else if(result.data.message.indexOf('ok') > -1) {
             console.log("deleteSuccess@@")
             Alert.success("Deletion!", {
                 position: 'top-right',
@@ -77,7 +90,7 @@ class DeleteItem extends React.Component {
     receiveUserSubmit = (result,body) => {
         this.props.handleLoadingSpinner(false);
         _self.props.refresh('All');
-        console.log('user delete ... success result..', result.data, body.params.name,':::',this.props.selectOrg);
+        console.log('user delete ... success result..', result.data, body.params.name);
         if(result.data.message) {
             Alert.success(result.data.message, {
                 position: 'top-right',
@@ -91,9 +104,11 @@ class DeleteItem extends React.Component {
             });
             _self.props.success();
         }
-        if(this.props.siteId === 'Organization' && body.params.name == (this.props.selectOrg.Organization)?this.props.selectOrg.Organization:null) {
+        if(this.props.siteId === 'Organization' && body.params.name == localStorage.selectOrg) {
             this.props.handleSelectOrg('-')
             this.props.handleUserRole('')
+            localStorage.setItem('selectRole', '')
+            localStorage.setItem('selectOrg', '')
         }
     }
 

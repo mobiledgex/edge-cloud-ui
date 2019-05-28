@@ -11,7 +11,7 @@ const numberDes =(a,b)=> (
 )
 
 let generateData = (datas,body) => {
-    console.log('format data appinst- ', datas)
+    console.log('format data appinst- ', datas,body)
     let result = datas;
     let values = [];
     //20190409 transition string to json
@@ -32,11 +32,11 @@ let generateData = (datas,body) => {
     console.log("tojson!!",toJson)
     if(toJson){
         toJson.map((dataResult, i) => {
-            if(dataResult.message) {
-
+            if(dataResult.error || dataResult.message) {
+                console.log("error")
             } else {
                 let Index = i;
-                let Region = body.region || '-';
+                let Region = body.region || body.params.region || '-';
                 let DeveloperName = dataResult.data.key.app_key.developer_key.name  || '-';
                 let AppName = dataResult.data.key.app_key.name  || '-';
                 let Version = dataResult.data.key.app_key.version  || '-';
