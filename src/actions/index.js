@@ -192,3 +192,10 @@ export function creatingSpinner (creating) {
         creating
     }
 }
+export function alertMsg (msg) {
+    console.log('ALERT_MSG == ', msg)
+    return {
+        type: types.ALERT_MSG,
+        msg
+    }
+}

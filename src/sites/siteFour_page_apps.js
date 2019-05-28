@@ -112,15 +112,15 @@ class SiteFourPageApps extends React.Component {
             _self.setState({devData:join})
         }
     }
-    getDataDeveloper(token, region) {
+    getDataDeveloper = (token, region) => {
         let rgn = ['US','EU'];
         let serviceBody = {}
         this.setState({devData:[]})
         if(region !== 'All'){
             rgn = [region]
         } 
-
-        if(this.props.userRole == 'AdminManager') {
+        console.log("eeeee@@",localStorage.selectOrg)
+        if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
                 // All show app
                 services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)
@@ -133,7 +133,7 @@ class SiteFourPageApps extends React.Component {
                         "region":item,
                         "app":{
                             "key":{
-                                "developer_key":{"name":this.props.selectOrg.Organization},
+                                "developer_key":{"name":localStorage.selectOrg},
                             }
                         }
                     }
@@ -161,7 +161,7 @@ class SiteFourPageApps extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    console.log('props in state.form..', state.form, 'region === ', state.changeRegion)
+    console.log('props in state.form..', state.form, 'region === ', state)
     let registNew= state.form.registNewListInput
         ? {
             values: state.form.registNewListInput.values,

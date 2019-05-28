@@ -24,7 +24,7 @@ class headerGlobalMini extends React.Component {
         this.state = {
             email: store ? store.email : 'Administrator',
             openProfile:false,
-            openSettings:false,
+            // openSettings:false,
             userInfo:{info:[]}
         }
     }
@@ -70,39 +70,33 @@ class headerGlobalMini extends React.Component {
         let token = store.userToken;
         Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
 
-        this.setState({openProfile:true, openSettings:false})
+        this.setState({openProfile:true})
     }
-    settingsView() {
-        this.setState({openProfile:false, openSettings:true})
-    }
+    // settingsView() {
+    //     this.setState({openProfile:false, openSettings:true})
+    // }
     closeProfile = () => {
-        this.setState({ openProfile: false })
+        this.setState({ openProfile:false})
     }
-    closeSettings = () => {
-        this.setState({openSettings:false})
-    }
-    createUser() {
-        this.setState({})
-    }
+    // closeSettings = () => {
+    //     this.setState({openSettings:false})
+    // }
+    // createUser() {
+    //     this.setState({})
+    // }
     resetPassword() {
         this.props.handleClickLogin('forgot')
     }
 
     menuAdmin = () => (
         <Button.Group vertical>
-            <Button onClick={() => this.profileView()} >Your profile</Button> {/*동작안함*/}
-            {/*<Button style={{height:10, padding:0, margin:0}}><Divider inverted style={{padding:2, margin:0}}></Divider></Button>*/}
-
-            <Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>
+            <Button onClick={() => this.profileView()} >Your profile</Button>
+            {/*<Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>*/}
             {(this.props.location.pathname !== "/site4")?
             <Button style={{color:'#333333'}} onClick={() => this.resetPassword()} >Reset Password</Button>
             :
             null}
-
-            {/*<Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>*/}
-            {/*<Button style={{color:'#333333'}} onClick={() => this.resetPassword()} >Reset Password</Button>*/}
-
-            <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{this.state.userName}</div><div>Logout</div></Button>
+            <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{(this.props.location.pathname === "/site4")? this.props.email :this.state.email}</div><div>Logout</div></Button>
         </Button.Group>
 
     )
@@ -116,28 +110,23 @@ class headerGlobalMini extends React.Component {
 
         return (
             <Fragment>
-                    <Popup
-                        trigger={
-                            <div style={{cursor:'pointer'}}>
-                                <Image src='/assets/avatar/avatar_default.svg' avatar />
-                                <span>
-                                    {(this.props.location.pathname === "/site4")? this.props.email :this.state.email}
-                                </span>
-                            </div>}
-                        content={
-                            this.menuAdmin()
-                            }
-                        on='click'
-                        position='bottom center'
-                        className='gnb_logout'
-                    />
-
+                <Popup
+                    trigger={
+                        <div style={{cursor:'pointer'}}>
+                            <Image src='/assets/avatar/avatar_default.svg' avatar />
+                            <span>
+                                {(this.props.location.pathname === "/site4")? this.props.email :this.state.email}
+                            </span>
+                        </div>}
+                    content={
+                        this.menuAdmin()
+                    }
+                    on='click'
+                    position='bottom center'
+                    className='gnb_logout'
+                />
                 {/*<PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')} usrUrl={this.props.userURL}></PopSettingViewer>*/}
-                {/*<PopProfileViewer data={this.props.data} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>*/}
-                <PopProfileViewer data={this.props.data} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>
-
-                <PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')}></PopSettingViewer>
-
+                <PopProfileViewer data={(this.props.location.pathname === "/site4")? this.props.data :this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>
             </Fragment>
         )
     }

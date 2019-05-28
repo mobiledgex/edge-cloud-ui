@@ -85,7 +85,7 @@ class DeveloperListView extends React.Component {
     }
 
     onUseOrg(useData,key, evt) {
-        console.log(useData,this.state.orgData.data,key)
+        console.log("onuseorg",useData,this.state.orgData.data,key)
 
         this.setState({selectUse:key})
         if(this.state.orgData.data) {
@@ -93,6 +93,8 @@ class DeveloperListView extends React.Component {
                 if(item.org == useData.Organization) {
                     console.log('item role =',item.role)
                     this.props.handleUserRole(item.role)
+                    localStorage.setItem('selectOrg', useData.Organization)
+                    localStorage.setItem('selectRole', item.role)
                 }
             })
 
@@ -264,7 +266,7 @@ class DeveloperListView extends React.Component {
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
                                     <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
-                                        {(this.props.siteId == 'Organization' && this.props.userRole !== 'AdminManager')?
+                                        {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager')?
                                             <Button color={(this.state.selectUse == i)?'teal' :null} onClick={(evt) => this.onUseOrg(item,i, evt)}>
                                                 <Icon name='check' />
                                             </Button>:null}

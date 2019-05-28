@@ -45,7 +45,6 @@ import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import { LOCAL_STRAGE_KEY } from '../components/utils/Settings';
 import * as Service from '../services/service_login_api';
 import * as computeService from '../services/service_compute_service';
-import PopProfileViewer from '../container/popProfileViewer';
 import PopSettingViewer from '../container/popSettingViewer';
 import * as aggregation from "../utils";
 import Alert from "react-s-alert";
@@ -97,7 +96,6 @@ class SiteFour extends React.Component {
             onlyView: false,
             userToken:null,
             profileViewData:null,
-            openProfile:false,
             userName:'',
             controllerRegions:null,
             regions:[
@@ -111,10 +109,9 @@ class SiteFour extends React.Component {
             setMotion:defaultMotion,
             OrganizationName:'',
             adminShow:false,
-            openSettings:false,
-            userURL:'',
             createState:'',
-            toggleState:true
+            toggleState:true,
+            noData:false
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
@@ -241,25 +238,26 @@ class SiteFour extends React.Component {
         });
         _self.props.history.location.search = "pg="+pg;
         _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label })
+        localStorage.setItem('selectMenu', label)
     }
 
     onHandleRegistry() {
-        if(this.state.activeItem === 'Organization') {
+        if(localStorage.selectMenu === 'Organization') {
             this.setState({page:'pg=newOrg'})
             this.gotoUrl('/site4', 'pg=newOrg')
-        } else if(this.state.activeItem === 'Apps') {
+        } else if(localStorage.selectMenu === 'Apps') {
             this.setState({page: 'pg=createApp'})
             this.gotoUrl('/site4', 'pg=createApp')
-        } else if(this.state.activeItem === 'App Instances') {
+        } else if(localStorage.selectMenu === 'App Instances') {
             this.setState({page:'pg=createAppInst'})
             this.gotoUrl('/site4', 'pg=createAppInst')
-        } else if(this.state.activeItem === '') {
+        } else if(localStorage.selectMenu === '') {
             this.setState({page:'pg=createAppInst'})
             this.gotoUrl('/site4', 'pg=createAppInst')
-        } else if(this.state.activeItem === 'Cluster Flavors') {
+        } else if(localStorage.selectMenu === 'Cluster Flavors') {
             this.setState({page:'pg=createClusterFlavor'})
             this.gotoUrl('/site4', 'pg=createClusterFlavor')
-        } else if(this.state.activeItem === 'Cluster Instances') {
+        } else if(localStorage.selectMenu === 'Cluster Instances') {
             this.setState({page:'pg=createClusterInst'})
             this.gotoUrl('/site4', 'pg=createClusterInst')
         } else {
@@ -284,6 +282,7 @@ class SiteFour extends React.Component {
                 if(item.role.indexOf('Admin') > -1){
                     this.setState({adminShow:true});
                     this.props.handleUserRole(item.role);
+                    localStorage.setItem('selectRole', item.role)
                 }
             })
         }
@@ -304,15 +303,7 @@ class SiteFour extends React.Component {
         //잠시 막음 : superuser 일 때만 데이터 불러옴.
         //if(arr.length > 0) _self.setState({regions: arr})
     }
-    menuAdmin = () => (
-        <Button.Group vertical>
-            <Button onClick={() => this.profileView()} >Your profile</Button>
-            {/*<Button style={{height:10, padding:0, margin:0}}><Divider inverted style={{padding:2, margin:0}}></Divider></Button>*/}
-            {(this.state.role == 'AdminManager')? <Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button> : null}
-            <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{this.state.userName}</div><div>Logout</div></Button>
-        </Button.Group>
 
-    )
     menuAddItem = () => (
         <Button.Group vertical>
 
@@ -351,6 +342,7 @@ class SiteFour extends React.Component {
 
     }
     getAdminInfo(token) {
+        console.log("showrole@@@@@@")
         Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
         computeService.getMCService('showController', {token:token}, this.receiveResult, this);
         computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
@@ -364,7 +356,7 @@ class SiteFour extends React.Component {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         console.log("stateProps@@",this.props,this.state)
         console.log('store.. ', store.user)
-        this.setState({activeItem:'Organization', headerTitle:'Organization'})
+        this.setState({activeItem: (localStorage.selectMenu)?localStorage.selectMenu:'Organization', headerTitle:(localStorage.selectMenu)?localStorage.selectMenu:'Organization'})
         //get list of customer's info
         // if(store.userToken) {
         //     Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
@@ -376,7 +368,7 @@ class SiteFour extends React.Component {
             //this.setState({page:'pg=0'})
             //this.gotoUrl('/site4', 'pg=0')
             //this.gotoPreview('/site4');
-        this.props.history.location.search = "pg=0";
+        //this.props.history.location.search = "pg=0";
         this.getAdminInfo(store.userToken);
 
         setTimeout(() => {
@@ -388,29 +380,23 @@ class SiteFour extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         console.log("props!!!!",nextProps)
-
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         this.setState({userToken: nextProps.userToken})
         this.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
-        this.setState({role: (nextProps.userRole) ? nextProps.userRole : null})
-        if(nextProps.selectOrg !== this.props.selectOrg && nextProps.location.search === 'pg=0') {
-            console.log('nextProps.selectOr -- ', nextProps.selectOrg)
-            this.resetMotion()
-            setTimeout(() => _self.setState({OrganizationName:nextProps.selectOrg.Organization}), 1000)
+        if(nextProps.params && nextProps.params.subPath) {
+            this.setState({page:nextProps.params.subPath})
         }
-        if(nextProps.userRole && nextProps.userRole == 'AdminManager'){
-            this.setState({OrganizationName:nextProps.userRole})
-        }
+
         /**
          * setting url of data Rest
          **/
-        if(nextProps.userSetting && nextProps.userSetting.submitSucceeded) {
-            console.log('user setting...', nextProps.userSetting)
-            Service.setDomain(nextProps.userSetting.userURL)
-            computeService.setDomain(nextProps.userSetting.userURL)
-            this.setState({openSettings:false, userURL:nextProps.userSetting.userURL})
-        }
+        // if(nextProps.userSetting && nextProps.userSetting.submitSucceeded) {
+        //     console.log('user setting...', nextProps.userSetting)
+        //     Service.setDomain(nextProps.userSetting.userURL)
+        //     computeService.setDomain(nextProps.userSetting.userURL)
+        //     this.setState({openSettings:false, userURL:nextProps.userSetting.userURL})
+        // }
 
         if(nextProps.creatingSpinner && this.state.toggleState) {
             this.getIntervalData();
@@ -419,28 +405,13 @@ class SiteFour extends React.Component {
     }
 
 
-    //close profile popup
-    closeProfile = () => {
-        this.setState({ openProfile: false })
-    }
-
-    profileView() {
-        this.setState({openProfile:true})
-    }
-    settingsView() {
-        this.setState({openSettings:true})
-    }
-    closeSettings = () => {
-        this.setState({openSettings:false})
-    }
-
     //compute page menu view
     menuItemView = (item, i, activeItem) => (
         <Menu.Item
             key={i}
             name={item.label}
             active={activeItem === item.label}
-            onClick={() => this.handleItemClick(i, item.label, item.pg, this.state.role)}
+            onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
         >
             <div className="left_menu_item">
                 <MaterialIcon icon={item.icon}/>
@@ -596,36 +567,24 @@ class SiteFour extends React.Component {
                             className='gnb_logout'
                         />
                         {/* 프로필 */}
-                        <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false} userURL={this.state.userURL}/>
-                        {/*<Popup*/}
-                        {/*    trigger={<div style={{cursor:'pointer'}}>*/}
-                        {/*        <Image src='/assets/avatar/avatar_default.svg' avatar />*/}
-                        {/*        <span>{this.state.email}</span>*/}
-                        {/*    </div>}*/}
-                        {/*    content={this.menuAdmin()}*/}
-                        {/*    on='click'*/}
-                        {/*    position='bottom center'*/}
-                        {/*    className='gnb_logout'*/}
-                        {/*/>*/}
+                        <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false}/>
                         <div>
                             <span>Support</span>
                         </div>
                     </Grid.Column>
-                    {/*<PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')} usrUrl={this.state.userURL}></PopSettingViewer>*/}
-                    {/*<PopProfileViewer data={this.props.userInfo.info} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>*/}
 
                 </Grid.Row>
                 <Grid.Row columns={2} className='view_contents'>
                     <Grid.Column mobile={4} tablet={4} computer={3} className='view_left'>
                         <Menu secondary vertical className='view_left_menu org_menu'>
                             {
-                                (this.state.role)?
+                                (localStorage.selectRole)?
                                     this.OrgMenu.map((item, i)=>(
-                                        this.menuItemView(item, i, activeItem)
+                                        this.menuItemView(item, i, localStorage.selectMenu)
                                     ))
                                 :
                                     this.auth_default.map((item, i)=>(
-                                        this.menuItemView(item, i, activeItem)
+                                        this.menuItemView(item, i, localStorage.selectMenu)
                                     ))
                             }
                             <Grid.Row>
@@ -633,29 +592,29 @@ class SiteFour extends React.Component {
                                     <Grid>
                                         <Grid.Row columns={2}>
                                             <Grid.Column width={11} style={{lineHeight:'24px'}}>
-                                                {this.state.OrganizationName}
+                                                {localStorage.selectOrg}
                                             </Grid.Column>
                                             <Grid.Column width={5}>
                                                 <div className="markBox">
                                                     {
-                                                        (this.state.role == 'AdminManager')? null
+                                                        (localStorage.selectRole == 'AdminManager')? null
                                                         :
-                                                        (this.state.role == 'DeveloperManager')?
+                                                        (localStorage.selectRole == 'DeveloperManager')?
                                                             <div className="mark markD markM">M</div>
                                                             :
-                                                            (this.state.role == 'DeveloperContributor')?
+                                                            (localStorage.selectRole == 'DeveloperContributor')?
                                                                 <div className="mark markD markC">C</div>
                                                                 :
-                                                                (this.state.role == 'DeveloperViewer')?
+                                                                (localStorage.selectRole == 'DeveloperViewer')?
                                                                     <div className="mark markD markV">V</div>
                                                                     :
-                                                                    (this.state.role == 'OperatorManager')?
+                                                                    (localStorage.selectRole == 'OperatorManager')?
                                                                         <div className="mark markO markM">M</div>
                                                                         :
-                                                                        (this.state.role == 'OperatorContributor')?
+                                                                        (localStorage.selectRole == 'OperatorContributor')?
                                                                             <div className="mark markO markC">C</div>
                                                                             :
-                                                                            (this.state.role == 'OperatorViewer')?
+                                                                            (localStorage.selectRole == 'OperatorViewer')?
                                                                                 <div className="mark markO markV">V</div>
                                                                                 :
                                                                                 <div></div>
@@ -669,19 +628,19 @@ class SiteFour extends React.Component {
                         </Menu>
                         <Menu secondary vertical className='view_left_menu'>
                             {
-                                (this.state.role == 'AdminManager')?
+                                (localStorage.selectRole == 'AdminManager')?
                                     this.menuItems.map((item, i)=>(
-                                        this.menuItemView(item, i, activeItem)
+                                        this.menuItemView(item, i, localStorage.selectMenu)
                                     ))
                                 :
-                                (this.state.role == 'DeveloperManager' || this.state.role == 'DeveloperContributor' || this.state.role == 'DeveloperViewer')?
+                                (localStorage.selectRole == 'DeveloperManager' || localStorage.selectRole == 'DeveloperContributor' || localStorage.selectRole == 'DeveloperViewer')?
                                     this.menuItems.map((item, i)=>(
-                                        this.menuItemView(item, i, activeItem)
+                                        this.menuItemView(item, i, localStorage.selectMenu)
                                     ))
                                 :
-                                (this.state.role == 'OperatorManager' || this.state.role == 'OperatorContributor' || this.state.role == 'OperatorViewer')?
+                                (localStorage.selectRole == 'OperatorManager' || localStorage.selectRole == 'OperatorContributor' || localStorage.selectRole == 'OperatorViewer')?
                                     this.auth_three.map((item, i)=>(
-                                        this.menuItemView(item, i, activeItem)
+                                        this.menuItemView(item, i, localStorage.selectMenu)
                                     ))
                                 :
                                 null
@@ -690,7 +649,7 @@ class SiteFour extends React.Component {
                         </Menu>
                         <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
                             {
-                                (this.state.role == 'AdminManager')? 'version 0.7.8' : null
+                                (localStorage.selectRole == 'AdminManager')? 'version 0.7.8' : null
                             }
                         </div>
                     </Grid.Column>
@@ -737,7 +696,7 @@ class SiteFour extends React.Component {
                                     { ({ width, height }) =>
                                         <div style={{width:width, height:height, display:'flex', overflow:'hidden'}}>
                                             {
-                                                (this.state.page === 'pg=0')?<SiteFourPageOrganization userToken={this.state.userToken}></SiteFourPageOrganization> :
+                                                (this.state.page === 'pg=0')?<SiteFourPageOrganization></SiteFourPageOrganization> :
                                                 (this.state.page === 'pg=1')?<SiteFourPageUser></SiteFourPageUser> :
                                                 (this.state.page === 'pg=2')?<SiteFourPageCloudlet></SiteFourPageCloudlet> :
                                                 (this.state.page === 'pg=3')?<SiteFourPageFlavor></SiteFourPageFlavor> :
@@ -777,12 +736,14 @@ const mapStateToProps = (state) => {
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         loadingSpinner : state.loadingSpinner.loading?state.loadingSpinner.loading:null,
         creatingSpinner : state.creatingSpinner.creating?state.creatingSpinner.creating:null,
+        injectData: state.injectData ? state.injectData : null
         // userSetting : state.form.registUserSetting
         //     ? {
         //         userURL: state.form.registUserSetting.values.userURL,
         //         submitSucceeded: state.form.registUserSetting.submitSucceeded
         //     }
         //     : {}
+
     }
 };
 

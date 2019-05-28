@@ -128,15 +128,37 @@ class SiteFourPageClusterInst extends React.Component {
     getDataDeveloper = (region) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let rgn = ['US','EU'];
+        let serviceBody = {}
         this.setState({devData:[]})
         if(region !== 'All'){
             rgn = [region]
         } 
-        console.log("dsssd@@",region,rgn)
-        rgn.map((item) => {
-            services.getMCService('ShowClusterInst',{token:store.userToken, region:item}, _self.receiveResultClusterInst)
-            services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
-        })
+
+        if(localStorage.userRole == 'AdminManager') {
+            rgn.map((item) => {
+                // All show clusterInst
+                services.getMCService('ShowClusterInst',{token:store.userToken, region:item}, _self.receiveResultClusterInst)
+                services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
+            })
+        } else {
+            rgn.map((item) => {
+                serviceBody = {
+                    "token":store.userToken,
+                    "params": {
+                        "region":item,
+                        "clusterinst":{
+                            "key":{
+                                "developer": localStorage.selectOrg
+                            }
+                        }
+                    }
+                }
+                // org별 show clusterInst
+                services.getMCService('ShowClusterInsts',serviceBody, _self.receiveResultClusterInst)
+                services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
+            })
+        }
+
     }
     getDataDeveloperSub = () => {
         this.getDataDeveloper('All');
@@ -154,10 +176,12 @@ class SiteFourPageClusterInst extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-
+    console.log('props in state.form..', state.form, 'region === ', state)
     return {
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
-        changeRegion : state.changeRegion.region?state.changeRegion.region:null
+        changeRegion : state.changeRegion.region?state.changeRegion.region:null,
+        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
+        userRole : state.showUserRole?state.showUserRole.role:null,
     }
 };
 const mapDispatchProps = (dispatch) => {

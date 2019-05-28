@@ -26,3 +26,4 @@ export const LOADING_SPINNER = 'LOADING_SPINNER';
 export const BLINK_MARK = 'BLINK_MARK';
 export const LOGIN_MODE = 'LOGIN_MODE';
 export const CREATING_SPINNER = 'CREATING_SPINNER';
+export const ALERT_MSG = 'ALERT_MSG';

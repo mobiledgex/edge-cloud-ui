@@ -26,12 +26,12 @@ const FormContainer = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{width:'100%'}} placeholder='Username or Email' name='username' width ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput}></Input>
+                <Input style={{width:'100%'}} placeholder='Username or Email' name='username' width ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') {props.self.onSubmit()} }}></Input>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
             <Grid.Column >
-                <Input style={{width:'100%'}} placeholder='Password' name='password' type='password' ref={ipt=>{props.self.pwd = ipt}} onChange={props.self.onChangeInput}></Input>
+                <Input style={{width:'100%'}} placeholder='Password' name='password' type='password' ref={ipt=>{props.self.pwd = ipt}} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') {props.self.onSubmit()} }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -58,7 +58,7 @@ const FormForgotPass = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{width:'100%'}} placeholder='Enter your email address' name='email' width ref={ipt=>{props.self.email = ipt}} onChange={props.self.onChangeInput}></Input>
+                <Input style={{width:'100%'}} placeholder='Enter your email address' name='email' width ref={ipt=>{props.self.email = ipt}} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') {props.self.onSendEmail()} }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -106,7 +106,7 @@ const FormResendVerify = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{width:'100%'}} placeholder='Enter your email address' name='email' width ref={ipt=>{props.self.email = ipt}} onChange={props.self.onChangeInput}></Input>
+                <Input style={{width:'100%'}} placeholder='Enter your email address' name='email' width ref={ipt=>{props.self.email = ipt}} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') {props.self.onSendEmail('verify')} }}></Input>
             </Grid.Column>
         </Grid.Row>
         <div className="loginValidation">
@@ -353,6 +353,11 @@ class Login extends Component {
     handleClickLogin(mode) {
         this.props.handleChangeLoginMode(mode)
     }
+    // onKeyPress = (e) => {
+    //     if(e.key === 'Enter') {
+    //         this.onSubmit()
+    //     }
+    // }
     onSendEmail(mode) {
         if(mode === 'verify') {
             serviceLogin.resendVerify('resendverify',

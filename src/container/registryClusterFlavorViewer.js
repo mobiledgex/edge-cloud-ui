@@ -113,21 +113,6 @@ class RegistryClusterFlavorViewer extends React.Component {
     }
 
 
-
-    onUseOrg(useData,key, evt) {
-        console.log(useData,this.state.orgData.data,key)
-
-        this.setState({selectUse:key})
-        this.state.orgData.data.map((item,i) => {
-            if(item.org == useData.Organization) {
-                console.log('item role =',item.role)
-                this.props.handleUserRole(item.role)
-            }
-        })
-
-        this.props.handleSelectOrg(useData)
-        
-    }
     
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
@@ -359,8 +344,6 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
-        handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))}
     };
 };
 

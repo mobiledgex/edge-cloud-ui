@@ -181,7 +181,7 @@ class SiteFourOrgaStepView extends React.Component {
         if(nextProps.devData) {
             this.setState({dummyData:nextProps.devData})
         }
-        if(nextProps.stateForm){
+        if(nextProps.stateForm && nextProps.stateForm.values.submitSucceeded){
             this.setState({typeOperator:(nextProps.stateForm.values) ? nextProps.stateForm.values.type:this.state.typeOperator})
             this.setState({orgaName:(nextProps.stateForm.values) ? nextProps.stateForm.values.name:this.state.orgaName})
         }

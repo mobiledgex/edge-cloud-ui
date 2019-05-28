@@ -298,9 +298,11 @@ export function getMCService(resource, body, callback, self) {
                     case 'ShowUsers': callback(formatComputeUsers(parseData)); break;
                     case 'ShowCloudlet': callback(FormatComputeCloudlet(parseData,body)); break;
                     case 'ShowClusterInst': callback(FormatComputeClstInst(parseData,body)); break;
+                    case 'ShowClusterInsts': callback(FormatComputeClstInst(parseData,body)); break;
                     case 'ShowApps': callback(FormatComputeApp(parseData,body)); break;
                     case 'ShowApp': callback(FormatComputeApp(parseData,body)); break;
                     case 'ShowAppInst': callback(FormatComputeInst(parseData,body)); break;
+                    case 'ShowAppInsts': callback(FormatComputeInst(parseData,body)); break;
                     case 'showController': callback(parseData); break;
                     case 'ShowRole': callback(parseData); break;
                     case 'UpdateVerify': callback(parseData); break;
