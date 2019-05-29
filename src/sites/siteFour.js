@@ -592,7 +592,9 @@ class SiteFour extends React.Component {
                                     <Grid>
                                         <Grid.Row columns={2}>
                                             <Grid.Column width={11} style={{lineHeight:'24px'}}>
-                                                {localStorage.selectOrg}
+                                                {
+                                                    (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole : localStorage.selectOrg
+                                                }  
                                             </Grid.Column>
                                             <Grid.Column width={5}>
                                                 <div className="markBox">

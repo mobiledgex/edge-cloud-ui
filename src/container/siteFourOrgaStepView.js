@@ -104,7 +104,13 @@ class SiteFourOrgaStepView extends React.Component {
         this.setState({step:num})
     }
     changeOrg = () => {
-        this.props.handleChangeSite({mainPath:"/site4", subPath: "pg=0"});
+        this.props.history.push({
+            pathname: '/site4',
+            search: 'pg=0'
+        });
+        this.props.history.location.search = 'pg=0';
+        this.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=0'})
+        // this.props.handleChangeSite({mainPath:"/site4", subPath: "pg=0"});
     }
 
     makeSteps = () => (
@@ -174,14 +180,14 @@ class SiteFourOrgaStepView extends React.Component {
 
 
     componentWillReceiveProps(nextProps, nextContext) {
-                console.log('nextProps...', nextProps.stateForm)
+                console.log('nextProps22...', nextProps.stateForm)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
         if(nextProps.devData) {
             this.setState({dummyData:nextProps.devData})
         }
-        if(nextProps.stateForm && nextProps.stateForm.values.submitSucceeded){
+        if(nextProps.stateForm && nextProps.stateForm.submitSucceeded){
             this.setState({typeOperator:(nextProps.stateForm.values) ? nextProps.stateForm.values.type:this.state.typeOperator})
             this.setState({orgaName:(nextProps.stateForm.values) ? nextProps.stateForm.values.name:this.state.orgaName})
         }

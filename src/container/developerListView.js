@@ -52,7 +52,6 @@ class DeveloperListView extends React.Component {
         };
 
     }
-///////페이지 기능 안 됨
     gotoUrl(site, subPath) {
         console.log('999',_self.props.history)
         _self.props.history.push({
@@ -62,7 +61,6 @@ class DeveloperListView extends React.Component {
         _self.props.history.location.search = subPath;
         _self.props.handleChangeSite({mainPath:site, subPath: subPath})
     }
-///////
     onHandleClick(dim, data) {
         console.log('on handle click == ', data)
         this.setState({ dimmer:dim, open: true, selected:data })

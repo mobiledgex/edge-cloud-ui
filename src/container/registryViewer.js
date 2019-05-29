@@ -3,6 +3,7 @@ import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
+import {withRouter} from "react-router-dom";
 
 import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
@@ -17,6 +18,7 @@ import SiteFourCreateFormAppDefault from "./siteFourCreateFormAppDefault";
 import Alert from "react-s-alert";
 import * as service from "../services/service_compute_service";
 const ReactGridLayout = WidthProvider(RGL);
+
 
 
 const headerStyle = {
@@ -44,7 +46,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getOptionData={props.regionf} flavorData={props.devoptionsf} getUserRole={props.userrole} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getOptionData={props.regionf} flavorData={props.devoptionsf} getUserRole={props.userrole} gotoUrl={props.gotoUrl} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'VM Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
 ]
@@ -181,6 +183,15 @@ class RegistryViewer extends React.Component {
     }
 
 
+    gotoUrl() {
+        _self.props.history.push({
+            pathname: '/site4',
+            search: 'pg=5'
+        });
+        _self.props.history.location.search = 'pg=5';
+        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=5'})
+    }
+
     generateDOM(open, dimmer, width, height, data, keysData, hideHeader) {
 
         let panelParams = {data:data, keys:keysData, regionf:this.getOptionData, devoptionsf:this.state.devoptionsf, userrole:localStorage.selectRole}
@@ -191,7 +202,7 @@ class RegistryViewer extends React.Component {
                 <div className="round_panel" key={i} style={{ width:width, minWidth:670, height:height, display:'flex', flexDirection:'column'}} >
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
 
-                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} />
+                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} />
 
                     </div>
                 </div>
@@ -274,8 +285,8 @@ class RegistryViewer extends React.Component {
     )
 
     getOptionData = (region) => {
-        console.log('computeItem@@',this.props.computeItem)
-        if(this.props.computeItem == "Apps") {
+        console.log('computeItem@@',localStorage.selectMenu)
+        if(localStorage.selectMenu == "Apps") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // clusterFlavor
             service.getMCService('ShowFlavor',{token:store.userToken,region:region}, _self.receiveF)
@@ -467,6 +478,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(RegistryViewer);
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(RegistryViewer));
 
 

@@ -39,7 +39,7 @@ class EntranceGlobe extends Component {
             modalOpen: true,
             loading:false,
             signup:false,
-            openProfile:false
+            logined: false
         };
         self = this;
         this.spuserToken = null;
@@ -49,7 +49,7 @@ class EntranceGlobe extends Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT).userToken : null
         console.log('user info entranceGlobal ...', this.props,store)
         if(store) {
-            this.setState({modalOpen: false})
+            this.setState({modalOpen: false, logined:true})
 
         }
         // && this.props.params.mainPath=='/logout'
@@ -61,9 +61,14 @@ class EntranceGlobe extends Component {
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('new props... ', nextProps)
         if(nextProps.user.userToken) {
-            this.setState({modalOpen: false})
+            this.setState({modalOpen: false, logined:true})
         }
 
+        if(nextProps.loginMode && nextProps.loginMode === 'verify') {
+            this.setState({modalOpen: true, logined:true})
+        } else if(nextProps.loginMode && nextProps.loginMode === 'forgot') {
+            this.setState({modalOpen: true, logined:false})
+        }
 
         // if(nextProps.user.login_token !== undefined) {
         //     this.setState({modalOpen: false})
@@ -92,6 +97,10 @@ class EntranceGlobe extends Component {
 
     //go to NEXT
     goToNext(site) {
+        //set organization of localstorage
+        if(site == '/site4') {
+            localStorage.setItem('selectMenu', 'Organization')
+        }
         //브라우져 입력창에 주소 기록
         let mainPath = site;
         let subPath = 'pg=0';
@@ -152,14 +161,7 @@ class EntranceGlobe extends Component {
         this.setState({modalOpen:true})
 
     }
-    //close profile popup
-    closeProfile = () => {
-        this.setState({ openProfile: false })
-    }
 
-    profileView() {
-        this.setState({openProfile:true})
-    }
     handleMarkerMouseover = (mouseEvent, hoveredMarker) => {
         this.setState({hoveredMarker, mouseEvent});
     };
@@ -194,7 +196,7 @@ class EntranceGlobe extends Component {
 
 
 
-                        {(this.state.modalOpen)?
+                        {(this.state.modalOpen && !this.state.logined)?
                         <Grid style={{backgroundColor:'transparent', width:230, height:100, position:'absolute', top:20, right:(this.state.modalOpen)?50:185, alignSelf:'center'}}>
                             <Grid.Row columns={2}>
                                 <Grid.Column><Button onClick={() => this.handleClickLogin('login')}><span>Login</span></Button></Grid.Column>
@@ -203,13 +205,12 @@ class EntranceGlobe extends Component {
                         </Grid>
                         :<div></div>}
 
-                        {!this.state.modalOpen &&
+                        {this.state.logined &&
 
                         <div className='intro_gnb_header'>
                             <div className='navbar_right'>
                                 <HeaderGlobalMini handleClickLogin={this.handleClickLogin} email={this.state.email} dimmer={false}></HeaderGlobalMini>
                             </div>
-                            <PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')}></PopSettingViewer>
                         </div>
                         }
                         <Transition
@@ -261,6 +262,7 @@ function mapStateToProps ( state ) {
     return {
         user:state.user,
         userInfo : state.userInfo?state.userInfo:null,
+        loginMode: state.loginMode?state.loginMode.mode:null
     }
 }
 const mapDispatchProps = (dispatch) => {

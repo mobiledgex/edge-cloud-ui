@@ -6,6 +6,24 @@ import MaterialIcon from "../sites/siteFour_page_createOrga";
 import './styles.css';
 import '../css/index.css';
 
+const validate = values => {
+    console.log("validation@@",values)
+    const errors = {}
+    if (!values.FlavorName) {
+        errors.FlavorName = 'Required'
+    }
+    if (!values.RAM) {
+        errors.RAM = 'Required'
+    } 
+    if (!values.VCPUS) {
+        errors.VCPUS = 'Required'
+    } 
+    if (!values.DISK) {
+        errors.DISK = 'Required'
+    } 
+    return errors
+}
+
 const renderSelect = field => (
     <Form.Select
         name={field.input.name}
@@ -18,14 +36,15 @@ const renderSelect = field => (
     />
 );
 
-const renderInput = field => (
+const renderInput = ({ input, placeholder, type, meta: { touched, error, warning } }) => (
     <div>
          <Form.Input
-            {...field.input}
-            type={field.type}
-            placeholder={field.placeholder}
+            {...input}
+            type={type}
+            placeholder={placeholder}
             fluid
         />
+        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
     </div>
    
 );
@@ -131,5 +150,6 @@ class registNewListInput extends React.Component {
 };
 
 export default reduxForm({
-    form: "registNewListInput"
+    form: "registNewListInput",
+    validate
 })(registNewListInput);

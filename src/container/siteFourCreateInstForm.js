@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import {Form, Input, Grid, Tab} from 'semantic-ui-react';
+import {Form, Input, Grid, Tab, Button} from 'semantic-ui-react';
 import SiteFourCreateFormDefault from './siteFourCreateFormDefault';
 import BubbleGroup from '../charts/bubbleGroup';
 import EditMap from '../libs/simpleMaps/with-react-motion/editMap';
@@ -12,6 +12,7 @@ import {connect} from "react-redux";
 import {scaleLinear} from "d3-scale";
 import {Field} from "redux-form";
 import './styles.css';
+import {withRouter} from "react-router-dom";
 
 
 const panes = [
@@ -389,13 +390,22 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
     }
 
+    gotoUrl() {
+        _self.props.history.push({
+            pathname: '/site4',
+            search: 'pg=4'
+        });
+        _self.props.history.location.search = 'pg=4';
+        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=4'})
+    }
+
     render() {
         const { activeIndex } = this.state;
         return (
             <Grid>
                 <Grid.Row columns={2}>
                     <Grid.Column width={8}>
-                        <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole} onSubmit={() => console.log('submit form')} onChangeState={this.onChangeFormState}></SiteFourCreateFormDefault>
+                        <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole} gotoUrl={this.gotoUrl} onSubmit={() => console.log('submit form')} onChangeState={this.onChangeFormState}></SiteFourCreateFormDefault>
                     </Grid.Column>
                     <Grid.Column width={8}>
                         <Tab activeIndex={activeIndex} onTabChange={this.handleTabChange} panes={panes}{...this.state}></Tab>
@@ -462,4 +472,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(SiteFourCreateInstForm);
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourCreateInstForm));

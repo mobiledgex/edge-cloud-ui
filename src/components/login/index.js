@@ -42,8 +42,6 @@ const FormContainer = (props) => (
         </Grid.Row>
         <Grid.Row>
             <div style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', display:'inline-block'}} onClick={() => props.self.handleClickLogin('forgot')}>Forgot Password?</div>
-            <div style={{fontStyle:'italic', display:'inline-block', margin:'0 10px'}}>or</div>
-            <div style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', display:'inline-block'}} onClick={() => props.self.handleClickLogin('verify')}>Verify Email?</div>
         </Grid.Row>
     </Grid>
 
@@ -64,8 +62,13 @@ const FormForgotPass = (props) => (
         <div className="loginValidation">
             {props.login_danger}
         </div>
-        <Grid.Row>
-            <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Password reset email</Button>
+        <Grid.Row columns={2}>
+            <Grid.Column>
+                <Button onClick={() => props.self.onSendEmail('back')}>Back</Button>
+            </Grid.Column>
+            <Grid.Column>
+                <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail()}>Send Password reset email</Button>
+            </Grid.Column>
         </Grid.Row>
 
     </Grid>
@@ -320,6 +323,11 @@ class Login extends Component {
                     effect: 'slide',
                     timeout: 5000
                 });
+
+                //goto reqeuset verify email ....
+                if(result.data.message.indexOf('not verified') > -1) {
+                    self.setState({loginMode: 'verify'})
+                }
             } else {
                 alert(result.data.message)
             }
@@ -351,7 +359,8 @@ class Login extends Component {
         //self.receiveToken({data:{token:'my test token'}})
     }
     handleClickLogin(mode) {
-        this.props.handleChangeLoginMode(mode)
+        //this.props.handleChangeLoginMode(mode)
+        self.setState({loginMode:mode})
     }
     // onKeyPress = (e) => {
     //     if(e.key === 'Enter') {
@@ -371,6 +380,8 @@ class Login extends Component {
             let token = strArr[1];
             service.getMCService('ResetPassword',{service:'passwordreset',token:token, password:pass}, this.receiveData, this)
 
+        } else if(mode === 'back') {
+            self.setState({loginMode:'login'})
         }
         else {
             serviceLogin.resetPassword('passwordresetrequest',
