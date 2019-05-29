@@ -76,13 +76,13 @@ class RegistryClusterInstViewer extends React.Component {
             keysData:[
                 {
                     'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
-                    'ClusterName':{label:'ClusterName', type:'RenderInput', necessary:true, tip:null, active:true},
-                    'OrganizationName':{label:'OrganizationName', type:'RenderInputDisabled', necessary:true, tip:null, active:true, items:['','']},
+                    'ClusterName':{label:'Cluster Name', type:'RenderInput', necessary:true, tip:null, active:true},
+                    'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:null, active:true, items:['','']},
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
                     'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
                     'IpAccess':{label:'IpAccess', type:'RenderSelect', necessary:false, tip:'When checked, this will inherit settings from application settings',items:ipaccessArr},
                     'Flavor':{label:'Flavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
-                    'NumberOfMaster':{label:'Number of Master', type:'RenderInput', necessary:false, tip:'When checked, this will inherit settings from application settings', value:null},
+                    'NumberOfMaster':{label:'Number of Master', type:'RenderInputDisabled', necessary:false, tip:'When checked, this will inherit settings from application settings', value:null},
                     'NumberOfNode':{label:'Number of Node', type:'RenderInput', necessary:false, tip:'When checked, this will inherit settings from application settings', value:null},
                 },
                 {

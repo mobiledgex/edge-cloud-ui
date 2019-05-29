@@ -214,23 +214,30 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
 /*    justify-content: center;*/
 /*}*/
 
-.popup_user .submitButtonGroup.orgButton.fields .field{
-    position: absolute;
-    top: 41.55rem;
-}
-
-.popup_user .submitButtonGroup.orgButton.fields .field .button{
-    padding: .7em 1.5em;
+.popup_user .submitButtonGroup.orgButton.fields{
+    padding-bottom: 0;
 
 }
+/*.popup_user .submitButtonGroup.orgButton.fields .field{*/
+/*    position: absolute;*/
+/*    top: 41.55rem;*/
+/*}*/
 
+/*.popup_user .submitButtonGroup.orgButton.fields .field .button{*/
+/*    padding: .7em 1.5em;*/
+
+/*}*/
+
+.popup_user .row.avatar_img{
+    padding-top: 0;
+}
 .popup_user .submitButtonGroup.orgButton.fields .field:last-child .button{
     display: none;
 }
 
-.popup_user .orgButton{
-    padding: 0;
-}
+/*.popup_user .orgButton{*/
+/*    padding: 0;*/
+/*}*/
 
 .popup_user .step_side{
     padding-top: 0;

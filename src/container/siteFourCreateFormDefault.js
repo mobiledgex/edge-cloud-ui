@@ -252,7 +252,7 @@ class SiteFourCreateFormDefault extends React.Component {
 
     cancelClick = (e) => {
         e.preventDefault();
-        // 기능 추가
+        this.props.gotoUrl()
     }
     
     render (){
@@ -307,7 +307,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             />
                                                         :
                                                         (fieldKeys[pId][key]['type'] === 'RenderInputDisabled') ?
-                                                            (getUserRole == 'AdminManager') ?
+                                                            (getUserRole == 'AdminManager' && fieldKeys[pId][key]['label'] === 'Organization Name') ?
                                                                 <Field
                                                                     component={renderSelect}
                                                                     placeholder={'Select OrganizationName'}
@@ -386,7 +386,7 @@ class SiteFourCreateFormDefault extends React.Component {
                             <Form.Group inline>
                                 {/*<Button onClick={()=>this.onHandleReset()}>Reset</Button>*/}
                                 <span style={{marginRight:'1em'}}>
-                                    <Button disabled onClick={this.cancelClick}>
+                                    <Button onClick={this.cancelClick}>
                                         Cancel
                                     </Button>
                                 </span>

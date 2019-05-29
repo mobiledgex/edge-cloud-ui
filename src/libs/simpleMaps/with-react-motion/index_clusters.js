@@ -355,11 +355,11 @@ class ClustersMap extends Component {
             return Math.round(value)
         }
         const mapName = (item) => {
-            if (this.props.itemLabel == "Cloudlets") {
+            if (localStorage.selectMenu == "Cloudlets") {
                 return item.CloudletName
-            } else if (this.props.itemLabel == "App Instances") {
+            } else if (localStorage.selectMenu == "App Instances") {
                 return item.AppName
-            } else if (this.props.itemLabel == "Cluster Instances") {
+            } else if (localStorage.selectMenu == "Cluster Instances") {
                 if(nextProps.parentProps.reg === 'cloudleAndClusterMap') {
                     return item.CloudletName
                 } else {
@@ -421,13 +421,13 @@ class ClustersMap extends Component {
         return (
             <div style={wrapperStyles}>
                 <div className="zoom-inout-reset-clusterMap" style={{left:8, bottom:4, position:'absolute', display:'block'}}>
-                    <Button id="mapZoomCtl" size='20' icon onClick={this.handleReset}>
+                    <Button id="mapZoomCtl" size='larges' icon onClick={this.handleReset}>
                         <Icon name="expand" />
                     </Button>
-                    <Button id="mapZoomCtl" size='20' icon onClick={this.handleZoomIn}>
+                    <Button id="mapZoomCtl" size='large' icon onClick={this.handleZoomIn}>
                         <Icon name="plus square outline" />
                     </Button>
-                    <Button id="mapZoomCtl" size='20' icon onClick={this.handleZoomOut}>
+                    <Button id="mapZoomCtl" size='large' icon onClick={this.handleZoomOut}>
                         <Icon name="minus square outline" />
                     </Button>
                 </div>
@@ -484,16 +484,16 @@ class ClustersMap extends Component {
                                                 ))}
                                         </Geographies>
                                         <Markers>
-                                            {(this.props.itemLabel == "Cloudlets" && !this.state.detailMode) ?
+                                            {(localStorage.selectMenu == "Cloudlets" && !this.state.detailMode) ?
                                                 this.state.cities.map((city, i) => (
                                                     MarkerComponent(this, city, i, {transform:"translate(-24,-18)", gColor:6, cName:'st1', path:0})
                                                 ))
-                                                : (this.props.itemLabel == "Cluster Instances" && !this.state.detailMode) ?
+                                                : (localStorage.selectMenu == "Cluster Instances" && !this.state.detailMode) ?
                                                 this.state.cities.map((city, i) => (
                                                     MarkerComponent(this, city, i, {transform:"translate(-25,-27)", gColor:8, cName:'st2', path:1})
                                                 ))
                                                 :
-                                                (this.props.itemLabel == "App Instances" && !this.state.detailMode) ?
+                                                (localStorage.selectMenu == "App Instances" && !this.state.detailMode) ?
                                                 this.state.cities.map((city, i) => (
                                                     MarkerComponent(this, city, i, {transform:"translate(-17,-21)", gColor:7, cName:'st3', path:2})
                                                 ))

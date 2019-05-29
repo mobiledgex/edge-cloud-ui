@@ -120,7 +120,8 @@ class PopAddUserViewer extends React.Component {
                         <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
                     </div>
                 </Modal.Content>
-                <Modal.Actions  className='adduser-close'>
+                <Modal.Actions>
+                {/*<Modal.Actions  className='adduser-close'>*/}
                     <Button onClick={() => this.close()} style={{}}>
                         Close
                     </Button>

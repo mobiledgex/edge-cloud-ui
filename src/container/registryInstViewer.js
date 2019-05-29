@@ -15,6 +15,7 @@ import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
 import SiteFourCreateFormAppDefault from "./siteFourCreateFormAppDefault";
 import Alert from "react-s-alert";
+import {withRouter} from "react-router-dom";
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -43,7 +44,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getUserRole={props.userrole} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
@@ -233,6 +234,14 @@ class RegistryInstViewer extends React.Component {
         this.setState({ openAdd: false })
     }
 
+    gotoUrl() {
+        _self.props.history.push({
+            pathname: '/site4',
+            search: 'pg=6'
+        });
+        _self.props.history.location.search = 'pg=6';
+        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=6'})
+    }
 
     generateDOM(open, dimmer, width, height, data, keysData, hideHeader) {
 
@@ -244,7 +253,7 @@ class RegistryInstViewer extends React.Component {
                 <div className="round_panel" key={i} style={{ width:width, minWidth:670, height:height, display:'flex', flexDirection:'column'}} >
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
 
-                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} />
+                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} />
 
                     </div>
                 </div>
@@ -480,6 +489,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(RegistryInstViewer);
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(RegistryInstViewer));
 
 

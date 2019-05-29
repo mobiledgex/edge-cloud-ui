@@ -30,8 +30,8 @@ export default class PopProfileViewer extends React.Component {
                         <Grid.Column width={5} className='detail_item'>
                             <div>{key}</div>
                         </Grid.Column>
-                        <Grid.Column width={11}>
-                            <div style={{wordWrap: 'break-word'}}>{(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key]):String(nextProps.data[key])}</div>
+                        <Grid.Column width={11} style={{display:'flex', flexDirection:'row', alignContent:'center', justifyContent:'flex-start'}}>
+                            <div style={{wordWrap: 'break-word', marginRight:20}}>{(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key]):String(nextProps.data[key])}</div>
                         </Grid.Column>
                         <Divider vertical></Divider>
                     </Grid.Row>
@@ -43,9 +43,9 @@ export default class PopProfileViewer extends React.Component {
     }
 
 
-    close() {
+    close(mode) {
         this.setState({ open: false })
-        this.props.close && this.props.close()
+        this.props.close && this.props.close(mode)
     }
 
 

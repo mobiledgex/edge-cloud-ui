@@ -78,11 +78,6 @@ class RegistNewListItem extends React.Component {
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
        
-        // clusterFlavor
-        
-        if(this.props.computeItem == "Cluster Flavors") {
-            service.getMCService('ShowFlavor',{token:store.userToken,region:'US'}, _self.receiveMF)
-        }
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('regist new item -- ', nextProps)
@@ -203,52 +198,65 @@ class RegistNewListItem extends React.Component {
         this.props.handleLoadingSpinner(false);
         this.props.refresh('All')
         let paseData = result.data;
-        // let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
-        console.log('response paseData  -',paseData );
 
-        if(paseData.message.indexOf('ok') > -1) {
-            Alert.success("Created successfully", {
+        if(paseData.error) {
+            Alert.error(paseData.error, {
                 position: 'top-right',
                 effect: 'slide',
-                onShow: function () {
-                    console.log('aye!')
-                },
                 beep: true,
                 timeout: 5000,
                 offset: 100
             });
-            //create success !!!
-            // if(splitData[2]['result']['message'] === 'Created successfully') {
-            //     _self.props.success()
-            // }
-            
         } else {
-            Alert.error(paseData.message, {
+            Alert.success("Created successfully", {
                 position: 'top-right',
                 effect: 'slide',
-                onShow: function () {
-                    console.log('aye!')
-                },
                 beep: true,
                 timeout: 5000,
                 offset: 100
             });
         }
-       //_self.props.handleSpinner(false)
+
     }
 
     onSubmit = () => {
-        console.log("ONSUBMIT@@")
+        console.log("ONSUBMIT@@",this.props.flavorValue.values)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        console.log("computeItem@@@",this.props.computeItem)
+        console.log("computeItem@@@",localStorage.selectMenu)
         let serviceBody = {};
 
         //playing spinner
         //this.props.handleSpinner(true)
 
+
+
         //TODO: 20190410 메뉴 별 구분 필요
-        if(this.props.computeItem === 'Flavors'){
+        if(localStorage.selectMenu === 'Flavors'){
             console.log("submitData@@",this.props.submitData)
+            const flavor = ['Region','FlavorName','RAM','VCPUS','DISK']
+            let error = [];
+            if(!this.props.flavorValue.values) {
+                Alert.error('Insert values to all fields', {
+                    position: 'top-right',
+                    effect: 'slide',
+                    timeout: 3000,
+                });
+                return false;
+            } else {
+                flavor.map((item) => {
+                    if(!this.props.flavorValue.values[item]) {
+                        error.push(item)
+                    }
+                })
+                if(error.length > 0) {
+                    Alert.error('Insert values to '+error[0]+' field', {
+                        position: 'top-right',
+                        effect: 'slide',
+                        timeout: 3000,
+                    });
+                    return false;
+                }
+            }
             const {FlavorName,RAM,VCPUS,DISK,Region} = this.props.submitData.registNewListInput.values
             serviceBody = {
                 "token":store.userToken,
@@ -264,25 +272,6 @@ class RegistNewListItem extends React.Component {
             }
             this.props.handleLoadingSpinner(true);
             service.createNewFlavor('CreateFlavor',serviceBody, this.receiveSubmit)
-        } else if(this.props.computeItem === 'Cluster Flavors'){
-            const {ClusterFlavor,MasterFlavor,NumberOfMasterNode,NodeFlavor,NumberOfNode,MaximumNodes,Region} = this.props.submitData.registNewListInput.values;
-
-            serviceBody = {
-                "token":store.userToken,
-                "params": {
-                    "region":Region,
-                    "clusterflavor":{
-                        "key":{"name":ClusterFlavor},
-                        "node_flavor":{"name":NodeFlavor},
-                        "master_flavor":{"name":MasterFlavor},
-                        "num_nodes":Number(NumberOfNode),
-                        "max_nodes":Number(MaximumNodes),
-                        "num_masters":Number(NumberOfMasterNode)
-                    }
-                }
-            }
-            this.props.handleLoadingSpinner(true);
-            service.createNewClusterFlavor('CreateClusterFlavor',serviceBody, this.receiveSubmit)
         }
         //close
         this.close();
@@ -334,13 +323,19 @@ const mapStateToProps = (state) => {
         submitSucceeded: state.form.orgaStepTwo.submitSucceeded
     }
     : {};
+    let formFlavor= state.form.registNewListInput
+    ? {
+        values: state.form.registNewListInput.values
+    }
+    : {};
     return {
         locLong : state.mapCoordinatesLong?state.mapCoordinatesLong:null,
         locLat : state.mapCoordinatesLat?state.mapCoordinatesLat:null,
         computeItem : state.computeItem?state.computeItem.item:null,
         userToken : state.user?state.user.userToken:null,
         submitData : state.form?state.form : null,
-        stepTwo:formStepTwo
+        stepTwo:formStepTwo,
+        flavorValue:formFlavor
     }
 };
 

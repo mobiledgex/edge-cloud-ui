@@ -362,10 +362,10 @@ class RegistNewItem extends React.Component {
         // }
     }
 
-    receiveSubmitCloudlet(result) {
+    receiveSubmitCloudlet = (result) => {
         console.log('registry new ... success resultcloudlet@..', result.data)
         _self.props.handleLoadingSpinner(false);
-        _self.props.refresh()
+        _self.props.refresh('All')
         if(result.data.error) {
             Alert.error(result.data.error, {
                 position: 'top-right',
@@ -395,13 +395,13 @@ class RegistNewItem extends React.Component {
     onSubmit = () => {
         let serviceBody = {}
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        console.log("siteId@@@",this.props.computeItem)
+        console.log("siteId@@@",localStorage.selectMenu)
         //this.props.handleLoadingSpinner(true);
         // setTimeout(() => {
         //     this.props.handleLoadingSpinner(false);
         // },3000);
         //TODO: 20190410 메뉴 별 구분 필요
-        if(this.props.computeItem === 'Cluster Instances'){
+        if(localStorage.selectMenu === 'Cluster Instances'){
             console.log("submitData@@",this.props.submitData)
             const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, Number_of_Master, Number_of_Node} = this.props.submitData.registNewInput.values
             this.props.handleCreatingSpinner(true);
@@ -424,7 +424,7 @@ class RegistNewItem extends React.Component {
             }
             //this.props.handleLoadingSpinner(true);
             service.createNewClusterInst('CreateClusterInst', serviceBody, this.receiveSubmit)
-        } else if(this.props.computeItem === 'Cloudlets') {
+        } else if(localStorage.selectMenu === 'Cloudlets') {
             console.log("submitCloudlet@@",this.props.submitData)
             const {CloudletName, OperatorName, Longitude, Latitude, Ip_support, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
             this.props.handleLoadingSpinner(true);
@@ -472,7 +472,7 @@ class RegistNewItem extends React.Component {
         if(refVal) this.props.handleMapLat(refVal);
     }
     getOptionData = (region) => {
-        if(this.props.computeItem == "Cluster Instances") {
+        if(localStorage.selectMenu == "Cluster Instances") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // operator, cloudlet
             service.getMCService('ShowCloudlet',{token:store.userToken,region:region}, _self.receiveOper)
