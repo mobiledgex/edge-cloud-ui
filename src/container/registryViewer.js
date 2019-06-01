@@ -27,7 +27,9 @@ const headerStyle = {
 var horizon = 6;
 var vertical = 20;
 var layout = [
-    {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":5,"minH":5,"moved":false,"static":false, "title":"Developer"},
+    {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":19,"minH":20,"maxW":19,"minH":20,"moved":false,"static":false, "title":"Developer"},
+    // {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":5,"minH":5,"moved":false,"static":false, "title":"Developer"}, //resize
+
 ]
 let _self = null;
 const colors = [
@@ -163,6 +165,10 @@ class RegistryViewer extends React.Component {
                 timeout: 5000,
                 offset: 100
             });
+            setTimeout(() => {
+                this.gotoUrl();
+            }, 1000)
+            //this.gotoUrl();
             //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=6'})
         }
     }

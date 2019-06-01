@@ -38,7 +38,7 @@ const clusterNode = (props) => (
     <Fragment>
         <Grid style={{margin:0, justifyContent:'center', backgroundColor:'rgba(0,0,0,.3)'}}>
             <Grid.Row>
-                <label style={{fontSize:'1.5em'}}>Cluster</label>
+                <label style={{fontSize:'1.5em'}}>{props.clusterName ? props.clusterName : 'cluster'}</label>
             </Grid.Row>
             <Grid.Row>
                 <BubbleGroup data={props.flavorConfig}></BubbleGroup>
@@ -341,7 +341,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
         const getChild = (value, idx) => (
             {
                 "name": value,
-                "value": idx === 0 ? 300 : 200,
+                "value": idx === 0 ? 200 : 200,
                 "color": idx === 0 ? "#ff7d77" : "#a2cbff"
             }
         )
@@ -400,7 +400,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
     }
 
     render() {
-        const { activeIndex } = this.state;
+        const { activeIndex, clusterName } = this.state;
         return (
             <Grid>
                 <Grid.Row columns={2}>
@@ -408,7 +408,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
                         <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole} gotoUrl={this.gotoUrl} onSubmit={() => console.log('submit form')} onChangeState={this.onChangeFormState}></SiteFourCreateFormDefault>
                     </Grid.Column>
                     <Grid.Column width={8}>
-                        <Tab activeIndex={activeIndex} onTabChange={this.handleTabChange} panes={panes}{...this.state}></Tab>
+                        <Tab activeIndex={activeIndex} clusterName={clusterName} onTabChange={this.handleTabChange} panes={panes}{...this.state}></Tab>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

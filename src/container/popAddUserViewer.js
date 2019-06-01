@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Divider, Modal, Grid, Input, TextArea, Dropdown, Image} from "semantic-ui-react";
-import SiteFourOrgaTwo from "./siteFourOrgaStepTwo";
+import SiteFourOrgaAddUser from "./siteFourOrgaAddUser";
 import * as serviceOrganiz from "../services/service_organiz_api";
 import Alert from 'react-s-alert';
 import { withRouter } from 'react-router-dom';
@@ -85,7 +85,7 @@ class PopAddUserViewer extends React.Component {
     }
 
     setForms = () => (
-        <SiteFourOrgaTwo onSubmit={() => console.log('Form was submitted')} org={this.state.organization} type={this.state.typeOperator} successReset={this.state.successReset}></SiteFourOrgaTwo>
+        <SiteFourOrgaAddUser onSubmit={() => console.log('Form was submitted')} org={this.state.organization} type={this.state.typeOperator} successReset={this.state.successReset}></SiteFourOrgaAddUser>
     )
 
 
@@ -132,15 +132,14 @@ class PopAddUserViewer extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log('props in Flavor..', state)
-    let formStepTwo= state.form.orgaStepTwo
+    let formStepAdduser= state.form.orgaStepAddUser
     ? {
-        values: state.form.orgaStepTwo.values,
-        submitSucceeded: state.form.orgaStepTwo.submitSucceeded
+        values: state.form.orgaStepAddUser.values,
+        submitSucceeded: state.form.orgaStepAddUser.submitSucceeded
     }
     : {};
     return {
-        stepTwo:formStepTwo,
+        stepTwo:formStepAdduser,
         loadingSpinner : state.loadingSpinner.loading?state.loadingSpinner.loading:null,
     }
 };

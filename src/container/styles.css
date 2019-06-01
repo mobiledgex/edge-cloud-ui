@@ -145,6 +145,10 @@
     min-width: 190px;
 }
 
+.step_side .row:last-child .ui.card{
+    margin-bottom: 0;
+}
+
 .step_side .ui.card .ui.divided.list>.item {
     padding: 0 1em !important;
 

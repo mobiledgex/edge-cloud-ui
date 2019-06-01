@@ -317,12 +317,7 @@ class RegistNewListItem extends React.Component {
 
 const mapStateToProps = (state) => {
     console.log('props in Flavor..', state)
-    let formStepTwo= state.form.orgaStepTwo
-    ? {
-        values: state.form.orgaStepTwo.values,
-        submitSucceeded: state.form.orgaStepTwo.submitSucceeded
-    }
-    : {};
+
     let formFlavor= state.form.registNewListInput
     ? {
         values: state.form.registNewListInput.values
@@ -334,7 +329,6 @@ const mapStateToProps = (state) => {
         computeItem : state.computeItem?state.computeItem.item:null,
         userToken : state.user?state.user.userToken:null,
         submitData : state.form?state.form : null,
-        stepTwo:formStepTwo,
         flavorValue:formFlavor
     }
 };

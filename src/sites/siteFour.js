@@ -39,15 +39,12 @@ import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
 import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
 import SiteFourPageCreateorga from './siteFour_page_createOrga';
-import SiteFourPageClusterFlavorReg from './siteFour_page_clusterFlavorReg';
+
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 
-import { LOCAL_STRAGE_KEY } from '../components/utils/Settings';
 import * as Service from '../services/service_login_api';
 import * as computeService from '../services/service_compute_service';
-import PopSettingViewer from '../container/popSettingViewer';
-import * as aggregation from "../utils";
-import Alert from "react-s-alert";
+
 
 
 
@@ -351,6 +348,8 @@ class SiteFour extends React.Component {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+
+
     }
     componentDidMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
@@ -496,6 +495,7 @@ class SiteFour extends React.Component {
                 if(item.ClusterName == this.state.createState && item.State == 'Ready') {
                     this.props.handleCreatingSpinner(false);
                     this.setState({toggleState:true});
+                    this.gotoUrl('/site4', 'pg=4')
                 } else if(item.ClusterName == this.state.createState && item.State !== 'Ready') {
                     this.getIntervalData();
                 }
@@ -651,7 +651,7 @@ class SiteFour extends React.Component {
                         </Menu>
                         <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
                             {
-                                (localStorage.selectRole == 'AdminManager')? 'version 0.7.8' : null
+                                (localStorage.selectRole == 'AdminManager')? 'version 0.8.0' : null
                             }
                         </div>
                     </Grid.Column>

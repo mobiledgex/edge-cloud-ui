@@ -7,15 +7,13 @@ import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'semantic-ui-css/semantic.min.css';
 
-//menus
-import HeaderGlobalMenu from './container/headerGlobalMenu';
-import HeaderGlobal from './container/headerGlobal';
-import HeaderWeather from './container/headerWeather';
+
 //redux
 import { connect } from 'react-redux';
 import * as actions from './actions';
+import * as Service from './services/service_login_api';
 // API
-import * as MyAPI from './components/utils/MyAPI'
+
 import { LOCAL_STRAGE_KEY } from './components/utils/Settings'
 //insert pages
 import EntranceGlob from './sites/entranceGlob';
@@ -25,7 +23,7 @@ import SiteFour from "./sites/siteFour";
 import CreateAccount from './components/login/CreateAccont';
 import history from './history';
 import VerifyContent from './container/verifyContent';
-import ResetPassContent from './container/resetPassContent';
+
 
 let self = null;
 
@@ -154,31 +152,60 @@ class App extends Component {
 
 
     }
-    state = { animation: 'ani', duration: 500, user:{}, selectedCloudlet:'' }
+    state = { animation: 'ani', duration: 500, user:{}, selectedCloudlet:'',tokenState:'' }
 
     handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
     //go to NEXT
-    goToNext(props2) {
+    goToNext(main, sub) {
+        if(main == '/logout') {
+            localStorage.removeItem('selectOrg');
+            localStorage.removeItem('selectRole')
+            localStorage.removeItem('selectMenu')
+        }
         //브라우져 입력창에 주소 기록
-        let mainPath = '/site1';
-        let subPath = 'pg=1';
-        props2.history.push({
+        let mainPath = main;
+        let subPath = sub;
+        history.push({
             pathname: mainPath,
             search: subPath,
-            state: { some: 'state' }
+            state: { some: 'state' },
+            userInfo:{info:null}
         });
-        props2.history.location.search = subPath;
+        history.location.pathName = main;
+        history.location.search = subPath;
         self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+    }
+
+    receiveCurrentUser(result) {
+        if(result.data && result.data.message) {
+            self.setState({tokenState:'expired'})
+            Alert.error(result.data.message, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+            setTimeout(() => self.goToNext('/logout',''),2000);
+        } else {
+            self.setState({tokenState:'live'})
+            self.setState({userInfo: result.data})
+        }
+    }
+    profileView() {
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store.userToken;
+        Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
+
     }
 
     componentDidMount() {
         let pathName = window.location.pathname;
-        console.log('pathName = '+pathName)
+
         //this.router.history.push(pathName);
 
         // Login check
         const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
+
         if (!storage_data) {
             return;
         }
@@ -188,6 +215,8 @@ class App extends Component {
             //this.signinWithTokenRequest(storage_json.login_token)
             //setTimeout(() => self.props.mapDispatchToLoginWithPassword(storage_json), 1000);
             self.props.mapDispatchToLoginWithPassword(storage_json)
+
+
         }
 
 
