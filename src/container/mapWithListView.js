@@ -24,8 +24,10 @@ var horizon = 6;
 var vertical = 20;
 
 var layout = [
-    {"w":24,"h":9,"x":0,"y":0,"i":"0","minW":5,"minH":8,"moved":false,"static":false, "title":"LocationView"},
-    {"w":24,"h":11,"x":0,"y":9,"i":"1","minW":8,"minH":6,"moved":false,"static":false, "title":"Developer"},
+    {"w":24,"h":9,"x":0,"y":0,"i":"0","minW":24,"minH":9,"maxW":24,"maxH":9,"moved":false,"static":false, "title":"LocationView"},
+    {"w":24,"h":11,"x":0,"y":9,"i":"1","minW":24,"minH":11,"maxW":24,"maxH":11,"moved":false,"static":false, "title":"Developer"},
+    // {"w":24,"h":9,"x":0,"y":0,"i":"0","minW":5,"minH":8,"moved":false,"static":false, "title":"LocationView"}, //resize
+    // {"w":24,"h":11,"x":0,"y":9,"i":"1","minW":8,"minH":6,"moved":false,"static":false, "title":"Developer"}, //resize
 ]
 const override = {
     display: 'fixed',

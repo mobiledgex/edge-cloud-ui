@@ -246,13 +246,16 @@ class SiteFourOrgaTwo extends React.Component {
 
 
     onHandleSubmit = () => {
-        console.log("ADDSUER@@@@")
+        alert("submit add user")
         this.props.handleLoadingSpinner(true);
         _self.props.handleSubmit();
         setTimeout(() => {
             _self.props.dispatch(reset('orgaStepTwo'));
+            _self.props.dispatch(initialize('orgaStepTwo', {
+                submitSucceeded: false
+            }))
             //this.props.handleLoadingSpinner(false);
-        },1000);
+        },500);
         
     }
 
@@ -275,7 +278,7 @@ class SiteFourOrgaTwo extends React.Component {
                                     <Grid>
                                         <Grid.Row className='avatar_img'>
                                             <Grid.Column>
-                                                <Image src={userAvatar[avatarRandom]} width='250px' centered bordered/>
+                                                <Image src={userAvatar[avatarRandom]} width='210px' centered bordered/>
                                             </Grid.Column>
                                         </Grid.Row>
                                         <Grid.Row>
@@ -340,8 +343,8 @@ class SiteFourOrgaTwo extends React.Component {
 
                                 <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
                                     {/*<Form.Button >Preview</Form.Button>*/}
-                                    <Form.Button primary positive>Add</Form.Button>
-                                    <Form.Button onClick={this.continueClick}>Continue</Form.Button>
+                                    <Form.Button primary positive>Continue</Form.Button>
+                                    <Form.Button onClick={this.continueClick}>Skip</Form.Button>
 
                                 </Form.Group>
                             </Form>

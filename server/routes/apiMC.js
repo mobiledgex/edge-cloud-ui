@@ -103,16 +103,17 @@ exports.currentUser = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success current user..', response.data)
+            console.log('success current user..', response)
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'error...'})
             }
         })
         .catch(function (error) {
-            console.log(error);
-            res.json(error)
+
+            console.log('error......',Object.keys(error), error.response.data);
+            res.json(error.response.data)
         });
 }
 
@@ -597,8 +598,8 @@ exports.CreateOrg= (req, res) => {
 }
 
 /*
-http --auth-type=jwt --auth=$ORGMANTOKEN POST 127.0.0.1:9900/api/v1/auth/role/adduser
-org=bigorg username=worker1 role=DeveloperContributor
+http --auth-type=jwt --auth=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTkyMDYxOTcsImlhdCI6MTU1OTExOTc5NywidXNlcm5hbWUiOiJpbmtpa2ltMDUxMyIsImtpZCI6M30.13GB5N79Yf_0BkW1RtruyoEXUXkhVxwZvmtUkz1fnQVblTI2nLo7ydXDVY36TqOGFDLIDitcvIjNgVK6L7-3Hg POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/role/adduser
+org=bicTest3Org username=kunhee949 role=OperatorContributor
  */
 exports.addUserRole= (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;

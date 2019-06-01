@@ -1,6 +1,8 @@
 import React, { Fragment } from "react";
-import {Button, Form, Table, List, Grid, Card} from "semantic-ui-react";
-import { Field, reduxForm } from "redux-form";
+import {Button, Form, Table, List, Grid, Card, Header, Image} from "semantic-ui-react";
+import { connect } from 'react-redux';
+import * as actions from '../actions';
+import {Field, reduxForm, initialize, reset} from "redux-form";
 import MaterialIcon from "material-icons-react";
 import './styles.css';
 
@@ -25,19 +27,17 @@ const validate = values => {
     }
     return errors
 }
-let type = 'Developer';
-let role = 'Manage'
 const roles =
     {
         Developer: [
-            { Flavor:'View', ClusterFlavor:'View', Users:'Manage', Cloudlets:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
-            { Flavor:'View', ClusterFlavor:'View', Users:'View', Cloudlets:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
-            { Flavor:'View', ClusterFlavor:'View', Users:'View', Cloudlets:'View', ClusterInst:'View', Apps:'View', AppInst:'View'}
+            { Users:'Manage', Cloudlets:'View', Flavor:'View', ClusterFlavor:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
+            { Users:'View', Cloudlets:'View', Flavor:'View', ClusterFlavor:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
+            { Users:'View', Cloudlets:'View', Flavor:'View', ClusterFlavor:'View', ClusterInst:'View', Apps:'View', AppInst:'View'}
         ],
         Operator: [
-            { Flavor:'disabled', ClusterFlavor:'disabled', Users:'Manage', Cloudlets:'Manage', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
-            { Flavor:'disabled', ClusterFlavor:'disabled', Users:'View', Cloudlets:'View', ClusterInst:'Manage', Apps:'disabled', AppInst:'disabled'},
-            { Flavor:'disabled', ClusterFlavor:'disabled', Users:'View', Cloudlets:'View', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
+            { Users:'Manage', Cloudlets:'Manage', Flavor:'disabled', ClusterFlavor:'disabled', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
+            { Users:'View', Cloudlets:'View', Flavor:'disabled', ClusterFlavor:'disabled', ClusterInst:'Manage', Apps:'disabled', AppInst:'disabled'},
+            { Users:'View', Cloudlets:'View', Flavor:'disabled', ClusterFlavor:'disabled', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
         ]
     }
 
@@ -49,7 +49,7 @@ const makeRoleList = (selectedType, i) => (
             <List.Content>
                 {
                     Object.keys(roles[selectedType][i]).map((key) => (
-                        <List.Header><div style={{color:((roles[selectedType][i][key] === 'Manage')?'rgba(136,221,0,.9)':'rgba(255,255,255,.6)')}}>{ key +" : "+ (roles[selectedType][i][key]) }</div></List.Header>
+                        <List.Header key={key}><div style={{color:((roles[selectedType][i][key] === 'Manage')?'rgba(136,221,0,.9)':'rgba(255,255,255,.6)')}}>{ key +" : "+ (roles[selectedType][i][key]) }</div></List.Header>
                     ))
                 }
 
@@ -121,14 +121,6 @@ const renderInput = field => (
         placeholder={field.placeholder}
     />
 );
-const typeOperator = (selected) => (
-
-    <Button.Group>
-        <Button positive={(selected === 'Developer')}>Developer</Button>
-        <Button.Or />
-        <Button positive={(selected === 'Operator')}>Operator</Button>
-    </Button.Group>
-)
 const makeAdduser = () => (
     <Grid>
         <Grid.Row columns={2}>
@@ -179,8 +171,34 @@ const makeListView = () => (
     </Table>
 )
 
-const makeCardContent = (item, i) => (
-    <Grid.Column>
+
+const userAvatar = [
+    'https://react.semantic-ui.com/images/avatar/large/matthew.png',
+    'https://react.semantic-ui.com/images/avatar/large/elliot.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/daniel.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/jenny.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/molly.png',
+    'https://react.semantic-ui.com/images/avatar/large/steve.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/helen.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/ade.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/nan.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/chris.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/veronika.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/stevie.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/justen.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/tom.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/christian.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/matt.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/joe.jpg',
+    'https://react.semantic-ui.com/images/avatar/large/zoe.jpg',
+
+
+]
+
+let avatarRandom = Math.floor(Math.random() * userAvatar.length);
+
+const makeCardContent = (item, i, type) => (
+    <Grid.Row>
         <Card>
             <Card.Content>
                 <Card.Header>{item['header']}</Card.Header>
@@ -188,54 +206,174 @@ const makeCardContent = (item, i) => (
                 <Card.Description>
                     {makeRoleList(type, i)}
                 </Card.Description>
-                <div style={{position:'absolute', top:'1em', right:'1em', width:'auto', display:'flex', alignItem:'right', justifyContent:'right' }}>
-                    <MaterialIcon icon={(item['header'] === role)?'check_circle':'check_circle_outline'} size={40} color={(item['header'] === role)?'rgba(136,221,0,.9)':'rgba(255,255,255,.6)'}/>
-                </div>
+                {/*<div style={{position:'absolute', top:'1em', right:'1em', width:'auto', display:'flex', alignItem:'right', justifyContent:'right' }}>*/}
+                {/*    <MaterialIcon icon={(item['header'] === role)?'check_circle':'check_circle_outline'} size={40} color={(item['header'] === role)?'rgba(136,221,0,.9)':'rgba(255,255,255,.6)'}/>*/}
+                {/*</div>*/}
             </Card.Content>
         </Card>
-    </Grid.Column>
+    </Grid.Row>
 )
-const SiteFourOrgaTwo = props => {
-    const { handleSubmit, reset, type } = props;
 
-    return (
-        <Fragment>
-            <Grid>
-                <Grid.Row columns={2}>
-                    <Grid.Column width={11}>
-                        <Form onSubmit={handleSubmit} className={"fieldForm"}>
-                            <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
-                                {makeAdduser()}
-                                <Field
-                                    component={renderInput}
-                                    name="type"
-                                    type="input"
-                                    placeholder={type}
-                                />
-                            </Form.Group>
+let _self = null;
+class SiteFourOrgaAddUser extends React.Component {
+    constructor(props) {
+        super(props);
+        _self = this;
+        this.state = {
+            typeValue:''
+        };
+       
+    }
 
-                            <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
-                                <Form.Button primary>Preview</Form.Button>
-                                <Form.Button>Continue</Form.Button>
-                            </Form.Group>
-                        </Form>
-                        {makeListView()}
-                    </Grid.Column>
-                    <Grid.Column width={5}>
-                        <Grid.Row>
-                            {items.map((item, i) => (
-                                makeCardContent(item, i)
-                            ))}
-                        </Grid.Row>
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+    handleInitialize() {
+        let cType = this.props.type.substring(0,1).toUpperCase() + this.props.type.substring(1);
+        const initData = {
+          "orgName": this.props.org,
+          "orgType": cType
+        };
+    
+        this.props.initialize(initData);
+      }
+      
+    componentDidMount() {
+        this.handleInitialize();
+    }
+    
+    componentWillReceiveProps(nextProps) {
+        console.log("twoProps",nextProps)
+    }
 
 
-        </Fragment>
-    );
+
+    onHandleSubmit = () => {
+        alert("submit add user")
+        this.props.handleLoadingSpinner(true);
+        _self.props.handleSubmit();
+        setTimeout(() => {
+            _self.props.dispatch(reset('orgaStepTwo'));
+            _self.props.dispatch(initialize('orgaStepTwo', {
+                submitSucceeded: false
+            }))
+            //this.props.handleLoadingSpinner(false);
+        },500);
+        
+    }
+
+    continueClick = (e) => {
+        e.preventDefault();
+        this.props.nextstep(3)
+    }
+    
+    render (){
+        const { handleSubmit, reset, org, type } = this.props;
+        let cType = type.substring(0,1).toUpperCase() + type.substring(1);
+        return (
+            <Fragment>
+                <Grid>
+                    <Grid.Row columns={2}>
+                        <Grid.Column width={11}>
+                            <Form onSubmit={this.onHandleSubmit} className={"fieldForm"}>
+                                <Header>Add Users to Your Organization!</Header>
+                                <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
+                                    <Grid>
+                                        <Grid.Row className='avatar_img'>
+                                            <Grid.Column>
+                                                <Image src={userAvatar[avatarRandom]} width='250px' centered bordered/>
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                        <Grid.Row>
+                                            <Grid.Column width={5}>
+                                                <div>Username</div>
+                                            </Grid.Column>
+                                            <Grid.Column width={11}>
+                                                <Field
+                                                    component={renderInput}
+                                                    name="username"
+                                                    type="input"
+                                                    placeholder="Username"
+                                                />
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                        <Grid.Row>
+                                            <Grid.Column width={5}>
+                                                <div>OrganizationName</div>
+                                            </Grid.Column>
+                                            <Grid.Column width={11}>
+                                                <Field
+                                                    component={renderInput}
+                                                    name="orgName"
+                                                    type="input"
+                                                    placeholder={org}
+                                                />
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                        <Grid.Row>
+                                            <Grid.Column width={5}>
+                                                <div>Type</div>
+                                            </Grid.Column>
+                                            <Grid.Column width={11}>
+                                                <Field
+                                                component={renderInput}
+                                                name="orgType"
+                                                type="input"
+                                                placeholder={type}
+                                                />
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                        <Grid.Row>
+                                            <Grid.Column width={5}>
+                                                <div>Role</div>
+                                            </Grid.Column>
+                                            <Grid.Column width={11}>
+                                                <Field
+                                                    component={renderSelect}
+                                                    lable="Role"
+                                                    name="selectRole"
+                                                    options={[
+                                                        { key: "m", text: "Manager", value: "Manager" },
+                                                        { key: "c", text: "Contributor", value: "Contributor" },
+                                                        { key: "v", text: "Viewer", value: "Viewer" }
+                                                    ]}
+                                                    placeholder="Select Role"
+                                                />
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                    </Grid>
+                                </Form.Group>
+
+                                <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
+                                    {/*<Form.Button >Preview</Form.Button>*/}
+                                    <Form.Button primary positive>Continue</Form.Button>
+                                    <Form.Button onClick={this.continueClick}>Skip</Form.Button>
+
+                                </Form.Group>
+                            </Form>
+                        </Grid.Column>
+                        <Grid.Column width={5} className='step_side'>
+                                {items.map((item, i) => (
+                                    makeCardContent(item, i, cType)
+                                ))}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </Fragment>
+        )
+        
+    }
 };
 
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+    };
+};
+
+SiteFourOrgaAddUser = connect(
+    null,
+    mapDispatchProps
+)(SiteFourOrgaAddUser);
+
 export default reduxForm({
-    form: "orgaStepTwo"
-})(SiteFourOrgaTwo);
+    form: "orgaStepAddUser",
+    enableReinitialize: true
+})(SiteFourOrgaAddUser);

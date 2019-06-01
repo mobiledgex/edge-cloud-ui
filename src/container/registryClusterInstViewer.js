@@ -25,7 +25,8 @@ const headerStyle = {
 var horizon = 6;
 var vertical = 20;
 var layout = [
-    {"w":19,"h":20,"x":0,"y":0,"i":"0", "minW":8,"minH":5, "moved":false,"static":false, "title":"Developer"},
+    {"w":19,"h":20,"x":0,"y":0,"i":"0", "minW":19,"minH":20, "maxW":19,"maxH":20, "moved":false,"static":false, "title":"Developer"},
+    // {"w":19,"h":20,"x":0,"y":0,"i":"0", "minW":8,"minH":5, "moved":false,"static":false, "title":"Developer"} //resize
 ]
 let _self = null;
 const colors = [
@@ -79,6 +80,7 @@ class RegistryClusterInstViewer extends React.Component {
                     'ClusterName':{label:'Cluster Name', type:'RenderInput', necessary:true, tip:null, active:true},
                     'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:null, active:true, items:['','']},
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
+                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'aaa', active:true, items:['Docker', 'Kubernetes', 'VM']},
                     'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
                     'IpAccess':{label:'IpAccess', type:'RenderSelect', necessary:false, tip:'When checked, this will inherit settings from application settings',items:ipaccessArr},
                     'Flavor':{label:'Flavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
@@ -95,6 +97,7 @@ class RegistryClusterInstViewer extends React.Component {
                     'ClusterName':'',
                     'OrganizationName':'',
                     'Operator':'',
+                    'DeploymentType':'',
                     'Cloudlet':'',
                     'IpAccess':'',
                     'Flavor':'',
@@ -338,6 +341,7 @@ const createFormat = (data) => (
                         },
                         "developer":data['OrganizationName']
                     },
+                "deploymentType":data['DeploymentType'],
                 "flavor":{"name":data['Flavor']},
                 "ip_access":parseInt(getInteger(data['IpAccess'])),
                 "num_masters":parseInt(data['NumberOfMaster']),

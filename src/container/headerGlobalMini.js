@@ -3,7 +3,7 @@ import {Button, Grid, Image, Popup} from 'semantic-ui-react';
 
 import MaterialIcon, {colorPalette} from 'material-icons-react';
 import { withRouter } from 'react-router-dom';
-
+import Alert from 'react-s-alert';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -55,6 +55,12 @@ class headerGlobalMini extends React.Component {
         //this.gotoPreview('/logout')
 
     }
+    componentDidMount() {
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        let token = store.userToken;
+        Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
+    }
+
     componentWillReceiveProps(nextProps, nextContext) {
 
         if(nextProps.user) {
@@ -64,9 +70,20 @@ class headerGlobalMini extends React.Component {
             this.setState({userInfo:nextProps.userInfo})
         }
     }
+
     receiveCurrentUser(result) {
-        console.log("receive user info...", result.data)
-        _self.setState({userInfo: result.data})
+        if(result.data && result.data.message) {
+            _self.setState({tokenState:'expired'})
+            Alert.error(result.data.message, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+            setTimeout(() => _self.gotoPreview('/logout'),2000);
+        } else {
+            _self.setState({tokenState:'live'})
+            _self.setState({userInfo: result.data})
+        }
     }
 
 

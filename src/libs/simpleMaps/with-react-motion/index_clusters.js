@@ -47,8 +47,8 @@ const markerSize = [20, 24]
 let _self = null;
 const makeList = (obj) => (
     <List>
-        {obj.map((key) => (
-            <List.Item>
+        {obj.map((key,i) => (
+            <List.Item key={i}>
 
                     {key}
 
