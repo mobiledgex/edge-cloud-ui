@@ -193,7 +193,7 @@ class SiteFour extends React.Component {
         let mainPath = site;
         let subPath = 'pg=0';
         _self.props.handleChangeViewBtn(false)
-        
+
         //_self.props.handleChangeClickCity([]);
         _self.props.handleSelectOrg('')
         _self.props.handleUserRole('')
@@ -372,7 +372,7 @@ class SiteFour extends React.Component {
 
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
-            if(elem){ 
+            if(elem){
                 //_self.makeGhost(elem, _self)
             }
         }, 4000)
@@ -470,14 +470,14 @@ class SiteFour extends React.Component {
         let rgn = ['US','EU'];
         if(region !== 'All'){
             rgn = [region]
-        } 
+        }
         setTimeout(() =>{
             console.log("interval@@@@");
             //rgn.map((item) => {
                 computeService.getMCService('ShowClusterInst',{token:store.userToken, region:'US'}, _self.receiveResultClusterInst)
             //})
         }, 20000);
-        
+
     }
 
     receiveResultClusterInst = (result) => {
@@ -501,7 +501,7 @@ class SiteFour extends React.Component {
                 }
             })
         }
-        
+
     }
 
     render() {
@@ -540,7 +540,7 @@ class SiteFour extends React.Component {
                     />
                     <span className={this.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
                 </div>
- 
+
                 <Grid.Row className='gnb_header'>
                     <Grid.Column width={6} className='navbar_left'>
                         <Header>
@@ -594,7 +594,7 @@ class SiteFour extends React.Component {
                                             <Grid.Column width={11} style={{lineHeight:'24px'}}>
                                                 {
                                                     (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole : localStorage.selectOrg
-                                                }  
+                                                }
                                             </Grid.Column>
                                             <Grid.Column width={5}>
                                                 <div className="markBox">
@@ -651,7 +651,7 @@ class SiteFour extends React.Component {
                         </Menu>
                         <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
                             {
-                                (localStorage.selectRole == 'AdminManager')? 'version 0.8.0' : null
+                                (localStorage.selectRole == 'AdminManager')? 'version 0.8.1' : null
                             }
                         </div>
                     </Grid.Column>
@@ -659,7 +659,7 @@ class SiteFour extends React.Component {
                         <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
                             <Grid.Column className='title_align' style={{lineHeight:'36px'}}>{this.state.headerTitle}</Grid.Column>
                             {
-                                (this.props.location.search !== 'pg=1') ? 
+                                (this.props.location.search !== 'pg=1') ?
                                 <Grid.Column className='title_align'>
                                     <Item style={{marginLeft:20, marginRight:10}}>
                                         <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>

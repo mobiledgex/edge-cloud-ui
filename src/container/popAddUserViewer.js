@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import {GridLoader} from "react-spinners";
 import './styles.css';
+
 let _self = null;
 class PopAddUserViewer extends React.Component {
     constructor() {

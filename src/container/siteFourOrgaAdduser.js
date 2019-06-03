@@ -231,7 +231,6 @@ class SiteFourOrgaAddUser extends React.Component {
           "orgName": this.props.org,
           "orgType": cType
         };
-    
         this.props.initialize(initData);
       }
       
@@ -246,15 +245,14 @@ class SiteFourOrgaAddUser extends React.Component {
 
 
     onHandleSubmit = () => {
-        alert("submit add user")
         this.props.handleLoadingSpinner(true);
+
         _self.props.handleSubmit();
         setTimeout(() => {
-            _self.props.dispatch(reset('orgaStepTwo'));
-            _self.props.dispatch(initialize('orgaStepTwo', {
+            _self.props.dispatch(reset('orgaStepAddUser'));
+            _self.props.dispatch(initialize('orgaStepAddUser', {
                 submitSucceeded: false
             }))
-            //this.props.handleLoadingSpinner(false);
         },500);
         
     }

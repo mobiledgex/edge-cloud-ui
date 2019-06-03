@@ -19,7 +19,7 @@ exports.getToken = (req, res) => {
     serviceName = req.body.service;
     serviceBody = req.body.serviceBody;
   }
-  console.log('Please waite loading token... ', serviceName, mcUrl)
+  console.log('Please waite loading token... ', serviceBody, mcUrl)
   axios.post(mcUrl + '/api/v1/login', qs.stringify({
         username: serviceBody.username,
         password: serviceBody.password
