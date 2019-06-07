@@ -105,8 +105,8 @@ class SiteFourPageCreateorga extends React.Component {
         }
 
     }
-    resultCreateOrg = (result,resource, self) => {
-        console.log("receive == ", result, resource, self)
+    resultCreateOrg = (result,resource, self, body) => {
+        console.log("receive ==@@ ", result, resource, self, body)
         _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
             this.setState({loopCancel:true});
@@ -118,7 +118,7 @@ class SiteFourPageCreateorga extends React.Component {
             //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         } else {
 
-            Alert.success('Success created organization', {
+            Alert.success('Your organization '+body.name+' created successfully', {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
@@ -127,7 +127,7 @@ class SiteFourPageCreateorga extends React.Component {
             this.setState({step:2})
         }
     }
-    resultGiveToRole = (result,resource, self) => {
+    resultGiveToRole = (result,resource, self, body) => {
         console.log("receive == ", result, resource, self)
         _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
@@ -139,7 +139,7 @@ class SiteFourPageCreateorga extends React.Component {
             //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         } else {
 
-            Alert.success('Success Add User', {
+            Alert.success('User '+body.username+' added to organization '+body.org+' successfully', {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000

@@ -25,9 +25,10 @@ import creatingSpinner from './creatingSpinner';
 import loginMode from './loginMode';
 import injectData from './injectData';
 import alertMsg from './alertMsg';
+import changeViewMode from './changeViewMode';
 
 const reducers = combineReducers({
-    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor, loginMode,injectData,
+    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor, loginMode,injectData,changeViewMode,
     registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, searchValue, computeRefresh, loadingSpinner, creatingSpinner, alertMsg, form: formReducer
 });
 

@@ -53,8 +53,8 @@ class PopAddUserViewer extends React.Component {
         }
     }
 
-    resultGiveToRole = (result,resource, self) => {
-        console.log("receive == ", result, resource, self)
+    resultGiveToRole = (result,resource, self, body) => {
+        console.log("receive 3== ", result, resource, self, body)
         _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
             Alert.error(String(result.data.error), {
@@ -66,7 +66,7 @@ class PopAddUserViewer extends React.Component {
             //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         } else {
 
-            Alert.success('Success Add User', {
+            Alert.success('User '+body.username+' added to organization '+body.org+' successfully', {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000

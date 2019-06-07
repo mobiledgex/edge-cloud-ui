@@ -188,8 +188,8 @@ class RegistryInstViewer extends React.Component {
         }
     }
 
-    receiveResult = (result) => {
-        console.log('result creat appInst ...', result.data.error)
+    receiveResult = (result, body) => {
+        console.log('result creat appInst ...', result.data.error, body)
         _self.props.handleLoadingSpinner(false);
         this.setState({loopCancel:true});
         if(result.data.error) {
@@ -206,7 +206,7 @@ class RegistryInstViewer extends React.Component {
             return;
         } else {
             //this.props.gotoApp();
-            Alert.success('SUCCESS', {
+            Alert.success('Your application instance created successfully', {
                 position: 'top-right',
                 effect: 'slide',
                 onShow: function () {

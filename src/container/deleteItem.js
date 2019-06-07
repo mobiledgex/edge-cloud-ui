@@ -32,7 +32,16 @@ class DeleteItem extends React.Component {
      * delete selected item
      * @param result
      ***************************/
-    receiveSubmit = (result) => {
+    receiveSubmit = (result, body) => {
+        let msg = '';
+        let msg2 = '';
+        if(this.props.siteId == 'ClusterInst') {
+            msg = 'Your cluster '+body.params.clusterinst.key.cluster_key.name
+        } else if(this.props.siteId == 'appinst') {
+            msg = 'Your application instance'
+            msg2 = ' from '+body.params.appinst.key.cluster_inst_key.cluster_key.name
+        }
+
         this.props.handleLoadingSpinner(false);
         this.props.refresh('All')
         console.log('registry delete ... success result..', result.data)
@@ -45,7 +54,7 @@ class DeleteItem extends React.Component {
                 timeout: 5000
             });
         } else if (result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
-            Alert.success("Deletion!", {
+            Alert.success(msg+' deleted successfully'+msg2, {  
                 position: 'top-right',
                 effect: 'slide',
                 onShow: function () {
@@ -61,19 +70,24 @@ class DeleteItem extends React.Component {
         
     }
 
-    receiveListSubmit = (result) => {
+    receiveListSubmit = (result, body) => {
+        let msg = '';
+        if(this.props.siteId == 'Cloudlet') msg = 'Cloudlet '+body.params.cloudlet.key.name
+        else if(this.props.siteId == 'Flavors') msg = 'Flavor '+body.params.flavor.key.name
+        else if(this.props.siteId == 'App') msg = 'Your application '+body.params.app.key.name
+        
         this.props.handleLoadingSpinner(false);
         this.props.refresh('All')
-        console.log('registry delete ... success result..', result.data)
+        console.log('registry delete ... success result..', result.data, body)
         if(result.data.error == "rpc error: code = Unknown desc = Application in use by static Application Instance") {
             Alert.error(result.data.error, {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
             });
-        } else if(result.data.message.indexOf('ok') > -1) {
+        } else if(result.data.message) {
             console.log("deleteSuccess@@")
-            Alert.success("Deletion!", {
+            Alert.success(msg+' deleted successfully', {
                 position: 'top-right',
                 effect: 'slide',
                 onShow: function () {
@@ -88,11 +102,20 @@ class DeleteItem extends React.Component {
     }
 
     receiveUserSubmit = (result,body) => {
+
+        let msg = '';
+        if(this.props.siteId === 'Organization') {
+            msg = 'Your organization '+body.params.name+' deleted successfully'
+        } else if(this.props.siteId === 'User') {
+            msg = 'User '+body.params.username+' removed from organization '+body.params.org
+        } else if(this.props.siteId === 'Account') {
+            msg = 'User '+_self.state.deleteName+' removed from console '
+        }
+
         this.props.handleLoadingSpinner(false);
-        _self.props.refresh('All');
-        console.log('user delete ... success result..', result.data, body.params.name);
+        console.log('user delete ... success result..', result.data, body);
         if(result.data.message) {
-            Alert.success(result.data.message, {
+            Alert.success(msg, {
                 position: 'top-right',
                 effect: 'slide',
                 onShow: function () {
@@ -102,7 +125,7 @@ class DeleteItem extends React.Component {
                 timeout: 5000,
                 offset: 100
             });
-            _self.props.success();
+            _self.props.success(_self.state.deleteName);
         }
         if(this.props.siteId === 'Organization' && body.params.name == localStorage.selectOrg) {
             this.props.handleSelectOrg('-')
@@ -110,6 +133,8 @@ class DeleteItem extends React.Component {
             localStorage.setItem('selectRole', '')
             localStorage.setItem('selectOrg', '')
         }
+
+        _self.props.refresh('All');
     }
 
     closeDeleteModal(confirm) {
@@ -186,6 +211,19 @@ class DeleteItem extends React.Component {
                 }
             }
             service.deleteUser(serviceNm, serviceBody, this.receiveUserSubmit)
+        } else if(this.props.siteId === 'Account') {
+            let userArr = [];
+            Object.values(this.props.selected).map((item,i) => {
+                userArr.push(item);
+            })
+            serviceNm = 'delete'
+            serviceBody = {
+                "token":store.userToken,
+                "params": {
+                    "name":userArr[0]
+                }
+            }
+            service.deleteAccount(serviceNm, serviceBody, this.receiveUserSubmit)
         } else if(this.props.siteId === 'Organization') {
             const {Organization, Type, Address, Phone} = this.props.selected
             serviceNm = 'delete'
@@ -278,12 +316,13 @@ class DeleteItem extends React.Component {
 
     /** ************************ **/
     componentWillReceiveProps(nextProps, nextContext) {
-        
+        console.log("dddnextProps",nextProps)
         if(nextProps.open){
             let name = '';
             this.setState({showWarning:nextProps.open})
             if(nextProps.siteId == 'Organization') name = nextProps.selected.Organization
             else if(nextProps.siteId == 'User') name = nextProps.selected.Username
+            else if(nextProps.siteId == 'Account') name = nextProps.selected.Username
             else if(nextProps.siteId == 'Cloudlet') name = nextProps.selected.CloudletName
             else if(nextProps.siteId == 'Flavors') name = nextProps.selected.FlavorName
             else if(nextProps.siteId == 'ClusterInst') name = nextProps.selected.ClusterName

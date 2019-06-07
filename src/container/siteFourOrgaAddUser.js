@@ -341,7 +341,7 @@ class SiteFourOrgaAddUser extends React.Component {
 
                                 <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
                                     {/*<Form.Button >Preview</Form.Button>*/}
-                                    <Form.Button primary positive>Continue</Form.Button>
+                                    <Form.Button primary positive>Add</Form.Button>
                                     <Form.Button onClick={this.continueClick}>Skip</Form.Button>
 
                                 </Form.Group>

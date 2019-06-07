@@ -25,12 +25,12 @@ export function organize(resource, body, callback, self) {
             } else {
 
             }
-            console.log('parse data super user ===>>>>>>>>>> ', parseData)
+            console.log('parse data super user ===>>>>>>>>>> ', parseData, body)
             if(parseData) {
                 if(parseData.message){
 
                 } else {
-                    callback(parseData, resource, self);
+                    callback(parseData, resource, self, body);
                 }
             }
 

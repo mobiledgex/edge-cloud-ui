@@ -244,7 +244,6 @@ class EntranceGlobe extends Component {
                                 color={'#70b2bc'}
                                 loading={this.state.loading}
                             />
-                            <Alert stack={{limit: 3}} />
                         </div>
 
                     </div>

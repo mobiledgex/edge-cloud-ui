@@ -12,12 +12,14 @@ import * as serviceLogin from '../../services/service_login_api';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
 import * as service from "../../services/service_compute_service";
+import CustomContentAlert from './CustomContentAlert';
 /*
 
  */
 
 const host = window.location.host;
 let self = null;
+let email = 'yourEmail@email.net'
 
 const FormContainer = (props) => (
     <Grid className="signUpBD">
@@ -145,8 +147,17 @@ const FormSignUpContainer = (props) => (
             <div className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer'}}>By clicking SignUp, you agree to our <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Terms</a>, <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Data Policy</a>, and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Cookies Policy</a>.</div>
         </Grid.Row>
     </Grid>
-
 )
+const customerName = '';
+let flag = true;
+const showAlert = (props) => {
+    let verifyMessage = `In order to participate in a console, you must verify your account. An email has been sent to ${props.self.state.email} with a link to verify your account. If you have not received the email after a few minutes, please check your spam folder or resend the verification email.`
+    flag = false;
+    Alert.info(<CustomContentAlert position='bottom' customFields={{customerName: props.self.state && props.self.state.email || 'yourEmail'}} email={props.self.state && props.self.state.email || 'yourEmail@@'} message={verifyMessage}/>, {
+        position: 'top-right', timeout: 15000, limit:1
+    })
+    setTimeout(()=>flag = true, 1000)
+}
 const SuccessMsg = (props) => (
     <Grid className="signUpBD">
         <Grid.Row>
@@ -160,8 +171,13 @@ const SuccessMsg = (props) => (
         <Grid.Row>
             {(props.msg.indexOf('created') !== -1) ?
                 <div>
-                    <div className="login-text">Thanks for creating a MobiledgeX account! Please verify your account by clicking on the link in your email. Then you'll be able to login and get started.</div>
-                    <div className="login-text" style={{fontStyle:'italic', textDecoration:'underline'}}>Sign in with your account</div>
+                    <div className="login-text">Thanks for creating a MobiledgeX account! Please verify your email. Then you'll be able to login and get started.</div>
+                    <div className="login-text" style={{fontStyle:'italic'}}>If you verify your account, Sign in with your account</div>
+                    {
+                        (flag)?
+                        showAlert(props)
+                            :null
+                    }
                 </div>
                 :
                 <Fragment>
@@ -230,7 +246,8 @@ class Login extends Component {
             successMsg:'Success create new account',
             loginDanger:'',
             forgotPass:false,
-            forgotMessage:false
+            forgotMessage:false,
+            created:false
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -243,6 +260,10 @@ class Login extends Component {
 
         //브라우져 주소창에 주소를 입력할 경우
 
+        /***
+         * TEST success created new account
+         ***/
+        //this.setState({successCreate:true, loginMode:'signup', successMsg:'test created'})
     }
     componentWillReceiveProps (nextProps) {
         console.log('submit props ---- ', nextProps)
@@ -257,6 +278,7 @@ class Login extends Component {
                 } else {
                     serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email}, self.resultCreateUser, self)
                 }
+                this.setState({email:nextProps.values.email})
             }
 
         }
@@ -269,7 +291,7 @@ class Login extends Component {
             }
 
         } else if(nextProps.loginMode === 'signup'){
-            this.setState({successCreate:false, loginMode:'signup', forgotMessage:false, forgotPass:false});
+            this.setState({successCreate:false, loginMode:'signup', forgotMessage:false, forgotPass:false, errorCreate:false});
         } else if(nextProps.loginMode === 'forgot'){
             this.setState({successCreate:false, loginMode:'forgot', forgotMessage:false, forgotPass:false});
         } else if(nextProps.loginMode === 'verify'){
@@ -289,14 +311,21 @@ class Login extends Component {
     resultCreateUser(result) {
         console.log('success create......', result.data, JSON.stringify(result.data), typeof result.data)
         let message = (result.data.message)? result.data.message : null;
-        console.log('msg-',message)
-        if(message.indexOf('duplicate') > -1){
-            message = 'Already exist ID!'
-        }
-        if(message.indexOf('Email' && 'already') > -1){
-            message = 'Email already in use'
-        }
-        //TODO 20190416 - redux
+        // console.log('msg-',message)
+        // if(message.indexOf('duplicate') > -1){
+        //     message = 'Already exist ID!'
+        // }
+        // if(message.indexOf('Email' && 'already') > -1){
+        //     message = 'Email already in use'
+        // }
+
+        Alert.error(message, {
+            position: 'top-right',
+            effect: 'slide',
+            timeout: 5000
+        });
+
+
         self.setState({successMsg:message ? message:self.state.successMsg, errorCreate: true, signup:true});
     }
     resultNewPass(result) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
-import DeveloperListView from '../container/developerListView';
+import AccountListView from '../container/accountsListView';
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
 //redux
@@ -10,14 +10,27 @@ import * as actions from '../actions';
 
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
-import MapWithListView from "./siteFour_page_six";
-import Alert from "react-s-alert";
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
+/*
+{ Name: 'bickhcho1',
+       Email: 'whrjsgml111@naver.com',
+       EmailVerified: true,
+       Passhash: '',
+       Salt: '',
+       Iter: 0,
+       FamilyName: '',
+       GivenName: '',
+       Picture: '',
+       Nickname: '',
+       CreatedAt: '2019-05-23T06:29:01.794715Z',
+       UpdatedAt: '2019-05-23T06:30:42.082077Z',
+       Locked: false }
 
+ */
 let _self = null;
-class SiteFourPageOrganization extends React.Component {
+class SiteFourPageAccount extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -32,22 +45,15 @@ class SiteFourPageOrganization extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [2,2,3,3,6]
-        //this.hideHeader = ['Address','Phone']
+        this.headerLayout = [4,4,4,3]
+        this.hiddenKeys = ['Passhash', 'Salt', 'Iter','FamilyName','GivenName','Picture','Nickname','CreatedAt','UpdatedAt']
     }
-    gotoUrl(site, subPath) {
-        _self.props.history.push({
-            pathname: site,
-            search: subPath
-        });
-        _self.props.history.location.search = subPath;
-        _self.setState({ page:subPath})
-    }
+
     //go to
-    gotoPreview(site, page) {
+    gotoPreview(site) {
         //브라우져 입력창에 주소 기록
         let mainPath = site;
-        let subPath = page;
+        let subPath = 'pg=0';
         _self.props.history.push({
             pathname: mainPath,
             search: subPath,
@@ -68,67 +74,50 @@ class SiteFourPageOrganization extends React.Component {
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
+        console.log('info.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // console.log('info.. store == ', store)
-        if(store.userToken) this.getDataDeveloper(store.userToken);
+        if(store.userToken) {
+            this.getDataDeveloper(store.userToken);
+        }
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
         if(nextProps.computeRefresh.compute) {
-            //let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            //this.getDataDeveloper(store.userToken);
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            this.getDataDeveloper(store.userToken);
             this.props.handleComputeRefresh(false);
         }
-
     }
-    receiveResult = (result,resource, self) => {
+    receiveResult = (result) => {
         this.props.handleLoadingSpinner(false);
-
-        console.log("receive == ", result, resource, self)
-        if(result.error) {
-            Alert.error('There is no data', {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-            //setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
-            // _self.gotoUrl('/site4', 'pg=newOrg')  /* CreatOrg 자동 연결... */
-        } else {
-            _self.setState({devData:result})
-
-            // if(result.length === 0) {
-            //     _self.gotoUrl('/site4', 'pg=newOrg')
-            // } else {
-            //     _self.setState({devData:result})
-            // }
-
-        }
+        let reverseResult = result.reverse();
+        _self.setState({devData:reverseResult})
     }
     getDataDeveloper(token) {
+        _self.props.handleLoadingSpinner(true)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        services.getMCService('showOrg',{token:store.userToken}, _self.receiveResult)
+        services.getMCService('ShowAccounts',{token:store.userToken}, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader} siteId={"Organization"} dataRefresh={this.getDataDeveloper}></DeveloperListView>
-            // <DeveloperListView headerLayout={this.headerLayout}></DeveloperListView>
+
+            <AccountListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'Account'} dataRefresh={this.getDataDeveloper} hiddenKeys={this.hiddenKeys}></AccountListView>
+
         );
     }
 
 };
 
 const mapStateToProps = (state) => {
-    console.log('props in userToken..', state)
     return {
-        userToken : (state.user.userToken) ? state.userToken: null,
-        userInfo: state.user.user,
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null
     }
 };
+
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
@@ -139,4 +128,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageOrganization)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageAccount)));
