@@ -51,11 +51,11 @@ export default class PopUserViewer extends React.Component {
         return (
             <Modal size={'tiny'} open={this.state.open} dimmer={false}>
                 <Modal.Header>User</Modal.Header>
-                <Modal.Content>
+                <Modal.Content  image scrolling>
                     <Grid>
                         <Grid.Row >
                             <Grid.Column>
-                                <Image src='/assets/matthew.png' size="medium" centered bordered/>
+                                <Image src='/assets/matthew.png' size="small" centered bordered/>
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row >

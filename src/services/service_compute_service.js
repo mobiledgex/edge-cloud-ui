@@ -13,6 +13,7 @@ import FormatComputeInst from './formatter/formatComputeInstance';
 import FormatComputeClstInst from './formatter/formatComputeClstInstance';
 import FormatComputeOrganization from './formatter/formatComputeOrganization';
 import formatComputeUsers from './formatter/formatComputeUsers';
+import formatComputeAccounts from './formatter/formatComputeAccounts';
 
 const hostname = window.location.hostname;
 let serviceDomain = 'https://mc.mobiledgex.net:9900';
@@ -151,7 +152,7 @@ export function createNewApp(resource, body, callback) {
     })
         .then(function (response) {
             console.log('response  registry new obj result-',response);
-            callback(response)
+            callback(response, body)
         })
         .catch(function (error) {
             console.log(error);
@@ -165,7 +166,7 @@ export function createNewAppInst(resource, body, callback) {
     }))
         .then(function (response) {
             console.log('response  registry new obj result-',response);
-            callback(response)
+            callback(response, body)
         })
         .catch(function (error) {
             console.log(error);
@@ -179,7 +180,7 @@ export function deleteCompute(resource, body, callback) {
     })
         .then(function (response) {
             console.log('response  registry new obj result-',response);
-            callback(response)
+            callback(response, body)
         })
         .catch(function (error) {
             console.log(error);
@@ -193,7 +194,21 @@ export function deleteUser(resource, body, callback) {
     })
         .then(function (response) {
             console.log('response  registry new obj result-',response);
-            callback(response)
+            callback(response, body)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function deleteAccount(resource, body, callback) {
+    axios.post('https://'+hostname+':3030/deleteAccount',{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('response  registry new obj result-',response);
+            callback(response, body)
         })
         .catch(function (error) {
             console.log(error);
@@ -221,7 +236,7 @@ export function createNewClusterInst(resource, body, callback) {
     })
         .then(function (response) {
             console.log('response clusterInst result-',response);
-            callback(response)
+            callback(response, body)
         })
         .catch(function (error) {
             console.log(error);
@@ -236,7 +251,7 @@ export function createNewFlavor(resource, body, callback) {
     })
         .then(function (response) {
             console.log('response flavor result-',response);
-            callback(response)
+            callback(response, body)
         })
         .catch(function (error) {
             console.log(error);
@@ -265,8 +280,8 @@ export function createNewCloudlet(resource, body, callback) {
         serviceDomain:serviceDomain
     })
         .then(function (response) {
-            console.log('response cloudlet result-',response);
-            callback(response)
+            console.log('response cloudlet result-',response,body);
+            callback(response, body)
         })
         .catch(function (error) {
             console.log(error);
@@ -296,6 +311,7 @@ export function getMCService(resource, body, callback, self) {
                     case 'ShowFlavor': callback(FormatComputeFlavor(parseData,body)); break;
                     case 'ShowClusterFlavor': callback(FormatComputeCluster(parseData,body)); break;
                     case 'ShowUsers': callback(formatComputeUsers(parseData)); break;
+                    case 'ShowAccounts': callback(formatComputeAccounts(parseData)); break;
                     case 'ShowCloudlet': callback(FormatComputeCloudlet(parseData,body)); break;
                     case 'ShowClusterInst': callback(FormatComputeClstInst(parseData,body)); break;
                     case 'ShowClusterInsts': callback(FormatComputeClstInst(parseData,body)); break;

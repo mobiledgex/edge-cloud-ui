@@ -20,7 +20,7 @@ import * as service from "../services/service_compute_service";
 const ReactGridLayout = WidthProvider(RGL);
 
 
-
+let itData = ''
 const headerStyle = {
     backgroundImage: 'url()'
 }
@@ -72,7 +72,8 @@ class RegistryViewer extends React.Component {
             selectUse:null,
             resultData:null,
             devoptionsf:[],
-            loopCancel:true
+            loopCancel:true,
+            imageTypeValue:''
         };
         this.keysData = [
             {
@@ -82,7 +83,7 @@ class RegistryViewer extends React.Component {
                 'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:null, active:true},
                 'ImagePath':{label:'Image Path', type:'RenderInput', necessary:true, tip:'aaa', active:true},
                 'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'aaa', active:true, items:['Docker', 'Kubernetes', 'VM']},
-                'ImageType':{label:'Image Type', type:'RenderInput', necessary:false, tip:'If Deployment Type Chosen as kubernetes, then image type is always ImageTypeDocker'},
+                'ImageType':{label:'Image Type', type:'RenderDT', necessary:false, tip:'If Deployment Type Chosen as kubernetes, then image type is always ImageTypeDocker',items:''},
                 'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'aaa', active:true},
                 'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:'Like this udp:12001,tcp:80,http:7777', active:true, items:['tcp', 'udp']},
                 // 'IpAccess':{label:'Ip Access', type:'IpSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
@@ -137,8 +138,8 @@ class RegistryViewer extends React.Component {
         //this.setState({orgData:result})
         console.log('submit result 2...', result)
     }
-    receiveResult = (result) => {
-        console.log('result creat app ...', result.data.error)
+    receiveResult = (result, body) => {
+        console.log('result creat app ...', result.data.error, body)
         _self.props.handleLoadingSpinner(false);
         this.setState({loopCancel:true});
         if(result.data.error) {
@@ -155,7 +156,7 @@ class RegistryViewer extends React.Component {
             return;
         } else {
             //this.props.gotoApp();
-            Alert.success('SUCCESS', {
+            Alert.success('Your application '+body.params.app.key.name+' created successfully', {
                 position: 'top-right',
                 effect: 'slide',
                 onShow: function () {
@@ -334,8 +335,9 @@ class RegistryViewer extends React.Component {
          * **********/
         let assObj = Object.assign([], this.fakeData);
         assObj[0].OrganizationName = localStorage.selectOrg;
+        //assObj[0].ImageType = this.state.imageTypeValue;
         console.log("jjjjkkkkkk",assObj);
-        this.setState({fakeData:assObj});
+        //this.setState({fakeData:assObj});
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
@@ -364,6 +366,18 @@ class RegistryViewer extends React.Component {
             }
             if(this.state.loopCancel) this.loadingBox(serviceBody);
             
+        }
+        if(nextProps.selectedDeploymentType) {
+            let assObj = Object.assign([], this.keysData);
+            if(nextProps.selectedDeploymentType == "Kubernetes" || nextProps.selectedDeploymentType == "Docker") {
+                assObj[0].ImageType.items = 'ImageTypeDocker';
+                itData = 'ImageTypeDocker'
+                this.setState({imageTypeValue:'ImageTypeDocker'});
+            } else if(nextProps.selectedDeploymentType == "VM") {
+                assObj[0].ImageType.items = 'ImageTypeQcow';
+                this.setState({imageTypeValue:'ImageTypeQcow'})
+                itData = 'ImageTypeQcow'
+            }
         }
     }
 
@@ -409,7 +423,7 @@ const createFormat = (data) => (
                 "key":{"developer_key":{"name":data['OrganizationName']},"name":data['AppName'],"version":data['Version']},
                 "image_path":data['ImagePath'],
                 "deploymentType":data['DeploymentType'],
-                "image_type":Number(data['ImageType']),
+                "image_type":itData,
                 "access_ports":accessport(data),
                 "default_flavor":{"name":data['DefaultFlavor']},
                 "cluster":{"name":""},
@@ -446,12 +460,19 @@ const mapStateToProps = (state) => {
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
+    let selectedDeploymentType = null;
+    if(state.form.createAppFormDefault) {
+        if(state.form.createAppFormDefault.values.DeploymentType !== "") {
+            selectedDeploymentType = state.form.createAppFormDefault.values.DeploymentType;
+        }
+    }
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
         console.log("state.form.createAppFormDefault.values@@",state.form.createAppFormDefault.values)
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
         submitVal = createFormat(enableValue)
         console.log("submitVal@@@@",submitVal)
     }
+    
     let region = state.changeRegion
         ? {
             value: state.changeRegion.region
@@ -468,6 +489,7 @@ const mapStateToProps = (state) => {
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         computeItem : state.computeItem?state.computeItem.item:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
+        selectedDeploymentType : selectedDeploymentType
     }
     
     // return (dimm) ? {

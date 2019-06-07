@@ -4,33 +4,27 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
-import SelectFromTo from '../components/selectFromTo';
-import RegistNewListItem from './registNewListItem';
 import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import DeleteItem from './deleteItem';
+import PopVerify from './popVerify';
 import './styles.css';
 import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
-import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
+import Alert from 'react-s-alert';
+
+
 const ReactGridLayout = WidthProvider(RGL);
 
-
-const headerStyle = {
-    backgroundImage: 'url()'
-}
-var horizon = 6;
-var vertical = 20;
 var layout = [
     {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":19,"minH":20, "maxW":19,"maxH":20, "moved":false,"static":false, "title":"Developer"},
-    // {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":8,"minH":5,"moved":false,"static":false, "title":"Developer"} //resize
 ]
 let _self = null;
 
-class DeveloperListView extends React.Component {
+class AccountListView extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -49,7 +43,9 @@ class DeveloperListView extends React.Component {
             orgData:{data:[]},
             selectUse:null,
             resultData:null,
-            openDelete:false
+            openDelete:false,
+            openVerify:false,
+            verifyEmail:''
         };
 
     }
@@ -65,49 +61,18 @@ class DeveloperListView extends React.Component {
     onHandleClick(dim, data) {
         console.log('on handle click == ', data)
         this.setState({ dimmer:dim, open: true, selected:data })
-        //this.props.handleChangeSite(data.children.props.to)
     }
-    onHandleClickAdd(dim, data) {
-        console.log('on handle click == ', data)
-        this.setState({ dimmer:dim, openAdd: true, selected:data })
-        //this.props.handleChangeSite(data.children.props.to)
-    }
-    onHandleClickAddApp(dim, data) {
-        console.log('on handle click == ', data)
-        this.setState({page:'pg=createAppInst'})
-    }
+
     getDataDeveloper(token) {
         services.getMCService('ShowRole',{token:token}, this.receiveResult)
     }
     receiveResult = (result) => {
         this.setState({orgData:result})
     }
-
-    onUseOrg(useData,key, evt) {
-        console.log("onuseorg",useData,this.state.orgData.data,key)
-
-        this.setState({selectUse:key})
-        if(this.state.orgData.data) {
-            this.state.orgData.data.map((item,i) => {
-                if(item.org == useData.Organization) {
-                    console.log('item role =',item.role)
-                    this.props.handleUserRole(item.role)
-                    localStorage.setItem('selectOrg', useData.Organization)
-                    localStorage.setItem('selectRole', item.role)
-                }
-            })
-
-            this.props.handleSelectOrg(useData)
-        } else {
-            console.log('Error: There is no orgData')
-        }
-
-        
-    }
     
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
-        this.setState({ open: false, openDelete: false, selected:{} })
+        this.setState({ open: false, openDelete: false, selected:{}, openVerify:false })
         this.props.handleInjectDeveloper(null)
     }
     closeDetail = () => {
@@ -119,20 +84,20 @@ class DeveloperListView extends React.Component {
     closeAddUser = () => {
         this.setState({ openAdd: false })
     }
-    makeHeader_noChild =(title)=> (
-        <Header className='panel_title'>{title}</Header>
-    )
-    makeHeader_date =(title)=> (
-        <Header className='panel_title' style={{display:'flex',flexDirection:'row'}}>
-            <div style={{display:'flex', flexGrow:8}}>{title}</div>
-            <SelectFromTo style={{display:'flex', alignSelf:'flex-end'}}></SelectFromTo>
-        </Header>
-    )
-    makeHeader_select =(title)=> (
-        <Header className='panel_title'>{title}</Header>
-    )
+    receiveResendVerify(result) {
+        Alert.success('Success send  ', {
+            position: 'top-right',
+            effect: 'slide',
+            timeout: 5000
+        });
+       _self.props.handleLoadingSpinner(false);
 
-    InputExampleFluid = (value) => <Input fluid placeholder={(this.state.dimmer === 'blurring')? '' : value} />
+    }
+
+    popupSendEmail(email) {
+        this.setState({openVerify:true, verifyEmail:email})
+    }
+
 
      generateDOM(open, dimmer, width, height, hideHeader) {
         return layout.map((item, i) => (
@@ -173,11 +138,6 @@ class DeveloperListView extends React.Component {
 
         ))
     }
-    /*
-    <div className="round_panel" key={i} style={{display:'flex'}}>
-                {this.TableExampleVeryBasic()}
-            </div>
-     */
 
     generateLayout() {
         const p = this.props;
@@ -226,9 +186,7 @@ class DeveloperListView extends React.Component {
         //this.props.onLayoutChange(layout);
         console.log('changed layout = ', JSON.stringify(layout))
     }
-    onPortClick() {
 
-    }
     detailView(item) {
         console.log("user >>>> ",item)
         if(!item['Username']){
@@ -237,33 +195,7 @@ class DeveloperListView extends React.Component {
             this.setState({detailViewData:item, openUser:true})
         }
     }
-    roleMark = (role) => (
-        (role.indexOf('Admin')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markA markS">S</div> :
-        (role.indexOf('Developer')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markD markM">M</div> :
-        (role.indexOf('Developer')!==-1 && role.indexOf('Contributor')!==-1) ? <div className="mark markD markC">C</div> :
-        (role.indexOf('Developer')!==-1 && role.indexOf('Viewer')!==-1) ? <div className="mark markD markV">V</div> :
-        (role.indexOf('Operator')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markO markM">M</div> :
-        (role.indexOf('Operator')!==-1 && role.indexOf('Contributor')!==-1) ? <div className="mark markO markC">C</div> :
-        (role.indexOf('Operator')!==-1 && role.indexOf('Viewer')!==-1) ? <div className="mark markO markV">V</div> : <div></div>
-    )
-    typeMark = (type) => (
-        (type.indexOf('developer')!==-1) ? <div className="mark type markD markM"></div> :
-            (type.indexOf('operator')!==-1) ? <div className="mark type markO markM"></div> : <div></div>
-    )
-    addUserDisable = (orgName) => {
-        let dsb = false;
-        if(this.state.orgData && localStorage.selectRole !== 'AdminManager'){
-            this.state.orgData.data.map((item,i) => {
-                if(item.org == orgName.Organization) {
-                    if(item.role == 'DeveloperContributor') dsb = true
-                    else if(item.role == 'DeveloperViewer') dsb = true
-                    else if(item.role == 'OperatorContributor') dsb = true
-                    else if(item.role == 'OperatorViewer') dsb = true
-                }
-            })
-        }
-        return dsb;
-    }
+
     TableExampleVeryBasic = (w, h, headL, hideHeader, datas) => (
         <Table className="viewListTable" basic='very' sortable striped celled fixed>
             <Table.Header className="viewListTableHeader">
@@ -279,20 +211,8 @@ class DeveloperListView extends React.Component {
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
                                     <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
-                                        {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager')?
-                                            <Button color={(this.state.selectUse == i)?'teal' :null} onClick={(evt) => this.onUseOrg(item,i, evt)}>
-                                                <Icon name='check' />
-                                            </Button>:null}
-                                        <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
-                                        {(this.props.siteId == 'Organization')?
-                                            <Button color='teal' disabled={this.addUserDisable(item)} onClick={() => this.onHandleClickAdd(true, item, i)}>
-                                                Add User
-                                            </Button>:null}
-                                        {(this.props.siteId == 'App')?
-                                            <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.gotoUrl('/site4', 'pg=createAppInst')}>
-                                            Launch
-                                            </Button>:null}
-                                        <Button disabled={(localStorage.selectMenu !== 'Organization')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
+
+                                        <Button size='mini' onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>
                                 :
@@ -302,11 +222,6 @@ class DeveloperListView extends React.Component {
                                         <span style={(item[value] == 'developer')?{color:'#9b9979'}:{color:'#7d969b'}}>{item[value]}</span>
                                     </Table.Cell>
                                 :
-                                (value === 'Mapped_ports')?
-                                    <Table.Cell key={j} textAlign='left'>
-                                        <Icon name='server' size='big' onClick={() => this.onPortClick(true, item)} style={{cursor:'pointer'}}></Icon>
-                                    </Table.Cell>
-                                :
                                 (value === 'Username')?
                                     <Table.Cell key={j} textAlign='left'>
                                         <div className="left_menu_item" onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
@@ -314,10 +229,15 @@ class DeveloperListView extends React.Component {
                                         </div>
                                     </Table.Cell>
                                 :   
-                                (value === 'Role Type')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
-                                        <div className="markBox">{this.roleMark(item[value])}</div>
-                                        {item[value]}
+                                (value === 'EmailVerified')?
+                                    <Table.Cell key={j} textAlign='center' style={{cursor:'pointer'}} >
+                                        {
+                                            (item[value] === true)?
+                                                String(item[value])
+                                                :
+                                                <Button size='mini' onClick={() => this.popupSendEmail(item['Email'])}>verify</Button>
+                                        }
+
                                     </Table.Cell>
                                 :
                                 (!( String(hideHeader).indexOf(value) > -1 )) ?
@@ -340,10 +260,13 @@ class DeveloperListView extends React.Component {
         //reload data of dummyData that defined props devData
 
         //_self.props.handleRefreshData({params:{state:'refresh'}})
+        //refresh the list
+
+        _self.props.dataRefresh();
     }
+
     componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        //if(store.userToken && localStorage.selectMenu == 'Organization') this.getDataDeveloper(store.userToken);
+
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('nextProps',nextProps,this.props.siteId)
@@ -366,12 +289,15 @@ class DeveloperListView extends React.Component {
             <ContainerDimensions>
                 { ({ width, height }) =>
                     <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
-                        <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
-                        
+
                         <DeleteItem open={this.state.openDelete}
                                     selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                                     success={this.successfully} refresh={this.props.dataRefresh}
                         ></DeleteItem>
+                        <PopVerify open={this.state.openVerify} email={this.state.verifyEmail}
+                                    selected={this.state.selected} close={this.close} siteId={this.props.siteId}
+                                    success={this.successfully} receiveResendVerify={this.receiveResendVerify}
+                        ></PopVerify>
                         
                         <ReactGridLayout
                             layout={this.state.layout}
@@ -416,15 +342,11 @@ const mapStateToProps = (state) => {
         searchValue : (state.searchValue.search) ? state.searchValue.search: null,
         userRole : state.showUserRole?state.showUserRole.role:null,
     }
-    
-    // return (dimm) ? {
-    //     dimmInfo : dimm
-    // } : (account)? {
-    //     accountInfo: account + Math.random()*10000
-    // } : null;
+
 };
 const mapDispatchProps = (dispatch) => {
     return {
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
@@ -433,6 +355,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(DeveloperListView));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(AccountListView));
 
 

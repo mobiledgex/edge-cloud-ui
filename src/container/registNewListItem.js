@@ -193,8 +193,8 @@ class RegistNewListItem extends React.Component {
         let groupByOper = aggregate.groupBy(result, 'DeveloperName')
         _self.setState({appResult:groupByOper})
     }
-    receiveSubmit = (result) => {
-        console.log('registry new ... success result..', result.data)
+    receiveSubmit = (result, body) => {
+        console.log('registry new ... success result..', result.data, body)
         this.props.handleLoadingSpinner(false);
         this.props.refresh('All')
         let paseData = result.data;
@@ -208,7 +208,7 @@ class RegistNewListItem extends React.Component {
                 offset: 100
             });
         } else {
-            Alert.success("Created successfully", {
+            Alert.success("Flavor "+body.params.flavor.key.name+" created successfully", {
                 position: 'top-right',
                 effect: 'slide',
                 beep: true,

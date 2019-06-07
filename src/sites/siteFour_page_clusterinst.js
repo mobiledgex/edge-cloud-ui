@@ -31,7 +31,7 @@ class SiteFourPageClusterInst extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [1,2,2,1,2,1,2,1,2,2];
+        this.headerLayout = [1,2,2,1,2,1,2,2,2];
         //this.hiddenKeys = ['CloudletLocation']
     }
 
