@@ -82,13 +82,15 @@ export default class PopDetailViewer extends React.Component {
         return (
             <Modal size={'small'} open={this.state.open} dimmer={false}>
                 <Modal.Header>View Detail</Modal.Header>
-                <Modal.Content>
-                    <Grid divided>
+                <Modal.Content image>
+                    <Modal.Description>
+                    <Grid divided style={{overflowY:'scroll'}}>
                         {
                             this.state.listOfDetail
                         }
 
                     </Grid>
+                    </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>
                     <Button onClick={() => this.close()}>
