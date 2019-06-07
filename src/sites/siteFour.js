@@ -666,7 +666,7 @@ class SiteFour extends React.Component {
                         </Menu>
                         <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
                             {
-                                (localStorage.selectRole == 'AdminManager')? 'version 0.8.2' : null
+                                (localStorage.selectRole == 'AdminManager')? 'version 0.8.3' : null
                             }
                         </div>
                     </Grid.Column>
