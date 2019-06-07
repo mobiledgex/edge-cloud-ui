@@ -108,6 +108,15 @@ const renderInputDisabled = field => (
     />
 );
 
+const renderInputDpType = field => (
+    <Form.Input
+        {...field.input}
+        type={field.type}
+        label={field.label}
+        value={field.placeholder}
+    />
+);
+
 const makeCardContent = (item, i, type) => (
     <Grid.Row>
         <Card>
@@ -313,6 +322,16 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                             value={data[key]}
                                                             name={key}
                                                             />
+                                                        :
+                                                        (fieldKeys[pId][key]['type'] === 'RenderDT') ?
+                                                        <Field
+                                                                component={renderInputDpType}
+                                                                placeholder={fieldKeys[pId][key].items}
+                                                                type="input"
+                                                                name={key}
+                                                                onChange={()=>console.log('onChange text..')}
+                                                                value={fieldKeys[pId][key].items}
+                                                                />
                                                         :
                                                         (fieldKeys[pId][key]['type'] === 'RenderInputDisabled') ?
                                                             (getUserRole == 'AdminManager') ?

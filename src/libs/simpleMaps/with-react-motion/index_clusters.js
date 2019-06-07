@@ -70,7 +70,7 @@ class ClustersMap extends Component {
             countries:[],
             citiesSecond:[],
             detailMode:false,
-            selectedCity:'Barcelona',
+            selectedCity:[],
             oldCountry:'',
             unselectCity:'',
             clickCities:[],
@@ -103,7 +103,7 @@ class ClustersMap extends Component {
     handleReset() {
         this.setState({
             center: this.state.center,
-            zoom: 2,
+            zoom: 3,
             detailMode:false
         })
         this.props.handleChangeClickCity([]);
@@ -360,10 +360,10 @@ class ClustersMap extends Component {
             } else if (localStorage.selectMenu == "App Instances") {
                 return item.AppName
             } else if (localStorage.selectMenu == "Cluster Instances") {
-                if(nextProps.parentProps.reg === 'cloudleAndClusterMap') {
+                if(nextProps.parentProps.reg === 'cloudletAndClusterMap') {
                     return item.CloudletName
                 } else {
-                    return item.Cloudlet
+                    return item.ClusterName
                 }
             } else {
                 return

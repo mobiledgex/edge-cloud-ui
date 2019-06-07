@@ -116,7 +116,38 @@ exports.currentUser = (req, res) => {
             res.json(error.response.data)
         });
 }
+exports.showAccounts = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody;
+        superpass = req.body.serviceBody.token;
+    }
+    console.log('show user accounts.. ', serviceBody, mcUrl)
+    axios.post(mcUrl + '/api/v1/auth/user/show', qs.stringify({
 
+        }),
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success show account user..', response.data)
+            if(response.data) {
+                res.json(response.data)
+            } else {
+                res.json({error:'error...'})
+            }
+        })
+        .catch(function (error) {
+
+            console.log('error......',Object.keys(error), error.response.data);
+            res.json(error.response.data)
+        });
+}
 exports.showController = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
@@ -474,7 +505,7 @@ exports.ShowAppInst = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Request failed'})
             }
         })
         .catch(function (error) {
@@ -494,7 +525,7 @@ exports.ShowAppInsts = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me appInst-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me appInstsssssssss-- ', serviceBody, 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowAppInst', serviceBody,
         {
             headers: {
@@ -502,7 +533,7 @@ exports.ShowAppInsts = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show appInsts', response.data)
+            console.log('success show appInstsssssss', response.data)
             if(response.data) {
                 res.json(response.data)
             } else {
@@ -631,8 +662,12 @@ exports.addUserRole= (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
-            res.json({error:String(error)})
+            console.log('error show ..@@', error.response.data.message);
+            if(error.response.data.message == 'Username not found') {
+                res.json({error:error.response.data.message})
+            } else {
+                res.json({error:String(error)})
+            }
         });
 }
 
@@ -900,7 +935,7 @@ exports.DeleteService = (req, res) => {
 
             console.log('success Delete ', response.data)
 
-            if(response.data) {
+            if(response.data && Object.keys(response.data).length !== 0) {
                 res.json(response.data)
             } else {
                 res.json({'message':'ok'})
@@ -929,6 +964,41 @@ exports.DeleteUser = (req, res) => {
     }
     console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/role/'+serviceName, serviceBody,
+
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+
+            console.log('success Delete ', response.data)
+
+            if(response.data) {
+                res.json(response.data)
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+
+            console.log('error show ..', String(error));
+            res.json({error:String(error)})
+        });
+}
+exports.DeleteAccount = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        serviceName = req.body.service;
+    }
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    axios.post(mcUrl + '/api/v1/auth/user/'+serviceName, serviceBody,
 
         {
             headers: {

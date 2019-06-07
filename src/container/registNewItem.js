@@ -83,9 +83,6 @@ class RegistNewItem extends React.Component {
 
         // developer(Organization)
         //service.getMCService('showOrg',{token:store.userToken}, _self.receiveDev)
-        if(localStorage.selectRole == 'AdminManager') {
-            this.getOrgData()
-        }
         
     }
     componentDidUpdate(){
@@ -362,8 +359,8 @@ class RegistNewItem extends React.Component {
         // }
     }
 
-    receiveSubmitCloudlet = (result) => {
-        console.log('registry new ... success resultcloudlet@..', result.data)
+    receiveSubmitCloudlet = (result, body) => {
+        console.log('registry new ... success resultcloudlet@..', result.data, body)
         _self.props.handleLoadingSpinner(false);
         _self.props.refresh('All')
         if(result.data.error) {
@@ -379,7 +376,7 @@ class RegistNewItem extends React.Component {
             });
             return;
         } else {
-            Alert.success('SUCCESS', {
+            Alert.success('Cloudlet '+body.params.cloudlet.key.name+' created successfully', {
                 position: 'top-right',
                 effect: 'slide',
                 onShow: function () {

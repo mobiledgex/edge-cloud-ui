@@ -198,7 +198,7 @@ const userAvatar = [
 let avatarRandom = Math.floor(Math.random() * userAvatar.length);
 
 const makeCardContent = (item, i, type) => (
-    <Grid.Row>
+    <Grid.Row key={i}>
         <Card>
             <Card.Content>
                 <Card.Header>{item['header']}</Card.Header>
@@ -246,7 +246,6 @@ class SiteFourOrgaTwo extends React.Component {
 
 
     onHandleSubmit = () => {
-        alert("submit add user")
         this.props.handleLoadingSpinner(true);
         _self.props.handleSubmit();
         setTimeout(() => {

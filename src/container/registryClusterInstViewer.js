@@ -183,10 +183,10 @@ class RegistryClusterInstViewer extends React.Component {
             _self.setState({dummyData:_self.state.fakeData, resultData:(!_self.state.resultData)?_self.props.devData:_self.state.resultData})
         }
     }
-    receiveSubmit = (result) => {
+    receiveSubmit = (result, body) => {
         //this.props.handleLoadingSpinner(false);
 
-        console.log('receive data ..', result.data)
+        console.log('receive data ..', result.data, body)
 
         let paseData = result.data;
 
@@ -321,12 +321,6 @@ class RegistryClusterInstViewer extends React.Component {
   "NumberOfNode": "2"
 }
  */
-const getInteger = (str) => (
-    (str === ipaccessArr[0])? 1 :
-    (str === ipaccessArr[1])? 2 :
-    (str === ipaccessArr[2])? 3 :
-    (str === ipaccessArr[3])? 4 : false
-)
 const createFormat = (data) => (
     {
         "region":data['Region'],
@@ -343,7 +337,7 @@ const createFormat = (data) => (
                     },
                 "deploymentType":data['DeploymentType'],
                 "flavor":{"name":data['Flavor']},
-                "ip_access":parseInt(getInteger(data['IpAccess'])),
+                "ip_access":data['IpAccess'],
                 "num_masters":parseInt(data['NumberOfMaster']),
                 "num_nodes":parseInt(data['NumberOfNode'])
             }

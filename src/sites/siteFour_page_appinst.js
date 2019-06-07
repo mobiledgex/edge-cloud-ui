@@ -1,17 +1,17 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
-import sizeMe from 'react-sizeme';
+
 
 import { withRouter } from 'react-router-dom';
 
+import Alert from "react-s-alert";
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
 import MapWithListView from "../container/mapWithListView";
-import Alert from "react-s-alert";
-
+import PageDetailViewer from '../container/pageDetailViewer';
+import DeveloperListView from "../container/developerListView";
 
 
 let _self = null;
@@ -22,15 +22,15 @@ class SiteFourPageAppInst extends React.Component {
         this.state = {
             shouldShowBox: true,
             shouldShowCircle: false,
-            contHeight:0,
-            contWidth:0,
             bodyHeight:0,
-            devData:[]
+            devData:[],
+            viewMode:'listView',
+            detailData:null
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [1,2,2,1,2,2,2,2];
-        //this.hiddenKeys = ['CloudletLocation', 'URI', 'Mapped_ports']
+        this.headerLayout = [1,2,2,1,1,2,2,2,1];
+        this.hiddenKeys = ['Error','URI', 'Mapped_ports', 'Runtime', 'Created', 'Liveness','Flavor']
     }
 
     //go to
@@ -55,7 +55,6 @@ class SiteFourPageAppInst extends React.Component {
     componentWillMount() {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
@@ -67,7 +66,6 @@ class SiteFourPageAppInst extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
         if(nextProps.computeRefresh.compute) {
             this.getDataDeveloper(nextProps.changeRegion);
@@ -76,9 +74,22 @@ class SiteFourPageAppInst extends React.Component {
         if(this.props.changeRegion !== nextProps.changeRegion){
             this.getDataDeveloper(nextProps.changeRegion);
         }
+        if(nextProps.viewMode) {
+            if(nextProps.viewMode === 'listView') {
+
+                //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
+                this.getDataDeveloper(this.props.changeRegion)
+                this.setState({viewMode:nextProps.viewMode})
+            } else {
+                this.setState({viewMode:nextProps.viewMode})
+                setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
+            }
+
+        }
+
     }
     receiveResult = (result) => {
-        let join = this.state.devData.concat(result);
+        let join = _self.state.devData.concat(result);
         this.props.handleLoadingSpinner(false);
         console.log("receive == ", result)
         if(result.error) {
@@ -128,9 +139,12 @@ class SiteFourPageAppInst extends React.Component {
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem } = this.state
+        const { activeItem, viewMode } = this.state
         return (
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} siteId='appinst' dataRefresh={this.getDataDeveloper}></MapWithListView>
+            (viewMode === 'listView')?
+            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloper}></MapWithListView>
+            :
+            <PageDetailViewer data={this.state.detailData}/>
         );
     }
 
@@ -143,6 +157,12 @@ const mapStateToProps = (state) => {
     if(state.receiveDataReduce.params && state.receiveDataReduce.params.state === 'refresh'){
         stateChange = true;
     }
+    let viewMode = null;
+    let detailData = null;
+    if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+        viewMode = state.changeViewMode.mode.viewMode;
+        detailData = state.changeViewMode.mode.data;
+    }
 
     return {
         stateChange:stateChange,
@@ -150,6 +170,7 @@ const mapStateToProps = (state) => {
         changeRegion : state.changeRegion.region?state.changeRegion.region:null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
+        viewMode : viewMode, detailData:detailData
     }
 };
 const mapDispatchProps = (dispatch) => {
@@ -162,4 +183,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageAppInst)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageAppInst));

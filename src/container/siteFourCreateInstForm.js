@@ -49,11 +49,11 @@ const clusterNode = (props) => (
                     <div style={{display:'inline-block'}}>Cluster</div>
                 </div>
                 <div style={{display:'inline-block', verticalAlign: 'middle', marginRight:'20px'}}>
-                    <div style={{display:'inline-block', width:24, height:24, verticalAlign: 'middle', backgroundColor: '#ff7d77', marginRight:'10px'}}></div>
+                    <div style={{display:'inline-block', width:24, height:24, verticalAlign: 'middle', backgroundColor: '#ff7d77', opacity:'0.7', marginRight:'10px'}}></div>
                     <div style={{display:'inline-block'}}>MasterNode</div>
                 </div>
                 <div style={{display:'inline-block', verticalAlign: 'middle'}}>
-                    <div style={{display:'inline-block', width:24, height:24, verticalAlign: 'middle', backgroundColor: '#a2cbff', marginRight:'10px'}}></div>
+                    <div style={{display:'inline-block', width:24, height:24, verticalAlign: 'middle', backgroundColor: '#a2cbff', opacity:'0.7', marginRight:'10px'}}></div>
                     <div style={{display:'inline-block'}}>Node</div>
                 </div>
             </Grid.Row>
@@ -67,7 +67,7 @@ const cloudletMap = (props, type) => (
     <Fragment>
         {(type === 'cloudlets')?
         <div className='panel_worldmap' style={{width:'100%', height:600}}>
-            <ClustersMap parentProps={{devData:props.cloudletData, reg:'cloudleAndClusterMap', zoomIn:()=>console.log('zoomin'), zoomOut:()=>console.log('zoomout'), resetMap:()=>console.log('resetmap') }} zoomControl={{center:[0, 0], zoom:1.5} }></ClustersMap>
+            <ClustersMap parentProps={{devData:props.cloudletData, reg:'cloudletAndClusterMap', zoomIn:()=>console.log('zoomin'), zoomOut:()=>console.log('zoomout'), resetMap:()=>console.log('resetmap') }} zoomControl={{center:[0, 0], zoom:1.5} }></ClustersMap>
         </div>
 
         :

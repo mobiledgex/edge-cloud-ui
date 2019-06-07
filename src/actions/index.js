@@ -199,3 +199,9 @@ export function alertMsg (msg) {
         msg
     }
 }
+export function changeDetail (mode) {
+    return {
+        type: types.CHANGE_VIEW,
+        mode
+    }
+}

@@ -202,7 +202,7 @@ class MapWithListView extends React.Component {
         return keys.map((key, i) => (
             (!( String(hidden).indexOf(key) > -1 ))?
                 (i === keys.length -1) ?
-                <Table.HeaderCell key={i} width={3} textAlign='center' sorted={column === key ? direction : null}>
+                <Table.HeaderCell key={i} width={2} textAlign='center' sorted={column === key ? direction : null}>
                     {key}
                 </Table.HeaderCell>
                 :
@@ -222,7 +222,10 @@ class MapWithListView extends React.Component {
         alert(b[a])
     }
     detailView(item) {
-        this.setState({detailViewData:item, openDetail:true})
+        //this.setState({detailViewData:item, openDetail:true})
+
+        //change popup to page view
+        this.props.handleDetail({data:item, viewMode:'detailView'})
     }
     TableExampleVeryBasic = (w, h, headL, hidden) => (
         <Table className="viewListTable" basic='very' striped celled fixed sortable ref={ref => this.viewListTable = ref} style={{width:'100%'}}>
@@ -242,7 +245,7 @@ class MapWithListView extends React.Component {
                                 {Object.keys(item).map((value, j) => (
                                     (value === 'Edit')?
                                         <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <Button disabled key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
+                                            <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                             <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
                                         </Table.Cell>
                                     :
@@ -305,12 +308,13 @@ class MapWithListView extends React.Component {
         setTimeout(() => self.setState({tooltipVisible:true}), 1000)
 
     }
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log('-----component did update ------', prevState.dummyData, this.state.dummyData)
-    }
+    // componentDidUpdate(prevProps, prevState, snapshot) {
+    //     console.log('-----component did update ------', prevState.dummyData, this.state.dummyData)
+    // }
 
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('nextProps--------', nextProps,this.props.clickCity)
+
         let cityCoordinates = []
         let filterList = []
 
@@ -372,7 +376,7 @@ class MapWithListView extends React.Component {
                             {this.generateDOM(open, dimmer, width, height)}
                         </ReactGridLayout>
 
-                        <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
+                        {/*<PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>*/}
                     </div>
 
                 }
@@ -397,22 +401,19 @@ const mapStateToProps = (state) => {
     console.log(state)
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
-
+    let viewMode = null;
     return {
         accountInfo,
         dimmInfo,
         clickCity: state.clickCityList.list
     }
 
-    // return (dimm) ? {
-    //     dimmInfo : dimm
-    // } : (account)? {
-    //     accountInfo: account + Math.random()*10000
-    // } : null;
+
 };
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
+        handleDetail: (data) => { dispatch(actions.changeDetail(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleRefreshData: (data) => { dispatch(actions.refreshData(data))},
         handleBlinkMark: (data) => { dispatch(actions.blinkMark(data))}

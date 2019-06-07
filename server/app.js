@@ -451,6 +451,7 @@ app.post('/showOrg', apiMC.showOrg);
 app.post('/ShowFlavor', apiMC.ShowFlavor);
 app.post('/ShowClusterFlavor', apiMC.ShowClusterFlavor);
 app.post('/ShowUsers', apiMC.ShowUsers);
+app.post('/ShowAccounts', apiMC.showAccounts);
 app.post('/ShowCloudlet', apiMC.ShowCloudlet);
 app.post('/showController', apiMC.showController);
 app.post('/ShowClusterInst', apiMC.ShowClusterInst);
@@ -476,6 +477,7 @@ app.post('/ShowRole', apiMC.ShowRole);
 /////
 app.post('/deleteService', apiMC.DeleteService);
 app.post('/deleteUser', apiMC.DeleteUser);
+app.post('/deleteAccount', apiMC.DeleteAccount);
 app.post('/deleteOrg', apiMC.DeleteOrg);
 
 // mc-dev
