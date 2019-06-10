@@ -25,8 +25,7 @@ const headerStyle = {
 var horizon = 6;
 var vertical = 20;
 var layout = [
-    {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":19,"minH":20, "maxW":19,"maxH":20, "moved":false,"static":false, "title":"Developer"},
-    // {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":8,"minH":5,"moved":false,"static":false, "title":"Developer"} //resize
+    {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":8,"minH":5,"moved":false,"static":false, "title":"Developer"}
 ]
 let _self = null;
 
@@ -46,10 +45,11 @@ class DeveloperListView extends React.Component {
             detailViewData:null,
             selected:{},
             openUser:false,
-            orgData:{data:[]},
             selectUse:null,
             resultData:null,
-            openDelete:false
+            openDelete:false,
+            isDraggable: false
+
         };
 
     }
@@ -76,19 +76,13 @@ class DeveloperListView extends React.Component {
         console.log('on handle click == ', data)
         this.setState({page:'pg=createAppInst'})
     }
-    getDataDeveloper(token) {
-        services.getMCService('ShowRole',{token:token}, this.receiveResult)
-    }
-    receiveResult = (result) => {
-        this.setState({orgData:result})
-    }
 
     onUseOrg(useData,key, evt) {
-        console.log("onuseorg",useData,this.state.orgData.data,key)
+        console.log("onuseorg",useData,this.props.roleInfo.data,key)
 
         this.setState({selectUse:key})
-        if(this.state.orgData.data) {
-            this.state.orgData.data.map((item,i) => {
+        if(this.props.roleInfo.data) {
+            this.props.roleInfo.data.map((item,i) => {
                 if(item.org == useData.Organization) {
                     console.log('item role =',item.role)
                     this.props.handleUserRole(item.role)
@@ -252,8 +246,8 @@ class DeveloperListView extends React.Component {
     )
     addUserDisable = (orgName) => {
         let dsb = false;
-        if(this.state.orgData && localStorage.selectRole !== 'AdminManager'){
-            this.state.orgData.data.map((item,i) => {
+        if(this.props.roleInfo && localStorage.selectRole !== 'AdminManager'){
+            this.props.roleInfo.data.map((item,i) => {
                 if(item.org == orgName.Organization) {
                     if(item.role == 'DeveloperContributor') dsb = true
                     else if(item.role == 'DeveloperViewer') dsb = true
@@ -342,8 +336,7 @@ class DeveloperListView extends React.Component {
         //_self.props.handleRefreshData({params:{state:'refresh'}})
     }
     componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        //if(store.userToken && localStorage.selectMenu == 'Organization') this.getDataDeveloper(store.userToken);
+
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('nextProps',nextProps,this.props.siteId)
@@ -389,13 +382,16 @@ class DeveloperListView extends React.Component {
             </ContainerDimensions>
 
         );
+
     }
     static defaultProps = {
         className: "layout",
         items: 20,
         rowHeight: 30,
         cols: 12,
-        width: 1600
+        width: 1600,
+        isDraggable:false
+
     };
 }
 
@@ -415,6 +411,7 @@ const mapStateToProps = (state) => {
         userToken : (state.user.userToken) ? state.userToken: null,
         searchValue : (state.searchValue.search) ? state.searchValue.search: null,
         userRole : state.showUserRole?state.showUserRole.role:null,
+        roleInfo : state.roleInfo?state.roleInfo.role:null,
     }
     
     // return (dimm) ? {

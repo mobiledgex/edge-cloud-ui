@@ -25,8 +25,7 @@ const headerStyle = {
 var horizon = 6;
 var vertical = 20;
 var layout = [
-    {"w":19,"h":20,"x":0,"y":0,"minW":19,"minH":20,"maxW":19,"maxH":20,"i":"0","moved":false,"static":false, "title":"Developer"},
-    // {"w":19,"h":20,"x":0,"y":0,"minW":8,"minH":7,"i":"0","moved":false,"static":false, "title":"Developer"}, //resize
+    {"w":19,"h":20,"x":0,"y":0,"minW":8,"minH":7,"i":"0","moved":false,"static":false, "title":"Developer"}
 
 ]
 const stepData = [

@@ -42,6 +42,10 @@ body, button, input, textarea, optgroup, select, textarea,
     background: transparent;
 }
 
+.table-no-resized .react-grid-item > .react-resizable-handle {
+    display: none;
+    /*background: transparent;*/
+}
 
 .CircularProgressbar .CircularProgressbar-path {
     stroke: url('#gradientTwo') !important;

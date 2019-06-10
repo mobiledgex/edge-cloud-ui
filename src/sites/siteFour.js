@@ -262,6 +262,7 @@ class SiteFour extends React.Component {
     }
     receiveAdminInfo = (result) => {
         console.log("adminInfo@@@",result.data,this.props,this.state);
+        this.props.handleRoleInfo(result)
         if(result.error) {
 
         } else {
@@ -718,7 +719,7 @@ class SiteFour extends React.Component {
                             <Grid.Column style={{height:'100%'}}>
                                 <ContainerDimensions>
                                     { ({ width, height }) =>
-                                        <div style={{width:width, height:height, display:'flex', overflow:'hidden'}}>
+                                        <div className="table-no-resized" style={{width:width, height:height, display:'flex', overflow:'hidden'}}>
                                             {
                                                 (this.state.page === 'pg=0')?<SiteFourPageOrganization></SiteFourPageOrganization> :
                                                 (this.state.page === 'pg=1')?<SiteFourPageUser></SiteFourPageUser> :
@@ -793,6 +794,7 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))},
         handleDetail: (data) => { dispatch(actions.changeDetail(data))},
+        handleRoleInfo: (data) => { dispatch(actions.roleInfo(data))},
     };
 };
 

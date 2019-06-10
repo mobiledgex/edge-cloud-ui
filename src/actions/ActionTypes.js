@@ -28,3 +28,4 @@ export const LOGIN_MODE = 'LOGIN_MODE';
 export const CREATING_SPINNER = 'CREATING_SPINNER';
 export const ALERT_MSG = 'ALERT_MSG';
 export const CHANGE_VIEW = 'CHANGE_VIEW';
+export const ROLE_INFO = 'ROLE_INFO';

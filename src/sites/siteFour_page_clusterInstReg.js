@@ -68,7 +68,7 @@ class SiteFourPageClusterInstReg extends React.Component {
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        console.log('info.. store == ', store)
+        // console.log('info.. store == ', store)
 
 
         if(store.userToken) {
