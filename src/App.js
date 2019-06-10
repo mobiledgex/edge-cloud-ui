@@ -95,8 +95,16 @@ const DashboardContainer = ( props, props2) => {
         self.props.mapDispatchToLoginWithPassword({})
 
     }
+    if(props.mainPath === '/passwordreset') {
+        let token = props2.location.search.replace('token=', '')
+        let params = {};
+        params['resetToken'] = token
+        localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(params))
+    }
 
     const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
+
+
     console.log('storage data == ', storage_data)
     if (!storage_data && props.mainPath !== '/createAccount' && props.mainPath !== '/verify' && props.mainPath !== '/passwordreset') {
         let mainPath = '/site1';

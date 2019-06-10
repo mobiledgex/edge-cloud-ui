@@ -205,3 +205,10 @@ export function changeDetail (mode) {
         mode
     }
 }
+export function roleInfo (role) {
+    console.log('ROLE_INFO == ', role)
+    return {
+        type: types.ROLE_INFO,
+        role
+    }
+}

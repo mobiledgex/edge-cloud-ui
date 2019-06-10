@@ -482,7 +482,7 @@ app.post('/deleteOrg', apiMC.DeleteOrg);
 
 // mc-dev
 app.post('/passwordresetrequest', apiMC.ResetPassword)
-app.post('/newpass', apiMC.UpdatePassword)
+app.post('/passwordreset', apiMC.UpdatePassword)
 /*
 --auth-type=jwt --auth=$SUPERPASS
  */

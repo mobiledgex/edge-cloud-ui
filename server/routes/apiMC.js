@@ -1108,15 +1108,15 @@ exports.UpdatePassword = (req, res) => {
             console.log('success update pass ', response.statusText)
 
             if(response.statusText === 'OK') {
-                res.json({message:'Success'})
+                res.json({message:'You have successfully updated your password'})
             } else {
-
+                console.log(response)
             }
         })
         .catch(function (error) {
 
+            res.json({error:'Invalid or expired token'})
             console.log('error show ..', String(error));
-            res.json({error:String(error)})
         });
 }
 exports.ResendVerify = (req, res) => {

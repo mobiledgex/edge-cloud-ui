@@ -132,7 +132,9 @@ const FormResendVerify = (props) => (
             {props.login_danger}
         </div>
         <Grid.Row>
-            <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail('verify')}>Send verify email</Button>
+            <Grid.Column>
+                <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSendEmail('verify')}>Send verify email</Button>
+            </Grid.Column>
         </Grid.Row>
 
     </Grid>
@@ -247,7 +249,8 @@ class Login extends Component {
             loginDanger:'',
             forgotPass:false,
             forgotMessage:false,
-            created:false
+            created:false,
+            store:null
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -264,17 +267,17 @@ class Login extends Component {
          * TEST success created new account
          ***/
         //this.setState({successCreate:true, loginMode:'signup', successMsg:'test created'})
+
+
     }
+
     componentWillReceiveProps (nextProps) {
         console.log('submit props ---- ', nextProps)
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(nextProps.values) {
             if(nextProps.submitSucceeded) {
-                let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-                if(store && store.userToken) {
-
-                }
                 if(nextProps.loginMode === 'resetPass'){
-                    service.getMCService('newpass',{ email:nextProps.values.email}, self.resultNewPass, self)
+                    service.getMCService('passwordreset',{ password:nextProps.values.password, token: store.resetToken}, self.resultNewPass, self)
                 } else {
                     serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email}, self.resultCreateUser, self)
                 }
@@ -331,7 +334,19 @@ class Login extends Component {
     resultNewPass(result) {
         console.log('success update as new pass......', result.data, JSON.stringify(result.data), typeof result.data)
         let message = (result.data.message)? result.data.message : null;
-        console.log('msg-',message)
+        if(result.data.error) {
+            Alert.error(result.data.error, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+        } else {
+            Alert.success(result.data.message, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+        }
 
         //TODO 20190416 - redux
         self.setState({successMsg:message ? message:self.state.successMsg, errorCreate: true, signup:true});
@@ -356,7 +371,6 @@ class Login extends Component {
         console.log('receive token..', result.data)
         if(result.data.token) {
             console.log('success....receive token.....', result.data.token, 'self params == ', self.params)
-
             self.params['userToken'] = result.data.token
             localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
             self.props.mapDispatchToLoginWithPassword(self.params)
@@ -439,7 +453,7 @@ class Login extends Component {
     onSubmit() {
         const { username, password } = this.state
         if(!username && !password) {
-            self.setState({loginDanger:'Insert Username and password'});
+            self.setState({loginDanger:'Insert Username and Password'});
         } else if(!username) {
             self.setState({loginDanger:'Insert Username'});
         } else if(!password) {
@@ -450,7 +464,10 @@ class Login extends Component {
             password: password,
         }
         self.params = params;
-        self.requestToken(self);
+        if(username && password) {
+            self.setState({loginDanger:''});
+            self.requestToken(self)
+        };
 
         // create account
         // MyAPI.signinWithPassword(params)

@@ -25,8 +25,7 @@ const headerStyle = {
 var horizon = 6;
 var vertical = 20;
 var layout = [
-    {"w":19,"h":20,"x":0,"y":0,"i":"0", "minW":19,"minH":20, "maxW":19,"maxH":20, "moved":false,"static":false, "title":"Developer"},
-    // {"w":19,"h":20,"x":0,"y":0,"i":"0", "minW":8,"minH":5, "moved":false,"static":false, "title":"Developer"} //resize
+    {"w":19,"h":20,"x":0,"y":0,"i":"0", "minW":8,"minH":5, "moved":false,"static":false, "title":"Developer"}
 ]
 let _self = null;
 const colors = [
@@ -321,6 +320,12 @@ class RegistryClusterInstViewer extends React.Component {
   "NumberOfNode": "2"
 }
  */
+const getInteger = (str) => (
+    (str === ipaccessArr[0])? 0 :
+    (str === ipaccessArr[1])? 1 :
+    (str === ipaccessArr[2])? 2 :
+    (str === ipaccessArr[3])? 3 : false
+)
 const createFormat = (data) => (
     {
         "region":data['Region'],
@@ -337,7 +342,7 @@ const createFormat = (data) => (
                     },
                 "deploymentType":data['DeploymentType'],
                 "flavor":{"name":data['Flavor']},
-                "ip_access":data['IpAccess'],
+                "ip_access":parseInt(getInteger(data['IpAccess'])),
                 "num_masters":parseInt(data['NumberOfMaster']),
                 "num_nodes":parseInt(data['NumberOfNode'])
             }

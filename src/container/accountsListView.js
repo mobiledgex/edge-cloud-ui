@@ -20,7 +20,7 @@ import Alert from 'react-s-alert';
 const ReactGridLayout = WidthProvider(RGL);
 
 var layout = [
-    {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":19,"minH":20, "maxW":19,"maxH":20, "moved":false,"static":false, "title":"Developer"},
+    {"w":19,"h":20,"x":0,"y":0,"i":"0", "moved":false,"static":false, "title":"Developer"},
 ]
 let _self = null;
 
@@ -45,7 +45,8 @@ class AccountListView extends React.Component {
             resultData:null,
             openDelete:false,
             openVerify:false,
-            verifyEmail:''
+            verifyEmail:'',
+            isDraggable: false,
         };
 
     }
@@ -321,7 +322,8 @@ class AccountListView extends React.Component {
         items: 20,
         rowHeight: 30,
         cols: 12,
-        width: 1600
+        width: 1600,
+        isDraggable:false
     };
 }
 

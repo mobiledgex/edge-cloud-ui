@@ -27,8 +27,7 @@ const headerStyle = {
 var horizon = 6;
 var vertical = 20;
 var layout = [
-    {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":19,"minH":20,"maxW":19,"minH":20,"moved":false,"static":false, "title":"Developer"},
-    // {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":5,"minH":5,"moved":false,"static":false, "title":"Developer"}, //resize
+    {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":5,"minH":5,"moved":false,"static":false, "title":"Developer"}
 
 ]
 let _self = null;
@@ -82,7 +81,7 @@ class RegistryViewer extends React.Component {
                 'AppName':{label:'App Name', type:'RenderInput', necessary:true, tip:null, active:true},
                 'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:null, active:true},
                 'ImagePath':{label:'Image Path', type:'RenderInput', necessary:true, tip:'aaa', active:true},
-                'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'aaa', active:true, items:['Docker', 'Kubernetes', 'VM']},
+                'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'aaa', active:true, items:['docker', 'kubernetes', 'vm']},
                 'ImageType':{label:'Image Type', type:'RenderDT', necessary:false, tip:'If Deployment Type Chosen as kubernetes, then image type is always ImageTypeDocker',items:''},
                 'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'aaa', active:true},
                 'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:'Like this udp:12001,tcp:80,http:7777', active:true, items:['tcp', 'udp']},
@@ -369,11 +368,11 @@ class RegistryViewer extends React.Component {
         }
         if(nextProps.selectedDeploymentType) {
             let assObj = Object.assign([], this.keysData);
-            if(nextProps.selectedDeploymentType == "Kubernetes" || nextProps.selectedDeploymentType == "Docker") {
+            if(nextProps.selectedDeploymentType == "kubernetes" || nextProps.selectedDeploymentType == "docker") {
                 assObj[0].ImageType.items = 'ImageTypeDocker';
                 itData = 'ImageTypeDocker'
                 this.setState({imageTypeValue:'ImageTypeDocker'});
-            } else if(nextProps.selectedDeploymentType == "VM") {
+            } else if(nextProps.selectedDeploymentType == "vm") {
                 assObj[0].ImageType.items = 'ImageTypeQcow';
                 this.setState({imageTypeValue:'ImageTypeQcow'})
                 itData = 'ImageTypeQcow'
@@ -422,7 +421,7 @@ const createFormat = (data) => (
             {
                 "key":{"developer_key":{"name":data['OrganizationName']},"name":data['AppName'],"version":data['Version']},
                 "image_path":data['ImagePath'],
-                "deploymentType":data['DeploymentType'],
+                "deployment":data['DeploymentType'],
                 "image_type":itData,
                 "access_ports":accessport(data),
                 "default_flavor":{"name":data['DefaultFlavor']},

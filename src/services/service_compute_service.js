@@ -297,14 +297,13 @@ export function getMCService(resource, body, callback, self) {
         serviceDomain:serviceDomain
     }))
         .then(function (response) {
-            console.log("showInstName!!",response)
+
             let parseData = null;
             if(response.data) {
                 parseData = JSON.parse(JSON.stringify(response));
             } else {
                 parseData = response;
             }
-
             if(parseData){
                 switch(resource){
                     case 'showOrg': callback(FormatComputeOrganization(parseData)); break;
@@ -323,6 +322,7 @@ export function getMCService(resource, body, callback, self) {
                     case 'ShowRole': callback(parseData); break;
                     case 'UpdateVerify': callback(parseData); break;
                     case 'ResetPassword': callback(parseData); break;
+                    case 'passwordreset': callback(parseData); break;
                 }
             }
         })
