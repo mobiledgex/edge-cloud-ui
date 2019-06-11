@@ -423,7 +423,7 @@ class RegistNewItem extends React.Component {
             service.createNewClusterInst('CreateClusterInst', serviceBody, this.receiveSubmit)
         } else if(localStorage.selectMenu === 'Cloudlets') {
             console.log("submitCloudlet@@",this.props.submitData)
-            const {CloudletName, OperatorName, Longitude, Latitude, Ip_support, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
+            const {CloudletName, OperatorName, Latitude, Longitude, Ip_support, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
             this.props.handleLoadingSpinner(true);
             serviceBody = {
                 "token":store.userToken,
@@ -439,7 +439,7 @@ class RegistNewItem extends React.Component {
                             "longitude":Number(Longitude),
                             "timestamp":{}
                         },
-                        "ip_support":Number(Ip_support),
+                        "ip_support":Ip_support,
                         "num_dynamic_ips":Number(Num_dynamic_ips)
                     }
                 }

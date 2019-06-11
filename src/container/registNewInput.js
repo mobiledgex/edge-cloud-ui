@@ -76,6 +76,11 @@ class registNewInput extends React.Component {
                 {key: 1, value: "1", text: "IpAccessDedicated"},
                 {key: 2, value: "2", text: "IpAccessDedicatedOrShared"},
                 {key: 3, value: "3", text: "IpAccessShared"}
+            ],
+            Ip_support:[
+                {key: 0, value: "IPSupportUnknown", text: "IPSupportUnknown"},
+                {key: 1, value: "IPSupportStatic", text: "IPSupportStatic"},
+                {key: 2, value: "IPSupportDynamic", text: "IPSupportDynamic"}
             ]
         };
 
@@ -114,11 +119,12 @@ class registNewInput extends React.Component {
     componentWillReceiveProps(nextProps) {        
         console.log("nextProps@@",nextProps)
         if(nextProps.locationLong || nextProps.locationLat){
-            this.props.dispatch(change('registNewInput', 'Longitude', nextProps.locationLong));
             this.props.dispatch(change('registNewInput', 'Latitude', nextProps.locationLat));
+            this.props.dispatch(change('registNewInput', 'Longitude', nextProps.locationLong));
         } else {
-            this.props.dispatch(change('registNewInput', 'Longitude', null));
             this.props.dispatch(change('registNewInput', 'Latitude', null));
+            this.props.dispatch(change('registNewInput', 'Longitude', null));
+
         }
     }
 
@@ -167,11 +173,13 @@ class registNewInput extends React.Component {
                                                     <Field component={renderSelect} placeholder='Select Flavor' name='Flavor' options={option[8]} value={value[8]} />
                                                     : (key === 'IpAccess')?
                                                     <Field component={renderSelect} placeholder='Select IpAccess' name='IpAccess' options={this.state.ipAccessStatic} />
+                                                    : (key === 'Ip_support')?
+                                                    <Field component={renderSelect} placeholder='Select Ip_support' name='Ip_support' options={this.state.Ip_support} />
                                                     : (key === 'CloudletLocation')?
                                                     <Grid>
                                                         <Grid.Row columns={2}>
-                                                            <Grid.Column><span>Longitude</span><Field ref={longLoc} name='Longitude' component={renderLocationInput} placeholder={(dimmer === 'blurring')? '' : (selected[key]) ? selected[key].longitude : null } change={handleChangeLong} /></Grid.Column>
                                                             <Grid.Column><span>Latitude</span><Field ref={latLoc} name='Latitude' component={renderLocationInput} placeholder={(dimmer === 'blurring')? '' : (selected[key]) ? selected[key].latitude : null } change={handleChangeLat} /></Grid.Column>
+                                                            <Grid.Column><span>Longitude</span><Field ref={longLoc} name='Longitude' component={renderLocationInput} placeholder={(dimmer === 'blurring')? '' : (selected[key]) ? selected[key].longitude : null } change={handleChangeLong} /></Grid.Column>
                                                         </Grid.Row>
                                                     </Grid>
                                                     :
