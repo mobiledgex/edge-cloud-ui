@@ -215,6 +215,7 @@ class SiteFour extends React.Component {
         _self.setState({ page:subPath})
     }
     handleItemClick ( id, label, pg, role ) {
+        _self.props.handleDetail({data:null, viewMode:'listView'})
         _self.props.handleChangeViewBtn(false);
         _self.props.handleChangeClickCity([]);
         _self.props.handleChangeComputeItem(label);
@@ -402,7 +403,11 @@ class SiteFour extends React.Component {
             this.setState({toggleState:false})
         }
 
-        if(nextProps.viewMode) this.setState({viewMode:nextProps.viewMode})
+        if(nextProps.viewMode){
+            this.setState({viewMode:nextProps.viewMode})
+        } else {
+            this.setState({viewMode:'listView'})
+        }
     }
 
 
@@ -667,7 +672,7 @@ class SiteFour extends React.Component {
                         </Menu>
                         <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
                             {
-                                (localStorage.selectRole == 'AdminManager')? 'version 0.8.3' : null
+                                (localStorage.selectRole == 'AdminManager')? 'version 0.8.4' : null
                             }
                         </div>
                     </Grid.Column>

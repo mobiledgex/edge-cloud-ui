@@ -1,22 +1,16 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
-import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
-import MapWithListView from "../container/mapWithListView";
 import DeveloperListView from '../container/developerListView';
 import Alert from "react-s-alert";
 
-
-
 let _self = null;
-
+let rgn = ['US','EU'];
 class SiteFourPageApps extends React.Component {
     constructor(props) {
         super(props);
@@ -36,8 +30,6 @@ class SiteFourPageApps extends React.Component {
         this.headerLayout = [1,2,2,1,2,2,2,3];
         this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster']
         this.userToken = null;
-
-        //
 
     }
 
@@ -113,7 +105,7 @@ class SiteFourPageApps extends React.Component {
         }
     }
     getDataDeveloper = (token, region) => {
-        let rgn = ['US','EU'];
+
         let serviceBody = {}
         this.setState({devData:[]})
         if(region !== 'All'){

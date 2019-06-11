@@ -60,10 +60,7 @@ let generateData = (datas,body) => {
                 let ImageType = dataResult.data.image_type || '-';
                 let DefaultFlavor = dataResult.data.default_flavor.name || '-';
                 let Ports = dataResult.data.access_ports || '-';
-                // let IpAccess = dataResult.data.IpAccess || '-';
-                let Cluster = dataResult.data.cluster.name || '-';
-                
-                let DeploymentGenerator = dataResult.deployment_generator || '-';
+                //let DeploymentGenerator = dataResult.deployment_generator || '-';
 
                 let newRegistKey = [
                     'Region',

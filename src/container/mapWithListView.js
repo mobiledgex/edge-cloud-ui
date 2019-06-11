@@ -200,11 +200,11 @@ class MapWithListView extends React.Component {
         return keys.map((key, i) => (
             (!( String(hidden).indexOf(key) > -1 ))?
                 (i === keys.length -1) ?
-                <Table.HeaderCell key={i} width={2} textAlign='center' sorted={column === key ? direction : null}>
+                <Table.HeaderCell key={i} width={2} textAlign='center'>
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell key={i} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
+                <Table.HeaderCell key={i} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'CloudletLocation')?this.handleSort(key):null}>
                     {key}
                 </Table.HeaderCell>
             :

@@ -76,19 +76,19 @@ const cloudletMap = (props, type) => (
             <Grid style={{margin:'0 -1rem'}}>
                 <Grid.Row columns={2}>
                     <Grid.Column>
+                        <Grid.Column>
+                            <Form.Field
+                                id='form-input-control-first-name'
+                                control={renderLocationInput}
+                                label='Latitude'
+                                placeholder='Latitude'
+                            />
+                        </Grid.Column>
                         <Form.Field
                             id='form-input-control-first-name'
                             control={renderLocationInput}
                             label='Longitude'
                             placeholder='Longitude'
-                        />
-                    </Grid.Column>
-                    <Grid.Column>
-                        <Form.Field
-                            id='form-input-control-first-name'
-                            control={renderLocationInput}
-                            label='Latitude'
-                            placeholder='Latitude'
                         />
                     </Grid.Column>
                 </Grid.Row>
