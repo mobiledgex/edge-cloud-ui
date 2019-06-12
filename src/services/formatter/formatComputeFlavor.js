@@ -37,18 +37,18 @@ let generateData = (datas,body) => {
                 let Region = body.region || '-';
                 let FlavorName = dataResult.data.key.name || '-';
                 let RAM = dataResult.data.ram || '-';
-                let VCPUS = dataResult.data.vcpus || '-';
-                let DISK = dataResult.data.disk || '-';
-                let newRegistKey = ['Region', 'FlavorName', 'RAM', 'VCPUS', 'DISK'];
+                let vCPUs = dataResult.data.vcpus || '-';
+                let Disk = dataResult.data.disk || '-';
+                let newRegistKey = ['Region', 'FlavorName', 'RAM', 'vCPUs', 'Disk'];
 
-                values.push({Region:Region, FlavorName:FlavorName, RAM:RAM, VCPUS:VCPUS, DISK:DISK, Edit:newRegistKey})
+                values.push({Region:Region, FlavorName:FlavorName, RAM:RAM, vCPUs:vCPUs, Disk:Disk, Edit:newRegistKey})
             }
 
         })
     } else {
-        let newRegistKey = ['Region', 'FlavorName', 'RAM', 'VCPUS', 'DISK'];
+        let newRegistKey = ['Region', 'FlavorName', 'RAM', 'vCPUs', 'Disk'];
         //values.push({Edit:newRegistKey})
-        values.push({Region:'', FlavorName:'', RAM:'', VCPUS:'', DISK:'', Edit:newRegistKey})
+        values.push({Region:'', FlavorName:'', RAM:'', vCPUs:'', Disk:'', Edit:newRegistKey})
     }
 
     //ascending or descending

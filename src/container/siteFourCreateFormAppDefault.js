@@ -212,12 +212,12 @@ class SiteFourCreateFormAppDefault extends React.Component {
     )
     onHandleSubmit() {
         this.props.handleSubmit();
-        setTimeout(() => this.props.dispatch(reset('createAppFormDefault')),1000);
+        //setTimeout(() => this.props.dispatch(reset('createAppFormDefault')),1000);
     }
 
     handleRegionChange = (e) => {
         this.props.getOptionData(e)
-        this.props.dispatch(reset('createAppFormDefault'));
+        //this.props.dispatch(reset('createAppFormDefault'));
     }
 
     AddPorts = (e) => {
@@ -283,7 +283,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                         (fieldKeys[pId][key]['type'] === 'RenderSelect') ?
                                                         <Field
                                                             component={renderSelect}
-                                                            placeholder={'Select '+key}
+                                                            placeholder={'Select '+fieldKeys[pId][key]['label']}
                                                             value={data[key]}
                                                             options={fieldKeys[pId][key]['items']}
                                                             name={key}
@@ -337,7 +337,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                             (getUserRole == 'AdminManager') ?
                                                                 <Field
                                                                     component={renderSelect}
-                                                                    placeholder={'Select OrganizationName'}
+                                                                    placeholder={'Select Organization Name'}
                                                                     options={this.state.orgArr}
                                                                     name={key}
                                                                     onChange={()=>console.log('onChange text..')}/>

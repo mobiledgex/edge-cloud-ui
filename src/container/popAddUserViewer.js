@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Divider, Modal, Grid, Input, TextArea, Dropdown, Image} from "semantic-ui-react";
-import SiteFourOrgaAddUser from "./siteFourOrgaAddUser";
+import SiteFourOrgaAddUser from "./siteFourOrgaAdduser";
 import * as serviceOrganiz from "../services/service_organiz_api";
 import Alert from 'react-s-alert';
 import { withRouter } from 'react-router-dom';

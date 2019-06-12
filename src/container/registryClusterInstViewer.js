@@ -81,7 +81,7 @@ class RegistryClusterInstViewer extends React.Component {
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
                     'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'aaa', active:true, items:['Docker', 'Kubernetes']},
                     'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
-                    'IpAccess':{label:'IpAccess', type:'RenderSelect', necessary:false, tip:'When checked, this will inherit settings from application settings',items:ipaccessArr},
+                    'IpAccess':{label:'Ip Access', type:'RenderSelect', necessary:false, tip:'When checked, this will inherit settings from application settings',items:ipaccessArr},
                     'Flavor':{label:'Flavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
                     'NumberOfMaster':{label:'Number of Master', type:'RenderInputDisabled', necessary:false, tip:'When checked, this will inherit settings from application settings', value:null},
                     'NumberOfNode':{label:'Number of Node', type:'RenderInput', necessary:false, tip:'When checked, this will inherit settings from application settings', value:null},

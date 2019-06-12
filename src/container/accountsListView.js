@@ -178,7 +178,7 @@ class AccountListView extends React.Component {
                 </Table.HeaderCell>
                 :
                 <Table.HeaderCell key={i} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'EmailVerified')?this.handleSort(key):null}>
-                    {key}
+                    {(key === 'EmailVerified')?'Email Verified':key}
                 </Table.HeaderCell>
         ));
     }

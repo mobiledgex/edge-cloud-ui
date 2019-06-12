@@ -146,7 +146,14 @@ class registNewInput extends React.Component {
                                         regKeys.map((key, i)=>(
                                             <Grid.Row key={i} columns={3}>
                                                 <Grid.Column width={5} className='detail_item'>
-                                                    <div>{key}</div>
+                                                    <div>
+                                                        {(key === 'CloudletName')?'Cloudlet Name'
+                                                            :(key === 'OperatorName')?'Operator Name'
+                                                                :(key === 'CloudletLocation')?'Cloudlet Location'
+                                                                    :(key === 'Ip_support')?'Ip Support'
+                                                                        :(key === 'Num_dynamic_ips')?'Num Dynamic Ips'
+                                                                            :key}
+                                                    </div>
                                                 </Grid.Column>
                                                 <Grid.Column width={9}>
                                                 {
@@ -156,7 +163,7 @@ class registNewInput extends React.Component {
                                                         (this.props.defaultValue) ?
                                                             <Field component={renderInput} type="input" name='OrganizationName' disabled={true} />
                                                         :
-                                                            <Field component={renderSelect} placeholder='Select OrganizationName' name='OrganizationName' options={option[1]} />
+                                                            <Field component={renderSelect} placeholder='Select Organization Name' name='OrganizationName' options={option[1]} />
                                                     : (key === 'Cloudlet')?
                                                     <Field component={renderSelect} placeholder='Select Cloudlet' name='Cloudlet' options={this.props.cloudArr} value={value[2]} />
                                                     : (key === 'Region')?
@@ -164,7 +171,7 @@ class registNewInput extends React.Component {
                                                     : (key === 'Version')?
                                                     <Field component={renderSelect} placeholder='Select Version' name='Version' options={option[4]} value={value[4]} change={change[4]}/>
                                                     : (key === 'ClusterInst')?
-                                                    <Field component={renderSelect} placeholder='Select ClusterInst' name='ClusterInst' options={option[5]} value={value[5]} change={change[5]}/>
+                                                    <Field component={renderSelect} placeholder='Select Cluster Inst' name='ClusterInst' options={option[5]} value={value[5]} change={change[5]}/>
                                                     : (key === 'Type')?
                                                     <Field component={renderSelect} placeholder='Select Type' name='Type' options={option[6]} value={value[6]} change={change[6]}/>
                                                     : (key === 'Role')?
@@ -172,9 +179,9 @@ class registNewInput extends React.Component {
                                                     : (key === 'Flavor')?
                                                     <Field component={renderSelect} placeholder='Select Flavor' name='Flavor' options={option[8]} value={value[8]} />
                                                     : (key === 'IpAccess')?
-                                                    <Field component={renderSelect} placeholder='Select IpAccess' name='IpAccess' options={this.state.ipAccessStatic} />
+                                                    <Field component={renderSelect} placeholder='Select Ip Access' name='IpAccess' options={this.state.ipAccessStatic} />
                                                     : (key === 'Ip_support')?
-                                                    <Field component={renderSelect} placeholder='Select Ip_support' name='Ip_support' options={this.state.Ip_support} />
+                                                    <Field component={renderSelect} placeholder='Select Ip Support' name='IpSupport' options={this.state.Ip_support} />
                                                     : (key === 'CloudletLocation')?
                                                     <Grid>
                                                         <Grid.Row columns={2}>

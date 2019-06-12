@@ -80,9 +80,9 @@ class RegistryInstViewer extends React.Component {
                     'Version':{label:'App Version', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
                     'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
-                    'AutoClusterInst':{label:'Auto-ClusterInt', type:'RenderCheckbox', necessary:false, tip:'When checked, this will inherit settings from application settings'},
-                    'ClusterInst':{label:'ClusterInst', type:'RenderSelect', necessary:true,
-                        tip:' When selecting clusterinst, default flavor and ipaccess specified in app setting gets overridden',
+                    'AutoClusterInst':{label:'Auto Cluster Inst', type:'RenderCheckbox', necessary:false, tip:'When checked, this will inherit settings from application settings'},
+                    'ClusterInst':{label:'Cluster Inst', type:'RenderSelect', necessary:true,
+                        tip:' When selecting cluster inst, default flavor and ipaccess specified in app setting gets overridden',
                         active:true, items:[null]},
                 },
                 {

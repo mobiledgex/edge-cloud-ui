@@ -98,6 +98,7 @@ class MapWithListView extends React.Component {
     }
     closeDetail = () => {
         this.setState({ openDetail: false })
+        this.props.handleDetail({data:null, viewMode:'listView'})
     }
     makeHeader_noChild =(title)=> (
         <Header className='panel_title'>{title}</Header>
@@ -205,7 +206,14 @@ class MapWithListView extends React.Component {
                 </Table.HeaderCell>
                 :
                 <Table.HeaderCell key={i} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'CloudletLocation')?this.handleSort(key):null}>
-                    {key}
+                    {(key === 'CloudletName')? 'Cloudlet Name'
+                        : (key === 'CloudletLocation')? 'Cloudlet Location'
+                            : (key === 'ClusterName')? 'Cluster Name'
+                                : (key === 'OrganizationName')? 'Organization Name'
+                                    : (key === 'IpAccess')? 'Ip Access'
+                                        : (key === 'AppName')? 'App Name'
+                                            : (key === 'ClusterInst')? 'Cluster Inst'
+                    : key}
                 </Table.HeaderCell>
             :
                 null
@@ -220,7 +228,7 @@ class MapWithListView extends React.Component {
         alert(b[a])
     }
     detailView(item) {
-        //this.setState({detailViewData:item, openDetail:true})
+        this.setState({detailViewData:item, openDetail:true})
 
         //change popup to page view
         this.props.handleDetail({data:item, viewMode:'detailView'})
@@ -374,7 +382,7 @@ class MapWithListView extends React.Component {
                             {this.generateDOM(open, dimmer, width, height)}
                         </ReactGridLayout>
 
-                        {/*<PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>*/}
+                        <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                     </div>
 
                 }

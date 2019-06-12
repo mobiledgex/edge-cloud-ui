@@ -215,7 +215,7 @@ const makeCardContent = (item, i, type) => (
 )
 
 let _self = null;
-class SiteFourOrgaAddUser extends React.Component {
+class SiteFourOrgaAdduser extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -366,12 +366,12 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-SiteFourOrgaAddUser = connect(
+SiteFourOrgaAdduser = connect(
     null,
     mapDispatchProps
-)(SiteFourOrgaAddUser);
+)(SiteFourOrgaAdduser);
 
 export default reduxForm({
     form: "orgaStepAddUser",
     enableReinitialize: true
-})(SiteFourOrgaAddUser);
+})(SiteFourOrgaAdduser);

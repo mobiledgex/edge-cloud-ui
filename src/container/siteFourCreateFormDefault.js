@@ -227,7 +227,7 @@ class SiteFourCreateFormDefault extends React.Component {
     handleRegionChange = (e) => {
         alert(e)
         this.props.getOptionData(e)
-        this.props.dispatch(reset('createAppFormDefault'));
+        //this.props.dispatch(reset('createAppFormDefault'));
     }
 
     AddPorts = (e) => {
@@ -292,7 +292,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                         (fieldKeys[pId][key]['type'] === 'RenderSelect') ?
                                                         <Field
                                                             component={renderSelect}
-                                                            placeholder={'Select '+key}
+                                                            placeholder={'Select '+fieldKeys[pId][key]['label'] }
                                                             value={data[key]}
                                                             options={fieldKeys[pId][key]['items']}
                                                             name={key}
@@ -310,7 +310,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             (getUserRole == 'AdminManager' && fieldKeys[pId][key]['label'] === 'Organization Name') ?
                                                                 <Field
                                                                     component={renderSelect}
-                                                                    placeholder={'Select OrganizationName'}
+                                                                    placeholder={'Select Organization Name'}
                                                                     options={this.state.orgArr}
                                                                     name={key}
                                                                     onChange={()=>console.log('onChange text..')}/>

@@ -233,7 +233,7 @@ class RegistNewListItem extends React.Component {
         //TODO: 20190410 메뉴 별 구분 필요
         if(localStorage.selectMenu === 'Flavors'){
             console.log("submitData@@",this.props.submitData)
-            const flavor = ['Region','FlavorName','RAM','VCPUS','DISK']
+            const flavor = ['Region','FlavorName','RAM','vCPUs','Disk']
             let error = [];
             if(!this.props.flavorValue.values) {
                 Alert.error('Insert values to all fields', {
@@ -257,7 +257,7 @@ class RegistNewListItem extends React.Component {
                     return false;
                 }
             }
-            const {FlavorName,RAM,VCPUS,DISK,Region} = this.props.submitData.registNewListInput.values
+            const {FlavorName,RAM,vCPUs,Disk,Region} = this.props.submitData.registNewListInput.values
             serviceBody = {
                 "token":store.userToken,
                 "params": {
@@ -265,8 +265,8 @@ class RegistNewListItem extends React.Component {
                     "flavor":{
                         "key":{"name":FlavorName},
                         "ram":Number(RAM),
-                        "vcpus":Number(VCPUS),
-                        "disk":Number(DISK)
+                        "vcpus":Number(vCPUs),
+                        "disk":Number(Disk)
                     }
                 }
             }

@@ -111,7 +111,8 @@ class SiteFour extends React.Component {
             toggleState:true,
             noData:false,
             viewMode:'listView',
-            toggleDisable:true
+            toggleDisable:true,
+            currentVersion:'v-'
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
@@ -277,6 +278,9 @@ class SiteFour extends React.Component {
         }
 
     }
+    receiveVersion(result) {
+        _self.setState({currentVersion:result.data.version})
+    }
     controllerOptions(option){
         let arr = []
         if(option) {
@@ -342,6 +346,7 @@ class SiteFour extends React.Component {
         Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
         computeService.getMCService('showController', {token:token}, this.receiveResult, this);
         computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
+        computeService.getMCService('Version',{token:token}, this.receiveVersion, this)
     }
     componentWillMount() {
         console.log('info..will mount ', this.columnLeft)
@@ -379,6 +384,8 @@ class SiteFour extends React.Component {
                 //_self.makeGhost(elem, _self)
             }
         }, 4000)
+
+
     }
     componentWillReceiveProps(nextProps) {
         console.log("props!!!!",nextProps,this.props)
@@ -445,7 +452,7 @@ class SiteFour extends React.Component {
 
         let child = document.createElement('div')
         child.style.cssText = 'position:absolute; width:100px; height:30px; line-height:30px; text-align:center; opacity:0.8; left:0px; z-index:100; background:#aaaaaa; border-radius:5px';
-        child.innerHTML = '<div>CloudletName</div>'
+        child.innerHTML = '<div>Cloudlet Name</div>'
         elem.appendChild(child);
         //
         let nextPosX = 15
@@ -672,7 +679,7 @@ class SiteFour extends React.Component {
                         </Menu>
                         <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
                             {
-                                (localStorage.selectRole == 'AdminManager')? 'version 0.8.4' : null
+                                (localStorage.selectRole == 'AdminManager')? this.state.currentVersion : null
                             }
                         </div>
                     </Grid.Column>

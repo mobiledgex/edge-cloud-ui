@@ -15,11 +15,11 @@ const validate = values => {
     if (!values.RAM) {
         errors.RAM = 'Required'
     } 
-    if (!values.VCPUS) {
-        errors.VCPUS = 'Required'
+    if (!values.vCPUs) {
+        errors.vCPUs = 'Required'
     } 
-    if (!values.DISK) {
-        errors.DISK = 'Required'
+    if (!values.Disk) {
+        errors.Disk = 'Required'
     } 
     return errors
 }
@@ -106,7 +106,7 @@ class registNewListInput extends React.Component {
                                         regKeys.map((key, i)=>(
                                             <Grid.Row key={i} columns={2}>
                                                 <Grid.Column width={5} className='detail_item'>
-                                                    <div>{key}</div>
+                                                    <div>{(key === 'FlavorName')?'Flavor Name' :key}</div>
                                                 </Grid.Column>
                                                 <Grid.Column width={11}>
                                                 {

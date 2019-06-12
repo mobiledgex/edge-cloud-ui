@@ -8,6 +8,7 @@ import qs from "qs";
 const API_KEY = '__apiMC_key__'
 let mcUrl = 'https://mc.mobiledgex.net:9900';
 let mcDevUrl = 'https://mc-stage.mobiledgex.net:9900';
+let _version = 'v0.0.0';
 console.log("how fast...", process.env.MC_URL)
 // create user
 exports.getToken = (req, res) => {
@@ -1214,4 +1215,10 @@ exports.ShowRole = (req, res) => {
             console.log('error show org..', String(error));
             res.json({error:'Request failed'})
         });
+}
+
+exports.getVersion = (req, res) => {
+    if(process.env.BUILD_VERSION) _version =  process.env.BUILD_VERSION;
+    console.log('get version = ', _version)
+    res.json({version:_version})
 }
