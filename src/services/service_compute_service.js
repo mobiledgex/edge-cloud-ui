@@ -323,6 +323,7 @@ export function getMCService(resource, body, callback, self) {
                     case 'UpdateVerify': callback(parseData); break;
                     case 'ResetPassword': callback(parseData); break;
                     case 'passwordreset': callback(parseData); break;
+                    default : callback(parseData);
                 }
             }
         })

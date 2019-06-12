@@ -237,7 +237,7 @@ class SiteFourOrgaOne extends React.Component {
                                 <Grid>
                                     <Grid.Row>
                                         <Grid.Column width={5}>
-                                            <div>OrganizationName</div>
+                                            <div>Organization Name</div>
                                         </Grid.Column>
                                         <Grid.Column width={11}>
                                             <Field

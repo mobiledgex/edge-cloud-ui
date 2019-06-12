@@ -197,7 +197,7 @@ class RegistryClusterFlavorViewer extends React.Component {
         if(nextProps.submitValues) {
             console.log('submit on...', nextProps.submitValues)
             console.log("submitData@@",nextProps.submitData)
-            const {FlavorName,RAM,VCPUS,DISK,Region} = this.propsnextProps.submitData.registNewListInput.values
+            const {FlavorName,RAM,vCPUs,Disk,Region} = this.propsnextProps.submitData.registNewListInput.values
             serviceBody = {
                 "token":store.userToken,
                 "params": {
@@ -205,8 +205,8 @@ class RegistryClusterFlavorViewer extends React.Component {
                     "flavor":{
                         "key":{"name":FlavorName},
                         "ram":Number(RAM),
-                        "vcpus":Number(VCPUS),
-                        "disk":Number(DISK)
+                        "vcpus":Number(vCPUs),
+                        "disk":Number(Disk)
                     }
                 }
             }
