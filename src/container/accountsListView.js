@@ -109,24 +109,24 @@ class AccountListView extends React.Component {
                         {this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)}
                     </div>
 
-                    <Table.Footer className='listPageContainer'>
-                        <Table.Row>
-                            <Table.HeaderCell>
-                                <Menu pagination>
-                                    <Menu.Item as='a' icon>
-                                        <Icon name='chevron left' />
-                                    </Menu.Item>
-                                    <Menu.Item as='a' active={true}>1</Menu.Item>
-                                    <Menu.Item as='a'>2</Menu.Item>
-                                    <Menu.Item as='a'>3</Menu.Item>
-                                    <Menu.Item as='a'>4</Menu.Item>
-                                    <Menu.Item as='a' icon>
-                                        <Icon name='chevron right' />
-                                    </Menu.Item>
-                                </Menu>
-                            </Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Footer>
+                    {/*<Table.Footer className='listPageContainer'>*/}
+                    {/*    <Table.Row>*/}
+                    {/*        <Table.HeaderCell>*/}
+                    {/*            <Menu pagination>*/}
+                    {/*                <Menu.Item as='a' icon>*/}
+                    {/*                    <Icon name='chevron left' />*/}
+                    {/*                </Menu.Item>*/}
+                    {/*                <Menu.Item as='a' active={true}>1</Menu.Item>*/}
+                    {/*                <Menu.Item as='a'>2</Menu.Item>*/}
+                    {/*                <Menu.Item as='a'>3</Menu.Item>*/}
+                    {/*                <Menu.Item as='a'>4</Menu.Item>*/}
+                    {/*                <Menu.Item as='a' icon>*/}
+                    {/*                    <Icon name='chevron right' />*/}
+                    {/*                </Menu.Item>*/}
+                    {/*            </Menu>*/}
+                    {/*        </Table.HeaderCell>*/}
+                    {/*    </Table.Row>*/}
+                    {/*</Table.Footer>*/}
 
                 </div>
                 :
@@ -173,11 +173,11 @@ class AccountListView extends React.Component {
         console.log('default width header -- ', widthDefault, filteredKeys)
         return filteredKeys.map((key, i) => (
             (i === filteredKeys.length -1) ?
-                <Table.HeaderCell key={i} width={(this.props.siteId == 'Organization')?3:2} textAlign='center' sorted={column === key ? direction : null}>
+                <Table.HeaderCell key={i} className='unsortable' width={2} textAlign='center'>
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell key={i} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'EmailVerified')?this.handleSort(key):null}>
+                <Table.HeaderCell key={i} className={(key === 'EmailVerified' || key === 'Locked')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'EmailVerified' && key !== 'Locked' )?this.handleSort(key):null}>
                     {(key === 'EmailVerified')?'Email Verified':key}
                 </Table.HeaderCell>
         ));
@@ -213,7 +213,7 @@ class AccountListView extends React.Component {
                                 (value === 'Edit')?
                                     <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
 
-                                        <Button size='mini' onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
+                                        <Button onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>
                                 :
@@ -233,10 +233,10 @@ class AccountListView extends React.Component {
                                 (value === 'EmailVerified')?
                                     <Table.Cell key={j} textAlign='center' style={{cursor:'pointer'}} >
                                         {
-                                            (item[value] === true)?
-                                                String(item[value])
+                                            (item[value] === true)?'Yes'
+                                                // String(item[value])
                                                 :
-                                                <Button size='mini' onClick={() => this.popupSendEmail(item['Email'])}>verify</Button>
+                                                <Button onClick={() => this.popupSendEmail(item['Email'])}>Send verification email</Button>
                                         }
 
                                     </Table.Cell>

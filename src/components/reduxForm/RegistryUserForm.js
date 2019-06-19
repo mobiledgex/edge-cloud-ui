@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import {Field, initialize, reduxForm} from "redux-form";
-import { Form, Message } from "semantic-ui-react";
+import {Form, Input, Message} from "semantic-ui-react";
 import './styles.css';
 
 const validate = values => {
@@ -67,6 +67,16 @@ const renderTextArea = field => (
         label={field.label}
         placeholder={field.placeholder}
     />
+);
+const renderInputNum = field => (
+    <Form.Field
+        {...field.input}
+        type={field.type}
+        // placeholder={field.placeholder}
+    >
+        <label>{field.label}</label>
+        <Input type="number"></Input>
+    </Form.Field>
 );
 const renderInput = field => (
     <div>

@@ -184,7 +184,7 @@ const SuccessMsg = (props) => (
                 :
                 <Fragment>
                     <div className="login-text">Fail to create your account. Please try Again.</div>
-                    {/*<Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => console.log(props.self.handleClickLogin)}><span>Sign Up</span></Button> // onClick 동작 안됨*/}
+                    <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => console.log(props.self.handleClickLogin)}><span>Sign Up</span></Button>
                 </Fragment>
             }
 
@@ -321,12 +321,19 @@ class Login extends Component {
         // if(message.indexOf('Email' && 'already') > -1){
         //     message = 'Email already in use'
         // }
-
-        Alert.error(message, {
-            position: 'top-right',
-            effect: 'slide',
-            timeout: 5000
-        });
+        if(message.indexOf('created') > -1) {
+            Alert.success(message, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+        } else {
+            Alert.error(message, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
+        }
 
 
         self.setState({successMsg:message ? message:self.state.successMsg, errorCreate: true, signup:true});
@@ -368,9 +375,7 @@ class Login extends Component {
     }
     receiveToken(result) {
 
-        console.log('receive token..', result.data)
         if(result.data.token) {
-            console.log('success....receive token.....', result.data.token, 'self params == ', self.params)
             self.params['userToken'] = result.data.token
             localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
             self.props.mapDispatchToLoginWithPassword(self.params)

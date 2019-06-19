@@ -4,6 +4,7 @@ import sizeMe from 'react-sizeme';
 import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
+import PageDetailViewer from '../container/pageDetailViewer';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -15,6 +16,7 @@ import Alert from "react-s-alert";
 
 
 let _self = null;
+let rgn = ['US','EU'];
 class SiteFourPageClusterInst extends React.Component {
     constructor(props) {
         super(props);
@@ -27,12 +29,18 @@ class SiteFourPageClusterInst extends React.Component {
             bodyHeight:0,
             devData:[],
             clusterInstData:[],
-            cloudletData:[]
+            cloudletData:[],
+            liveComp:false,
+            viewMode:'listView',
+            detailData:null,
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [1,2,2,1,2,1,2,2,2];
-        //this.hiddenKeys = ['CloudletLocation']
+        this.loadCount = 0;
+
+        this.headerLayout = [1,2,2,1,2,1,1,2,2,1];
+        this.hiddenKeys = ['Status']
+
     }
 
     //go to
@@ -58,6 +66,7 @@ class SiteFourPageClusterInst extends React.Component {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+        this.setState({liveComp:true})
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
@@ -67,7 +76,17 @@ class SiteFourPageClusterInst extends React.Component {
             this.getDataDeveloper(this.props.changeRegion);
         }
     }
+    componentWillUnmount() {
+
+        this.setState({liveComp:false})
+    }
+
+
     componentWillReceiveProps(nextProps) {
+        console.log("nextprprprp",nextProps)
+        if(!this.state.liveComp) {
+            return;
+        }
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
@@ -78,6 +97,18 @@ class SiteFourPageClusterInst extends React.Component {
         if(this.props.changeRegion !== nextProps.changeRegion){
             console.log("regionChange@@@@")
             this.getDataDeveloper(nextProps.changeRegion);
+        }
+        if(nextProps.viewMode) {
+            if(nextProps.viewMode === 'listView') {
+                this.setState({liveComp:false})
+                //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
+                this.getDataDeveloper(this.props.changeRegion)
+                this.setState({viewMode:nextProps.viewMode})
+            } else {
+                this.setState({viewMode:nextProps.viewMode})
+                setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
+            }
+
         }
     }
     receiveResult(result) {
@@ -103,33 +134,45 @@ class SiteFourPageClusterInst extends React.Component {
 
     groupJoin(result,cmpt){
 
-        console.log('cluster inst show app list.. ', result, cmpt)
+        console.log('cluster inst show app list.. ', result, cmpt, 'load cnt = ', _self.loadCount)
         this.props.handleLoadingSpinner(false);
 
-        if(cmpt == 'clusterInst') this.setState({clusterInstData:result}) 
-        else if(cmpt == 'cloudlet') this.setState({cloudletData:result})
-        
-        if(this.state.clusterInstData.length > 0 && this.state.cloudletData.length > 0) {
+        if(cmpt == 'clusterInst') this.setState({clusterInstData:_self.state.clusterInstData.concat(result)})
+        else if(cmpt == 'cloudlet') this.setState({cloudletData:_self.state.cloudletData.concat(result)})
+
+        _self.countJoin()
+
+        _self.loadCount ++;
+    }
+    countJoin() {
+        if(_self.loadCount + 1 === rgn.length * 2) {
             let clusterInst = this.state.clusterInstData;
             let cloudlet = this.state.cloudletData;
             let arr =[]
             clusterInst.map((itemCinst,i) => {
                 cloudlet.map((itemClet,j) => {
-                    if(itemCinst.Cloudlet == itemClet.CloudletName) {
+                    console.log('cloudletName is == ',itemCinst.Cloudlet, ":", itemClet.CloudletName)
+                    if(itemCinst.Cloudlet === itemClet.CloudletName) {
                         itemCinst.CloudletLocation = itemClet.CloudletLocation;
-                    } 
+                    }
                 })
-                arr.push(itemCinst)
+                if(itemCinst.Cloudlet !== "") arr.push(itemCinst)
             })
-            _self.setState({devData:arr})
+            _self.setState({devData:arr, liveComp:true})
+
+            _self.loadCount = 0;
         }
+
+        // default data ??? - in order to display header of table even if has no data.
     }
     
     getDataDeveloper = (region) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let rgn = ['US','EU'];
+
+        //TODO: region에 대한 데이터를  DB에서 가져와야 함.
+
         let serviceBody = {}
-        this.setState({devData:[]})
+        _self.setState({devData:[], cloudletData:[], clusterInstData:[]})
         if(region !== 'All'){
             rgn = [region]
         } 
@@ -137,8 +180,8 @@ class SiteFourPageClusterInst extends React.Component {
         if(localStorage.userRole == 'AdminManager') {
             rgn.map((item) => {
                 // All show clusterInst
-                services.getMCService('ShowClusterInst',{token:store.userToken, region:item}, _self.receiveResultClusterInst)
                 services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
+                services.getMCService('ShowClusterInst',{token:store.userToken, region:item}, _self.receiveResultClusterInst)
             })
         } else {
             rgn.map((item) => {
@@ -155,7 +198,7 @@ class SiteFourPageClusterInst extends React.Component {
                 }
                 // org별 show clusterInst
                 services.getMCService('ShowClusterInsts',serviceBody, _self.receiveResultClusterInst)
-                services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
+                setTimeout(()=>services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet), 500);
             })
         }
 
@@ -165,11 +208,14 @@ class SiteFourPageClusterInst extends React.Component {
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem } = this.state
+        const { activeItem, viewMode } = this.state
         return (
 
             //<DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} title='Cluster Instance' region='US' dataRefresh={this.getDataDeveloperSub}></MapWithListView>
+            (viewMode === 'listView')?
+                <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} title='Cluster Instance' region='US' dataRefresh={this.getDataDeveloperSub}></MapWithListView>
+                :
+                <PageDetailViewer data={this.state.detailData}/>
         );
     }
 
@@ -177,11 +223,18 @@ class SiteFourPageClusterInst extends React.Component {
 
 const mapStateToProps = (state) => {
     console.log('props in state.form..', state.form, 'region === ', state)
+    let viewMode = null;
+    let detailData = null;
+    if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+        viewMode = state.changeViewMode.mode.viewMode;
+        detailData = state.changeViewMode.mode.data;
+    }
     return {
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
         changeRegion : state.changeRegion.region?state.changeRegion.region:null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
+        viewMode : viewMode, detailData:detailData
     }
 };
 const mapDispatchProps = (dispatch) => {

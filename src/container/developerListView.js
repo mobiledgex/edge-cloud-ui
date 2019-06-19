@@ -78,11 +78,11 @@ class DeveloperListView extends React.Component {
     }
 
     onUseOrg(useData,key, evt) {
-        console.log("onuseorg",useData,this.props.roleInfo.data,key)
+        console.log("onuseorg",useData,this.props.roleInfo,key)
 
         this.setState({selectUse:key})
-        if(this.props.roleInfo.data) {
-            this.props.roleInfo.data.map((item,i) => {
+        if(this.props.roleInfo) {
+            this.props.roleInfo.map((item,i) => {
                 if(item.org == useData.Organization) {
                     console.log('item role =',item.role)
                     this.props.handleUserRole(item.role)
@@ -137,24 +137,24 @@ class DeveloperListView extends React.Component {
                         {this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)}
                     </div>
 
-                    <Table.Footer className='listPageContainer'>
-                        <Table.Row>
-                            <Table.HeaderCell>
-                                <Menu pagination>
-                                    <Menu.Item as='a' icon>
-                                        <Icon name='chevron left' />
-                                    </Menu.Item>
-                                    <Menu.Item as='a' active={true}>1</Menu.Item>
-                                    <Menu.Item as='a'>2</Menu.Item>
-                                    <Menu.Item as='a'>3</Menu.Item>
-                                    <Menu.Item as='a'>4</Menu.Item>
-                                    <Menu.Item as='a' icon>
-                                        <Icon name='chevron right' />
-                                    </Menu.Item>
-                                </Menu>
-                            </Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Footer>
+                    {/*<Table.Footer className='listPageContainer'>*/}
+                    {/*    <Table.Row>*/}
+                    {/*        <Table.HeaderCell>*/}
+                    {/*            <Menu pagination>*/}
+                    {/*                <Menu.Item as='a' icon>*/}
+                    {/*                    <Icon name='chevron left' />*/}
+                    {/*                </Menu.Item>*/}
+                    {/*                <Menu.Item as='a' active={true}>1</Menu.Item>*/}
+                    {/*                <Menu.Item as='a'>2</Menu.Item>*/}
+                    {/*                <Menu.Item as='a'>3</Menu.Item>*/}
+                    {/*                <Menu.Item as='a'>4</Menu.Item>*/}
+                    {/*                <Menu.Item as='a' icon>*/}
+                    {/*                    <Icon name='chevron right' />*/}
+                    {/*                </Menu.Item>*/}
+                    {/*            </Menu>*/}
+                    {/*        </Table.HeaderCell>*/}
+                    {/*    </Table.Row>*/}
+                    {/*</Table.Footer>*/}
 
                 </div>
                 :
@@ -206,17 +206,20 @@ class DeveloperListView extends React.Component {
         console.log('default width header -- ', widthDefault, filteredKeys)
         return filteredKeys.map((key, i) => (
             (i === filteredKeys.length -1) ?
-                <Table.HeaderCell key={i} width={(this.props.siteId == 'Organization')?3:2} textAlign='center' sorted={column === key ? direction : null}>
+                <Table.HeaderCell key={i} className='unsortable' width={(this.props.siteId == 'Organization')?3:2} textAlign='center'>
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell key={i} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address')?this.handleSort(key):null}>
+                <Table.HeaderCell key={i} className={(key === 'Phone' || key === 'Address')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address')?this.handleSort(key):null}>
                     {(key === 'FlavorName')? 'Flavor Name'
-                        : (key === 'OrganizationName')? 'Organization Name'
-                            : (key === 'AppName')? 'App Name'
-                                : (key === 'DeploymentType')? 'Deployment Type'
-                                    : (key === 'DefaultFlavor')? 'Default Flavor'
-                                        : key}
+                        : (key === 'RAM')? 'RAM Size'
+                            : (key === 'vCPUs')? 'Number of vCPUs'
+                                : (key === 'Disk')? 'Disk Space'
+                                    : (key === 'OrganizationName')? 'Organization Name'
+                                        : (key === 'AppName')? 'App Name'
+                                            : (key === 'DeploymentType')? 'Deployment Type'
+                                                : (key === 'DefaultFlavor')? 'Default Flavor'
+                                                    : key}
                 </Table.HeaderCell>
         ));
     }
@@ -250,9 +253,10 @@ class DeveloperListView extends React.Component {
             (type.indexOf('operator')!==-1) ? <div className="mark type markO markM"></div> : <div></div>
     )
     addUserDisable = (orgName) => {
+        console.log("disable@@",this.props.roleInfo)
         let dsb = false;
         if(this.props.roleInfo && localStorage.selectRole !== 'AdminManager'){
-            this.props.roleInfo.data.map((item,i) => {
+            this.props.roleInfo.map((item,i) => {
                 if(item.org == orgName.Organization) {
                     if(item.role == 'DeveloperContributor') dsb = true
                     else if(item.role == 'DeveloperViewer') dsb = true

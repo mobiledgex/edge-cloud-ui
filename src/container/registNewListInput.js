@@ -36,6 +36,22 @@ const renderSelect = field => (
     />
 );
 
+const renderInputNum = field => (
+    <Form.Field
+        {...field.input}
+        type={field.type}
+    >
+        <label>{field.label}</label>
+        {(field.unit)?
+        <Input fluid
+               type="number"
+               label={{ basic: true, content: field.unit}}
+               labelPosition='right'></Input>
+        :
+        <Input fluid type="number"></Input>}
+    </Form.Field>
+);
+
 const renderInput = ({ input, placeholder, type, meta: { touched, error, warning } }) => (
     <div>
          <Form.Input
@@ -106,7 +122,7 @@ class registNewListInput extends React.Component {
                                         regKeys.map((key, i)=>(
                                             <Grid.Row key={i} columns={2}>
                                                 <Grid.Column width={5} className='detail_item'>
-                                                    <div>{(key === 'FlavorName')?'Flavor Name' :key}</div>
+                                                    <div>{(key === 'FlavorName')?'Flavor Name':(key == 'RAM')?'RAM Size':(key == 'vCPUs')?'Number of vCPUs':(key == 'Disk')?'Disk Space':key}</div>
                                                 </Grid.Column>
                                                 <Grid.Column width={11}>
                                                 {
@@ -116,6 +132,12 @@ class registNewListInput extends React.Component {
                                                     <Field component={renderSelect} placeholder='Select NodeFlavor' name='NodeFlavor' options={option[0]} value={value[0]} />
                                                     : (key === 'Region')?
                                                     <Field component={renderSelect} placeholder='Select Region' name='Region' options={this.state.regionStatic} />
+                                                    : (key === 'RAM')?
+                                                    <Field component={renderInputNum} name='RAM' unit="MB" options={this.state.regionStatic} />
+                                                    : (key === 'vCPUs')?
+                                                    <Field component={renderInputNum} name='vCPUs' options={this.state.regionStatic} />
+                                                    : (key === 'Disk' )?
+                                                    <Field component={renderInputNum} name='Disk'  unit="GB" options={this.state.regionStatic} />
                                                     :
                                                     <Field component={renderInput} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } />
                                                 }

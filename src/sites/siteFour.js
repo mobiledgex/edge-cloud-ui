@@ -87,7 +87,7 @@ class SiteFour extends React.Component {
             contWidth:0,
             bodyHeight:0,
             headerTitle:'',
-            activeItem: 'Organization',
+            activeItem: 'Organizations',
             page: 'pg=0',
             email: store ? store.email : 'Administrator',
             role: '', //db에서
@@ -108,7 +108,7 @@ class SiteFour extends React.Component {
             OrganizationName:'',
             adminShow:false,
             createState:'',
-            toggleState:true,
+            // toggleState:true,
             noData:false,
             viewMode:'listView',
             toggleDisable:true,
@@ -118,7 +118,7 @@ class SiteFour extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
         this.OrgMenu = [
-            {label:'Organization', icon:'people', pg:0},
+            {label:'Organizations', icon:'people', pg:0},
             {label:'Users', icon:'dvr', pg:1},
             {label:'Accounts', icon:'dvr', pg:101}
         ]
@@ -231,7 +231,7 @@ class SiteFour extends React.Component {
     }
 
     onHandleRegistry() {
-        if(localStorage.selectMenu === 'Organization') {
+        if(localStorage.selectMenu === 'Organizations') {
             this.setState({page:'pg=newOrg'})
             this.gotoUrl('/site4', 'pg=newOrg')
         } else if(localStorage.selectMenu === 'Apps') {
@@ -264,7 +264,7 @@ class SiteFour extends React.Component {
     }
     receiveAdminInfo = (result) => {
         console.log("adminInfo@@@",result.data,this.props,this.state);
-        this.props.handleRoleInfo(result)
+        this.props.handleRoleInfo(result.data)
         if(result.error) {
 
         } else {
@@ -359,7 +359,7 @@ class SiteFour extends React.Component {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         console.log("stateProps@@",this.props,this.state)
         console.log('store.. ', store.user)
-        this.setState({activeItem: (localStorage.selectMenu)?localStorage.selectMenu:'Organization', headerTitle:(localStorage.selectMenu)?localStorage.selectMenu:'Organization'})
+        this.setState({activeItem: (localStorage.selectMenu)?localStorage.selectMenu:'Organizations', headerTitle:(localStorage.selectMenu)?localStorage.selectMenu:'Organizations'})
         //get list of customer's info
         // if(store.userToken) {
         //     Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
@@ -389,12 +389,16 @@ class SiteFour extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         console.log("props!!!!",nextProps,this.props)
+        let store = JSON.parse(localStorage.PROJECT_INIT);
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         this.setState({userToken: nextProps.userToken})
         this.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
         if(nextProps.params && nextProps.params.subPath) {
             this.setState({page:nextProps.params.subPath})
+            if(nextProps.params.subPath == 'pg=0') {
+                computeService.getMCService('ShowRole',{token:store.userToken}, this.receiveAdminInfo)
+            }
         }
 
         if(localStorage.selectRole && nextProps.params.subPath !== this.props.params.subPath) {
@@ -405,10 +409,10 @@ class SiteFour extends React.Component {
 
 
 
-        if(nextProps.creatingSpinner && this.state.toggleState) {
-            this.getIntervalData();
-            this.setState({toggleState:false})
-        }
+        // if(nextProps.creatingSpinner && this.state.toggleState) {
+        //     this.getIntervalData();
+        //     this.setState({toggleState:false})
+        // }
 
         if(nextProps.viewMode){
             this.setState({viewMode:nextProps.viewMode})
@@ -478,48 +482,48 @@ class SiteFour extends React.Component {
         this.props.handleComputeRefresh(true)
     }
 
-    getIntervalData = (region) => {
-        console.log("gogogogog@@@")
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let rgn = ['US','EU'];
-        if(region !== 'All'){
-            rgn = [region]
-        } 
-        setTimeout(() =>{
-            console.log("interval@@@@");
-            //rgn.map((item) => {
-                computeService.getMCService('ShowClusterInst',{token:store.userToken, region:'US'}, _self.receiveResultClusterInst)
-            //})
-        }, 20000);
+    // getIntervalData = (region) => {
+    //     console.log("gogogogog@@@")
+    //     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+    //     let rgn = ['US','EU'];
+    //     if(region !== 'All'){
+    //         rgn = [region]
+    //     } 
+    //     setTimeout(() =>{
+    //         console.log("interval@@@@");
+    //         //rgn.map((item) => {
+    //             computeService.getMCService('ShowClusterInst',{token:store.userToken, region:'US'}, _self.receiveResultClusterInst)
+    //         //})
+    //     }, 20000);
         
-    }
+    // }
 
-    receiveResultClusterInst = (result) => {
-        console.log("result@@@@",result,this.state.createState)
-        if(!this.state.createState){
-            result.map((item) => {
-                if(item.State == 'Creating'){
-                    this.setState({createState:item.ClusterName});
-                    return;
-                }
-            })
-            this.getIntervalData();
-        } else {
-            result.map((item) => {
-                if(item.ClusterName == this.state.createState && item.State == 'Ready') {
-                    this.props.handleCreatingSpinner(false);
-                    this.setState({toggleState:true});
-                    this.gotoUrl('/site4', 'pg=4')
-                } else if(item.ClusterName == this.state.createState && item.State !== 'Ready') {
-                    this.getIntervalData();
-                }
-            })
-        }
+    // receiveResultClusterInst = (result) => {
+    //     console.log("result@@@@",result,this.state.createState)
+    //     if(!this.state.createState){
+    //         result.map((item) => {
+    //             if(item.State == 'Creating'){
+    //                 this.setState({createState:item.ClusterName});
+    //                 return;
+    //             }
+    //         })
+    //         this.getIntervalData();
+    //     } else {
+    //         result.map((item) => {
+    //             if(item.ClusterName == this.state.createState && item.State == 'Ready') {
+    //                 this.props.handleCreatingSpinner(false);
+    //                 this.setState({toggleState:true});
+    //                 this.gotoUrl('/site4', 'pg=4')
+    //             } else if(item.ClusterName == this.state.createState && item.State !== 'Ready') {
+    //                 this.getIntervalData();
+    //             }
+    //         })
+    //     }
         
-    }
+    // }
 
     disableBtn = () => {
-        const menuArr = ['Organization','Users','Cloudlets','Flavors','Cluster Instances','Apps','App Instances']
+        const menuArr = ['Organization','Users','Accounts','Cloudlets','Flavors','Cluster Instances','Apps','App Instances']
         this.auth_list.map((item,i) => {
             if(item.role == localStorage.selectRole) {
                 item.view.map((item) => {
@@ -612,7 +616,9 @@ class SiteFour extends React.Component {
                         <Menu secondary vertical className='view_left_menu org_menu'>
                             {
                                 this.OrgMenu.map((item, i)=>(
-                                    this.menuItemView(item, i, localStorage.selectMenu)
+                                    (item.label == 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
+                                    : (localStorage.selectRole == 'AdminManager') ? this.menuItemView(item, i, localStorage.selectMenu)
+                                    : this.menuItemView(item, i, localStorage.selectMenu)
                                 ))
                             }
                             <Grid.Row>
@@ -708,7 +714,7 @@ class SiteFour extends React.Component {
 
                         </Grid.Row>
                         {
-                            (this.state.headerTitle !== 'Organization' && this.state.headerTitle !== 'Users') ?
+                            (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'Users') ?
                             <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
                                 <label style={{padding:'0 10px'}}>Region</label>
                                 <Dropdown className='selection'
@@ -804,7 +810,7 @@ const mapDispatchProps = (dispatch) => {
         handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))},
+        // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))},
         handleDetail: (data) => { dispatch(actions.changeDetail(data))},
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data))},
     };

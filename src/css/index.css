@@ -58,6 +58,14 @@ body, button, input, textarea, optgroup, select, textarea,
     border: solid 1px rgba(255,255,255,.2) !important;
     color: rgba(255,255,255,.6) !important;
 }
+.ui.labeled.input>.label:not(.corner){
+    background-color: rgba(0,0,0,.3) !important;
+    border: solid 1px rgba(255,255,255,.2) !important;
+    color: rgba(255,255,255,.6) !important;
+    font-weight: normal;
+
+}
+
 .ui.list .list>.item .header,
 .ui.list>.item .header,
 .ui.header {
@@ -1094,7 +1102,13 @@ body, button, input, textarea, optgroup, select, textarea,
 .contents_body .ui.table thead th,
 .contents_body .ui.sortable.table thead th {
     color: rgba(255,255,255,.7);
+    cursor: pointer;
 }
+.contents_body .ui.table thead th.unsortable,
+.contents_body .ui.sortable.table thead th.unsortable {
+    cursor: default;
+}
+
 .contents_body .ui.basic.striped.table tbody tr:nth-child(1n) {
     background: rgba(0,0,0,.15) !important;
 }
@@ -1122,11 +1136,26 @@ body, button, input, textarea, optgroup, select, textarea,
 .contents_body .ui.sortable.table thead th.sorted:hover {
     background: rgb(41, 44, 51);
     color: rgba(136,221,0,.9);
+    cursor: pointer;
 }
 .contents_body .ui.sortable.table thead th.sorted {
     background: rgb(41, 44, 51);
     color: rgba(136,221,0,.9);
+    cursor: pointer;
 }
+
+.contents_body .ui.sortable.table thead th.unsortable:hover,
+.contents_body .ui.sortable.table thead th.unsortable.sorted:hover {
+    background: rgb(41, 44, 51);
+    color: rgba(255,255,255,.7);
+    cursor: default;
+
+}
+/*.contents_body .ui.sortable.table thead th.unsortable.sorted {*/
+/*    background: rgb(41, 44, 51);*/
+/*    color: rgba(255,255,255,.7);*/
+/*    cursor: default;*/
+/*}*/
 
 /* grid table paging */
 .listPageContainer {

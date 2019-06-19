@@ -392,7 +392,7 @@ class RegistNewItem extends React.Component {
     onSubmit = () => {
         let serviceBody = {}
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        console.log("siteId@@@",localStorage.selectMenu)
+        console.log("siteId@@@",this.props.submitData.registNewInput.values)
         //this.props.handleLoadingSpinner(true);
         // setTimeout(() => {
         //     this.props.handleLoadingSpinner(false);
@@ -401,7 +401,7 @@ class RegistNewItem extends React.Component {
         if(localStorage.selectMenu === 'Cluster Instances'){
             console.log("submitData@@",this.props.submitData)
             const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, Number_of_Master, Number_of_Node} = this.props.submitData.registNewInput.values
-            this.props.handleCreatingSpinner(true);
+            // this.props.handleCreatingSpinner(true);
             serviceBody = {
                 "token":store.userToken,
                 "params": {
@@ -423,7 +423,7 @@ class RegistNewItem extends React.Component {
             service.createNewClusterInst('CreateClusterInst', serviceBody, this.receiveSubmit)
         } else if(localStorage.selectMenu === 'Cloudlets') {
             console.log("submitCloudlet@@",this.props.submitData)
-            const {CloudletName, OperatorName, Latitude, Longitude, Ip_support, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
+            const {CloudletName, OperatorName, Latitude, Longitude, IpSupport, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
             this.props.handleLoadingSpinner(true);
             serviceBody = {
                 "token":store.userToken,
@@ -439,7 +439,7 @@ class RegistNewItem extends React.Component {
                             "longitude":Number(Longitude),
                             "timestamp":{}
                         },
-                        "ip_support":Ip_support,
+                        "ip_support":IpSupport,
                         "num_dynamic_ips":Number(Num_dynamic_ips)
                     }
                 }
@@ -474,7 +474,7 @@ class RegistNewItem extends React.Component {
             // operator, cloudlet
             service.getMCService('ShowCloudlet',{token:store.userToken,region:region}, _self.receiveOper)
             // Flavor
-            service.getMCService('ShowFlavor',{token:store.userToken,region:region}, _self.receiveCF)
+            setTimeout(() => service.getMCService('ShowFlavor',{token:store.userToken,region:region}, _self.receiveCF), 500);
         }
     }
 
@@ -541,7 +541,7 @@ const mapDispatchProps = (dispatch) => {
         handleMapLong: (data) => { dispatch(actions.mapCoordinatesLong(data))},
         handleMapLat: (data) => { dispatch(actions.mapCoordinatesLat(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))}
+        // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))}
     };
 };
 

@@ -290,11 +290,11 @@ export function createNewCloudlet(resource, body, callback) {
 
 
 export function getMCService(resource, body, callback, self) {
-    console.log('parse data get mc service ===>>>>>>>>>> ', resource, serviceDomain)
+    console.log('parse data get mc service ===>>>>>>>>>> ', resource)
     axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
         service: resource,
         serviceBody:body,
-        serviceDomain:serviceDomain
+        serviceId: Math.round(Math.random()*10000)
     }))
         .then(function (response) {
 

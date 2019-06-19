@@ -86,6 +86,7 @@ class SiteFourPageClusterInstReg extends React.Component {
         }
     }
     componentWillReceiveProps(nextProps) {
+        console.log("gggggg@@",nextProps)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
@@ -104,6 +105,15 @@ class SiteFourPageClusterInstReg extends React.Component {
         }
     }
 
+    gotoUrl() {
+        _self.props.history.push({
+            pathname: '/site4',
+            search: 'pg=4'
+        });
+        _self.props.history.location.search = 'pg=4';
+        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=4'})
+    }
+
     getDataDeveloper(token, region) {
 
         services.getMCService('ShowFlavor',{token:token, region:(region === 'All') ? 'US' : region}, _self.receiveResult)
@@ -116,7 +126,7 @@ class SiteFourPageClusterInstReg extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <RegistryClusterInstViewer devData={this.state.devData}/>
+            <RegistryClusterInstViewer devData={this.state.devData} gotoUrl={this.gotoUrl}/>
         );
     }
 

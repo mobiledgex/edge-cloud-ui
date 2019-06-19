@@ -22,14 +22,24 @@ const panes = [
 
 const renderLocationInput = field => (
     <div>
-        <Form.Input
+        <Form.Field
             {...field.input}
             type={field.type}
             placeholder={field.placeholder}
-            onChange={field.change}
             //value={field.value}
-            fluid
-        />
+        >
+            <Input fluid type="number"
+                   onChange={field.change}
+                   placeholder={field.placeholder}></Input>
+        </Form.Field>
+        {/*<Form.Input*/}
+        {/*    {...field.input}*/}
+        {/*    type={field.type}*/}
+        {/*    placeholder={field.placeholder}*/}
+        {/*    onChange={field.change}*/}
+        {/*    //value={field.value}*/}
+        {/*    fluid*/}
+        {/*/>*/}
     </div>
 
 );

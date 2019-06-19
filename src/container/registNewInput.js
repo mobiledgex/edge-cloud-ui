@@ -31,6 +31,17 @@ const renderSelect = field => (
         fluid
     />
 );
+const renderInputNum = field => (
+    <Form.Field
+        {...field.input}
+        type={field.type}
+        // placeholder={field.placeholder}
+    >
+        <label>{field.label}</label>
+        <Input fluid type="number"></Input>
+    </Form.Field>
+);
+
 
 const renderInput = field => (
     <div>
@@ -47,14 +58,24 @@ const renderInput = field => (
 
 const renderLocationInput = field => (
     <div>
-         <Form.Input
+        <Form.Field
             {...field.input}
             type={field.type}
             placeholder={field.placeholder}
-            onChange={field.change}
             //value={field.value}
-            fluid
-        />
+        >
+            <Input fluid type="number"
+                   onChange={field.change}
+                   placeholder={field.placeholder}></Input>
+        </Form.Field>
+        {/* <Form.Input*/}
+        {/*    {...field.input}*/}
+        {/*    type={field.type}*/}
+        {/*    placeholder={field.placeholder}*/}
+        {/*    onChange={field.change}*/}
+        {/*    //value={field.value}*/}
+        {/*    fluid*/}
+        {/*/>*/}
     </div>
    
 );
@@ -78,9 +99,9 @@ class registNewInput extends React.Component {
                 {key: 3, value: "3", text: "IpAccessShared"}
             ],
             Ip_support:[
-                {key: 0, value: "IPSupportUnknown", text: "IPSupportUnknown"},
-                {key: 1, value: "IPSupportStatic", text: "IPSupportStatic"},
-                {key: 2, value: "IPSupportDynamic", text: "IPSupportDynamic"}
+                {key: 0, value: 0, text: "IPSupportUnknown"},
+                {key: 1, value: 1, text: "IPSupportStatic"},
+                {key: 2, value: 2, text: "IPSupportDynamic"}
             ]
         };
 
@@ -189,6 +210,8 @@ class registNewInput extends React.Component {
                                                             <Grid.Column><span>Longitude</span><Field ref={longLoc} name='Longitude' component={renderLocationInput} placeholder={(dimmer === 'blurring')? '' : (selected[key]) ? selected[key].longitude : null } change={handleChangeLong} /></Grid.Column>
                                                         </Grid.Row>
                                                     </Grid>
+                                                    : (key === 'Num_dynamic_ips')?
+                                                    <Field component={renderInputNum} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } />
                                                     :
                                                     <Field component={renderInput} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } />
                                                 }

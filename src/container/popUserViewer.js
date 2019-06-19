@@ -71,7 +71,7 @@ export default class PopUserViewer extends React.Component {
                                             <div>{key}</div>
                                         </Grid.Column>
                                         <Grid.Column width={11}>
-                                            <div style={{wordWrap: 'break-word'}}>{(typeof this.state.propsData[key] === 'object')? JSON.stringify(this.state.propsData[key]):String(this.state.propsData[key])}</div>
+                                            <div style={{wordWrap: 'break-word'}}>{(typeof this.state.propsData[key] === 'object')? JSON.stringify(this.state.propsData[key]):(key === 'EmailVerified' && JSON.stringify(this.state.propsData[key]) === 'true')?'Yes':String(this.state.propsData[key])}</div>
                                         </Grid.Column>
                                         <Divider vertical></Divider>
                                     </Grid.Row>
