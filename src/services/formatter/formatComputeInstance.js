@@ -75,12 +75,12 @@ let generateData = (datas,body) => {
         toJson = toArray.map((str)=>(JSON.parse(str)))
     } else {
         toJson = [];
-        toJson.push(datas.data)
+        toJson.push((datas.data)?datas.data:{})
     }
     console.log("tojson!!",toJson)
-    if(toJson){
+    if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
-            if(dataResult.error || dataResult.message) {
+            if(dataResult.error || dataResult.message || !dataResult.data) {
                 console.log("error")
             } else {
                 let Index = i;
@@ -132,6 +132,7 @@ let generateData = (datas,body) => {
                     Runtime:runtime,
                     Created:created,
                     Edit:newRegistKey,
+                    Progress:''
                 })
             }
         })

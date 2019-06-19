@@ -29,10 +29,11 @@ exports.getToken = (req, res) => {
   )
       .then(function (response) {
         console.log('success get pub token..', response.data)
-        if(response.data) {
+        if(response.data && response.statusText === 'OK') {
           res.json(response.data)
-        } else {
-
+        } else if(response.statusText === 'OK'){
+            console.log('empty')
+            res.json(null)
         }
       })
       .catch(function (error) {
@@ -71,10 +72,11 @@ exports.createUser = (req, res) => {
   )
       .then(function (response) {
         console.log('success create user..', response.data)
-        if(response.data) {
+        if(response.data && response.statusText === 'OK') {
           res.json(response.data)
-        } else {
-
+        } else if(response.statusText === 'OK'){
+            console.log('empty')
+            res.json(null)
         }
       })
       .catch(function (error) {
@@ -105,8 +107,12 @@ exports.currentUser = (req, res) => {
     )
         .then(function (response) {
             console.log('success current user..', response)
-            if(response.data) {
+            if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
             } else {
                 res.json({error:'error...'})
             }
@@ -137,8 +143,12 @@ exports.showAccounts = (req, res) => {
     )
         .then(function (response) {
             console.log('success show account user..', response.data)
-            if(response.data) {
+            if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
             } else {
                 res.json({error:'error...'})
             }
@@ -169,8 +179,12 @@ exports.showController = (req, res) => {
     )
         .then(function (response) {
             console.log('success showController..', response.data)
-            if(response.data) {
+            if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
             } else {
 
             }
@@ -208,8 +222,10 @@ exports.showOrg = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show org..', String(error));
-            res.json({error:'There is no data'})
+            // console.log('error show org..', String(error));
+            // res.json({error:'There is no data'})
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 
@@ -241,8 +257,12 @@ exports.ShowFlavor = (req, res) => {
     )
         .then(function (response) {
             console.log('success show flavor', response.data)
-            if(response.data) {
+            if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
             } else {
 
             }
@@ -275,8 +295,12 @@ exports.ShowClusterFlavor = (req, res) => {
     )
         .then(function (response) {
             console.log('success show cluster flavor', response.data)
-            if(response.data) {
+            if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
             } else {
 
             }
@@ -307,10 +331,10 @@ exports.ShowUsers = (req, res) => {
     )
         .then(function (response) {
             console.log('success show users', response.data)
-            if(response.data) {
+            if(response.data && response.data.length) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'There is no data'})
             }
         })
         .catch(function (error) {
@@ -341,8 +365,12 @@ exports.ShowCloudlet = (req, res) => {
     )
         .then(function (response) {
             console.log('success show cloudlet', response.data)
-            if(response.data) {
+            if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
             } else {
 
             }
@@ -375,7 +403,12 @@ exports.ShowClusterInst = (req, res) => {
     )
         .then(function (response) {
             console.log('success show cluster instances', response.data)
-            res.json(response.data)
+            if(response.data && response.statusText === 'OK') {
+                res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+            }
         })
         .catch(function (error) {
             console.log('error show ..', String(error));
@@ -403,8 +436,12 @@ exports.ShowClusterInsts = (req, res) => {
     )
         .then(function (response) {
             console.log('success show clusterInsts', response.data)
-            if(response.data) {
+            if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
             } else {
 
             }
@@ -436,11 +473,13 @@ exports.ShowApps = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show apps', response.data)
-            if(response.data) {
+            console.log('success show apps', response.data, 'status=',response.statusText, 'has data = ', String(response.data).indexOf('data'))
+            if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
-            } else {
 
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
             }
         })
         .catch(function (error) {
@@ -469,8 +508,12 @@ exports.ShowApp = (req, res) => {
     )
         .then(function (response) {
             console.log('success show apps', response.data)
-            if(response.data) {
+            if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
             } else {
 
             }
@@ -503,8 +546,12 @@ exports.ShowAppInst = (req, res) => {
     )
         .then(function (response) {
             console.log('success show appinst', response.data)
-            if(response.data) {
+            if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
             } else {
                 res.json({error:'Request failed'})
             }
@@ -535,8 +582,12 @@ exports.ShowAppInsts = (req, res) => {
     )
         .then(function (response) {
             console.log('success show appInstsssssss', response.data)
-            if(response.data) {
+            if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
             } else {
 
             }
@@ -584,7 +635,7 @@ exports.Create = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
@@ -620,12 +671,12 @@ exports.CreateOrg= (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
-            res.json({error:String(error)})
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 
@@ -659,16 +710,12 @@ exports.addUserRole= (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-            console.log('error show ..@@', error.response.data.message);
-            if(error.response.data.message == 'Username not found') {
-                res.json({error:error.response.data.message})
-            } else {
-                res.json({error:String(error)})
-            }
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 
@@ -699,15 +746,12 @@ exports.CreateFlavor = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-            if(error.response.data.message == 'rpc error: code = Unknown desc = Key already exists') {
-                res.json({error:error.response.data.message})
-            } else {
-                res.json({error:String(error)})
-            }
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 
@@ -738,13 +782,12 @@ exports.CreateClusterFlavor = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-
-            console.log('error show ..', String(error));
-            res.json({error:String(error)})
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 
@@ -779,9 +822,8 @@ exports.CreateCloudlet = (req, res) => {
             }
         })
         .catch(function (error) {
-
-            console.log('error show ..', String(error));
-            res.json({error:String(error)})
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 
@@ -830,13 +872,12 @@ exports.CreateApp = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-
-            console.log('error show ..', String(error));
-            res.json({error:String(error)})
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 exports.CreateAppInst = (req, res) => {
@@ -866,13 +907,12 @@ exports.CreateAppInst = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-
-            console.log('error show ..', String(error));
-            res.json({error:String(error)})
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 
@@ -904,13 +944,12 @@ exports.CreateClusterInst = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-
-            console.log('error show ..', String(error));
-            res.json({message:String(error)})
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 exports.DeleteService = (req, res) => {
@@ -943,13 +982,8 @@ exports.DeleteService = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log("errorDesc1",error.response.data)
-            console.log('error show ..', String(error));
-            if(error.response.data.message == 'ClusterInst in use by Application Instance' || error.response.data.message == 'rpc error: code = Unknown desc = Application in use by static Application Instance') {
-                res.json({error:error.response.data.message})
-            } else {
-                res.json({error:String(error)})
-            }
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 exports.DeleteUser = (req, res) => {
@@ -978,13 +1012,12 @@ exports.DeleteUser = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-
-            console.log('error show ..', String(error));
-            res.json({error:String(error)})
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 exports.DeleteAccount = (req, res) => {
@@ -1013,13 +1046,12 @@ exports.DeleteAccount = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-
-            console.log('error show ..', String(error));
-            res.json({error:String(error)})
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 exports.DeleteOrg = (req, res) => {
@@ -1048,13 +1080,12 @@ exports.DeleteOrg = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-
-            console.log('error show ..', String(error));
-            res.json({error:String(error)})
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 
@@ -1084,13 +1115,12 @@ exports.ResetPassword = (req, res) => {
             if(response.statusText === 'OK') {
                 res.json({message:'Success'})
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-
-            console.log('error show ..', String(error));
-            res.json({error:String(error)})
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 exports.UpdatePassword = (req, res) => {
@@ -1111,7 +1141,7 @@ exports.UpdatePassword = (req, res) => {
             if(response.statusText === 'OK') {
                 res.json({message:'You have successfully updated your password'})
             } else {
-                console.log(response)
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
@@ -1138,7 +1168,7 @@ exports.ResendVerify = (req, res) => {
             if(response.statusText === 'OK') {
                 res.json({message:'Success'})
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
@@ -1207,13 +1237,12 @@ exports.ShowRole = (req, res) => {
             if(response.data) {
                 res.json(response.data)
             } else {
-
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-
-            console.log('error show org..', String(error));
-            res.json({error:'Request failed'})
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
         });
 }
 

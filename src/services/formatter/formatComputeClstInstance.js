@@ -47,9 +47,9 @@ let generateData = (datas,body) => {
     //20190409 transition string to json
     
     console.log("clusterinst tojson!!",toJson)
-    if(toJson){
+    if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
-            if(dataResult.error || dataResult.message) {
+            if(dataResult.error || dataResult.message || !dataResult.data) {
                 console.log("error")
             } else {
                 let Index = i;
@@ -65,14 +65,14 @@ let generateData = (datas,body) => {
                 let NumNodes = dataResult.data.num_nodes || '';
                 let State = dataResult.data.state || '';
                 let CloudletLocation = '-';
+                let Status = dataResult.data.status
 
                 let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'Number_of_Master', 'Number_of_Node', 'CloudletLocation'];
-                values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, State:State, CloudletLocation:CloudletLocation, Edit:newRegistKey})
+                values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, State:State, CloudletLocation:CloudletLocation, Edit:newRegistKey, Progress:'',Status:Status})
             }
         })
     } else {
         let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'Number_of_Master', 'Number_of_Node', 'CloudletLocation'];
-        //values.push({Edit:newRegistKey})
         values.push({Region:'', ClusterName:'', OrganizationName:'', Operator:'', Cloudlet:'', Flavor:'', IpAccess:'', CloudletLocation:'', Edit:newRegistKey})
     }
 

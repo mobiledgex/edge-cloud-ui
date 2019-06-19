@@ -129,8 +129,8 @@ class RegistryInstViewer extends React.Component {
         //     services.getMCService('ShowClusterInst',{token:token,region:item}, this.receiveResultClusterInst)
         // })
         services.getMCService('ShowCloudlet',{token:token,region:'US'}, this.receiveResultCloudlet)
-        services.getMCService('ShowApps',{token:token,region:'US'}, this.receiveResultApp)
-        services.getMCService('ShowClusterInst',{token:token,region:'US'}, this.receiveResultClusterInst)
+        setTimeout(() => services.getMCService('ShowApps',{token:token,region:'US'}, this.receiveResultApp), 500);
+        setTimeout(() => services.getMCService('ShowClusterInst',{token:token,region:'US'}, this.receiveResultClusterInst), 1000);
         
     }
     receiveResultCloudlet = (result) => {

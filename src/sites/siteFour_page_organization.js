@@ -28,7 +28,8 @@ class SiteFourPageOrganization extends React.Component {
             contWidth:0,
             bodyHeight:0,
             activeItem: 'Developers',
-            devData:[]
+            devData:[],
+            liveComp:false
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -54,7 +55,7 @@ class SiteFourPageOrganization extends React.Component {
             state: { some: 'state' }
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+
 
     }
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -72,7 +73,16 @@ class SiteFourPageOrganization extends React.Component {
         // console.log('info.. store == ', store)
         if(store.userToken) this.getDataDeveloper(store.userToken);
     }
+    componentWillUnmount() {
+
+        this.setState({liveComp:false})
+    }
+
+
     componentWillReceiveProps(nextProps) {
+        if(!this.state.liveComp) {
+            return;
+        }
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
@@ -93,7 +103,7 @@ class SiteFourPageOrganization extends React.Component {
                 effect: 'slide',
                 timeout: 5000
             });
-            //setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
+            setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
             // _self.gotoUrl('/site4', 'pg=newOrg')  /* CreatOrg 자동 연결... */
         } else {
             _self.setState({devData:result})

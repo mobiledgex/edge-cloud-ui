@@ -22,7 +22,8 @@ class SiteFourPageApps extends React.Component {
             contWidth:0,
             bodyHeight:0,
             activeItem: 'Developers',
-            devData:[]
+            devData:[],
+            liveComp:true
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -56,6 +57,7 @@ class SiteFourPageApps extends React.Component {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+        this.setState({liveComp:true})
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
@@ -66,7 +68,16 @@ class SiteFourPageApps extends React.Component {
             this.userToken = store.userToken;
         }
     }
+    componentWillUnmount() {
+
+        this.setState({liveComp:false})
+    }
+
+
     componentWillReceiveProps(nextProps) {
+        if(!this.state.liveComp) {
+            return;
+        }
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -153,7 +164,7 @@ class SiteFourPageApps extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    console.log('props in state.form..', state.form, 'region === ', state)
+
     let registNew= state.form.registNewListInput
         ? {
             values: state.form.registNewListInput.values,

@@ -1,19 +1,22 @@
 import _ from 'lodash'
 import React from 'react';
-import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Divider, Container, Sticky } from 'semantic-ui-react';
-import {findDOMNode} from 'react-dom'
+import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Popup, Container, Sticky } from 'semantic-ui-react';
+
 import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux';
 import RGL, { WidthProvider } from "react-grid-layout";
 import ContainerDimensions from 'react-container-dimensions';
+import Alert from "react-s-alert";
 import * as actions from '../actions';
 import SelectFromTo from '../components/selectFromTo';
 import RegistNewItem from './registNewItem';
 import DeleteItem from './deleteItem';
 import './styles.css';
 import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
-import * as service from "../services/service_compute_service";
+import VerticalLinearStepper from '../components/stepper';
 import PopDetailViewer from './popDetailViewer';
+import * as computeService from '../services/service_compute_service';
+
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -34,7 +37,17 @@ const override = {
     borderColor: 'red'
 }
 
-
+const MyCustomContentTemplate = (item) => {
+    console.log("mycuster@@",item)
+    
+    return (
+        <div>
+            <VerticalLinearStepper item={item} />
+            {/* <button className="customButton" onClick={handleConfirm.bind(this)}>Confirm</button> */}
+            <span className='s-alert-close'></span>
+        </div>
+    );
+}
 
 const ContainerOne = (props) => (
 
@@ -63,7 +76,8 @@ class MapWithListView extends React.Component {
             openDelete:false,
             tooltipMsg:'No Message',
             tooltipVisible: false,
-            detailViewData:null
+            detailViewData:null,
+            cInstStatus:{}
         };
 
         _self = this;
@@ -151,24 +165,26 @@ class MapWithListView extends React.Component {
                         {this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys)}
                     </div>
 
-                    <Table.Footer className='listPageContainer'>
-                        <Table.Row>
-                            <Table.HeaderCell>
-                                <Menu pagination>
-                                    <Menu.Item as='a' icon>
-                                        <Icon name='chevron left' />
-                                    </Menu.Item>
-                                    <Menu.Item as='a' active={true}>1</Menu.Item>
-                                    <Menu.Item as='a'>2</Menu.Item>
-                                    <Menu.Item as='a'>3</Menu.Item>
-                                    <Menu.Item as='a'>4</Menu.Item>
-                                    <Menu.Item as='a' icon>
-                                        <Icon name='chevron right' />
-                                    </Menu.Item>
-                                </Menu>
-                            </Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Footer>
+                    {/*<Table.Footer className='listPageContainer'>*/}
+                    {/*    <Table.Row>*/}
+                    {/*        <Table.HeaderCell>*/}
+                    {/*            <Menu pagination>*/}
+                    {/*                <Menu.Item as='a' icon>*/}
+                    {/*                    <Icon name='chevron left' />*/}
+                    {/*                </Menu.Item>*/}
+                    {/*                <Menu.Item as='a' active={true}>1</Menu.Item>*/}
+                    {/*                <Menu.Item as='a'>2</Menu.Item>*/}
+                    {/*                <Menu.Item as='a'>3</Menu.Item>*/}
+                    {/*                <Menu.Item as='a'>4</Menu.Item>*/}
+                    {/*                <Menu.Item as='a' icon>*/}
+                    {/*                    <Icon name='chevron right' />*/}
+                    {/*                </Menu.Item>*/}
+                    {/*            </Menu>*/}
+                    {/*        </Table.HeaderCell>*/}
+                    {/*    </Table.Row>*/}
+                    {/*</Table.Footer>*/}
+
+                    {/*페이저 기능 생길 때 까지 */}
                 </div>
                 :
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%', height:'100%'}} >
@@ -201,11 +217,11 @@ class MapWithListView extends React.Component {
         return keys.map((key, i) => (
             (!( String(hidden).indexOf(key) > -1 ))?
                 (i === keys.length -1) ?
-                <Table.HeaderCell key={i} width={2} textAlign='center'>
+                <Table.HeaderCell key={i} className='unsortable' width={2} textAlign='center'>
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell key={i} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'CloudletLocation')?this.handleSort(key):null}>
+                <Table.HeaderCell key={i} className={(key === 'CloudletLocation')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'CloudletLocation')?this.handleSort(key):null}>
                     {(key === 'CloudletName')? 'Cloudlet Name'
                         : (key === 'CloudletLocation')? 'Cloudlet Location'
                             : (key === 'ClusterName')? 'Cluster Name'
@@ -228,11 +244,38 @@ class MapWithListView extends React.Component {
         alert(b[a])
     }
     detailView(item) {
-        this.setState({detailViewData:item, openDetail:true})
+        //
 
         //change popup to page view
         this.props.handleDetail({data:item, viewMode:'detailView'})
     }
+    stateView(item) {
+        this.setState({cInstStatus:item})
+        //Call ClusterInst Show
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        computeService.getMCService('ShowClusterInst',{token:store.userToken, region:'US'}, _self.receiveResultClusterInst)
+    }
+
+    receiveResultClusterInst = (result) => {
+        console.log("result@@@@",result,this.state.cInstStatus)
+        let cData = null;
+        result.map((item,i) => {
+            if(item.ClusterName == this.state.cInstStatus.ClusterName) {
+                cData = item
+            }
+        })
+        console.log("cData@@@",cData)
+        if(cData.Status.task_number === 1){
+            localStorage.setItem('clusterinstCreateStep', cData.Status.task_name)
+        }
+        Alert.info(<MyCustomContentTemplate item={cData}/>, {
+            position: 'top-right', timeout: 'none', limit:1,
+            customFields: {
+                stateLevel: 1
+            }
+        })
+    }
+
     TableExampleVeryBasic = (w, h, headL, hidden) => (
         <Table className="viewListTable" basic='very' striped celled fixed sortable ref={ref => this.viewListTable = ref} style={{width:'100%'}}>
             <Table.Header className="viewListTableHeader"  style={{width:'100%'}}>
@@ -274,6 +317,27 @@ class MapWithListView extends React.Component {
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             {(item[value] == 0)? "IpAccessUnknown" : (item[value] == 1)? "IpAccessDedicated" : (item[value] == 2)? "IpAccessDedicatedOrShared" : (item[value] == 3)? "IpAccessShared" : item[value]}
                                             {/*{item[value]}*/}
+                                        </Table.Cell>
+                                    :
+                                    (value === 'State')?
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                            {(item[value] == 1)? "NotPresent" : (item[value] == 2)? "CreateRequested" : (item[value] == 3)? "Creating" : (item[value] == 4)? "CreateError" : (item[value] == 5)? "Ready" : (item[value] == 6)? "UpdateRequested" : (item[value] == 7)? "Updating" : (item[value] == 8)? "UpdateError" : (item[value] == 9)? "DeleteRequested" : (item[value] == 10)? "Deleting" : (item[value] == 11)? "DeleteError" : (item[value] == 12)? "DeletePrepare" : item[value]}
+                                            {/*{item[value]}*/}
+                                        </Table.Cell>
+                                    :
+                                    (value === 'Progress' && item['State'] == 3)?
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                            <Popup content='Detail View status of progress' trigger={<Icon loading size={12} color='green' name='circle notch' />} />
+                                        </Table.Cell>
+                                    :
+                                    (value === 'Progress' && item['State'] == 5)?
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                            {'complete'}
+                                        </Table.Cell>
+                                    :
+                                    (value === 'Progress' && (item['State'] == 10 || item['State'] == 12))?
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                            <Popup content='Detail View status of progress' trigger={<Icon loading size={12} color='red' name='circle notch' />} />
                                         </Table.Cell>
                                     :
                                     (!( String(hidden).indexOf(value) > -1 )) ?
@@ -382,7 +446,7 @@ class MapWithListView extends React.Component {
                             {this.generateDOM(open, dimmer, width, height)}
                         </ReactGridLayout>
 
-                        <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
+                        <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} centered={false} style={{right:400}}></PopDetailViewer>
                     </div>
 
                 }

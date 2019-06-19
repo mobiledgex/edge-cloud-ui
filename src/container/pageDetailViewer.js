@@ -120,7 +120,7 @@ export default class PageDetailViewer extends React.Component {
 
     makeTable = (values, label, i) => (
         (label !== 'Edit')?
-        <Table.Row>
+        <Table.Row key={i}>
             <Table.Cell>
                 <Header as='h4' image>
                     <Icon name={'dot'} />
@@ -150,6 +150,15 @@ export default class PageDetailViewer extends React.Component {
         this.props.close()
     }
 
+    changeLocation(data) {
+        let loc = '';
+        if(data['CloudletLocation'].latitude && data['CloudletLocation'].longitude){
+            loc = 'latitude : '+data['CloudletLocation'].latitude+', longitude : '+data['CloudletLocation'].longitude
+            data['CloudletLocation'] = loc
+        }
+        return data
+    }
+
 
     render() {
         let { listData } = this.state;
@@ -167,7 +176,7 @@ export default class PageDetailViewer extends React.Component {
                             </Table.Header>
                             <Table.Body>
                                 {
-                                    (keys.length) && keys.map((item, i) => this.makeTable(listData, item, i))
+                                    (keys.length) && keys.map((item, i) => this.makeTable(this.changeLocation(listData), item, i))
                                 }
                             </Table.Body>
                         </Table>

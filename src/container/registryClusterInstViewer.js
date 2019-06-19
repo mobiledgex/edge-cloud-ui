@@ -44,11 +44,11 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'Cluster Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole}  onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'Cluster Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
-const ipaccessArr = ['IpAccessUnknown','IpAccessDedicated','IpAccessDedicatedOrShared','IpAccessShared'];
+const ipaccessArr = ['IpAccessDedicated','IpAccessShared'];
 class RegistryClusterInstViewer extends React.Component {
     constructor(props) {
         super(props);
@@ -73,18 +73,19 @@ class RegistryClusterInstViewer extends React.Component {
             operators:[],
             clustinst:[],
             apps:[],
+            clusterInstCreate:true,
             keysData:[
                 {
                     'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
                     'ClusterName':{label:'Cluster Name', type:'RenderInput', necessary:true, tip:null, active:true},
                     'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:null, active:true, items:['','']},
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
-                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'aaa', active:true, items:['Docker', 'Kubernetes']},
                     'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
+                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'aaa', active:true, items:['Docker', 'Kubernetes']},
                     'IpAccess':{label:'Ip Access', type:'RenderSelect', necessary:false, tip:'When checked, this will inherit settings from application settings',items:ipaccessArr},
                     'Flavor':{label:'Flavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
                     'NumberOfMaster':{label:'Number of Master', type:'RenderInputDisabled', necessary:false, tip:'When checked, this will inherit settings from application settings', value:null},
-                    'NumberOfNode':{label:'Number of Node', type:'RenderInput', necessary:false, tip:'When checked, this will inherit settings from application settings', value:null},
+                    'NumberOfNode':{label:'Number of Node', type:'RenderInputNum', necessary:false, tip:'When checked, this will inherit settings from application settings', value:null},
                 },
                 {
 
@@ -96,8 +97,8 @@ class RegistryClusterInstViewer extends React.Component {
                     'ClusterName':'',
                     'OrganizationName':'',
                     'Operator':'',
-                    'DeploymentType':'',
                     'Cloudlet':'',
+                    'DeploymentType':'',
                     'IpAccess':'',
                     'Flavor':'',
                     'NumberOfMaster':'1',
@@ -139,6 +140,15 @@ class RegistryClusterInstViewer extends React.Component {
         this.setState({ openAdd: false })
     }
 
+    gotoUrl() {
+        _self.props.history.push({
+            pathname: '/site4',
+            search: 'pg=4'
+        });
+        _self.props.history.location.search = 'pg=4';
+        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=4'})
+    }
+
 
     generateDOM(open, dimmer, width, height, data, keysData, hideHeader, region) {
 
@@ -149,7 +159,7 @@ class RegistryClusterInstViewer extends React.Component {
             (i === 0)?
                 <div className="round_panel" key={i} style={{ width:width, minWidth:670, height:height, display:'flex', flexDirection:'column'}} >
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
-                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} />
+                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} />
                     </div>
                 </div>
                 :
@@ -183,11 +193,22 @@ class RegistryClusterInstViewer extends React.Component {
         }
     }
     receiveSubmit = (result, body) => {
-        //this.props.handleLoadingSpinner(false);
+        
 
         console.log('receive data ..', result.data, body)
 
         let paseData = result.data;
+        if(paseData.error) {
+            this.setState({clusterInstCreate:false});
+            this.props.handleLoadingSpinner(false);
+            Alert.error(paseData.error, {
+                position: 'top-right',
+                effect: 'slide',
+                beep: true,
+                timeout: 3000,
+                offset: 100
+            });
+        }
 
         // if(paseData.message) {
         //     Alert.error(paseData.message, {
@@ -250,11 +271,18 @@ class RegistryClusterInstViewer extends React.Component {
 
         if(nextProps.submitValues && nextProps.submitSucceeded && this.reqCount === 0) {
             console.log('submit on...', nextProps.submitValues)
-            this.props.handleCreatingSpinner(true);
+            //this.props.handleCreatingSpinner(true);
+            this.props.handleLoadingSpinner(true);
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             serviceBody = {params:createFormat(nextProps.submitValues), token:store.userToken}
             service.createNewClusterInst('CreateClusterInst',serviceBody, this.receiveSubmit)
-            //this.props.handleLoadingSpinner(true);
+            setTimeout(() => {
+                this.props.handleLoadingSpinner(false);
+                if(this.state.clusterInstCreate) {
+                    this.props.gotoUrl();
+                }
+            }, 3000)
+            
             this.reqCount = 1;
         }
 
@@ -321,10 +349,8 @@ class RegistryClusterInstViewer extends React.Component {
 }
  */
 const getInteger = (str) => (
-    (str === ipaccessArr[0])? 0 :
-    (str === ipaccessArr[1])? 1 :
-    (str === ipaccessArr[2])? 2 :
-    (str === ipaccessArr[3])? 3 : false
+    (str === 'IpAccessDedicated')? 1 :
+    (str === 'IpAccessShared')? 3 : false
 )
 const createFormat = (data) => (
     {
@@ -423,7 +449,7 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))}
+        // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))}
     };
 };
 

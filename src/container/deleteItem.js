@@ -128,10 +128,10 @@ class DeleteItem extends React.Component {
             _self.props.success(_self.state.deleteName);
         }
         if(this.props.siteId === 'Organization' && body.params.name == localStorage.selectOrg) {
-            this.props.handleSelectOrg('-')
-            this.props.handleUserRole('')
             localStorage.setItem('selectRole', '')
             localStorage.setItem('selectOrg', '')
+            this.props.handleSelectOrg('-')
+            this.props.handleUserRole('')
         }
 
         _self.props.refresh('All');
@@ -175,6 +175,8 @@ class DeleteItem extends React.Component {
                 }
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
+            setTimeout(() => this.props.refresh('All'), 2000)
+            
         } else if(this.props.siteId === 'appinst') {
             const {OrganizationName, AppName, Version, Operator, Cloudlet, ClusterInst, Region} = this.props.selected
             serviceNm = 'DeleteAppInst'
@@ -342,7 +344,7 @@ class DeleteItem extends React.Component {
             >
                 <Modal.Header>{`Delete ${this.props.siteId}`}</Modal.Header>
                 <Modal.Content>
-                    <p>{'Are you sure you want to delete '}<b>{this.state.deleteName}</b></p>
+                    <p>{'Are you sure you want to delete '}<b>{this.state.deleteName}</b>{'?'}</p>
                 </Modal.Content>
                 <Modal.Actions>
                     <Button onClick={() => this.closeDeleteModal('no')} negative>

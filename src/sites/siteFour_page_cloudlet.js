@@ -28,7 +28,8 @@ class SiteFourPageCloudlet extends React.Component {
             contWidth:0,
             bodyHeight:0,
             activeItem: 'Developers',
-            devData:[]
+            devData:[],
+            liveComp:false
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -70,7 +71,16 @@ class SiteFourPageCloudlet extends React.Component {
             this.userToken = store.userToken;
         }
     }
+    componentWillUnmount() {
+
+        this.setState({liveComp:false})
+    }
+
+
     componentWillReceiveProps(nextProps) {
+        if(!this.state.liveComp) {
+            return;
+        }
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
@@ -108,8 +118,8 @@ class SiteFourPageCloudlet extends React.Component {
         if(region !== 'All'){
             rgn = [region]
         }  
-        rgn.map((item) => {
-            services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult)
+        rgn.map((item, i) => {
+            setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 500 * i)
         })
     }
     getDataDeveloperSub = () => {

@@ -43,7 +43,7 @@ export default class PopDetailViewer extends React.Component {
                     (key !== 'Edit')?
                     <Grid.Row columns={2} key={i}>
                         <Grid.Column width={5} className='detail_item'>
-                            <div>{key}</div>
+                            <div>{(key === 'FlavorName')?'Flavor Name':(key == 'RAM')?'RAM Size':(key == 'vCPUs')?'Number of vCPUs':(key == 'Disk')?'Disk Space':key}</div>
                         </Grid.Column>
                         <Grid.Column width={11}>
                             <div style={{wordWrap: 'break-word'}}>{(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key]):String(nextProps.data[key])}</div>
@@ -88,7 +88,6 @@ export default class PopDetailViewer extends React.Component {
                         {
                             this.state.listOfDetail
                         }
-
                     </Grid>
                     </Modal.Description>
                 </Modal.Content>

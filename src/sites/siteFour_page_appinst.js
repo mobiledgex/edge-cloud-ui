@@ -25,11 +25,12 @@ class SiteFourPageAppInst extends React.Component {
             bodyHeight:0,
             devData:[],
             viewMode:'listView',
-            detailData:null
+            detailData:null,
+            liveComp:false
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [1,2,2,1,1,2,2,2,1];
+        this.headerLayout = [1,2,2,1,1,2,2,2,1,1,1];
         this.hiddenKeys = ['Error','URI', 'Mapped_ports', 'Runtime', 'Created', 'Liveness','Flavor']
     }
 
@@ -55,6 +56,7 @@ class SiteFourPageAppInst extends React.Component {
     componentWillMount() {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
+        this.setState({liveComp:true})
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
@@ -64,7 +66,16 @@ class SiteFourPageAppInst extends React.Component {
             this.getDataDeveloper(this.props.changeRegion);
         }
     }
+    componentWillUnmount() {
+
+        this.setState({liveComp:false})
+    }
+
+
     componentWillReceiveProps(nextProps) {
+        if(!this.state.liveComp) {
+            return;
+        }
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
 
         if(nextProps.computeRefresh.compute) {

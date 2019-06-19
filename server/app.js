@@ -440,6 +440,7 @@ app.post('/delete', function(req, res){
  ** ****************************/
 
 const apiMC = require('./routes/apiMC');
+console.log('====== process env mcurl ======='+process.env.MC_URL)
 apiMC.MC_URL = process.env.MC_URL;
 app.post('/masterControl', apiMC.getToken);
 app.post('/createUser', apiMC.createUser);

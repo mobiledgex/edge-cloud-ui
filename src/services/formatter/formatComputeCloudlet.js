@@ -17,7 +17,11 @@ let generateData = (datas,body) => {
     let toJson = [];
     if(datas.data) {
         if(typeof datas.data === 'object') {
-            toJson.push((datas.data)?datas.data:{});
+            if(datas.data == null) {
+                toJson = null;
+            } else {
+                toJson.push((datas.data)?datas.data:{});
+            }
         } else {
             toArray = datas.data.split('\n')
             toArray.pop();
@@ -27,9 +31,9 @@ let generateData = (datas,body) => {
         toJson = null;
     }
     console.log("cloudlet tojson!!",toJson,body)
-    if(toJson){
+    if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
-            if(dataResult.error || dataResult.message) {
+            if(dataResult.error || dataResult.message || !dataResult.data) {
                 console.log("error")
             } else {
                 let Index = i;
@@ -47,7 +51,7 @@ let generateData = (datas,body) => {
         })
     } else {
         let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
-        values.push({Region:'', CloudletName:'', Operator:'', CloudletLocation:'', Ip_support:'', Num_dynamic_ips:'', Edit:newRegistKey})
+        values.push({Region:'-', CloudletName:'-', Operator:'-', CloudletLocation:'-', Ip_support:'-', Num_dynamic_ips:'-', Edit:newRegistKey})
     }
 
 

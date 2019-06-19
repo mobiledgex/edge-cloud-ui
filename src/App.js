@@ -7,7 +7,6 @@ import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'semantic-ui-css/semantic.min.css';
 
-
 //redux
 import { connect } from 'react-redux';
 import * as actions from './actions';
@@ -140,7 +139,7 @@ const DashboardContainer = ( props, props2) => {
                 {props.mainPath === '/createAccount' && <CreateAccount params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/passwordreset' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} reset={true}/>}
                 {props.mainPath === '/verify' && <VerifyContent params={_params} history={(props2.history)?props2.history:null}/>}
-            <Alert stack={{limit: 3}} />
+            <Alert stack={{limit: 1}} />
         </div>
         :
         <div></div>

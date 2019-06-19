@@ -31,7 +31,7 @@ export default class PopProfileViewer extends React.Component {
                             <div>{key}</div>
                         </Grid.Column>
                         <Grid.Column width={11} style={{display:'flex', flexDirection:'row', alignContent:'center', justifyContent:'flex-start'}}>
-                            <div style={{wordWrap: 'break-word', marginRight:20}}>{(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key]):String(nextProps.data[key])}</div>
+                            <div style={{wordWrap: 'break-word', marginRight:20}}>{(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key]):(key === 'EmailVerified' && JSON.stringify(nextProps.data[key]) === 'true')?'Yes':String(nextProps.data[key])}</div>
                         </Grid.Column>
                         <Divider vertical></Divider>
                     </Grid.Row>

@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 
-import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup, Icon} from "semantic-ui-react";
+import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup, Icon, Input} from "semantic-ui-react";
 
 import { Field, reduxForm, initialize, reset } from "redux-form";
 import MaterialIcon from "material-icons-react";
@@ -90,6 +90,16 @@ const renderTextArea = field => (
         // placeholder={field.placeholder}
     />
 );
+const renderInputNum = field => (
+    <Form.Field
+        {...field.input}
+        type={field.type}
+        // placeholder={field.placeholder}
+    >
+        <label>{field.label}</label>
+        <Input type="number"></Input>
+    </Form.Field>
+);
 const renderInput = field => (
     <Form.Input
         {...field.input}
@@ -114,6 +124,7 @@ const renderInputDpType = field => (
         type={field.type}
         label={field.label}
         value={field.placeholder}
+        disabled
     />
 );
 

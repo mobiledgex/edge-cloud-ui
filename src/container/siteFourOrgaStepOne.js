@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import {Button, Form, Item, Message, List, Grid, Card, Header, Image} from "semantic-ui-react";
+import {Button, Form, Item, Message, List, Grid, Card, Header, Image, Input} from "semantic-ui-react";
 import {Field, reduxForm, initialize, reset} from "redux-form";
 import MaterialIcon from "../sites/siteFour_page_createOrga";
 import './styles.css';
@@ -131,6 +131,17 @@ const renderTextArea = field => (
         label={field.label}
         placeholder={field.placeholder}
     />
+);
+
+const renderInputNum = field => (
+    <Form.Field
+        {...field.input}
+        type={field.type}
+        // placeholder={field.placeholder}
+    >
+        <label>{field.label}</label>
+        <Input type="number"></Input>
+    </Form.Field>
 );
 const renderInput = ({ input, placeholder, type, meta: { touched, error, warning } }) => (
     <div>
@@ -265,7 +276,7 @@ class SiteFourOrgaOne extends React.Component {
                                         </Grid.Column>
                                         <Grid.Column width={11}>
                                             <Field
-                                                component={renderInput}
+                                                component={renderInputNum}
                                                 name="phone"
                                                 type="input"
                                             />

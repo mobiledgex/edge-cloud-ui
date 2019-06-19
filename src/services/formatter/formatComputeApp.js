@@ -42,9 +42,9 @@ let generateData = (datas,body) => {
     }
 
     console.log("Apptojson!!",toJson, body)
-    if(toJson){
+    if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
-            if(dataResult.error || dataResult.message) {
+            if(dataResult.error || dataResult.message || !dataResult.data) {
                 console.log("error")
             } else {
                 console.log("gogogo@#@")

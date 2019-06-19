@@ -28,7 +28,8 @@ class SiteFourPageCluster extends React.Component {
             contWidth:0,
             bodyHeight:0,
             activeItem: 'Developers',
-            devData:[]
+            devData:[],
+            liveComp:false
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -74,7 +75,16 @@ class SiteFourPageCluster extends React.Component {
             setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         }
     }
+    componentWillUnmount() {
+
+        this.setState({liveComp:false})
+    }
+
+
     componentWillReceiveProps(nextProps) {
+        if(!this.state.liveComp) {
+            return;
+        }
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 

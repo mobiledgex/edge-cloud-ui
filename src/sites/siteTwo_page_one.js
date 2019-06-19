@@ -276,7 +276,7 @@ class SiteTwoPageOne extends React.Component  {
         ComputeService.getMCService('ShowCloudlet',{token:store.userToken, region:'US'}, _self.receiveCloudlet)
 
         //get info appInstance
-        ComputeService.getComputeService('appinst', this.receiveAppInst)
+        setTimeout(() => ComputeService.getComputeService('appinst', this.receiveAppInst), 500);
 
 
         /*

@@ -17,8 +17,7 @@ import SiteOne from './siteOne';
 import * as serviceLogin from "../services/service_login_api";
 
 import {GridLoader} from "react-spinners";
-import Alert from 'react-s-alert';
-import PopSettingViewer from "../container/popSettingViewer";
+
 
 
 const pointMarkers = getMockData(0x97bcd8, 'point');
@@ -99,7 +98,7 @@ class EntranceGlobe extends Component {
     goToNext(site) {
         //set organization of localstorage
         if(site == '/site4') {
-            localStorage.setItem('selectMenu', 'Organization')
+            localStorage.setItem('selectMenu', 'Organizations')
         }
         //브라우져 입력창에 주소 기록
         let mainPath = site;
