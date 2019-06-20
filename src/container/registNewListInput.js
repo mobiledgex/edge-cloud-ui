@@ -1,5 +1,19 @@
 import React, { Fragment } from "react";
-import {Button, Form, Item, Message, Divider, Modal, List, Grid, Card, Dropdown, Input, TextArea} from "semantic-ui-react";
+import {
+    Button,
+    Form,
+    Item,
+    Message,
+    Divider,
+    Modal,
+    List,
+    Grid,
+    Card,
+    Dropdown,
+    Input,
+    TextArea,
+    Popup, Icon
+} from "semantic-ui-react";
 import { Field, reduxForm, initialize } from "redux-form";
 
 import MaterialIcon from "../sites/siteFour_page_createOrga";
@@ -104,6 +118,23 @@ class registNewListInput extends React.Component {
 
     }
 
+    getHelpPopup =(key)=> (
+        <Popup
+            trigger={<Icon name='question circle outline' size='large' style={{lineHeight: '38px'}}/>}
+            content=
+                {(key=='FlavorName')? 'Name of the flavor'
+                    :(key=='RAM')? 'RAM in megabytes'
+                        :(key=='vCPUs')? 'Number of virtual CPUs'
+                            :(key=='Disk')? 'Amount of disk space in gigabytes'
+                                : key
+                }
+            // content={this.state.tip}
+            // style={style}
+            inverted
+        />
+    )
+
+
     render() {
         const {handleSubmit, data, dimmer, selected, regKeys, open, close, option, value, change} = this.props;
 
@@ -120,11 +151,11 @@ class registNewListInput extends React.Component {
                                     {
                                         (data.length > 0)?
                                         regKeys.map((key, i)=>(
-                                            <Grid.Row key={i} columns={2}>
+                                            <Grid.Row key={i} columns={3}>
                                                 <Grid.Column width={5} className='detail_item'>
                                                     <div>{(key === 'FlavorName')?'Flavor Name':(key == 'RAM')?'RAM Size':(key == 'vCPUs')?'Number of vCPUs':(key == 'Disk')?'Disk Space':key}</div>
                                                 </Grid.Column>
-                                                <Grid.Column width={11}>
+                                                <Grid.Column width={10}>
                                                 {
                                                     (key === 'MasterFlavor')?
                                                     <Field component={renderSelect} placeholder='Select MasterFlavor' name='MasterFlavor' options={option[0]} value={value[0]} />
@@ -141,6 +172,9 @@ class registNewListInput extends React.Component {
                                                     :
                                                     <Field component={renderInput} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } />
                                                 }
+                                                </Grid.Column>
+                                                <Grid.Column width={1}>
+                                                    {this.getHelpPopup(key)}
                                                 </Grid.Column>
                                                 <Divider vertical></Divider>
                                             </Grid.Row>

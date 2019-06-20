@@ -399,7 +399,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 />
                                                         }
                                                     </Grid.Column>
-                                                    <Grid.Column width={1} style={{padding:0}}>
+                                                    <Grid.Column width={1}>
                                                     {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
 
                                                     </Grid.Column>

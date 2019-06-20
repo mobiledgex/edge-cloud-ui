@@ -45,6 +45,7 @@ class AccountListView extends React.Component {
             resultData:null,
             openDelete:false,
             openVerify:false,
+            userName:'',
             verifyEmail:'',
             isDraggable: false,
         };
@@ -95,8 +96,8 @@ class AccountListView extends React.Component {
 
     }
 
-    popupSendEmail(email) {
-        this.setState({openVerify:true, verifyEmail:email})
+    popupSendEmail(user, email) {
+        this.setState({openVerify:true, userName:user, verifyEmail:email})
     }
 
 
@@ -236,7 +237,7 @@ class AccountListView extends React.Component {
                                             (item[value] === true)?'Yes'
                                                 // String(item[value])
                                                 :
-                                                <Button onClick={() => this.popupSendEmail(item['Email'])}>Send verification email</Button>
+                                                <Button onClick={() => this.popupSendEmail(item['Username'], item['Email'])}>Send verification email</Button>
                                         }
 
                                     </Table.Cell>
@@ -295,7 +296,7 @@ class AccountListView extends React.Component {
                                     selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                                     success={this.successfully} refresh={this.props.dataRefresh}
                         ></DeleteItem>
-                        <PopVerify open={this.state.openVerify} email={this.state.verifyEmail}
+                        <PopVerify open={this.state.openVerify} email={this.state.verifyEmail} user={this.state.userName}
                                     selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                                     success={this.successfully} receiveResendVerify={this.receiveResendVerify}
                         ></PopVerify>

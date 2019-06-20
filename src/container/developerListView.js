@@ -48,8 +48,8 @@ class DeveloperListView extends React.Component {
             selectUse:null,
             resultData:null,
             openDelete:false,
-            isDraggable: false
-
+            isDraggable: false,
+            noData:false
         };
 
     }
@@ -127,14 +127,24 @@ class DeveloperListView extends React.Component {
     )
 
     InputExampleFluid = (value) => <Input fluid placeholder={(this.state.dimmer === 'blurring')? '' : value} />
+    generateStart () {
 
+        (this.state.dummyData.length) ? this.setState({noData: false}) : this.setState({noData: true})
+    }
+    checkLengthData() {
+        this.setState({noData:false})
+        setTimeout(() => this.generateStart(), 2000)
+    }
      generateDOM(open, dimmer, width, height, hideHeader) {
         return layout.map((item, i) => (
 
             (i === 0)?
                 <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
-                        {this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)}
+                        {(this.state.dummyData.length)?
+                            this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData) :
+                            (this.state.noData)?<div style={{padding:20}}>When you click the New button, the Create New tab appears as the default view.</div>:null
+                        }
                     </div>
 
                     {/*<Table.Footer className='listPageContainer'>*/}
@@ -352,8 +362,10 @@ class DeveloperListView extends React.Component {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-        if(nextProps.devData) {
+        if(nextProps.devData.length) {
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+        } else {
+            this.checkLengthData();
         }
         if(nextProps.searchValue) {
             let searchData  = reducer.filterSearch(nextProps.devData,nextProps.searchValue);

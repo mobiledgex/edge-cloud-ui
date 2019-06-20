@@ -152,14 +152,7 @@ const FormSignUpContainer = (props) => (
 )
 const customerName = '';
 let flag = true;
-const showAlert = (props) => {
-    let verifyMessage = `In order to participate in a console, you must verify your account. An email has been sent to ${props.self.state.email} with a link to verify your account. If you have not received the email after a few minutes, please check your spam folder or resend the verification email.`
-    flag = false;
-    Alert.info(<CustomContentAlert position='bottom' customFields={{customerName: props.self.state && props.self.state.email || 'yourEmail'}} email={props.self.state && props.self.state.email || 'yourEmail@@'} message={verifyMessage}/>, {
-        position: 'top-right', timeout: 15000, limit:1
-    })
-    setTimeout(()=>flag = true, 1000)
-}
+
 const SuccessMsg = (props) => (
     <Grid className="signUpBD">
         <Grid.Row>
@@ -169,26 +162,27 @@ const SuccessMsg = (props) => (
             <span className='title' onClick={()=>console.log(props.msg)}>{String(props.msg)}</span>
             }
         </Grid.Row>
-
-        <Grid.Row>
-            {(props.msg.indexOf('created') !== -1) ?
-                <div>
+        {(props.msg.indexOf('created') !== -1) ?
+            <Fragment>
+                <Grid.Row>
                     <div className="login-text">Thanks for creating a MobiledgeX account! Please verify your email. Then you'll be able to login and get started.</div>
+                </Grid.Row>
+                <Grid.Row>
                     <div className="login-text" style={{fontStyle:'italic'}}>If you verify your account, Sign in with your account</div>
-                    {
-                        (flag)?
-                        showAlert(props)
-                            :null
-                    }
-                </div>
-                :
-                <Fragment>
+                </Grid.Row>
+            </Fragment>
+            :
+            <Fragment>
+                <Grid.Row>
                     <div className="login-text">Fail to create your account. Please try Again.</div>
-                    <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => console.log(props.self.handleClickLogin)}><span>Sign Up</span></Button>
-                </Fragment>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column>
+                        <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.handleClickLogin('signup')}><span>Sign Up</span></Button>
+                    </Grid.Column>
+                </Grid.Row>
+            </Fragment>
             }
-
-        </Grid.Row>
         <Grid.Row>
             <Grid.Column>
                  <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() =>  props.self.handleClickLogin('login')}><span>Log In</span></Button>
@@ -266,8 +260,8 @@ class Login extends Component {
         /***
          * TEST success created new account
          ***/
-        //this.setState({successCreate:true, loginMode:'signup', successMsg:'test created'})
-
+        //this.setState({successCreate:true, loginMode:'signuped', successMsg:'test created'})
+        //this.onProgress();
 
     }
 
@@ -282,6 +276,7 @@ class Login extends Component {
                     serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email}, self.resultCreateUser, self)
                 }
                 this.setState({email:nextProps.values.email})
+                this.onProgress(true);
             }
 
         }
@@ -310,7 +305,14 @@ class Login extends Component {
     //         nextState.loginSuccess != this.state.loginSuccess
     //     )
     // }
+    showAlert = () => {
+        let verifyMessage = `In order to participate in a console, you must verify your account. An email has been sent to ${self.state.email} with a link to verify your account. If you have not received the email after a few minutes, please check your spam folder or resend the verification email.`
 
+        Alert.info(<CustomContentAlert position='bottom' customFields={{customerName: self.state && self.state.email || 'yourEmail'}} email={self.state && self.state.email || 'yourEmail@@'} message={verifyMessage}/>, {
+            position: 'top-right', timeout: 15000, limit:1
+        })
+
+    }
     resultCreateUser(result) {
         console.log('success create......', result.data, JSON.stringify(result.data), typeof result.data)
         let message = (result.data.message)? result.data.message : null;
@@ -321,22 +323,29 @@ class Login extends Component {
         // if(message.indexOf('Email' && 'already') > -1){
         //     message = 'Email already in use'
         // }
+        self.onProgress(false)
+        self.props.handleChangeLoginMode('signuped');
         if(message.indexOf('created') > -1) {
             Alert.success(message, {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
             });
+
+            self.showAlert()
+
+            self.setState({successCreate:true, errorCreate:false})
         } else {
             Alert.error(message, {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
             });
+            self.setState({successCreate:false, errorCreate:true})
         }
 
 
-        self.setState({successMsg:message ? message:self.state.successMsg, errorCreate: true, signup:true});
+        self.setState({successMsg:message ? message:self.state.successMsg, signup:false});
     }
     resultNewPass(result) {
         console.log('success update as new pass......', result.data, JSON.stringify(result.data), typeof result.data)
@@ -372,6 +381,9 @@ class Login extends Component {
     }
     onChangeInput = (e, { name, value }) => {
         this.setState({ [name]: value })
+    }
+    onProgress(value) {
+        this.props.handleCreatingSpinner(value)
     }
     receiveToken(result) {
 
@@ -419,11 +431,10 @@ class Login extends Component {
     }
     requestToken(self) {
         serviceLogin.getMethodCall('requestToken', {username:self.state.username, password:self.state.password}, self.receiveToken)
-
         //self.receiveToken({data:{token:'my test token'}})
     }
     handleClickLogin(mode) {
-        //this.props.handleChangeLoginMode(mode)
+        this.props.handleChangeLoginMode(mode)
         self.setState({loginMode:mode})
     }
     // onKeyPress = (e) => {
@@ -527,7 +538,7 @@ class Login extends Component {
     //
     render() {
         const { reset, data, loginState } = this.props;
-        console.log(this.state.session, this.state.redirect)
+        console.log('check state...',this.state.loginMode, ":",this.state.successCreate, ":", this.state.errorCreate)
         return (
 
                 (this.state.session !== 'open') ?
@@ -546,6 +557,10 @@ class Login extends Component {
                                     <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
                                     :
                                     <FormSignUpContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle}/>
+                            :(this.state.loginMode === 'signuped')?
+                                (this.state.successCreate || this.state.errorCreate)?
+                                    <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
+                                    :<div></div>
                             :(this.state.loginMode === 'login')?
                                 <FormContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} login_danger={this.state.loginDanger}/>
                             :
@@ -572,12 +587,13 @@ const mapStateToProps = state => {
     return {
             values: profile ? profile.values : null,
             submitSucceeded: profile ? profile.submitSucceeded : null,
-            loginMode: loginmode ? loginmode.mode : null
+            loginMode: loginmode ? loginmode.mode : null,
         }
 };
 
 const mapDispatchProps = (dispatch) => {
     return {
+        handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))},
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleChangeTab: (data) => { dispatch(actions.changeTab(data))},
         mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data})),

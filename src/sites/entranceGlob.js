@@ -225,7 +225,7 @@ class EntranceGlobe extends Component {
                         >
                             { this.state.modalOpen &&
                             <div className='intro_login'>
-                                <Login signup={this.state.signup}></Login>
+                                <Login></Login>
                             </div>
                             }
                             {!this.state.modalOpen &&

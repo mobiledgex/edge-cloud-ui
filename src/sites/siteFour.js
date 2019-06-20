@@ -328,9 +328,11 @@ class SiteFour extends React.Component {
         <Popup
             trigger={<Icon name='question circle outline' size='small' style={{marginTop:0,paddingLeft:10}}/>}
             content=
-                {(key=='Organization')? 'Click New button to create your organization!'
-                 :
-                 key
+                {(key=='Cloudlets')? 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator.'
+                :(key=='Cluster Instances')? 'ClusterInst is an instance of a Cluster on a Cloudlet. It is defined by a Cluster, Cloudlet, and Developer key.'
+                :(key=='Apps')? 'App belongs to developers and is used to provide information about their application.'
+                :(key=='App Instances')? 'AppInst is an instance of an App on a Cloudlet where it is defined by an App plus a ClusterInst key. Many of the fields here are inherited from the App definition.'
+                : key
                 }
             // content={this.state.tip}
             // style={style}

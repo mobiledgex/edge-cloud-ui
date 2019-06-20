@@ -38,7 +38,7 @@ class SiteFourPageClusterInst extends React.Component {
         this.hgap = 0;
         this.loadCount = 0;
 
-        this.headerLayout = [1,2,2,1,2,1,1,2,2,1];
+        this.headerLayout = [1,2,2,2,2,1,2,2,1,2];
         this.hiddenKeys = ['Status']
 
     }

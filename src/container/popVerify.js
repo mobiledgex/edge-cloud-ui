@@ -38,6 +38,7 @@ class PopVerify extends React.Component {
         _self.props.handleLoadingSpinner(true);
         serviceLogin.resendVerify('resendverify',
             {
+                username: _self.props.userName,
                 email:_self.props.email,
                 callbackurl : 'https://'+host+'/verify'
             }, _self.props.receiveResendVerify)
