@@ -53,11 +53,11 @@ let generateData = (datas,body) => {
                 let DeveloperName = dataResult.data.key.developer_key.name || '-';
                 let AppName = dataResult.data.key.name || '-';
                 let Version = dataResult.data.key.version || '-';
-                let ImagePath = dataResult.data.image_path || '-';
                 let DeploymentType = dataResult.data.deployment || '-';
                 let Command = dataResult.data.command || '-';
                 let DeploymentMF = dataResult.data.deployment_manifest || '-';
                 let ImageType = dataResult.data.image_type || '-';
+                let ImagePath = dataResult.data.image_path || '-';
                 let DefaultFlavor = dataResult.data.default_flavor.name || '-';
                 let Ports = dataResult.data.access_ports || '-';
                 //let DeploymentGenerator = dataResult.deployment_generator || '-';
@@ -67,9 +67,9 @@ let generateData = (datas,body) => {
                     'DeveloperName',
                     'AppName',
                     'Version',
-                    'ImagePath',
                     'DeploymentType',
                     'ImageType',
+                    'ImagePath',
                     'DefaultFlavor',
                     'Ports',
                     // 'IpAccess',
@@ -83,9 +83,9 @@ let generateData = (datas,body) => {
                     OrganizationName:DeveloperName,
                     AppName:AppName,
                     Version:Version,
-                    ImagePath:ImagePath,
                     DeploymentType:DeploymentType,
                     ImageType:ImageType,
+                    ImagePath:ImagePath,
                     DefaultFlavor:DefaultFlavor,
                     Ports:Ports,
                     // IpAccess:IpAccess,

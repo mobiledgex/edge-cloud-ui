@@ -63,7 +63,7 @@ exports.createUser = (req, res) => {
         name: serviceBody.name,
         passhash: serviceBody.password,
         email: serviceBody.email,
-        callbackurl: "http://console.mobiledgex.net/verify",
+        callbackurl: mcUrl+"/verify",
         operatingsystem:"mac OSX",
         browser:"httpie",
         clientip:"127.0.0.1"

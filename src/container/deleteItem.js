@@ -126,6 +126,17 @@ class DeleteItem extends React.Component {
                 offset: 100
             });
             _self.props.success(_self.state.deleteName);
+        } else if(result.data.error) {
+            Alert.error(result.data.error, {
+                position: 'top-right',
+                effect: 'slide',
+                onShow: function () {
+                    console.log('aye!')
+                },
+                beep: true,
+                timeout: 15000,
+                offset: 100
+            });
         }
         if(this.props.siteId === 'Organization' && body.params.name == localStorage.selectOrg) {
             localStorage.setItem('selectRole', '')
@@ -198,6 +209,7 @@ class DeleteItem extends React.Component {
                 }
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
+            setTimeout(() => this.props.refresh('All'), 2000)
         } else if(this.props.siteId === 'User') {
             let userArr = [];
             Object.values(this.props.selected).map((item,i) => {

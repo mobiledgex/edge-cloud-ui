@@ -100,6 +100,7 @@ let generateData = (datas,body) => {
                 let error = dataResult.data.errors || '-';
                 let runtime = dataResult.data.runtime_info || '-';
                 let created = "seconds : "+dataResult.data.created_at.seconds  || '-' + "     nanos : "+dataResult.data.created_at.nanos || '-';
+                let Status = dataResult.data.status
 
 
                 let newRegistKey = [
@@ -131,8 +132,9 @@ let generateData = (datas,body) => {
                     Error:error,
                     Runtime:runtime,
                     Created:created,
+                    Progress:'',
                     Edit:newRegistKey,
-                    Progress:''
+                    Status:Status
                 })
             }
         })

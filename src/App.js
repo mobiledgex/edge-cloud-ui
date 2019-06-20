@@ -6,7 +6,7 @@ import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'semantic-ui-css/semantic.min.css';
-
+import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
 //redux
 import { connect } from 'react-redux';
 import * as actions from './actions';
@@ -139,7 +139,19 @@ const DashboardContainer = ( props, props2) => {
                 {props.mainPath === '/createAccount' && <CreateAccount params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/passwordreset' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} reset={true}/>}
                 {props.mainPath === '/verify' && <VerifyContent params={_params} history={(props2.history)?props2.history:null}/>}
-            <Alert stack={{limit: 1}} />
+            <Alert stack={{limit: 3}} />
+
+            <div className="loadingBox" style={{zIndex:99999}}>
+                <GridLoader
+                    sizeUnit={"px"}
+                    size={25}
+                    color={'#70b2bc'}
+                    loading={self.props.creatingSpinner}
+                    //loading={true}
+                />
+                <span className={self.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
+            </div>
+
         </div>
         :
         <div></div>
@@ -279,6 +291,7 @@ const mapStateToProps = (state) => {
         siteName: (state.siteChanger)?state.siteChanger.site:null,
         tab: (state.tabChanger.tab)?state.tabChanger.tab:null,
         clickTab: (state.tabClick.clickTab)?state.tabClick.clickTab:null,
+        creatingSpinner : state.creatingSpinner.creating?state.creatingSpinner.creating:null,
     };
 };
 

@@ -68,12 +68,12 @@ let generateData = (datas,body) => {
                 let Status = dataResult.data.status
 
                 let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'Number_of_Master', 'Number_of_Node', 'CloudletLocation'];
-                values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, State:State, CloudletLocation:CloudletLocation, Edit:newRegistKey, Progress:'',Status:Status})
+                values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, State:State, Progress:'', Status:Status, Edit:newRegistKey})
             }
         })
     } else {
         let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'Number_of_Master', 'Number_of_Node', 'CloudletLocation'];
-        values.push({Region:'', ClusterName:'', OrganizationName:'', Operator:'', Cloudlet:'', Flavor:'', IpAccess:'', CloudletLocation:'', Edit:newRegistKey})
+        values.push({Region:'', ClusterName:'', OrganizationName:'', Operator:'', Cloudlet:'', Flavor:'', IpAccess:'', CloudletLocation:'', State:'', Progress:'', Status:'', Edit:newRegistKey})
     }
 
     //ascending or descending

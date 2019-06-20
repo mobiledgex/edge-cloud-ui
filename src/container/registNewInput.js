@@ -108,11 +108,21 @@ class registNewInput extends React.Component {
     }
 
     getHelpPopup =(key)=> (
-        (key === 'CloudletName' || key === 'Operator' || key === 'OperatorName' || key === 'ClusterName' || key === 'OrganizationName') ? false
-        :
         <Popup
             trigger={<Icon name='question circle outline' size='large' style={{lineHeight: '38px'}}/>}
-            content={key}
+            content=
+                {(key=='CloudletName')? 'Name of the cloudlet'
+                    :(key=='OperatorName')? 'Company or Organization name of the operator'
+                        :(key=='CloudletLocation')? 'Latitude: Latitude in WGS 84 coordinates, Longitude: Longitude in WGS 84 coordinates'
+                            :(key=='Ip_support')?
+                                'IpSupport indicates the type of public IP support provided by the Cloudlet. Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.\n' +
+                                '\n' +
+                                'IP_SUPPORT_UNKNOWN: Unknown IP support\n' +
+                                'IP_SUPPORT_STATIC: Static IP addresses are provided to and managed by Controller\n' +
+                                'IP_SUPPORT_DYNAMIC: IP addresses are dynamically provided by an Operator\'s DHCP server'
+                                :(key=='Num_dynamic_ips')? 'Number of dynamic IPs available for dynamic IP support'
+                                    : key
+                }
             // content={this.state.tip}
             // style={style}
             inverted
@@ -216,7 +226,7 @@ class registNewInput extends React.Component {
                                                     <Field component={renderInput} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } />
                                                 }
                                                 </Grid.Column>
-                                                <Grid.Column width={2} style={{padding:0}}>
+                                                <Grid.Column width={2}>
                                                     {this.getHelpPopup(key)}
                                                 </Grid.Column>
                                                 <Divider vertical></Divider>

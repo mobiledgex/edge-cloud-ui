@@ -1246,6 +1246,62 @@ body, button, input, textarea, optgroup, select, textarea,
 }
 
 
+/*Alert progress */
+.s-alert-wrapper>.s-alert-box.s-alert-info{
+    background: #292c33;
+    /*background: rgba(42,45,50,0.85);*/
+
+}
+
+.s-alert-wrapper>.s-alert-box.s-alert-info .s-alert-box-inner .ProgressBox>div{
+    width:100%
+}
+
+.s-alert-box-inner .ProgressBox .ui.progress:first-child {
+    margin-top: 0.5em;
+    background: rgba(0,0,0,.3);
+}
+
+.s-alert-box-inner .ProgressBox .ui.progress .bar{
+    background: rgba(68,119,0,1);
+}
+
+.s-alert-box-inner .ProgressBox .MuiPaper-root{
+    background: none;
+    /*background: rgba(255, 255, 255, 0.25);*/
+    border-radius: .28571429rem;
+    color: rgba(255, 255, 255, 0.6);
+    padding:0;
+}
+.s-alert-box-inner .ProgressBox .MuiStepIcon-root{
+    color: rgba(255, 255, 255, 0.3);
+}
+.s-alert-box-inner .ProgressBox .MuiStepIcon-root.MuiStepIcon-completed{
+    color: rgba(68,119,0,1);
+}
+
+.s-alert-box-inner .ProgressBox .MuiStepIcon-root.MuiStepIcon-active {
+    color: rgba(68,119,0,1);
+}
+
+.s-alert-box-inner .ProgressBox .MuiStepLabel-label{
+    color:rgba(255, 255, 255, 0.2);
+}
+
+.s-alert-box-inner .ProgressBox .MuiStepLabel-label.MuiStepLabel-completed, .s-alert-box-inner  .MuiStepLabel-label.MuiStepLabel-active{
+    color:rgba(255, 255, 255, 0.75);
+}
+
+
+.tbBodyList i.green.icon{
+    color: rgba(136,221,0,.85) !important;
+}
+
+.tbBodyList i.red.icon{
+    color: #E74C3C !important;
+}
+
+
 /* tooltip */
 .customToolTip {
     color: rgba(255,255,255,.8) !important;

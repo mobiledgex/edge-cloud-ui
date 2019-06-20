@@ -47,8 +47,7 @@ let generateData = (datas,body) => {
         })
     } else {
         let newRegistKey = ['Region', 'FlavorName', 'RAM', 'vCPUs', 'Disk'];
-        //values.push({Edit:newRegistKey})
-        values.push({Region:'', FlavorName:'', RAM:'', vCPUs:'', Disk:'', Edit:newRegistKey})
+        //values.push({Region:'', FlavorName:'', RAM:'', vCPUs:'', Disk:'', Edit:newRegistKey})
     }
 
     //ascending or descending

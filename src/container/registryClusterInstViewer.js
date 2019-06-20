@@ -77,15 +77,15 @@ class RegistryClusterInstViewer extends React.Component {
             keysData:[
                 {
                     'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
-                    'ClusterName':{label:'Cluster Name', type:'RenderInput', necessary:true, tip:null, active:true},
-                    'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:null, active:true, items:['','']},
-                    'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
-                    'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
-                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'aaa', active:true, items:['Docker', 'Kubernetes']},
-                    'IpAccess':{label:'Ip Access', type:'RenderSelect', necessary:false, tip:'When checked, this will inherit settings from application settings',items:ipaccessArr},
-                    'Flavor':{label:'Flavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:['','']},
-                    'NumberOfMaster':{label:'Number of Master', type:'RenderInputDisabled', necessary:false, tip:'When checked, this will inherit settings from application settings', value:null},
-                    'NumberOfNode':{label:'Number of Node', type:'RenderInputNum', necessary:false, tip:'When checked, this will inherit settings from application settings', value:null},
+                    'ClusterName':{label:'Cluster Name', type:'RenderInput', necessary:true, tip:'Cluster name', active:true},
+                    'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Name of Organization that this cluster belongs to', active:true, items:['','']},
+                    'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Company or Organization name of the operator', active:true, items:['','']},
+                    'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:'Name of the cloudlet', active:true, items:['','']},
+                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (kubernetes or docker)', active:true, items:['Docker', 'Kubernetes']},
+                    'IpAccess':{label:'Ip Access', type:'RenderSelect', necessary:false, tip:'IpAccess indicates the type of RootLB that Developer requires for their App',items:ipaccessArr},
+                    'Flavor':{label:'Flavor', type:'RenderSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor', active:true, items:['','']},
+                    'NumberOfMaster':{label:'Number of Masters', type:'RenderInputDisabled', necessary:false, tip:'Number of k8s masters (In case of docker deployment, this field is not required)', value:null},
+                    'NumberOfNode':{label:'Number of Nodes', type:'RenderInputNum', necessary:false, tip:'Number of k8s nodes (In case of docker deployment, this field is not required)', value:null},
                 },
                 {
 

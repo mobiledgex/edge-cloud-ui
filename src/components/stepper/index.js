@@ -34,11 +34,19 @@ function getSteps(data) {
             'Deleting'
         ];
     } else {
-        return [
-            (data.item.item.Status.task_name)?localStorage.clusterinstCreateStep:'Creating',
-            'Waiting for Cluster to Initialize',
-            'Updating Docker Credentials for cluster'
-        ];
+        if(data.item.site == 'ClusterInst'){
+            return [
+                (data.item.item.Status.task_name)?localStorage.clusterinstCreateStep:'Creating Heat Stack',
+                'Waiting for Cluster to Initialize',
+                'Updating Docker Credentials for cluster'
+            ];
+        } else if(data.item.site == 'appinst') {
+            return [
+                (data.item.item.Status.task_name)?localStorage.clusterinstCreateStep:'Creating App',
+                'Configuring Service: LB, Firewall Rules and DNS',
+            ];
+        }
+        
     }
     
 }
@@ -52,7 +60,7 @@ function getStepContent(step,data) {
 export default function VerticalLinearStepper(rData) {
 
     let data = rData;
-    console.log("data@@date!!",data)
+    console.log("data@@date!!",data,data.item.site)
     const classes = useStyles();
     const [activeStep, setActiveStep] = (data.item.item.State == 10 || data.item.item.State == 12) ? React.useState((data.item.item.State == 12)?0:(data.item.item.State == 10)?1:2) : React.useState((data.item.item.Status.task_number)?data.item.item.Status.task_number-1:3)
     const steps = getSteps(data);
@@ -63,12 +71,19 @@ export default function VerticalLinearStepper(rData) {
             else if(pData.item.item.State == 10) return 70
             else return 100
         } else {
-            if(pData.item.item.Status.task_number == 1 && !pData.item.item.Status.step_name) return 20
-            else if(pData.item.item.Status.task_number == 1 && pData.item.item.Status.step_name) return 30
-            else if(pData.item.item.Status.task_number == 2 && !pData.item.item.Status.step_name) return 50
-            else if(pData.item.item.Status.task_number == 2 && pData.item.item.Status.step_name) return 70
-            else if(pData.item.item.Status.task_number == 3) return 90
-            else if(Object.keys(pData.item.item.Status).length === 0) return 100
+            if(data.item.site == 'ClusterInst') {
+                if(pData.item.item.Status.task_number == 1 && !pData.item.item.Status.step_name) return 20
+                else if(pData.item.item.Status.task_number == 1 && pData.item.item.Status.step_name) return 30
+                else if(pData.item.item.Status.task_number == 2 && !pData.item.item.Status.step_name) return 50
+                else if(pData.item.item.Status.task_number == 2 && pData.item.item.Status.step_name) return 70
+                else if(pData.item.item.Status.task_number == 3) return 90
+                else if(Object.keys(pData.item.item.Status).length === 0) return 100
+            } else if(data.item.site == 'appinst') {
+                if(pData.item.item.Status.task_number == 1) return 40
+                else if(pData.item.item.Status.task_number == 2) return 80
+                else if(Object.keys(pData.item.item.Status).length === 0) return 100
+            }
+            
         }
     }
     

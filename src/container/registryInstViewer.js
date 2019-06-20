@@ -72,17 +72,18 @@ class RegistryInstViewer extends React.Component {
             clustinst:[],
             apps:[],
             loopCancel:true,
+            appInstCreate:true,
             keysData:[
                 {
                     'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
-                    'DeveloperName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:null, active:true},
-                    'AppName':{label:'App Name', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
-                    'Version':{label:'App Version', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
-                    'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
-                    'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
+                    'DeveloperName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Organization or Company Name that a Developer is part of', active:true},
+                    'AppName':{label:'App Name', type:'RenderSelect', necessary:true, tip:'App name', active:true, items:[null]},
+                    'Version':{label:'App Version', type:'RenderSelect', necessary:true, tip:'App version', active:true, items:[null]},
+                    'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Company or Organization name of the operator', active:true, items:[null]},
+                    'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:'Name of the cloudlet', active:true, items:[null]},
                     'AutoClusterInst':{label:'Auto Cluster Inst', type:'RenderCheckbox', necessary:false, tip:'When checked, this will inherit settings from application settings'},
                     'ClusterInst':{label:'Cluster Inst', type:'RenderSelect', necessary:true,
-                        tip:' When selecting cluster inst, default flavor and ipaccess specified in app setting gets overridden',
+                        tip:'When selecting cluster inst, default flavor and ip access specified in app setting gets overridden',
                         active:true, items:[null]},
                 },
                 {
@@ -192,6 +193,7 @@ class RegistryInstViewer extends React.Component {
         _self.props.handleLoadingSpinner(false);
         this.setState({loopCancel:true});
         if(result.data.error) {
+            this.setState({appInstCreate:false});
             Alert.error(result.data.error, {
                 position: 'top-right',
                 effect: 'slide',
@@ -288,6 +290,12 @@ class RegistryInstViewer extends React.Component {
         _self.props.handleLoadingSpinner(true);
         // services.createNewApp('CreateApp', serviceBody, _self.receiveResult)
         services.createNewAppInst('CreateAppInst', {params:params, token:tokens}, _self.receiveResult)
+        setTimeout(() => {
+            this.props.handleLoadingSpinner(false);
+            if(this.state.appInstCreate) {
+                this.gotoUrl();
+            }
+        }, 3000)
     }
 
     componentDidMount() {

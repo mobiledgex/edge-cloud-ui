@@ -16,6 +16,7 @@ import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
 import VerticalLinearStepper from '../components/stepper';
 import PopDetailViewer from './popDetailViewer';
 import * as computeService from '../services/service_compute_service';
+import MaterialIcon from 'material-icons-react';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -41,8 +42,8 @@ const MyCustomContentTemplate = (item) => {
     console.log("mycuster@@",item)
     
     return (
-        <div>
-            <VerticalLinearStepper item={item} />
+        <div className='ProgressBox'>
+            <VerticalLinearStepper style={{width:'100%'}} item={item} />
             {/* <button className="customButton" onClick={handleConfirm.bind(this)}>Confirm</button> */}
             <span className='s-alert-close'></span>
         </div>
@@ -77,7 +78,8 @@ class MapWithListView extends React.Component {
             tooltipMsg:'No Message',
             tooltipVisible: false,
             detailViewData:null,
-            cInstStatus:{}
+            cInstStatus:{},
+            noData:false
         };
 
         _self = this;
@@ -155,6 +157,15 @@ class MapWithListView extends React.Component {
             direction: direction === 'ascending' ? 'descending' : 'ascending',
         })
     }
+    generateStart () {
+
+        (this.state.dummyData.length) ? this.setState({noData: false}) : this.setState({noData: true})
+    }
+    checkLengthData() {
+        this.setState({noData:false})
+        setTimeout(() => this.generateStart(), 2000)
+    }
+
     generateDOM(open, dimmer, width, height) {
         return layout.map((item, i) => (
 
@@ -162,7 +173,10 @@ class MapWithListView extends React.Component {
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%', height:'100%'}} >
 
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
-                        {this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys)}
+                        {(this.state.dummyData.length)?
+                            this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys) :
+                            (this.state.noData)?<div style={{padding:20}}>When you click the New button, the Create New tab appears as the default view.</div>:null
+                        }
                     </div>
 
                     {/*<Table.Footer className='listPageContainer'>*/}
@@ -221,7 +235,7 @@ class MapWithListView extends React.Component {
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell key={i} className={(key === 'CloudletLocation')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'CloudletLocation')?this.handleSort(key):null}>
+                <Table.HeaderCell key={i} className={(key === 'CloudletLocation' || key === 'Edit' || key === 'Progress')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key == 'CloudletLocation' || key == 'Edit' || key == 'Progress')?null:this.handleSort(key)}>
                     {(key === 'CloudletName')? 'Cloudlet Name'
                         : (key === 'CloudletLocation')? 'Cloudlet Location'
                             : (key === 'ClusterName')? 'Cluster Name'
@@ -253,7 +267,13 @@ class MapWithListView extends React.Component {
         this.setState({cInstStatus:item})
         //Call ClusterInst Show
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        computeService.getMCService('ShowClusterInst',{token:store.userToken, region:'US'}, _self.receiveResultClusterInst)
+        console.log("dddddd@@",this.props)
+        if(this.props.siteId == 'ClusterInst') {
+            computeService.getMCService('ShowClusterInst',{token:store.userToken, region:'US'}, _self.receiveResultClusterInst)
+        } else if(this.props.siteId == 'appinst') {
+            computeService.getMCService('ShowAppInst',{token:store.userToken, region:'US'}, _self.receiveResultAppInst)
+        }
+        
     }
 
     receiveResultClusterInst = (result) => {
@@ -268,7 +288,27 @@ class MapWithListView extends React.Component {
         if(cData.Status.task_number === 1){
             localStorage.setItem('clusterinstCreateStep', cData.Status.task_name)
         }
-        Alert.info(<MyCustomContentTemplate item={cData}/>, {
+        Alert.info(<MyCustomContentTemplate item={cData} site={this.props.siteId}/>, {
+            position: 'top-right', timeout: 'none', limit:1,
+            customFields: {
+                stateLevel: 1
+            }
+        })
+    }
+
+    receiveResultAppInst = (result) => {
+        console.log("result@@@@",result,this.state.cInstStatus)
+        let cData = null;
+        result.map((item,i) => {
+            if(item.AppName == this.state.cInstStatus.AppName) {
+                cData = item
+            }
+        })
+        console.log("cData@@@",cData)
+        if(cData.Status.task_number === 1){
+            localStorage.setItem('clusterinstCreateStep', cData.Status.task_name)
+        }
+        Alert.info(<MyCustomContentTemplate item={cData} site={this.props.siteId}/>, {
             position: 'top-right', timeout: 'none', limit:1,
             customFields: {
                 stateLevel: 1
@@ -327,17 +367,17 @@ class MapWithListView extends React.Component {
                                     :
                                     (value === 'Progress' && item['State'] == 3)?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <Popup content='Detail View status of progress' trigger={<Icon loading size={12} color='green' name='circle notch' />} />
+                                            <Popup content='View Progress' trigger={<Icon loading size={12} color='green' name='circle notch' />} />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && item['State'] == 5)?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            {'complete'}
+                                            <MaterialIcon icon='done' color='white' />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && (item['State'] == 10 || item['State'] == 12))?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <Popup content='Detail View status of progress' trigger={<Icon loading size={12} color='red' name='circle notch' />} />
+                                            <Popup content='View Progress' trigger={<Icon loading size={12} color='red' name='circle notch' />} />
                                         </Table.Cell>
                                     :
                                     (!( String(hidden).indexOf(value) > -1 )) ?
@@ -395,8 +435,10 @@ class MapWithListView extends React.Component {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-        if(nextProps.devData) {
+        if(nextProps.devData.length) {
             this.setState({dummyData:nextProps.devData})
+        }else {
+            this.checkLengthData();
         }
 
         nextProps.clickCity.map((item) => {

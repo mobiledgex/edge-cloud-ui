@@ -51,7 +51,7 @@ let generateData = (datas,body) => {
         })
     } else {
         let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
-        values.push({Region:'-', CloudletName:'-', Operator:'-', CloudletLocation:'-', Ip_support:'-', Num_dynamic_ips:'-', Edit:newRegistKey})
+        //values.push({Region:'-', CloudletName:'-', Operator:'-', CloudletLocation:'-', Ip_support:'-', Num_dynamic_ips:'-', Edit:newRegistKey})
     }
 
 

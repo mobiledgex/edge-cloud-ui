@@ -30,8 +30,9 @@ class SiteFourPageAppInst extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [1,2,2,1,1,2,2,2,1,1,1];
-        this.hiddenKeys = ['Error','URI', 'Mapped_ports', 'Runtime', 'Created', 'Liveness','Flavor']
+
+        this.headerLayout = [1,2,2,1,1,2,1,2];
+        this.hiddenKeys = ['Error','URI', 'Mapped_ports', 'Runtime', 'Created', 'Liveness','Flavor','Status']
     }
 
     //go to
