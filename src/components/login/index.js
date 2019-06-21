@@ -263,6 +263,10 @@ class Login extends Component {
         //this.setState({successCreate:true, loginMode:'signuped', successMsg:'test created'})
         //this.onProgress();
 
+        //this.setState({email:'myemail@test.com', username:'my name'})
+        //setTimeout(() =>self.resultCreateUser({data:{message:'good created'}}, {}, self), 2000);
+        //inkikim1234
+
     }
 
     componentWillReceiveProps (nextProps) {
@@ -270,12 +274,12 @@ class Login extends Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(nextProps.values) {
             if(nextProps.submitSucceeded) {
+                this.setState({email:nextProps.values.email, username:nextProps.values.username})
                 if(nextProps.loginMode === 'resetPass'){
                     service.getMCService('passwordreset',{ password:nextProps.values.password, token: store.resetToken}, self.resultNewPass, self)
                 } else {
                     serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email}, self.resultCreateUser, self)
                 }
-                this.setState({email:nextProps.values.email})
                 this.onProgress(true);
             }
 
@@ -305,15 +309,15 @@ class Login extends Component {
     //         nextState.loginSuccess != this.state.loginSuccess
     //     )
     // }
-    showAlert = () => {
-        let verifyMessage = `In order to participate in a console, you must verify your account. An email has been sent to ${self.state.email} with a link to verify your account. If you have not received the email after a few minutes, please check your spam folder or resend the verification email.`
+    showAlert = (resource) => {
+        let verifyMessage = `In order to participate in a console, you must verify your account. An email has been sent to ${resource.email} with a link to verify your account. If you have not received the email after a few minutes, please check your spam folder or resend the verification email.`
 
-        Alert.info(<CustomContentAlert position='bottom' customFields={{customerName: self.state && self.state.email || 'yourEmail'}} email={self.state && self.state.email || 'yourEmail@@'} message={verifyMessage}/>, {
+        Alert.info(<CustomContentAlert position='bottom' customFields={{customerName: resource && resource.name || 'your name'}} email={resource && resource.email || 'yourEmail@@'} message={verifyMessage}/>, {
             position: 'top-right', timeout: 15000, limit:1
         })
 
     }
-    resultCreateUser(result) {
+    resultCreateUser(result, resource, self) {
         console.log('success create......', result.data, JSON.stringify(result.data), typeof result.data)
         let message = (result.data.message)? result.data.message : null;
         // console.log('msg-',message)
@@ -332,7 +336,7 @@ class Login extends Component {
                 timeout: 5000
             });
 
-            self.showAlert()
+            self.showAlert(resource)
 
             self.setState({successCreate:true, errorCreate:false})
         } else {

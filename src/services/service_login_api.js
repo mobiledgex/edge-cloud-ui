@@ -85,12 +85,12 @@ export function createUser(resource, body, callback, self) {
                 } else {
 
                 }
-                callback(parseData, resource, self);
+                callback(parseData, body, self);
             } else {
                 if(parseData.message){
 
                 } else {
-                    callback(parseData, resource, self);
+                    callback(parseData, body, self);
                 }
             }
 

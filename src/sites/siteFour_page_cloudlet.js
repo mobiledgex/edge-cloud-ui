@@ -4,6 +4,7 @@ import sizeMe from 'react-sizeme';
 import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
+import PageDetailViewer from '../container/pageDetailViewer';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -29,7 +30,8 @@ class SiteFourPageCloudlet extends React.Component {
             bodyHeight:0,
             activeItem: 'Developers',
             devData:[],
-            liveComp:false
+            liveComp:false,
+            viewMode:'listView',
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -61,6 +63,7 @@ class SiteFourPageCloudlet extends React.Component {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+        this.setState({liveComp:true})
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
@@ -78,9 +81,7 @@ class SiteFourPageCloudlet extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        if(!this.state.liveComp) {
-            return;
-        }
+
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
@@ -91,7 +92,19 @@ class SiteFourPageCloudlet extends React.Component {
         if(this.props.changeRegion !== nextProps.changeRegion){
             this.getDataDeveloper(nextProps.changeRegion);
         }
+        if(nextProps.viewMode) {
+            console.log('cloudlet detail view == ', nextProps.viewMode)
+            if(nextProps.viewMode === 'listView') {
+                this.setState({liveComp:false})
+                //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
+                this.getDataDeveloper(this.props.changeRegion)
+                this.setState({viewMode:nextProps.viewMode})
+            } else {
+                this.setState({viewMode:nextProps.viewMode})
+                setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
+            }
 
+        }
     }
     receiveResult = (result) => {
         let join = this.state.devData.concat(result);
@@ -111,6 +124,9 @@ class SiteFourPageCloudlet extends React.Component {
         }
     }
     getDataDeveloper = (region) => {
+        if(!this.state.liveComp) {
+            return;
+        }
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let rgn = ['US','EU'];
         this.setState({devData:[]})
@@ -127,20 +143,29 @@ class SiteFourPageCloudlet extends React.Component {
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem } = this.state
+        const { activeItem, viewMode } = this.state
         return (
-
+            (viewMode === 'listView')?
             <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></MapWithListView>
-
+            :
+            <PageDetailViewer data={this.state.detailData}/>
         );
     }
 
 };
 
 const mapStateToProps = (state) => {
+    let viewMode = null;
+    let detailData = null;
+
+    if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+        viewMode = state.changeViewMode.mode.viewMode;
+        detailData = state.changeViewMode.mode.data;
+    }
     return {
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
-        changeRegion : state.changeRegion.region?state.changeRegion.region:null
+        changeRegion : state.changeRegion.region?state.changeRegion.region:null,
+        viewMode : viewMode, detailData:detailData
     }
 };
 const mapDispatchProps = (dispatch) => {
