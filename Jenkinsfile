@@ -3,6 +3,9 @@ pipeline {
         timeout(time: 45, unit: 'MINUTES')
     }
     agent any
+    environment {
+        DOCKER_BUILD_TAG = sh(returnStdout: true, script: "git describe --tags")
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -11,8 +14,7 @@ pipeline {
                 }
                 script {
                     dir(path: 'edge-cloud-ui') {
-                        currentBuild.displayName = sh(returnStdout: true,
-                            script: "git describe --tags")
+                        currentBuild.displayName = "${DOCKER_BUILD_TAG}"
                     }
                 }
             }
@@ -22,6 +24,15 @@ pipeline {
                 dir(path: 'edge-cloud-ui') {
                     sh "make build && make publish"
                 }
+            }
+        }
+        stage('Deploy') {
+            when {
+                 tag comparator: 'REGEXP', pattern: '^v[0-9\\.]$'
+            }
+            steps {
+                build job: 'console-deploy',
+                      parameters: [string(name: 'TAG', value: "${DOCKER_BUILD_TAG}"), string(name: 'DEPLOY_ENVIRONMENT', value: 'staging')]
             }
         }
     }
