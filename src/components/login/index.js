@@ -278,7 +278,7 @@ class Login extends Component {
                 if(nextProps.loginMode === 'resetPass'){
                     service.getMCService('passwordreset',{ password:nextProps.values.password, token: store.resetToken}, self.resultNewPass, self)
                 } else {
-                    serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email}, self.resultCreateUser, self)
+                    serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email, callbackurl : 'https://'+host+'/verify'}, self.resultCreateUser, self)
                 }
                 this.onProgress(true);
             }
