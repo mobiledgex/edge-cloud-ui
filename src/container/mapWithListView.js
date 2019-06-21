@@ -258,10 +258,9 @@ class MapWithListView extends React.Component {
         alert(b[a])
     }
     detailView(item) {
-        //
-
         //change popup to page view
-        this.props.handleDetail({data:item, viewMode:'detailView'})
+        console.log('=============  mapWithListView..detailView')
+        _self.props.handleDetail({data:item, viewMode:'detailView'})
     }
     stateView(item) {
         this.setState({cInstStatus:item})
@@ -273,7 +272,6 @@ class MapWithListView extends React.Component {
         } else if(this.props.siteId == 'appinst') {
             computeService.getMCService('ShowAppInst',{token:store.userToken, region:'US'}, _self.receiveResultAppInst)
         }
-        
     }
 
     receiveResultClusterInst = (result) => {

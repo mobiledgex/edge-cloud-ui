@@ -95,7 +95,6 @@ export default class PageDetailViewer extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('regist new item -- ', nextProps)
 
             let regKeys = [];
             let component = null;
