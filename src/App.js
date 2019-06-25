@@ -140,7 +140,7 @@ const DashboardContainer = ( props, props2) => {
                 {props.mainPath === '/passwordreset' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} reset={true}/>}
                 {props.mainPath === '/verify' && <VerifyContent params={_params} history={(props2.history)?props2.history:null}/>}
             <Alert stack={{limit: 3}} />
-
+            {(self.props.creatingSpinner==true)?
             <div className="loadingBox" style={{zIndex:99999}}>
                 <GridLoader
                     sizeUnit={"px"}
@@ -150,7 +150,7 @@ const DashboardContainer = ( props, props2) => {
                     //loading={true}
                 />
                 <span className={self.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
-            </div>
+            </div>:null}
 
         </div>
         :

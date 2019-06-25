@@ -1,15 +1,13 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-    search: null,
-    scType:'Username'
+    data: {}
 };
-export default function searchValue( state = initialState, action) {
+export default function appLaunch( state = initialState, action) {
     switch( action.type ) {
-        case types.SEARCH_VALUE :
+        case types.APP_LAUNCH :
             return Object.assign({}, state, {
-                search:action.search,
-                scType:action.scType
+                data:action.data
             })
             break;
         default:

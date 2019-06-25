@@ -140,7 +140,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
             organizeData:[],
             cloudletData:[],
             flavorData:[],
-
+            clusterShow:true
         }
         _self = this;
         this.loopReqCount = 3; //cloudlet(operators), cluster, flavor
@@ -251,6 +251,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
     }
     onChangeFormState = (state) => {
+        console.log("flavor##@@",state)
         let organizKeys = [];
         let flavorKeys = [];
         let regions = aggregate.groupBy(_self.state.cloudletData, 'Region')
@@ -329,7 +330,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
             setTimeout(() => {
                 _self.setFlavorNode([_self.props.masterNumber,_self.props.nodeNumber]);
                 //change TAB
-                _self.setState({activeIndex:1})
+                if(this.state.clusterShow) _self.setState({activeIndex:1})
             }, 500)
         } else if(state === 'NumberOfNode') {
             setTimeout(() => {
@@ -337,6 +338,8 @@ class SiteFourCreateInstForm extends React.PureComponent {
                 _self.setFlavorNode([_self.props.masterNumber,_self.props.nodeNumber]);
                 _self.setState({activeIndex:1})
             }, 500)
+        } else if(state === 'DeploymentType') {
+            _self.setState({activeIndex:0})
         }
     }
     setFlavorNode(keys, flavor) {
@@ -392,6 +395,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
+        console.log("rerererer@@",nextProps)
         if(nextProps.data) this.setState({devData: nextProps.data, keys:nextProps.keys})
         //reset cluster and node count
         if(nextProps.nodeNumber || nextProps.selectedFlavor) {
@@ -409,13 +413,26 @@ class SiteFourCreateInstForm extends React.PureComponent {
         _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=4'})
     }
 
+    clusterHide = (value) => {
+        console.log("clusterhide",value)
+        
+        if(value === 'Docker' && panes.length == 2) {
+            panes.pop();
+            this.setState({clusterShow:false})
+        }
+        if(value === 'Kubernetes' && panes.length == 1){
+            panes.push({ menuItem: 'Show Cluster', render: (props) => <Tab.Pane>{clusterNode(props)}</Tab.Pane> })
+            this.setState({clusterShow:true})
+        } 
+    }
+
     render() {
         const { activeIndex, clusterName } = this.state;
         return (
             <Grid>
                 <Grid.Row columns={2}>
                     <Grid.Column width={8}>
-                        <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole} gotoUrl={this.gotoUrl} onSubmit={() => console.log('submit form')} onChangeState={this.onChangeFormState}></SiteFourCreateFormDefault>
+                        <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole} gotoUrl={this.gotoUrl} clusterHide={this.clusterHide} onSubmit={() => console.log('submit form')} onChangeState={this.onChangeFormState}></SiteFourCreateFormDefault>
                     </Grid.Column>
                     <Grid.Column width={8}>
                         <Tab activeIndex={activeIndex} clusterName={clusterName} onTabChange={this.handleTabChange} panes={panes}{...this.state}></Tab>

@@ -84,8 +84,11 @@ class SiteFourPageCloudlet extends React.Component {
 
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-
+        if(!this.state.liveComp) {
+            return;
+        }
         if(nextProps.computeRefresh.compute) {
+            console.log("computerefresh@@@@")
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
         }
@@ -97,7 +100,7 @@ class SiteFourPageCloudlet extends React.Component {
             if(nextProps.viewMode === 'listView') {
                 this.setState({liveComp:false})
                 //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
-                this.getDataDeveloper(this.props.changeRegion)
+                //this.getDataDeveloper(this.props.changeRegion)
                 this.setState({viewMode:nextProps.viewMode})
             } else {
                 this.setState({viewMode:nextProps.viewMode})
@@ -124,9 +127,9 @@ class SiteFourPageCloudlet extends React.Component {
         }
     }
     getDataDeveloper = (region) => {
-        if(!this.state.liveComp) {
-            return;
-        }
+        // if(!this.state.liveComp) {
+        //     return;
+        // }
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let rgn = ['US','EU'];
         this.setState({devData:[]})

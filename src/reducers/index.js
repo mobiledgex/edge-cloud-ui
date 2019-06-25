@@ -27,10 +27,11 @@ import injectData from './injectData';
 import alertMsg from './alertMsg';
 import changeViewMode from './changeViewMode';
 import roleInfo from './roleInfo';
+import appLaunch from './appLaunch';
 
 const reducers = combineReducers({
     videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor, loginMode,injectData,changeViewMode,
-    registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, searchValue, computeRefresh, loadingSpinner, creatingSpinner, alertMsg, roleInfo, form: formReducer
+    registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, searchValue, computeRefresh, loadingSpinner, creatingSpinner, alertMsg, roleInfo, appLaunch, form: formReducer
 });
 
 export default reducers;

@@ -110,6 +110,7 @@ class PopAddUserViewer extends React.Component {
                         {/*</Grid.Row>*/}
                         {this.setForms()}
                     </Grid>
+                    {(this.props.loadingSpinner==true)?
                     <div className="loadingBox" style={{zIndex:99999}}>
                         <GridLoader
                             sizeUnit={"px"}
@@ -119,7 +120,7 @@ class PopAddUserViewer extends React.Component {
                             //loading={true}
                         />
                         <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
-                    </div>
+                    </div>:null}
                 </Modal.Content>
                 <Modal.Actions>
                 {/*<Modal.Actions  className='adduser-close'>*/}

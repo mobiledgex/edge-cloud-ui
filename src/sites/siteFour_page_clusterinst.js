@@ -102,7 +102,7 @@ class SiteFourPageClusterInst extends React.Component {
             if(nextProps.viewMode === 'listView') {
                 this.setState({liveComp:false})
                 //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
-                this.getDataDeveloper(this.props.changeRegion)
+                //this.getDataDeveloper(this.props.changeRegion)
                 this.setState({viewMode:nextProps.viewMode})
             } else {
                 this.setState({viewMode:nextProps.viewMode})

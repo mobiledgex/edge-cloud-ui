@@ -186,7 +186,13 @@ class RegistNewItem extends React.Component {
         let onlyNum = value;
         if(onlyNum > 180 || onlyNum < -180) {
             console.log("in",onlyNum)
-            alert("-180 ~ 180");
+            //alert("-180 ~ 180");
+            Alert.error("-180 ~ 180", {
+                position: 'top-right',
+                effect: 'slide',
+                beep: true,
+                timeout: 2000
+            });
             e.target.value=null;
             return
         }
@@ -201,7 +207,13 @@ class RegistNewItem extends React.Component {
         }
         let onlyNum = value;
         if(onlyNum > 90 || onlyNum < -90) {
-            alert("-90 ~ 90");
+            //alert("-90 ~ 90");
+            Alert.error("-90 ~ 90", {
+                position: 'top-right',
+                effect: 'slide',
+                beep: true,
+                timeout: 2000
+            });
             e.target.value=null;
             return
         }

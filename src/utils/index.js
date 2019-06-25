@@ -102,11 +102,11 @@ export const filterDefineKey = (object, values) => {
     return object;
 
 }
-export const filterSearch = (data, searchValue) => {
+export const filterSearch = (data, searchValue, searchType) => {
     let searchArr = []
     
     data.filter((item) => {
-        if(item.Username.indexOf(searchValue)!==-1){
+        if(item[searchType].indexOf(searchValue)!==-1){
             searchArr.push(item);
         }
     })

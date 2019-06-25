@@ -31,7 +31,7 @@ class SiteFourPageAppInst extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
 
-        this.headerLayout = [1,2,2,1,1,2,1,2];
+        this.headerLayout = [1,2,2,1,1,2,2,2,1,1];
         this.hiddenKeys = ['Error','URI', 'Mapped_ports', 'Runtime', 'Created', 'Liveness','Flavor','Status']
     }
 
@@ -90,7 +90,7 @@ class SiteFourPageAppInst extends React.Component {
             if(nextProps.viewMode === 'listView') {
 
                 //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
-                this.getDataDeveloper(this.props.changeRegion)
+                //this.getDataDeveloper(this.props.changeRegion)
                 this.setState({viewMode:nextProps.viewMode})
             } else {
                 this.setState({viewMode:nextProps.viewMode})

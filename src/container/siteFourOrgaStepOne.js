@@ -276,7 +276,7 @@ class SiteFourOrgaOne extends React.Component {
                                         </Grid.Column>
                                         <Grid.Column width={11}>
                                             <Field
-                                                component={renderInputNum}
+                                                component={renderInput}
                                                 name="phone"
                                                 type="input"
                                             />

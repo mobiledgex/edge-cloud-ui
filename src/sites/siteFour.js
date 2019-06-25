@@ -112,7 +112,8 @@ class SiteFour extends React.Component {
             noData:false,
             viewMode:'listView',
             toggleDisable:true,
-            currentVersion:'v-'
+            currentVersion:'v-',
+            searchChangeValue:'Username'
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
@@ -149,12 +150,7 @@ class SiteFour extends React.Component {
                 key:'Organization',
                 text:'Organization',
                 value:'Organization'
-            },
-            {
-                key:'RoleType',
-                text:'RoleType',
-                value:'RoleType'
-            },
+            }
         ]
 
         this.speed = { stiffness: 500, damping: 100 }
@@ -452,7 +448,7 @@ class SiteFour extends React.Component {
     )
 
     searchClick = (e) => {
-        this.props.handleSearchValue(e.target.value)
+        this.props.handleSearchValue(e.target.value,this.state.searchChangeValue)
     }
     makeGhost(elem, self) {
 
@@ -483,47 +479,6 @@ class SiteFour extends React.Component {
         this.props.handleLoadingSpinner(true);
         this.props.handleComputeRefresh(true)
     }
-
-    // getIntervalData = (region) => {
-    //     console.log("gogogogog@@@")
-    //     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    //     let rgn = ['US','EU'];
-    //     if(region !== 'All'){
-    //         rgn = [region]
-    //     } 
-    //     setTimeout(() =>{
-    //         console.log("interval@@@@");
-    //         //rgn.map((item) => {
-    //             computeService.getMCService('ShowClusterInst',{token:store.userToken, region:'US'}, _self.receiveResultClusterInst)
-    //         //})
-    //     }, 20000);
-        
-    // }
-
-    // receiveResultClusterInst = (result) => {
-    //     console.log("result@@@@",result,this.state.createState)
-    //     if(!this.state.createState){
-    //         result.map((item) => {
-    //             if(item.State == 'Creating'){
-    //                 this.setState({createState:item.ClusterName});
-    //                 return;
-    //             }
-    //         })
-    //         this.getIntervalData();
-    //     } else {
-    //         result.map((item) => {
-    //             if(item.ClusterName == this.state.createState && item.State == 'Ready') {
-    //                 this.props.handleCreatingSpinner(false);
-    //                 this.setState({toggleState:true});
-    //                 this.gotoUrl('/site4', 'pg=4')
-    //             } else if(item.ClusterName == this.state.createState && item.State !== 'Ready') {
-    //                 this.getIntervalData();
-    //             }
-    //         })
-    //     }
-        
-    // }
-
     disableBtn = () => {
         const menuArr = ['Organization','Users','Accounts','Cloudlets','Flavors','Cluster Instances','Apps','App Instances']
         this.auth_list.map((item,i) => {
@@ -539,12 +494,18 @@ class SiteFour extends React.Component {
         
     }
 
+    searchChange = (e, {value}) => {
+        this.setState({searchChangeValue:value})
+        this.props.handleSearchValue('',value)
+    }
+
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem, controllerRegions } = this.state
         return (
             <Grid className='view_body'>
-                <div className="loadingBox" style={{zIndex:99999}}>
+                {(this.props.loadingSpinner==true)?
+                <div className="loadingBox" style={{zIndex:9999}}>
                     <GridLoader
                         sizeUnit={"px"}
                         size={25}
@@ -554,7 +515,7 @@ class SiteFour extends React.Component {
                         //loading={true}
                     />
                     <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
-                </div>
+                </div>:null}
                 {/* <div className="creatingBox">
                     <PulseLoader
                         sizeUnit={"px"}
@@ -565,7 +526,8 @@ class SiteFour extends React.Component {
                     />
                     <span className={this.props.creatingSpinner ? '' : 'create'} style={{fontSize:'18px', color:'#70b2bc'}}>Creating...</span>
                 </div> */}
-                <div className="loadingBox" style={{zIndex:99999}}>
+                {(this.props.creatingSpinner==true)?
+                <div className="loadingBox" style={{zIndex:9999}}>
                     <GridLoader
                         sizeUnit={"px"}
                         size={25}
@@ -574,7 +536,7 @@ class SiteFour extends React.Component {
                         //loading={true}
                     />
                     <span className={this.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
-                </div>
+                </div>:null}
  
                 <Grid.Row className='gnb_header'>
                     <Grid.Column width={6} className='navbar_left'>
@@ -706,7 +668,7 @@ class SiteFour extends React.Component {
                             {
                                 (this.state.viewMode === 'detailView') ?
                                 <Grid.Column className='title_align'>
-                                    <Button onClick={()=>this.props.handleDetail({data:null, viewMode:'listView'})}>Close Detail</Button>
+                                    <Button onClick={()=>this.props.handleDetail({data:null, viewMode:'listView'})}>Close Details</Button>
                                 </Grid.Column>
                                 : null
                             }
@@ -730,8 +692,8 @@ class SiteFour extends React.Component {
                         {
                             (this.state.headerTitle == 'Users') ?
                             <div className='user_search' style={{top:15, right:75, position:'absolute',zIndex:99}}>
-                                <Input icon='search' placeholder='Search Username' style={{marginRight:'20px'}}  onChange={this.searchClick} />
-                                <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} />
+                                <Input icon='search' placeholder={'Search '+this.state.searchChangeValue} style={{marginRight:'20px'}}  onChange={this.searchClick} />
+                                <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange} />
                             </div>
                             : null
                         }
@@ -806,7 +768,7 @@ const mapDispatchProps = (dispatch) => {
         handleChangeComputeItem: (data) => { dispatch(actions.computeItem(data))},
         handleChangeClickCity: (data) => { dispatch(actions.clickCityList(data))},
         handleUserInfo: (data) => { dispatch(actions.userInfo(data))},
-        handleSearchValue: (data) => {dispatch(actions.searchValue(data))},
+        handleSearchValue: (data,value) => {dispatch(actions.searchValue(data,value))},
         handleChangeRegion: (data) => {dispatch(actions.changeRegion(data))},
         handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
         handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
