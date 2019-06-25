@@ -486,6 +486,7 @@ app.post('/passwordresetrequest', apiMC.ResetPassword)
 app.post('/passwordreset', apiMC.UpdatePassword)
 
 app.post('/Version', apiMC.getVersion)
+app.post('/SettingLock', apiMC.SettingLock)
 /*
 --auth-type=jwt --auth=$SUPERPASS
  */

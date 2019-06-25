@@ -240,6 +240,8 @@ class SiteFourCreateFormDefault extends React.Component {
                 this.setState({ipAccessValue:['IpAccessDedicated','IpAccessShared']})
                 this.setState({deployTypeDocker:false})
             }
+            this.props.clusterHide(value);
+            this.props.onChangeState(key)
         } else {
             this.props.onChangeState(key)
         }

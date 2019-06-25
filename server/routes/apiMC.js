@@ -1251,3 +1251,46 @@ exports.getVersion = (req, res) => {
     console.log('get version = ', _version)
     res.json({version:_version})
 }
+
+
+/**
+ * http --auth-type=jwt --auth=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjE0MjM0MTcsImlhdCI6MTU2MTMzNzAxNywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImtpZCI6M30.ODvb9w1VBoP3Dc6CEaBebDv21uckQehWPsHMH9pRwK0j4IRSjckGvGfabUaTE2o0rxWmGS8as1a8ikpbIJ9mVw POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/restricted/user/update email=popkim71@gmail.com locked:=true
+ * http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/restricted/user/update email=wonhopark80@gmail.com locked:=true
+ * @param req
+ * @param res
+ * @constructor
+ */
+exports.SettingLock = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    if(req.body.serviceBody){
+        serviceBody = {email:req.body.serviceBody.params.email, locked:req.body.serviceBody.params.locked === 'true'?true:false};
+        superpass = req.body.serviceBody.token;
+    }
+    console.log('set lock -- ', qs.stringify(serviceBody), 'mcUrl=',mcUrl, 'token=', superpass)
+    axios.post(mcUrl + '/api/v1/auth/config/update', serviceBody,
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`},
+                 //'Content-Type': 'application/json',
+            'Content-Type':'application/json; charset=UTF-8'
+
+        }
+    )
+        .then(function (response) {
+
+            console.log('success set lock', response)
+            if(response.data) {
+                res.json(response.data)
+            } else {
+                res.json({error:'Fail'})
+            }
+        })
+        .catch(function (error) {
+            console.log('error set lock ...', error);
+            res.json({error:String(error)})
+        });
+}
+

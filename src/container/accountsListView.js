@@ -69,7 +69,11 @@ class AccountListView extends React.Component {
         services.getMCService('ShowRole',{token:token}, this.receiveResult)
     }
     receiveResult = (result) => {
+        //alert(JSON.stringify(result));
         this.setState({orgData:result})
+    }
+    receiveLockResult = (result) => {
+        console.log(JSON.stringify(result));
     }
     
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
@@ -197,6 +201,10 @@ class AccountListView extends React.Component {
             this.setState({detailViewData:item, openUser:true})
         }
     }
+    onLocking(value) {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        services.getMCService('SettingLock',{token:store.userToken, params:{email:value.email, locked:value.lockState}}, this.receiveLockResult)
+    }
 
     TableExampleVeryBasic = (w, h, headL, hideHeader, datas) => (
         <Table className="viewListTable" basic='very' sortable striped celled fixed>
@@ -238,6 +246,25 @@ class AccountListView extends React.Component {
                                                 // String(item[value])
                                                 :
                                                 <Button onClick={() => this.popupSendEmail(item['Username'], item['Email'])}>Send verification email</Button>
+                                        }
+
+                                    </Table.Cell>
+                                :
+                                (value === 'Locked')?
+                                    <Table.Cell key={j} textAlign='center'
+                                                onMouseEnter={() => {
+                                                    document.body.style.cursor = "pointer";
+                                                }}
+                                                onMouseLeave={() => {
+                                                    document.body.style.cursor = "default";
+                                                }}
+                                    >
+                                        {
+                                            (item[value] === true)?
+
+                                                <Icon name='lock'       size={20} style={ {color:'#6a6a6a'}} onClick={() => this.onLocking({email:item['Email'], lockState:false})}/>
+                                                :
+                                                <Icon name='lock open'  size={20} style={{ color:'#bbff26'}} onClick={() => this.onLocking({email:item['Email'], lockState:true})}/>
                                         }
 
                                     </Table.Cell>

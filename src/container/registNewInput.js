@@ -202,7 +202,7 @@ class registNewInput extends React.Component {
                                                     : (key === 'Version')?
                                                     <Field component={renderSelect} placeholder='Select Version' name='Version' options={option[4]} value={value[4]} change={change[4]}/>
                                                     : (key === 'ClusterInst')?
-                                                    <Field component={renderSelect} placeholder='Select Cluster Inst' name='ClusterInst' options={option[5]} value={value[5]} change={change[5]}/>
+                                                    <Field component={renderSelect} placeholder='Select Cluster Instance' name='ClusterInst' options={option[5]} value={value[5]} change={change[5]}/>
                                                     : (key === 'Type')?
                                                     <Field component={renderSelect} placeholder='Select Type' name='Type' options={option[6]} value={value[6]} change={change[6]}/>
                                                     : (key === 'Role')?

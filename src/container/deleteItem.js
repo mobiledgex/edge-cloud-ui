@@ -23,7 +23,9 @@ class DeleteItem extends React.Component {
             showWarning:false,
             closeOnEscape:true,
             closeOnDimmerClick:true,
-            deleteName:''
+            deleteName:'',
+            deleteOrg:''
+
         }
         _self = this;
     }
@@ -343,6 +345,11 @@ class DeleteItem extends React.Component {
             else if(nextProps.siteId == 'App') name = nextProps.selected.AppName
             else if(nextProps.siteId == 'appinst') name = nextProps.selected.AppName
             this.setState({deleteName:name})
+            let orgName = '';
+            if(nextProps.siteId == 'User') orgName = nextProps.selected.Organization
+            this.setState({deleteOrg:orgName})
+
+
         }
     }
 
@@ -356,7 +363,9 @@ class DeleteItem extends React.Component {
             >
                 <Modal.Header>{`Delete ${this.props.siteId}`}</Modal.Header>
                 <Modal.Content>
-                    <p>{'Are you sure you want to delete '}<b>{this.state.deleteName}</b>{'?'}</p>
+                    {(this.props.siteId == 'User')?
+                    <p>{'Are you sure you want to delete '}<b>{this.state.deleteName}</b>{' from '}<b>{this.state.deleteOrg}</b>{'?'}</p>
+                    :<p>{'Are you sure you want to delete '}<b>{this.state.deleteName}</b>{'?'}</p>}
                 </Modal.Content>
                 <Modal.Actions>
                     <Button onClick={() => this.closeDeleteModal('no')} negative>

@@ -242,7 +242,7 @@ class MapWithListView extends React.Component {
                                 : (key === 'OrganizationName')? 'Organization Name'
                                     : (key === 'IpAccess')? 'Ip Access'
                                         : (key === 'AppName')? 'App Name'
-                                            : (key === 'ClusterInst')? 'Cluster Inst'
+                                            : (key === 'ClusterInst')? 'Cluster Instance'
                     : key}
                 </Table.HeaderCell>
             :
@@ -370,7 +370,7 @@ class MapWithListView extends React.Component {
                                     :
                                     (value === 'Progress' && item['State'] == 5)?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <MaterialIcon icon='done' color='white' />
+                                            <MaterialIcon icon='done' color='rgba(255,255,255,.5)' />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && (item['State'] == 10 || item['State'] == 12))?

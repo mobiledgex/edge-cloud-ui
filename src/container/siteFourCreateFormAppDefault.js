@@ -223,6 +223,11 @@ class SiteFourCreateFormAppDefault extends React.Component {
     )
     onHandleSubmit() {
         this.props.handleSubmit();
+        setTimeout(() => {
+            this.props.dispatch(initialize('createAppFormDefault', {
+                submitSucceeded: false
+            }))
+        },100);
         //setTimeout(() => this.props.dispatch(reset('createAppFormDefault')),1000);
     }
 

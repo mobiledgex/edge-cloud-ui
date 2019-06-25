@@ -199,6 +199,7 @@ class RegistryClusterInstViewer extends React.Component {
 
         let paseData = result.data;
         if(paseData.error) {
+            this.reqCount = 0;
             this.setState({clusterInstCreate:false});
             this.props.handleLoadingSpinner(false);
             Alert.error(paseData.error, {

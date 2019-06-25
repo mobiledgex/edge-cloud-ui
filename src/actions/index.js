@@ -136,11 +136,12 @@ export function selectOrganiz (org) {
         org
     }
 }
-export function searchValue (search) {
-    console.log('SEARCH_VALUE == ', search)
+export function searchValue (search,scType) {
+    console.log('SEARCH_VALUE == ', search,scType)
     return {
         type: types.SEARCH_VALUE,
-        search
+        search,
+        scType
     }
 }
 export function changeRegion (region) {
@@ -210,5 +211,12 @@ export function roleInfo (role) {
     return {
         type: types.ROLE_INFO,
         role
+    }
+}
+export function appLaunch (data) {
+    console.log('APP_LAUNCH == ', data)
+    return {
+        type: types.APP_LAUNCH,
+        data
     }
 }

@@ -277,6 +277,13 @@ class DeveloperListView extends React.Component {
         }
         return dsb;
     }
+    appLaunch = (data) => {
+        console.log("launch@@",data)
+        this.gotoUrl('/site4', 'pg=createAppInst')
+        this.props.handleAppLaunch(data)
+        // this.props.handleChangeComputeItem('App Instances')
+        localStorage.setItem('selectMenu', 'App Instances')
+    }
     TableExampleVeryBasic = (w, h, headL, hideHeader, datas) => (
         <Table className="viewListTable" basic='very' sortable striped celled fixed>
             <Table.Header className="viewListTableHeader">
@@ -302,7 +309,7 @@ class DeveloperListView extends React.Component {
                                                 Add User
                                             </Button>:null}
                                         {(this.props.siteId == 'App')?
-                                            <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.gotoUrl('/site4', 'pg=createAppInst')}>
+                                            <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.appLaunch(item)}>
                                             Launch
                                             </Button>:null}
                                         <Button disabled={(localStorage.selectMenu !== 'Organization')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
@@ -368,7 +375,8 @@ class DeveloperListView extends React.Component {
             this.checkLengthData();
         }
         if(nextProps.searchValue) {
-            let searchData  = reducer.filterSearch(nextProps.devData,nextProps.searchValue);
+            let searchData  = reducer.filterSearch(nextProps.devData,nextProps.searchValue,nextProps.searchType);
+            console.log("searchresult@@@",searchData)
             this.setState({dummyData:searchData})
         }
     }
@@ -431,6 +439,7 @@ const mapStateToProps = (state) => {
         itemLabel: state.computeItem.item,
         userToken : (state.user.userToken) ? state.userToken: null,
         searchValue : (state.searchValue.search) ? state.searchValue.search: null,
+        searchType : (state.searchValue.scType) ? state.searchValue.scType: null,
         userRole : state.showUserRole?state.showUserRole.role:null,
         roleInfo : state.roleInfo?state.roleInfo.role:null,
     }
@@ -447,7 +456,9 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
         handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
-        handleRefreshData: (data) => { dispatch(actions.refreshData(data))}
+        handleRefreshData: (data) => { dispatch(actions.refreshData(data))},
+        handleAppLaunch: (data) => { dispatch(actions.appLaunch(data))},
+        handleChangeComputeItem: (data) => { dispatch(actions.computeItem(data))},
     };
 };
 

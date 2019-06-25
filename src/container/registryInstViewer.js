@@ -77,12 +77,12 @@ class RegistryInstViewer extends React.Component {
                 {
                     'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
                     'DeveloperName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Organization or Company Name that a Developer is part of', active:true},
-                    'AppName':{label:'App Name', type:'RenderSelect', necessary:true, tip:'App name', active:true, items:[null]},
-                    'Version':{label:'App Version', type:'RenderSelect', necessary:true, tip:'App version', active:true, items:[null]},
+                    'AppName':{label:'App Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'App name', active:true, items:[null]},
+                    'Version':{label:'App Version', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'App version', active:true, items:[null]},
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Company or Organization name of the operator', active:true, items:[null]},
                     'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:'Name of the cloudlet', active:true, items:[null]},
-                    'AutoClusterInst':{label:'Auto Cluster Inst', type:'RenderCheckbox', necessary:false, tip:'When checked, this will inherit settings from application settings'},
-                    'ClusterInst':{label:'Cluster Inst', type:'RenderSelect', necessary:true,
+                    'AutoClusterInst':{label:'Auto Cluster Instance', type:'RenderCheckbox', necessary:false, tip:'When checked, this will inherit settings from application settings'},
+                    'ClusterInst':{label:'Cluster Instance', type:'RenderSelect', necessary:true,
                         tip:'When selecting cluster inst, default flavor and ip access specified in app setting gets overridden',
                         active:true, items:[null]},
                 },
@@ -307,11 +307,15 @@ class RegistryInstViewer extends React.Component {
          * **********/
         let assObj = Object.assign([], this.state.fakeData);
         assObj[0].DeveloperName = localStorage.selectOrg;
+        if(Object.keys(this.props.appLaunch).length > 0) {
+            assObj[0].AppName = this.props.appLaunch.AppName;
+            assObj[0].Version = this.props.appLaunch.Version;
+        }
         this.setState({fakeData:assObj})
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-
+        console.log("enenennen",nextProps,this.props)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -329,6 +333,10 @@ class RegistryInstViewer extends React.Component {
             // services.createNewAppInst('CreateAppInst', {params:nextProps.submitValues, token:store.userToken}, _self.receiveResult)
         }
 
+        // if(nextProps.history.location.appdata) {
+        //     console.log("appdata@@",nextProps.history.location.appdata)
+        // }
+
         /************
          * set list of cloudlet
          * **********/
@@ -342,27 +350,35 @@ class RegistryInstViewer extends React.Component {
          * set list of version
          * **********/
         if(nextProps.selectedApp) {
-            let assObj = Object.assign([], this.state.keysData);
-            assObj[0].Version.items = this.state.apps[nextProps.selectedApp].map((cld) => (cld.Version));
-            this.setState({keysData:assObj})
-
+            if(Object.keys(this.props.appLaunch).length == 0) {
+                let assObj = Object.assign([], this.state.keysData);
+                assObj[0].Version.items = this.state.apps[nextProps.selectedApp].map((cld) => (cld.Version));
+                this.setState({keysData:assObj})
+            }
+        }
+        //set list of clusterInst filter
+        if(Object.keys(nextProps.submitData).length > 0){
+            if(nextProps.submitData.createAppFormDefault.values.Operator && nextProps.submitData.createAppFormDefault.values.Cloudlet) {
+                let keys = Object.keys(this.state.clustinst);
+                let arr = []
+                let assObj = Object.assign([], this.state.keysData);
+                keys.map((item,i) => {
+                    this.state.clustinst[item].map((items,j) => {
+                        if(items.Operator == nextProps.submitData.createAppFormDefault.values.Operator && items.Cloudlet == nextProps.submitData.createAppFormDefault.values.Cloudlet) {
+                            arr.push(item);
+                        }
+                    })
+                })
+                assObj[0].ClusterInst.items = arr;
+                this.setState({keysData:assObj})
+            }
         }
         
-        //set list of clusterInst filter
-        if(nextProps.submitData.createAppFormDefault.values.Operator && nextProps.submitData.createAppFormDefault.values.Cloudlet) {
-            let keys = Object.keys(this.state.clustinst);
-            let arr = []
-            let assObj = Object.assign([], this.state.keysData);
-            keys.map((item,i) => {
-                this.state.clustinst[item].map((items,j) => {
-                    if(items.Operator == nextProps.submitData.createAppFormDefault.values.Operator && items.Cloudlet == nextProps.submitData.createAppFormDefault.values.Cloudlet) {
-                        arr.push(item);
-                    }
-                })
-            })
-            assObj[0].ClusterInst.items = arr;
-            this.setState({keysData:assObj})
-        }
+    }
+
+    componentWillUnmount() {
+        console.log("unmount@@")
+        this.props.handleAppLaunch({})
     }
 
     render() {
@@ -484,6 +500,7 @@ const mapStateToProps = (state) => {
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         submitData : state.form?state.form : null,
         userRole : state.showUserRole?state.showUserRole.role:null,
+        appLaunch : state.appLaunch?state.appLaunch.data:null
     }
     
     // return (dimm) ? {
@@ -496,7 +513,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAppLaunch: (data) => { dispatch(actions.appLaunch(data))},
     };
 };
 
