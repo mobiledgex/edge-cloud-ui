@@ -166,7 +166,8 @@ class MapWithListView extends React.Component {
         setTimeout(() => this.generateStart(), 2000)
     }
 
-    generateDOM(open, dimmer, width, height) {
+    generateDOM(open, dimmer, width, height, randomValue) {
+        console.log('-- viewMode randomValue ---- ', randomValue, 'data ---- ',_self.state.dummyData)
         return layout.map((item, i) => (
 
             (i === 1)?
@@ -421,7 +422,7 @@ class MapWithListView extends React.Component {
     // }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('nextProps--------', nextProps,this.props.clickCity)
+        console.log('view mode nextProps--------', nextProps,this.props.clickCity, 'random=', nextProps.randomValue, 'data=', nextProps.devData)
 
         let cityCoordinates = []
         let filterList = []
@@ -462,6 +463,8 @@ class MapWithListView extends React.Component {
 
     render() {
         const { open, dimmer } = this.state;
+        const {randomValue} = this.props;
+        
         return (
             <ContainerDimensions>
                 { ({ width, height }) =>
@@ -483,7 +486,7 @@ class MapWithListView extends React.Component {
                             {...this.props}
                             style={{width:width, height:height-20}}
                         >
-                            {this.generateDOM(open, dimmer, width, height)}
+                            {this.generateDOM(open, dimmer, width, height, randomValue)}
                         </ReactGridLayout>
 
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} centered={false} style={{right:400}}></PopDetailViewer>

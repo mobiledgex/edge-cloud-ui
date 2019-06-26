@@ -361,7 +361,7 @@ class DeleteItem extends React.Component {
                 closeOnEscape={closeOnEscape}
                 closeOnDimmerClick={closeOnDimmerClick}
             >
-                <Modal.Header>{`Delete ${this.props.siteId}`}</Modal.Header>
+                <Modal.Header>{(this.props.siteId == 'User')?`Delete ${this.props.siteId} from Organization`:`Delete ${this.props.siteId}`}</Modal.Header>
                 <Modal.Content>
                     {(this.props.siteId == 'User')?
                     <p>{'Are you sure you want to delete '}<b>{this.state.deleteName}</b>{' from '}<b>{this.state.deleteOrg}</b>{'?'}</p>

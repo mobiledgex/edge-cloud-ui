@@ -84,9 +84,9 @@ class SiteFourPageClusterInst extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         console.log("nextprprprp",nextProps)
-        if(!this.state.liveComp) {
-            return;
-        }
+        // if(!this.state.liveComp) {
+        //     return;
+        // }
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
@@ -208,12 +208,13 @@ class SiteFourPageClusterInst extends React.Component {
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem, viewMode } = this.state
+        const { activeItem, viewMode } = this.state;
+        let randomValue = Math.round(Math.random() * 100);
         return (
 
             //<DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
             (viewMode === 'listView')?
-                <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} title='Cluster Instance' region='US' dataRefresh={this.getDataDeveloperSub}></MapWithListView>
+                <MapWithListView devData={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} title='Cluster Instance' region='US' dataRefresh={this.getDataDeveloperSub}></MapWithListView>
                 :
                 <PageDetailViewer data={this.state.detailData}/>
         );

@@ -63,7 +63,7 @@ class PopVerify extends React.Component {
             >
                 <Modal.Header>{`Verify Email ${this.props.email}`}</Modal.Header>
                 <Modal.Content>
-                    <p>{`In order to participate in a console, you must verify your account. An email has been sent to ${this.props.email} with a link to verify your account. If you have not received the email after a few minutes, please check your spam folder or resend the verification email.`}</p>
+                    <p>{`Thank you for signing up. Please verify your account. In order to login to your account, you must verify your account. An email has been sent to ${this.props.email} with a link to verify your account. If you have not received the email after a few minutes check your spam folder or resend the verification email.`}</p>
                     <p><b>{'Are you sure verify email?'}</b></p>
                 </Modal.Content>
                 <Modal.Actions>

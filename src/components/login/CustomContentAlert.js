@@ -30,7 +30,7 @@ const CustomContentAlert = (
                     </Icon.Group>
                 </div>
             </div>
-            <h3 className="customer">{customFields.customerName}</h3>
+            <h3 className="customer">{email}</h3>
             <span className='s-alert-close' onClick={handleClose}></span>
         </div>
     );

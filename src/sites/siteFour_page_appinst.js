@@ -60,7 +60,7 @@ class SiteFourPageAppInst extends React.Component {
         this.setState({liveComp:true})
     }
     componentDidMount() {
-        console.log('info.. ', this.childFirst, this.childSecond)
+ 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         // console.log('info.. store == ', store,this.props.changeRegion)
         if(store.userToken) {
@@ -74,9 +74,10 @@ class SiteFourPageAppInst extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        if(!this.state.liveComp) {
-            return;
-        }
+        // if(!this.state.liveComp) {
+        //     return;
+        // }
+        console.log('nextProps view mode...', nextProps)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
 
         if(nextProps.computeRefresh.compute) {
@@ -99,11 +100,13 @@ class SiteFourPageAppInst extends React.Component {
 
         }
 
+        setTimeout(() => this.forceUpdate(), 1000)
+
     }
     receiveResult = (result) => {
         let join = _self.state.devData.concat(result);
         this.props.handleLoadingSpinner(false);
-        console.log("receive == ", result)
+        console.log("view mode receive == ", result)
         if(result.error) {
             Alert.error(result.error, {
                 position: 'top-right',
@@ -115,7 +118,7 @@ class SiteFourPageAppInst extends React.Component {
         }
     }
     getDataDeveloper = (region) => {
-        console.log("appinst@@gogo")
+        console.log("view mode appinst@@gogo")
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let rgn = ['US','EU'];
         let serviceBody = {}
@@ -151,10 +154,14 @@ class SiteFourPageAppInst extends React.Component {
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem, viewMode } = this.state
+        const { activeItem, viewMode, devData } = this.state;
+        let randomValue = Math.round(Math.random() * 100);
+        
+        let myDevData = Object.assign([], devData)
+        console.log('view mode', randomValue, viewMode, myDevData)
         return (
             (viewMode === 'listView')?
-            <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloper}></MapWithListView>
+            <MapWithListView devData={myDevData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloper}></MapWithListView>
             :
             <PageDetailViewer data={this.state.detailData}/>
         );
