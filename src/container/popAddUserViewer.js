@@ -28,13 +28,13 @@ class PopAddUserViewer extends React.Component {
     }
 
     componentDidMount() {
-
+        //nextProps.data['Type'].substring(0,1).toUpperCase() + nextProps.data['Type'].substring(1)
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('regist new item -- ', nextProps)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(nextProps.open) {
-            this.setState({open:nextProps.open, dimmer:nextProps.dimmer, typeOperator:nextProps.data['Type'], organization:nextProps.data['Organization']});
+            this.setState({open:nextProps.open, dimmer:nextProps.dimmer, typeOperator:(nextProps.data['Type'].substring(0,1).toUpperCase() + nextProps.data['Type'].substring(1)), organization:nextProps.data['Organization']});
         }
         if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded) {
                 console.log('stream form siteFour_page_createOrga.js  git to a role view ... ', nextProps, nextProps.stepTwo.values)

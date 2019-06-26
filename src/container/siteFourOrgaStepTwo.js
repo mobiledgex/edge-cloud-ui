@@ -249,12 +249,12 @@ class SiteFourOrgaTwo extends React.Component {
         this.props.handleLoadingSpinner(true);
         _self.props.handleSubmit();
         setTimeout(() => {
-            _self.props.dispatch(reset('orgaStepTwo'));
+            //_self.props.dispatch(reset('orgaStepTwo'));
             _self.props.dispatch(initialize('orgaStepTwo', {
                 submitSucceeded: false
             }))
-            //this.props.handleLoadingSpinner(false);
-        },500);
+            this.handleInitialize();
+        },0);
         
     }
 

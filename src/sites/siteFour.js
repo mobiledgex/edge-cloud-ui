@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {
     Grid,
     Image,
@@ -12,7 +12,8 @@ import {
     Item,
     Input,
     Segment,
-    Table, Icon
+    Table, Icon,
+    Container
 } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 
@@ -117,6 +118,7 @@ class SiteFour extends React.Component {
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
+        this.menuW = 240;
         this.hgap = 0;
         this.OrgMenu = [
             {label:'Organizations', icon:'people', pg:0},
@@ -350,6 +352,7 @@ class SiteFour extends React.Component {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+        this.setState({contWidth:(window.innerWidth-this.menuW)})
 
 
     }
@@ -390,6 +393,7 @@ class SiteFour extends React.Component {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
+        this.setState({contWidth:(window.innerWidth-this.menuW)})
         this.setState({userToken: nextProps.userToken})
         this.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
         if(nextProps.params && nextProps.params.subPath) {
@@ -573,10 +577,10 @@ class SiteFour extends React.Component {
                             className='gnb_logout'
                         />
                     </Grid.Column>
-
                 </Grid.Row>
-                <Grid.Row columns={2} className='view_contents'>
-                    <Grid.Column mobile={4} tablet={4} computer={3} className='view_left'>
+                <Container className='view_left_container' style={{width:this.menuW}}>
+                <Grid.Row className='view_contents'>
+                    <Grid.Column style={{height:this.state.bodyHeight}} className='view_left'>
                         <Menu secondary vertical className='view_left_menu org_menu'>
                             {
                                 this.OrgMenu.map((item, i)=>(
@@ -653,7 +657,11 @@ class SiteFour extends React.Component {
                             }
                         </div>
                     </Grid.Column>
-                    <Grid.Column mobile={12} tablet={12} computer={13} style={{height:this.state.bodyHeight}} className='contents_body'>
+                </Grid.Row>
+                </Container>
+                <Container className='contents_body_container' style={{width:this.state.contWidth, top:this.headerH, left:this.menuW}}>
+                <Grid.Row  className='view_contents' style={{minWidth:1024-this.menuW}}>
+                    <Grid.Column style={{height:this.state.bodyHeight}} className='contents_body'>
                         <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
                             <Grid.Column className='title_align' style={{lineHeight:'36px'}}>{this.state.headerTitle}</Grid.Column>
                             {
@@ -672,7 +680,7 @@ class SiteFour extends React.Component {
                                 </Grid.Column>
                                 : null
                             }
-                            <div style={{position:'absolute', top:25, right:35}}>
+                            <div style={{position:'absolute', top:25, right:25}}>
                                 {this.getHelpPopup(this.state.headerTitle)}
                             </div>
 
@@ -691,7 +699,7 @@ class SiteFour extends React.Component {
                         }
                         {
                             (this.state.headerTitle == 'Users') ?
-                            <div className='user_search' style={{top:15, right:75, position:'absolute',zIndex:99}}>
+                            <div className='user_search' style={{top:15, right:65, position:'absolute',zIndex:99}}>
                                 <Input icon='search' placeholder={'Search '+this.state.searchChangeValue} style={{marginRight:'20px'}}  onChange={this.searchClick} />
                                 <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange} />
                             </div>
@@ -724,6 +732,7 @@ class SiteFour extends React.Component {
                         </Grid.Row>
                     </Grid.Column>
                 </Grid.Row>
+                </Container>
                 <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
                     {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
                 </Motion>

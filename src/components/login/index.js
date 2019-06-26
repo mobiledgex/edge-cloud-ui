@@ -310,7 +310,7 @@ class Login extends Component {
     //     )
     // }
     showAlert = (resource) => {
-        let verifyMessage = `In order to participate in a console, you must verify your account. An email has been sent to ${resource.email} with a link to verify your account. If you have not received the email after a few minutes, please check your spam folder or resend the verification email.`
+        let verifyMessage = `Thank you for signing up. Please verify your account. In order to login to your account, you must verify your account. An email has been sent to ${resource.email} with a link to verify your account. If you have not received the email after a few minutes check your spam folder or resend the verification email.`
 
         Alert.info(<CustomContentAlert position='bottom' customFields={{customerName: resource && resource.name || 'your name'}} email={resource && resource.email || 'yourEmail@@'} message={verifyMessage}/>, {
             position: 'top-right', timeout: 15000, limit:1
@@ -540,6 +540,7 @@ class Login extends Component {
     }
     /* http://docs.nativebase.io/docs/examples/ReduxFormExample.html */
     //
+
     render() {
         const { reset, data, loginState } = this.props;
         console.log('check state...',this.state.loginMode, ":",this.state.successCreate, ":", this.state.errorCreate)

@@ -226,10 +226,10 @@ class SiteFourOrgaAdduser extends React.Component {
     }
 
     handleInitialize() {
-        let cType = this.props.type.substring(0,1).toUpperCase() + this.props.type.substring(1);
+        //let cType = this.props.type.substring(0,1).toUpperCase() + this.props.type.substring(1);
         const initData = {
           "orgName": this.props.org,
-          "orgType": cType
+          "orgType": this.props.type
         };
         this.props.initialize(initData);
       }
@@ -246,14 +246,15 @@ class SiteFourOrgaAdduser extends React.Component {
 
     onHandleSubmit = () => {
         this.props.handleLoadingSpinner(true);
-
+        
         _self.props.handleSubmit();
         setTimeout(() => {
-            _self.props.dispatch(reset('orgaStepAddUser'));
+            //_self.props.dispatch(reset('orgaStepAddUser'));
             _self.props.dispatch(initialize('orgaStepAddUser', {
                 submitSucceeded: false
             }))
-        },500);
+            this.handleInitialize();
+        },0);
         
     }
 
@@ -264,7 +265,8 @@ class SiteFourOrgaAdduser extends React.Component {
     
     render (){
         const { handleSubmit, reset, org, type } = this.props;
-        let cType = type.substring(0,1).toUpperCase() + type.substring(1);
+        console.log("ororororo@@",org,":::",type)
+        //let cType = type.substring(0,1).toUpperCase() + type.substring(1);
         return (
             <Fragment>
                 <Grid>
@@ -349,7 +351,7 @@ class SiteFourOrgaAdduser extends React.Component {
                         </Grid.Column>
                         <Grid.Column width={5} className='step_side'>
                                 {items.map((item, i) => (
-                                    makeCardContent(item, i, cType)
+                                    makeCardContent(item, i, type)
                                 ))}
                         </Grid.Column>
                     </Grid.Row>
