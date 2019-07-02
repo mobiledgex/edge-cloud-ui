@@ -200,21 +200,24 @@ class RegistNewListItem extends React.Component {
         let paseData = result.data;
 
         if(paseData.error) {
-            Alert.error(paseData.error, {
-                position: 'top-right',
-                effect: 'slide',
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
+            // Alert.error(paseData.error, {
+            //     position: 'top-right',
+            //     effect: 'slide',
+            //     beep: true,
+            //     timeout: 5000,
+            //     offset: 100
+            // });
+            this.props.handleAlertInfo('error',paseData.error)
         } else {
-            Alert.success("Flavor "+body.params.flavor.key.name+" created successfully", {
-                position: 'top-right',
-                effect: 'slide',
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
+            // Alert.success("Flavor "+body.params.flavor.key.name+" created successfully", {
+            //     position: 'top-right',
+            //     effect: 'slide',
+            //     beep: true,
+            //     timeout: 5000,
+            //     offset: 100
+            // });
+            console.log("Flavor "+body.params.flavor.key.name+" created successfully")
+            this.props.handleAlertInfo('success','Flavor '+body.params.flavor.key.name+' created successfully')
         }
 
     }
@@ -337,7 +340,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleMapLong: (data) => { dispatch(actions.mapCoordinatesLong(data))},
         handleMapLat: (data) => { dispatch(actions.mapCoordinatesLat(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

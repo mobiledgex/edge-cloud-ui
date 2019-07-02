@@ -8,24 +8,36 @@ import * as services from '../services/service_compute_service';
 import './styles.css';
 
 const validate = values => {
+    console.log("validation@@",values)
     const errors = {}
-    if (!values.username) {
-        errors.username = 'Required'
-    } else if (values.username.length > 15) {
-        errors.username = 'Must be 15 characters or less'
-    }
-    if (!values.email) {
-        errors.email = 'Required'
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-        errors.email = 'Invalid email address'
-    }
-    if (!values.age) {
-        errors.age = 'Required'
-    } else if (isNaN(Number(values.age))) {
-        errors.age = 'Must be a number'
-    } else if (Number(values.age) < 18) {
-        errors.age = 'Sorry, you must be at least 18 years old'
-    }
+    // if (!values.Region) {
+    //     errors.Region = 'Required'
+    // }
+    // if (!values.OrganizationName) {
+    //     errors.OrganizationName = 'Required'
+    // }
+    // if (!values.AppName) {
+    //     errors.AppName = 'Required'
+    // }
+    // if (!values.Version) {
+    //     errors.Version = 'Required'
+    // }
+    // if (!values.DeploymentType) {
+    //     errors.DeploymentType = 'Required'
+    // }
+    // if (!values.ImageType) {
+    //     errors.ImageType = 'Required'
+    // }
+    // if (!values.ImagePath) {
+    //     errors.ImagePath = 'Required'
+    // }
+    // if (!values.Ports_0) {
+    //     errors.Ports_0 = 'Required'
+    // }
+    // if (!values.DefaultFlavor) {
+    //     errors.DefaultFlavor = 'Required'
+    // }
+
     return errors
 }
 
@@ -61,15 +73,28 @@ const renderRadio = field => (
     />
 );
 
-const renderSelect = field => (
-    <Form.Select
-        label={field.label}
-        name={field.input.name}
-        onChange={(e, { value }) => field.input.onChange(value)}
-        options={makeOption(field.options)}
-        placeholder={field.placeholder}
-        value={field.input.value}
-    />
+// const renderSelect = field => (
+//     <Form.Select
+//         label={field.label}
+//         name={field.input.name}
+//         onChange={(e, { value }) => field.input.onChange(value)}
+//         options={makeOption(field.options)}
+//         placeholder={field.placeholder}
+//         value={field.input.value}
+//     />
+// );
+const renderSelect = ({ input, label, options, placeholder, value, type, meta: { touched, error, warning } }) => (
+    <div>
+        <Form.Select
+            label={label}
+            name={input.name}
+            onChange={(e, { value }) => input.onChange(value)}
+            options={makeOption(options)}
+            placeholder={placeholder}
+            value={input.value}
+        />
+        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+    </div>
 );
 
 const renderSelectNumber = field => (
@@ -100,13 +125,25 @@ const renderInputNum = field => (
         <Input type="number"></Input>
     </Form.Field>
 );
-const renderInput = field => (
-    <Form.Input
-        {...field.input}
-        type={field.type}
-        label={field.label}
-        // placeholder={field.placeholder}
-    />
+// const renderInput = field => (
+//     <Form.Input
+//         {...field.input}
+//         type={field.type}
+//         label={field.label}
+//         // placeholder={field.placeholder}
+//     />
+// );
+const renderInput = ({ input, placeholder, label, type, meta: { touched, error, warning } }) => (
+    <div>
+        <Form.Input
+            {...input}
+            type={type}
+            label={label}
+            // placeholder={placeholder}
+        />
+        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+    </div>
+
 );
 const renderInputDisabled = field => (
     <Form.Input
@@ -452,5 +489,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
 export default reduxForm({
     form: "createAppFormDefault",
-    enableReinitialize: true,
+    validate
+    // enableReinitialize: true
 })(SiteFourCreateFormAppDefault);

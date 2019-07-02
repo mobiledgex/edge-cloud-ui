@@ -110,19 +110,9 @@ class SiteFourPageCreateorga extends React.Component {
         _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
             this.setState({loopCancel:true});
-            Alert.error(String(result.data.error), {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-            //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+            this.props.handleAlertInfo('error',String(result.data.error))
         } else {
-
-            Alert.success('Your organization '+body.name+' created successfully', {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('success','Your organization '+body.name+' created successfully')
             //goto next step
             this.setState({step:2})
         }
@@ -131,19 +121,9 @@ class SiteFourPageCreateorga extends React.Component {
         console.log("receive == ", result, resource, self)
         _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
-            Alert.error(String(result.data.error), {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-            //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+            this.props.handleAlertInfo('error',String(result.data.error))
         } else {
-
-            Alert.success('User '+body.username+' added to organization '+body.org+' successfully', {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('success','User '+body.username+' added to organization '+body.org+' successfully')
             //goto next step
             //this.setState({step:3})
         }
@@ -205,7 +185,8 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

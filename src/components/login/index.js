@@ -110,7 +110,7 @@ const ResetPassword = (props) => (
         </Grid.Row>
         <RegistryResetForm onSubmit={() => console.log('ProfileForm was submitted')}/>
         <Grid.Row>
-            <div className="login-text" style={{fontStyle:'italic', textDecoration:'underline'}}>By clicking SignUp, you agree to our <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Terms</a>, <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Data Policy</a>, and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Cookies Policy</a>.</div>
+            <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)"}}>By clicking SignUp, you agree to our Terms, Data Policy, and Cookies Policy.</a>
         </Grid.Row>
     </Grid>
 
@@ -146,7 +146,7 @@ const FormSignUpContainer = (props) => (
         </Grid.Row>
         <RegistryUserForm onSubmit={() => console.log('ProfileForm was submitted')}/>
         <Grid.Row>
-            <div className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer'}}>By clicking SignUp, you agree to our <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Terms</a>, <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Data Policy</a>, and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank">Cookies Policy</a>.</div>
+            <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)"}}>By clicking SignUp, you agree to our Terms, Data Policy, and Cookies Policy.</a>
         </Grid.Row>
     </Grid>
 )
@@ -561,7 +561,7 @@ class Login extends Component {
                                 (this.state.successCreate || this.state.errorCreate)?
                                     <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>
                                     :
-                                    <FormSignUpContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle}/>
+                                    <FormSignUpContainer self={this} focused={this.state.focused} loginBtnStyle={this.state.loginBtnStyle} lastFormValue={this.state.lastFromValue}/>
                             :(this.state.loginMode === 'signuped')?
                                 (this.state.successCreate || this.state.errorCreate)?
                                     <SuccessMsg self={this} msg={this.state.successMsg}></SuccessMsg>

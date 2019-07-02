@@ -81,11 +81,11 @@ class RegistryViewer extends React.Component {
                 'AppName':{label:'App Name', type:'RenderInput', necessary:true, tip:'App name', active:true},
                 'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:'App version', active:true},
                 'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (kubernetes, docker, or vm)', active:true, items:['docker', 'kubernetes', 'vm']},
-                'ImageType':{label:'Image Type', type:'RenderDT', necessary:false, tip:'ImageType specifies image type of an App',items:''},
+                'ImageType':{label:'Image Type', type:'RenderDT', necessary:true, tip:'ImageType specifies image type of an App',items:''},
                 'ImagePath':{label:'Image Path', type:'RenderInput', necessary:true, tip:'URI of where image resides', active:true},
                 'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor.', active:true},
                 'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:'Comma separated list of protocol:port pairs that the App listens on i.e. tcp:80,udp:10002,http:443', active:true, items:['tcp', 'udp']},
-                // 'IpAccess':{label:'Ip Access', type:'IpSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
+                // 'IpAccess':{label:'IP Access', type:'IPSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
                 'Command':{label:'Command', type:'RenderInput', necessary:false, tip:'Command that the container runs to start service', active:true},
                 'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file', active:true},
             },
@@ -142,29 +142,10 @@ class RegistryViewer extends React.Component {
         _self.props.handleLoadingSpinner(false);
         this.setState({loopCancel:true});
         if(result.data.error) {
-            Alert.error(result.data.error, {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('error!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
-            return;
+            this.props.handleAlertInfo('error',result.data.error)
         } else {
             //this.props.gotoApp();
-            Alert.success('Your application '+body.params.app.key.name+' created successfully', {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('aye!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
+            this.props.handleAlertInfo('success','Your application '+body.params.app.key.name+' created successfully')
             setTimeout(() => {
                 this.gotoUrl();
             }, 1000)
@@ -501,7 +482,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

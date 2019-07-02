@@ -220,3 +220,11 @@ export function appLaunch (data) {
         data
     }
 }
+export function alertInfo (mode,msg) {
+    console.log('ALERT_INFO == ', mode, msg)
+    return {
+        type: types.ALERT_INFO,
+        mode,
+        msg
+    }
+}

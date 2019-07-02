@@ -30,3 +30,4 @@ export const ALERT_MSG = 'ALERT_MSG';
 export const CHANGE_VIEW = 'CHANGE_VIEW';
 export const ROLE_INFO = 'ROLE_INFO';
 export const APP_LAUNCH = 'APP_LAUNCH';
+export const ALERT_INFO = 'ALERT_INFO';

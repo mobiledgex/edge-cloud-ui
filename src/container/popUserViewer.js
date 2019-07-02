@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Divider, Modal, Grid, Input, TextArea, Dropdown, Image} from "semantic-ui-react";
-
+import * as moment from 'moment';
 
 let _self = null;
 export default class PopUserViewer extends React.Component {
@@ -68,10 +68,30 @@ export default class PopUserViewer extends React.Component {
                                 (key !== 'Edit' && key !== 'Username')?
                                     <Grid.Row columns={2}>
                                         <Grid.Column width={5} className='detail_item'>
-                                            <div>{key}</div>
+                                            <div>
+                                                {(key == 'EmailVerified')?'Email Verified'
+                                                :(key == 'FamilyName')?'Family Name'
+                                                :(key == 'Given Name')?'Given Name'
+                                                :(key == 'CreatedAt')?'Created At'
+                                                :(key == 'UpdatedAt')?'Updated At'
+                                                :key}
+                                            </div>
                                         </Grid.Column>
                                         <Grid.Column width={11}>
-                                            <div style={{wordWrap: 'break-word'}}>{(typeof this.state.propsData[key] === 'object')? JSON.stringify(this.state.propsData[key]):(key === 'EmailVerified' && JSON.stringify(this.state.propsData[key]) === 'true')?'Yes':String(this.state.propsData[key])}</div>
+                                            <div style={{wordWrap: 'break-word'}}>
+                                                {
+                                                    (typeof this.state.propsData[key] === 'object')? JSON.stringify(this.state.propsData[key])
+                                                    : (key === 'EmailVerified' && JSON.stringify(this.state.propsData[key]) === 'true')? 'Yes'
+                                                    : (key === 'Locked' && JSON.stringify(this.state.propsData[key]) === 'true')? 'Yes'
+                                                    : (key === 'CreatedAt') ? String(moment(this.state.propsData[key], "YYYY-MM-DD HH:mm"))
+                                                    : (key === 'UpdatedAt') ? String(moment(this.state.propsData[key], "YYYY-MM-DD HH:mm"))
+                                                    : String(this.state.propsData[key])
+
+
+
+                                                }
+                                            </div>
+
                                         </Grid.Column>
                                         <Divider vertical></Divider>
                                     </Grid.Row>
@@ -91,3 +111,20 @@ export default class PopUserViewer extends React.Component {
 }
 
 
+/*
+function example(…) {
+    return condition1 ? value1
+         : condition2 ? value2
+         : condition3 ? value3
+         : value4;
+}
+
+// Equivalent to:
+
+function example(…) {
+    if (condition1) { return value1; }
+    else if (condition2) { return value2; }
+    else if (condition3) { return value3; }
+    else { return value4; }
+}
+ */

@@ -136,7 +136,7 @@ class SiteFourOrgaStepView extends React.Component {
             {
                 (this.state.step ==1) ? <SiteFourOrgaOne changeOrg={this.changeOrg} onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator}></SiteFourOrgaOne> :
                     (this.state.step ==2) ? <SiteFourOrgaTwo nextstep={this.nextstep} onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName}></SiteFourOrgaTwo> :
-                        (this.state.step ==3) ? <SiteFourOrgaThree changeOrg={this.changeOrg} onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator}></SiteFourOrgaThree> : null
+                        (this.state.step ==3) ? <SiteFourOrgaThree changeOrg={this.changeOrg} onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName}></SiteFourOrgaThree> : null
             }
 
         </Item>

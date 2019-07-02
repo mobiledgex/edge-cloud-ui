@@ -356,11 +356,6 @@ class DeveloperListView extends React.Component {
             
         </Table>
     )
-    successfully(msg) {
-        //reload data of dummyData that defined props devData
-
-        //_self.props.handleRefreshData({params:{state:'refresh'}})
-    }
     componentDidMount() {
 
     }
@@ -372,6 +367,7 @@ class DeveloperListView extends React.Component {
         if(nextProps.devData.length) {
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         } else {
+            //this.setState({dummyData:nextProps.devData})
             this.checkLengthData();
         }
         if(nextProps.searchValue) {
@@ -392,7 +388,7 @@ class DeveloperListView extends React.Component {
                         
                         <DeleteItem open={this.state.openDelete}
                                     selected={this.state.selected} close={this.close} siteId={this.props.siteId}
-                                    success={this.successfully} refresh={this.props.dataRefresh}
+                                    refresh={this.props.dataRefresh}
                         ></DeleteItem>
                         
                         <ReactGridLayout

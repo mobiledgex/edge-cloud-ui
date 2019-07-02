@@ -28,10 +28,22 @@ export default class PopProfileViewer extends React.Component {
                 component = regKeys.map((key, i)=>(
                     <Grid.Row columns={2} key={i}>
                         <Grid.Column width={5} className='detail_item'>
-                            <div>{key}</div>
+                            <div>
+                                {(key == 'EmailVerified')?'Email Verified'
+                                :(key == 'FamilyName')?'Family Name'
+                                :(key == 'Given Name')?'Given Name'
+                                :(key == 'CreatedAt')?'Created At'
+                                :(key == 'UpdatedAt')?'Updated At'
+                                :key}
+                            </div>
                         </Grid.Column>
                         <Grid.Column width={11} style={{display:'flex', flexDirection:'row', alignContent:'center', justifyContent:'flex-start'}}>
-                            <div style={{wordWrap: 'break-word', marginRight:20}}>{(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key]):(key === 'EmailVerified' && JSON.stringify(nextProps.data[key]) === 'true')?'Yes':String(nextProps.data[key])}</div>
+                            <div style={{wordWrap: 'break-word', marginRight:20}}>
+                                {(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key])
+                                :(key === 'EmailVerified' && JSON.stringify(nextProps.data[key]) === 'true')?'Yes'
+                                :(key === 'Locked' && JSON.stringify(nextProps.data[key]) === 'false')?'No'
+                                :String(nextProps.data[key])}
+                            </div>
                         </Grid.Column>
                         <Divider vertical></Divider>
                     </Grid.Row>

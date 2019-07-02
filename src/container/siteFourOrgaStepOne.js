@@ -215,7 +215,7 @@ class SiteFourOrgaOne extends React.Component {
                 submitSucceeded: false
             }))
             //this.props.dispatch(reset('orgaStepOne'))
-        },1500);
+        },0);
 
     }
 

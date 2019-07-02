@@ -264,7 +264,7 @@ class AccountListView extends React.Component {
 
                                                 <Icon name='lock'       size={20} style={ {color:'#6a6a6a'}} onClick={() => this.onLocking({email:item['Email'], lockState:false})}/>
                                                 :
-                                                <Icon name='lock open'  size={20} style={{ color:'#bbff26'}} onClick={() => this.onLocking({email:item['Email'], lockState:true})}/>
+                                                <Icon name='lock open'  size={20} style={{ color:'rgba(136,221,0,.9)'}} onClick={() => this.onLocking({email:item['Email'], lockState:true})}/>
                                         }
 
                                     </Table.Cell>

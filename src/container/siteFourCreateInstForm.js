@@ -171,33 +171,21 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
     receiveResultOrg(result) {
         if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error',result.error)
         } else {
             _self.groupJoin(result,'organization')
         }
     }
     receiveResultCloudlet(result) {
         if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error',result.error)
         } else {
             _self.groupJoin(result,'cloudlet')
         }
     }
     receiveResultFlavor(result) {
         if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error',result.error)
         } else {
             _self.groupJoin(result,'flavor')
         }
@@ -274,11 +262,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
                     )
                     _self.resetDevData(operatorKeys, 'Operator');
                 } else {
-                    Alert.error('There is no operators in the Region', {
-                        position: 'top-right',
-                        effect: 'slide',
-                        timeout: 5000
-                    });
+                    this.props.handleAlertInfo('error','There is no operators in the Region')
                 }
             }, 500)
 
@@ -309,19 +293,11 @@ class SiteFourCreateInstForm extends React.PureComponent {
                         )
                         _self.resetDevData(cloudletKeys, 'Cloudlet');
                     } else {
-                        Alert.error('There is no Cloudlets in the Region', {
-                            position: 'top-right',
-                            effect: 'slide',
-                            timeout: 5000
-                        });
+                        this.props.handleAlertInfo('error','There is no Cloudlets in the Region')
                     }
 
                 } else {
-                    Alert.error('There is no operators in', {
-                        position: 'top-right',
-                        effect: 'slide',
-                        timeout: 5000
-                    });
+                    this.props.handleAlertInfo('error','There is no operators in')
                 }
             }, 500)
             _self.setState({activeIndex:0})
@@ -495,7 +471,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 
