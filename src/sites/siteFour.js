@@ -389,7 +389,7 @@ class SiteFour extends React.Component {
 
     }
     componentWillReceiveProps(nextProps) {
-        console.log("props!!!!",nextProps,this.props)
+        console.log("props!!!!",nextProps.viewMode)
         let store = JSON.parse(localStorage.PROJECT_INIT);
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
@@ -413,13 +413,15 @@ class SiteFour extends React.Component {
         // }
 
         if(nextProps.viewMode){
+            console.log("viewmode@@@",nextProps.viewMode)
             this.setState({viewMode:nextProps.viewMode})
         } else {
             this.setState({viewMode:'listView'})
         }
-        if(nextProps.params.subPath && this.state.viewMode == 'detailView') {
-            this.setState({viewMode:'listView'})
-        }
+        // if(nextProps.params.subPath && this.state.viewMode == 'detailView') {
+        //     console.log("viewMode!!!@")
+        //     this.setState({viewMode:'listView'})
+        // }
 
         //Redux Alert 
         if(nextProps.alertInfo.mode) {
@@ -526,8 +528,9 @@ class SiteFour extends React.Component {
     }
 
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
+        const {shouldShowBox, shouldShowCircle, viewMode } = this.state;
         const { activeItem, controllerRegions } = this.state
+        console.log('viewMode!!!',viewMode)
         return (
             <Grid className='view_body'>
                 {(this.props.loadingSpinner==true)?
@@ -696,7 +699,7 @@ class SiteFour extends React.Component {
                                 : null
                             }
                             {
-                                (this.state.viewMode === 'detailView') ?
+                                (viewMode === 'detailView') ?
                                 <Grid.Column className='title_align'>
                                     <Button onClick={()=>this.props.handleDetail({data:null, viewMode:'listView'})}>Close Details</Button>
                                 </Grid.Column>
@@ -779,11 +782,12 @@ const mapStateToProps = (state) => {
         loadingSpinner : state.loadingSpinner.loading?state.loadingSpinner.loading:null,
         creatingSpinner : state.creatingSpinner.creating?state.creatingSpinner.creating:null,
         injectData: state.injectData ? state.injectData : null,
+        viewMode : viewMode,
         alertInfo : {
             mode: state.alertInfo.mode,
             msg: state.alertInfo.msg
         },
-        viewMode : viewMode
+        
     }
 };
 

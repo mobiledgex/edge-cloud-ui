@@ -211,12 +211,18 @@ class RegistryInstViewer extends React.Component {
     }
 
     gotoUrl() {
+        console.log("eessajajaj@@",_self.props)
+        let pg = 'pg=6'
+        if(_self.props.location.goBack) {
+            pg = 'pg=5'
+            localStorage.setItem('selectMenu', 'Apps')
+        }
         _self.props.history.push({
             pathname: '/site4',
-            search: 'pg=6'
+            search: pg
         });
-        _self.props.history.location.search = 'pg=6';
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=6'})
+        _self.props.history.location.search = pg;
+        _self.props.handleChangeSite({mainPath:'/site4', subPath: pg})
     }
 
     generateDOM(open, dimmer, width, height, data, keysData, hideHeader) {

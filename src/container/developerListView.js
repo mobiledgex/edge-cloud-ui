@@ -53,11 +53,12 @@ class DeveloperListView extends React.Component {
         };
 
     }
-    gotoUrl(site, subPath) {
+    gotoUrl(site, subPath, pg) {
         console.log('999',_self.props.history)
         _self.props.history.push({
             pathname: site,
-            search: subPath
+            search: subPath,
+            goBack: pg
         });
         _self.props.history.location.search = subPath;
         _self.props.handleChangeSite({mainPath:site, subPath: subPath})
@@ -279,7 +280,7 @@ class DeveloperListView extends React.Component {
     }
     appLaunch = (data) => {
         console.log("launch@@",data)
-        this.gotoUrl('/site4', 'pg=createAppInst')
+        this.gotoUrl('/site4', 'pg=createAppInst','pg=5')
         this.props.handleAppLaunch(data)
         // this.props.handleChangeComputeItem('App Instances')
         localStorage.setItem('selectMenu', 'App Instances')
