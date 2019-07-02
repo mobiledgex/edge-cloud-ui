@@ -1,7 +1,8 @@
 import React from 'react';
 import {Button, Divider, Table, Grid, Header, Image, Icon} from "semantic-ui-react";
 import ContainerDimensions from 'react-container-dimensions';
-
+import * as moment from 'moment';
+import ReactJson from 'react-json-view'
 
 const TableExampleCollapsing = () => (
     <Table basic='very' celled collapsing>
@@ -65,6 +66,26 @@ const TableExampleCollapsing = () => (
     </Table>
 )
 
+const _status = {
+    "0" : "Tracked State Unknown",
+    "1" : "Not Present",
+    "2" : "Create Requested",
+    "3" : "Creating",
+    "4" : "Create Error",
+    "5" : "Ready",
+    "6" : "Update Requested",
+    "7" : "Updating",
+    "8" : "Update Error",
+    "9" : "Delete Requested",
+    "10" : "Deleting",
+    "11" : "Delete Error",
+    "12" : "Delete Prepare"
+}
+const _liveness = {
+    "1" : "Static",
+    "2" : "Dynamic"
+}
+
 let _self = null;
 export default class PageDetailViewer extends React.Component {
     constructor() {
@@ -89,6 +110,21 @@ export default class PageDetailViewer extends React.Component {
             listOfDetail:null
         }
         _self = this;
+
+        this.jsonViewProps = {
+            name:null,
+            theme: "monokai",
+            collapsed: false,
+            collapseStringsAfter: 15,
+            onAdd: false,
+            onEdit: false,
+            onDelete: false,
+            displayObjectSize: false,
+            enableClipboard: true,
+            indentWidth: 4,
+            displayDataTypes: false,
+            iconStyle: "triangle"
+        }
     }
 
     componentDidMount() {
@@ -116,6 +152,9 @@ export default class PageDetailViewer extends React.Component {
             <Divider vertical></Divider>
         </Grid.Row>
     )
+    jsonView = (jsonObj) => (
+        <ReactJson src={jsonObj} {...this.jsonViewProps} />
+    )
 
     makeTable = (values, label, i) => (
         (label !== 'Edit')?
@@ -124,11 +163,30 @@ export default class PageDetailViewer extends React.Component {
                 <Header as='h4' image>
                     <Icon name={'dot'} />
                     <Header.Content>
-                        {label}
+                        {(label == 'CloudletName')?'Cloudlet Name'
+                        :(label == 'CloudletLocation')?'Cloudlet Location'
+                        :(label == 'Ip_support')?'IP Support'
+                        :(label == 'Num_dynamic_ips')?'Number of Dynamic IPs' /* Cloudlets */
+                        :(label == 'ClusterName')?'Cluster Name'
+                        :(label == 'OrganizationName')?'Organization Name'
+                        :(label == 'IpAccess')?'IP Access' /* Cluster Inst */
+                        :(label == 'Mapped_port')?'Mapped Port' /* Cluster Inst */
+
+                        :label}
                     </Header.Content>
                 </Header>
             </Table.Cell>
-            <Table.Cell>{(typeof values[label] === 'object')? JSON.stringify(values[label]):String(values[label])}</Table.Cell>
+            <Table.Cell onClick = {() => console.log('label@@@@',values)}>
+                {(label === 'Ip_support' && String(values[label]) == '1')?'Static'
+                :(label === 'Ip_support' && String(values[label]) == '2')?'Dynamic' /* Cloudlets */
+                :(label === 'IpAccess' && String(values[label]) == '1')?'Dedicated'
+                :(label === 'IpAccess' && String(values[label]) == '3')?'Shared' /* Cluster Inst */
+                :(label === 'Created')? String( moment.unix( values[label].replace('seconds : ', '') ) )
+                :(label === 'State')? _status[values[label]]
+                :(label === 'Liveness')? _liveness[values[label]]
+                :(typeof values[label] === 'object')? this.jsonView(values[label])
+                :String(values[label])}
+            </Table.Cell>
         </Table.Row> : null
     )
 
@@ -150,11 +208,11 @@ export default class PageDetailViewer extends React.Component {
     }
 
     changeLocation(data) {
-        let loc = '';
-        if(data['CloudletLocation'].latitude && data['CloudletLocation'].longitude){
-            loc = 'latitude : '+data['CloudletLocation'].latitude+', longitude : '+data['CloudletLocation'].longitude
-            data['CloudletLocation'] = loc
-        }
+        // let loc = '';
+        // if(data['CloudletLocation'].latitude && data['CloudletLocation'].longitude){
+        //     loc = 'Latitude : '+data['CloudletLocation'].latitude+ ', Longitude : '+data['CloudletLocation'].longitude
+        //     data['CloudletLocation'] = loc
+        // }
         return data
     }
 
@@ -166,11 +224,11 @@ export default class PageDetailViewer extends React.Component {
             <ContainerDimensions>
                 {({width, height}) =>
                     <div style={{width: width, height: height-90, display: 'flex', overflowY: 'auto', overflowX: 'hidden', marginTop:20}}>
-                        <Table celled collapsing style={{width:'100%', height:'100%'}}>
+                        <Table celled collapsing style={{width:'100%'}}>
                             <Table.Header>
                                 <Table.Row>
-                                    <Table.HeaderCell><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
-                                    <Table.HeaderCell><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
+                                    <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
+                                    <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
                             <Table.Body>

@@ -103,7 +103,7 @@ class SiteFourPageOrganization extends React.Component {
                 effect: 'slide',
                 timeout: 5000
             });
-            setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
+            //setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
             // _self.gotoUrl('/site4', 'pg=newOrg')  /* CreatOrg 자동 연결... */
         } else {
             _self.setState({devData:result})
@@ -119,6 +119,22 @@ class SiteFourPageOrganization extends React.Component {
     getDataDeveloper(token) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         services.getMCService('showOrg',{token:store.userToken}, _self.receiveResult)
+        services.getMCService('ShowRole',{token:store.userToken}, _self.receiveAdminInfo)
+    }
+    receiveAdminInfo = (result) => {
+        console.log("adminInfo###",result.data,this.props,this.state);
+        this.props.handleRoleInfo(result.data)
+        if(result.error) {
+
+        } else {
+            result.data.map((item,i) => {
+                if(item.role.indexOf('Admin') > -1){
+                    this.props.handleUserRole(item.role);
+                    localStorage.setItem('selectRole', item.role)
+                }
+            })
+        }
+
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -145,7 +161,9 @@ const mapDispatchProps = (dispatch) => {
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleRoleInfo: (data) => { dispatch(actions.roleInfo(data))},
+        handleUserInfo: (data) => { dispatch(actions.userInfo(data))}
     };
 };
 

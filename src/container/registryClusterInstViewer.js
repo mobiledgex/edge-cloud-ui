@@ -48,7 +48,7 @@ const panes = [
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
-const ipaccessArr = ['IpAccessDedicated','IpAccessShared'];
+const ipaccessArr = ['Dedicated','Shared'];
 class RegistryClusterInstViewer extends React.Component {
     constructor(props) {
         super(props);
@@ -81,8 +81,8 @@ class RegistryClusterInstViewer extends React.Component {
                     'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Name of Organization that this cluster belongs to', active:true, items:['','']},
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Company or Organization name of the operator', active:true, items:['','']},
                     'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:'Name of the cloudlet', active:true, items:['','']},
-                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (kubernetes or docker)', active:true, items:['Docker', 'Kubernetes']},
-                    'IpAccess':{label:'Ip Access', type:'RenderSelect', necessary:false, tip:'IpAccess indicates the type of RootLB that Developer requires for their App',items:ipaccessArr},
+                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (kubernetes or docker)', active:true, items:['docker', 'kubernetes']},
+                    'IpAccess':{label:'IP Access', type:'RenderSelect', necessary:false, tip:'IpAccess indicates the type of RootLB that Developer requires for their App',items:ipaccessArr},
                     'Flavor':{label:'Flavor', type:'RenderSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor', active:true, items:['','']},
                     'NumberOfMaster':{label:'Number of Masters', type:'RenderInputDisabled', necessary:false, tip:'Number of k8s masters (In case of docker deployment, this field is not required)', value:null},
                     'NumberOfNode':{label:'Number of Nodes', type:'RenderInputNum', necessary:false, tip:'Number of k8s nodes (In case of docker deployment, this field is not required)', value:null},
@@ -202,13 +202,7 @@ class RegistryClusterInstViewer extends React.Component {
             this.reqCount = 0;
             this.setState({clusterInstCreate:false});
             this.props.handleLoadingSpinner(false);
-            Alert.error(paseData.error, {
-                position: 'top-right',
-                effect: 'slide',
-                beep: true,
-                timeout: 3000,
-                offset: 100
-            });
+            this.props.handleAlertInfo('error',paseData.error)
         }
 
         // if(paseData.message) {
@@ -350,8 +344,8 @@ class RegistryClusterInstViewer extends React.Component {
 }
  */
 const getInteger = (str) => (
-    (str === 'IpAccessDedicated')? 1 :
-    (str === 'IpAccessShared')? 3 : false
+    (str === 'Dedicated')? 1 :
+    (str === 'Shared')? 3 : false
 )
 const createFormat = (data) => (
     {
@@ -450,7 +444,7 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))}
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

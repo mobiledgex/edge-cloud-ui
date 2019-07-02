@@ -3,6 +3,8 @@ import {Field, initialize, reduxForm} from "redux-form";
 import {Form, Input, Message} from "semantic-ui-react";
 import './styles.css';
 
+
+let _errors = null;
 const validate = values => {
     // console.log("signupVali@@",values)
     const errors = {}
@@ -19,7 +21,7 @@ const validate = values => {
     if (!values.confirmpassword) {
         errors.confirmpassword = 'Required'
     } else if (values.password !== values.confirmpassword) {
-        errors.confirmpassword = 'password and confirmpassword do not match'
+        errors.confirmpassword = 'Password and Confirm Password do not match'
     }
 
 
@@ -28,7 +30,7 @@ const validate = values => {
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
         errors.email = 'Invalid email address'
     }
-   
+    _errors = errors;
     return errors
 }
 
@@ -96,10 +98,19 @@ class RegistryUserForm extends React.Component{
     constructor() {
         super();
         _self = this;
+        this.state = {
+            lastProps: {}
+        }
     }
     onHandleSubmit =(a,b)=> {
-        console.log('+++++++++on handle submit +++++', a, b)
+        console.log('+++++++++on handle submit +++++', a, b, 'errors =',Object.keys(_errors))
+
+        //if  any has error as validation
         this.props.handleSubmit();
+        if(_errors && Object.keys(_errors).length) {
+            return;
+
+        }
         setTimeout(() => {
             _self.props.dispatch(initialize('profile', {
                 submitSucceeded: false
@@ -107,6 +118,15 @@ class RegistryUserForm extends React.Component{
         },1000);
 
     }
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.setState({lastProps:nextProps})
+        console.log('20190702 will receive props', nextProps)
+    }
+
+    componentDidMount() {
+        console.log('20190702 component did mount')
+    }
+
     render() {
         const { handleSubmit, reset } = this.props;
 
@@ -152,5 +172,4 @@ class RegistryUserForm extends React.Component{
 export default reduxForm({
     form: "profile",
     validate,
-    enableReinitialize: false
 })(RegistryUserForm);

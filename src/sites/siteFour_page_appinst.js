@@ -13,8 +13,8 @@ import MapWithListView from "../container/mapWithListView";
 import PageDetailViewer from '../container/pageDetailViewer';
 import DeveloperListView from "../container/developerListView";
 
-
 let _self = null;
+let rgn = ['US','EU'];
 class SiteFourPageAppInst extends React.Component {
     constructor(props) {
         super(props);
@@ -30,6 +30,7 @@ class SiteFourPageAppInst extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
+        this.loadCount = 0;
 
         this.headerLayout = [1,2,2,1,1,2,2,2,1,1];
         this.hiddenKeys = ['Error','URI', 'Mapped_ports', 'Runtime', 'Created', 'Liveness','Flavor','Status']
@@ -104,18 +105,32 @@ class SiteFourPageAppInst extends React.Component {
 
     }
     receiveResult = (result) => {
-        let join = _self.state.devData.concat(result);
+        console.log("appinst@@@#@",result,this.state.devData)
+
+        let join = this.state.devData.concat(result);
         this.props.handleLoadingSpinner(false);
         console.log("view mode receive == ", result)
-        if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-        } else {
-            _self.setState({devData:join})
+        this.setState({devData:join})
+
+        this.countJoin()
+
+        this.loadCount ++;
+    }
+    countJoin() {
+        console.log("tteeeesss@@@",_self.loadCount+1)
+        if(_self.loadCount + 1 === rgn.length*2) {
+            console.log("countjoin@@@",this.state.devData)
+            let appinsts = this.state.devData;
+            
+            let arr =[]
+            appinsts.map((itemCinst,i) => {
+                arr.push(itemCinst)
+            })
+            _self.setState({devData:arr})
+
+            _self.loadCount = 0;
         }
+
     }
     getDataDeveloper = (region) => {
         console.log("view mode appinst@@gogo")

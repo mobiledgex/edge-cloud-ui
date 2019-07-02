@@ -234,10 +234,10 @@ class SiteFourCreateFormDefault extends React.Component {
             this.props.onChangeState(key)
         } else if(key === 'DeploymentType') {
             if(value == 'Docker') {
-                this.setState({ipAccessValue:['IpAccessDedicated']})
+                this.setState({ipAccessValue:['Dedicated']})
                 this.setState({deployTypeDocker:true})
             } else if(value == 'Kubernetes') {
-                this.setState({ipAccessValue:['IpAccessDedicated','IpAccessShared']})
+                this.setState({ipAccessValue:['Dedicated','Shared']})
                 this.setState({deployTypeDocker:false})
             }
             this.props.clusterHide(value);
@@ -318,7 +318,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 component={renderSelect}
                                                                 placeholder={'Select '+fieldKeys[pId][key]['label'] }
                                                                 value={data[key]}
-                                                                options={(fieldKeys[pId][key]['label'] !== 'Ip Access') ? fieldKeys[pId][key]['items'] : this.state.ipAccessValue}
+                                                                options={(fieldKeys[pId][key]['label'] !== 'IP Access') ? fieldKeys[pId][key]['items'] : this.state.ipAccessValue}
                                                                 name={key}
                                                                 onChange={(e)=>this.onHandleChange(key,e,data[key])}/>
                                                             :

@@ -27,6 +27,7 @@ class SiteFourPageApps extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
+        this.loadCount = 0;
 
         this.headerLayout = [1,2,2,1,2,2,2,3];
         this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster']
@@ -60,7 +61,7 @@ class SiteFourPageApps extends React.Component {
         this.setState({liveComp:true})
     }
     componentDidMount() {
-        console.log('info.. ', this.childFirst, this.childSecond)
+        console.log('infof.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         // console.log('info.. store == ', store)
         if(store.userToken) {
@@ -96,24 +97,38 @@ class SiteFourPageApps extends React.Component {
         // }
         
         if(nextProps.computeRefresh.compute) {
+            console.log("refresh@@@")
             this.getDataDeveloper(store.userToken,nextProps.region.value);
             this.props.handleComputeRefresh(false);
         }
 
     }
     receiveResult = (result, region) => {
+        
         let join = this.state.devData.concat(result);
         this.props.handleLoadingSpinner(false);
         console.log("receive == ", result)
-        if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-        } else {
-            _self.setState({devData:join})
+        this.setState({devData:join})
+
+        this.countJoin()
+
+        this.loadCount ++;
+    }
+    countJoin() {
+        console.log("tteeeesss@@@",_self.loadCount+1)
+        if(_self.loadCount + 1 === rgn.length*2) {
+            console.log("countjoin@@@",this.state.devData)
+            let apps = this.state.devData;
+            
+            let arr =[]
+            apps.map((itemCinst,i) => {
+                arr.push(itemCinst)
+            })
+            _self.setState({devData:arr})
+
+            _self.loadCount = 0;
         }
+
     }
     getDataDeveloper = (token, region) => {
 

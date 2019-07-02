@@ -155,13 +155,8 @@ class RegistryInstViewer extends React.Component {
     }
     receiveResultApp = (result) => {
         if(result.error) {
-            Alert.error(String(result.error), {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error',String(result.error))
         } else {
-
             let appGroup = reducer.groupBy(result, 'AppName')
             console.log('submit receiveResultApp 2...', appGroup)
             let keys = Object.keys(appGroup);
@@ -172,13 +167,8 @@ class RegistryInstViewer extends React.Component {
     }
     receiveResultClusterInst = (result) => {
         if(result.error) {
-            Alert.error(String(result.error), {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error',String(result.error))
         } else {
-
             let clinstGroup = reducer.groupBy(result, 'ClusterName')
             console.log('submit clinstGroup 2...', clinstGroup)
             let keys = Object.keys(clinstGroup);
@@ -194,29 +184,10 @@ class RegistryInstViewer extends React.Component {
         this.setState({loopCancel:true});
         if(result.data.error) {
             this.setState({appInstCreate:false});
-            Alert.error(result.data.error, {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('error!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
+            this.props.handleAlertInfo('error',result.data.error)
             return;
         } else {
-            //this.props.gotoApp();
-            Alert.success('Your application instance created successfully', {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('aye!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
+            this.props.handleAlertInfo('success','Your application instance created successfully')
             setTimeout(() => {
                 this.gotoUrl();
             }, 1000)
@@ -458,6 +429,7 @@ const mapStateToProps = (state) => {
     let selectedCloudlet = null;
     let selectedOperator = null;
     let selectedApp = null;
+    // alert(JSON.stringify(state.form.createAppFormDefault))
 
     if(state.form.createAppFormDefault) {
         if(state.form.createAppFormDefault.values.Cloudlet !== "") {
@@ -515,6 +487,7 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleAppLaunch: (data) => { dispatch(actions.appLaunch(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

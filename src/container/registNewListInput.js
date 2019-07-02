@@ -38,32 +38,39 @@ const validate = values => {
     return errors
 }
 
-const renderSelect = field => (
-    <Form.Select
-        name={field.input.name}
-        onChange={(e, { value }) => field.input.onChange(value)}
-        //onChange={field.input.onChange(field.value)}
-        options={field.options}
-        placeholder={field.placeholder}
-        value={field.value}
-        fluid
-    />
+const renderSelect = ({ input, options, placeholder, value, type, meta: { touched, error, warning } }) => (
+    <div>
+        <Form.Select
+            name={input.name}
+            onChange={(e, { value }) => input.onChange(value)}
+            //onChange={field.input.onChange(field.value)}
+            options={options}
+            placeholder={placeholder}
+            value={value}
+            fluid
+        />
+        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+    </div>
 );
 
-const renderInputNum = field => (
-    <Form.Field
-        {...field.input}
-        type={field.type}
-    >
-        <label>{field.label}</label>
-        {(field.unit)?
-        <Input fluid
-               type="number"
-               label={{ basic: true, content: field.unit}}
-               labelPosition='right'></Input>
-        :
-        <Input fluid type="number"></Input>}
-    </Form.Field>
+const renderInputNum = ({ input, unit, label, placeholder, type, meta: { touched, error, warning } }) => (
+    <div>
+        <Form.Field
+            {...input}
+            type={type}
+        >
+            <label>{label}</label>
+            {(unit)?
+            <Input fluid
+                   type="number"
+                   label={{ basic: true, content: unit}}
+                   labelPosition='right'></Input>
+            :
+            <Input fluid type="number"></Input>}
+        </Form.Field>
+        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+    </div>
+
 );
 
 const renderInput = ({ input, placeholder, type, meta: { touched, error, warning } }) => (
@@ -78,6 +85,7 @@ const renderInput = ({ input, placeholder, type, meta: { touched, error, warning
     </div>
    
 );
+
 const renderTextArea = field => (
     <Form>
         <TextArea

@@ -20,53 +20,118 @@ import './styles.css';
 import EditMap from '../libs/simpleMaps/with-react-motion/editMap';
 
 
-const renderSelect = field => (
-    <Form.Select
-        name={field.input.name}
-        onChange={(e, { value }) => field.input.onChange(value)}
-        //onChange={field.input.change}
-        options={field.options}
-        placeholder={field.placeholder}
-        value={field.value}
-        fluid
-    />
-);
-const renderInputNum = field => (
-    <Form.Field
-        {...field.input}
-        type={field.type}
-        // placeholder={field.placeholder}
-    >
-        <label>{field.label}</label>
-        <Input fluid type="number"></Input>
-    </Form.Field>
-);
+const validate = values => {
+    console.log("validation@@",values)
+    const errors = {}
+    if (!values.Region) {
+        errors.Region = 'Required'
+    }
+    if (!values.CloudletName) {
+        errors.CloudletName = 'Required'
+    }
+    if (!values.OperatorName) {
+        errors.OperatorName = 'Required'
+    }
+    if (values.Latitude == null) {
+        errors.Latitude = 'Required'
+    }
+    if (values.Longitude == null) {
+        errors.Longitude = 'Required'
+    }
+    if (!values.Num_dynamic_ips) {
+        errors.Num_dynamic_ips = 'Required'
+    }
 
+    return errors
+}
 
-const renderInput = field => (
+// const renderSelect = field => (
+//     <Form.Select
+//         name={field.input.name}
+//         onChange={(e, { value }) => field.input.onChange(value)}
+//         //onChange={field.input.change}
+//         options={field.options}
+//         placeholder={field.placeholder}
+//         value={field.value}
+//         fluid
+//     />
+// );
+
+const renderSelect = ({ input, options, placeholder, value, type, meta: { touched, error, warning } }) => (
     <div>
-         <Form.Input
-            {...field.input}
-            type={field.type}
-            placeholder={field.placeholder}
-            disabled={field.disabled}
+        <Form.Select
+            name={input.name}
+            onChange={(e, { value }) => input.onChange(value)}
+            //onChange={input.change}
+            options={options}
+            placeholder={placeholder}
+            value={value}
             fluid
         />
+        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
     </div>
-   
 );
-
-const renderLocationInput = field => (
+// const renderInputNum = field => (
+//     <Form.Field
+//         {...field.input}
+//         type={field.type}
+//         // placeholder={field.placeholder}
+//     >
+//         <label>{field.label}</label>
+//         <Input fluid type="number"></Input>
+//     </Form.Field>
+// );
+const renderInputNum = ({ input, unit, label, placeholder, type, meta: { touched, error, warning } }) => (
     <div>
         <Form.Field
-            {...field.input}
-            type={field.type}
-            placeholder={field.placeholder}
+            {...input}
+            type={type}
+            // placeholder={field.placeholder}
+        >
+            <label>{label}</label>
+            <Input fluid type="number"></Input>
+        </Form.Field>
+        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+    </div>
+
+);
+
+// const renderInput = field => (
+//     <div>
+//          <Form.Input
+//             {...field.input}
+//             type={field.type}
+//             placeholder={field.placeholder}
+//             disabled={field.disabled}
+//             fluid
+//         />
+//     </div>
+//
+// );
+const renderInput = ({ input, placeholder, type, disabled, meta: { touched, error, warning } }) => (
+    <div>
+        <Form.Input
+            {...input}
+            type={type}
+            placeholder={placeholder}
+            disabled={disabled}
+            fluid
+        />
+        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+    </div>
+
+);
+const renderLocationInput = ({ input, placeholder, change, type, meta: { touched, error, warning } }) => (
+    <div>
+        <Form.Field
+            {...input}
+            type={type}
+            placeholder={placeholder}
             //value={field.value}
         >
             <Input fluid type="number"
-                   onChange={field.change}
-                   placeholder={field.placeholder}></Input>
+                   onChange={change}
+                   placeholder={placeholder}></Input>
         </Form.Field>
         {/* <Form.Input*/}
         {/*    {...field.input}*/}
@@ -76,6 +141,7 @@ const renderLocationInput = field => (
         {/*    //value={field.value}*/}
         {/*    fluid*/}
         {/*/>*/}
+        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
     </div>
    
 );
@@ -94,14 +160,14 @@ class registNewInput extends React.Component {
             ],
             ipAccessStatic:[
                 {key: 0, value: "0", text: "IpAccessUnknown"},
-                {key: 1, value: "1", text: "IpAccessDedicated"},
+                {key: 1, value: "1", text: "Dedicated"},
                 {key: 2, value: "2", text: "IpAccessDedicatedOrShared"},
-                {key: 3, value: "3", text: "IpAccessShared"}
+                {key: 3, value: "3", text: "Shared"}
             ],
             Ip_support:[
-                {key: 0, value: 0, text: "IPSupportUnknown"},
-                {key: 1, value: 1, text: "IPSupportStatic"},
-                {key: 2, value: 2, text: "IPSupportDynamic"}
+                // {key: 0, value: 0, text: "IPSupportUnknown"},
+                {key: 1, value: 1, text: "Static"},
+                {key: 2, value: 2, text: "Dynamic"}
             ]
         };
 
@@ -181,8 +247,8 @@ class registNewInput extends React.Component {
                                                         {(key === 'CloudletName')?'Cloudlet Name'
                                                             :(key === 'OperatorName')?'Operator Name'
                                                                 :(key === 'CloudletLocation')?'Cloudlet Location'
-                                                                    :(key === 'Ip_support')?'Ip Support'
-                                                                        :(key === 'Num_dynamic_ips')?'Num Dynamic Ips'
+                                                                    :(key === 'Ip_support')?'IP Support'
+                                                                        :(key === 'Num_dynamic_ips')?'Number of Dynamic IPs'
                                                                             :key}
                                                     </div>
                                                 </Grid.Column>
@@ -210,9 +276,9 @@ class registNewInput extends React.Component {
                                                     : (key === 'Flavor')?
                                                     <Field component={renderSelect} placeholder='Select Flavor' name='Flavor' options={option[8]} value={value[8]} />
                                                     : (key === 'IpAccess')?
-                                                    <Field component={renderSelect} placeholder='Select Ip Access' name='IpAccess' options={this.state.ipAccessStatic} />
+                                                    <Field component={renderSelect} placeholder='Select IP Access' name='IPAccess' options={this.state.ipAccessStatic} />
                                                     : (key === 'Ip_support')?
-                                                    <Field component={renderSelect} placeholder='Select Ip Support' name='IpSupport' options={this.state.Ip_support} />
+                                                    <Field component={renderSelect} placeholder='Select IP Support' name='IPSupport' options={this.state.Ip_support} />
                                                     : (key === 'CloudletLocation')?
                                                     <Grid>
                                                         <Grid.Row columns={2}>
@@ -268,5 +334,6 @@ class registNewInput extends React.Component {
 
 export default reduxForm({
     form: "registNewInput",
-    enableReinitialize: true
+    validate
+    // enableReinitialize: true
 })(registNewInput);

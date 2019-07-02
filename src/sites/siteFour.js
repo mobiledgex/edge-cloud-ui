@@ -47,7 +47,7 @@ import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import * as Service from '../services/service_login_api';
 import * as computeService from '../services/service_compute_service';
 
-
+import Alert from 'react-s-alert';
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
@@ -398,9 +398,6 @@ class SiteFour extends React.Component {
         this.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
         if(nextProps.params && nextProps.params.subPath) {
             this.setState({page:nextProps.params.subPath})
-            if(nextProps.params.subPath == 'pg=0') {
-                computeService.getMCService('ShowRole',{token:store.userToken}, this.receiveAdminInfo)
-            }
         }
 
         if(localStorage.selectRole && nextProps.params.subPath !== this.props.params.subPath) {
@@ -408,8 +405,7 @@ class SiteFour extends React.Component {
             //this.setState({toggleDisable:false})
         }
 
-
-
+        
 
         // if(nextProps.creatingSpinner && this.state.toggleState) {
         //     this.getIntervalData();
@@ -420,6 +416,32 @@ class SiteFour extends React.Component {
             this.setState({viewMode:nextProps.viewMode})
         } else {
             this.setState({viewMode:'listView'})
+        }
+        if(nextProps.params.subPath && this.state.viewMode == 'detailView') {
+            this.setState({viewMode:'listView'})
+        }
+
+        //Redux Alert 
+        if(nextProps.alertInfo.mode) {
+            Alert.closeAll();
+            if(nextProps.alertInfo.mode === 'success') {
+                Alert.success(nextProps.alertInfo.msg, {
+                    position: 'top-right',
+                    effect: 'slide',
+                    beep: true,
+                    timeout: 5000,
+                    offset: 100
+                });
+            } else if(nextProps.alertInfo.mode === 'error') {
+                Alert.error(nextProps.alertInfo.msg, {
+                    position: 'top-right',
+                    effect: 'slide',
+                    beep: true,
+                    timeout: 5000,
+                    offset: 100
+                });
+            }
+            nextProps.handleAlertInfo('','');
         }
     }
 
@@ -484,7 +506,7 @@ class SiteFour extends React.Component {
         this.props.handleComputeRefresh(true)
     }
     disableBtn = () => {
-        const menuArr = ['Organization','Users','Accounts','Cloudlets','Flavors','Cluster Instances','Apps','App Instances']
+        const menuArr = ['Organization','Users','Cloudlets','Flavors','Cluster Instances','Apps','App Instances']
         this.auth_list.map((item,i) => {
             if(item.role == localStorage.selectRole) {
                 item.view.map((item) => {
@@ -757,14 +779,11 @@ const mapStateToProps = (state) => {
         loadingSpinner : state.loadingSpinner.loading?state.loadingSpinner.loading:null,
         creatingSpinner : state.creatingSpinner.creating?state.creatingSpinner.creating:null,
         injectData: state.injectData ? state.injectData : null,
-        // userSetting : state.form.registUserSetting
-        //     ? {
-        //         userURL: state.form.registUserSetting.values.userURL,
-        //         submitSucceeded: state.form.registUserSetting.submitSucceeded
-        //     }
-        //     : {}
+        alertInfo : {
+            mode: state.alertInfo.mode,
+            msg: state.alertInfo.msg
+        },
         viewMode : viewMode
-
     }
 };
 
@@ -786,6 +805,7 @@ const mapDispatchProps = (dispatch) => {
         // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))},
         handleDetail: (data) => { dispatch(actions.changeDetail(data))},
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

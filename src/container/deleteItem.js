@@ -50,23 +50,9 @@ class DeleteItem extends React.Component {
         
         console.log("deleteCluster@@@",result.data)
         if(result.data.error == "ClusterInst in use by Application Instance") {
-            Alert.error(result.data.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error',result.data.error)
         } else if (result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
-            Alert.success(msg+' deleted successfully'+msg2, {  
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('aye!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
-            _self.props.success();
+            this.props.handleAlertInfo('success',msg+' deleted successfully'+msg2)
         }
 
         
@@ -80,26 +66,11 @@ class DeleteItem extends React.Component {
         
         this.props.handleLoadingSpinner(false);
         this.props.refresh('All')
-        console.log('registry delete ... success result..', result.data, body)
+        
         if(result.data.error == "rpc error: code = Unknown desc = Application in use by static Application Instance") {
-            Alert.error(result.data.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error',result.data.error)
         } else if(result.data.message) {
-            console.log("deleteSuccess@@")
-            Alert.success(msg+' deleted successfully', {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('aye!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
-            _self.props.success();
+            this.props.handleAlertInfo('success',msg+' deleted successfully.')
         }
     }
 
@@ -117,28 +88,9 @@ class DeleteItem extends React.Component {
         this.props.handleLoadingSpinner(false);
         console.log('user delete ... success result..', result.data, body);
         if(result.data.message) {
-            Alert.success(msg, {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('aye!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
-            _self.props.success(_self.state.deleteName);
+            this.props.handleAlertInfo('success',msg)
         } else if(result.data.error) {
-            Alert.error(result.data.error, {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('aye!')
-                },
-                beep: true,
-                timeout: 15000,
-                offset: 100
-            });
+            this.props.handleAlertInfo('error',result.data.error)
         }
         if(this.props.siteId === 'Organization' && body.params.name == localStorage.selectOrg) {
             localStorage.setItem('selectRole', '')
@@ -164,10 +116,6 @@ class DeleteItem extends React.Component {
         let serviceBody = {}
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.props.handleLoadingSpinner(true);
-        // setTimeout(() => {
-        //     this.props.handleLoadingSpinner(false);
-        // },3000);
-
         let serviceNm = '';
         if(this.props.siteId === 'ClusterInst'){
             const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region} = this.props.selected
@@ -396,7 +344,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
-        handleUserRole: (data) => { dispatch(actions.showUserRole(data))}
+        handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

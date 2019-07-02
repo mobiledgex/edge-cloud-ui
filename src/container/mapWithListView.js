@@ -17,6 +17,7 @@ import VerticalLinearStepper from '../components/stepper';
 import PopDetailViewer from './popDetailViewer';
 import * as computeService from '../services/service_compute_service';
 import MaterialIcon from 'material-icons-react';
+import ReactJson from 'react-json-view'
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -83,6 +84,20 @@ class MapWithListView extends React.Component {
         };
 
         _self = this;
+        this.jsonViewProps = {
+            name:null,
+            theme: "monokai",
+            collapsed: false,
+            collapseStringsAfter: 15,
+            onAdd: false,
+            onEdit: false,
+            onDelete: false,
+            displayObjectSize: false,
+            enableClipboard: true,
+            indentWidth: 4,
+            displayDataTypes: false,
+            iconStyle: "triangle"
+        }
 
     }
 
@@ -241,7 +256,7 @@ class MapWithListView extends React.Component {
                         : (key === 'CloudletLocation')? 'Cloudlet Location'
                             : (key === 'ClusterName')? 'Cluster Name'
                                 : (key === 'OrganizationName')? 'Organization Name'
-                                    : (key === 'IpAccess')? 'Ip Access'
+                                    : (key === 'IpAccess')? 'IP Access'
                                         : (key === 'AppName')? 'App Name'
                                             : (key === 'ClusterInst')? 'Cluster Instance'
                     : key}
@@ -263,15 +278,18 @@ class MapWithListView extends React.Component {
         console.log('=============  mapWithListView..detailView')
         _self.props.handleDetail({data:item, viewMode:'detailView'})
     }
+    jsonView = (jsonObj) => (
+        <ReactJson src={jsonObj} {...this.jsonViewProps} />
+    )
     stateView(item) {
         this.setState({cInstStatus:item})
         //Call ClusterInst Show
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        console.log("dddddd@@",this.props)
+        console.log("dddddd@@",item)
         if(this.props.siteId == 'ClusterInst') {
-            computeService.getMCService('ShowClusterInst',{token:store.userToken, region:'US'}, _self.receiveResultClusterInst)
+            computeService.getMCService('ShowClusterInst',{token:store.userToken, region:item.Region}, _self.receiveResultClusterInst)
         } else if(this.props.siteId == 'appinst') {
-            computeService.getMCService('ShowAppInst',{token:store.userToken, region:'US'}, _self.receiveResultAppInst)
+            computeService.getMCService('ShowAppInst',{token:store.userToken, region:item.Region}, _self.receiveResultAppInst)
         }
     }
 
@@ -283,6 +301,7 @@ class MapWithListView extends React.Component {
                 cData = item
             }
         })
+        Alert.closeAll();
         console.log("cData@@@",cData)
         if(cData.Status.task_number === 1){
             localStorage.setItem('clusterinstCreateStep', cData.Status.task_name)
@@ -303,6 +322,7 @@ class MapWithListView extends React.Component {
                 cData = item
             }
         })
+        Alert.closeAll();
         console.log("cData@@@",cData)
         if(cData.Status.task_number === 1){
             localStorage.setItem('clusterinstCreateStep', cData.Status.task_name)
@@ -345,22 +365,20 @@ class MapWithListView extends React.Component {
                                     (value === 'CloudletLocation')?
                                         <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
-                                            {
-                                                `Latitude : ${item[value].latitude}
-                                                Longitude : ${item[value].longitude}`
-                                            }
+                                            {`Latitude : ${item[value].latitude}`} <br />
+                                            {`Longitude : ${item[value].longitude}`}
                                             </div>
                                         </Table.Cell>
                                     :
                                     (value === 'IpAccess')?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            {(item[value] == 0)? "IpAccessUnknown" : (item[value] == 1)? "IpAccessDedicated" : (item[value] == 2)? "IpAccessDedicatedOrShared" : (item[value] == 3)? "IpAccessShared" : item[value]}
+                                            {(item[value] == 0)? "IpAccessUnknown" : (item[value] == 1)? "Dedicated" : (item[value] == 2)? "IpAccessDedicatedOrShared" : (item[value] == 3)? "Shared" : item[value]}
                                             {/*{item[value]}*/}
                                         </Table.Cell>
                                     :
                                     (value === 'State')?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            {(item[value] == 1)? "NotPresent" : (item[value] == 2)? "CreateRequested" : (item[value] == 3)? "Creating" : (item[value] == 4)? "CreateError" : (item[value] == 5)? "Ready" : (item[value] == 6)? "UpdateRequested" : (item[value] == 7)? "Updating" : (item[value] == 8)? "UpdateError" : (item[value] == 9)? "DeleteRequested" : (item[value] == 10)? "Deleting" : (item[value] == 11)? "DeleteError" : (item[value] == 12)? "DeletePrepare" : item[value]}
+                                            {(item[value] == 0)? "Tracked State Unknown" : (item[value] == 1)? "Not Present" : (item[value] == 2)? "Create Requested" : (item[value] == 3)? "Creating" : (item[value] == 4)? "Create Error" : (item[value] == 5)? "Ready" : (item[value] == 6)? "Update Requested" : (item[value] == 7)? "Updating" : (item[value] == 8)? "Update Error" : (item[value] == 9)? "Delete Requested" : (item[value] == 10)? "Deleting" : (item[value] == 11)? "Delete Error" : (item[value] == 12)? "Delete Prepare" : item[value]}
                                             {/*{item[value]}*/}
                                         </Table.Cell>
                                     :
