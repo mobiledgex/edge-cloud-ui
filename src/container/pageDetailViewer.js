@@ -156,6 +156,10 @@ export default class PageDetailViewer extends React.Component {
         <ReactJson src={jsonObj} {...this.jsonViewProps} />
     )
 
+    makeUTC = (time) => (
+        moment.unix( time.replace('seconds : ', '') ).format('YYYY-MM-DD HH:mm:ss') + ' UTC'
+    )
+
     makeTable = (values, label, i) => (
         (label !== 'Edit')?
         <Table.Row key={i}>
@@ -181,7 +185,7 @@ export default class PageDetailViewer extends React.Component {
                 :(label === 'Ip_support' && String(values[label]) == '2')?'Dynamic' /* Cloudlets */
                 :(label === 'IpAccess' && String(values[label]) == '1')?'Dedicated'
                 :(label === 'IpAccess' && String(values[label]) == '3')?'Shared' /* Cluster Inst */
-                :(label === 'Created')? String( moment.unix( values[label].replace('seconds : ', '') ) )
+                :(label === 'Created')? String( this.makeUTC(values[label]) )
                 :(label === 'State')? _status[values[label]]
                 :(label === 'Liveness')? _liveness[values[label]]
                 :(typeof values[label] === 'object')? this.jsonView(values[label])

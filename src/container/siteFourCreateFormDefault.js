@@ -233,10 +233,10 @@ class SiteFourCreateFormDefault extends React.Component {
         } else if(key === 'OrganizationName') {
             this.props.onChangeState(key)
         } else if(key === 'DeploymentType') {
-            if(value == 'Docker') {
+            if(value == 'docker') {
                 this.setState({ipAccessValue:['Dedicated']})
                 this.setState({deployTypeDocker:true})
-            } else if(value == 'Kubernetes') {
+            } else if(value == 'kubernetes') {
                 this.setState({ipAccessValue:['Dedicated','Shared']})
                 this.setState({deployTypeDocker:false})
             }

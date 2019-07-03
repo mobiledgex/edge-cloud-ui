@@ -84,7 +84,7 @@ class DeveloperListView extends React.Component {
         this.setState({selectUse:key})
         if(this.props.roleInfo) {
             this.props.roleInfo.map((item,i) => {
-                if(item.org == useData.Organization) {
+                if(i == key) {
                     console.log('item role =',item.role)
                     this.props.handleUserRole(item.role)
                     localStorage.setItem('selectOrg', useData.Organization)

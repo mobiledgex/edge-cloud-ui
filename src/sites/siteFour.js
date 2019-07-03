@@ -114,7 +114,8 @@ class SiteFour extends React.Component {
             viewMode:'listView',
             toggleDisable:true,
             currentVersion:'v-',
-            searchChangeValue:'Username'
+            searchChangeValue:'Username',
+            menuClick:false
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
@@ -214,6 +215,7 @@ class SiteFour extends React.Component {
         _self.setState({ page:subPath})
     }
     handleItemClick ( id, label, pg, role ) {
+        _self.setState({menuClick:true})
         _self.props.handleDetail({data:null, viewMode:'listView'})
         _self.props.handleChangeViewBtn(false);
         _self.props.handleChangeClickCity([]);
@@ -378,7 +380,6 @@ class SiteFour extends React.Component {
         this.disableBtn();
         
         this.getAdminInfo(store.userToken);
-
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
             if(elem){ 
@@ -389,7 +390,7 @@ class SiteFour extends React.Component {
 
     }
     componentWillReceiveProps(nextProps) {
-        console.log("props!!!!",nextProps.viewMode)
+        console.log("props!!!!",nextProps,this.props)
         let store = JSON.parse(localStorage.PROJECT_INIT);
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
@@ -400,10 +401,11 @@ class SiteFour extends React.Component {
             this.setState({page:nextProps.params.subPath})
         }
 
-        if(localStorage.selectRole && nextProps.params.subPath !== this.props.params.subPath) {
-            this.disableBtn();
-            //this.setState({toggleDisable:false})
-        }
+        // if(localStorage.selectRole && this.state.menuClick) {
+        //     console.log("Dddfdfdfdfdfdf")
+        //     this.disableBtn();
+        //     this.setState({menuClick:false})
+        // }
 
         
 
@@ -447,6 +449,12 @@ class SiteFour extends React.Component {
         }
     }
 
+    componentDidUpdate() {
+        if(localStorage.selectRole && this.state.menuClick) {
+            this.disableBtn();
+            this.setState({menuClick:false})
+        }
+    }
 
     //compute page menu view
     menuItemView = (item, i, activeItem) => (
@@ -524,7 +532,7 @@ class SiteFour extends React.Component {
 
     searchChange = (e, {value}) => {
         this.setState({searchChangeValue:value})
-        this.props.handleSearchValue('',value)
+        this.props.handleSearchValue(this.props.searchValue,value)
     }
 
     render() {
@@ -711,7 +719,7 @@ class SiteFour extends React.Component {
 
                         </Grid.Row>
                         {
-                            (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'Users') ?
+                            (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'Users' && this.state.headerTitle !== 'Accounts') ?
                             <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
                                 <label style={{padding:'0 10px'}}>Region</label>
                                 <Dropdown className='selection'
@@ -787,7 +795,7 @@ const mapStateToProps = (state) => {
             mode: state.alertInfo.mode,
             msg: state.alertInfo.msg
         },
-        
+        searchValue : (state.searchValue.search) ? state.searchValue.search: null,
     }
 };
 

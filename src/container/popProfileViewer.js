@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Divider, Modal, Grid} from "semantic-ui-react";
-
+import * as moment from 'moment';
 
 let _self = null;
 export default class PopProfileViewer extends React.Component {
@@ -16,6 +16,10 @@ export default class PopProfileViewer extends React.Component {
 
     componentDidMount() {
 
+    }
+    makeUTC = (time) => {
+        console.log('time... ', moment( time ).format("YYYY-MM-DD HH:mm:ss"))
+        return moment( time ).format("YYYY-MM-DD HH:mm:ss") + ' UTC'
     }
     componentWillReceiveProps(nextProps, nextContext) {
         console.log('regist new item -- ', nextProps)
@@ -42,6 +46,8 @@ export default class PopProfileViewer extends React.Component {
                                 {(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key])
                                 :(key === 'EmailVerified' && JSON.stringify(nextProps.data[key]) === 'true')?'Yes'
                                 :(key === 'Locked' && JSON.stringify(nextProps.data[key]) === 'false')?'No'
+                                :(key === 'CreatedAt' && nextProps.data[key]) ? this.makeUTC(nextProps.data[key])
+                                :(key === 'UpdatedAt' && nextProps.data[key]) ? this.makeUTC(nextProps.data[key])
                                 :String(nextProps.data[key])}
                             </div>
                         </Grid.Column>

@@ -253,17 +253,24 @@ class SiteFourCreateInstForm extends React.PureComponent {
             let operatorKeys = [];
             setTimeout(() => {
                 let flavor = aggregate.groupBy(_self.state.flavorData, 'Region');
-                flavor[_self.props.selectedRegion].map((ff) => flavorKeys.push(ff.FlavorName))
-                _self.resetDevData(flavorKeys, 'Flavor')
-                let operators = regions[_self.props.selectedRegion];
-                if(operators) {
-                    operators.map(
-                        (aa) => operatorKeys.push(aa.Operator)
-                    )
-                    _self.resetDevData(operatorKeys, 'Operator');
+                if(flavor) {
+                    if(flavor[_self.props.selectedRegion]) flavor[_self.props.selectedRegion].map((ff) => flavorKeys.push(ff.FlavorName));
+                    _self.resetDevData(flavorKeys, 'Flavor')
+                    let operators = regions[_self.props.selectedRegion];
+                    if(operators) {
+                        operators.map(
+                            (aa) => operatorKeys.push(aa.Operator)
+                        )
+                        _self.resetDevData(operatorKeys, 'Operator');
+                    } else {
+                        _self.resetDevData(operatorKeys, 'Operator');
+                        this.props.handleAlertInfo('error','There is no operators in the Region')
+                    }
                 } else {
-                    this.props.handleAlertInfo('error','There is no operators in the Region')
+                    _self.resetDevData(flavorKeys, 'Flavor');
+                    this.props.handleAlertInfo('error','There is no flavors in the Region')
                 }
+
             }, 500)
 
 
@@ -392,11 +399,11 @@ class SiteFourCreateInstForm extends React.PureComponent {
     clusterHide = (value) => {
         console.log("clusterhide",value)
         
-        if(value === 'Docker' && panes.length == 2) {
+        if(value === 'docker' && panes.length == 2) {
             panes.pop();
             this.setState({clusterShow:false})
         }
-        if(value === 'Kubernetes' && panes.length == 1){
+        if(value === 'kubernetes' && panes.length == 1){
             panes.push({ menuItem: 'Show Cluster', render: (props) => <Tab.Pane>{clusterNode(props)}</Tab.Pane> })
             this.setState({clusterShow:true})
         } 

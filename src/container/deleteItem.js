@@ -49,7 +49,7 @@ class DeleteItem extends React.Component {
         console.log('registry delete ... success result..', result.data)
         
         console.log("deleteCluster@@@",result.data)
-        if(result.data.error == "ClusterInst in use by Application Instance") {
+        if(result.data.error) {
             this.props.handleAlertInfo('error',result.data.error)
         } else if (result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
             this.props.handleAlertInfo('success',msg+' deleted successfully'+msg2)
@@ -67,7 +67,7 @@ class DeleteItem extends React.Component {
         this.props.handleLoadingSpinner(false);
         this.props.refresh('All')
         
-        if(result.data.error == "rpc error: code = Unknown desc = Application in use by static Application Instance") {
+        if(result.data.error) {
             this.props.handleAlertInfo('error',result.data.error)
         } else if(result.data.message) {
             this.props.handleAlertInfo('success',msg+' deleted successfully.')
