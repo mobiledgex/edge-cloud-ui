@@ -44,7 +44,10 @@ export default class PopUserViewer extends React.Component {
         this.setState({ open: false })
         this.props.close()
     }
-
+    makeUTC = (time) => {
+        console.log('time... ', moment( time ).format("YYYY-MM-DD HH:mm:ss"))
+        return moment( time ).format("YYYY-MM-DD HH:mm:ss") + ' UTC'
+    }
 
     render() {
 
@@ -83,8 +86,8 @@ export default class PopUserViewer extends React.Component {
                                                     (typeof this.state.propsData[key] === 'object')? JSON.stringify(this.state.propsData[key])
                                                     : (key === 'EmailVerified' && JSON.stringify(this.state.propsData[key]) === 'true')? 'Yes'
                                                     : (key === 'Locked' && JSON.stringify(this.state.propsData[key]) === 'true')? 'Yes'
-                                                    : (key === 'CreatedAt') ? String(moment(this.state.propsData[key], "YYYY-MM-DD HH:mm"))
-                                                    : (key === 'UpdatedAt') ? String(moment(this.state.propsData[key], "YYYY-MM-DD HH:mm"))
+                                                    : (key === 'CreatedAt') ? String(this.makeUTC(this.state.propsData[key]))
+                                                    : (key === 'UpdatedAt') ? String(this.makeUTC(this.state.propsData[key]))
                                                     : String(this.state.propsData[key])
 
 

@@ -25,7 +25,6 @@ export function getMethodCall(resource, body, callback, self) {
             } else {
 
             }
-            console.log('parse data token===>>>>>>>>>> ', parseData)
             if(parseData) callback(parseData, self);
         })
         .catch(function (error) {
@@ -49,7 +48,6 @@ export function getCurrentUserInfo(resource, body, callback, self) {
             } else {
 
             }
-            console.log('parse data super user ===>>>>>>>>>> ', parseData)
             if(parseData) callback(parseData, resource, self);
         })
         .catch(function (error) {
@@ -77,7 +75,6 @@ export function createUser(resource, body, callback, self) {
             } else {
 
             }
-            console.log('parse data super user ===>>>>>>>>>> ', parseData)
             if(parseData.data) {
                 if(typeof parseData.data === 'string' && parseData.data.indexOf("}{") > 0) {
                     parseData.data.replace("}{", "},{")
@@ -115,7 +112,6 @@ export function resetPassword(resource, body, callback, self) {
             } else {
 
             }
-            console.log('parse data reset password ===>>>>>>>>>> ', parseData)
             if(parseData) {
                 if(parseData.message){
                     console.log(parseData.message)
@@ -151,7 +147,6 @@ export function resendVerify(resource, body, callback, self) {
             } else {
 
             }
-            console.log('parse data result send mail ===>>>>>>>>>> ', parseData)
             if(parseData) {
                 if(parseData.message){
                     console.log(parseData.message)
