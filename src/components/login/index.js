@@ -352,8 +352,10 @@ class Login extends Component {
         self.setState({successMsg:message ? message:self.state.successMsg, signup:false});
     }
     resultNewPass(result) {
+
         console.log('success update as new pass......', result.data, JSON.stringify(result.data), typeof result.data)
         let message = (result.data.message)? result.data.message : null;
+        alert(message)
         if(result.data.error) {
             Alert.error(result.data.error, {
                 position: 'top-right',
@@ -367,6 +369,7 @@ class Login extends Component {
                 timeout: 5000
             });
         }
+        self.onProgress(false);
 
         //TODO 20190416 - redux
         self.setState({successMsg:message ? message:self.state.successMsg, errorCreate: true, signup:true});
