@@ -434,7 +434,32 @@ class RegistNewItem extends React.Component {
             //this.props.handleLoadingSpinner(true);
             service.createNewClusterInst('CreateClusterInst', serviceBody, this.receiveSubmit)
         } else if(localStorage.selectMenu === 'Cloudlets') {
-            console.log("submitCloudlet@@",this.props.submitData)
+            console.log("submitCloudlet@@",this.props.cloudletValue.values)
+            const cloudlet = ['Region','CloudletName','OperatorName','Latitude','Longitude','IPSupport','Num_dynamic_ips']
+            let error = [];
+            if(!this.props.cloudletValue.values) {
+                Alert.error('Insert values to all fields', {
+                    position: 'top-right',
+                    effect: 'slide',
+                    timeout: 3000,
+                });
+                return false;
+            } else {
+                cloudlet.map((item) => {
+                    if(!this.props.cloudletValue.values[item]) {
+                        error.push(item)
+                    }
+                })
+                if(error.length > 0) {
+                    Alert.error('Insert values to '+error[0]+' field', {
+                        position: 'top-right',
+                        effect: 'slide',
+                        timeout: 3000,
+                    });
+                    return false;
+                }
+            }
+
             const {CloudletName, OperatorName, Latitude, Longitude, IpSupport, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
             this.props.handleLoadingSpinner(true);
             serviceBody = {
@@ -538,6 +563,12 @@ class RegistNewItem extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+    console.log("statestatestate",state)
+    let formCloudlet= state.form.registNewListInput
+    ? {
+        values: state.form.registNewListInput.values
+    }
+    : {};
     return {
         locLong : state.mapCoordinatesLong?state.mapCoordinatesLong:null,
         locLat : state.mapCoordinatesLat?state.mapCoordinatesLat:null,
@@ -545,6 +576,7 @@ const mapStateToProps = (state) => {
         computeItem : state.computeItem?state.computeItem.item:null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
+        cloudletValue:formCloudlet
     }
 };
 

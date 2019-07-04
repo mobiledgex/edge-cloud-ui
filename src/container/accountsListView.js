@@ -222,7 +222,7 @@ class AccountListView extends React.Component {
                                 (value === 'Edit')?
                                     <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
 
-                                        <Button onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
+                                        <Button disabled={item.Username === 'mexadmin'} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>
                                 :
