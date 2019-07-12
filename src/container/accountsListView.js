@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Divider, Container } from 'semantic-ui-react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import * as moment from 'moment';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
 import PopDetailViewer from './popDetailViewer';
@@ -205,6 +206,17 @@ class AccountListView extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         services.getMCService('SettingLock',{token:store.userToken, params:{email:value.email, locked:value.lockState}}, this.receiveLockResult)
     }
+    compareDate = (date) => {
+        let isNew = false;
+        let dName = 'd'
+        let fromNow = moment(date).startOf('day').fromNow();
+        console.log('from now. ', fromNow)
+        let darray = fromNow.split(' ')
+        if(parseInt(darray[0]) <= 1 && darray[1] === 'days') isNew = true;
+        if(parseInt(darray[0]) <= 24 && darray[1] === 'hours') isNew = true; dName='h'
+        console.log('is new... ', 'date=', date, 'isNew =',isNew, parseInt(darray[0]))
+        return {new:isNew, days:darray[0]+dName};
+    }
 
     TableExampleVeryBasic = (w, h, headL, hideHeader, datas) => (
         <Table className="viewListTable" basic='very' sortable striped celled fixed>
@@ -235,10 +247,10 @@ class AccountListView extends React.Component {
                                 (value === 'Username')?
                                     <Table.Cell key={j} textAlign='left'>
                                         <div className="left_menu_item" onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
-                                        <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {(i==0) ? <div className="userNewMark">{'New'}</div> : null} {item[value]}
+                                        <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {this.compareDate(item['UpdatedAt']).new ? <div className="userNewMark">{`New`}</div> : null} {item[value]}
                                         </div>
                                     </Table.Cell>
-                                :   
+                                :
                                 (value === 'EmailVerified')?
                                     <Table.Cell key={j} textAlign='center' style={{cursor:'pointer'}} >
                                         {

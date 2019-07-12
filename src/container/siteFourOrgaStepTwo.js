@@ -2,42 +2,39 @@ import React, { Fragment } from "react";
 import {Button, Form, Table, List, Grid, Card, Header, Image} from "semantic-ui-react";
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import {Field, reduxForm, initialize, reset} from "redux-form";
+import {Field, reduxForm, stopSubmit} from "redux-form";
 import MaterialIcon from "material-icons-react";
 import './styles.css';
 
 const validate = values => {
     const errors = {}
+    console.log("validatefwff",values)
     if (!values.username) {
         errors.username = 'Required'
-    } else if (values.username.length > 15) {
-        errors.username = 'Must be 15 characters or less'
     }
-    if (!values.email) {
-        errors.email = 'Required'
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-        errors.email = 'Invalid email address'
+    if (!values.orgName) {
+        errors.orgName = 'Required'
     }
-    if (!values.age) {
-        errors.age = 'Required'
-    } else if (isNaN(Number(values.age))) {
-        errors.age = 'Must be a number'
-    } else if (Number(values.age) < 18) {
-        errors.age = 'Sorry, you must be at least 18 years old'
+    if (!values.orgType) {
+        errors.orgType = 'Required'
     }
+    if (!values.selectRole) {
+        errors.selectRole = 'Required'
+    }
+    
     return errors
 }
 const roles =
     {
         Developer: [
-            { Users:'Manage', Cloudlets:'View', Flavor:'View', ClusterFlavor:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
-            { Users:'View', Cloudlets:'View', Flavor:'View', ClusterFlavor:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
-            { Users:'View', Cloudlets:'View', Flavor:'View', ClusterFlavor:'View', ClusterInst:'View', Apps:'View', AppInst:'View'}
+            { Users:'Manage', Cloudlets:'View', Flavor:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
+            { Users:'View', Cloudlets:'View', Flavor:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
+            { Users:'View', Cloudlets:'View', Flavor:'View', ClusterInst:'View', Apps:'View', AppInst:'View'}
         ],
         Operator: [
-            { Users:'Manage', Cloudlets:'Manage', Flavor:'disabled', ClusterFlavor:'disabled', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
-            { Users:'View', Cloudlets:'View', Flavor:'disabled', ClusterFlavor:'disabled', ClusterInst:'Manage', Apps:'disabled', AppInst:'disabled'},
-            { Users:'View', Cloudlets:'View', Flavor:'disabled', ClusterFlavor:'disabled', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
+            { Users:'Manage', Cloudlets:'Manage', Flavor:'disabled', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
+            { Users:'View', Cloudlets:'Manage', Flavor:'disabled', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
+            { Users:'View', Cloudlets:'View', Flavor:'disabled', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
         ]
     }
 
@@ -96,14 +93,17 @@ const renderRadio = field => (
 );
 
 const renderSelect = field => (
-    <Form.Select
-        label={field.label}
-        name={field.input.name}
-        onChange={(e, { value }) => field.input.onChange(value)}
-        options={field.options}
-        placeholder={field.placeholder}
-        value={field.input.value}
-    />
+    <div>
+        <Form.Select
+            label={field.label}
+            name={field.input.name}
+            onChange={(e, { value }) => field.input.onChange(value)}
+            options={field.options}
+            placeholder={field.placeholder}
+            value={field.input.value}
+        />
+        {field.meta.touched && ((field.meta.error && <span className="text-danger">{field.meta.error}</span>) || (field.meta.warning && <span>{field.meta.warning}</span>))}
+    </div>
 );
 
 const renderTextArea = field => (
@@ -114,12 +114,15 @@ const renderTextArea = field => (
     />
 );
 const renderInput = field => (
-    <Form.Input
-        {...field.input}
-        type={field.type}
-        label={field.label}
-        placeholder={field.placeholder}
-    />
+    <div>
+        <Form.Input
+            {...field.input}
+            type={field.type}
+            label={field.label}
+            placeholder={field.placeholder}
+        />
+        {field.meta.touched && ((field.meta.error && <span className="text-danger">{field.meta.error}</span>) || (field.meta.warning && <span>{field.meta.warning}</span>))}
+    </div>
 );
 const makeAdduser = () => (
     <Grid>
@@ -241,20 +244,23 @@ class SiteFourOrgaTwo extends React.Component {
     
     componentWillReceiveProps(nextProps) {
         console.log("twoProps",nextProps)
+        if(this.props.toggleSubmitTwo) {
+            this.props.dispatch(stopSubmit('orgaStepTwo',{}))
+        }
     }
 
 
 
     onHandleSubmit = () => {
-        this.props.handleLoadingSpinner(true);
+        
         _self.props.handleSubmit();
-        setTimeout(() => {
-            //_self.props.dispatch(reset('orgaStepTwo'));
-            _self.props.dispatch(initialize('orgaStepTwo', {
-                submitSucceeded: false
-            }))
-            this.handleInitialize();
-        },0);
+        // setTimeout(() => {
+        //     //_self.props.dispatch(reset('orgaStepTwo'));
+        //     _self.props.dispatch(initialize('orgaStepTwo', {
+        //         submitSucceeded: false
+        //     }))
+        //     this.handleInitialize();
+        // },0);
         
     }
 
@@ -374,5 +380,5 @@ SiteFourOrgaTwo = connect(
 
 export default reduxForm({
     form: "orgaStepTwo",
-    enableReinitialize: true
+    validate
 })(SiteFourOrgaTwo);

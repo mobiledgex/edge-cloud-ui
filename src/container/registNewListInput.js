@@ -161,7 +161,7 @@ class registNewListInput extends React.Component {
                                         regKeys.map((key, i)=>(
                                             <Grid.Row key={i} columns={3}>
                                                 <Grid.Column width={5} className='detail_item'>
-                                                    <div>{(key === 'FlavorName')?'Flavor Name':(key == 'RAM')?'RAM Size':(key == 'vCPUs')?'Number of vCPUs':(key == 'Disk')?'Disk Space':key}</div>
+                                                    <div>{(key == 'Region')?'Region *':(key === 'FlavorName')?'Flavor Name *':(key == 'RAM')?'RAM Size *':(key == 'vCPUs')?'Number of vCPUs *':(key == 'Disk')?'Disk Space *':key}</div>
                                                 </Grid.Column>
                                                 <Grid.Column width={10}>
                                                 {

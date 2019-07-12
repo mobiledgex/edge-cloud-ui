@@ -115,7 +115,8 @@ class SiteFour extends React.Component {
             toggleDisable:true,
             currentVersion:'v-',
             searchChangeValue:'Username',
-            menuClick:false
+            menuClick:false,
+            showItem:false
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
@@ -221,6 +222,7 @@ class SiteFour extends React.Component {
         _self.props.handleChangeClickCity([]);
         _self.props.handleChangeComputeItem(label);
         _self.props.handleSearchValue('')
+        _self.props.handleChangeRegion('All')
         _self.props.history.push({
             pathname: '/site4',
             search: "pg="+pg
@@ -535,6 +537,22 @@ class SiteFour extends React.Component {
         this.props.handleSearchValue(this.props.searchValue,value)
     }
 
+    DropdownIconFilter = () => (
+        <Dropdown text='Filter' icon='filter' floating labeled button className='icon' onClick={() => this.setState(prevState => ({ showItem: !prevState.showItem }))}>
+            {
+                (this.state.showItem)?
+                    <Dropdown.Menu>
+                        <Dropdown.Item icon='attention' text='Important' />
+                        <Dropdown.Item icon='comment' text='Announcement' />
+                        <Dropdown.Item icon='conversation' text='Discussion' />
+                    </Dropdown.Menu>
+                    :
+                    null
+            }
+
+        </Dropdown>
+    )
+
     render() {
         const {shouldShowBox, shouldShowCircle, viewMode } = this.state;
         const { activeItem, controllerRegions } = this.state
@@ -713,6 +731,9 @@ class SiteFour extends React.Component {
                                 </Grid.Column>
                                 : null
                             }
+                            {/*<Grid.Column>*/}
+                                {/*<div>{this.DropdownIconFilter()}</div>*/}
+                            {/*</Grid.Column>*/}
                             <div style={{position:'absolute', top:25, right:25}}>
                                 {this.getHelpPopup(this.state.headerTitle)}
                             </div>
@@ -724,7 +745,8 @@ class SiteFour extends React.Component {
                                 <label style={{padding:'0 10px'}}>Region</label>
                                 <Dropdown className='selection'
                                     options={this.state.regions}
-                                    defaultValue={this.state.regions[0].value}
+                                    // defaultValue={this.state.regions[0].value}
+                                    value={this.props.changeRegion}
                                     onChange={this.onChangeRegion}
                                 />
                             </Grid.Row>
@@ -796,6 +818,7 @@ const mapStateToProps = (state) => {
             msg: state.alertInfo.msg
         },
         searchValue : (state.searchValue.search) ? state.searchValue.search: null,
+        changeRegion : (state.changeRegion.region) ? state.changeRegion.region : null
     }
 };
 

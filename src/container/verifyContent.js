@@ -95,7 +95,7 @@ class VerifyContent extends Component {
                     color={'#70b2bc'}
                     loading={this.state.loading}
                 />
-                <div>Verifying Update...</div>
+                <div>Verifying...</div>
             </div>
 
 

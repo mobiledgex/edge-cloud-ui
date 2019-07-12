@@ -331,7 +331,7 @@ class DeveloperListView extends React.Component {
                                 (value === 'Username')?
                                     <Table.Cell key={j} textAlign='left'>
                                         <div className="left_menu_item" onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
-                                        <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {(i==0) ? <div className="userNewMark">{'New'}</div> : null} {item[value]}
+                                        <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {item[value]}
                                         </div>
                                     </Table.Cell>
                                 :   
@@ -361,14 +361,14 @@ class DeveloperListView extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('nextProps',nextProps,this.props.siteId)
+        console.log('nextProps@@3',nextProps,this.props.siteId)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
         if(nextProps.devData.length) {
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         } else {
-            //this.setState({dummyData:nextProps.devData})
+            this.setState({dummyData:nextProps.devData})
             this.checkLengthData();
         }
         if(nextProps.searchValue) {
@@ -400,7 +400,7 @@ class DeveloperListView extends React.Component {
                         >
                             {this.generateDOM(open, dimmer, width, height, hiddenKeys)}
                         </ReactGridLayout>
-                        <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
+                        <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} siteId={this.props.siteId}></PopDetailViewer>
                         <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                         <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
                     </div>

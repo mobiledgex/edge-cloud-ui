@@ -239,17 +239,18 @@ class registNewInput extends React.Component {
                                 <div style={{display:'flex', flexDirection:'row', width:'100%'}}>
                                     <Grid divided style={{width:800}}>
                                     {
-                                        (data.length > 0)?
+                                        (regKeys.length > 0)?
                                         regKeys.map((key, i)=>(
                                             <Grid.Row key={i} columns={3}>
                                                 <Grid.Column width={5} className='detail_item'>
                                                     <div>
-                                                        {(key === 'CloudletName')?'Cloudlet Name'
-                                                            :(key === 'OperatorName')?'Operator Name'
-                                                                :(key === 'CloudletLocation')?'Cloudlet Location'
+                                                        {(key === 'CloudletName')?'Cloudlet Name *'
+                                                            :(key === 'OperatorName')?'Operator Name *'
+                                                                :(key === 'CloudletLocation')?'Cloudlet Location *'
                                                                     :(key === 'Ip_support')?'IP Support'
-                                                                        :(key === 'Num_dynamic_ips')?'Number of Dynamic IPs'
-                                                                            :key}
+                                                                        :(key === 'Num_dynamic_ips')?'Number of Dynamic IPs *'
+                                                                            :(key === 'Region')?'Region *'
+                                                                                :key}
                                                     </div>
                                                 </Grid.Column>
                                                 <Grid.Column width={9}>

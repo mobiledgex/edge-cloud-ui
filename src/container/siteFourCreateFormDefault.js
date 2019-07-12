@@ -2,32 +2,11 @@ import React, { Fragment } from "react";
 
 import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup, Icon, Input} from "semantic-ui-react";
 
-import { Field, reduxForm, initialize, reset, change } from "redux-form";
+import { Field, reduxForm, initialize, reset, change, stopSubmit } from "redux-form";
 import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
 import './styles.css';
 
-const validate = values => {
-    const errors = {}
-    if (!values.username) {
-        errors.username = 'Required'
-    } else if (values.username.length > 15) {
-        errors.username = 'Must be 15 characters or less'
-    }
-    if (!values.email) {
-        errors.email = 'Required'
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-        errors.email = 'Invalid email address'
-    }
-    if (!values.age) {
-        errors.age = 'Required'
-    } else if (isNaN(Number(values.age))) {
-        errors.age = 'Must be a number'
-    } else if (Number(values.age) < 18) {
-        errors.age = 'Sorry, you must be at least 18 years old'
-    }
-    return errors
-}
 
 const makeOption =(options)=> (
     options.map((value) =>(
@@ -35,61 +14,20 @@ const makeOption =(options)=> (
     ))
 )
 
-const makeOptionNumber =(options)=> (
-    options.map((value,i) =>(
-        {key:i, text:value, value:i}
-    ))
-)
-
-const renderCheckbox = field => (
-    <Form.Checkbox toggle
-        style={{height:'33px', paddingTop:'8px'}}
-        checked={!!field.input.value}
-        name={field.input.name}
-        label={field.label}
-        onChange={(e, { checked }) => field.input.onChange(checked)}
-    />
-);
-
-const renderRadio = field => (
-    <Form.Radio
-        style={{height: '38px', paddingTop: '10px'}}
-        checked={field.input.value === field.radioValue}
-        label={field.label}
-        name={field.input.name}
-        onChange={(e, { checked }) => field.input.onChange(field.radioValue)}
-    />
-);
-
 const renderSelect = field => (
-    <Form.Select
-        label={field.label}
-        name={field.input.name}
-        onChange={(e, { value }) => field.input.onChange(value)}
-        options={makeOption(field.options)}
-        placeholder={field.placeholder}
-        value={field.input.value}
-    />
+    <div>
+        <Form.Select
+            label={field.label}
+            name={field.input.name}
+            onChange={(e, { value }) => field.input.onChange(value)}
+            options={makeOption(field.options)}
+            placeholder={field.placeholder}
+            value={field.input.value}
+        />
+        {field.error && <span className="text-danger">{field.error}</span>}
+    </div>
 );
 
-const renderSelectNumber = field => (
-    <Form.Select
-        label={field.label}
-        name={field.input.name}
-        onChange={(e, { value }) => field.input.onChange(value)}
-        options={makeOptionNumber(field.options)}
-        placeholder={field.placeholder}
-        value={field.input.value}
-    />
-);
-
-const renderTextArea = field => (
-    <Form.TextArea
-        {...field.input}
-        label={field.label}
-        // placeholder={field.placeholder}
-    />
-);
 const renderInputNum = field => (
     <Form.Field
         {...field.input}
@@ -101,12 +39,15 @@ const renderInputNum = field => (
     </Form.Field>
 );
 const renderInput = field => (
-    <Form.Input
-        {...field.input}
-        type={field.type}
-        label={field.label}
-        // placeholder={field.placeholder}
-    />
+    <div>
+        <Form.Input
+            {...field.input}
+            type={field.type}
+            label={field.label}
+            // placeholder={field.placeholder}
+        />
+        {field.error && <span className="text-danger">{field.error}</span>}
+    </div>
 );
 const renderInputDisabled = field => (
     <Form.Input
@@ -118,19 +59,6 @@ const renderInputDisabled = field => (
     />
 );
 
-const makeCardContent = (item, i, type) => (
-    <Grid.Row>
-        <Card>
-            <Card.Content>
-                <Card.Header>{item['header']}</Card.Header>
-                <Card.Meta>{type}</Card.Meta>
-                <Card.Description>
-
-                </Card.Description>
-            </Card.Content>
-        </Card>
-    </Grid.Row>
-)
 const style = {
     borderRadius: 0,
     opacity: 0.7,
@@ -188,6 +116,10 @@ class SiteFourCreateFormDefault extends React.Component {
         if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
+            // submitSucceeded 초기화
+            if(this.props.toggleSubmit) {
+                this.props.dispatch(stopSubmit('createAppFormDefault',{}))
+            }
             if(!this.state.dataInit){
                 this.handleInitialize(nextProps.data.data[0]);
                 this.setState({dataInit:true})
@@ -215,16 +147,15 @@ class SiteFourCreateFormDefault extends React.Component {
     )
     onHandleSubmit=(a,b)=> {
         this.props.handleSubmit();
-        setTimeout(() => {
-            this.props.dispatch(initialize('createAppFormDefault', {
-                submitSucceeded: false
-            }))
-            //this.props.dispatch(reset('createAppFormDefault'))
-        },100);
+        // setTimeout(() => {
+        //     this.props.dispatch(initialize('createAppFormDefault', {
+        //         submitSucceeded: false
+        //     }))
+        //     //this.props.dispatch(reset('createAppFormDefault'))
+        // },100);
     }
     onFormState=(a,b)=> {
         alert('onForm state',a,b)
-
     }
     onHandleChange(key,value,c){
         console.log("key@@@@@@",key,value,c)
@@ -304,15 +235,6 @@ class SiteFourCreateFormDefault extends React.Component {
                                                     </Grid.Column>
                                                     <Grid.Column width={11}>
                                                         {
-
-                                                            (fieldKeys[pId][key]['type'] === 'RenderTextArea') ?
-                                                            <Field
-                                                                component={renderTextArea}
-                                                                placeholder={data[key]}
-                                                                value={data[key] || ''}
-                                                                name={key}
-                                                                onChange={()=>console.log('onChange text..')}/>
-                                                            :
                                                             (fieldKeys[pId][key]['type'] === 'RenderSelect') ?
                                                             <Field
                                                                 component={renderSelect}
@@ -320,14 +242,8 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 value={data[key]}
                                                                 options={(fieldKeys[pId][key]['label'] !== 'IP Access') ? fieldKeys[pId][key]['items'] : this.state.ipAccessValue}
                                                                 name={key}
-                                                                onChange={(e)=>this.onHandleChange(key,e,data[key])}/>
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'RenderCheckbox') ?
-                                                            <Field
-                                                                component={renderCheckbox}
-                                                                value={data[key]}
-                                                                name={key}
-                                                                />
+                                                                onChange={(e)=>this.onHandleChange(key,e,data[key])}
+                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'RenderInputNum') ?
                                                             <Field
@@ -343,7 +259,8 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                         placeholder={'Select Organization Name'}
                                                                         options={this.state.orgArr}
                                                                         name={key}
-                                                                        onChange={()=>console.log('onChange text..')}/>
+                                                                        onChange={()=>console.log('onChange text..')}
+                                                                        error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                                 :
                                                                     <Field
                                                                         disabled
@@ -353,52 +270,13 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                         value={data[key]}
                                                                         />
                                                             :
-                                                            (fieldKeys[pId][key]['type'] === 'CustomPorts') ?
-                                                            <Grid>
-                                                                {
-                                                                    this.state.portArray.map((item,i) => (
-
-                                                                        <Grid.Row key={i} columns={3} style={{paddingBottom:'0px'}}>
-                                                                            <Grid.Column width={10}>
-                                                                                <Field
-                                                                                    component={renderInput}
-                                                                                    type="input"
-                                                                                    name={key+'_'+i}
-                                                                                    //value={data[key]}
-                                                                                    />
-                                                                            </Grid.Column>
-                                                                            <Grid.Column width={5}>
-                                                                                <Field
-                                                                                    component={renderSelect}
-                                                                                    placeholder={'Select port'}
-                                                                                    //value={data[key]}
-                                                                                    options={fieldKeys[pId][key]['items']}
-                                                                                    name={key+'select_'+i}
-                                                                                    onChange={()=>console.log('onChange text..')}
-                                                                                    />
-                                                                            </Grid.Column>
-                                                                            <Grid.Column width={1}>
-                                                                                {/*<Button onClick={this.RemovePorts} sttle={{width:'100%'}}>Delete</Button>*/}
-                                                                                <div className='removePorts' onClick={this.RemovePorts}><i className="material-icons">clear</i></div>
-                                                                            </Grid.Column>
-                                                                        </Grid.Row>
-                                                                    ))
-                                                                }
-                                                                <Grid.Row>
-                                                                    <Grid.Column>
-                                                                        <Button positive onClick={this.AddPorts}>Add Port Mapping</Button>
-                                                                        {/*<div className="addPortMapping" onClick={this.AddPorts}>+ Add Port Mapping</div>*/}
-                                                                    </Grid.Column>
-                                                                </Grid.Row>
-                                                            </Grid>
-                                                            :
                                                             <Field
                                                                 component={renderInput}
                                                                 type="input"
                                                                 name={key}
                                                                 value={data[key]}
                                                                 onChange={(e)=>this.onHandleChange(key,e.target.value)}
-                                                                />
+                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                         }
                                                     </Grid.Column>
                                                     <Grid.Column width={1}>

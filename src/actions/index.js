@@ -228,3 +228,10 @@ export function alertInfo (mode,msg) {
         msg
     }
 }
+export function createAccount (created) {
+    console.log('created == ', created)
+    return {
+        type: types.CREATE_ACCOUNT,
+        created
+    }
+}
