@@ -435,7 +435,7 @@ class RegistNewItem extends React.Component {
             service.createNewClusterInst('CreateClusterInst', serviceBody, this.receiveSubmit)
         } else if(localStorage.selectMenu === 'Cloudlets') {
             console.log("submitCloudlet@@",this.props.cloudletValue.values)
-            const cloudlet = ['Region','CloudletName','OperatorName','Latitude','Longitude','IPSupport','Num_dynamic_ips']
+            const cloudlet = ['Region','CloudletName','OperatorName','Latitude','Longitude','Num_dynamic_ips']
             let error = [];
             if(!this.props.cloudletValue.values) {
                 Alert.error('Insert values to all fields', {
@@ -525,12 +525,13 @@ class RegistNewItem extends React.Component {
 
     render() {
         let {data, dimmer, selected} = this.props;
-        let regKeys = (data[0])?data[0]['Edit']:null;
+        const cloudletArr = ['Region','CloudletName','OperatorName','CloudletLocation','Ip_support','Num_dynamic_ips'];
+        let regKeys = (data[0])?data[0]['Edit']:(this.props.siteId=='Cloudlet')?cloudletArr:[];
         console.log("data@@",data)
         let optionArr = [this.state.devOptionsOperator, this.state.devOptionsDeveloper, this.state.devOptionsCloudlet, this.state.devOptionsFour, this.state.devOptionsSix, this.state.devOptionsFive, this.state.devOptionsOrgType, this.state.devOptionsOrgRole, this.state.devOptionsCF]
         let valueArr = [this.state.dropdownValueOne, this.state.dropdownValueTwo, this.state.dropdownValueThree, this.state.dropdownValueFour, this.state.dropdownValueSix, this.state.dropdownValueFive, this.state.handleChangeOrgType, this.state.handleChangeOrgRole, this.state.handleChangeCF]
         let changeArr = [this.handleChangeOne, this.handleChangeTwo, this.handleChangeThree, this.handleChangeFour, this.handleChangeSix, this.handleChangeFive, this.handleChangeOrgType, this.handleChangeOrgRole]
-        console.log('regKeys ===>>>', regKeys)
+        console.log('regKeys ===>>>', regKeys, this.props.siteId)
         return (
             <RegistNewInput
                 handleSubmit={this.onSubmit}
@@ -564,9 +565,9 @@ class RegistNewItem extends React.Component {
 
 const mapStateToProps = (state) => {
     console.log("statestatestate",state)
-    let formCloudlet= state.form.registNewListInput
+    let formCloudlet= state.form.registNewInput
     ? {
-        values: state.form.registNewListInput.values
+        values: state.form.registNewInput.values
     }
     : {};
     return {

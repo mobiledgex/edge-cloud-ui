@@ -1,28 +1,12 @@
 import React, { Fragment } from "react";
 import {Button, Form, Item, Message, List, Grid, Card, Header, Image, Input} from "semantic-ui-react";
-import {Field, reduxForm, initialize, reset} from "redux-form";
+import {Field, reduxForm, initialize, reset, stopSubmit} from "redux-form";
 import MaterialIcon from "../sites/siteFour_page_createOrga";
 import './styles.css';
 
 const validate = values => {
     const errors = {}
-    if (!values.username) {
-        errors.username = 'Required'
-    } else if (values.username.length > 15) {
-        errors.username = 'Must be 15 characters or less'
-    }
-    if (!values.email) {
-        errors.email = 'Required'
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-        errors.email = 'Invalid email address'
-    }
-    if (!values.age) {
-        errors.age = 'Required'
-    } else if (isNaN(Number(values.age))) {
-        errors.age = 'Must be a number'
-    } else if (Number(values.age) < 18) {
-        errors.age = 'Sorry, you must be at least 18 years old'
-    }
+    console.log("validateaaa",values)
     if (!values.type) {
         errors.type = 'Required'
     }
@@ -34,6 +18,8 @@ const validate = values => {
     }
     if (!values.phone) {
         errors.phone = 'Required'
+    }else if (!/^[\+]?[(]?[0-9]{3}[)]?[-]?[0-9]{3}[-]?[0-9]{4,6}$/im.test(values.phone)) {
+        errors.phone = 'Invalid phone Number. (ex) (123)456-7890, 123-456-7890, 1234567890, +121234567890'
     }
     return errors
 }
@@ -198,11 +184,14 @@ class SiteFourOrgaOne extends React.Component {
     }
 
     componentDidMount() {
-        this.handleInitialize();
+        //this.handleInitialize();
     }
 
     componentWillReceiveProps(nextProps) {
         console.log("twoProps",nextProps)
+        if(this.props.toggleSubmit) {
+            this.props.dispatch(stopSubmit('orgaStepOne',{}))
+        }
     }
 
 
@@ -210,13 +199,10 @@ class SiteFourOrgaOne extends React.Component {
     onHandleSubmit = () => {
         console.log("ADDSUER@@@@")
         this.props.handleSubmit();
-        setTimeout(() => {
-            this.props.dispatch(initialize('orgaStepOne', {
-                submitSucceeded: false
-            }))
-            //this.props.dispatch(reset('orgaStepOne'))
-        },0);
-
+        // setTimeout(() => {
+        //     this.props.dispatch(stopSubmit('orgaStepOne'))
+        // },0);
+        //this.props.dispatch(stopSubmit('orgaStepOne',{}))
     }
 
     cancelClick = (e) => {

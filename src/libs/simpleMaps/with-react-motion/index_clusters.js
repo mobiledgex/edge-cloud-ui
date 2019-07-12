@@ -297,6 +297,7 @@ class ClustersMap extends Component {
         ReactTooltip.hide(this.tooltipref)
     }
     handleMoveMk = (marker, evt) => {
+
         const x = evt.clientX
         const y = evt.clientY + window.pageYOffset
         let names = [];
@@ -671,11 +672,11 @@ const MarkerComponent = (self, city, i, config) => (
                     <feComposite in2="firstfilter" operator="over"></feComposite>
                 </filter>
             </defs>
-            <path filter="url(#innershadow)" className={config.cName} d={paths[config.path]}>
+            <path filter="url(#innershadow)" className={config.cName} d={paths[config.path]} ref={ref => self.circle = ref}
+                  data-tip='tooltip' data-for='happyFace'>
             </path>
         </g>
         <text textAnchor="middle" y={8} className="marker_value"
-              ref={ref => self.circle = ref} data-tip='tooltip' data-for='happyFace'
               style={{fontSize: 24}}>
             {city.cost}
         </text>

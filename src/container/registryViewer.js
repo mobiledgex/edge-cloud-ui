@@ -47,7 +47,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getOptionData={props.regionf} flavorData={props.devoptionsf} getUserRole={props.userrole} gotoUrl={props.gotoUrl} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getOptionData={props.regionf} flavorData={props.devoptionsf} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'VM Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
 ]
@@ -71,8 +71,9 @@ class RegistryViewer extends React.Component {
             selectUse:null,
             resultData:null,
             devoptionsf:[],
-            loopCancel:true,
-            imageTypeValue:''
+            imageTypeValue:'',
+            toggleSubmit:false,
+            validateError:[]
         };
         this.keysData = [
             {
@@ -140,7 +141,7 @@ class RegistryViewer extends React.Component {
     receiveResult = (result, body) => {
         console.log('result creat app ...', result.data.error, body)
         _self.props.handleLoadingSpinner(false);
-        this.setState({loopCancel:true});
+        this.setState({toggleSubmit:false})
         if(result.data.error) {
             this.props.handleAlertInfo('error',result.data.error)
         } else {
@@ -189,7 +190,7 @@ class RegistryViewer extends React.Component {
                 <div className="round_panel" key={i} style={{ width:width, minWidth:670, height:height, display:'flex', flexDirection:'column'}} >
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
 
-                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} />
+                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} />
 
                     </div>
                 </div>
@@ -289,11 +290,6 @@ class RegistryViewer extends React.Component {
         _self.setState({devoptionsf: arr});
     }
 
-    loadingBox = (serviceBody) => {
-        this.setState({loopCancel:false});
-        _self.props.handleLoadingSpinner(true);
-        services.createNewApp('CreateApp', serviceBody, _self.receiveResult)
-    }
 
     componentDidMount() {
 
@@ -321,7 +317,7 @@ class RegistryViewer extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('nextPropsapp@@',nextProps)
+        console.log('nextPropsapp@@',nextProps.formApps)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -335,25 +331,42 @@ class RegistryViewer extends React.Component {
         ///////
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        this.setState({toggleSubmit:false});
+        console.log("submitValues2submitValues2",nextProps.submitValues,"::",nextProps.formApps.submitSucceeded,"::",!this.state.toggleSubmit)
+        if(nextProps.submitValues && !this.state.toggleSubmit) {
+            
+            const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','ImagePath','DefaultFlavor','Ports_0','Portsselect_0']
+            console.log("validateValuevalidateValue",nextProps.validateValue)
+            let error = [];
+            apps.map((item) => {
+                if(!nextProps.validateValue[item]) {
+                    error.push(item)
+                }
+            })
 
-        if(nextProps.submitValues) {
-            let serviceBody = {}
-            console.log('submit on...', nextProps.submitValues)
-            //TODO: // 20190430 add spinner...(loading)
-            serviceBody = {
-                "token":store.userToken,
-                "params": nextProps.submitValues
+            if(nextProps.formApps.submitSucceeded && error.length == 0){
+                let serviceBody = {}
+                this.setState({toggleSubmit:true,validateError:error});
+                this.props.handleLoadingSpinner(true);
+                //TODO: // 20190430 add spinner...(loading)
+                serviceBody = {
+                    "token":store.userToken,
+                    "params": nextProps.submitValues
+                }
+                services.createNewApp('CreateApp', serviceBody, this.receiveResult)
+            } else {
+                this.setState({validateError:error,toggleSubmit:true})
             }
-            if(this.state.loopCancel) this.loadingBox(serviceBody);
             
         }
-        if(nextProps.selectedDeploymentType) {
+
+        if(nextProps.formApps.values) {
             let assObj = Object.assign([], this.keysData);
-            if(nextProps.selectedDeploymentType == "kubernetes" || nextProps.selectedDeploymentType == "docker") {
+            if(nextProps.formApps.values.DeploymentType == "kubernetes" || nextProps.formApps.values.DeploymentType == "docker") {
                 assObj[0].ImageType.items = 'ImageTypeDocker';
                 itData = 'ImageTypeDocker'
                 this.setState({imageTypeValue:'ImageTypeDocker'});
-            } else if(nextProps.selectedDeploymentType == "vm") {
+            } else if(nextProps.formApps.values.DeploymentType == "vm") {
                 assObj[0].ImageType.items = 'ImageTypeQcow';
                 this.setState({imageTypeValue:'ImageTypeQcow'})
                 itData = 'ImageTypeQcow'
@@ -441,15 +454,20 @@ const mapStateToProps = (state) => {
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
     let selectedDeploymentType = null;
+    let validateValue = null;
     if(state.form.createAppFormDefault) {
-        if(state.form.createAppFormDefault.values.DeploymentType !== "") {
-            selectedDeploymentType = state.form.createAppFormDefault.values.DeploymentType;
+        if(state.form.createAppFormDefault.value) {
+            if(state.form.createAppFormDefault.values.DeploymentType !== "") {
+                selectedDeploymentType = state.form.createAppFormDefault.values.DeploymentType;
+            }
         }
     }
+    
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
         console.log("state.form.createAppFormDefault.values@@",state.form.createAppFormDefault.values)
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
         submitVal = createFormat(enableValue)
+        validateValue = state.form.createAppFormDefault.values;
         console.log("submitVal@@@@",submitVal)
     }
     
@@ -459,6 +477,12 @@ const mapStateToProps = (state) => {
         }
         : {};
 
+    let formApps= state.form.createAppFormDefault
+        ? {
+            values: state.form.createAppFormDefault.values,
+            submitSucceeded: state.form.createAppFormDefault.submitSucceeded
+        }
+        : {};
     return {
         accountInfo,
         dimmInfo,
@@ -469,7 +493,9 @@ const mapStateToProps = (state) => {
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         computeItem : state.computeItem?state.computeItem.item:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
-        selectedDeploymentType : selectedDeploymentType
+        selectedDeploymentType : selectedDeploymentType,
+        validateValue:validateValue,
+        formApps : formApps
     }
     
     // return (dimm) ? {

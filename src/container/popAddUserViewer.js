@@ -22,7 +22,8 @@ class PopAddUserViewer extends React.Component {
             userName:null,
             typeOperator:'',
             organization:'',
-            successReset:false
+            successReset:false,
+            toggleSubmit:false
         }
         _self = this;
     }
@@ -31,24 +32,26 @@ class PopAddUserViewer extends React.Component {
         //nextProps.data['Type'].substring(0,1).toUpperCase() + nextProps.data['Type'].substring(1)
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('regist new item -- ', nextProps)
+        console.log('regist new item popadduser -- ', nextProps.stepTwo)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(nextProps.open) {
             this.setState({open:nextProps.open, dimmer:nextProps.dimmer, typeOperator:(nextProps.data['Type'].substring(0,1).toUpperCase() + nextProps.data['Type'].substring(1)), organization:nextProps.data['Organization']});
         }
-        if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded) {
-                console.log('stream form siteFour_page_createOrga.js  git to a role view ... ', nextProps, nextProps.stepTwo.values)
-                //{username: "inkikim", orgName: "bicinkiOrg", orgType: "Developer", selectRole: "Manager"}
-                let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
-                let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
-                let _role = nextProps.stepTwo.values && nextProps.stepTwo.values.orgType+nextProps.stepTwo.values.selectRole || '';
-                serviceOrganiz.organize('addUserRole',
-                    {
-                            username:_username,
-                            org:_org,
-                            role:_role,
-                            token:store.userToken
-                    }, this.resultGiveToRole, this)
+        if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded && !this.state.toggleSubmit) {
+            this.props.handleLoadingSpinner(true);
+            this.setState({toggleSubmit:true});
+            console.log('stream form siteFour_page_createOrga.js  git to a role view ... ', nextProps, nextProps.stepTwo.values)
+            //{username: "inkikim", orgName: "bicinkiOrg", orgType: "Developer", selectRole: "Manager"}
+            let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
+            let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
+            let _role = nextProps.stepTwo.values && nextProps.stepTwo.values.orgType+nextProps.stepTwo.values.selectRole || '';
+            serviceOrganiz.organize('addUserRole',
+                {
+                        username:_username,
+                        org:_org,
+                        role:_role,
+                        token:store.userToken
+                }, this.resultGiveToRole, this)
             
         }
     }
@@ -56,21 +59,13 @@ class PopAddUserViewer extends React.Component {
     resultGiveToRole = (result,resource, self, body) => {
         console.log("receive 3== ", result, resource, self, body)
         _self.props.handleLoadingSpinner(false);
+        this.setState({toggleSubmit:false})
         if(result.data.error) {
-            Alert.error(String(result.data.error), {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error',String(result.data.error))
             this.setState({successReset:true});
             //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         } else {
-
-            Alert.success('User '+body.username+' added to organization '+body.org+' successfully', {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('success','User '+body.username+' added to organization '+body.org+' successfully')
             //popup close
         }
     }
@@ -86,7 +81,7 @@ class PopAddUserViewer extends React.Component {
     }
 
     setForms = () => (
-        <SiteFourOrgaAddUser onSubmit={() => console.log('Form was submitted')} org={this.state.organization} type={this.state.typeOperator} successReset={this.state.successReset}></SiteFourOrgaAddUser>
+        <SiteFourOrgaAddUser onSubmit={() => console.log('Form was submitted')} org={this.state.organization} type={this.state.typeOperator} successReset={this.state.successReset} toggleSubmit={this.state.toggleSubmit}></SiteFourOrgaAddUser>
     )
 
 
@@ -134,6 +129,7 @@ class PopAddUserViewer extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+    console.log("popadduserstate@@",state)
     let formStepAdduser= state.form.orgaStepAddUser
     ? {
         values: state.form.orgaStepAddUser.values,
@@ -148,7 +144,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

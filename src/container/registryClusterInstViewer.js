@@ -44,7 +44,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'Cluster Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'Cluster Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
@@ -74,6 +74,10 @@ class RegistryClusterInstViewer extends React.Component {
             clustinst:[],
             apps:[],
             clusterInstCreate:true,
+            toggleSubmit:false,
+            validateError:[],
+            regSuccess:true,
+            errorClose:false,
             keysData:[
                 {
                     'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
@@ -108,7 +112,6 @@ class RegistryClusterInstViewer extends React.Component {
 
 
         };
-        this.reqCount = 0;
 
     }
 
@@ -159,7 +162,7 @@ class RegistryClusterInstViewer extends React.Component {
             (i === 0)?
                 <div className="round_panel" key={i} style={{ width:width, minWidth:670, height:height, display:'flex', flexDirection:'column'}} >
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
-                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} />
+                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} />
                     </div>
                 </div>
                 :
@@ -198,12 +201,11 @@ class RegistryClusterInstViewer extends React.Component {
         console.log('receive data ..', result.data, body)
 
         let paseData = result.data;
-        // if(paseData.error) {
-        //     this.reqCount = 0;
-        //     this.setState({clusterInstCreate:false});
-        //     this.props.handleLoadingSpinner(false);
-        //     this.props.handleAlertInfo('error',paseData.error)
-        // }
+        if(paseData.error && !this.state.errorClose) {
+            this.setState({clusterInstCreate:false})
+            this.props.handleLoadingSpinner(false);
+            this.props.handleAlertInfo('error',paseData.error)
+        }
 
         // if(paseData.message) {
         //     Alert.error(paseData.message, {
@@ -261,24 +263,34 @@ class RegistryClusterInstViewer extends React.Component {
         }
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
-        let serviceBody = {};
-
-        if(nextProps.submitValues && nextProps.submitSucceeded && this.reqCount === 0) {
-            console.log('submit on...', nextProps.submitValues)
-            //this.props.handleCreatingSpinner(true);
-            this.props.handleLoadingSpinner(true);
-            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            serviceBody = {params:createFormat(nextProps.submitValues), token:store.userToken}
-            service.createNewClusterInst('CreateClusterInst',serviceBody, this.receiveSubmit)
-            setTimeout(() => {
-                this.props.handleLoadingSpinner(false);
-                if(this.state.clusterInstCreate) {
-                    this.props.gotoUrl();
-                }
-            }, 3000)
+        this.setState({toggleSubmit:false});
+        console.log("clusternextProps.validateValue",nextProps.validateValue)
+        if(nextProps.submitValues && !this.state.toggleSubmit) {
             
-            this.reqCount = 1;
+            const cluster = ['Region','ClusterName','OrganizationName','Operator','Cloudlet','DeploymentType','Flavor'];
+            console.log("validateValuevalidateValue",nextProps.validateValue,":::",nextProps.formClusterInst.submitSucceeded)
+            let error = [];
+            cluster.map((item) => {
+                if(!nextProps.validateValue[item]) {
+                    error.push(item)
+                }
+            })
+
+            if(nextProps.formClusterInst.submitSucceeded && error.length == 0){
+                this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
+                this.props.handleLoadingSpinner(true);
+                service.createNewClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
+                setTimeout(() => {
+                    if(this.state.clusterInstCreate){
+                        this.props.handleLoadingSpinner(false);
+                        this.props.gotoUrl();
+                        this.setState({errorClose:true})
+                    }
+                }, 3000)
+            } else {
+                this.setState({validateError:error,toggleSubmit:true})
+            }
+            
         }
 
         /************
@@ -361,7 +373,7 @@ const createFormat = (data) => (
                         },
                         "developer":data['OrganizationName']
                     },
-                "deploymentType":data['DeploymentType'],
+                "deployment":data['DeploymentType'],
                 "flavor":{"name":data['Flavor']},
                 "ip_access":parseInt(getInteger(data['IpAccess'])),
                 "num_masters":parseInt(data['NumberOfMaster']),
@@ -383,7 +395,7 @@ const mapStateToProps = (state) => {
     let selectedOperator = null;
     let selectedApp = null;
     let flavors = null;
-    let submitSucceeded = null;
+    let validateValue = null;
 
     if(state.form.createAppFormDefault) {
         if(state.form.createAppFormDefault.values.Region !== "") {
@@ -402,11 +414,15 @@ const mapStateToProps = (state) => {
         //     selectedApp = state.form.createAppFormDefault.values.AppName;
         // }
 
-        submitSucceeded = state.form.createAppFormDefault.submitSucceeded;
-        if(state.form.createAppFormDefault.values && submitSucceeded) {
-            submitVal = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
-        } else {
-            submitVal = null;
+        if(state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
+            let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
+            console.log("enableValueenableValueenableValue222ss",enableValue)
+            if(enableValue.DeploymentType === "docker"){
+                enableValue.NumberOfMaster = 0;
+                enableValue.NumberOfNode = 0;
+            }
+            submitVal = createFormat(enableValue);
+            validateValue = state.form.createAppFormDefault.values;
         }
     }
 
@@ -417,11 +433,16 @@ const mapStateToProps = (state) => {
         }
         : {};
 
+    let formClusterInst= state.form.createAppFormDefault
+        ? {
+            values: state.form.createAppFormDefault.values,
+            submitSucceeded: state.form.createAppFormDefault.submitSucceeded
+        }
+        : {};
 
     return {
         accountInfo,
         dimmInfo,
-        submitSucceeded,
         itemLabel: state.computeItem.item,
         userToken : (state.user.userToken) ? state.userToken: null,
         submitValues: submitVal,
@@ -429,7 +450,8 @@ const mapStateToProps = (state) => {
         flavors: (state.showFlavor) ? state.showFlavor.flavor : null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
-
+        validateValue:validateValue,
+        formClusterInst : formClusterInst
     }
     
     // return (dimm) ? {

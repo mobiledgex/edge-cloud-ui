@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import RGL, { WidthProvider } from "react-grid-layout";
 import ContainerDimensions from 'react-container-dimensions';
 import Alert from "react-s-alert";
+import * as moment from 'moment';
 import * as actions from '../actions';
 import SelectFromTo from '../components/selectFromTo';
 import RegistNewItem from './registNewItem';
@@ -18,6 +19,7 @@ import PopDetailViewer from './popDetailViewer';
 import * as computeService from '../services/service_compute_service';
 import MaterialIcon from 'material-icons-react';
 import ReactJson from 'react-json-view'
+
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -39,17 +41,17 @@ const override = {
     borderColor: 'red'
 }
 
-const MyCustomContentTemplate = (item) => {
-    console.log("mycuster@@",item)
+// const MyCustomContentTemplate = (item) => {
+//     console.log("mycuster@@",item)
     
-    return (
-        <div className='ProgressBox'>
-            <VerticalLinearStepper style={{width:'100%'}} item={item} />
-            {/* <button className="customButton" onClick={handleConfirm.bind(this)}>Confirm</button> */}
-            <span className='s-alert-close'></span>
-        </div>
-    );
-}
+//     return (
+//         <div className='ProgressBox'>
+//             <VerticalLinearStepper item={item} />
+//             {/* <button className="customButton" onClick={handleConfirm.bind(this)}>Confirm</button> */}
+//             <span className='s-alert-close' ></span>
+//         </div>
+//     );
+// }
 
 const ContainerOne = (props) => (
 
@@ -79,8 +81,8 @@ class MapWithListView extends React.Component {
             tooltipMsg:'No Message',
             tooltipVisible: false,
             detailViewData:null,
-            cInstStatus:{},
-            noData:false
+            noData:false,
+            updateData:{},
         };
 
         _self = this;
@@ -281,58 +283,48 @@ class MapWithListView extends React.Component {
     jsonView = (jsonObj) => (
         <ReactJson src={jsonObj} {...this.jsonViewProps} />
     )
-    stateView(item) {
-        this.setState({cInstStatus:item})
-        //Call ClusterInst Show
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        console.log("dddddd@@",item)
-        if(this.props.siteId == 'ClusterInst') {
-            computeService.getMCService('ShowClusterInst',{token:store.userToken, region:item.Region}, _self.receiveResultClusterInst)
-        } else if(this.props.siteId == 'appinst') {
-            computeService.getMCService('ShowAppInst',{token:store.userToken, region:item.Region}, _self.receiveResultAppInst)
-        }
-    }
-
-    receiveResultClusterInst = (result) => {
-        console.log("result@@@@",result,this.state.cInstStatus)
-        let cData = null;
-        result.map((item,i) => {
-            if(item.ClusterName == this.state.cInstStatus.ClusterName) {
-                cData = item
-            }
-        })
+    stateView(_item) {
+        console.log("dddddd@@",_item)
         Alert.closeAll();
-        console.log("cData@@@",cData)
-        if(cData.Status.task_number === 1){
-            localStorage.setItem('clusterinstCreateStep', cData.Status.task_name)
+        if(_item.Status.task_number === 1){
+            localStorage.setItem('clusterinstCreateStep', _item.Status.task_name)
         }
-        Alert.info(<MyCustomContentTemplate item={cData} site={this.props.siteId}/>, {
+
+        Alert.info(
+            <div className='ProgressBox'>
+                <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}   />
+            </div>, {
             position: 'top-right', timeout: 'none', limit:1,
-            customFields: {
-                stateLevel: 1
-            }
+            //onShow: this.progressShow('clusterInst'),
+            //onClose: this.props.dataRefresh
         })
     }
 
-    receiveResultAppInst = (result) => {
-        console.log("result@@@@",result,this.state.cInstStatus)
-        let cData = null;
-        result.map((item,i) => {
-            if(item.AppName == this.state.cInstStatus.AppName) {
-                cData = item
-            }
-        })
+    setAlertRefresh = () => {
+        this.props.dataRefresh();
         Alert.closeAll();
-        console.log("cData@@@",cData)
-        if(cData.Status.task_number === 1){
-            localStorage.setItem('clusterinstCreateStep', cData.Status.task_name)
+    }
+    makeUTC = (time) => (
+        moment.unix( time.replace('seconds : ', '') ).format('YYYY-MM-DD HH:mm:ss')
+    )
+    compareDate = (date) => {
+
+        let isNew = false;
+        let darray = [];
+        console.log('pure date........... ..', date)
+        if(date) {
+            let formatDate = this.makeUTC(date);
+
+            let fromNow = moment(formatDate).startOf('day').fromNow();
+            console.log('from now. ', fromNow)
+            darray = fromNow.split(' ')
+            if(parseInt(darray[0]) <= 1 && darray[1] === 'days') isNew = true;
+            console.log('is new... ', 'date=', formatDate, 'isNew =',isNew, parseInt(darray[0]))
+        } else {
+
         }
-        Alert.info(<MyCustomContentTemplate item={cData} site={this.props.siteId}/>, {
-            position: 'top-right', timeout: 'none', limit:1,
-            customFields: {
-                stateLevel: 1
-            }
-        })
+
+        return {new:isNew, days:darray[0]};
     }
 
     TableExampleVeryBasic = (w, h, headL, hidden) => (
@@ -355,6 +347,13 @@ class MapWithListView extends React.Component {
                                         <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                             <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
+                                        </Table.Cell>
+                                    :
+                                    (value === 'AppName')? //
+                                        <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                            <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace' style={{display:'flex', justifyContent:'row'}}>
+                                                {this.compareDate(item['Created']).new ? <div className="userNewMark">{`New`}</div> : null} {String(item[value])}
+                                            </div>
                                         </Table.Cell>
                                     :
                                     (value === 'Mapped_ports')?
@@ -453,7 +452,7 @@ class MapWithListView extends React.Component {
             this.setState({ dimmer:'blurring', open: true })
         }
         if(nextProps.devData.length) {
-            this.setState({dummyData:nextProps.devData})
+            this.setState({dummyData:nextProps.devData}) 
         }else {
             this.checkLengthData();
         }

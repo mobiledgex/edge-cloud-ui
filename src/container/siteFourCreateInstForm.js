@@ -82,7 +82,7 @@ const cloudletMap = (props, type) => (
 
         :
         <EditMap parentProps={{devData:props.cloudletData}}></EditMap>}
-        <Form>
+        {/* <Form>
             <Grid style={{margin:'0 -1rem'}}>
                 <Grid.Row columns={2}>
                     <Grid.Column>
@@ -103,7 +103,7 @@ const cloudletMap = (props, type) => (
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-        </Form>
+        </Form> */}
         {/*<Grid>*/}
         {/*    <Grid.Row columns={2}>*/}
         {/*        <Grid.Column>*/}
@@ -264,11 +264,9 @@ class SiteFourCreateInstForm extends React.PureComponent {
                         _self.resetDevData(operatorKeys, 'Operator');
                     } else {
                         _self.resetDevData(operatorKeys, 'Operator');
-                        this.props.handleAlertInfo('error','There is no operators in the Region')
                     }
                 } else {
                     _self.resetDevData(flavorKeys, 'Flavor');
-                    this.props.handleAlertInfo('error','There is no flavors in the Region')
                 }
 
             }, 500)
@@ -300,11 +298,11 @@ class SiteFourCreateInstForm extends React.PureComponent {
                         )
                         _self.resetDevData(cloudletKeys, 'Cloudlet');
                     } else {
-                        this.props.handleAlertInfo('error','There is no Cloudlets in the Region')
+                        //this.props.handleAlertInfo('error','There is no Cloudlets in the Region')
                     }
 
                 } else {
-                    this.props.handleAlertInfo('error','There is no operators in')
+                    //this.props.handleAlertInfo('error','There is no operators in')
                 }
             }, 500)
             _self.setState({activeIndex:0})
@@ -415,7 +413,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
             <Grid>
                 <Grid.Row columns={2}>
                     <Grid.Column width={8}>
-                        <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole} gotoUrl={this.gotoUrl} clusterHide={this.clusterHide} onSubmit={() => console.log('submit form')} onChangeState={this.onChangeFormState}></SiteFourCreateFormDefault>
+                        <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole} gotoUrl={this.gotoUrl} clusterHide={this.clusterHide} toggleSubmit={this.props.toggleSubmit} validError={this.props.validError} onSubmit={() => console.log('submit form')} onChangeState={this.onChangeFormState}></SiteFourCreateFormDefault>
                     </Grid.Column>
                     <Grid.Column width={8}>
                         <Tab activeIndex={activeIndex} clusterName={clusterName} onTabChange={this.handleTabChange} panes={panes}{...this.state}></Tab>

@@ -39,7 +39,7 @@ class SiteFourPageClusterInst extends React.Component {
         this.loadCount = 0;
 
         this.headerLayout = [1,2,2,2,2,1,2,2,1,2];
-        this.hiddenKeys = ['Status']
+        this.hiddenKeys = ['Status','Deployment']
 
     }
 
@@ -69,7 +69,7 @@ class SiteFourPageClusterInst extends React.Component {
         this.setState({liveComp:true})
     }
     componentDidMount() {
-        console.log('info.. ', this.childFirst, this.childSecond)
+        console.log('infoCluster1.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         // console.log('info.. store == ', store)
         if(store.userToken) {
@@ -83,7 +83,7 @@ class SiteFourPageClusterInst extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        console.log("nextprprprp",nextProps)
+        console.log("infoCluster2",nextProps)
         // if(!this.state.liveComp) {
         //     return;
         // }
@@ -145,19 +145,29 @@ class SiteFourPageClusterInst extends React.Component {
         _self.loadCount ++;
     }
     countJoin() {
+        console.log("countJoincountJoin",_self.loadCount + 1,":::",rgn.length * 2)
         if(_self.loadCount + 1 === rgn.length * 2) {
             let clusterInst = this.state.clusterInstData;
             let cloudlet = this.state.cloudletData;
-            let arr =[]
+            let arr =[];
+            let duplicate = false;
             clusterInst.map((itemCinst,i) => {
                 cloudlet.map((itemClet,j) => {
-                    console.log('cloudletName is == ',itemCinst.Cloudlet, ":", itemClet.CloudletName)
+                    
                     if(itemCinst.Cloudlet === itemClet.CloudletName) {
+                        console.log('cloudletName is == ',itemCinst.Cloudlet, ":", itemClet.CloudletName)
                         itemCinst.CloudletLocation = itemClet.CloudletLocation;
                     }
                 })
-                if(itemCinst.Cloudlet !== "") arr.push(itemCinst)
+                console.log("cloudletNamedevDatadevData2",arr)
+                // arr.map((item) => {
+                //     if(item.ClusterName == itemCinst.ClusterName) {
+                //         duplicate = true;
+                //     }   
+                // })
+                if(itemCinst.Cloudlet !== "" && !duplicate) arr.push(itemCinst)
             })
+            console.log("cloudletNamedevDatadevData3",arr)
             _self.setState({devData:arr, liveComp:true})
 
             _self.loadCount = 0;
@@ -167,6 +177,8 @@ class SiteFourPageClusterInst extends React.Component {
     }
     
     getDataDeveloper = (region) => {
+        console.log("changeRegion@@",region)
+        _self.loadCount = 0;
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
         //TODO: region에 대한 데이터를  DB에서 가져와야 함.
@@ -174,14 +186,18 @@ class SiteFourPageClusterInst extends React.Component {
         let serviceBody = {}
         _self.setState({devData:[], cloudletData:[], clusterInstData:[]})
         if(region !== 'All'){
-            rgn = [region]
-        } 
+            rgn = [region];
+        } else {
+            rgn = ['US','EU'];
+        }
 
-        if(localStorage.userRole == 'AdminManager') {
+        if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
                 // All show clusterInst
+                console.log("changeRegionitem",item)
                 services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
                 services.getMCService('ShowClusterInst',{token:store.userToken, region:item}, _self.receiveResultClusterInst)
+                // setTimeout(()=>services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet), 0);
             })
         } else {
             rgn.map((item) => {
@@ -197,8 +213,9 @@ class SiteFourPageClusterInst extends React.Component {
                     }
                 }
                 // org별 show clusterInst
+                services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
                 services.getMCService('ShowClusterInsts',serviceBody, _self.receiveResultClusterInst)
-                setTimeout(()=>services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet), 500);
+                //setTimeout(()=>services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet), 0);
             })
         }
 

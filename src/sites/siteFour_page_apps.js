@@ -115,15 +115,21 @@ class SiteFourPageApps extends React.Component {
         this.loadCount ++;
     }
     countJoin() {
-        console.log("tteeeesss@@@",_self.loadCount+1)
-        if(_self.loadCount + 1 === rgn.length*2) {
+        console.log("tteeeesss@@@",_self.loadCount+1,":::",rgn.length)
+        if(_self.loadCount + 1 === rgn.length) {
             console.log("countjoin@@@",this.state.devData)
             let apps = this.state.devData;
-            
+            let duplicate = false;
             let arr =[]
             apps.map((itemCinst,i) => {
-                arr.push(itemCinst)
+                arr.map((item) => {
+                    if(item.AppName == itemCinst.AppName) {
+                        duplicate = true;
+                    }   
+                })
+                if(!duplicate) arr.push(itemCinst)
             })
+            
             _self.setState({devData:arr})
 
             _self.loadCount = 0;
@@ -133,15 +139,19 @@ class SiteFourPageApps extends React.Component {
     getDataDeveloper = (token, region) => {
 
         let serviceBody = {}
+        _self.loadCount = 0;
         this.setState({devData:[]})
         if(region !== 'All'){
             rgn = [region]
-        } 
-        console.log("eeeee@@",localStorage.selectOrg)
+        } else {
+            rgn = ['US','EU'];
+        }
+
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
                 // All show app
-                services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)
+                // services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)
+                setTimeout(() => {services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)}, 0)
             })
         } else {
             rgn.map((item) => {
@@ -157,7 +167,7 @@ class SiteFourPageApps extends React.Component {
                     }
                 }
                 // org별 show app
-                services.getMCService('ShowApp',serviceBody, _self.receiveResult)
+                setTimeout(() => {services.getMCService('ShowApp',serviceBody, _self.receiveResult)}, 0)
             })
         }
         

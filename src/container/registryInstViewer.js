@@ -13,7 +13,7 @@ import _ from "lodash";
 import * as reducer from '../utils'
 import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
-import SiteFourCreateFormAppDefault from "./siteFourCreateFormAppDefault";
+import SiteFourCreateFormAppInstDefault from "./siteFourCreateFormAppInstDefault";
 import Alert from "react-s-alert";
 import {withRouter} from "react-router-dom";
 const ReactGridLayout = WidthProvider(RGL);
@@ -44,7 +44,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppInstDefault data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
@@ -71,8 +71,9 @@ class RegistryInstViewer extends React.Component {
             operators:[],
             clustinst:[],
             apps:[],
-            loopCancel:true,
-            appInstCreate:true,
+            toggleSubmit:false,
+            validateError:[],
+            regSuccess:true,
             keysData:[
                 {
                     'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
@@ -82,7 +83,7 @@ class RegistryInstViewer extends React.Component {
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Company or Organization name of the operator', active:true, items:[null]},
                     'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:'Name of the cloudlet', active:true, items:[null]},
                     'AutoClusterInst':{label:'Auto Cluster Instance', type:'RenderCheckbox', necessary:false, tip:'When checked, this will inherit settings from application settings'},
-                    'ClusterInst':{label:'Cluster Instance', type:'RenderSelect', necessary:true,
+                    'ClusterInst':{label:'Cluster Instance', type:'RenderClusterDisabled', necessary:true,
                         tip:'When selecting cluster inst, default flavor and ip access specified in app setting gets overridden',
                         active:true, items:[null]},
                 },
@@ -98,7 +99,7 @@ class RegistryInstViewer extends React.Component {
                     'Version':'',
                     'Operator':'',
                     'Cloudlet':'',
-                    'AutoClusterInst':'',
+                    'AutoClusterInst':false,
                     'ClusterInst':'',
                 }
             ]
@@ -181,17 +182,12 @@ class RegistryInstViewer extends React.Component {
     receiveResult = (result, body) => {
         console.log('result creat appInst ...', result.data.error, body)
         _self.props.handleLoadingSpinner(false);
-        this.setState({loopCancel:true});
         if(result.data.error) {
-            this.setState({appInstCreate:false});
+            this.setState({regSuccess:false});
             this.props.handleAlertInfo('error',result.data.error)
             return;
         } else {
             this.props.handleAlertInfo('success','Your application instance created successfully')
-            setTimeout(() => {
-                this.gotoUrl();
-            }, 1000)
-            //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=6'})
         }
     }
     
@@ -235,7 +231,7 @@ class RegistryInstViewer extends React.Component {
                 <div className="round_panel" key={i} style={{ width:width, minWidth:670, height:height, display:'flex', flexDirection:'column'}} >
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
 
-                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} />
+                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} />
 
                     </div>
                 </div>
@@ -261,19 +257,6 @@ class RegistryInstViewer extends React.Component {
         console.log('changed layout = ', JSON.stringify(layout))
     }
 
-    loadingBox = (params,tokens) => {
-        console.log("loadingbox in#@")
-        this.setState({loopCancel:false});
-        _self.props.handleLoadingSpinner(true);
-        // services.createNewApp('CreateApp', serviceBody, _self.receiveResult)
-        services.createNewAppInst('CreateAppInst', {params:params, token:tokens}, _self.receiveResult)
-        setTimeout(() => {
-            this.props.handleLoadingSpinner(false);
-            if(this.state.appInstCreate) {
-                this.gotoUrl();
-            }
-        }, 3000)
-    }
 
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -292,7 +275,7 @@ class RegistryInstViewer extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log("enenennen",nextProps,this.props)
+        console.log("enenennen",nextProps.formAppInst)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -303,11 +286,37 @@ class RegistryInstViewer extends React.Component {
         }
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        this.setState({toggleSubmit:false});
+        console.log("submitSucceededsubmitSucceeded2",nextProps.formAppInst.values)
+        if(nextProps.submitValues && !this.state.toggleSubmit) {
+            
+            const apps = ['Region','DeveloperName','AppName','Version','Operator','Cloudlet','ClusterInst']
+            if(nextProps.formAppInst.values.AutoClusterInst) {
+                apps.pop();
+                console.log("apps.pop();apps.pop();",apps)
+            }
+            console.log("validateValuevalidateValue",nextProps.validateValue,":::",nextProps.formAppInst.submitSucceeded)
+            let error = [];
+            apps.map((item) => {
+                if(!nextProps.validateValue[item]) {
+                    error.push(item)
+                }
+            })
 
-        if(nextProps.submitValues) {
-            console.log('submit on...', nextProps.submitValues)
-            if(this.state.loopCancel) this.loadingBox(nextProps.submitValues,store.userToken);
-            // services.createNewAppInst('CreateAppInst', {params:nextProps.submitValues, token:store.userToken}, _self.receiveResult)
+            if(nextProps.formAppInst.submitSucceeded && error.length == 0){
+                this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
+                this.props.handleLoadingSpinner(true);
+                services.createNewAppInst('CreateAppInst', {params:nextProps.submitValues, token:store.userToken}, _self.receiveResult)
+                setTimeout(() => {
+                    if(this.state.regSuccess) {
+                        this.props.handleLoadingSpinner(false);
+                        this.gotoUrl();
+                    }
+                }, 4000)
+            } else {
+                this.setState({validateError:error,toggleSubmit:true})
+            }
+            
         }
 
         // if(nextProps.history.location.appdata) {
@@ -350,6 +359,15 @@ class RegistryInstViewer extends React.Component {
                 this.setState({keysData:assObj})
             }
         }
+
+
+        // if(nextProps.formAppInst.values) {
+        //     let assObj = Object.assign([], this.state.keysData);
+        //     console.log("statestateassObj",assObj)
+        //     if(nextProps.formAppInst.values.AutoClusterInst) {
+        //         assObj[0].ClusterInst.items = [];
+        //     }
+        // }
         
     }
 
@@ -435,6 +453,7 @@ const mapStateToProps = (state) => {
     let selectedCloudlet = null;
     let selectedOperator = null;
     let selectedApp = null;
+    let validateValue = null;
     // alert(JSON.stringify(state.form.createAppFormDefault))
 
     if(state.form.createAppFormDefault) {
@@ -454,7 +473,12 @@ const mapStateToProps = (state) => {
 
         if(state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
             let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
-            submitVal = createFormat(enableValue)
+            console.log("state.form.createAppFormDefault.valuessssss",enableValue)
+            if(state.form.createAppFormDefault.values.AutoClusterInst){
+                enableValue.ClusterInst = 'autocluster'+state.form.createAppFormDefault.values.AppName.replace(/(\s*)/g, "");
+            }
+            submitVal = createFormat(enableValue);
+            validateValue = state.form.createAppFormDefault.values;
         }
     }
 
@@ -462,6 +486,13 @@ const mapStateToProps = (state) => {
     let region = state.changeRegion
         ? {
             value: state.changeRegion.region
+        }
+        : {};
+        
+    let formAppInst= state.form.createAppFormDefault
+        ? {
+            values: state.form.createAppFormDefault.values,
+            submitSucceeded: state.form.createAppFormDefault.submitSucceeded
         }
         : {};
 
@@ -478,7 +509,9 @@ const mapStateToProps = (state) => {
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         submitData : state.form?state.form : null,
         userRole : state.showUserRole?state.showUserRole.role:null,
-        appLaunch : state.appLaunch?state.appLaunch.data:null
+        appLaunch : state.appLaunch?state.appLaunch.data:null,
+        validateValue:validateValue,
+        formAppInst : formAppInst
     }
     
     // return (dimm) ? {

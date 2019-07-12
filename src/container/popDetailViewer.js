@@ -24,7 +24,8 @@ export default class PopDetailViewer extends React.Component {
             dropdownValueFive:'',
             cloudletResult:null,
             appResult:null,
-            listOfDetail:null
+            listOfDetail:null,
+            propsData:''
         }
         _self = this;
     }
@@ -80,13 +81,14 @@ export default class PopDetailViewer extends React.Component {
                                 :String(nextProps.data[key])}
                             </div>
                         </Grid.Column>
+
                         <Divider vertical></Divider>
                     </Grid.Row>
                         :null
 
                 ))
             }
-            this.setState({listOfDetail:component})
+            this.setState({listOfDetail:component,propsData:nextProps.data})
         }
 
     }
@@ -113,14 +115,50 @@ export default class PopDetailViewer extends React.Component {
 
         return (
             <Modal size={'small'} open={this.state.open} dimmer={false}>
-                <Modal.Header>View Detail</Modal.Header>
+                <Modal.Header >View Detail</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
-                    <Grid divided style={{overflowY:'scroll'}}>
-                        {
-                            this.state.listOfDetail
+                        <Grid divided style={{overflowY:'scroll'}}>
+                            {
+                                this.state.listOfDetail
+                            }
+                        </Grid>
+                        {(this.props.siteId === 'Organization') ?
+                            <Grid>
+                                <Grid.Row>
+                                    <Grid.Column>
+                                        <div>
+                                            If your image is docker, please upload your image with your MobiledgeX
+                                            Account Credentials to our docker registry using the following docker
+                                            command.
+                                        </div>
+                                        <br></br>
+                                        <div>
+                                            {`$ docker login -u <username> docker.mobiledgex.net`}
+                                        </div>
+                                        <div>
+                                            {`$ docker tag <your application> docker.mobiledgex.net/` + this.state.propsData.Organization + `/images/<application name>:<version>`}
+                                        </div>
+                                        <div>
+                                            {`$ docker push docker.mobiledgex.net/` + this.state.propsData.Organization + `/images/<application name>:<version>`}
+                                        </div>
+                                        <div>
+                                            $ docker logout docker.mobiledgex.net
+                                        </div>
+                                        <br></br>
+                                        <div>
+                                            If you image is VM, please upload to our VM registry with your MobiledgeX
+                                            Account Credentials.
+                                        </div>
+                                        <div>
+                                            {`curl -u<username>:<password> -T <path_to_file> `}<span
+                                            style={{color: 'rgba(136,221,0,.9)'}}>{`"https://artifactory.mobiledgex.net/artifactory/mc-repo-` + this.state.propsData.Organization + `/<target_file_path>"`}</span>
+                                        </div>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                            :null
                         }
-                    </Grid>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>

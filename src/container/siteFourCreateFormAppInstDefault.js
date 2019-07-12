@@ -13,13 +13,17 @@ const makeOption =(options)=> (
     ))
 )
 
-const makeOptionNumber =(options)=> (
-    options.map((value,i) =>(
-        {key:i, text:value, value:i}
-    ))
-)
+const renderCheckbox = field => (
+    <Form.Checkbox toggle
+        style={{height:'33px', paddingTop:'8px'}}
+        checked={!!field.input.value}
+        name={field.input.name}
+        label={field.label}
+        onChange={(e, { checked }) => field.input.onChange(checked)}
+    />
+);
 
-const renderSelect = ({ input, label, options, placeholder, error}) => (
+const renderSelect = ({ input, label, options, placeholder, error }) => (
     <div>
         <Form.Select
             label={label}
@@ -33,32 +37,13 @@ const renderSelect = ({ input, label, options, placeholder, error}) => (
     </div>
 );
 
-const renderSelectNumber = field => (
-    <Form.Select
-        label={field.label}
-        name={field.input.name}
-        onChange={(e, { value }) => field.input.onChange(value)}
-        options={makeOptionNumber(field.options)}
-        placeholder={field.placeholder}
-        value={field.input.value}
-    />
-);
-
-const renderTextArea = field => (
-    <Form.TextArea
-        {...field.input}
-        label={field.label}
-        // placeholder={field.placeholder}
-    />
-);
-
-const renderInput = ({ input, placeholder, label, type, error}) => (
+const renderInput = ({ input, placeholder, label, type, error }) => (
     <div>
         <Form.Input
             {...input}
             type={type}
             label={label}
-            // placeholder={placeholder}
+            placeholder={placeholder}
         />
         {error && <span className="text-danger">{error}</span>}
     </div>
@@ -74,23 +59,13 @@ const renderInputDisabled = field => (
     />
 );
 
-const renderInputDpType = field => (
-    <Form.Input
-        {...field.input}
-        type={field.type}
-        label={field.label}
-        value={field.placeholder}
-        disabled
-    />
-);
-
 const style = {
     borderRadius: 0,
     opacity: 0.7,
     padding:'2em'
 }
 
-class SiteFourCreateFormAppDefault extends React.Component {
+class SiteFourCreateFormAppInstDefault extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -100,7 +75,8 @@ class SiteFourCreateFormAppDefault extends React.Component {
             fieldKeys:null,
             dataInit:false,
             portArray:['item'],
-            orgArr:[]
+            orgArr:[],
+            ClusterDisable:false
         };
 
     }
@@ -120,7 +96,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
 
     componentDidMount() {
-        console.log("this.props.data.data[0]",this.props.data.data[0])
         if(this.props.data && this.props.data.data.length){
             let keys = Object.keys(this.props.data.data[0])
             this.setState({data:this.props.data.data[0], regKeys:keys, fieldKeys:this.props.data.keys, pId:this.props.pId})
@@ -136,7 +111,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("SiteFourCreateFormAppDefault22 --> ",nextProps.validError)
+        console.log("SiteFourCreateFormAppInstDefault --> ",nextProps)
         if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
@@ -144,11 +119,10 @@ class SiteFourCreateFormAppDefault extends React.Component {
             if(this.props.toggleSubmit) {
                 this.props.dispatch(stopSubmit('createAppFormDefault',{}))
             }
-
-            // if(!this.state.dataInit){
-            //     this.handleInitialize(nextProps.data.data[0]);
-            //     this.setState({dataInit:true})
-            // }
+            if(!this.state.dataInit){
+                this.handleInitialize(nextProps.data.data[0]);
+                this.setState({dataInit:true})
+            }
         }
         
         
@@ -185,17 +159,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
         //this.props.dispatch(reset('createAppFormDefault'));
     }
 
-    AddPorts = (e) => {
-        e.preventDefault();
-        this.setState({portArray:this.state.portArray.concat('item')})
-    }
-    RemovePorts = (e) => {
-        let arr = this.state.portArray;
-        if(arr.length > 1) {
-            arr.pop()
-        }
-        this.setState({portArray:arr}); 
-    }
+
     receiveResult = (result) => {
         let arr = [];
         console.log("receive == ", result)
@@ -210,10 +174,15 @@ class SiteFourCreateFormAppDefault extends React.Component {
         e.preventDefault();
         this.props.gotoUrl()
     }
+
+    onHandleToggleChange = (e) => {
+        this.setState({ClusterDisable:e})
+    }
+    
     render (){
         const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
         const { data, regKeys, fieldKeys } = this.state;
-        console.log("data@fo@@22",this.props.validError,':::',regKeys)
+        console.log("data@fo@@",data, regKeys, fieldKeys)
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         return (
 
@@ -235,16 +204,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                 </Grid.Column>
                                                 <Grid.Column width={11}>
                                                     {
-
-                                                        (fieldKeys[pId][key]['type'] === 'RenderTextArea') ?
-                                                        <Field
-                                                            component={renderTextArea}
-                                                            placeholder={data[key]}
-                                                            value={data[key] || ''}
-                                                            name={key}
-                                                            onChange={()=>console.log('onChange text..')}/>
-
-                                                        :
                                                         (fieldKeys[pId][key]['type'] === 'RenderSelect') ?
                                                         <Field
                                                             component={renderSelect}
@@ -255,46 +214,13 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                             onChange={()=>console.log('onChange text..')}
                                                             error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                         :
-                                                        (fieldKeys[pId][key]['type'] === 'IpSelect') ?
+                                                        (fieldKeys[pId][key]['type'] === 'RenderCheckbox') ?
                                                         <Field
-                                                            component={renderSelectNumber}
-                                                            placeholder={'Select IpAccess'}
+                                                            component={renderCheckbox}
                                                             value={data[key]}
-                                                            options={fieldKeys[pId][key]['items']}
                                                             name={key}
-                                                            onChange={()=>console.log('onChange text..')}/>
-                                                        :
-                                                        (fieldKeys[pId][key]['type'] === 'FlavorSelect') ?
-                                                        <Field
-                                                            component={renderSelect}
-                                                            placeholder={'Select Flavor'}
-                                                            value={data[key]}
-                                                            options={this.props.flavorData}
-                                                            name={key}
-                                                            onChange={()=>console.log('onChange text..')}
-                                                            error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
-                                                        :
-                                                        (fieldKeys[pId][key]['type'] === 'RegionSelect') ?
-                                                        <Field
-                                                            component={renderSelect}
-                                                            placeholder={'Select Region'}
-                                                            value={data[key]}
-                                                            options={fieldKeys[pId][key]['items']}
-                                                            name={key}
-
-                                                            onChange={this.handleRegionChange}
-                                                            error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
-                                                        :
-                                                        (fieldKeys[pId][key]['type'] === 'RenderDT') ?
-                                                        <Field
-                                                                component={renderInputDpType}
-                                                                placeholder={fieldKeys[pId][key].items}
-                                                                type="input"
-                                                                name={key}
-                                                                onChange={()=>console.log('onChange text..')}
-                                                                value={fieldKeys[pId][key].items}
-                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
-                                                                />
+                                                            onChange={(e)=>this.onHandleToggleChange(e)}
+                                                            />
                                                         :
                                                         (fieldKeys[pId][key]['type'] === 'RenderInputDisabled') ?
                                                             (getUserRole == 'AdminManager') ?
@@ -314,54 +240,31 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                     value={data[key]}
                                                                     />
                                                         :
-                                                        (fieldKeys[pId][key]['type'] === 'CustomPorts') ?
-                                                        <Grid>
-                                                            {
-                                                                this.state.portArray.map((item,i) => (
-
-                                                                    <Grid.Row key={i} columns={3} style={{paddingBottom:'0px'}}>
-                                                                        <Grid.Column width={10}>
-                                                                            <Field
-                                                                                component={renderInput}
-                                                                                type="input"
-                                                                                name={key+'_'+i}
-                                                                                //value={data[key]}
-                                                                                error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
-                                                                                />
-                                                                        </Grid.Column>
-                                                                        <Grid.Column width={5}>
-                                                                            <Field
-                                                                                component={renderSelect}
-                                                                                placeholder={'Select port'}
-                                                                                //value={data[key]}
-                                                                                options={fieldKeys[pId][key]['items']}
-                                                                                name={key+'select_'+i}
-                                                                                onChange={()=>console.log('onChange text..')}
-                                                                                error={(this.props.validError.indexOf(key+'select_'+i) !== -1)?'Required':''}
-                                                                                />
-                                                                        </Grid.Column>
-                                                                        <Grid.Column width={1}>
-                                                                            {/*<Button onClick={this.RemovePorts} sttle={{width:'100%'}}>Delete</Button>*/}
-                                                                            <div className='removePorts' onClick={this.RemovePorts}><i className="material-icons">clear</i></div>
-                                                                        </Grid.Column>
-                                                                    </Grid.Row>
-                                                                ))
-                                                            }
-                                                            <Grid.Row>
-                                                                <Grid.Column>
-                                                                    <Button positive onClick={this.AddPorts}>Add Port Mapping</Button>
-                                                                    {/*<div className="addPortMapping" onClick={this.AddPorts}>+ Add Port Mapping</div>*/}
-                                                                </Grid.Column>
-                                                            </Grid.Row>
-                                                        </Grid>
+                                                        (fieldKeys[pId][key]['type'] === 'RenderClusterDisabled') ?
+                                                            (!this.state.ClusterDisable) ?
+                                                                <Field
+                                                                    component={renderSelect}
+                                                                    placeholder={'Select '+fieldKeys[pId][key]['label']}
+                                                                    value={data[key]}
+                                                                    options={fieldKeys[pId][key]['items']}
+                                                                    name={key}
+                                                                    onChange={()=>console.log('onChange text..')}
+                                                                    error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
+                                                            :
+                                                                <Field
+                                                                    disabled
+                                                                    component={renderInputDisabled}
+                                                                    type="input"
+                                                                    name={key}
+                                                                    placeholder={'autocluster'}
+                                                                    />
                                                         :
                                                         <Field
                                                             component={renderInput}
                                                             type="input"
                                                             name={key}
                                                             value={data[key]}
-                                                            error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
-                                                            />
+                                                            error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                     }
                                                 </Grid.Column>
                                                 <Grid.Column width={1}>
@@ -405,4 +308,4 @@ export default reduxForm({
     form: "createAppFormDefault",
     // validate
     // enableReinitialize: true
-})(SiteFourCreateFormAppDefault);
+})(SiteFourCreateFormAppInstDefault);

@@ -110,7 +110,9 @@ const ResetPassword = (props) => (
         </Grid.Row>
         <RegistryResetForm onSubmit={() => console.log('ProfileForm was submitted')}/>
         <Grid.Row>
-            <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)"}}>By clicking SignUp, you agree to our Terms, Data Policy, and Cookies Policy.</a>
+            <span>
+                By clicking SignUp, you agree to our <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms</a>, <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Data Policy</a>, and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:"0"}}>Cookies Policy</a>.
+            </span>
         </Grid.Row>
     </Grid>
 
@@ -146,7 +148,9 @@ const FormSignUpContainer = (props) => (
         </Grid.Row>
         <RegistryUserForm onSubmit={() => console.log('ProfileForm was submitted')}/>
         <Grid.Row>
-            <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)"}}>By clicking SignUp, you agree to our Terms, Data Policy, and Cookies Policy.</a>
+            <span>
+                By clicking SignUp, you agree to our <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms</a>, <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Data Policy</a>, and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:"0"}}>Cookies Policy</a>.
+            </span>
         </Grid.Row>
     </Grid>
 )
@@ -165,7 +169,7 @@ const SuccessMsg = (props) => (
         {(props.msg.indexOf('created') !== -1) ?
             <Fragment>
                 <Grid.Row>
-                    <div className="login-text">Thanks for creating a MobiledgeX account! Please verify your email. Then you'll be able to login and get started.</div>
+                    <div className="login-text">{props.self.state.resultMsg}</div>
                 </Grid.Row>
                 <Grid.Row>
                     <div className="login-text" style={{fontStyle:'italic'}}>If you verify your account, Sign in with your account</div>
@@ -244,7 +248,8 @@ class Login extends Component {
             forgotPass:false,
             forgotMessage:false,
             created:false,
-            store:null
+            store:null,
+            resultMsg:''
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -270,7 +275,7 @@ class Login extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        console.log('submit props ---- ', nextProps)
+
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(nextProps.values) {
             if(nextProps.submitSucceeded) {
@@ -300,6 +305,12 @@ class Login extends Component {
             this.setState({successCreate:false, loginMode:'verify', forgotMessage:false, forgotPass:false});
         } else if(nextProps.loginMode === 'resetPass'){
             this.setState({successCreate:false, loginMode:'resetPass', forgotMessage:false, forgotPass:false});
+        } else if(nextProps.loginMode === 'signuped' && nextProps.createSuccess){
+            let msgTxt = `Thank you for signing up. Please verify your account.
+                            In order to login to your account, you must verify your account. 
+                            An email has been sent to xxxx.com with a link to verify your account. 
+                            If you have not received the email after a few minutes check your spam folder or resend the verification email.`
+            this.setState({successCreate:true, loginMode:'signuped', successMsg:'Account created', resultMsg:msgTxt})
         }
 
     }
@@ -317,8 +328,7 @@ class Login extends Component {
         })
 
     }
-    resultCreateUser(result, resource, self) {
-        console.log('success create......', result.data, JSON.stringify(result.data), typeof result.data)
+    resultCreateUser(result, resource) {
         let message = (result.data.message)? result.data.message : null;
         // console.log('msg-',message)
         // if(message.indexOf('duplicate') > -1){
@@ -328,32 +338,37 @@ class Login extends Component {
         //     message = 'Email already in use'
         // }
         self.onProgress(false)
-        self.props.handleChangeLoginMode('signuped');
+
         if(message.indexOf('created') > -1) {
+
+
+            //self.showAlert(resource)
+
+            self.setState({successCreate:true, loginMode:'signuped', signup:false})
             Alert.success(message, {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
             });
-
-            self.showAlert(resource)
-
-            self.setState({successCreate:true, errorCreate:false})
+            self.props.handleCreateAccount(true)
         } else {
+            self.setState({successCreate:false, errorCreate:false, signup:false})
+            self.forceUpdate();
+            self.props.handleCreateAccount(false)
             Alert.error(message, {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
             });
-            self.setState({successCreate:false, errorCreate:true})
+
         }
 
 
         self.setState({successMsg:message ? message:self.state.successMsg, signup:false});
+        setTimeout(()=>self.props.handleChangeLoginMode('signuped'), 600);
     }
     resultNewPass(result) {
 
-        console.log('success update as new pass......', result.data, JSON.stringify(result.data), typeof result.data)
         let message = (result.data.message)? result.data.message : null;
         alert(message)
         if(result.data.error) {
@@ -368,15 +383,15 @@ class Login extends Component {
                 effect: 'slide',
                 timeout: 5000
             });
+            setTimeout(()=>self.props.handleChangeLoginMode('login'), 600);
         }
         self.onProgress(false);
 
-        //TODO 20190416 - redux
-        self.setState({successMsg:message ? message:self.state.successMsg, errorCreate: true, signup:true});
+
+
     }
 
     onFocusHandle(value) {
-        console.log('on focus button', value)
         self.setState({focused: value})
     }
     onSignOut() {
@@ -546,7 +561,6 @@ class Login extends Component {
 
     render() {
         const { reset, data, loginState } = this.props;
-        console.log('check state...',this.state.loginMode, ":",this.state.successCreate, ":", this.state.errorCreate)
         return (
 
                 (this.state.session !== 'open') ?
@@ -592,10 +606,12 @@ class Login extends Component {
 const mapStateToProps = state => {
                                 let profile = state.form.profile ? state.form.profile : null;
                                 let loginmode = state.loginMode ? state.loginMode : null;
+                                let createSuccess = state.createAccount ? state.createAccount.created : null;
     return {
             values: profile ? profile.values : null,
             submitSucceeded: profile ? profile.submitSucceeded : null,
             loginMode: loginmode ? loginmode.mode : null,
+            createSuccess : createSuccess
         }
 };
 
@@ -605,7 +621,8 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleChangeTab: (data) => { dispatch(actions.changeTab(data))},
         mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data})),
-        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))}
+        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))},
+        handleCreateAccount: (data) => { dispatch(actions.createAccount(data))}
     };
 };
 

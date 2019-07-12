@@ -29,9 +29,10 @@ import changeViewMode from './changeViewMode';
 import roleInfo from './roleInfo';
 import appLaunch from './appLaunch';
 import alertInfo from './alertInfo';
+import createAccount from './createAccount';
 
 const reducers = combineReducers({
-    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor, loginMode,injectData,changeViewMode,
+    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor, loginMode,injectData,changeViewMode,createAccount,
     registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, searchValue, computeRefresh, loadingSpinner, creatingSpinner, alertMsg, roleInfo, appLaunch, alertInfo, form: formReducer
 });
 

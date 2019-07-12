@@ -31,7 +31,8 @@ class SiteFourPageCreateorga extends React.Component {
             activeItem: 'Developers',
             devData:[],
             step:1,
-            loopCancel:true
+            toggleSubmit:false,
+            toggleSubmitTwo:false
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -78,20 +79,27 @@ class SiteFourPageCreateorga extends React.Component {
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
-        if(nextProps.stepOne && nextProps.stepOne.submitSucceeded) {
-            if(this.state.loopCancel && store.userToken) {
-                this.setState({loopCancel:false});
-                _self.props.handleLoadingSpinner(true);
-                serviceOrganiz.organize('createOrg',
-                        {name:nextProps.stepOne.values.name, type:nextProps.stepOne.values.type.toLowerCase(), address:nextProps.stepOne.values.address, phone:nextProps.stepOne.values.phone,
-                            token:store.userToken}, this.resultCreateOrg, this)
-            }
+        if(nextProps.stepOne && nextProps.stepOne.submitSucceeded && !this.state.toggleSubmit) {
+            this.setState({toggleSubmit:true});
+            console.log("stepOnestepOnestepOne")
+            _self.props.handleLoadingSpinner(true);
+            serviceOrganiz.organize('createOrg',
+                {
+                    name:nextProps.stepOne.values.name,
+                    type:nextProps.stepOne.values.type.toLowerCase(),
+                    address:nextProps.stepOne.values.address,
+                    phone:nextProps.stepOne.values.phone,
+                    token:store.userToken
+                }, this.resultCreateOrg, this)
+            
         }
         /*
         org=bigorg username=worker1 role=DeveloperContributor
          */
-        if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded) {
+        if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded && !this.state.toggleSubmitTwo) {
             console.log('stream form siteFour_page_createOrga.js  git to a role ... ', nextProps, nextProps.stepTwo.values)
+            this.setState({toggleSubmitTwo:true});
+            this.props.handleLoadingSpinner(true);
             let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
             let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
             let _role = nextProps.stepTwo.values && nextProps.stepTwo.values.orgType+nextProps.stepTwo.values.selectRole || '';
@@ -107,9 +115,9 @@ class SiteFourPageCreateorga extends React.Component {
     }
     resultCreateOrg = (result,resource, self, body) => {
         console.log("receive ==@@ ", result, resource, self, body)
+        this.setState({toggleSubmit:false})
         _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
-            this.setState({loopCancel:true});
             this.props.handleAlertInfo('error',String(result.data.error))
         } else {
             this.props.handleAlertInfo('success','Your organization '+body.name+' created successfully')
@@ -119,6 +127,7 @@ class SiteFourPageCreateorga extends React.Component {
     }
     resultGiveToRole = (result,resource, self, body) => {
         console.log("receive == ", result, resource, self)
+        this.setState({toggleSubmitTwo:false})
         _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
             this.props.handleAlertInfo('error',String(result.data.error))
@@ -145,16 +154,11 @@ class SiteFourPageCreateorga extends React.Component {
     getDataDeveloper(token) {
         services.getMCService('showOrg',{token:token}, _self.receiveResult)
     }
-    loadingBox = () => {
-        this.setState({loopCancel:false});
-        _self.props.handleLoadingSpinner(true);
-        // services.createNewApp('CreateApp', serviceBody, _self.receiveResult)
-    }
     render() {
         const {shouldShowBox, shouldShowCircle, step} = this.state;
         const { activeItem } = this.state
         return (
-            <SiteFourOrgaStepView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader} stepMove={this.state.step}></SiteFourOrgaStepView>
+            <SiteFourOrgaStepView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader} stepMove={this.state.step} toggleSubmit={this.state.toggleSubmit} toggleSubmitTwo={this.state.toggleSubmitTwo}></SiteFourOrgaStepView>
         );
     }
 
@@ -165,7 +169,8 @@ const mapStateToProps = (state) => {
     let formStepOne= state.form.orgaStepOne
         ? {
             values: state.form.orgaStepOne.values,
-            submitSucceeded: state.form.orgaStepOne.submitSucceeded
+            submitSucceeded: state.form.orgaStepOne.submitSucceeded,
+            submitFailed: state.form.orgaStepOne.submitFailed
         }
         : {};
     let formStepTwo= state.form.orgaStepTwo

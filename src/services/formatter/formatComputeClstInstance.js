@@ -65,10 +65,11 @@ let generateData = (datas,body) => {
                 let NumNodes = dataResult.data.num_nodes || '';
                 let State = dataResult.data.state || '';
                 let CloudletLocation = '-';
-                let Status = dataResult.data.status
+                let Status = dataResult.data.status;
+                let Deployment = dataResult.data.deployment;
 
                 let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'Number_of_Master', 'Number_of_Node', 'CloudletLocation'];
-                values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, State:State, Progress:'', Status:Status, Edit:newRegistKey})
+                values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, State:State, Progress:'', Status:Status, Deployment:Deployment, Edit:newRegistKey})
             }
         })
     } else {
