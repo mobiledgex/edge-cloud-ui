@@ -98,7 +98,12 @@ class SiteFourPageCluster extends React.Component {
         }
     }
     receiveResult = (result) => {
-        let join = this.state.devData.concat(result);
+        let join = null;
+        if(result[0]['Edit']) {
+            join = this.state.devData.concat(result);
+        } else {
+            join = this.state.devData;
+        }
         this.props.handleLoadingSpinner(false);
         console.log("receive cluster== ", result)
         if(result.error) {

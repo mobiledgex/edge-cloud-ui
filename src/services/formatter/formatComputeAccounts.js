@@ -41,7 +41,22 @@ let generateData = (datas) => {
     if(toJson){
         toJson.map((dataResult, i) => {
             if(dataResult.message) {
-
+                values.push({
+                    Username:'',
+                    Email:'',
+                    EmailVerified:'',
+                    Passhash:'',
+                    Salt:'',
+                    Iter:'',
+                    FamilyName:'',
+                    GivenName:'',
+                    Picture:'',
+                    Nickname:'',
+                    CreatedAt:'',
+                    UpdatedAt:'',
+                    Locked:'',
+                    Edit:null
+                })
             } else {
                 let Index = i;
                 let Username = dataResult.Name || '-';

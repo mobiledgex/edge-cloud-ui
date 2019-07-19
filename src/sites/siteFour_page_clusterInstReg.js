@@ -77,11 +77,7 @@ class SiteFourPageClusterInstReg extends React.Component {
             }
             this.userToken = store.userToken;
         } else {
-            Alert.error('Invalid or expired token', {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error','Invalid or expired token')
             setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         }
     }
@@ -95,11 +91,7 @@ class SiteFourPageClusterInstReg extends React.Component {
     receiveResult(result) {
         console.log("clusterFlavorReg receive == ", result)
         if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error',result.error)
         } else {
             _self.props.handleInjectFlavor(result)
         }
@@ -150,7 +142,8 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleInjectFlavor: (data) => { dispatch(actions.showFlavor(data))}
+        handleInjectFlavor: (data) => { dispatch(actions.showFlavor(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

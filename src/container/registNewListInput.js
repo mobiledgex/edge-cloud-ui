@@ -14,7 +14,7 @@ import {
     TextArea,
     Popup, Icon
 } from "semantic-ui-react";
-import { Field, reduxForm, initialize } from "redux-form";
+import { Field, reduxForm, initialize, reset } from "redux-form";
 
 import MaterialIcon from "../sites/siteFour_page_createOrga";
 import './styles.css';
@@ -38,7 +38,7 @@ const validate = values => {
     return errors
 }
 
-const renderSelect = ({ input, options, placeholder, value, type, meta: { touched, error, warning } }) => (
+const renderSelect = ({ input, options, placeholder, value, type, error }) => (
     <div>
         <Form.Select
             name={input.name}
@@ -49,11 +49,11 @@ const renderSelect = ({ input, options, placeholder, value, type, meta: { touche
             value={value}
             fluid
         />
-        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+        {error && <span className="text-danger">{error}</span>}
     </div>
 );
 
-const renderInputNum = ({ input, unit, label, placeholder, type, meta: { touched, error, warning } }) => (
+const renderInputNum = ({ input, unit, label, placeholder, type, error }) => (
     <div>
         <Form.Field
             {...input}
@@ -68,12 +68,12 @@ const renderInputNum = ({ input, unit, label, placeholder, type, meta: { touched
             :
             <Input fluid type="number"></Input>}
         </Form.Field>
-        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+        {error && <span className="text-danger">{error}</span>}
     </div>
 
 );
 
-const renderInput = ({ input, placeholder, type, meta: { touched, error, warning } }) => (
+const renderInput = ({ input, placeholder, type, error }) => (
     <div>
          <Form.Input
             {...input}
@@ -81,7 +81,7 @@ const renderInput = ({ input, placeholder, type, meta: { touched, error, warning
             placeholder={placeholder}
             fluid
         />
-        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+        {error && <span className="text-danger">{error}</span>}
     </div>
    
 );
@@ -111,14 +111,15 @@ class registNewListInput extends React.Component {
 
     }
 
-    handleInitialize(initData) {
-
-
+    handleInitialize() {
+        const initData = {
+            "FlavorName": ""
+        };
         this.props.initialize(initData);
     }
 
     componentDidMount() {
-        //this.handleInitialize(this.props.data);
+        this.handleInitialize();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -142,6 +143,11 @@ class registNewListInput extends React.Component {
         />
     )
 
+    handleClose = () => {
+        this.props.close()
+        this.props.dispatch(reset('registNewListInput'));
+    }
+
 
     render() {
         const {handleSubmit, data, dimmer, selected, regKeys, open, close, option, value, change} = this.props;
@@ -151,13 +157,13 @@ class registNewListInput extends React.Component {
             <Fragment>
                 <Form onSubmit={handleSubmit} className={"fieldForm"}>
                     <Form.Group>
-                        <Modal style={{width:800}} open={open} onClose={close}>
+                        <Modal style={{width:800}} open={open} onClose={this.handleClose}>
                             <Modal.Header>Settings</Modal.Header>
                             <Modal.Content>
                                 <div style={{display:'flex', flexDirection:'row', width:'100%'}}>
                                     <Grid divided style={{width:800}}>
                                     {
-                                        (data.length > 0)?
+                                        (data.length > 0 && regKeys)?
                                         regKeys.map((key, i)=>(
                                             <Grid.Row key={i} columns={3}>
                                                 <Grid.Column width={5} className='detail_item'>
@@ -170,15 +176,15 @@ class registNewListInput extends React.Component {
                                                     : (key === 'NodeFlavor')?
                                                     <Field component={renderSelect} placeholder='Select NodeFlavor' name='NodeFlavor' options={option[0]} value={value[0]} />
                                                     : (key === 'Region')?
-                                                    <Field component={renderSelect} placeholder='Select Region' name='Region' options={this.state.regionStatic} />
+                                                    <Field component={renderSelect} placeholder='Select Region' name='Region' options={this.state.regionStatic} error={(this.props.validError.indexOf(key) !== -1)?'Required':''} />
                                                     : (key === 'RAM')?
-                                                    <Field component={renderInputNum} name='RAM' unit="MB" options={this.state.regionStatic} />
+                                                    <Field component={renderInputNum} name='RAM' unit="MB" options={this.state.regionStatic} error={(this.props.validError.indexOf(key) !== -1)?'Required':''} />
                                                     : (key === 'vCPUs')?
-                                                    <Field component={renderInputNum} name='vCPUs' options={this.state.regionStatic} />
+                                                    <Field component={renderInputNum} name='vCPUs' options={this.state.regionStatic} error={(this.props.validError.indexOf(key) !== -1)?'Required':''} />
                                                     : (key === 'Disk' )?
-                                                    <Field component={renderInputNum} name='Disk'  unit="GB" options={this.state.regionStatic} />
+                                                    <Field component={renderInputNum} name='Disk'  unit="GB" options={this.state.regionStatic} error={(this.props.validError.indexOf(key) !== -1)?'Required':''} />
                                                     :
-                                                    <Field component={renderInput} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } />
+                                                    <Field component={renderInput} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } error={(this.props.validError.indexOf(key) !== -1)?'Required':''} />
                                                 }
                                                 </Grid.Column>
                                                 <Grid.Column width={1}>
@@ -187,13 +193,13 @@ class registNewListInput extends React.Component {
                                                 <Divider vertical></Divider>
                                             </Grid.Row>
                                         ))
-                                        :''
+                                        :null
                                     }
                                     </Grid>
                                 </div>
                             </Modal.Content>
                             <Modal.Actions>
-                                <Button onClick={close}>
+                                <Button onClick={this.handleClose}>
                                     Cancel
                                 </Button>
                                 <Button

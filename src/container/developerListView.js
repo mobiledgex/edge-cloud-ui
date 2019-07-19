@@ -142,9 +142,9 @@ class DeveloperListView extends React.Component {
             (i === 0)?
                 <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
-                        {(this.state.dummyData.length)?
-                            this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData) :
-                            (this.state.noData)?<div style={{padding:20}}>When you click the New button, the Create New tab appears as the default view.</div>:null
+                        {
+                            this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)
+
                         }
                     </div>
 
@@ -299,6 +299,7 @@ class DeveloperListView extends React.Component {
                         <Table.Row key={i} id={'tbRow_'+i} style={{position:'relative'}}>
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
+                                    String(item[value]) === 'null' ? <Table.Cell /> :
                                     <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
                                         {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager')?
                                             <Button color={(this.state.selectUse == i)?'teal' :null} onClick={(evt) => this.onUseOrg(item,i, evt)}>
@@ -313,7 +314,7 @@ class DeveloperListView extends React.Component {
                                             <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.appLaunch(item)}>
                                             Launch
                                             </Button>:null}
-                                        <Button disabled={(localStorage.selectMenu !== 'Organization')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
+                                        <Button disabled={(localStorage.selectMenu !== 'Organizations')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>
                                 :

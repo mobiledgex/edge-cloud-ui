@@ -83,16 +83,16 @@ class SiteFourPageFlavor extends React.Component {
         
     }
     receiveResult = (result) => {
-        let join = this.state.devData.concat(result);
+        let join = null;
+        if(result[0]['Edit']) {
+            join = this.state.devData.concat(result);
+        } else {
+            join = this.state.devData;
+        }
         this.props.handleLoadingSpinner(false);
         console.log("receive == ", result)
         if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-
+            this.props.handleAlertInfo('error',result.error)
         } else {
             _self.setState({devData:join})
 
@@ -133,7 +133,8 @@ const mapDispatchProps = (dispatch) => {
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

@@ -20,10 +20,11 @@ const renderCheckbox = field => (
         name={field.input.name}
         label={field.label}
         onChange={(e, { checked }) => field.input.onChange(checked)}
+        disabled = {field.disabled}
     />
 );
 
-const renderSelect = ({ input, label, options, placeholder, error }) => (
+const renderSelect = ({ input, label, options, placeholder, error, disabled }) => (
     <div>
         <Form.Select
             label={label}
@@ -32,6 +33,7 @@ const renderSelect = ({ input, label, options, placeholder, error }) => (
             options={makeOption(options)}
             placeholder={placeholder}
             value={input.value}
+            disabled = {disabled}
         />
         {error && <span className="text-danger">{error}</span>}
     </div>
@@ -220,6 +222,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                                             value={data[key]}
                                                             name={key}
                                                             onChange={(e)=>this.onHandleToggleChange(e)}
+                                                            disabled={this.props.autoClusterDisable}
                                                             />
                                                         :
                                                         (fieldKeys[pId][key]['type'] === 'RenderInputDisabled') ?
@@ -227,7 +230,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                                                 <Field
                                                                     component={renderSelect}
                                                                     placeholder={'Select Organization Name'}
-                                                                    options={this.state.orgArr}
+                                                                    options={fieldKeys[pId][key]['items']}
                                                                     name={key}
                                                                     onChange={()=>console.log('onChange text..')}
                                                                     error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
@@ -249,7 +252,9 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                                                     options={fieldKeys[pId][key]['items']}
                                                                     name={key}
                                                                     onChange={()=>console.log('onChange text..')}
-                                                                    error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
+                                                                    error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
+                                                                    disabled={this.props.autoClusterDisable}
+                                                                    />
                                                             :
                                                                 <Field
                                                                     disabled

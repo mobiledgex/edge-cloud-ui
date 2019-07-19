@@ -232,26 +232,27 @@ class AccountListView extends React.Component {
                         <Table.Row key={i} id={'tbRow_'+i} style={{position:'relative'}}>
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
+                                    String(item[value]) === 'null' ? <Table.Cell /> :
                                     <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
 
                                         <Button disabled={item.Username === 'mexadmin'} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>
                                 :
-                                (value === 'Type')?
+                                (value === 'Type' && item[value])?
                                     <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} >
                                         {/*<div className="markBox">{this.typeMark(item[value])}</div>*/}
                                         <span style={(item[value] == 'developer')?{color:'#9b9979'}:{color:'#7d969b'}}>{item[value]}</span>
                                     </Table.Cell>
                                 :
-                                (value === 'Username')?
+                                (value === 'Username' && item[value])?
                                     <Table.Cell key={j} textAlign='left'>
                                         <div className="left_menu_item" onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
                                         <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {this.compareDate(item['UpdatedAt']).new ? <div className="userNewMark">{`New`}</div> : null} {item[value]}
                                         </div>
                                     </Table.Cell>
                                 :
-                                (value === 'EmailVerified')?
+                                (value === 'EmailVerified' && item[value])?
                                     <Table.Cell key={j} textAlign='center' style={{cursor:'pointer'}} >
                                         {
                                             (item[value] === true)?'Yes'
@@ -262,7 +263,7 @@ class AccountListView extends React.Component {
 
                                     </Table.Cell>
                                 :
-                                (value === 'Locked')?
+                                (value === 'Locked' && item[value])?
                                     <Table.Cell key={j} textAlign='center'
                                                 onMouseEnter={() => {
                                                     document.body.style.cursor = "pointer";

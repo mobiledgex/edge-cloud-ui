@@ -1484,3 +1484,28 @@ rect.zoom {
         min-width:784px !important;
     }
 }
+
+svg text{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/*scroll style*/
+body ::-webkit-scrollbar-thumb {
+    cursor: pointer;
+    border-radius: 5px;
+    background: rgb(255, 235, 0);
+    transition: color .2s ease;
+}
+body ::-webkit-scrollbar-thumb {
+    cursor: pointer;
+    border-radius: 5px;
+    background: rgba(115, 112, 121, 0.51);
+    transition: color .2s ease;
+}
+body ::-webkit-scrollbar-track {
+    background: rgba(0,0,0,.1);
+    border-radius: 0;
+}

@@ -12,6 +12,7 @@ import './siteThree.css';
 import MapWithListView from "../container/mapWithListView";
 import PageDetailViewer from '../container/pageDetailViewer';
 import DeveloperListView from "../container/developerListView";
+import * as aggregate from '../utils'
 
 let _self = null;
 let rgn = ['US','EU'];
@@ -26,14 +27,14 @@ class SiteFourPageAppInst extends React.Component {
             devData:[],
             viewMode:'listView',
             detailData:null,
-            liveComp:false
+            hiddenKeys:['Error','URI', 'Mapped_ports', 'Runtime', 'Created', 'Liveness','Flavor','Status']
         };
         this.headerH = 70;
         this.hgap = 0;
         this.loadCount = 0;
 
-        this.headerLayout = [1,2,2,1,1,2,2,2,1,1];
-        this.hiddenKeys = ['Error','URI', 'Mapped_ports', 'Runtime', 'Created', 'Liveness','Flavor','Status']
+        this.headerLayout = [1,2,2,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1];
+        this._devData = [];
     }
 
     //go to
@@ -55,10 +56,26 @@ class SiteFourPageAppInst extends React.Component {
     onHandleRegistry() {
         this.props.handleInjectDeveloper('userInfo');
     }
+    setHiddenKey(key) {
+        console.log('20190718 hidden key == ', key, this.state.hiddenKeys)
+        let copyHiddenKeys = Object.assign([],this.state.hiddenKeys)
+        let newHiddenKeys = [];
+        if(key.hidden === true) {
+            newHiddenKeys = copyHiddenKeys.concat(key.name)
+
+        } else {
+            //remove key from hiddenKeys
+            newHiddenKeys = aggregate.filterDefine(this.state.hiddenKeys, [key.name])
+            console.log('20190718 remove item from list..', key.name, ":", newHiddenKeys)
+        }
+
+        this.setState({hiddenKeys:newHiddenKeys})
+
+    }
+
     componentWillMount() {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({liveComp:true})
     }
     componentDidMount() {
  
@@ -67,18 +84,15 @@ class SiteFourPageAppInst extends React.Component {
         if(store.userToken) {
             this.getDataDeveloper(this.props.changeRegion);
         }
+        this._devData = [];
     }
     componentWillUnmount() {
 
-        this.setState({liveComp:false})
     }
 
 
     componentWillReceiveProps(nextProps) {
-        // if(!this.state.liveComp) {
-        //     return;
-        // }
-        console.log('nextProps view mode...', nextProps)
+        console.log('20190718 nextProps view mode in page_appinst.js...', nextProps)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
 
         if(nextProps.computeRefresh.compute) {
@@ -101,46 +115,41 @@ class SiteFourPageAppInst extends React.Component {
 
         }
 
+        //make hidden key
+        let tbHeader = nextProps.headerFilter;
+        console.log('20190717 headerFilter..', tbHeader)
+        if(tbHeader) {
+            this.setHiddenKey(tbHeader)
+        }
         setTimeout(() => this.forceUpdate(), 1000)
 
     }
     receiveResult = (result) => {
-        console.log("appinst@@@#@",result,this.state.devData)
-
-        let join = this.state.devData.concat(result);
-        this.props.handleLoadingSpinner(false);
-        console.log("view mode receive == ", result)
-        this.setState({devData:join})
-
-        this.countJoin()
-
-        this.loadCount ++;
-    }
-    countJoin() {
-        console.log("tteeeesss@@@",_self.loadCount+1)
-        if(_self.loadCount + 1 === rgn.length*2) {
-            console.log("countjoin@@@",this.state.devData)
-            let appinsts = this.state.devData;
-            
-            let arr =[]
-            appinsts.map((itemCinst,i) => {
-                arr.push(itemCinst)
-            })
-            _self.setState({devData:arr})
-
-            _self.loadCount = 0;
+        let join = null;
+        if(result[0]['Edit']) {
+            join = this.state.devData.concat(result);
+        } else {
+            join = this.state.devData;
         }
-
+        console.log('20190718 ', JSON.stringify(join))
+        this.props.handleLoadingSpinner(false);
+        this.setState({devData:join})
+        this.loadCount ++;
+        if(rgn.length == this.loadCount){
+            return
+        }
     }
+
     getDataDeveloper = (region) => {
-        console.log("view mode appinst@@gogo")
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let rgn = ['US','EU'];
         let serviceBody = {}
+        _self.loadCount = 0;
         this.setState({devData:[]})
         if(region !== 'All'){
             rgn = [region]
-        }  
+        } else {
+            rgn = ['US','EU'];
+        }
  
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
@@ -171,12 +180,9 @@ class SiteFourPageAppInst extends React.Component {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem, viewMode, devData } = this.state;
         let randomValue = Math.round(Math.random() * 100);
-        
-        let myDevData = Object.assign([], devData)
-        console.log('view mode', randomValue, viewMode, myDevData)
         return (
             (viewMode === 'listView')?
-            <MapWithListView devData={myDevData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloper}></MapWithListView>
+            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloper}></MapWithListView>
             :
             <PageDetailViewer data={this.state.detailData}/>
         );
@@ -186,7 +192,7 @@ class SiteFourPageAppInst extends React.Component {
 
 const mapStateToProps = (state) => {
 
-    console.log('change --- --- --- --- -- ',state)
+    console.log('20190717 change --- --- --- --- -- ',state.tableHeader)
     let stateChange = false;
     if(state.receiveDataReduce.params && state.receiveDataReduce.params.state === 'refresh'){
         stateChange = true;
@@ -204,7 +210,8 @@ const mapStateToProps = (state) => {
         changeRegion : state.changeRegion.region?state.changeRegion.region:null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
-        viewMode : viewMode, detailData:detailData
+        viewMode : viewMode, detailData:detailData,
+        headerFilter : state.tableHeader.filter ? state.tableHeader.filter : null
     }
 };
 const mapDispatchProps = (dispatch) => {

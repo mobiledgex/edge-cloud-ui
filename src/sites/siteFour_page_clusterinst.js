@@ -12,7 +12,7 @@ import * as services from '../services/service_compute_service';
 import './siteThree.css';
 import MapWithListView from "../container/mapWithListView";
 import Alert from "react-s-alert";
-
+import * as aggregate from "../utils";
 
 
 let _self = null;
@@ -30,7 +30,6 @@ class SiteFourPageClusterInst extends React.Component {
             devData:[],
             clusterInstData:[],
             cloudletData:[],
-            liveComp:false,
             viewMode:'listView',
             detailData:null,
         };
@@ -66,10 +65,9 @@ class SiteFourPageClusterInst extends React.Component {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
-        this.setState({liveComp:true})
     }
     componentDidMount() {
-        console.log('infoCluster1.. ', this.childFirst, this.childSecond)
+        console.log('20190716 infoCluster1.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         // console.log('info.. store == ', store)
         if(store.userToken) {
@@ -77,16 +75,13 @@ class SiteFourPageClusterInst extends React.Component {
         }
     }
     componentWillUnmount() {
-
-        this.setState({liveComp:false})
+        console.log('20190716 ====>unmount clusterinst<====')
+        this.setState({devData:[], clusterInstData:[], cloudletData:[]})
     }
 
 
     componentWillReceiveProps(nextProps) {
         console.log("infoCluster2",nextProps)
-        // if(!this.state.liveComp) {
-        //     return;
-        // }
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
@@ -100,9 +95,6 @@ class SiteFourPageClusterInst extends React.Component {
         }
         if(nextProps.viewMode) {
             if(nextProps.viewMode === 'listView') {
-                this.setState({liveComp:false})
-                //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
-                //this.getDataDeveloper(this.props.changeRegion)
                 this.setState({viewMode:nextProps.viewMode})
             } else {
                 this.setState({viewMode:nextProps.viewMode})
@@ -112,14 +104,15 @@ class SiteFourPageClusterInst extends React.Component {
         }
     }
     receiveResult(result) {
-        let join = this.state.devData.concat(result);
+        let join = null;
+        if(result[0]['Edit']) {
+            join = this.state.devData.concat(result);
+        } else {
+            join = this.state.devData;
+        }
 
         if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error',result.error)
         } else {
             _self.setState({devData:join})
         }
@@ -133,47 +126,29 @@ class SiteFourPageClusterInst extends React.Component {
     }
 
     groupJoin(result,cmpt){
-
-        console.log('cluster inst show app list.. ', result, cmpt, 'load cnt = ', _self.loadCount)
         this.props.handleLoadingSpinner(false);
 
         if(cmpt == 'clusterInst') this.setState({clusterInstData:_self.state.clusterInstData.concat(result)})
         else if(cmpt == 'cloudlet') this.setState({cloudletData:_self.state.cloudletData.concat(result)})
 
-        _self.countJoin()
-
         _self.loadCount ++;
+        if(rgn.length*2 == this.loadCount){
+            _self.countJoin()
+            return
+        }
     }
     countJoin() {
-        console.log("countJoincountJoin",_self.loadCount + 1,":::",rgn.length * 2)
-        if(_self.loadCount + 1 === rgn.length * 2) {
-            let clusterInst = this.state.clusterInstData;
-            let cloudlet = this.state.cloudletData;
-            let arr =[];
-            let duplicate = false;
-            clusterInst.map((itemCinst,i) => {
-                cloudlet.map((itemClet,j) => {
-                    
-                    if(itemCinst.Cloudlet === itemClet.CloudletName) {
-                        console.log('cloudletName is == ',itemCinst.Cloudlet, ":", itemClet.CloudletName)
-                        itemCinst.CloudletLocation = itemClet.CloudletLocation;
-                    }
-                })
-                console.log("cloudletNamedevDatadevData2",arr)
-                // arr.map((item) => {
-                //     if(item.ClusterName == itemCinst.ClusterName) {
-                //         duplicate = true;
-                //     }   
-                // })
-                if(itemCinst.Cloudlet !== "" && !duplicate) arr.push(itemCinst)
+        let clusterInst = this.state.clusterInstData;
+        let cloudlet = this.state.cloudletData;
+        clusterInst.map((itemCinst,i) => {
+            cloudlet.map((itemClet,j) => {
+                if(itemCinst.Cloudlet === itemClet.CloudletName) {
+                    itemCinst.CloudletLocation = itemClet.CloudletLocation;
+                }
             })
-            console.log("cloudletNamedevDatadevData3",arr)
-            _self.setState({devData:arr, liveComp:true})
+        })
+        _self.setState({devData:clusterInst})
 
-            _self.loadCount = 0;
-        }
-
-        // default data ??? - in order to display header of table even if has no data.
     }
     
     getDataDeveloper = (region) => {
@@ -224,14 +199,15 @@ class SiteFourPageClusterInst extends React.Component {
         this.getDataDeveloper('All');
     }
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
+        const {shouldShowBox, shouldShowCircle, devData} = this.state;
         const { activeItem, viewMode } = this.state;
         let randomValue = Math.round(Math.random() * 100);
         return (
 
             //<DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
             (viewMode === 'listView')?
-                <MapWithListView devData={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} title='Cluster Instance' region='US' dataRefresh={this.getDataDeveloperSub}></MapWithListView>
+
+                <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} title='Cluster Instance' region='US' dataRefresh={this.getDataDeveloperSub}></MapWithListView>
                 :
                 <PageDetailViewer data={this.state.detailData}/>
         );
@@ -240,7 +216,7 @@ class SiteFourPageClusterInst extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    console.log('props in state.form..', state.form, 'region === ', state)
+    console.log('20190716 props in state.form..', state.form, 'region === ', state)
     let viewMode = null;
     let detailData = null;
     if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
@@ -261,7 +237,8 @@ const mapDispatchProps = (dispatch) => {
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

@@ -235,3 +235,15 @@ export function createAccount (created) {
         created
     }
 }
+export function tableHeaders (headers) {
+    return {
+        type: types.TABLE_HEADER,
+        headers
+    }
+}
+export function saveStateFilter (filter) {
+    return {
+        type: types.SAVE_FILTERS,
+        filter
+    }
+}

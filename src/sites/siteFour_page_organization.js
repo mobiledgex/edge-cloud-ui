@@ -98,11 +98,7 @@ class SiteFourPageOrganization extends React.Component {
 
         console.log("receive == ", result, resource, self)
         if(result.error) {
-            Alert.error('There is no data', {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error','There is no data')
             //setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
             // _self.gotoUrl('/site4', 'pg=newOrg')  /* CreatOrg 자동 연결... */
         } else {
@@ -163,7 +159,8 @@ const mapDispatchProps = (dispatch) => {
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data))},
-        handleUserInfo: (data) => { dispatch(actions.userInfo(data))}
+        handleUserInfo: (data) => { dispatch(actions.userInfo(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

@@ -84,6 +84,15 @@ const renderInputDpType = field => (
     />
 );
 
+const renderInputPathType = field => (
+    <Form.Input
+        {...field.input}
+        type={field.type}
+        label={field.label}
+        value={field.placeholder}
+    />
+);
+
 const style = {
     borderRadius: 0,
     opacity: 0.7,
@@ -293,6 +302,16 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                 name={key}
                                                                 onChange={()=>console.log('onChange text..')}
                                                                 value={fieldKeys[pId][key].items}
+                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
+                                                                />
+                                                        :
+                                                        (fieldKeys[pId][key]['type'] === 'RenderPath') ?
+                                                        <Field
+                                                                component={renderInputPathType}
+                                                                placeholder={fieldKeys[pId][key].items}
+                                                                type="input"
+                                                                name={key}
+                                                                value={(fieldKeys[pId][key].items)?fieldKeys[pId][key].items:data[key]}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
                                                                 />
                                                         :

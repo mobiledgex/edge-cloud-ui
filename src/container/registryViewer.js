@@ -20,7 +20,8 @@ import * as service from "../services/service_compute_service";
 const ReactGridLayout = WidthProvider(RGL);
 
 
-let itData = ''
+let itData = '';
+let submitImgPath = '';
 const headerStyle = {
     backgroundImage: 'url()'
 }
@@ -71,7 +72,6 @@ class RegistryViewer extends React.Component {
             selectUse:null,
             resultData:null,
             devoptionsf:[],
-            imageTypeValue:'',
             toggleSubmit:false,
             validateError:[]
         };
@@ -83,7 +83,7 @@ class RegistryViewer extends React.Component {
                 'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:'App version', active:true},
                 'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (kubernetes, docker, or vm)', active:true, items:['docker', 'kubernetes', 'vm']},
                 'ImageType':{label:'Image Type', type:'RenderDT', necessary:true, tip:'ImageType specifies image type of an App',items:''},
-                'ImagePath':{label:'Image Path', type:'RenderInput', necessary:true, tip:'URI of where image resides', active:true},
+                'ImagePath':{label:'Image Path', type:'RenderPath', necessary:true, tip:'URI of where image resides', active:true,items:''},
                 'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor.', active:true},
                 'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:'Comma separated list of protocol:port pairs that the App listens on i.e. tcp:80,udp:10002,http:443', active:true, items:['tcp', 'udp']},
                 // 'IpAccess':{label:'IP Access', type:'IPSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
@@ -311,7 +311,7 @@ class RegistryViewer extends React.Component {
          * **********/
         let assObj = Object.assign([], this.fakeData);
         assObj[0].OrganizationName = localStorage.selectOrg;
-        //assObj[0].ImageType = this.state.imageTypeValue;
+        //assObj[0].ImagePath.items = "docker.mobiledgex.net/OrganizationName/images/AppName:AppVersion";
         console.log("jjjjkkkkkk",assObj);
         //this.setState({fakeData:assObj});
 
@@ -335,7 +335,7 @@ class RegistryViewer extends React.Component {
         console.log("submitValues2submitValues2",nextProps.submitValues,"::",nextProps.formApps.submitSucceeded,"::",!this.state.toggleSubmit)
         if(nextProps.submitValues && !this.state.toggleSubmit) {
             
-            const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','ImagePath','DefaultFlavor','Ports_0','Portsselect_0']
+            const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','DefaultFlavor','Ports_0','Portsselect_0']
             console.log("validateValuevalidateValue",nextProps.validateValue)
             let error = [];
             apps.map((item) => {
@@ -353,6 +353,7 @@ class RegistryViewer extends React.Component {
                     "token":store.userToken,
                     "params": nextProps.submitValues
                 }
+                console.log("serviceBody@@",serviceBody)
                 services.createNewApp('CreateApp', serviceBody, this.receiveResult)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
@@ -360,17 +361,31 @@ class RegistryViewer extends React.Component {
             
         }
 
-        if(nextProps.formApps.values) {
+        if(nextProps.formApps.values && nextProps.formApps.values.DeploymentType) {
             let assObj = Object.assign([], this.keysData);
+            let selectType = '';
+            let defaultPath = '';
             if(nextProps.formApps.values.DeploymentType == "kubernetes" || nextProps.formApps.values.DeploymentType == "docker") {
-                assObj[0].ImageType.items = 'ImageTypeDocker';
-                itData = 'ImageTypeDocker'
-                this.setState({imageTypeValue:'ImageTypeDocker'});
+                selectType = 'ImageTypeDocker';
+                defaultPath = 'docker.mobiledgex.net/OrganizationName/images/AppName:AppVersion';
             } else if(nextProps.formApps.values.DeploymentType == "vm") {
-                assObj[0].ImageType.items = 'ImageTypeQcow';
-                this.setState({imageTypeValue:'ImageTypeQcow'})
-                itData = 'ImageTypeQcow'
+                selectType = 'ImageTypeQcow';
+                defaultPath = 'https://artifactory.mobiledgex.net/artifactory/mc-repo-OrganizationName';
             }
+            let ImagePath = (nextProps.formApps.values.ImagePath)? nextProps.formApps.values.ImagePath : defaultPath;
+            assObj[0].ImageType.items = selectType;
+            itData = selectType;
+            if(nextProps.formApps.values.OrganizationName){
+                ImagePath = ImagePath.replace('OrganizationName',nextProps.formApps.values.OrganizationName)
+            }
+            if(nextProps.formApps.values.AppName) {
+                ImagePath = ImagePath.replace('AppName',nextProps.formApps.values.AppName)
+            }
+            if(nextProps.formApps.values.Version) {
+                ImagePath = ImagePath.replace('AppVersion',nextProps.formApps.values.Version)
+            }
+            assObj[0].ImagePath.items = ImagePath;
+            submitImgPath = ImagePath;
         }
     }
 
@@ -464,11 +479,10 @@ const mapStateToProps = (state) => {
     }
     
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
-        console.log("state.form.createAppFormDefault.values@@",state.form.createAppFormDefault.values)
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
+        if(enableValue.ImagePath == "") enableValue.ImagePath = submitImgPath;
         submitVal = createFormat(enableValue)
         validateValue = state.form.createAppFormDefault.values;
-        console.log("submitVal@@@@",submitVal)
     }
     
     let region = state.changeRegion
