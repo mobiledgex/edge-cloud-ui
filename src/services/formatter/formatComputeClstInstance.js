@@ -47,10 +47,24 @@ let generateData = (datas,body) => {
     //20190409 transition string to json
     
     console.log("clusterinst tojson!!",toJson)
+    let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'Number_of_Master', 'Number_of_Node', 'CloudletLocation'];
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
             if(dataResult.error || dataResult.message || !dataResult.data) {
                 console.log("error")
+                values.push({
+                    Region:'',
+                    ClusterName:'',
+                    OrganizationName:'',
+                    Operator:'',
+                    Cloudlet:'',
+                    Flavor:'',
+                    IpAccess:'',
+                    CloudletLocation:'',
+                    State:'',
+                    Progress:'',
+                    Status:'',
+                    Edit:null})
             } else {
                 let Index = i;
                 let Region = body.region || body.params.region || '-';
@@ -68,13 +82,13 @@ let generateData = (datas,body) => {
                 let Status = dataResult.data.status;
                 let Deployment = dataResult.data.deployment;
 
-                let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'Number_of_Master', 'Number_of_Node', 'CloudletLocation'];
+
                 values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, State:State, Progress:'', Status:Status, Deployment:Deployment, Edit:newRegistKey})
+
             }
         })
     } else {
-        let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'Number_of_Master', 'Number_of_Node', 'CloudletLocation'];
-        values.push({Region:'', ClusterName:'', OrganizationName:'', Operator:'', Cloudlet:'', Flavor:'', IpAccess:'', CloudletLocation:'', State:'', Progress:'', Status:'', Edit:newRegistKey})
+        //values.push({Region:'', ClusterName:'', OrganizationName:'', Operator:'', Cloudlet:'', Flavor:'', IpAccess:'', CloudletLocation:'', State:'', Progress:'', Status:'', Edit:newRegistKey})
     }
 
     //ascending or descending

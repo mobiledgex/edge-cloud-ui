@@ -41,6 +41,7 @@ class RegistNewListItem extends React.Component {
             cloudletResult:null,
             appResult:null,
             devOptionsMF:[],
+            validateError:[],
             devOptionsOrgType:[
                 {
                     key:'Developer',
@@ -195,31 +196,16 @@ class RegistNewListItem extends React.Component {
     }
     receiveSubmit = (result, body) => {
         console.log('registry new ... success result..', result.data, body)
-        this.props.handleLoadingSpinner(false);
+        
         this.props.refresh('All')
         let paseData = result.data;
-
         if(paseData.error) {
-            // Alert.error(paseData.error, {
-            //     position: 'top-right',
-            //     effect: 'slide',
-            //     beep: true,
-            //     timeout: 5000,
-            //     offset: 100
-            // });
             this.props.handleAlertInfo('error',paseData.error)
+            return
         } else {
-            // Alert.success("Flavor "+body.params.flavor.key.name+" created successfully", {
-            //     position: 'top-right',
-            //     effect: 'slide',
-            //     beep: true,
-            //     timeout: 5000,
-            //     offset: 100
-            // });
-            console.log("Flavor "+body.params.flavor.key.name+" created successfully")
             this.props.handleAlertInfo('success','Flavor '+body.params.flavor.key.name+' created successfully')
         }
-
+        this.props.handleLoadingSpinner(false);
     }
 
     onSubmit = () => {
@@ -235,31 +221,16 @@ class RegistNewListItem extends React.Component {
 
         //TODO: 20190410 메뉴 별 구분 필요
         if(localStorage.selectMenu === 'Flavors'){
-            console.log("submitData@@",this.props.submitData)
+            console.log("submitflavorValue@@",this.props.flavorValue.values)
             const flavor = ['Region','FlavorName','RAM','vCPUs','Disk']
             let error = [];
-            if(!this.props.flavorValue.values) {
-                Alert.error('Insert values to all fields', {
-                    position: 'top-right',
-                    effect: 'slide',
-                    timeout: 3000,
-                });
-                return false;
-            } else {
-                flavor.map((item) => {
-                    if(!this.props.flavorValue.values[item]) {
-                        error.push(item)
-                    }
-                })
-                if(error.length > 0) {
-                    Alert.error('Insert values to '+error[0]+' field', {
-                        position: 'top-right',
-                        effect: 'slide',
-                        timeout: 3000,
-                    });
-                    return false;
+            flavor.map((item) => {
+                if(!this.props.flavorValue.values[item]) {
+                    error.push(item)
                 }
-            }
+            })
+            console.log("derrorerrorerror",error)
+
             const {FlavorName,RAM,vCPUs,Disk,Region} = this.props.submitData.registNewListInput.values
             serviceBody = {
                 "token":store.userToken,
@@ -273,11 +244,14 @@ class RegistNewListItem extends React.Component {
                     }
                 }
             }
-            this.props.handleLoadingSpinner(true);
-            service.createNewFlavor('CreateFlavor',serviceBody, this.receiveSubmit)
+            if(error.length == 0) {
+                this.close();
+                this.props.handleLoadingSpinner(true);
+                service.createNewFlavor('CreateFlavor',serviceBody, this.receiveSubmit)
+            }
+            this.setState({validateError:error})
         }
-        //close
-        this.close();
+
     }
     close = () => {
         this.setState({ open: false })
@@ -311,6 +285,7 @@ class RegistNewListItem extends React.Component {
                 option={optionArr}
                 value={valueArr}
                 change={changeArr}
+                validError={this.state.validateError}
             >
             </RegistNewListInput>
         )

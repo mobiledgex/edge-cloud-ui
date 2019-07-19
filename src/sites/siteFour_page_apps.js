@@ -22,8 +22,7 @@ class SiteFourPageApps extends React.Component {
             contWidth:0,
             bodyHeight:0,
             activeItem: 'Developers',
-            devData:[],
-            liveComp:true
+            devData:[]
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -58,7 +57,6 @@ class SiteFourPageApps extends React.Component {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
-        this.setState({liveComp:true})
     }
     componentDidMount() {
         console.log('infof.. ', this.childFirst, this.childSecond)
@@ -71,14 +69,10 @@ class SiteFourPageApps extends React.Component {
     }
     componentWillUnmount() {
 
-        this.setState({liveComp:false})
     }
 
 
     componentWillReceiveProps(nextProps) {
-        if(!this.state.liveComp) {
-            return;
-        }
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -104,38 +98,20 @@ class SiteFourPageApps extends React.Component {
 
     }
     receiveResult = (result, region) => {
-        
-        let join = this.state.devData.concat(result);
-        this.props.handleLoadingSpinner(false);
-        console.log("receive == ", result)
-        this.setState({devData:join})
-
-        this.countJoin()
-
-        this.loadCount ++;
-    }
-    countJoin() {
-        console.log("tteeeesss@@@",_self.loadCount+1,":::",rgn.length)
-        if(_self.loadCount + 1 === rgn.length) {
-            console.log("countjoin@@@",this.state.devData)
-            let apps = this.state.devData;
-            let duplicate = false;
-            let arr =[]
-            apps.map((itemCinst,i) => {
-                arr.map((item) => {
-                    if(item.AppName == itemCinst.AppName) {
-                        duplicate = true;
-                    }   
-                })
-                if(!duplicate) arr.push(itemCinst)
-            })
-            
-            _self.setState({devData:arr})
-
-            _self.loadCount = 0;
+        let join = null;
+        if(result[0]['Edit']) {
+            join = this.state.devData.concat(result);
+        } else {
+            join = this.state.devData;
         }
-
+        this.props.handleLoadingSpinner(false);
+        this.setState({devData:join})
+        this.loadCount ++;
+        if(rgn.length == this.loadCount){
+            return
+        }
     }
+
     getDataDeveloper = (token, region) => {
 
         let serviceBody = {}
@@ -150,8 +126,8 @@ class SiteFourPageApps extends React.Component {
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
                 // All show app
-                // services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)
-                setTimeout(() => {services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)}, 0)
+                services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)
+                // setTimeout(() => {services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)}, 0)
             })
         } else {
             rgn.map((item) => {
@@ -167,7 +143,7 @@ class SiteFourPageApps extends React.Component {
                     }
                 }
                 // org별 show app
-                setTimeout(() => {services.getMCService('ShowApp',serviceBody, _self.receiveResult)}, 0)
+                services.getMCService('ShowApp',serviceBody, _self.receiveResult)
             })
         }
         

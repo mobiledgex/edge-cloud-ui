@@ -487,6 +487,35 @@ app.post('/passwordreset', apiMC.UpdatePassword)
 
 app.post('/Version', apiMC.getVersion)
 app.post('/SettingLock', apiMC.SettingLock)
+
+
+/***************************
+ * 2019 07 13
+ * start mextrix
+ ***************************/
+
+/*
+http --auth-type=jwt --auth=$SUPERPASS POST
+https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app <<<
+'{
+    "region":"US",
+    "appinst":{
+        "app_key":{
+            "developer_key":{"name":"MobiledgeX"},
+            "name":"aa-deployment","version":"aaa"
+        },
+        "cluster_inst_key":{
+            "cluster_key":{"name":"aaaa"},
+            "cloudlet_key":{"operator_key":{"name":"TDG"}}
+        }
+    },
+    "starttime":"2019-06-25T21:59:15Z",
+    "endtime":"2019-06-25T22:00:00Z"
+}'
+ */
+
+
+
 /*
 --auth-type=jwt --auth=$SUPERPASS
  */

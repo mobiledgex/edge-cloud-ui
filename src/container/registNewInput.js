@@ -57,7 +57,7 @@ const validate = values => {
 //     />
 // );
 
-const renderSelect = ({ input, options, placeholder, value, type, meta: { touched, error, warning } }) => (
+const renderSelect = ({ input, options, placeholder, value, type, error}) => (
     <div>
         <Form.Select
             name={input.name}
@@ -68,7 +68,7 @@ const renderSelect = ({ input, options, placeholder, value, type, meta: { touche
             value={value}
             fluid
         />
-        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+        {error && <span className="text-danger">{error}</span>}
     </div>
 );
 // const renderInputNum = field => (
@@ -81,7 +81,7 @@ const renderSelect = ({ input, options, placeholder, value, type, meta: { touche
 //         <Input fluid type="number"></Input>
 //     </Form.Field>
 // );
-const renderInputNum = ({ input, unit, label, placeholder, type, meta: { touched, error, warning } }) => (
+const renderInputNum = ({ input, unit, label, placeholder, type, error }) => (
     <div>
         <Form.Field
             {...input}
@@ -91,7 +91,7 @@ const renderInputNum = ({ input, unit, label, placeholder, type, meta: { touched
             <label>{label}</label>
             <Input fluid type="number"></Input>
         </Form.Field>
-        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+        {error && <span className="text-danger">{error}</span>}
     </div>
 
 );
@@ -108,7 +108,7 @@ const renderInputNum = ({ input, unit, label, placeholder, type, meta: { touched
 //     </div>
 //
 // );
-const renderInput = ({ input, placeholder, type, disabled, meta: { touched, error, warning } }) => (
+const renderInput = ({ input, placeholder, type, disabled, error }) => (
     <div>
         <Form.Input
             {...input}
@@ -117,11 +117,11 @@ const renderInput = ({ input, placeholder, type, disabled, meta: { touched, erro
             disabled={disabled}
             fluid
         />
-        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+        {error && <span className="text-danger">{error}</span>}
     </div>
 
 );
-const renderLocationInput = ({ input, placeholder, change, type, meta: { touched, error, warning } }) => (
+const renderLocationInput = ({ input, placeholder, change, type, error }) => (
     <div>
         <Form.Field
             {...input}
@@ -133,15 +133,7 @@ const renderLocationInput = ({ input, placeholder, change, type, meta: { touched
                    onChange={change}
                    placeholder={placeholder}></Input>
         </Form.Field>
-        {/* <Form.Input*/}
-        {/*    {...field.input}*/}
-        {/*    type={field.type}*/}
-        {/*    placeholder={field.placeholder}*/}
-        {/*    onChange={field.change}*/}
-        {/*    //value={field.value}*/}
-        {/*    fluid*/}
-        {/*/>*/}
-        {touched && ((error && <span className="text-danger">{error}</span>) || (warning && <span>{warning}</span>))}
+        {error && <span className="text-danger">{error}</span>}
     </div>
    
 );
@@ -223,23 +215,30 @@ class registNewInput extends React.Component {
             this.props.dispatch(change('registNewInput', 'Longitude', null));
 
         }
+
+        console.log("this.props.validError",this.props.validError)
+    }
+
+    handleClose = () => {
+        this.props.close()
+        this.props.dispatch(reset('registNewInput'));
     }
 
     render() {
         const { handleSubmit, data, dimmer, selected, regKeys,open, close, option, value, change, longLoc, latLoc, zoomIn, zoomOut, resetMap, locationLongLat, resetLocation, handleChangeLong, handleChangeLat, locationLong, locationLat } = this.props;
         // this.changeCloudLoc(cloudLoc);
-        
+        console.log("regKeysregKeysregKeys",regKeys,selected)
         return (
             <Fragment>
                 <Form onSubmit={handleSubmit} className={"fieldForm"}>
                     <Form.Group>
-                        <Modal style={{width:1200}} open={open} onClose={close}>
+                        <Modal style={{width:1200}} open={open} onClose={this.handleClose}>
                             <Modal.Header>Settings</Modal.Header>
                             <Modal.Content>
                                 <div style={{display:'flex', flexDirection:'row', width:'100%'}}>
                                     <Grid divided style={{width:800}}>
                                     {
-                                        (regKeys.length > 0)?
+                                        (regKeys && regKeys.length > 0)?
                                         regKeys.map((key, i)=>(
                                             <Grid.Row key={i} columns={3}>
                                                 <Grid.Column width={5} className='detail_item'>
@@ -265,7 +264,7 @@ class registNewInput extends React.Component {
                                                     : (key === 'Cloudlet')?
                                                     <Field component={renderSelect} placeholder='Select Cloudlet' name='Cloudlet' options={this.props.cloudArr} value={value[2]} />
                                                     : (key === 'Region')?
-                                                    <Field component={renderSelect} placeholder='Select Region' name='Region' options={this.state.regionStatic} onChange={this.handleRegionChange} />
+                                                    <Field component={renderSelect} placeholder='Select Region' name='Region' options={this.state.regionStatic} onChange={this.handleRegionChange} error={(this.props.validError.indexOf(key) !== -1)?'Required':''} />
                                                     : (key === 'Version')?
                                                     <Field component={renderSelect} placeholder='Select Version' name='Version' options={option[4]} value={value[4]} change={change[4]}/>
                                                     : (key === 'ClusterInst')?
@@ -283,14 +282,14 @@ class registNewInput extends React.Component {
                                                     : (key === 'CloudletLocation')?
                                                     <Grid>
                                                         <Grid.Row columns={2}>
-                                                            <Grid.Column><span>Latitude</span><Field ref={latLoc} name='Latitude' component={renderLocationInput} placeholder={(dimmer === 'blurring')? '' : (selected[key]) ? selected[key].latitude : null } change={handleChangeLat} /></Grid.Column>
-                                                            <Grid.Column><span>Longitude</span><Field ref={longLoc} name='Longitude' component={renderLocationInput} placeholder={(dimmer === 'blurring')? '' : (selected[key]) ? selected[key].longitude : null } change={handleChangeLong} /></Grid.Column>
+                                                            <Grid.Column><span>Latitude</span><Field ref={latLoc} name='Latitude' component={renderLocationInput} placeholder={(dimmer === 'blurring')? '' : (selected[key]) ? selected[key].latitude : null } change={handleChangeLat} error={(this.props.validError.indexOf('Latitude') !== -1)?'Required':''} /></Grid.Column>
+                                                            <Grid.Column><span>Longitude</span><Field ref={longLoc} name='Longitude' component={renderLocationInput} placeholder={(dimmer === 'blurring')? '' : (selected[key]) ? selected[key].longitude : null } change={handleChangeLong} error={(this.props.validError.indexOf('Longitude') !== -1)?'Required':''} /></Grid.Column>
                                                         </Grid.Row>
                                                     </Grid>
                                                     : (key === 'Num_dynamic_ips')?
-                                                    <Field component={renderInputNum} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } />
+                                                    <Field component={renderInputNum} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } error={(this.props.validError.indexOf(key) !== -1)?'Required':''} />
                                                     :
-                                                    <Field component={renderInput} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } />
+                                                    <Field component={renderInput} type="input" name={key} placeholder={(dimmer === 'blurring')? '' : selected[key] } error={(this.props.validError.indexOf(key) !== -1)?'Required':''} />
                                                 }
                                                 </Grid.Column>
                                                 <Grid.Column width={2}>
@@ -310,7 +309,7 @@ class registNewInput extends React.Component {
                                 </div>
                             </Modal.Content>
                             <Modal.Actions>
-                                <Button onClick={close}>
+                                <Button onClick={this.handleClose}>
                                     Cancel
                                 </Button>
                                 <Button

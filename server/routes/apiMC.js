@@ -1254,7 +1254,7 @@ exports.getVersion = (req, res) => {
 
 
 /**
- * http --auth-type=jwt --auth=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjE0MjM0MTcsImlhdCI6MTU2MTMzNzAxNywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImtpZCI6M30.ODvb9w1VBoP3Dc6CEaBebDv21uckQehWPsHMH9pRwK0j4IRSjckGvGfabUaTE2o0rxWmGS8as1a8ikpbIJ9mVw POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/restricted/user/update email=popkim71@gmail.com locked:=true
+ * http --auth-type=jwt --auth=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjMwMDM5OTMsImlhdCI6MTU2MjkxNzU5MywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImtpZCI6M30.VRTLHYhdtfc3PztxyZxaJS1AqXjHSVV1FiqghkiTRx1QkE6SNCl69m0Fu7ws4Smr9d3cTQ6ucz8vrVUCSi3uig POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/restricted/user/update email=popkim71@gmail.com locked:=false
  * http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/restricted/user/update email=wonhopark80@gmail.com locked:=true
  * @param req
  * @param res

@@ -88,11 +88,7 @@ class SiteFourPageAppInstReg extends React.Component {
     receiveResult(result) {
         console.log("receive == ", result)
         if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error',result.error)
         } else {
             _self.setState({devData:result})
         }
@@ -132,7 +128,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

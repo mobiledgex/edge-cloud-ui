@@ -26,14 +26,14 @@ const validate = values => {
 const roles =
     {
         Developer: [
-            { Users:'Manage', Cloudlets:'View', Flavor:'View', "Cluster Instance":'Manage', Apps:'Manage', "App Instance":'Manage'},
-            { Users:'View', Cloudlets:'View', Flavor:'View', "Cluster Instance":'Manage', Apps:'Manage', "App Instance":'Manage'},
-            { Users:'View', Cloudlets:'View', Flavor:'View', "Cluster Instance":'View', Apps:'View', "App Instance":'View'}
+            { Users:'Manage', Cloudlets:'View', Flavor:'View', 'Cluster Instance':'Manage', Apps:'Manage', 'App Instance':'Manage'},
+            { Users:'View', Cloudlets:'View', Flavor:'View', 'Cluster Instance':'Manage', Apps:'Manage', 'App Instance':'Manage'},
+            { Users:'View', Cloudlets:'View', Flavor:'View', 'Cluster Instance':'View', Apps:'View', 'App Instance':'View'}
         ],
         Operator: [
-            { Users:'Manage', Cloudlets:'Manage', Flavor:'disabled', "Cluster Instance":'disabled', Apps:'disabled', "App Instance":'disabled'},
-            { Users:'View', Cloudlets:'View', Flavor:'disabled', "Cluster Instance":'Manage', Apps:'disabled', "App Instance":'disabled'},
-            { Users:'View', Cloudlets:'View', Flavor:'disabled', "Cluster Instance":'disabled', Apps:'disabled', "App Instance":'disabled'},
+            { Users:'Manage', Cloudlets:'Manage', Flavor:'disabled', 'Cluster Instance':'disabled', Apps:'disabled', 'App Instance':'disabled'},
+            { Users:'View', Cloudlets:'View', Flavor:'disabled', 'Cluster Instance':'Manage', Apps:'disabled', 'App Instance':'disabled'},
+            { Users:'View', Cloudlets:'View', Flavor:'disabled', 'Cluster Instance':'disabled', Apps:'disabled', 'App Instance':'disabled'},
         ]
     }
 
@@ -158,24 +158,24 @@ const makeListView = () => (
 
 
 const userAvatar = [
-    'https://react.semantic-ui.com/images/avatar/large/matthew.png',
-    'https://react.semantic-ui.com/images/avatar/large/elliot.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/daniel.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/jenny.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/molly.png',
-    'https://react.semantic-ui.com/images/avatar/large/steve.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/helen.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/ade.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/nan.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/chris.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/veronika.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/stevie.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/justen.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/tom.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/christian.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/matt.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/joe.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/zoe.jpg',
+    'assets/avatar/large/matthew.png',
+    'assets/avatar/large/elliot.jpg',
+    'assets/avatar/large/daniel.jpg',
+    'assets/avatar/large/jenny.jpg',
+    'assets/avatar/large/molly.png',
+    'assets/avatar/large/steve.jpg',
+    'assets/avatar/large/helen.jpg',
+    'assets/avatar/large/ade.jpg',
+    'assets/avatar/large/nan.jpg',
+    'assets/avatar/large/chris.jpg',
+    'assets/avatar/large/veronika.jpg',
+    'assets/avatar/large/stevie.jpg',
+    'assets/avatar/large/justen.jpg',
+    'assets/avatar/large/tom.jpg',
+    'assets/avatar/large/christian.jpg',
+    'assets/avatar/large/matt.jpg',
+    'assets/avatar/large/joe.jpg',
+    'assets/avatar/large/zoe.jpg',
 
 
 ]
@@ -183,7 +183,7 @@ const userAvatar = [
 let avatarRandom = Math.floor(Math.random() * userAvatar.length);
 
 const makeCardContent = (item, i, type) => (
-    <Grid.Row>
+    <Grid.Row style={{ display:'flex', flexGrow:'1', marginBottom:'14px' }}>
         <Card>
             <Card.Content>
                 <Card.Header>{item['header']}</Card.Header>
@@ -270,10 +270,10 @@ class SiteFourOrgaAdduser extends React.Component {
                                             </Grid.Column>
                                         </Grid.Row>
                                         <Grid.Row>
-                                            <Grid.Column width={5}>
+                                            <Grid.Column width={4}>
                                                 <div>Username</div>
                                             </Grid.Column>
-                                            <Grid.Column width={11}>
+                                            <Grid.Column width={12}>
                                                 <Field
                                                     component={renderInput}
                                                     name="username"
@@ -283,10 +283,10 @@ class SiteFourOrgaAdduser extends React.Component {
                                             </Grid.Column>
                                         </Grid.Row>
                                         <Grid.Row>
-                                            <Grid.Column width={5}>
+                                            <Grid.Column width={4}>
                                                 <div>OrganizationName</div>
                                             </Grid.Column>
-                                            <Grid.Column width={11}>
+                                            <Grid.Column width={12}>
                                                 <Field
                                                     component={renderInput}
                                                     name="orgName"
@@ -296,10 +296,10 @@ class SiteFourOrgaAdduser extends React.Component {
                                             </Grid.Column>
                                         </Grid.Row>
                                         <Grid.Row>
-                                            <Grid.Column width={5}>
+                                            <Grid.Column width={4}>
                                                 <div>Type</div>
                                             </Grid.Column>
-                                            <Grid.Column width={11}>
+                                            <Grid.Column width={12}>
                                                 <Field
                                                 component={renderInput}
                                                 name="orgType"
@@ -309,10 +309,10 @@ class SiteFourOrgaAdduser extends React.Component {
                                             </Grid.Column>
                                         </Grid.Row>
                                         <Grid.Row>
-                                            <Grid.Column width={5}>
+                                            <Grid.Column width={4}>
                                                 <div>Role</div>
                                             </Grid.Column>
-                                            <Grid.Column width={11}>
+                                            <Grid.Column width={12}>
                                                 <Field
                                                     component={renderSelect}
                                                     lable="Role"

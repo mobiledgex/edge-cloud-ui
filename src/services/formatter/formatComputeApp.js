@@ -27,6 +27,21 @@ const numberDes =(a,b)=> (
   deployment_generator: 'kubernetes-basic' }
 
  */
+let newRegistKey = [
+    'Region',
+    'DeveloperName',
+    'AppName',
+    'Version',
+    'DeploymentType',
+    'ImageType',
+    'ImagePath',
+    'DefaultFlavor',
+    'Ports',
+    // 'IpAccess',
+    //'Cluster',
+    'Command',
+    'DeploymentMF',
+];
 let generateData = (datas,body) => {
     console.log('format data apps - ', JSON.stringify(datas.data))
     let values = [];
@@ -45,7 +60,24 @@ let generateData = (datas,body) => {
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
             if(dataResult.error || dataResult.message || !dataResult.data) {
-                console.log("error")
+                console.log("20190712 error")
+                values.push({
+                    Region:'',
+                    OrganizationName:'',
+                    AppName:'',
+                    Version:'',
+                    DeploymentType:'',
+                    ImageType:'',
+                    ImagePath:'',
+                    DefaultFlavor:'',
+                    Ports:'',
+                    // IpAccess:IpAccess,
+                    //Cluster:Cluster,
+                    Command:'',
+                    DeploymentMF:'',
+                    Edit:null
+
+                })
             } else {
                 console.log("gogogo@#@")
                 let Index = i;
@@ -62,21 +94,7 @@ let generateData = (datas,body) => {
                 let Ports = dataResult.data.access_ports || '-';
                 //let DeploymentGenerator = dataResult.deployment_generator || '-';
 
-                let newRegistKey = [
-                    'Region',
-                    'DeveloperName',
-                    'AppName',
-                    'Version',
-                    'DeploymentType',
-                    'ImageType',
-                    'ImagePath',
-                    'DefaultFlavor',
-                    'Ports',
-                    // 'IpAccess',
-                    //'Cluster',
-                    'Command',
-                    'DeploymentMF',
-                ];
+
 
                 values.push({
                     Region:Region,

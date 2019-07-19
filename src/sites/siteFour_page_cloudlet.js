@@ -38,6 +38,7 @@ class SiteFourPageCloudlet extends React.Component {
         this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips'];
         this.headerLayout = [1,4,4,4];
         this.userToken = null;
+        this._devData = [];
     }
 
     //go to
@@ -77,6 +78,7 @@ class SiteFourPageCloudlet extends React.Component {
     componentWillUnmount() {
 
         this.setState({liveComp:false})
+        this._devData = [];
     }
 
 
@@ -110,21 +112,25 @@ class SiteFourPageCloudlet extends React.Component {
         }
     }
     receiveResult = (result) => {
-        let join = this.state.devData.concat(result);
-        this.props.handleLoadingSpinner(false);
-        console.log("receive cloudlet == ", result)
+        if(result.length){
+            let join = null;
+            if(result[0]['Edit']) {
+                join = _self.state.devData.concat(result);
+            } else {
+                join = _self.state.devData;
+            }
+            _self.props.handleLoadingSpinner(false);
+            console.log("receive cloudlet == ", result)
 
-        if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-
+            if(result.error) {
+                this.props.handleAlertInfo('error',result.error)
+            } else {
+                _self.setState({devData:join})
+            }
         } else {
-            _self.setState({devData:join})
-
+            //alert('Loading Fail')
         }
+
     }
     getDataDeveloper = (region) => {
         // if(!this.state.liveComp) {
@@ -178,7 +184,8 @@ const mapDispatchProps = (dispatch) => {
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

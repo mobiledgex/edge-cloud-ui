@@ -19,7 +19,7 @@ import PopDetailViewer from './popDetailViewer';
 import * as computeService from '../services/service_compute_service';
 import MaterialIcon from 'material-icons-react';
 import ReactJson from 'react-json-view'
-
+import * as aggregate from '../utils'
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -191,9 +191,9 @@ class MapWithListView extends React.Component {
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%', height:'100%'}} >
 
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
-                        {(this.state.dummyData.length)?
-                            this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys) :
-                            (this.state.noData)?<div style={{padding:20}}>When you click the New button, the Create New tab appears as the default view.</div>:null
+                        {
+                            this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys)
+
                         }
                     </div>
 
@@ -246,14 +246,15 @@ class MapWithListView extends React.Component {
         let keys = Object.keys(_keys);
         let widthDefault = Math.round(16/keys.length);
         console.log('default width header -- ', widthDefault)
+
         return keys.map((key, i) => (
             (!( String(hidden).indexOf(key) > -1 ))?
                 (i === keys.length -1) ?
-                <Table.HeaderCell key={i} className='unsortable' width={2} textAlign='center'>
+                <Table.HeaderCell key={i} className='unsortable' textAlign='center'>
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell key={i} className={(key === 'CloudletLocation' || key === 'Edit' || key === 'Progress')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key == 'CloudletLocation' || key == 'Edit' || key == 'Progress')?null:this.handleSort(key)}>
+                <Table.HeaderCell key={i} className={(key === 'CloudletLocation' || key === 'Edit' || key === 'Progress')?'unsortable':''} textAlign='center' sorted={column === key ? direction : null} onClick={(key == 'CloudletLocation' || key == 'Edit' || key == 'Progress')?null:this.handleSort(key)}>
                     {(key === 'CloudletName')? 'Cloudlet Name'
                         : (key === 'CloudletLocation')? 'Cloudlet Location'
                             : (key === 'ClusterName')? 'Cluster Name'
@@ -327,6 +328,12 @@ class MapWithListView extends React.Component {
         return {new:isNew, days:darray[0]};
     }
 
+    makeTableRow =() => {
+        let row = null;
+
+        return row;
+    }
+
     TableExampleVeryBasic = (w, h, headL, hidden) => (
         <Table className="viewListTable" basic='very' striped celled fixed sortable ref={ref => this.viewListTable = ref} style={{width:'100%'}}>
             <Table.Header className="viewListTableHeader"  style={{width:'100%'}}>
@@ -335,53 +342,51 @@ class MapWithListView extends React.Component {
                 </Table.Row>
             </Table.Header>
             <Table.Body className="tbBodyList">
-                {   
-                
-                    //(!this.state.dummyData[0].ClusterName && !this.state.dummyData[0].Developer) ?
-                    //(this.state.dummyData[0][Object.keys(this.state.dummyData[0])[0]] !== "") ?
-                    ((this.state.dummyData[0])?this.state.dummyData[0][Object.keys(this.state.dummyData[0])[0]]:true) ?
+                {
+
                         this.state.dummyData.map((item, i) => (
                             <Table.Row key={i}>
                                 {Object.keys(item).map((value, j) => (
                                     (value === 'Edit')?
+                                        String(item[value]) === 'null' ? <Table.Cell/> :
                                         <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                             <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
                                         </Table.Cell>
                                     :
-                                    (value === 'AppName')? //
+                                    (value === 'AppName' && item[value])? //
                                         <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace' style={{display:'flex', justifyContent:'row'}}>
+                                            <div style={{display:'flex', justifyContent:'row'}}>
                                                 {this.compareDate(item['Created']).new ? <div className="userNewMark">{`New`}</div> : null} {String(item[value])}
                                             </div>
                                         </Table.Cell>
                                     :
-                                    (value === 'Mapped_ports')?
+                                    (value === 'Mapped_ports' && item[value])?
                                         <Table.Cell key={j} textAlign='left' style={(this.state.selectedItem == i)?{background:'#444'} :null} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Icon name='server' size='big' onClick={() => this.onPortClick(value, item)} style={{cursor:'pointer'}}></Icon>
                                         </Table.Cell>
                                     :
-                                    (value === 'CloudletLocation')?
+                                    (value === 'CloudletLocation' && item[value])?
                                         <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
+                                            <div>
                                             {`Latitude : ${item[value].latitude}`} <br />
                                             {`Longitude : ${item[value].longitude}`}
                                             </div>
                                         </Table.Cell>
                                     :
-                                    (value === 'IpAccess')?
+                                    (value === 'IpAccess' && item[value])?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             {(item[value] == 0)? "IpAccessUnknown" : (item[value] == 1)? "Dedicated" : (item[value] == 2)? "IpAccessDedicatedOrShared" : (item[value] == 3)? "Shared" : item[value]}
                                             {/*{item[value]}*/}
                                         </Table.Cell>
                                     :
-                                    (value === 'State')?
+                                    (value === 'State' && item[value])?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             {(item[value] == 0)? "Tracked State Unknown" : (item[value] == 1)? "Not Present" : (item[value] == 2)? "Create Requested" : (item[value] == 3)? "Creating" : (item[value] == 4)? "Create Error" : (item[value] == 5)? "Ready" : (item[value] == 6)? "Update Requested" : (item[value] == 7)? "Updating" : (item[value] == 8)? "Update Error" : (item[value] == 9)? "Delete Requested" : (item[value] == 10)? "Deleting" : (item[value] == 11)? "Delete Error" : (item[value] == 12)? "Delete Prepare" : item[value]}
                                             {/*{item[value]}*/}
                                         </Table.Cell>
                                     :
-                                    (value === 'Progress' && item['State'] == 3)?
+                                    (value === 'Progress'  && item['State'] == 3)?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Popup content='View Progress' trigger={<Icon loading size={12} color='green' name='circle notch' />} />
                                         </Table.Cell>
@@ -398,7 +403,7 @@ class MapWithListView extends React.Component {
                                     :
                                     (!( String(hidden).indexOf(value) > -1 )) ?
                                         <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
+                                            <div>
                                             {String(item[value])}
                                             </div>
                                         </Table.Cell>
@@ -406,11 +411,7 @@ class MapWithListView extends React.Component {
                                 ))}
                             </Table.Row>
                         ))
-                    : <Table.Row>
-                        <Table.Cell colSpan={Object.keys(this.state.dummyData[0]).length} textAlign='center' style={{fontSize:'1em'}}>
-                            -
-                        </Table.Cell>
-                    </Table.Row>
+
 
                 }
             </Table.Body>
@@ -433,13 +434,19 @@ class MapWithListView extends React.Component {
         let self = this;
         setTimeout(() => self.setState({tooltipVisible:true}), 1000)
 
+
+
+    }
+    componentWillUnmount() {
+
+        //alert('unmount map with list view')
+        this.props.handleSetHeader([])
     }
     // componentDidUpdate(prevProps, prevState, snapshot) {
     //     console.log('-----component did update ------', prevState.dummyData, this.state.dummyData)
     // }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('view mode nextProps--------', nextProps,this.props.clickCity, 'random=', nextProps.randomValue, 'data=', nextProps.devData)
 
         let cityCoordinates = []
         let filterList = []
@@ -451,8 +458,52 @@ class MapWithListView extends React.Component {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
+        console.log('20190718 nextProps.devData', nextProps.devData, 'props hiddenkey..',this.props.hiddenKeys)
         if(nextProps.devData.length) {
-            this.setState({dummyData:nextProps.devData}) 
+            //set filtering
+            let filteredData = [];
+            if(this.state.dummyData.length === 0) {
+                let headers = Object.keys(nextProps.devData[0])
+                let filters = [];
+                headers.map((item) => {
+                    let _state = false;
+                    this.props.hiddenKeys.map((hkey)=>{
+                        if(item === hkey){
+                            _state = true
+                        }
+                    })
+                    filters.push({name:item, hidden:_state })
+                })
+                this.props.handleSetHeader(filters)
+            }
+
+
+            //remove item from object by key name
+            /*******
+             * filtering
+             */
+            // console.log('20190718 newData...', this.state.dummyData)
+            // console.log('20190718 nextProps.devData...', nextProps.devData)
+            // let newData = [];
+            // let headers = Object.keys(nextProps.devData[0]);
+            // let copyData = Object.assign([], nextProps.devData);
+            // headers.map((item) => {
+            //     let _state = false;
+            //     this.props.hiddenKeys.map((hkey)=>{
+            //         if(item === hkey){
+            //             copyData.map((data) => {
+            //                 delete data[hkey]
+            //             })
+            //         }
+            //     })
+
+            // })
+
+
+
+            // console.log('20190718 newData 2222222222222', copyData)
+            // this.setState({dummyData:copyData})
+
         }else {
             this.checkLengthData();
         }
@@ -546,7 +597,7 @@ const mapDispatchProps = (dispatch) => {
         handleDetail: (data) => { dispatch(actions.changeDetail(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleRefreshData: (data) => { dispatch(actions.refreshData(data))},
-        handleBlinkMark: (data) => { dispatch(actions.blinkMark(data))}
+        handleSetHeader: (data) => { dispatch(actions.tableHeaders(data))}
 
     };
 };

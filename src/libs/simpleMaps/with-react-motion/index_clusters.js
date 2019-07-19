@@ -594,6 +594,7 @@ const paths = [
     'M 34.945312 17.558594 C 34.945312 27.097656 17.539062 49.683594 17.539062 49.683594 C 17.539062 49.683594 0.132812 27.097656 0.132812 17.558594 C 0.132812 8.019531 7.921875 0.289062 17.539062 0.289062 C 27.152344 0.289062 34.945312 8.019531 34.945312 17.558594 Z M 34.945312 17.558594'
 ]
 const MarkerComponent = (self, city, i, config) => (
+    (!isNaN(city.coordinates[0])) ?
     <Marker className="markerTwo" key={i} marker={city}
             onClick={ self.handleCityClick }
             onMouseOver={self.handleMoveMk}
@@ -672,13 +673,14 @@ const MarkerComponent = (self, city, i, config) => (
                     <feComposite in2="firstfilter" operator="over"></feComposite>
                 </filter>
             </defs>
-            <path filter="url(#innershadow)" className={config.cName} d={paths[config.path]} ref={ref => self.circle = ref}
-                  data-tip='tooltip' data-for='happyFace'>
+            <path filter="url(#innershadow)" className={config.cName} d={paths[config.path]} ref={ref => self.circle = ref}>
             </path>
         </g>
-        <text textAnchor="middle" y={8} className="marker_value"
-              style={{fontSize: 24}}>
-            {city.cost}
-        </text>
-    </Marker>
+        <g data-tip='tooltip' data-for='happyFace'>
+            <text textAnchor="middle" y={8} className="marker_value"
+                  style={{fontSize: 24}}>
+                {city.cost}
+            </text>
+        </g>
+    </Marker>: null
 )

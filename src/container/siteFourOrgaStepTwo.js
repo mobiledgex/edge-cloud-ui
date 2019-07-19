@@ -27,14 +27,14 @@ const validate = values => {
 const roles =
     {
         Developer: [
-            { Users:'Manage', Cloudlets:'View', Flavor:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
-            { Users:'View', Cloudlets:'View', Flavor:'View', ClusterInst:'Manage', Apps:'Manage', AppInst:'Manage'},
-            { Users:'View', Cloudlets:'View', Flavor:'View', ClusterInst:'View', Apps:'View', AppInst:'View'}
+            { Users:'Manage', Cloudlets:'View', Flavor:'View', 'Cluster Flavor':'View', 'Cluster Instance':'Manage', Apps:'Manage', 'App Instance':'Manage'},
+            { Users:'View', Cloudlets:'View', Flavor:'View', 'Cluster Flavor':'View', 'Cluster Instance':'Manage', Apps:'Manage', 'App Instance':'Manage'},
+            { Users:'View', Cloudlets:'View', Flavor:'View', 'Cluster Flavor':'View', 'Cluster Instance':'View', Apps:'View', 'App Instance':'View'}
         ],
         Operator: [
-            { Users:'Manage', Cloudlets:'Manage', Flavor:'disabled', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
-            { Users:'View', Cloudlets:'Manage', Flavor:'disabled', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
-            { Users:'View', Cloudlets:'View', Flavor:'disabled', ClusterInst:'disabled', Apps:'disabled', AppInst:'disabled'},
+            { Users:'Manage', Cloudlets:'Manage', Flavor:'disabled', 'Cluster Flavor':'disabled', 'Cluster Instance':'disabled', Apps:'disabled', 'App Instance':'disabled'},
+            { Users:'View', Cloudlets:'View', Flavor:'disabled', 'Cluster Flavor':'disabled', 'Cluster Instance':'Manage', Apps:'disabled', 'App Instance':'disabled'},
+            { Users:'View', Cloudlets:'View', Flavor:'disabled', 'Cluster Flavor':'disabled', 'Cluster Instance':'disabled', Apps:'disabled', 'App Instance':'disabled'},
         ]
     }
 
@@ -175,28 +175,30 @@ const makeListView = () => (
 )
 
 
-const userAvatar = [
-    'https://react.semantic-ui.com/images/avatar/large/matthew.png',
-    'https://react.semantic-ui.com/images/avatar/large/elliot.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/daniel.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/jenny.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/molly.png',
-    'https://react.semantic-ui.com/images/avatar/large/steve.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/helen.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/ade.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/nan.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/chris.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/veronika.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/stevie.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/justen.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/tom.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/christian.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/matt.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/joe.jpg',
-    'https://react.semantic-ui.com/images/avatar/large/zoe.jpg',
+// const userAvatar = [
+//     'https://react.semantic-ui.com/images/avatar/large/matthew.png',
+//     'https://react.semantic-ui.com/images/avatar/large/elliot.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/daniel.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/jenny.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/molly.png',
+//     'https://react.semantic-ui.com/images/avatar/large/steve.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/helen.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/ade.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/nan.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/chris.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/veronika.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/stevie.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/justen.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/tom.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/christian.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/matt.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/joe.jpg',
+//     'https://react.semantic-ui.com/images/avatar/large/zoe.jpg',
+//
+//
+// ]
 
-
-]
+const userAvatar = [];
 
 let avatarRandom = Math.floor(Math.random() * userAvatar.length);
 

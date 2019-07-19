@@ -44,6 +44,7 @@ class RegistNewItem extends React.Component {
             cloudletResult:null,
             cloudlets:null,
             appResult:null,
+            validateError:[],
             devOptionsOrgType:[
                 {
                     key:'Developer',
@@ -186,13 +187,7 @@ class RegistNewItem extends React.Component {
         let onlyNum = value;
         if(onlyNum > 180 || onlyNum < -180) {
             console.log("in",onlyNum)
-            //alert("-180 ~ 180");
-            Alert.error("-180 ~ 180", {
-                position: 'top-right',
-                effect: 'slide',
-                beep: true,
-                timeout: 2000
-            });
+            this.props.handleAlertInfo('error',"-180 ~ 180")
             e.target.value=null;
             return
         }
@@ -207,13 +202,7 @@ class RegistNewItem extends React.Component {
         }
         let onlyNum = value;
         if(onlyNum > 90 || onlyNum < -90) {
-            //alert("-90 ~ 90");
-            Alert.error("-90 ~ 90", {
-                position: 'top-right',
-                effect: 'slide',
-                beep: true,
-                timeout: 2000
-            });
+            this.props.handleAlertInfo('error',"-90 ~ 90")
             e.target.value=null;
             return
         }
@@ -372,33 +361,17 @@ class RegistNewItem extends React.Component {
     }
 
     receiveSubmitCloudlet = (result, body) => {
+        
         console.log('registry new ... success resultcloudlet@..', result.data, body)
-        _self.props.handleLoadingSpinner(false);
-        _self.props.refresh('All')
+        
+        this.props.refresh('All')
         if(result.data.error) {
-            Alert.error(result.data.error, {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('error!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
+            this.props.handleAlertInfo('error',result.data.error)
             return;
         } else {
-            Alert.success('Cloudlet '+body.params.cloudlet.key.name+' created successfully', {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('aye!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
+            this.props.handleAlertInfo('success','Cloudlet '+body.params.cloudlet.key.name+' created successfully')
         }
+        this.props.handleLoadingSpinner(false);
     }
 
     onSubmit = () => {
@@ -437,31 +410,15 @@ class RegistNewItem extends React.Component {
             console.log("submitCloudlet@@",this.props.cloudletValue.values)
             const cloudlet = ['Region','CloudletName','OperatorName','Latitude','Longitude','Num_dynamic_ips']
             let error = [];
-            if(!this.props.cloudletValue.values) {
-                Alert.error('Insert values to all fields', {
-                    position: 'top-right',
-                    effect: 'slide',
-                    timeout: 3000,
-                });
-                return false;
-            } else {
-                cloudlet.map((item) => {
-                    if(!this.props.cloudletValue.values[item]) {
-                        error.push(item)
-                    }
-                })
-                if(error.length > 0) {
-                    Alert.error('Insert values to '+error[0]+' field', {
-                        position: 'top-right',
-                        effect: 'slide',
-                        timeout: 3000,
-                    });
-                    return false;
+            cloudlet.map((item) => {
+                if(!this.props.cloudletValue.values[item]) {
+                    error.push(item)
                 }
-            }
+            })
+            console.log("derrorerrorerror",error)
 
             const {CloudletName, OperatorName, Latitude, Longitude, IpSupport, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
-            this.props.handleLoadingSpinner(true);
+            
             serviceBody = {
                 "token":store.userToken,
                 "params": {
@@ -481,15 +438,21 @@ class RegistNewItem extends React.Component {
                     }
                 }
             }
-            //this.props.handleLoadingSpinner(true);
-            service.createNewCloudlet('CreateCloudlet', serviceBody, this.receiveSubmitCloudlet)
+            if(error.length == 0) {
+                this.close();
+                this.props.handleLoadingSpinner(true);
+                service.createNewCloudlet('CreateCloudlet', serviceBody, this.receiveSubmitCloudlet)
+            }
+            this.setState({validateError:error})
+            
+
         }
         //close
         //this.close();
-        this.close();
+        
     }
     close = () => {
-        this.setState({ open: false })
+        this.setState({ open: false, validateError:[] })
         this.props.close()
     }
     onClickInput(a, b) {
@@ -557,6 +520,7 @@ class RegistNewItem extends React.Component {
                 locationLat={this.state.locationLat}
                 cloudArr={this.state.cloudletList}
                 getOptionData={this.getOptionData}
+                validError={this.state.validateError}
             >
             </RegistNewInput>
         )
@@ -564,7 +528,7 @@ class RegistNewItem extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log("statestatestate",state)
+    console.log("statestatestate",state.form.registNewInput)
     let formCloudlet= state.form.registNewInput
     ? {
         values: state.form.registNewInput.values
@@ -586,6 +550,7 @@ const mapDispatchProps = (dispatch) => {
         handleMapLong: (data) => { dispatch(actions.mapCoordinatesLong(data))},
         handleMapLat: (data) => { dispatch(actions.mapCoordinatesLat(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
         // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))}
     };
 };

@@ -30,7 +30,7 @@ let generateData = (datas,body) => {
     if(toJson){
         toJson.map((dataResult, i) => {
             if(dataResult.message) {
-
+                values.push({Region:'', ClusterFlavor:'', MasterFlavor:'', NumberOfMasterNode:'', NodeFlavor:'', NumberOfNode:'', MaximumNodes:'', Edit:null})
             } else {
             let Index = i;
             let Region = body.region || '-';

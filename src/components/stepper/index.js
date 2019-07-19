@@ -88,10 +88,24 @@ class VerticalLinearStepper extends React.Component {
                 } else {
                     task_number = item.Status.task_number;
                 }
-                let _activeStep = 
-                    (item.State == 10 || item.State == 12) ? 
-                        (item.State == 12)?0:(item.State == 10)?1:2 : 
-                        (task_number)?task_number-1:3
+
+                let _activeStep = 0
+                //Delete
+                if(item.State == 10 || item.State == 12){
+                    if(item.State == 12) _activeStep = 0
+                    else if(item.State == 10) _activeStep = 1
+                    else _activeStep = 2
+                }
+                //Create
+                if(!task_number && item.State == 3){
+                    _activeStep = 0
+                } else if(task_number && item.State == 3) {
+                    _activeStep = task_number-1
+                } else {
+                    _activeStep = 3
+                }
+
+                
                 console.log("_activeStep@@",_activeStep)
                 this.setState({activeStep:_activeStep})
             }
@@ -132,17 +146,19 @@ class VerticalLinearStepper extends React.Component {
             else return 100
         } else {
             if(this.props.site == 'ClusterInst') {
-                if(item.Status.task_number == 1 && !item.Status.step_name) return 20
+                if(Object.keys(item.Status).length === 0 && item.State == 3) return 0
+                else if(item.Status.task_number == 1 && !item.Status.step_name) return 20
                 else if(item.Status.task_number == 1 && item.Status.step_name) return 30
                 else if(item.Status.task_number == 2 && !item.Status.step_name) return 50
                 else if(item.Status.task_number == 2 && item.Status.step_name) return 70
                 else if(item.Status.task_number == 3) return 90
-                else if(Object.keys(item.Status).length === 0) return 100
+                else if(Object.keys(item.Status).length === 0 && item.State == 5) return 100
             } else if(this.props.site == 'appinst') {
-                if(item.Status.task_number == 1) return 30
+                if(Object.keys(item.Status).length === 0 && item.State == 3) return 0
+                else if(item.Status.task_number == 1) return 30
                 else if(item.Status.task_number == 2) return 50
                 else if(item.Status.task_number == 3) return 80
-                else if(Object.keys(item.Status).length === 0) return 100
+                else if(Object.keys(item.Status).length === 0 && item.State == 5) return 100
             }
             
         }

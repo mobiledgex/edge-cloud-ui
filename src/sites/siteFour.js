@@ -48,6 +48,7 @@ import * as Service from '../services/service_login_api';
 import * as computeService from '../services/service_compute_service';
 
 import Alert from 'react-s-alert';
+import DropDownFilter from '../components/dropDownFilter';
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
@@ -101,7 +102,7 @@ class SiteFour extends React.Component {
                 { key: 1, text: 'All', value: 'All' },
                 { key: 2, text: 'US', value: 'US' },
                 { key: 3, text: 'EU', value: 'EU' }
-                ],
+            ],
             nextPosX:window.innerWidth / 2 ,
             nextPosY:window.innerHeight / 2,
             nextOpacity:1,
@@ -116,7 +117,7 @@ class SiteFour extends React.Component {
             currentVersion:'v-',
             searchChangeValue:'Username',
             menuClick:false,
-            showItem:false
+            showItem:false,
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
@@ -159,6 +160,8 @@ class SiteFour extends React.Component {
 
         this.speed = { stiffness: 500, damping: 100 }
         this.speedOpacity = { stiffness: 500, damping: 100 }
+
+        this.selectedfilters = [];
     }
     PopupExampleFlowing = () => (
         <Popup trigger={<Button>Show flowing popup</Button>} flowing hoverable>
@@ -194,7 +197,7 @@ class SiteFour extends React.Component {
         let mainPath = site;
         let subPath = 'pg=0';
         _self.props.handleChangeViewBtn(false)
-        
+
         //_self.props.handleChangeClickCity([]);
         _self.props.handleSelectOrg('')
         _self.props.handleUserRole('')
@@ -331,10 +334,10 @@ class SiteFour extends React.Component {
             trigger={<Icon name='question circle outline' size='small' style={{marginTop:0,paddingLeft:10}}/>}
             content=
                 {(key=='Cloudlets')? 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator.'
-                :(key=='Cluster Instances')? 'ClusterInst is an instance of a Cluster on a Cloudlet. It is defined by a Cluster, Cloudlet, and Developer key.'
-                :(key=='Apps')? 'App belongs to developers and is used to provide information about their application.'
-                :(key=='App Instances')? 'AppInst is an instance of an App on a Cloudlet where it is defined by an App plus a ClusterInst key. Many of the fields here are inherited from the App definition.'
-                : key
+                    :(key=='Cluster Instances')? 'ClusterInst is an instance of a Cluster on a Cloudlet. It is defined by a Cluster, Cloudlet, and Developer key.'
+                        :(key=='Apps')? 'App belongs to developers and is used to provide information about their application.'
+                            :(key=='App Instances')? 'AppInst is an instance of an App on a Cloudlet where it is defined by an App plus a ClusterInst key. Many of the fields here are inherited from the App definition.'
+                                : key
                 }
             // content={this.state.tip}
             // style={style}
@@ -357,7 +360,7 @@ class SiteFour extends React.Component {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
         this.setState({contWidth:(window.innerWidth-this.menuW)})
-
+        //this.selectedfilters = [];
 
     }
     componentDidMount() {
@@ -371,20 +374,20 @@ class SiteFour extends React.Component {
         //     computeService.getMCService('showController', {token:store.userToken}, this.receiveResult, this);
         // }
         //if there is no role
-            //site1으로 이동할 수 없는 문제로 아래 코드 주석처리 by inki
-            //show you create the organization view
-            //this.setState({page:'pg=0'})
-            //this.gotoUrl('/site4', 'pg=0')
-            //this.gotoPreview('/site4');
+        //site1으로 이동할 수 없는 문제로 아래 코드 주석처리 by inki
+        //show you create the organization view
+        //this.setState({page:'pg=0'})
+        //this.gotoUrl('/site4', 'pg=0')
+        //this.gotoPreview('/site4');
         //this.props.history.location.search = "pg=0";
 
 
         this.disableBtn();
-        
+
         this.getAdminInfo(store.userToken);
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
-            if(elem){ 
+            if(elem){
                 //_self.makeGhost(elem, _self)
             }
         }, 4000)
@@ -392,8 +395,6 @@ class SiteFour extends React.Component {
 
     }
     componentWillReceiveProps(nextProps) {
-        console.log("props!!!!",nextProps,this.props)
-        let store = JSON.parse(localStorage.PROJECT_INIT);
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         this.setState({contWidth:(window.innerWidth-this.menuW)})
@@ -409,7 +410,7 @@ class SiteFour extends React.Component {
         //     this.setState({menuClick:false})
         // }
 
-        
+
 
         // if(nextProps.creatingSpinner && this.state.toggleState) {
         //     this.getIntervalData();
@@ -427,7 +428,7 @@ class SiteFour extends React.Component {
         //     this.setState({viewMode:'listView'})
         // }
 
-        //Redux Alert 
+        //Redux Alert
         if(nextProps.alertInfo.mode) {
             Alert.closeAll();
             if(nextProps.alertInfo.mode === 'success') {
@@ -448,6 +449,16 @@ class SiteFour extends React.Component {
                 });
             }
             nextProps.handleAlertInfo('','');
+        }
+
+        //set filters
+        if(nextProps.tableHeaders) {
+            this.setState({showItem:false})
+            if(nextProps.tableHeaders.length) {
+                this.setState({tableHeaders:nextProps.tableHeaders})
+            } else {
+
+            }
         }
     }
 
@@ -479,7 +490,7 @@ class SiteFour extends React.Component {
                             // loading={true}
                         />
                     </div>
-                :null}
+                    :null}
             </div>
 
         </Menu.Item>
@@ -529,7 +540,7 @@ class SiteFour extends React.Component {
             }
         })
 
-        
+
     }
 
     searchChange = (e, {value}) => {
@@ -537,21 +548,28 @@ class SiteFour extends React.Component {
         this.props.handleSearchValue(this.props.searchValue,value)
     }
 
-    DropdownIconFilter = () => (
-        <Dropdown text='Filter' icon='filter' floating labeled button className='icon' onClick={() => this.setState(prevState => ({ showItem: !prevState.showItem }))}>
-            {
-                (this.state.showItem)?
-                    <Dropdown.Menu>
-                        <Dropdown.Item icon='attention' text='Important' />
-                        <Dropdown.Item icon='comment' text='Announcement' />
-                        <Dropdown.Item icon='conversation' text='Discussion' />
-                    </Dropdown.Menu>
-                    :
-                    null
-            }
 
-        </Dropdown>
-    )
+    options = [
+        {
+            key: 1,
+            text: 'Mobile',
+            value: 1,
+            content: <Header icon='mobile' content='Mobile' subheader='The smallest size' />,
+        },
+        {
+            key: 2,
+            text: 'Tablet',
+            value: 2,
+            content: <Header icon='tablet' content='Tablet' subheader='The size in the middle' />,
+        },
+        {
+            key: 3,
+            text: 'Desktop',
+            value: 3,
+            content: <Header icon='desktop' content='Desktop' subheader='The largest size' />,
+        },
+    ]
+
 
     render() {
         const {shouldShowBox, shouldShowCircle, viewMode } = this.state;
@@ -560,17 +578,17 @@ class SiteFour extends React.Component {
         return (
             <Grid className='view_body'>
                 {(this.props.loadingSpinner==true)?
-                <div className="loadingBox" style={{zIndex:9999}}>
-                    <GridLoader
-                        sizeUnit={"px"}
-                        size={25}
-                        color={'#70b2bc'}
-                        loading={this.props.loadingSpinner}
-                        //loading={this.props.creatingSpinner}
-                        //loading={true}
-                    />
-                    <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
-                </div>:null}
+                    <div className="loadingBox" style={{zIndex:9999}}>
+                        <GridLoader
+                            sizeUnit={"px"}
+                            size={25}
+                            color={'#70b2bc'}
+                            loading={this.props.loadingSpinner}
+                            //loading={this.props.creatingSpinner}
+                            //loading={true}
+                        />
+                        <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
+                    </div>:null}
                 {/* <div className="creatingBox">
                     <PulseLoader
                         sizeUnit={"px"}
@@ -582,17 +600,17 @@ class SiteFour extends React.Component {
                     <span className={this.props.creatingSpinner ? '' : 'create'} style={{fontSize:'18px', color:'#70b2bc'}}>Creating...</span>
                 </div> */}
                 {(this.props.creatingSpinner==true)?
-                <div className="loadingBox" style={{zIndex:9999}}>
-                    <GridLoader
-                        sizeUnit={"px"}
-                        size={25}
-                        color={'#70b2bc'}
-                        loading={this.props.creatingSpinner}
-                        //loading={true}
-                    />
-                    <span className={this.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
-                </div>:null}
- 
+                    <div className="loadingBox" style={{zIndex:9999}}>
+                        <GridLoader
+                            sizeUnit={"px"}
+                            size={25}
+                            color={'#70b2bc'}
+                            loading={this.props.creatingSpinner}
+                            //loading={true}
+                        />
+                        <span className={this.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
+                    </div>:null}
+
                 <Grid.Row className='gnb_header'>
                     <Grid.Column width={6} className='navbar_left'>
                         <Header>
@@ -630,163 +648,170 @@ class SiteFour extends React.Component {
                     </Grid.Column>
                 </Grid.Row>
                 <Container className='view_left_container' style={{width:this.menuW}}>
-                <Grid.Row className='view_contents'>
-                    <Grid.Column style={{height:this.state.bodyHeight}} className='view_left'>
-                        <Menu secondary vertical className='view_left_menu org_menu'>
-                            {
-                                this.OrgMenu.map((item, i)=>(
-                                    (item.label == 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
-                                    : (localStorage.selectRole == 'AdminManager') ? this.menuItemView(item, i, localStorage.selectMenu)
-                                    : this.menuItemView(item, i, localStorage.selectMenu)
-                                ))
-                            }
-                            <Grid.Row>
-                                <Segment>
-                                    <Grid>
-                                        <Grid.Row columns={2}>
-                                            <Grid.Column width={11} style={{lineHeight:'24px'}}>
-                                                {
-                                                    (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole : localStorage.selectOrg
-                                                }  
-                                            </Grid.Column>
-                                            <Grid.Column width={5}>
-                                                <div className="markBox">
+                    <Grid.Row className='view_contents'>
+                        <Grid.Column style={{height:this.state.bodyHeight}} className='view_left'>
+                            <Menu secondary vertical className='view_left_menu org_menu'>
+                                {
+                                    this.OrgMenu.map((item, i)=>(
+                                        (item.label == 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
+                                            : (localStorage.selectRole == 'AdminManager') ? this.menuItemView(item, i, localStorage.selectMenu)
+                                            : this.menuItemView(item, i, localStorage.selectMenu)
+                                    ))
+                                }
+                                <Grid.Row>
+                                    <Segment>
+                                        <Grid>
+                                            <Grid.Row columns={2}>
+                                                <Grid.Column width={11} style={{lineHeight:'24px'}}>
                                                     {
-                                                        (localStorage.selectRole == 'AdminManager')? null
-                                                        :
-                                                        (localStorage.selectRole == 'DeveloperManager')?
-                                                            <div className="mark markD markM">M</div>
-                                                            :
-                                                            (localStorage.selectRole == 'DeveloperContributor')?
-                                                                <div className="mark markD markC">C</div>
-                                                                :
-                                                                (localStorage.selectRole == 'DeveloperViewer')?
-                                                                    <div className="mark markD markV">V</div>
-                                                                    :
-                                                                    (localStorage.selectRole == 'OperatorManager')?
-                                                                        <div className="mark markO markM">M</div>
-                                                                        :
-                                                                        (localStorage.selectRole == 'OperatorContributor')?
-                                                                            <div className="mark markO markC">C</div>
-                                                                            :
-                                                                            (localStorage.selectRole == 'OperatorViewer')?
-                                                                                <div className="mark markO markV">V</div>
-                                                                                :
-                                                                                <div></div>
+                                                        (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole : localStorage.selectOrg
                                                     }
-                                                </div>
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                    </Grid>
-                                </Segment>
-                            </Grid.Row>
-                        </Menu>
-                        <Menu secondary vertical className='view_left_menu'>
-                            {
-                                (localStorage.selectRole == 'AdminManager')?
-                                    this.menuItems.map((item, i)=>(
-                                        this.menuItemView(item, i, localStorage.selectMenu)
-                                    ))
-                                :
-                                (localStorage.selectRole == 'DeveloperManager' || localStorage.selectRole == 'DeveloperContributor' || localStorage.selectRole == 'DeveloperViewer')?
-                                    this.menuItems.map((item, i)=>(
-                                        this.menuItemView(item, i, localStorage.selectMenu)
-                                    ))
-                                :
-                                (localStorage.selectRole == 'OperatorManager' || localStorage.selectRole == 'OperatorContributor' || localStorage.selectRole == 'OperatorViewer')?
-                                    this.auth_three.map((item, i)=>(
-                                        this.menuItemView(item, i, localStorage.selectMenu)
-                                    ))
-                                :
-                                null
-                            }
+                                                </Grid.Column>
+                                                <Grid.Column width={5}>
+                                                    <div className="markBox">
+                                                        {
+                                                            (localStorage.selectRole == 'AdminManager')? null
+                                                                :
+                                                                (localStorage.selectRole == 'DeveloperManager')?
+                                                                    <div className="mark markD markM">M</div>
+                                                                    :
+                                                                    (localStorage.selectRole == 'DeveloperContributor')?
+                                                                        <div className="mark markD markC">C</div>
+                                                                        :
+                                                                        (localStorage.selectRole == 'DeveloperViewer')?
+                                                                            <div className="mark markD markV">V</div>
+                                                                            :
+                                                                            (localStorage.selectRole == 'OperatorManager')?
+                                                                                <div className="mark markO markM">M</div>
+                                                                                :
+                                                                                (localStorage.selectRole == 'OperatorContributor')?
+                                                                                    <div className="mark markO markC">C</div>
+                                                                                    :
+                                                                                    (localStorage.selectRole == 'OperatorViewer')?
+                                                                                        <div className="mark markO markV">V</div>
+                                                                                        :
+                                                                                        <div></div>
+                                                        }
+                                                    </div>
+                                                </Grid.Column>
+                                            </Grid.Row>
+                                        </Grid>
+                                    </Segment>
+                                </Grid.Row>
+                            </Menu>
+                            <Menu secondary vertical className='view_left_menu'>
+                                {
+                                    (localStorage.selectRole == 'AdminManager')?
+                                        this.menuItems.map((item, i)=>(
+                                            this.menuItemView(item, i, localStorage.selectMenu)
+                                        ))
+                                        :
+                                        (localStorage.selectRole == 'DeveloperManager' || localStorage.selectRole == 'DeveloperContributor' || localStorage.selectRole == 'DeveloperViewer')?
+                                            this.menuItems.map((item, i)=>(
+                                                this.menuItemView(item, i, localStorage.selectMenu)
+                                            ))
+                                            :
+                                            (localStorage.selectRole == 'OperatorManager' || localStorage.selectRole == 'OperatorContributor' || localStorage.selectRole == 'OperatorViewer')?
+                                                this.auth_three.map((item, i)=>(
+                                                    this.menuItemView(item, i, localStorage.selectMenu)
+                                                ))
+                                                :
+                                                null
+                                }
 
-                        </Menu>
-                        <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
-                            {
-                                (localStorage.selectRole == 'AdminManager')? this.state.currentVersion : null
-                            }
-                        </div>
-                    </Grid.Column>
-                </Grid.Row>
+                            </Menu>
+                            <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
+                                {
+                                    (localStorage.selectRole == 'AdminManager')? this.state.currentVersion : null
+                                }
+                            </div>
+                        </Grid.Column>
+                    </Grid.Row>
                 </Container>
                 <Container className='contents_body_container' style={{width:this.state.contWidth, top:this.headerH, left:this.menuW}}>
-                <Grid.Row  className='view_contents' style={{minWidth:1024-this.menuW}}>
-                    <Grid.Column style={{height:this.state.bodyHeight}} className='contents_body'>
-                        <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
-                            <Grid.Column className='title_align' style={{lineHeight:'36px'}}>{this.state.headerTitle}</Grid.Column>
-                            {
-                                (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101') ?
-                                <Grid.Column className='title_align'>
-                                    <Item style={{marginLeft:20, marginRight:10}}>
-                                        <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
-                                    </Item>
-                                </Grid.Column>
-                                : null
-                            }
-                            {
-                                (viewMode === 'detailView') ?
-                                <Grid.Column className='title_align'>
-                                    <Button onClick={()=>this.props.handleDetail({data:null, viewMode:'listView'})}>Close Details</Button>
-                                </Grid.Column>
-                                : null
-                            }
-                            {/*<Grid.Column>*/}
-                                {/*<div>{this.DropdownIconFilter()}</div>*/}
-                            {/*</Grid.Column>*/}
-                            <div style={{position:'absolute', top:25, right:25}}>
-                                {this.getHelpPopup(this.state.headerTitle)}
-                            </div>
+                    <Grid.Row  className='view_contents' style={{minWidth:1024-this.menuW}}>
+                        <Grid.Column style={{height:this.state.bodyHeight}} className='contents_body'>
+                            <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
+                                <Grid.Column className='title_align' style={{lineHeight:'36px'}}>{this.state.headerTitle}</Grid.Column>
+                                {
+                                    (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView') ?
+                                        <Grid.Column className='title_align'>
+                                            <Item style={{marginLeft:20, marginRight:10}}>
+                                                <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
+                                            </Item>
+                                        </Grid.Column>
+                                        : null
+                                }
+                                {
+                                    (viewMode === 'detailView') ?
+                                        <Grid.Column className='title_align' style={{marginLeft:20}}>
+                                            <Button onClick={()=>this.props.handleDetail({data:null, viewMode:'listView'})}>Close Details</Button>
+                                        </Grid.Column>
+                                        : null
+                                }
+                                {/* {
+                                    //filtering for column of table
+                                    (viewMode !== 'detailView' && (this.state.headerTitle === 'App Instances' || this.state.headerTitle === 'Apps' || this.state.headerTitle === 'Cluster Instances')) ?
+                                        <Grid.Column>
+                                            <DropDownFilter></DropDownFilter>
+                                        </Grid.Column>
+                                        :
+                                        null
+                                } */}
 
-                        </Grid.Row>
-                        {
-                            (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'Users' && this.state.headerTitle !== 'Accounts') ?
-                            <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
-                                <label style={{padding:'0 10px'}}>Region</label>
-                                <Dropdown className='selection'
-                                    options={this.state.regions}
-                                    // defaultValue={this.state.regions[0].value}
-                                    value={this.props.changeRegion}
-                                    onChange={this.onChangeRegion}
-                                />
+                                <div style={{position:'absolute', top:25, right:25}}>
+                                    {this.getHelpPopup(this.state.headerTitle)}
+                                </div>
+
                             </Grid.Row>
-                            : null
-                        }
-                        {
-                            (this.state.headerTitle == 'Users') ?
-                            <div className='user_search' style={{top:15, right:65, position:'absolute',zIndex:99}}>
-                                <Input icon='search' placeholder={'Search '+this.state.searchChangeValue} style={{marginRight:'20px'}}  onChange={this.searchClick} />
-                                <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange} />
-                            </div>
-                            : null
-                        }
-                        <Grid.Row className='site_content_body' style={{height:'100%'}}>
-                            <Grid.Column style={{height:'100%'}}>
-                                <ContainerDimensions>
-                                    { ({ width, height }) =>
-                                        <div className="table-no-resized" style={{width:width, height:height, display:'flex', overflow:'hidden'}}>
-                                            {
-                                                (this.state.page === 'pg=0')?<SiteFourPageOrganization></SiteFourPageOrganization> :
-                                                (this.state.page === 'pg=1')?<SiteFourPageUser></SiteFourPageUser> :
-                                                (this.state.page === 'pg=101')?<SiteFourPageAccount></SiteFourPageAccount> :
-                                                (this.state.page === 'pg=2')?<SiteFourPageCloudlet></SiteFourPageCloudlet> :
-                                                (this.state.page === 'pg=3')?<SiteFourPageFlavor></SiteFourPageFlavor> :
-                                                (this.state.page === 'pg=4')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
-                                                (this.state.page === 'pg=5')?<SiteFourPageApps></SiteFourPageApps>:
-                                                (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
-                                                (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
-                                                (this.state.page === 'pg=createApp')? <SiteFourPageAppReg></SiteFourPageAppReg> :
-                                                (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg></SiteFourPageAppInstReg> :
-                                                (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> : <div> </div>
-                                            }
-                                        </div>
-                                    }
-                                </ContainerDimensions>
+                            {
+                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'Users' && this.state.headerTitle !== 'Accounts'  && viewMode !== 'detailView') ?
+                                    <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
+                                        <label style={{padding:'0 10px'}}>Region</label>
+                                        <Dropdown className='selection'
+                                                  options={this.state.regions}
+                                            // defaultValue={this.state.regions[0].value}
+                                                  value={this.props.changeRegion}
+                                                  onChange={this.onChangeRegion}
+                                        />
+                                    </Grid.Row>
+                                    : null
+                            }
+                            {
+                                (this.state.headerTitle == 'Users') ?
+                                    <div className='user_search' style={{top:15, right:65, position:'absolute',zIndex:99}}>
+                                        <Input icon='search' placeholder={'Search '+this.state.searchChangeValue} style={{marginRight:'20px'}}  onChange={this.searchClick} />
+                                        <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange} />
+                                    </div>
+                                    : null
+                            }
+                            <Grid.Row className='site_content_body' style={{height:'100%'}}>
+                                <Grid.Column style={{height:'100%'}}>
+                                    <ContainerDimensions>
+                                        { ({ width, height }) =>
+                                            <div className="table-no-resized" style={{width:width, height:height, display:'flex', overflow:'hidden'}}>
+                                                {
+                                                    (this.state.page === 'pg=0')?<SiteFourPageOrganization></SiteFourPageOrganization> :
+                                                        (this.state.page === 'pg=1')?<SiteFourPageUser></SiteFourPageUser> :
+                                                            (this.state.page === 'pg=101')?<SiteFourPageAccount></SiteFourPageAccount> :
+                                                                (this.state.page === 'pg=2')?<SiteFourPageCloudlet></SiteFourPageCloudlet> :
+                                                                    (this.state.page === 'pg=3')?<SiteFourPageFlavor></SiteFourPageFlavor> :
+                                                                        (this.state.page === 'pg=4')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
+                                                                            (this.state.page === 'pg=5')?<SiteFourPageApps></SiteFourPageApps>:
+                                                                                (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
+                                                                                    (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
+                                                                                        (this.state.page === 'pg=createApp')? <SiteFourPageAppReg></SiteFourPageAppReg> :
+                                                                                            (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg></SiteFourPageAppInstReg> :
+                                                                                                (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> : <div> </div>
+                                                }
+                                            </div>
+                                        }
+                                    </ContainerDimensions>
 
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid.Column>
-                </Grid.Row>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid.Column>
+                    </Grid.Row>
                 </Container>
                 <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
                     {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
@@ -798,7 +823,6 @@ class SiteFour extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    console.log("siteFour@@@stateRedux ::: ",state)
     let viewMode = null;
     if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
         viewMode = state.changeViewMode.mode.viewMode;
@@ -818,7 +842,9 @@ const mapStateToProps = (state) => {
             msg: state.alertInfo.msg
         },
         searchValue : (state.searchValue.search) ? state.searchValue.search: null,
-        changeRegion : (state.changeRegion.region) ? state.changeRegion.region : null
+        changeRegion : (state.changeRegion.region) ? state.changeRegion.region : null,
+        tableHeaders : (state.tableHeader)? state.tableHeader.headers : null,
+        filters : (state.tableHeader)? state.tableHeader.filters : null
     }
 };
 

@@ -59,7 +59,7 @@ const numberDes =(a,b)=> (
  */
 
 let generateData = (datas,body) => {
-    console.log('format data appinst- ', datas,body)
+    console.log('20190712 format data appinst- ', datas,body)
     let result = datas;
     let values = [];
     //20190409 transition string to json
@@ -77,11 +77,44 @@ let generateData = (datas,body) => {
         toJson = [];
         toJson.push((datas.data)?datas.data:{})
     }
-    console.log("tojson!!",toJson)
+
+    let newRegistKey = [
+        'Region',
+        'DeveloperName',
+        'AppName',
+        'Version',
+        'Operator',
+        'Cloudlet',
+        'ClusterInst',
+        'CloudletLocation',
+        'State'
+    ];
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
+
             if(dataResult.error || dataResult.message || !dataResult.data) {
-                console.log("error")
+                console.log("20190713 error app inst")
+                values.push({
+                    Region:'',
+                    OrganizationName:'',
+                    AppName:'',
+                    Version:'',
+                    Operator:'',
+                    Cloudlet:'',
+                    ClusterInst:'',
+                    CloudletLocation:'',
+                    URI:'',
+                    Liveness:'',
+                    Mapped_port:'',
+                    Flavor:'',
+                    State:'',
+                    Error:'',
+                    Runtime:'',
+                    Created:'',
+                    Progress:'',
+                    Edit:null,
+                    Status:''
+                })
             } else {
                 let Index = i;
                 let Region = body.region || body.params.region || '-';
@@ -103,17 +136,7 @@ let generateData = (datas,body) => {
                 let Status = dataResult.data.status
 
 
-                let newRegistKey = [
-                    'Region',
-                    'DeveloperName',
-                    'AppName',
-                    'Version',
-                    'Operator',
-                    'Cloudlet',
-                    'ClusterInst',
-                    'CloudletLocation',
-                    'State'
-                ];
+
 
                 values.push({
                     Region:Region,
@@ -136,9 +159,11 @@ let generateData = (datas,body) => {
                     Edit:newRegistKey,
                     Status:Status
                 })
+                //console.log('20190712 dataResult...', values)
             }
         })
     } else {
+        console.log('20190713 empty..')
         let newRegistKey = [
             'Region',
             'DeveloperName',
@@ -166,7 +191,7 @@ let generateData = (datas,body) => {
 
     //values.sort(numberDes);
     //values.reverse();
-
+    console.log('20190712 values ..', values)
     return values
 
 }

@@ -19,7 +19,7 @@ const validate = values => {
     if (!values.confirmpassword) {
         errors.confirmpassword = 'Required'
     } else if (values.password !== values.confirmpassword) {
-        errors.confirmpassword = 'password and confirmpassword do not match'
+        errors.confirmpassword = 'Password and Confirm Password do not match'
     }
 
 

@@ -22,7 +22,7 @@ import SiteFour from "./sites/siteFour";
 import CreateAccount from './components/login/CreateAccont';
 import history from './history';
 import VerifyContent from './container/verifyContent';
-
+import './css/index.css';
 
 let self = null;
 

@@ -68,7 +68,12 @@ class DeleteItem extends React.Component {
         this.props.refresh('All')
         
         if(result.data.error) {
-            this.props.handleAlertInfo('error',result.data.error)
+            if(result.data.error.indexOf('Flavor in use by Cluster') > -1) {
+                this.props.handleAlertInfo('error','Error deleting '+body.params.flavor.key.name+'. Flavor is in use by a Cluster Instance.')
+            } else {
+                this.props.handleAlertInfo('error',result.data.error)
+            }
+            
         } else if(result.data.message) {
             this.props.handleAlertInfo('success',msg+' deleted successfully.')
         }
@@ -210,19 +215,6 @@ class DeleteItem extends React.Component {
                     "region":Region,
                     "flavor":{
                         "key":{"name":FlavorName}
-                    }
-                }
-            }
-            service.deleteCompute(serviceNm, serviceBody, this.receiveListSubmit)
-        } else if(this.props.siteId === 'ClusterFlavors') {
-            const {ClusterFlavor, Region} = this.props.selected
-            serviceNm = 'DeleteClusterFlavor'
-            serviceBody = {
-                "token":store.userToken,
-                "params": {
-                    "region":Region,
-                    "clusterflavor":{
-                        "key":{"name":ClusterFlavor}
                     }
                 }
             }

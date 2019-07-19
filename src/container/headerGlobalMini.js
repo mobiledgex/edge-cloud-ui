@@ -74,11 +74,7 @@ class headerGlobalMini extends React.Component {
     receiveCurrentUser(result) {
         if(result.data && result.data.message) {
             _self.setState({tokenState:'expired'})
-            Alert.error(result.data.message, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error',result.data.message)
             setTimeout(() => _self.gotoPreview('/logout'),2000);
         } else {
             _self.setState({tokenState:'live'})
@@ -165,7 +161,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))}
+        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

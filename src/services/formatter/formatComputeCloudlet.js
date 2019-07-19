@@ -31,10 +31,20 @@ let generateData = (datas,body) => {
         toJson = null;
     }
     console.log("cloudlet tojson!!",toJson,body)
+    let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
             if(dataResult.error || dataResult.message || !dataResult.data) {
-                console.log("error")
+                console.log("20190712 error.... cloudlet...")
+                values.push({
+                    Region:'',
+                    CloudletName:'',
+                    Operator:'',
+                    CloudletLocation:'',
+                    Ip_support:'',
+                    Num_dynamic_ips:'',
+                    Edit:null
+                })
             } else {
                 let Index = i;
                 let Region = body.region || '-';
@@ -43,15 +53,14 @@ let generateData = (datas,body) => {
                 let CloudletLocation = dataResult.data.location || '-';
                 let Ip_support = dataResult.data.ip_support || '-';
                 let Num_dynamic_ips = dataResult.data.num_dynamic_ips || '-';
-                let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
+
 
                 values.push({Region:Region,  CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Ip_support:Ip_support, Num_dynamic_ips:Num_dynamic_ips, Edit:newRegistKey})
             }
 
         })
     } else {
-        let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
-        //values.push({Region:'-', CloudletName:'-', Operator:'-', CloudletLocation:'-', Ip_support:'-', Num_dynamic_ips:'-', Edit:newRegistKey})
+
     }
 
 

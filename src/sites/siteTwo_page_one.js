@@ -10,8 +10,7 @@ import Alert from 'react-s-alert';
 import AnimatedMap from '../libs/simpleMaps/with-react-motion';
 import DeveloperSideInfo from '../container/developerSideInfo'
 //service
-import * as Service from '../services';
-import * as ComputeService from '../services/service_compute_service';
+import * as services from '../services/service_compute_service';
 //
 import * as aggregation from '../utils';
 //redux
@@ -56,7 +55,8 @@ class SiteTwoPageOne extends React.Component  {
             search: true,
             searchQuery: null,
             value: [],
-            condition:null
+            condition:null,
+            devData:[]
 
         }
         this.timeout = null;
@@ -121,7 +121,7 @@ class SiteTwoPageOne extends React.Component  {
 
     }
     receiveCloudlet(result) {
-        console.log('receive cloudlet  result... ', result)
+        console.log('20190718 receive cloudlet  result... ', result)
 
         let locatData = _self.setLocationGroupData(result);
         _self.setState({
@@ -232,6 +232,47 @@ class SiteTwoPageOne extends React.Component  {
         //TODO: counts call method from the developers
         _self.props.handleInjectData({methodCall:result})
     }
+    receiveResult = (result) => {
+        console.log("20190718 receive cloudlet == ", result)
+        if(result.length){
+            let join = null;
+            if(result[0]['Edit']) {
+                join = _self.state.devData.concat(result);
+            } else {
+                join = _self.state.devData;
+            }
+
+
+            console.log('20190718 11111 >>>>>> concated join ... ', join)
+            if(result.error) {
+                console.log('20190718 eeeeeerrrr>>>>>> concated join ... ', join)
+                this.props.handleAlertInfo('error',result.error)
+            } else {
+                console.log('20190718 >>>>>> concated join ... ', join)
+                _self.setState({devData:join})
+                _self.receiveCloudlet(join);
+            }
+            _self.props.handleLoadingSpinner(false);
+        } else {
+            //alert('Loading Fail')
+        }
+
+    }
+    getDataDeveloper = (region) => {
+        // if(!this.state.liveComp) {
+        //     return;
+        // }
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let rgn = ['US','EU'];
+        this.setState({devData:[]})
+        console.log("20190718 changeRegion###@@",_self.props.changeRegion, store.userToken)
+        if(region !== 'All'){
+            rgn = [region]
+        }
+        rgn.map((item, i) => {
+            setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 500 * i)
+        })
+    }
 
     shouldComponentUpdate(nextProps, nextState) {
         // if(nextProps.tabName !== this.props.tabName){
@@ -240,7 +281,7 @@ class SiteTwoPageOne extends React.Component  {
         return true;
     }
     componentDidMount() {
-        console.log('props pg is didmnt== '+this.props.tabName)
+        console.log('20190718 props pg is didmnt== '+this.props.tabName)
         function timeStringToFloat(time) {
             var startTime = new Date(time);
             var startMsec = startTime.getMilliseconds();
@@ -251,10 +292,7 @@ class SiteTwoPageOne extends React.Component  {
         var every = 5000;
         var getDatas = function(self){
             //call data from service
-            Service.getStatusCPU(self.receiveCPUData);
-            Service.getStatusMEM(self.receiveMEMData);
-            Service.getStatusFilesys(self.receiveFileData);
-            Service.getStatusNET(self.receiveNETData);
+
 
             var old = new Date('2019-02-22 21:15:20').getTime();
             var newd = new Date().getTime();
@@ -262,8 +300,7 @@ class SiteTwoPageOne extends React.Component  {
 
             self.timeout = setTimeout(function(){getDatas(self)} , every)
         }
-// 잠시막음 2019-03-27
-        //getDatas(_self);
+
 
         if(this.props.tabName === 'pg=1') {
             this.setState({sideVisible: true})
@@ -271,12 +308,20 @@ class SiteTwoPageOne extends React.Component  {
             this.setState({sideVisible: false})
         }
 
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        //get info cloudlet
-        ComputeService.getMCService('ShowCloudlet',{token:store.userToken, region:'US'}, _self.receiveCloudlet)
 
-        //get info appInstance
-        setTimeout(() => ComputeService.getComputeService('appinst', this.receiveAppInst), 500);
+        //ComputeService.getMCService('ShowCloudlet',{token:store.userToken, region:'US'}, _self.receiveCloudlet)
+        /********************************
+         * ---- new connection MC ----
+         * 2010 07 17 start monitoring console
+         ********************************/
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        if(store.userToken) {
+            this.getDataDeveloper(this.props.changeRegion);
+            this.userToken = store.userToken;
+        }
+
+        //TODO: 20190718 get info appInstance
+        //setTimeout(() => ComputeService.getComputeService('appinst', this.receiveAppInst), 500);
 
 
         /*
@@ -394,22 +439,22 @@ class SiteTwoPageOne extends React.Component  {
         }
         _self.forceUpdate();
     }
+    //reset list of sub dropwDown
     handleChangeOne = (e, {value}) => {
+
         _self.setState({ dropdownValueOne: value })
+
         // _self.setState({dropDownValueTwo:'Select Developer', dropDownValueThree:'Select Cloudlet',
         //     countryOptionsClou:[{ key: 1000, value: 'default', text: 'Select Cloudlet' }],
         //     countryOptionsDev:[{ key: 1000, value: 'default', text: 'Select Developer' }], selectedDevelop:''})
-
-        //reset list of sub dropwDown
         if(value !== 'default'){
             _self.setDeveloperList(value);
             _self.setCloudletList(value);
-
             //filtering by cloudlet name
-            let groupby = aggregation.groupBy(_self.state.cloudletsData, 'Operator')
-            console.log('groupy operator..', groupby)
-            let groupData = _self.setLocationGroupData(groupby[value]);
-            if(groupby[value]) _self.setState({locationData:groupData});
+            // let groupby = aggregation.groupBy(_self.state.cloudletsData, 'Operator')
+            // console.log('groupy operator..', groupby)
+            // let groupData = _self.setLocationGroupData(groupby[value]);
+            // if(groupby[value]) _self.setState({locationData:groupData});
         } else {
             _self.setState({locationData:_self.state.savelocationData});
         }
@@ -517,7 +562,8 @@ class SiteTwoPageOne extends React.Component  {
         _self.forceUpdate();
     }
     setDeveloperList(key) {
-        let groupbyDevel = aggregation.groupBy(_self.state.devGroup, 'operator')
+        console.log('20190718 value and setDeveloperList === ', key, "  :  ", _self.state.devGroup)
+        let groupbyDevel = aggregation.groupBy(_self.state.devGroup, 'Operator')
         let devData = (groupbyDevel[key]) ? aggregation.groupBy(groupbyDevel[key], 'developer'):{};
 
         let devKeys = Object.keys(devData)
@@ -586,7 +632,8 @@ class SiteTwoPageOne extends React.Component  {
 const mapStateToProps = (state) => {
     console.log('mapStateToProps in siteTwo_page_one...', state)
     return {
-        city: Object.assign({}, state.cityChanger.city)
+        city: Object.assign({}, state.cityChanger.city),
+        changeRegion : state.changeRegion.region?state.changeRegion.region:null,
     };
 };
 const mapDispatchProps = (dispatch) => {
@@ -594,6 +641,7 @@ const mapDispatchProps = (dispatch) => {
         handleChangeCity: (data) => { dispatch(actions.changeCity(data))},
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectNetworkData(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 SiteTwoPageOne.defaultProps = {
