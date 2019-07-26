@@ -172,6 +172,40 @@ export function createNewAppInst(resource, body, callback) {
             console.log(error);
         });
 }
+//Multi Create
+export function createNewMultiAppInst(resource, body, callback, multiData, filterData, vmCheck) {
+    console.log("bodybodybodydd",multiData)
+    axios.all(multiData.Cloudlet.map((itemCloudlet) => {
+        if(vmCheck) multiData.ClusterInst = ['somecluster']
+        if(multiData.AutoClusterInst) {
+            multiData.ClusterInst = ['autocluster' + multiData.AppName.replace(/(\s*)/g, "")];
+        }
+        filterData[itemCloudlet].map((items) => {
+            multiData.ClusterInst.map((itemCluster) => {
+                if(items.ClusterName == itemCluster || itemCluster == 'somecluster' || itemCluster.indexOf('autocluster') > -1){
+                    return axios.post('https://'+hostname+':3030/CreateAppInst',qs.stringify({
+                        service: resource,
+                        serviceBody:body,
+                        serviceDomain:serviceDomain,
+                        multiCloudlet:itemCloudlet,
+                        multiCluster:itemCluster
+                    }))
+                        .then(function (response) {
+                            console.log('response  registry new obj result-',response);
+                            callback(response, body)
+                        })
+                        .catch(function (error) {
+                            console.log("appinsterror",error);
+                        });
+                }
+            })
+            if(multiData.ClusterInst[0] == 'somecluster') multiData.ClusterInst = [];
+            if(String(multiData.ClusterInst[0]).indexOf('autocluster') > -1){
+                multiData.ClusterInst = [];
+            }
+        }) 
+    }))    
+}
 export function deleteCompute(resource, body, callback) {
     axios.post('https://'+hostname+':3030/deleteService',{
         service: resource,
@@ -241,6 +275,29 @@ export function createNewClusterInst(resource, body, callback) {
         .catch(function (error) {
             console.log(error);
         });
+}
+//Multi Create
+export function createNewMultiClusterInst(resource, body, callback, multiData) {
+    axios.all(multiData.map((item) => {
+        //console.log("itemneuemulit",item,body)
+        //body.params.clusterinst.key.cloudlet_key.name = item
+        return axios.post('https://'+hostname+':3030/CreateClusterInst',{
+            service: resource,
+            serviceBody:body,
+            serviceDomain:serviceDomain,
+            multiData:item
+        })
+            .then(function (response) {
+                console.log('response clusterInst result-',response);
+                callback(response, body)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }))
+
+
+    
 }
 
 export function createNewFlavor(resource, body, callback) {

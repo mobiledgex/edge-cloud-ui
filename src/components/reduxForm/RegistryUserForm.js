@@ -120,11 +120,9 @@ class RegistryUserForm extends React.Component{
     }
     componentWillReceiveProps(nextProps, nextContext) {
         this.setState({lastProps:nextProps})
-        console.log('20190702 will receive props', nextProps)
     }
 
     componentDidMount() {
-        console.log('20190702 component did mount')
     }
 
     render() {

@@ -1,6 +1,6 @@
 
 import axios from 'axios-jsonp-pro';
-
+import qs from 'qs';
 import request from 'request';
 
 import FormatComputeDev from './formatter/formatComputeDeveloper';
@@ -46,13 +46,21 @@ export function getClusterService(resource, callback) {
         });
 
 }
+
 export function getClusterHealth(resource, callback) {
     let reqCnt = resource.length;
     let respCount = 0;
     let resResults = [];
-    resource.map((rsName) => {
-        axios.get('https://'+hostname+':3030/timeCluster?cluster='+rsName)
+    resource.map((clusterParam) => {
+
+        //
+        axios.post('https://'+hostname+':3030/timeCluster', qs.stringify({
+            service: 'timeCluster',
+            serviceBody:clusterParam,
+            serviceId: Math.round(Math.random()*10000)
+        }))
             .then(function (response) {
+                console.log('20190719 getClusterHealth ---- response..', response)
                 resResults = resResults.concat(FormatMonitorCluster(response))
                 if(respCount === reqCnt-1) {
                     callback(resResults)
@@ -60,10 +68,17 @@ export function getClusterHealth(resource, callback) {
                 } else {
                     respCount ++;
                 }
-
             })
             .catch(function (error) {
-                console.log(error);
+                try {
+                    if(String(error).indexOf('Network Error') > -1){
+                        console.log("NETWORK ERROR@@@@@");
+                    } else {
+                        callback({error:error}, resource);
+                    }
+                } catch(e) {
+                    console.log('any error ??? ')
+                }
             });
     })
 

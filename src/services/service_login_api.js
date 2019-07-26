@@ -58,7 +58,6 @@ export function getCurrentUserInfo(resource, body, callback, self) {
 }
 
 /*
-$ http POST 127.0.0.1:9900/api/v1/usercreate name=orgman passhash=pointyears email="orgman@bigorg.com"
 
  */
 export function createUser(resource, body, callback, self) {
@@ -114,7 +113,6 @@ export function resetPassword(resource, body, callback, self) {
             }
             if(parseData) {
                 if(parseData.message){
-                    console.log(parseData.message)
                     callback(parseData, resource, self);
                 } else {
                 }
@@ -149,7 +147,6 @@ export function resendVerify(resource, body, callback, self) {
             }
             if(parseData) {
                 if(parseData.message){
-                    console.log(parseData.message)
                     callback(parseData, resource, self);
                 } else {
                 }

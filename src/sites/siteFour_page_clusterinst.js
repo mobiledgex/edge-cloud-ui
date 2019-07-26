@@ -67,7 +67,6 @@ class SiteFourPageClusterInst extends React.Component {
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
-        console.log('20190716 infoCluster1.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         // console.log('info.. store == ', store)
         if(store.userToken) {
@@ -75,7 +74,6 @@ class SiteFourPageClusterInst extends React.Component {
         }
     }
     componentWillUnmount() {
-        console.log('20190716 ====>unmount clusterinst<====')
         this.setState({devData:[], clusterInstData:[], cloudletData:[]})
     }
 
@@ -216,7 +214,6 @@ class SiteFourPageClusterInst extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    console.log('20190716 props in state.form..', state.form, 'region === ', state)
     let viewMode = null;
     let detailData = null;
     if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {

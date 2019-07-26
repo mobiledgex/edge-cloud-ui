@@ -21,10 +21,8 @@ class DropdownFilter extends React.Component {
         }
     }
     onBlur = (a,b) => {
-        console.log('20190713 onBlur..', a, b)
     }
     onFocus = (a, b) => {
-        console.log('20190713 onFocus..', a, b)
     }
     selectFilterItem = (a, {name, value}) => {
         this.holding = true;
@@ -37,7 +35,6 @@ class DropdownFilter extends React.Component {
 
         let changeState = [];
         this.state.tableHeaders.map((header) => {
-            console.log('20190717 select filter item... ', name, header)
             if(header.name === name) {
                 header.hidden = !header.hidden
                 this.props.handleSavestateFilters(header)
@@ -70,7 +67,6 @@ class DropdownFilter extends React.Component {
     render() {
         return (
             <Dropdown text='Filter' icon='filter' labeled button multiple onClick={this.selectFilter}
-                      onMouseDown={()=>console.log('20190713 mouse down')}
                       onFocus={this.onFocus}
                       onBlur={this.onBlur}
             >

@@ -74,7 +74,8 @@ class AccountListView extends React.Component {
         this.setState({orgData:result})
     }
     receiveLockResult = (result) => {
-        console.log(JSON.stringify(result));
+        console.log('20190723 result lock or unlock',JSON.stringify(result));
+        _self.props.handleComputeRefresh(true);
     }
     
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
@@ -394,7 +395,8 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
         handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
-        handleRefreshData: (data) => { dispatch(actions.refreshData(data))}
+        handleRefreshData: (data) => { dispatch(actions.refreshData(data))},
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
     };
 };
 

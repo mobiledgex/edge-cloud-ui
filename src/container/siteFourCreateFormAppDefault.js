@@ -108,7 +108,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
             regKey:null,
             fieldKeys:null,
             dataInit:false,
-            portArray:['item'],
+            portArray:[],
             orgArr:[]
         };
 
@@ -200,7 +200,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
     }
     RemovePorts = (e) => {
         let arr = this.state.portArray;
-        if(arr.length > 1) {
+        if(arr.length > 0) {
             arr.pop()
         }
         this.setState({portArray:arr}); 
