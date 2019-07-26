@@ -57,7 +57,6 @@ class SiteFourPageAppInst extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     setHiddenKey(key) {
-        console.log('20190718 hidden key == ', key, this.state.hiddenKeys)
         let copyHiddenKeys = Object.assign([],this.state.hiddenKeys)
         let newHiddenKeys = [];
         if(key.hidden === true) {
@@ -66,7 +65,6 @@ class SiteFourPageAppInst extends React.Component {
         } else {
             //remove key from hiddenKeys
             newHiddenKeys = aggregate.filterDefine(this.state.hiddenKeys, [key.name])
-            console.log('20190718 remove item from list..', key.name, ":", newHiddenKeys)
         }
 
         this.setState({hiddenKeys:newHiddenKeys})
@@ -92,7 +90,6 @@ class SiteFourPageAppInst extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        console.log('20190718 nextProps view mode in page_appinst.js...', nextProps)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
 
         if(nextProps.computeRefresh.compute) {
@@ -117,7 +114,6 @@ class SiteFourPageAppInst extends React.Component {
 
         //make hidden key
         let tbHeader = nextProps.headerFilter;
-        console.log('20190717 headerFilter..', tbHeader)
         if(tbHeader) {
             this.setHiddenKey(tbHeader)
         }
@@ -131,7 +127,6 @@ class SiteFourPageAppInst extends React.Component {
         } else {
             join = this.state.devData;
         }
-        console.log('20190718 ', JSON.stringify(join))
         this.props.handleLoadingSpinner(false);
         this.setState({devData:join})
         this.loadCount ++;
@@ -192,7 +187,6 @@ class SiteFourPageAppInst extends React.Component {
 
 const mapStateToProps = (state) => {
 
-    console.log('20190717 change --- --- --- --- -- ',state.tableHeader)
     let stateChange = false;
     if(state.receiveDataReduce.params && state.receiveDataReduce.params.state === 'refresh'){
         stateChange = true;

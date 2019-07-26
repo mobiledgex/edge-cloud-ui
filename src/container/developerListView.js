@@ -342,6 +342,16 @@ class DeveloperListView extends React.Component {
                                         {item[value]}
                                     </Table.Cell>
                                 :
+                                (value === 'DeploymentType')?
+                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
+                                        {
+                                            (item[value] == 'docker')? 'Docker':
+                                            (item[value] == 'kubernetes')? 'Kubernetes':
+                                            (item[value] == 'vm')? 'VM':
+                                            item[value]
+                                        }
+                                    </Table.Cell>
+                                :
                                 (!( String(hideHeader).indexOf(value) > -1 )) ?
                                     <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>

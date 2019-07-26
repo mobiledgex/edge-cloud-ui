@@ -3,6 +3,7 @@ import {Button, Divider, Table, Grid, Header, Image, Icon} from "semantic-ui-rea
 import ContainerDimensions from 'react-container-dimensions';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view'
+import TimeSeries from '../charts/plotly/timeseries';
 
 const TableExampleCollapsing = () => (
     <Table basic='very' celled collapsing>
@@ -107,7 +108,20 @@ export default class PageDetailViewer extends React.Component {
             dropdownValueFive:'',
             cloudletResult:null,
             appResult:null,
-            listOfDetail:null
+            listOfDetail:null,
+            timeseriesDataCPUMEM:[
+                [0,1,2,3,4,5],[2,3,4,5,6,7]
+            ],
+            timeseriesCPUMEM:[
+                ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
+            ],
+            dataLabel:['CPU', 'MEM'],
+            timeseriesDataNET:[
+                [0,1,2,3,4,5],[2,3,4,5,6,7]
+            ],
+            timeseriesNET:[
+                ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
+            ],
         }
         _self = this;
 
@@ -187,6 +201,8 @@ export default class PageDetailViewer extends React.Component {
                 :(label === 'IpAccess' && String(values[label]) == '3')?'Shared' /* Cluster Inst */
                 :(label === 'Created')? String( this.makeUTC(values[label]) )
                 :(label === 'State')? _status[values[label]]
+                :(label === 'Deployment' && String(values[label]) == 'docker')?'Docker'
+                :(label === 'Deployment' && String(values[label]) == 'kubernetes')?'Kubernetes'
                 :(label === 'Liveness')? _liveness[values[label]]
                 :(typeof values[label] === 'object')? this.jsonView(values[label])
                 :String(values[label])}
@@ -228,19 +244,29 @@ export default class PageDetailViewer extends React.Component {
             <ContainerDimensions>
                 {({width, height}) =>
                     <div style={{width: width, height: height-90, display: 'flex', overflowY: 'auto', overflowX: 'hidden', marginTop:20}}>
-                        <Table celled collapsing style={{width:'100%'}}>
-                            <Table.Header>
-                                <Table.Row>
-                                    <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
-                                    <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
-                                </Table.Row>
-                            </Table.Header>
-                            <Table.Body>
-                                {
-                                    (keys.length) && keys.map((item, i) => this.makeTable(this.changeLocation(listData), item, i))
-                                }
-                            </Table.Body>
-                        </Table>
+                        <Grid style={{width:width, backgroundColor:'#0d0e13', borderRadius:5}}>
+
+                                <Grid.Row>
+                                    <Table celled collapsing style={{width:'100%'}}>
+                                        <Table.Header>
+                                            <Table.Row>
+                                                <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
+                                                <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
+                                            </Table.Row>
+                                        </Table.Header>
+                                        <Table.Body>
+                                            {
+                                                (keys.length) && keys.map((item, i) => this.makeTable(this.changeLocation(listData), item, i))
+                                            }
+                                        </Table.Body>
+                                    </Table>
+
+                                </Grid.Row>
+                                {/*<Grid.Row style={{height:500, backgroundColor:'#252525'}}>*/}
+                                    {/*<TimeSeries style={{width:'100%', height:400}} chartData={this.state.timeseriesDataCPUMEM} series={this.state.timeseriesCPUMEM} margin={10} label={this.state.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>*/}
+                                {/*</Grid.Row>*/}
+
+                        </Grid>
                     </div>
                 }
             </ContainerDimensions>

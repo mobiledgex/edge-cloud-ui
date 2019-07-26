@@ -83,7 +83,7 @@ class RegistryInstViewer extends React.Component {
                     'AppName':{label:'App Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'App name', active:true, items:[null]},
                     'Version':{label:'App Version', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'App version', active:true, items:[null]},
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Company or Organization name of the operator', active:true, items:[null]},
-                    'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:'Name of the cloudlet', active:true, items:[null]},
+                    'Cloudlet':{label:'Cloudlet', type:'RenderDropDown', necessary:true, tip:'Name of the cloudlet', active:true, items:[null]},
                     'AutoClusterInst':{label:'Auto Cluster Instance', type:'RenderCheckbox', necessary:false, tip:'When checked, this will inherit settings from application settings'},
                     'ClusterInst':{label:'Cluster Instance', type:'RenderClusterDisabled', necessary:true,
                         tip:'When selecting cluster inst, default flavor and ip access specified in app setting gets overridden',
@@ -134,8 +134,8 @@ class RegistryInstViewer extends React.Component {
         // })
 
         services.getMCService('ShowApps',{token:token,region:'US'}, this.receiveResultApp)
-        setTimeout(() => services.getMCService('ShowCloudlet',{token:token,region:'US'}, this.receiveResultCloudlet), 200);
-        setTimeout(() => services.getMCService('ShowClusterInst',{token:token,region:'US'}, this.receiveResultClusterInst), 400);
+        //setTimeout(() => services.getMCService('ShowCloudlet',{token:token,region:'US'}, this.receiveResultCloudlet), 200);
+        setTimeout(() => services.getMCService('ShowClusterInst',{token:token,region:'US'}, this.receiveResultClusterInst), 200);
         
     }
     receiveResultCloudlet = (result) => {
@@ -175,11 +175,20 @@ class RegistryInstViewer extends React.Component {
             this.props.handleAlertInfo('error',String(result.error))
         } else {
             let clinstGroup = reducer.groupBy(result, 'ClusterName')
-            console.log('submit clinstGroup 2...', clinstGroup)
-            let keys = Object.keys(clinstGroup);
+            let cloudletGroup = reducer.groupBy(result, 'Cloudlet')
+            let operatorGroup = reducer.groupBy(result, 'Operator')
+            console.log('submit receiveResultCloudlet 1...', operatorGroup)
+            let keys = Object.keys(operatorGroup);
             let assObj = Object.assign([], this.state.keysData);
-            assObj[0].ClusterInst.items = keys;
-            this.setState({keysData:assObj, clustinst:clinstGroup})
+            assObj[0].Operator.items = keys;
+            this.setState({keysData:assObj, operators:operatorGroup, clustinst:clinstGroup, cloudlets:cloudletGroup})
+        }
+
+        // set list of operators
+        if(this.props.devData.length > 0) {
+            this.setState({dummyData:this.props.devData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
+        } else {
+            this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
         }
     }
 
@@ -192,6 +201,9 @@ class RegistryInstViewer extends React.Component {
             return;
         } else {
             this.props.handleAlertInfo('success','Your application instance created successfully')
+            setTimeout(() => {
+                this.gotoUrl();
+            }, 1000)
         }
     }
     
@@ -308,20 +320,21 @@ class RegistryInstViewer extends React.Component {
             })
 
             if(nextProps.formAppInst.submitSucceeded && error.length == 0){
+                console.log("clusterTest33333",this.state.cloudlets)
                 let submitData = nextProps.submitValues
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
                 console.log("autoClusterDisable!!!",this.state.autoClusterDisable,":::",submitData.appinst.key.cluster_inst_key.cluster_key.name)
-                if(this.state.autoClusterDisable){
-                    submitData.appinst.key.cluster_inst_key.cluster_key.name = 'somecluster';
-                }
-                services.createNewAppInst('CreateAppInst', {params:submitData, token:store.userToken}, _self.receiveResult)
+                // if(this.state.autoClusterDisable){
+                //     submitData.appinst.key.cluster_inst_key.cluster_key.name = 'somecluster';
+                // }
+                services.createNewMultiAppInst('CreateAppInst', {params:submitData, token:store.userToken}, _self.receiveResult, nextProps.validateValue, this.state.cloudlets, this.state.autoClusterDisable)
                 setTimeout(() => {
                     if(this.state.regSuccess) {
                         this.props.handleLoadingSpinner(false);
                         this.gotoUrl();
                     }
-                }, 4000)
+                }, 1000)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }
@@ -337,7 +350,8 @@ class RegistryInstViewer extends React.Component {
          * **********/
         if(nextProps.selectedOperator) {
             let assObj = Object.assign([], this.state.keysData);
-            assObj[0].Cloudlet.items = this.state.operators[nextProps.selectedOperator].map((cld) => (cld.CloudletName));
+            assObj[0].Cloudlet.items = this.state.operators[nextProps.selectedOperator].map((cld) => (cld.Cloudlet));
+            assObj[0].Cloudlet.items = reducer.removeDuplicate(assObj[0].Cloudlet.items)
             this.setState({keysData:assObj})
 
         }
@@ -366,12 +380,18 @@ class RegistryInstViewer extends React.Component {
         }
 
         if(nextProps.selectedVersion) {
-            console.log("selectedVersionselectedVersion",this.state.versions[nextProps.selectedApp][0].DeploymentType)
-            //this.state.versions[nextProps.selectedApp]
-            if(this.state.versions[nextProps.selectedApp][0].DeploymentType === 'vm'){
+            if(this.state.versions.length !== 0 && this.state.versions[nextProps.selectedApp][0].DeploymentType === 'vm'){
                 this.setState({autoClusterDisable:true})
-            } else {
+            } else if(this.state.versions.length !== 0){
                 this.setState({autoClusterDisable:false})
+            }
+
+            if(Object.keys(nextProps.appLaunch).length !== 0) {
+                if(nextProps.appLaunch.DeploymentType === 'vm'){
+                    this.setState({autoClusterDisable:true})
+                } else {
+                    this.setState({autoClusterDisable:false})
+                }
             }
         }
 
@@ -383,25 +403,18 @@ class RegistryInstViewer extends React.Component {
                 let assObj = Object.assign([], this.state.keysData);
                 keys.map((item,i) => {
                     this.state.clustinst[item].map((items,j) => {
-                        if(items.Operator == nextProps.submitData.createAppFormDefault.values.Operator && items.Cloudlet == nextProps.submitData.createAppFormDefault.values.Cloudlet) {
-                            arr.push(item);
-                        }
+                        nextProps.submitData.createAppFormDefault.values.Cloudlet.map((cItem) => {
+                            if(cItem == items.Cloudlet && nextProps.submitData.createAppFormDefault.values.DeveloperName == items.OrganizationName) {
+                                arr.push(item);
+                            }
+                        })
                     })
                 })
+                arr = reducer.removeDuplicate(arr)
                 assObj[0].ClusterInst.items = arr;
                 this.setState({keysData:assObj})
             }
         }
-
-
-        // if(nextProps.formAppInst.values) {
-        //     let assObj = Object.assign([], this.state.keysData);
-        //     console.log("statestateassObj",assObj)
-        //     if(nextProps.formAppInst.values.AutoClusterInst) {
-        //         assObj[0].ClusterInst.items = [];
-        //     }
-        // }
-        
     }
 
     componentWillUnmount() {
@@ -466,9 +479,8 @@ const createFormat = (data) => (
             "key":{
                 "app_key":{"developer_key":{"name":data['DeveloperName']},"name":data['AppName'],"version":data['Version']},
                 "cluster_inst_key":{
-                    "cloudlet_key":{"name":data['Cloudlet'],"operator_key":{"name":data['Operator']}},
                     "cluster_key":{"name":data['ClusterInst']},
-                    "developer":data['DeveloperName']
+                    "cloudlet_key":{"operator_key":{"name":data['Operator']},"name":data['Cloudlet']}
                 }
             },
         }
@@ -512,9 +524,9 @@ const mapStateToProps = (state) => {
         if(state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
             let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
             console.log("state.form.createAppFormDefault.valuessssss",enableValue)
-            if(state.form.createAppFormDefault.values.AutoClusterInst){
-                enableValue.ClusterInst = 'autocluster'+state.form.createAppFormDefault.values.AppName.replace(/(\s*)/g, "");
-            }
+            // if(state.form.createAppFormDefault.values.AutoClusterInst){
+            //     enableValue.ClusterInst = 'autocluster'+state.form.createAppFormDefault.values.AppName.replace(/(\s*)/g, "");
+            // }
             submitVal = createFormat(enableValue);
             validateValue = state.form.createAppFormDefault.values;
         }

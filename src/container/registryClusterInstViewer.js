@@ -84,8 +84,8 @@ class RegistryClusterInstViewer extends React.Component {
                     'ClusterName':{label:'Cluster Name', type:'RenderInput', necessary:true, tip:'Cluster name', active:true},
                     'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Name of Organization that this cluster belongs to', active:true, items:['','']},
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Company or Organization name of the operator', active:true, items:['','']},
-                    'Cloudlet':{label:'Cloudlet', type:'RenderSelect', necessary:true, tip:'Name of the cloudlet', active:true, items:['','']},
-                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (kubernetes or docker)', active:true, items:['docker', 'kubernetes']},
+                    'Cloudlet':{label:'Cloudlet', type:'RenderDropDown', necessary:true, tip:'Name of the cloudlet', active:true, items:['','']},
+                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (kubernetes or docker)', active:true, items:['Docker', 'Kubernetes']},
                     'IpAccess':{label:'IP Access', type:'RenderSelect', necessary:false, tip:'IpAccess indicates the type of RootLB that Developer requires for their App',items:ipaccessArr},
                     'Flavor':{label:'Flavor', type:'RenderSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor', active:true, items:['','']},
                     'NumberOfMaster':{label:'Number of Masters', type:'RenderInputDisabled', necessary:false, tip:'Number of k8s masters (In case of docker deployment, this field is not required)', value:null},
@@ -278,8 +278,8 @@ class RegistryClusterInstViewer extends React.Component {
 
             if(nextProps.formClusterInst.submitSucceeded && error.length == 0){
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
-                this.props.handleLoadingSpinner(true);
-                service.createNewClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
+                this.props.handleLoadingSpinner(true);                
+                service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit, nextProps.validateValue.Cloudlet)
                 setTimeout(() => {
                     if(this.state.clusterInstCreate){
                         this.props.handleLoadingSpinner(false);
@@ -417,10 +417,15 @@ const mapStateToProps = (state) => {
         if(state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
             let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
             console.log("enableValueenableValueenableValue222ss",enableValue)
-            if(enableValue.DeploymentType === "docker"){
+            if(enableValue.DeploymentType === "Docker"){
                 enableValue.NumberOfMaster = 0;
                 enableValue.NumberOfNode = 0;
+                enableValue.DeploymentType = "docker"
             }
+            if(enableValue.DeploymentType === "Kubernetes"){
+                enableValue.DeploymentType = "kubernetes"
+            }
+            console.log("ddddddfdfd",enableValue)
             submitVal = createFormat(enableValue);
             validateValue = state.form.createAppFormDefault.values;
         }

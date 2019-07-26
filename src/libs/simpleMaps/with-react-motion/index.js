@@ -46,14 +46,27 @@ const cityScale = scaleLinear()
 
 
 let _self = null;
+// const makeList = (obj) => (
+//     <List>
+//         {obj.map((key) => (
+//             <List.Item>
+//                 <List.Icon name='marker' />
+//                 <List.Content>
+//                     <List.Header as='a'>{'- '+key}</List.Header>
+//                 </List.Content>
+//             </List.Item>
+//         ))
+//         }
+//     </List>
+//
+// )
 const makeList = (obj) => (
     <List>
-        {obj.map((key) => (
-            <List.Item>
-                <List.Icon name='marker' />
-                <List.Content>
-                    <List.Header as='a'>{'- '+key}</List.Header>
-                </List.Content>
+        {obj.map((key,i) => (
+            <List.Item key={i}>
+
+                {key}
+
             </List.Item>
         ))
         }
@@ -313,7 +326,8 @@ class AnimatedMap extends Component {
         }
 
         //this.setState({tooltipMsg:(names.length>0) ? names : (this.props.parentProps.condition === 'two')?marker.name[0]:marker.name})
-        this.setState({tooltipMsg:(names.length>0) ? names : marker.name})
+        //this.setState({tooltipMsg:(names.length>0) ? names : marker.name})
+        _self.setState({tooltipMsg:(typeof names === 'object') ? names : marker.name})
         if(!this.moveMouse){
             ReactTooltip.rebuild()
             ReactTooltip.show(this.circle)

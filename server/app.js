@@ -183,7 +183,7 @@ curl -G 'http://40.122.54.157:8086/query'
 --data-urlencode "db=clusterstats"
 --data-urlencode "q=select \"cpu\" from \"crm-cluster\" where \"cluster\" = 'tdg-barcelona-niantic'"
  */
-app.get('/timeCluster', (req, res, next) => {
+app.get('/timeCluster-old', (req, res, next) => {
 
 
     var date = new Date();
@@ -493,7 +493,10 @@ app.post('/SettingLock', apiMC.SettingLock)
  * 2019 07 13
  * start mextrix
  ***************************/
-
+const apiMCMonitor = require('./routes/apiMCMonitor');
+console.log('====== process env mcurl ======='+process.env.MC_URL)
+apiMCMonitor.MC_URL = process.env.MC_URL;
+app.post('/timeCluster', apiMCMonitor.ShowclusterHealth)
 /*
 http --auth-type=jwt --auth=$SUPERPASS POST
 https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app <<<

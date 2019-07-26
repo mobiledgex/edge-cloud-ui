@@ -59,7 +59,6 @@ const numberDes =(a,b)=> (
  */
 
 let generateData = (datas,body) => {
-    console.log('20190712 format data appinst- ', datas,body)
     let result = datas;
     let values = [];
     //20190409 transition string to json
@@ -93,7 +92,6 @@ let generateData = (datas,body) => {
         toJson.map((dataResult, i) => {
 
             if(dataResult.error || dataResult.message || !dataResult.data) {
-                console.log("20190713 error app inst")
                 values.push({
                     Region:'',
                     OrganizationName:'',
@@ -159,11 +157,9 @@ let generateData = (datas,body) => {
                     Edit:newRegistKey,
                     Status:Status
                 })
-                //console.log('20190712 dataResult...', values)
             }
         })
     } else {
-        console.log('20190713 empty..')
         let newRegistKey = [
             'Region',
             'DeveloperName',
@@ -191,7 +187,6 @@ let generateData = (datas,body) => {
 
     //values.sort(numberDes);
     //values.reverse();
-    console.log('20190712 values ..', values)
     return values
 
 }

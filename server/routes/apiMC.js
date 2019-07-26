@@ -886,13 +886,16 @@ exports.CreateAppInst = (req, res) => {
     let params = {};
     let superpass = '';
     let region = 'local'
+    axios.defaults.timeout = 1000000;
     if(req.body.serviceBody){
         params = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
+        params.appinst.key.cluster_inst_key.cloudlet_key.name = req.body.multiCloudlet;
+        params.appinst.key.cluster_inst_key.cluster_key.name = req.body.multiCluster;
     }
 
-    console.log('Create me app inst-- ', params, 'string...', JSON.stringify(params), 'mcUrl=',mcUrl)
+    console.log('Create me app inst--string...', JSON.stringify(params), 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateAppInst', params,
 
         {
@@ -928,8 +931,9 @@ exports.CreateClusterInst = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
+        serviceBody.clusterinst.key.cloudlet_key.name = req.body.multiData;
     }
-    console.log('Create me cluster inst-- ', JSON.stringify(serviceBody), 'mcUrl=',mcUrl)
+    console.log('Create me cluster inst-- ', JSON.stringify(serviceBody), 'mcUrl=',mcUrl,'mdata=',req.body.multiData)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterInst', serviceBody,
 
         {
@@ -1259,6 +1263,19 @@ exports.getVersion = (req, res) => {
  * @param req
  * @param res
  * @constructor
+ * If users are configured to be created locked (by command below), then an email will be sent tosupport@mobiledgex.com(or whatever the notify email address is configured to). It is up to the MobiledgeX admin to then unlock theaccount.
+
+ To lock/unlock ALL new users (does not affect existing users) (run as admin):
+ http --auth-type=jwt --auth=$SUPERPASS POST 127.0.0.1:9900/api/v1/auth/config/update locknewaccounts:=true> or, to disable:http --auth-type=jwt --auth=$SUPERPASS POST 127.0.0.1:9900/api/v1/auth/config/update locknewaccounts:=false
+
+ Show configuration:
+ http --auth-type=jwt --auth=$SUPERPASS POST 127.0.0.1:9900/api/v1/auth/config/show
+
+ To unlock a specific user (run as admin):
+ http --auth-type=jwt --auth=$SUPERPASS POST 127.0.0.1:9900/api/v1/auth/restricted/user/update email=me@gmail.com locked:=false
+
+ To force verify a user's email manually without email access:
+ http --auth-type=jwt --auth=$SUPERPASS POST 127.0.0.1:9900/api/v1/auth/restricted/user/update email=me@gmail.com emailverified:=true
  */
 exports.SettingLock = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
@@ -1270,12 +1287,12 @@ exports.SettingLock = (req, res) => {
         superpass = req.body.serviceBody.token;
     }
     console.log('set lock -- ', qs.stringify(serviceBody), 'mcUrl=',mcUrl, 'token=', superpass)
-    axios.post(mcUrl + '/api/v1/auth/config/update', serviceBody,
+    axios.post(mcUrl + '/api/v1/auth/restricted/user/update', serviceBody,
         {
             headers: {
                 'Authorization':`Bearer ${superpass}`},
                  //'Content-Type': 'application/json',
-            'Content-Type':'application/json; charset=UTF-8'
+                'Content-Type':'application/json; charset=UTF-8'
 
         }
     )

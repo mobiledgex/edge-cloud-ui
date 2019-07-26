@@ -100,6 +100,7 @@ class MapWithListView extends React.Component {
             displayDataTypes: false,
             iconStyle: "triangle"
         }
+        this.sorting = false;
 
     }
 
@@ -156,23 +157,33 @@ class MapWithListView extends React.Component {
     resetMap(detailMode) {
         _self.setState({sideVisible:detailMode})
     }
-    handleSort = clickedColumn => () => {
-        const { column, dummyData, direction } = this.state
+    handleSort = clickedColumn => (a) => {
 
-        if (column !== clickedColumn) {
+        this.sorting = true;
+        const { column, dummyData, direction } = _self.state
+        //console.log('20190724 selected column == ', clickedColumn, a, ":", column, ":", dummyData);
+        if ((column !== clickedColumn) && dummyData) {
+            console.log('20190724 sorting...... ==> ', clickedColumn,":", dummyData)
+            //let sorted = _.sortBy(dummyData, [clickedColumn])
+            let sorted = _.sortBy(dummyData, [clm => String(clm[clickedColumn]).toLowerCase()])
             this.setState({
                 column: clickedColumn,
-                dummyData: _.sortBy(dummyData, [clickedColumn]),
+                dummyData: sorted,
                 direction: 'ascending',
             })
-
+            this.forceUpdate()
             return
+        } else {
+            let reverse = dummyData.reverse()
+            this.setState({
+                dummyData: reverse,
+                direction: direction === 'ascending' ? 'descending' : 'ascending',
+            })
+            console.log('20190724 reverse Data <== ', reverse)
+
         }
 
-        this.setState({
-            dummyData: dummyData.reverse(),
-            direction: direction === 'ascending' ? 'descending' : 'ascending',
-        })
+        setTimeout(() => this.sorting = false, 1000)
     }
     generateStart () {
 
@@ -183,8 +194,9 @@ class MapWithListView extends React.Component {
         setTimeout(() => this.generateStart(), 2000)
     }
 
-    generateDOM(open, dimmer, width, height, randomValue) {
-        console.log('-- viewMode randomValue ---- ', randomValue, 'data ---- ',_self.state.dummyData)
+    generateDOM(open, dimmer, width, height, randomValue, dummyData) {
+        console.log('20190724 -- viewMode randomValue ---- ', randomValue, 'data ---- ',dummyData)
+
         return layout.map((item, i) => (
 
             (i === 1)?
@@ -192,8 +204,7 @@ class MapWithListView extends React.Component {
 
                     <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
                         {
-                            this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys)
-
+                            this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys, dummyData)
                         }
                     </div>
 
@@ -228,6 +239,7 @@ class MapWithListView extends React.Component {
 
 
         ))
+
     }
     /*
     <div className="round_panel" key={i} style={{display:'flex'}}>
@@ -334,17 +346,17 @@ class MapWithListView extends React.Component {
         return row;
     }
 
-    TableExampleVeryBasic = (w, h, headL, hidden) => (
+    TableExampleVeryBasic = (w, h, headL, hidden, dummyData) => (
         <Table className="viewListTable" basic='very' striped celled fixed sortable ref={ref => this.viewListTable = ref} style={{width:'100%'}}>
             <Table.Header className="viewListTableHeader"  style={{width:'100%'}}>
                 <Table.Row onMouseOver={() => console.log('onMouseOver..')}>
-                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hidden):null}
+                    {(dummyData.length > 0)?this.makeHeader(dummyData[0], headL, hidden):null}
                 </Table.Row>
             </Table.Header>
             <Table.Body className="tbBodyList">
                 {
 
-                        this.state.dummyData.map((item, i) => (
+                        dummyData.map((item, i) => (
                             <Table.Row key={i}>
                                 {Object.keys(item).map((value, j) => (
                                     (value === 'Edit')?
@@ -448,6 +460,10 @@ class MapWithListView extends React.Component {
 
     componentWillReceiveProps(nextProps, nextContext) {
 
+        if(this.sorting) {
+            return;
+        }
+
         let cityCoordinates = []
         let filterList = []
 
@@ -458,7 +474,6 @@ class MapWithListView extends React.Component {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-        console.log('20190718 nextProps.devData', nextProps.devData, 'props hiddenkey..',this.props.hiddenKeys)
         if(nextProps.devData.length) {
             //set filtering
             let filteredData = [];
@@ -482,6 +497,7 @@ class MapWithListView extends React.Component {
             /*******
              * filtering
              */
+
             // console.log('20190718 newData...', this.state.dummyData)
             // console.log('20190718 nextProps.devData...', nextProps.devData)
             // let newData = [];
@@ -503,6 +519,7 @@ class MapWithListView extends React.Component {
 
             // console.log('20190718 newData 2222222222222', copyData)
             // this.setState({dummyData:copyData})
+
 
         }else {
             this.checkLengthData();
@@ -530,7 +547,7 @@ class MapWithListView extends React.Component {
     }
 
     render() {
-        const { open, dimmer } = this.state;
+        const { open, dimmer, dummyData } = this.state;
         const {randomValue} = this.props;
         
         return (
@@ -554,7 +571,7 @@ class MapWithListView extends React.Component {
                             {...this.props}
                             style={{width:width, height:height-20}}
                         >
-                            {this.generateDOM(open, dimmer, width, height, randomValue)}
+                            {this.generateDOM(open, dimmer, width, height, randomValue, dummyData)}
                         </ReactGridLayout>
 
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} centered={false} style={{right:400}}></PopDetailViewer>

@@ -24,7 +24,7 @@ const ContainerOne = (props) => (
     <AnimatedMap parentProps={props}/>
 
 );
-
+let rgn = ['US','EU'];
 class SiteTwoPageOne extends React.Component  {
     constructor(props){
         super(props)
@@ -46,7 +46,7 @@ class SiteTwoPageOne extends React.Component  {
             dropdownValueTwo:null,
             dropdownValueThree:null,
             operGroup:null,
-            devGroup:null,
+            devGroup:[],
             selectedDevelop:'Select Develpoer',
             selectedCloudlet:'Select Cloudlet',
             zoom:'out',
@@ -56,7 +56,8 @@ class SiteTwoPageOne extends React.Component  {
             searchQuery: null,
             value: [],
             condition:null,
-            devData:[]
+            devData:[],
+            developerData:[]
 
         }
         this.timeout = null;
@@ -121,7 +122,7 @@ class SiteTwoPageOne extends React.Component  {
 
     }
     receiveCloudlet(result) {
-        console.log('20190718 receive cloudlet  result... ', result)
+        console.log('20190719 receive cloudlet  result... ', result)
 
         let locatData = _self.setLocationGroupData(result);
         _self.setState({
@@ -160,7 +161,7 @@ class SiteTwoPageOne extends React.Component  {
         Object.keys(groupbyData).map((key, i) => {
             names[i] = [];
             groupbyData[key].map((data, j) => {
-                names[i].push(data['cloudlet']+'  /  ');
+                names[i].push(data['cloudlet']);
                 if(j === groupbyData[key].length -1) locationData.push({ "name": names[i],    "coordinates": [data['LON'], data['LAT']], "population": 17843000, "cost":groupbyData[key].length })
             })
 
@@ -177,7 +178,7 @@ class SiteTwoPageOne extends React.Component  {
 
         result.map((item) => {
             _self.state.cloudletsData.map((cloudlet) => {
-                if(item.cloudlet === cloudlet.CloudletName) locations.push({'LAT':reduceUp(cloudlet.CloudletLocation.latitude), 'LON':reduceUp(cloudlet.CloudletLocation.longitude), 'cloudlet':cloudlet.CloudletName, 'application':item.app})
+                if(item.Cloudlet === cloudlet.CloudletName) locations.push({'LAT':reduceUp(cloudlet.CloudletLocation.latitude), 'LON':reduceUp(cloudlet.CloudletLocation.longitude), 'cloudlet':cloudlet.CloudletName, 'application':item.AppName})
             })
         })
 
@@ -189,12 +190,12 @@ class SiteTwoPageOne extends React.Component  {
         Object.keys(groupbyData).map((key, i) => {
             names[i] = [];
             groupbyData[key].map((data, j) => {
-                names[i].push(data['application']+'  /  ');
+                names[i].push(data['application']);
                 if(j === groupbyData[key].length -1) locationData.push({ "name": names[i],    "coordinates": [data['LON'], data['LAT']], "population": 17843000, "cost":groupbyData[key].length })
             })
 
         })
-        console.log('location data ..... data ....data....', locationData)
+        console.log('20190719 location data ..... data ....data....', locationData)
         return locationData;
     }
 
@@ -210,22 +211,29 @@ class SiteTwoPageOne extends React.Component  {
     }
 
     receiveAppInst(result) {
-        console.log('result app inst  ---->>>> ', result)
+        console.log('20190719 result app inst  ---->>>> ', result)
 
-        // //////////////////////////////
-        // set developers to dropDown
-        /////////////////////////////////
-        let nameObj = result.map((item) => (
-            {app:item.AppName, operator:item.OperatorName, developer:item.DeveloperName, cloudlet:item.CloudletName}
-        ))
+        if(result.length){
+            let join = null;
+            if(result[0]['Edit']) {
+                join = _self.state.devGroup.concat(result);
+            } else {
+                join = _self.state.devGroup;
+            }
 
-        // let nameObj = result.map((item) => (
-        //     {developer:item.DeveloperName}
-        // ))
-        // console.log('nameObj ', nameObj)
-        _self.setState({devGroup:nameObj})
+            console.log('20190719 11111 >>>>>> concated join ... ', join)
+            if(result.error) {
+                console.log('20190719 eeeeeerrrr>>>>>> concated join ... ', join)
+                this.props.handleAlertInfo('error',result.error)
+            } else {
+                console.log('20190719 >>>>>> concated join ... ', join)
+                _self.setState({devGroup:join})
 
-        _self.forceUpdate();
+            }
+            _self.props.handleLoadingSpinner(false);
+        } else {
+            //alert('Loading Fail')
+        }
 
     }
     receiveMehodData(result) {
@@ -233,23 +241,19 @@ class SiteTwoPageOne extends React.Component  {
         _self.props.handleInjectData({methodCall:result})
     }
     receiveResult = (result) => {
-        console.log("20190718 receive cloudlet == ", result)
         if(result.length){
             let join = null;
             if(result[0]['Edit']) {
-                join = _self.state.devData.concat(result);
+                join = _self.state.developerData.concat(result);
             } else {
-                join = _self.state.devData;
+                join = _self.state.developerData;
             }
 
 
-            console.log('20190718 11111 >>>>>> concated join ... ', join)
             if(result.error) {
-                console.log('20190718 eeeeeerrrr>>>>>> concated join ... ', join)
                 this.props.handleAlertInfo('error',result.error)
             } else {
-                console.log('20190718 >>>>>> concated join ... ', join)
-                _self.setState({devData:join})
+                _self.setState({developerData:join})
                 _self.receiveCloudlet(join);
             }
             _self.props.handleLoadingSpinner(false);
@@ -258,20 +262,39 @@ class SiteTwoPageOne extends React.Component  {
         }
 
     }
-    getDataDeveloper = (region) => {
+
+    getInfoCloudlet = (region) => {
         // if(!this.state.liveComp) {
         //     return;
         // }
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let rgn = ['US','EU'];
+
         this.setState({devData:[]})
-        console.log("20190718 changeRegion###@@",_self.props.changeRegion, store.userToken)
         if(region !== 'All'){
             rgn = [region]
         }
         rgn.map((item, i) => {
             setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 500 * i)
         })
+
+
+    }
+    getInfoApp = (region) => {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let serviceBody = {}
+        _self.loadCount = 0;
+        this.setState({devData:[]})
+        if(region !== 'All'){
+            rgn = [region]
+        } else {
+            rgn = ['US','EU'];
+        }
+
+            rgn.map((item) => {
+                // All show appInst
+                services.getMCService('ShowAppInst',{token:store.userToken, region:item}, _self.receiveAppInst)
+            })
+
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -281,7 +304,6 @@ class SiteTwoPageOne extends React.Component  {
         return true;
     }
     componentDidMount() {
-        console.log('20190718 props pg is didmnt== '+this.props.tabName)
         function timeStringToFloat(time) {
             var startTime = new Date(time);
             var startMsec = startTime.getMilliseconds();
@@ -312,16 +334,14 @@ class SiteTwoPageOne extends React.Component  {
         //ComputeService.getMCService('ShowCloudlet',{token:store.userToken, region:'US'}, _self.receiveCloudlet)
         /********************************
          * ---- new connection MC ----
-         * 2010 07 17 start monitoring console
+         * 2019 07 17 start monitoring console
          ********************************/
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(store.userToken) {
-            this.getDataDeveloper(this.props.changeRegion);
+            this.getInfoCloudlet(this.props.changeRegion);
             this.userToken = store.userToken;
+            this.getInfoApp('All')
         }
-
-        //TODO: 20190718 get info appInstance
-        //setTimeout(() => ComputeService.getComputeService('appinst', this.receiveAppInst), 500);
 
 
         /*
@@ -448,6 +468,7 @@ class SiteTwoPageOne extends React.Component  {
         //     countryOptionsClou:[{ key: 1000, value: 'default', text: 'Select Cloudlet' }],
         //     countryOptionsDev:[{ key: 1000, value: 'default', text: 'Select Developer' }], selectedDevelop:''})
         if(value !== 'default'){
+            console.log('setDeveloperList...', value)
             _self.setDeveloperList(value);
             _self.setCloudletList(value);
             //filtering by cloudlet name
@@ -483,45 +504,43 @@ class SiteTwoPageOne extends React.Component  {
             _self.setState({sideVisible:false})
         } else {
             //filtering by cloudlet name
-            let groupby = aggregation.groupBy(_self.state.devGroup, 'developer')
+            let groupby = aggregation.groupBy(_self.state.devGroup, 'OrganizationName')
             let filtered = [];
-            let cloudlets = [];
+            let _cloudlets = [];
 
             groupby[value].map((obj) => {
-
+                console.log('20190719 grouped by organization..', _self.state.dropdownValueOne, _self.state.dropdownValueThree)
                 // condition of..
                 if(_self.state.dropdownValueOne !== 'default') {
 
                     if(_self.state.dropdownValueThree !== 'default') {
 
                         // operator & cloudlet
-                        if(_self.state.dropdownValueOne === obj.operator && _self.state.dropdownValueThree === obj.cloudlet) {
+                        if(_self.state.dropdownValueOne === obj.Operator && _self.state.dropdownValueThree === obj.Cloudlet) {
                             //TODO: 2019-04-02 setting name of app to
 
-
-
-                            cloudlets.push(obj);
+                            _cloudlets.push(obj);
                         }
 
                     } else {
                         // operator
-                        if(_self.state.dropdownValueOne === obj.operator) {
-                            cloudlets.push(obj);
+                        if(_self.state.dropdownValueOne === obj.Operator) {
+                            _cloudlets.push(obj);
                         }
                     }
                 }
             })
 
-
-            cloudlets.map((cld) => {
+            console.log('20190719 _cloudlets cloudlets..', _cloudlets, _self.state.cloudletsData)
+            _cloudlets.map((cld) => {
                 _self.state.cloudletsData.map((cloudlet) => {
-                    if(cloudlet['CloudletName'] === cld['cloudlet']) {
+                    if(cloudlet['CloudletName'] === cld['Cloudlet']) {
                         filtered.push(cld)
                     }
                 })
             })
 
-            console.log('groupy Developer..', groupby, groupby[value])
+            console.log('20190719 filtered..', filtered)
             if(filtered.length > 0) {
                 _self.setState({locationData:_self.setAppinstGroupData(filtered)});
             } else {
@@ -562,14 +581,15 @@ class SiteTwoPageOne extends React.Component  {
         _self.forceUpdate();
     }
     setDeveloperList(key) {
-        console.log('20190718 value and setDeveloperList === ', key, "  :  ", _self.state.devGroup)
+        console.log('20190719 value and setDeveloperList === ', key, "  :  ", _self.state.devGroup)
         let groupbyDevel = aggregation.groupBy(_self.state.devGroup, 'Operator')
-        let devData = (groupbyDevel[key]) ? aggregation.groupBy(groupbyDevel[key], 'developer'):{};
+        let devData = (groupbyDevel[key]) ? aggregation.groupBy(groupbyDevel[key], 'OrganizationName'):{};
 
         let devKeys = Object.keys(devData)
-        console.log('groupbyData developKeys ==>==> ', devKeys)
+        console.log('20190719 groupbyData developKeys ==>==> ', devKeys)
         let developers1 = [{ key: 0, value: 'default', text: 'Select Developer' }]
         let developers2 = devKeys.map((opr, i) => ({ key: i+1, value: opr, text: opr }))
+        console.log('20190719 developers1 developers2 ==>==> ', developers1, developers2)
         _self.setState({countryOptionsDev:[...developers1,...developers2]})
         _self.forceUpdate();
         //&&&&&&&&&& until set MWC &&&&&&&&&&&&&

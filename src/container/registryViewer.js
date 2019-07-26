@@ -81,11 +81,11 @@ class RegistryViewer extends React.Component {
                 'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Organization or Company Name that a Developer is part of', active:true},
                 'AppName':{label:'App Name', type:'RenderInput', necessary:true, tip:'App name', active:true},
                 'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:'App version', active:true},
-                'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (kubernetes, docker, or vm)', active:true, items:['docker', 'kubernetes', 'vm']},
+                'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (Kubernetes, Docker, or VM)', active:true, items:['Docker', 'Kubernetes', 'VM']},
                 'ImageType':{label:'Image Type', type:'RenderDT', necessary:true, tip:'ImageType specifies image type of an App',items:''},
                 'ImagePath':{label:'Image Path', type:'RenderPath', necessary:true, tip:'URI of where image resides', active:true,items:''},
                 'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor.', active:true},
-                'Ports':{label:'Ports', type:'CustomPorts', necessary:true, tip:'Comma separated list of protocol:port pairs that the App listens on i.e. tcp:80,udp:10002,http:443', active:true, items:['tcp', 'udp']},
+                'Ports':{label:'Ports', type:'CustomPorts', necessary:false, tip:'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443', active:true, items:['TCP', 'UDP']},
                 // 'IpAccess':{label:'IP Access', type:'IPSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
                 'Command':{label:'Command', type:'RenderInput', necessary:false, tip:'Command that the container runs to start service', active:true},
                 'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file', active:true},
@@ -335,7 +335,7 @@ class RegistryViewer extends React.Component {
         console.log("submitValues2submitValues2",nextProps.submitValues,"::",nextProps.formApps.submitSucceeded,"::",!this.state.toggleSubmit)
         if(nextProps.submitValues && !this.state.toggleSubmit) {
             
-            const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','DefaultFlavor','Ports_0','Portsselect_0']
+            const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','DefaultFlavor']
             console.log("validateValuevalidateValue",nextProps.validateValue)
             let error = [];
             apps.map((item) => {
@@ -365,16 +365,18 @@ class RegistryViewer extends React.Component {
             let assObj = Object.assign([], this.keysData);
             let selectType = '';
             let defaultPath = '';
-            if(nextProps.formApps.values.DeploymentType == "kubernetes" || nextProps.formApps.values.DeploymentType == "docker") {
-                selectType = 'ImageTypeDocker';
+            if(nextProps.formApps.values.DeploymentType == "Kubernetes" || nextProps.formApps.values.DeploymentType == "Docker") {
+                selectType = 'Docker';
                 defaultPath = 'docker.mobiledgex.net/OrganizationName/images/AppName:AppVersion';
-            } else if(nextProps.formApps.values.DeploymentType == "vm") {
-                selectType = 'ImageTypeQcow';
+            } else if(nextProps.formApps.values.DeploymentType == "VM") {
+                selectType = 'Qcow';
                 defaultPath = 'https://artifactory.mobiledgex.net/artifactory/mc-repo-OrganizationName';
             }
             let ImagePath = (nextProps.formApps.values.ImagePath)? nextProps.formApps.values.ImagePath : defaultPath;
             assObj[0].ImageType.items = selectType;
-            itData = selectType;
+            itData = (selectType == 'Docker') ? 'ImageTypeDocker' :
+                    (selectType == 'Qcow') ? 'ImageTypeQcow' : 
+                    selectType;
             if(nextProps.formApps.values.OrganizationName){
                 ImagePath = ImagePath.replace('OrganizationName',nextProps.formApps.values.OrganizationName)
             }
@@ -481,6 +483,9 @@ const mapStateToProps = (state) => {
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
         if(enableValue.ImagePath == "") enableValue.ImagePath = submitImgPath;
+        if(enableValue.DeploymentType === "Docker") enableValue.DeploymentType = "docker"
+        if(enableValue.DeploymentType === "Kubernetes") enableValue.DeploymentType = "kubernetes"
+        if(enableValue.DeploymentType === "VM") enableValue.DeploymentType = "vm"
         submitVal = createFormat(enableValue)
         validateValue = state.form.createAppFormDefault.values;
     }

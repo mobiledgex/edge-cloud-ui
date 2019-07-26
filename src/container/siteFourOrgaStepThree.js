@@ -171,31 +171,37 @@ class SiteFourOrgaThree extends React.Component {
                             <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
                                 <Grid>
                                     <Grid.Row>
-                                        <Grid.Column>
-                                            <div>
-                                                If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker command.
-                                            </div>
-                                            <br></br>
-                                            <div>
-                                                {`$ docker login -u <username> docker.mobiledgex.net`}
-                                            </div>
-                                            <div>
-                                                {`$ docker tag <your application> docker.mobiledgex.net/` + org + `/images/<application name>:<version>`}
-                                            </div>
-                                            <div>
-                                                {`$ docker push docker.mobiledgex.net/` + org + `/images/<application name>:<version>`}
-                                            </div>
-                                            <div>
-                                                $ docker logout docker.mobiledgex.net
-                                            </div>
-                                            <br></br>
-                                            <div>
-                                                If you image is VM, please upload to our VM registry with your MobiledgeX Account Credentials.
-                                            </div>
-                                            <div>
-                                                {`curl -u<username>:<password> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/mc-repo-` + org + `/<target_file_path>"`}
-                                            </div>
-                                        </Grid.Column>
+                                        {
+                                            (type === 'Developer')?
+                                            <Grid.Column>
+                                                <div>
+                                                    If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker command.
+                                                </div>
+                                                <br></br>
+                                                <div>
+                                                    {`$ docker login -u <username> docker.mobiledgex.net`}
+                                                </div>
+                                                <div>
+                                                    {`$ docker tag <your application> docker.mobiledgex.net/` + org + `/images/<application name>:<version>`}
+                                                </div>
+                                                <div>
+                                                    {`$ docker push docker.mobiledgex.net/` + org + `/images/<application name>:<version>`}
+                                                </div>
+                                                <div>
+                                                    $ docker logout docker.mobiledgex.net
+                                                </div>
+                                                <br></br>
+                                                <div>
+                                                    If you image is VM, please upload to our VM registry with your MobiledgeX Account Credentials.
+                                                </div>
+                                                <div>
+                                                    {`curl -u<username>:<password> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/mc-repo-` + org + `/<target_file_path>"`}
+                                                </div>
+                                            </Grid.Column>
+                                            :
+                                            <Grid.Column></Grid.Column>
+                                        }
+                                        
                                     </Grid.Row>
                                 </Grid>
                             </Form.Group>

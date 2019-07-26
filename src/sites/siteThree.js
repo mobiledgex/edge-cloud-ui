@@ -22,6 +22,7 @@ let _devOptionsTwo = [
     { key: 'cl', value: 'cl', text: 'Barcelona MWC' }
 ]
 
+let rgn = ['US','EU'];
 let _self = null;
 class SiteThree extends React.Component {
     constructor(props) {
@@ -41,6 +42,7 @@ class SiteThree extends React.Component {
             email:'Administrator',
             selectedCloudlet:null,
             clusters:[],
+            clusterInstData:[],
             appClusterData:[]
         };
         this.headerH = 70;
@@ -116,9 +118,63 @@ class SiteThree extends React.Component {
                 cl.push({ key: i, value: oper.CloudletName, text: oper.CloudletName })
             })
         }
-
-
         _self.setState({devOptionsTwo: cl})
+    }
+
+
+    receiveResultClusterInst(result) {
+        console.log('20190719 receive cluster inst..', result)
+        if(result.length)_self.groupJoin(result,'clusterInst')
+    }
+
+
+    groupJoin(result,cmpt){
+        let clinst = _self.state.clusterInstData;
+        console.log('20190719 data join siteTree...', clinst, "  :  ", _self.state.clusterInstData.concat(result) )
+        if(cmpt == 'clusterInst') this.setState({clusterInstData:_self.state.clusterInstData.concat(result)})
+        this.props.handleLoadingSpinner(false);
+
+    }
+
+    getDataDeveloper = (region) => {
+        console.log("changeRegion@@",region)
+        _self.loadCount = 0;
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+
+        //TODO: region에 대한 데이터를  DB에서 가져와야 함.
+
+        let serviceBody = {}
+        _self.setState({devData:[], cloudletData:[], clusterInstData:[]})
+        if(region !== 'All'){
+            rgn = [region];
+        } else {
+            rgn = ['US','EU'];
+        }
+
+        if(localStorage.selectRole == 'AdminManager') {
+            rgn.map((item) => {
+                // All show clusterInst
+                console.log("changeRegionitem",item)
+                service.getMCService('ShowClusterInst',{token:store.userToken, region:item}, _self.receiveResultClusterInst)
+            })
+        } else {
+            rgn.map((item) => {
+                serviceBody = {
+                    "token":store.userToken,
+                    "params": {
+                        "region":item,
+                        "clusterinst":{
+                            "key":{
+                                "developer": localStorage.selectOrg
+                            }
+                        }
+                    }
+                }
+                // org별 show clusterInst
+                service.getMCService('ShowClusterInsts',serviceBody, _self.receiveResultClusterInst)
+            })
+        }
+
     }
     componentDidMount() {
         console.log('selectedCloudlet check ...', this.props.selectedCloudlet)
@@ -135,12 +191,11 @@ class SiteThree extends React.Component {
             }, 1000)
 
         }
-        // 오퍼레이터
-        service.getComputeService('operator', this.receiveOper)
-        // 오퍼의 클라우드렛 정보
-        service.getComputeService('cloudlet', this.receiveCloudlet)
-        // 앱인스턴스 정보
-        service.getComputeService('appinst', this.receiveAppinst)
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        // console.log('info.. store == ', store)
+        if(store.userToken) {
+            this.getDataDeveloper('All');
+        }
 
 
         // Login check
@@ -275,7 +330,7 @@ class SiteThree extends React.Component {
                         </Menu>
                     </Grid.Column>
                     <Grid.Column width={14} style={{height:this.state.bodyHeight}} className='contents_body'>
-                        <AnalysticViewZone ></AnalysticViewZone>
+                        <AnalysticViewZone clusterInstData={this.state.clusterInstData}></AnalysticViewZone>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -295,8 +350,31 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))}
+        handleInjectData: (data) => { dispatch(actions.injectData(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteThree)));
+
+
+/*
+const CustomerPortalContainer = styled.main
+    background-color: rgb(255, 255, 255);
+    min-height: 90px;
+    width: ${gridSize() * 100}px;
+;
+const GridLayoutWithWidth = WidthProvider(GridLayout);
+<GridLayoutWrapper>
+    <GridLayoutWithWidth
+        className="layout"
+        layout={layout}
+        margin={[gridSize() * 2, gridSize()]}
+        cols={12}
+        rowHeight={13}
+        onLayoutChange={bfContext.onLayoutChange}
+    >
+        {renderLayout(layout)}
+    </GridLayoutWithWidth>
+</GridLayoutWrapper>
+ */

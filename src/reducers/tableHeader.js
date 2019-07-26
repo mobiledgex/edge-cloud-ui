@@ -5,7 +5,6 @@ const initialState = {
     filter: null
 };
 export default function tableHeader( state = initialState, action) {
-    console.log('20190717 action=', action.type, state)
     switch( action.type ) {
         case types.TABLE_HEADER :
             return Object.assign({}, state, {

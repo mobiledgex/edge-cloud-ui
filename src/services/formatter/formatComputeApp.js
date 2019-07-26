@@ -60,7 +60,6 @@ let generateData = (datas,body) => {
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
             if(dataResult.error || dataResult.message || !dataResult.data) {
-                console.log("20190712 error")
                 values.push({
                     Region:'',
                     OrganizationName:'',

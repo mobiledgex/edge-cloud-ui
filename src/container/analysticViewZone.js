@@ -1,6 +1,8 @@
 import React from 'react';
 import { Dropdown, Button, Header, Tab } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import sizeMe from 'react-sizeme';
+import ResizeSensor from './ResizeSensor';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
 import CPUMEMListView from './usage/cpumemoryListView';
@@ -41,11 +43,11 @@ class AnalysticViewZone extends React.Component {
         this.state = {
             layout,
             listData : [
-                {alarm:'3', dName:'Cluster-A', values:{cpu:35, mem:55, sys:33}},
-                {alarm:'5', dName:'Cluster-B', values:{cpu:78, mem:78, sys:12}},
-                {alarm:'1', dName:'Cluster-C', values:{cpu:32, mem:33, sys:67}},
-                {alarm:'2', dName:'Cluster-D', values:{cpu:23, mem:46, sys:41}},
-                {alarm:'4', dName:'Cluster-E', values:{cpu:55, mem:67, sys:23}}
+                {alarm:'3', dName:'Cluster-A', values:{cpu:35, mem:55, sys:33, net:[10,15], time:'2019-07-19 12:00:00'}},
+                {alarm:'5', dName:'Cluster-B', values:{cpu:78, mem:78, sys:12, net:[7,12], time:'2019-07-19 12:00:00'}},
+                {alarm:'1', dName:'Cluster-C', values:{cpu:32, mem:33, sys:67, net:[3,18], time:'2019-07-19 12:00:00'}},
+                {alarm:'2', dName:'Cluster-D', values:{cpu:23, mem:46, sys:41, net:[11,14], time:'2019-07-19 12:00:00'}},
+                {alarm:'4', dName:'Cluster-E', values:{cpu:55, mem:67, sys:23, net:[7,11], time:'2019-07-19 12:00:00'}}
             ],
             networkData:[],
             tcpudpClusterData:[],
@@ -68,7 +70,7 @@ class AnalysticViewZone extends React.Component {
         this.intervalTab = null;
 
         //before MWC show.... untile 2019.02.30
-        this.clusters = ['tdg-barcelona-niantic', 'tdg-barcelona-mobiledgex-demoapp'];
+        this.clusters = [];
         this.tcpudpCloumns = ['tcpConns', 'tcpRetrans', 'udpRecv', 'udpRecvErr', 'udpSend'];
         this.applications = [
             {cloudlet:'barcelona-mexdemo',
@@ -131,11 +133,27 @@ class AnalysticViewZone extends React.Component {
             </div>
         </Header>
     )
+    onResize = () => {
+        // if neither width nor height is provided via props
+        if (!this.props.width) {
+            this.setState({
+                width: this.mount.clientWidth,
+                //width: 1600
+            });
+        }
+        if (!this.props.height) {
+            this.setState({
+                height: this.mount.clientHeight,
+                //height: 900
+            });
+        }
 
+        console.log('20190719 resize event..', this.props)
+    };
     generateDOM(_applications) {
 
         return layout.map((item, i) => (
-            <div className="round_panel" key={i}>
+            <div className="round_panel" key={i} >
                 {
                     (i === 1)? this.makeHeader_date(item.title) :
                     (i === 2)? this.makeHeader_switch(item.title, 0) :
@@ -148,6 +166,7 @@ class AnalysticViewZone extends React.Component {
                     : (i === 3)? <NetworkTcpUdpComposeView applications={_applications} selectedCloudlet={this.state.selectedCloudlet}  activeIndex={this.state.activeIndex} netName={'UDP'}/>
                     : <span>{item.i}</span>
                 }
+
             </div>
         ))
     }
@@ -163,8 +182,8 @@ class AnalysticViewZone extends React.Component {
 
     }
     receiveClusterInfo(result) {
-        _self.setState({listData:result})
-
+        //_self.setState({listData:result})
+        console.log('20190719 result of cluster---', result)
 
     }
 
@@ -211,15 +230,65 @@ class AnalysticViewZone extends React.Component {
 
     }
 
-
-    componentDidMount() {
-        _self.interval = setInterval(() => {
-            serviceCluster.getClusterHealth(_self.clusters, _self.receiveClusterInfo)
-        }, 3000)
-
+    getClusterHealth (store) {
+        if(_self.clusters.length) serviceCluster.getClusterHealth( _self.clusters, _self.receiveClusterInfo)
+    }
+    getAppClusterApp() {
         // 클러스터에 해당하는 앱의 이름
         serviceCluster.getAppClusterApp(this.clusters, _self.receiveClusterApp);
+    }
 
+    makeForm = (cluster, store) => (
+        {
+            "token":store,
+            "params":{
+                "region":"US",
+                "clusterinst":{
+                    "cluster_key":{"name":"mmmm"},
+                    "cloudlet_key":{
+                        "operator_key":{"name":"TDG"},
+                        "name":"mexplat-stage-bonn-cloudlet"
+                    },
+                    "developer":"MobiledgeX"
+                },
+                "selector":"cpu",
+                "starttime":"2019-07-17T22:39:58Z",
+                "endtime":"2019-07-17T22:45:10Z"
+            }
+
+        }
+    )
+    componentWillReceiveProps(nextProps, nextContext) {
+        console.log('20190719 will receive props -- ', nextProps.clusterInstData)
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        if(nextProps.clusterInstData && nextProps.clusterInstData.length) {
+            nextProps.clusterInstData.map((cluster) => {
+                this.clusters.push(this.makeForm(cluster, store.userToken));
+            })
+            _self.getClusterHealth(store.userToken)
+        }
+    }
+
+    componentDidMount() {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        _self.interval = setInterval(() => {
+            _self.getClusterHealth(store);
+        }, 300000)
+        let {width, height} = this.props.size;
+        let rowHeight = 100; // h=3 then height = 30 * 3 = 90px
+        let divideH = (height / rowHeight);
+
+        let newHOne = Math.round(divideH*(2/3) - 1.5);
+        let newHTwo = Math.round(divideH*(1/3));
+
+        console.log('20190719 resize layout === ', width, height, newHOne, newHTwo)
+        let resizeLayout = [
+            {"w":6,"h":newHOne,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Cluster Health"},
+            {"w":6,"h":newHOne,"x":6,"y":0,"i":"1","moved":false,"static":false, "title":"Application Statistics"},
+            {"w":6,"h":newHTwo,"x":0,"y":newHOne,"i":"2","moved":false,"static":false, "title":"Network I/O Trend"},
+            {"w":6,"h":newHTwo,"x":6,"y":newHOne,"i":"3","moved":false,"static":false, "title":"Network I/O Trend"}]
+
+        this.setState({layout:resizeLayout})
 
         // _self.intervalTab = setInterval((e) => {
         //     _self.handleTabChange(e, (_self.state.activeIndex === 0)? {activeIndex:1} : {activeIndex:0})
@@ -231,8 +300,9 @@ class AnalysticViewZone extends React.Component {
     }
 
     render() {
+
         return (
-            <ReactGridLayout
+            <ReactGridLayout style={{backgroundColor:'green !important', height:'100%'}}
                 layout={this.state.layout}
                 onLayoutChange={this.onLayoutChange}
                 {...this.props}
@@ -244,9 +314,9 @@ class AnalysticViewZone extends React.Component {
     static defaultProps = {
         className: "layout",
         items: 20,
-        rowHeight: 30,
+        rowHeight: 100,
         cols: 12,
-        width: 1600
+        width: 1900
     };
 }
 
@@ -258,4 +328,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchProps)(AnalysticViewZone);
+export default connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(AnalysticViewZone));
