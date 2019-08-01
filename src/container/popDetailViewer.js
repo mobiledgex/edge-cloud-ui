@@ -73,6 +73,7 @@ export default class PopDetailViewer extends React.Component {
                                 {(key == 'DeploymentType' && String(nextProps.data[key]) === 'docker')?"Docker"
                                 :(key == 'DeploymentType' && String(nextProps.data[key]) === 'vm')?"VM"
                                 :(key == 'DeploymentType' && String(nextProps.data[key]) === 'kubernetes')?"Kubernetes"
+                                :(key == 'Ports')?String(nextProps.data[key]).toUpperCase()
                                 :(key == 'DeploymentMF')? this.makeTextBox(nextProps.data[key])
                                 :(key == 'ImageType' && String(nextProps.data[key]) === '1')?"Docker"
                                 :(key == 'ImageType' && String(nextProps.data[key]) === '2')?"Qcow" /* 여기까지 Apps*/

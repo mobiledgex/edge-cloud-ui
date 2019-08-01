@@ -20,6 +20,12 @@ export default class MonitoringViewer extends React.Component {
             timeseriesNET:[
                 ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
             ],
+            timeseriesDataDISK:[
+                [0,1,2,3,4,5]
+            ],
+            timeseriesDISK:[
+                ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
+            ],
             timeseriesDataTCP:[
                 [0,1,2,3,4,5],[2,3,4,5,6,7]
             ],
@@ -34,16 +40,18 @@ export default class MonitoringViewer extends React.Component {
             ],
             dataLabel:['CPU', 'MEM'],
             dataLabelNET:['RCV', 'SND'],
+            dataLabelDISK:['DISK'],
             dataLabelTCP:['RCV', 'SND'],
             dataLabelUDP:['RCV', 'SND', 'ERROR'],
         },
-        lastCPU:0, lastMEM: 0, lastNET:[], lastUDP:[], lastTCP:[],
+        lastCPU:0, lastMEM: 0, lastNET:[0,0], lastUDP:[0,0], lastTCP:[0,0],
         data:[]
     }
 
     cpuCnt = 0;
     memCnt = 0;
     netCnt = 0;
+    diskCnt = 0;
     tcpCnt = 0;
     udpCnt = 0;
 
@@ -56,6 +64,11 @@ export default class MonitoringViewer extends React.Component {
         if(label === 'mem') {
             this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt] = values['cmsn'];
             this.memCnt ++;
+        }
+        if(label === 'disk') {
+            this.state.mProp['timeseriesDataDISK'][0][this.diskCnt] = parseFloat(values['cmsn']).toFixed(2);
+            this.state.mProp['timeseriesDISK'][0][this.diskCnt] = values['time'];
+            this.diskCnt ++;
         }
         if(label === 'network') {
             this.state.mProp['timeseriesDataNET'][0][this.netCnt] = values['cmsn'][0];
@@ -76,10 +89,11 @@ export default class MonitoringViewer extends React.Component {
             this.state.mProp['timeseriesUDP'][0][this.udpCnt] = values['time'];
             this.udpCnt ++;
         }
-        console.log('20190730 ...last last ...', this.state.mProp['timeseriesDataNET'], " -:- ", this.netCnt)
+        console.log('20190730 ...last last ...', this.state.mProp['timeseriesDataDISK'], " -:- ", this.diskCnt)
         this.setState({props: this.state.mProp})
         this.setState({lastCPU: this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt-1]})
         this.setState({lastMEM: this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt-1]})
+        this.setState({lastDISK: this.state.mProp['timeseriesDataDISK'][0][this.diskCnt-1]})
         this.setState({lastNET: [this.state.mProp['timeseriesDataNET'][0][this.netCnt-1], this.state.mProp['timeseriesDataNET'][1][this.netCnt-1] ]})
         this.setState({lastTCP: [this.state.mProp['timeseriesDataTCP'][0][this.tcpCnt-1], this.state.mProp['timeseriesDataTCP'][1][this.tcpCnt-1] ]})
         this.setState({lastUDP: [this.state.mProp['timeseriesDataUDP'][0][this.udpCnt-1], this.state.mProp['timeseriesDataUDP'][1][this.udpCnt-1] ]})
@@ -101,16 +115,19 @@ export default class MonitoringViewer extends React.Component {
     feedData(data) {
         this.cpuCnt = 0;
         this.memCnt = 0;
+        this.diskCnt = 0;
         this.netCnt = 0;
         this.tcpCnt = 0;
         this.udpCnt = 0;
-        if(data) {
+        if(data && data.mData.length) {
             data.mData.map(item => {
-                console.log('20190730 ...monitoring viewer did Mount ...', item)
+                //console.log('20190730 ...monitoring viewer did Mount ...', item)
                 if(item.name.indexOf('cpu') > -1) {
                     this.setTimeseriesDataCPUMEM('cpu',item['values'])
                 } else if(item.name.indexOf('mem') > -1) {
                     this.setTimeseriesDataCPUMEM('mem',item['values'])
+                } else if(item.name.indexOf('disk') > -1) {
+                    this.setTimeseriesDataCPUMEM('disk',item['values'])
                 } else if(item.name.indexOf('network') > -1) {
                     this.setTimeseriesDataCPUMEM('network',item['values'])
                 } else if(item.name.indexOf('tcp') > -1) {
@@ -137,7 +154,7 @@ export default class MonitoringViewer extends React.Component {
 
     render() {
         return (
-            <Grid.Row style={{height:700, backgroundColor:'#252525'}}>
+            <Grid.Row style={{height:700, backgroundColor:'#282c33'}}>
                 <Grid.Column>
                     <div className='wrapperPercentage'>
                         <Segment className="childPercentage" inverted color='red'>
@@ -150,13 +167,32 @@ export default class MonitoringViewer extends React.Component {
                             <Header>
                                 MEMORY
                             </Header>
-                            <Container>{this.bytesToString(this.state.lastMEM)}</Container>
+                            <Container>
+                                {
+                                    this.bytesToString(
+                                    (this.props.data.page !== 'appInst')?this.state.lastMEM * 1000000:this.state.lastMEM
+                                    )
+                                }
+                            </Container>
                         </Segment>
-                        <Segment className="childPercentage" inverted color='yellow'>
+
+                        {
+                            (this.props.data.page !== 'appInst')?
+                                <Segment className="childPercentage" inverted color='yellow'>
+                                    <Header>
+                                        DISK
+                                    </Header>
+                                    <Container>{this.state.lastDISK + '%'}</Container>
+                                </Segment>
+                                :
+                                null
+                        }
+                        <Segment className="childPercentage" inverted color='purple'>
                             <Header>
                                 NETWORK
                             </Header>
-                            <Container>{JSON.stringify(this.state.lastNET)}</Container>
+                            <Container>{JSON.stringify(this.state.lastNET[0])+' RCV'}</Container>
+                            <Container>{JSON.stringify(this.state.lastNET[1])+' SND'}</Container>
                         </Segment>
                         {
                             (this.props.data.page !== 'appInst')?
@@ -164,7 +200,8 @@ export default class MonitoringViewer extends React.Component {
                                     <Header>
                                         TCP
                                     </Header>
-                                    <Container>{JSON.stringify(this.state.lastTCP)}</Container>
+                                    <Container>{JSON.stringify(this.state.lastTCP[0])+' RCV'}</Container>
+                                    <Container>{JSON.stringify(this.state.lastTCP[1])+' SND'}</Container>
                                 </Segment>
                             :
                             null
@@ -175,7 +212,8 @@ export default class MonitoringViewer extends React.Component {
                                     <Header>
                                         UDP
                                     </Header>
-                                    <Container>{JSON.stringify(this.state.lastUDP)}</Container>
+                                    <Container>{JSON.stringify(this.state.lastUDP[0])+' RCV'}</Container>
+                                    <Container>{JSON.stringify(this.state.lastUDP[1])+' SND'}</Container>
                                 </Segment>
                             :
                             null
@@ -186,6 +224,16 @@ export default class MonitoringViewer extends React.Component {
                 <Grid.Column style={{height:400}}>
                     <Header>CPU & MEMORY</Header>
                     <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} margin={10} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                    {
+                        (this.props.data.page !== 'appInst')?
+                            <div style={{height:500}}>
+                                <Header>DISK</Header>
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataDISK} series={this.state.mProp.timeseriesDISK} margin={10} label={this.state.mProp.dataLabelDISK} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                            </div>
+                        :
+                        null
+                    }
+
                     <Header>NETWORK</Header>
                     <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataNET} series={this.state.mProp.timeseriesNET} margin={10} label={this.state.mProp.dataLabelNET} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                     {

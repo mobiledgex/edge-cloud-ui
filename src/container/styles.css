@@ -282,5 +282,6 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
     justify-content: center;
 }
 .childPercentage {
+    height:105px;
     margin-top: 14px !important;
 }

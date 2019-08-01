@@ -51,6 +51,7 @@ class DeveloperListView extends React.Component {
             isDraggable: false,
             noData:false
         };
+        this.sorting = false;
 
     }
     gotoUrl(site, subPath, pg) {
@@ -189,23 +190,31 @@ class DeveloperListView extends React.Component {
 
         return layout
     }
-    handleSort = clickedColumn => () => {
-        const { column, dummyData, direction } = this.state
 
-        if (column !== clickedColumn) {
+    handleSort = clickedColumn => (a) => {
+
+        this.sorting = true;
+        const { column, dummyData, direction } = _self.state
+        //console.log('20190724 selected column == ', clickedColumn, a, ":", column, ":", dummyData);
+        if ((column !== clickedColumn) && dummyData) {
+            let sorted = _.sortBy(dummyData, [clm => String(clm[clickedColumn]).toLowerCase()])
             this.setState({
                 column: clickedColumn,
-                dummyData: _.sortBy(dummyData, [clickedColumn]),
+                dummyData: sorted,
                 direction: 'ascending',
             })
-
+            this.forceUpdate()
             return
+        } else {
+            let reverse = dummyData.reverse()
+            this.setState({
+                dummyData: reverse,
+                direction: direction === 'ascending' ? 'descending' : 'ascending',
+            })
+
         }
 
-        this.setState({
-            dummyData: dummyData.reverse(),
-            direction: direction === 'ascending' ? 'descending' : 'ascending',
-        })
+        setTimeout(() => this.sorting = false, 1000)
     }
     makeHeader(_keys, headL, visibles) {
         const { column, direction } = this.state
@@ -349,6 +358,13 @@ class DeveloperListView extends React.Component {
                                             (item[value] == 'kubernetes')? 'Kubernetes':
                                             (item[value] == 'vm')? 'VM':
                                             item[value]
+                                        }
+                                    </Table.Cell>
+                                :
+                                (value === 'Ports')?
+                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
+                                        {
+                                            String(item[value]).toUpperCase()
                                         }
                                     </Table.Cell>
                                 :

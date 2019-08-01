@@ -1092,8 +1092,16 @@ body, button, input, textarea, optgroup, select, textarea,
     width:100%;
     /* height:100%; */
     background: rgba(0,0,0,.15);
-    border-top: solid 2px rgba(255,255,255,0.2);
+    border-top: solid 2px rgba(51, 46, 46, 0.2);
     border-bottom: solid 2px rgba(255,255,255,0.2);
+}
+.contents_body .grid_table.tabs {
+    border-top: none;
+    border-bottom: none;
+}
+.contents_body .grid_table.tabs .ui.attached.segment {
+    border: none;
+    padding: 0;
 }
 .contents_body .ui.table {
     background-color: #292c33 !important;
