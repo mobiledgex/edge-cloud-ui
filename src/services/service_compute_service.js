@@ -174,15 +174,15 @@ export function createNewAppInst(resource, body, callback) {
 }
 //Multi Create
 export function createNewMultiAppInst(resource, body, callback, multiData, filterData, vmCheck) {
-    console.log("bodybodybodydd",multiData)
+    console.log("bodybodybodydd",multiData,":::",filterData)
     axios.all(multiData.Cloudlet.map((itemCloudlet) => {
-        if(vmCheck) multiData.ClusterInst = ['somecluster']
+        if(vmCheck) multiData.ClusterInst = ['']
         if(multiData.AutoClusterInst) {
             multiData.ClusterInst = ['autocluster' + multiData.AppName.replace(/(\s*)/g, "")];
         }
         filterData[itemCloudlet].map((items) => {
             multiData.ClusterInst.map((itemCluster) => {
-                if(items.ClusterName == itemCluster || itemCluster == 'somecluster' || itemCluster.indexOf('autocluster') > -1){
+                if(items.ClusterName == itemCluster || itemCluster == '' || itemCluster.indexOf('autocluster') > -1){
                     return axios.post('https://'+hostname+':3030/CreateAppInst',qs.stringify({
                         service: resource,
                         serviceBody:body,
@@ -199,8 +199,8 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
                         });
                 }
             })
-            if(multiData.ClusterInst[0] == 'somecluster') multiData.ClusterInst = [];
-            if(String(multiData.ClusterInst[0]).indexOf('autocluster') > -1){
+            console.log("nullcluste!!@RR!",multiData.ClusterInst)
+            if(String(multiData.ClusterInst[0]).indexOf('autocluster') > -1 || multiData.ClusterInst[0] == ""){
                 multiData.ClusterInst = [];
             }
         }) 

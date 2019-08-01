@@ -90,6 +90,7 @@ class SiteFourPageAppInst extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
+        console.log('20190731 nextProps detailData--- ', nextProps.detailData)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
 
         if(nextProps.computeRefresh.compute) {
@@ -106,8 +107,9 @@ class SiteFourPageAppInst extends React.Component {
                 //this.getDataDeveloper(this.props.changeRegion)
                 this.setState({viewMode:nextProps.viewMode})
             } else {
-                this.setState({viewMode:nextProps.viewMode})
-                setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
+                this.setState({detailData:nextProps.detailData})
+                this.forceUpdate()
+                setTimeout(() => this.setState({viewMode:nextProps.viewMode}), 600)
             }
 
         }
@@ -173,13 +175,13 @@ class SiteFourPageAppInst extends React.Component {
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem, viewMode, devData } = this.state;
+        const { activeItem, viewMode, devData, detailData } = this.state;
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
             <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloper}></MapWithListView>
             :
-            <PageDetailViewer data={this.state.detailData} page='appInst'/>
+            <PageDetailViewer data={detailData} page='appInst'/>
         );
     }
 

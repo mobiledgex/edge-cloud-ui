@@ -132,19 +132,6 @@ export default class PageDetailViewer extends React.Component {
             listOfDetail:null,
             clusterName:null,
             activeIndex:0,
-            timeseriesDataCPUMEM:[
-                [0,1,2,3,4,5],[2,3,4,5,6,7]
-            ],
-            timeseriesCPUMEM:[
-                ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
-            ],
-            dataLabel:['CPU', 'MEM'],
-            timeseriesDataNET:[
-                [0,1,2,3,4,5],[2,3,4,5,6,7]
-            ],
-            timeseriesNET:[
-                ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
-            ],
             page:''
         }
         _self = this;
@@ -197,7 +184,8 @@ export default class PageDetailViewer extends React.Component {
 
             (i === 0)?
                 <div className="round_panel" key={i} style={{ width:width, minWidth:670, display:'flex', flexGrow:1, flexShrink:1, flexBasis:'auto', flexDirection:'column'}} >
-                    <div className="grid_table" style={{width:'100%', overflowY:'auto'}}>
+
+                    <div className="grid_table tabs" style={{width:'100%', overflowY:'auto', overflowX:'hidden'}}>
                         <Tab style={{backgroundColor:'transparent'}} menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab}/>
                     </div>
                 </div>
@@ -243,6 +231,8 @@ export default class PageDetailViewer extends React.Component {
     "starttime":"2019-07-30T01:41:03Z",
     "endtime":"2019-07-30T01:44:54Z"}'
      */
+
+    /*
     makeFormCluster = (inst, valid, store) => (
         {
             "token":store,
@@ -257,15 +247,59 @@ export default class PageDetailViewer extends React.Component {
                     "developer":"MobiledgeX"
                 },
                 "selector":valid,
-                "starttime":moment.utc().subtract(50, 'hours').format(),
-                "endtime":moment.utc().subtract(32, 'hours').format()
+                "starttime":moment.utc().subtract(24, 'hours').format(),
+                "endtime":moment.utc().subtract(0, 'hours').format()
+            }
+
+        }
+    )
+    */
+
+
+
+    makeFormCluster = (inst, valid, store) => (
+        {
+            "token":store,
+            "params":{
+                "region":inst.Region,
+                "clusterinst":{
+                    "cluster_key":{"name":inst.ClusterName},
+                    "cloudlet_key":{
+                        "operator_key":{"name":inst.Operator},
+                        "name":inst.Cloudlet
+                    },
+                    "developer":inst.OrganizationName
+                },
+                "selector":valid,
+                "starttime":moment.utc().subtract(24, 'hours').format(),
+                "endtime":moment.utc().subtract(0, 'hours').format()
             }
 
         }
     )
 
 
+
     /*
+    http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app <<<
+    '{"region":"US",
+        "appinst":
+            {"app_key":
+                {"developer_key":{"name":"MobiledgeX"},
+                "name":"mobiledgexsdkdemo",
+                "version":"1.0"},
+                "cluster_inst_key":{
+                    "cluster_key":{"name":"autoclustermobiledgexsdkdemo"},
+                    "cloudlet_key":{"name":"mexplat-stage-hamburg-cloudlet","operator_key":{"name":"TDG"}
+                }
+            }
+        },
+        "selector":"cpu",
+        "starttime":"2019-07-28T23:25:35Z",
+        "endtime":"2019-07-28T23:33:13Z"
+    }'
+     */
+
     makeFormApp = (inst, valid, store) => (
         {
             "token":store,
@@ -286,15 +320,15 @@ export default class PageDetailViewer extends React.Component {
                     }
                 },
                 "selector":valid,
-                "starttime":moment.utc().subtract(12, 'hours').format(),
-                "endtime":moment.utc().subtract(1, 'hours').format()
+                "starttime":moment.utc().subtract(24, 'hours').format(),
+                "endtime":moment.utc().subtract(0, 'hours').format()
             }
         }
     )
-    */
 
 
 
+    /*
     makeFormApp = (inst, valid, store) => (
         {
             "token":store,
@@ -320,7 +354,7 @@ export default class PageDetailViewer extends React.Component {
             }
         }
     )
-
+    */
 
     componentDidMount() {
         console.log('20190729 detail info of data == ', this.props)
@@ -336,7 +370,7 @@ export default class PageDetailViewer extends React.Component {
             if(nextProps.data && !this.initData){
                 this.setState({listData:nextProps.data, page:nextProps.page})
                 //get info resource of app or cluster
-                console.log('20190730 detail info of data -- will recevive props == ', nextProps.data, nextProps.page)
+                console.log('20190731 detail info of data -- will recevive props == ', nextProps.data, nextProps.page)
                 this.getInstanceHealth( nextProps.page, nextProps.data)
 
                 this.initData = true;

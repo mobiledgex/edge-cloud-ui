@@ -286,7 +286,7 @@ class MapWithListView extends React.Component {
     }
     detailView(item) {
         //change popup to page view
-        console.log('=============  mapWithListView..detailView')
+        console.log('20190731 =============  mapWithListView..detailView ==== ', item)
         _self.props.handleDetail({data:item, viewMode:'detailView'})
     }
     jsonView = (jsonObj) => (
@@ -412,7 +412,7 @@ class MapWithListView extends React.Component {
                                     (!( String(hidden).indexOf(value) > -1 )) ?
                                         <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <div>
-                                            {(item[value] !== 'somecluster' ) ? String(item[value]) : '-'}
+                                            {String(item[value])}
                                             </div>
                                         </Table.Cell>
                                     : null
@@ -441,8 +441,6 @@ class MapWithListView extends React.Component {
     componentDidMount() {
         let self = this;
         setTimeout(() => self.setState({tooltipVisible:true}), 1000)
-
-
 
     }
     componentWillUnmount() {

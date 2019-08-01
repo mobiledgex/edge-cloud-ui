@@ -202,7 +202,7 @@ class RegistryInstViewer extends React.Component {
         } else {
             this.props.handleAlertInfo('success','Your application instance created successfully')
             setTimeout(() => {
-                this.gotoUrl();
+                this.gotoUrl('submit');
             }, 1000)
         }
     }
@@ -222,12 +222,14 @@ class RegistryInstViewer extends React.Component {
         this.setState({ openAdd: false })
     }
 
-    gotoUrl() {
-        console.log("eessajajaj@@",_self.props)
+    gotoUrl(msg) {
+        console.log("eessajajaj@@",_self.props,"::",msg,"::",_self.props.location.goBack)
         let pg = 'pg=6'
-        if(_self.props.location.goBack) {
+        if(_self.props.location.goBack && msg !== 'submit') {
             pg = 'pg=5'
             localStorage.setItem('selectMenu', 'Apps')
+        } else {
+            localStorage.setItem('selectMenu', 'App Instances')
         }
         _self.props.history.push({
             pathname: '/site4',
@@ -325,14 +327,11 @@ class RegistryInstViewer extends React.Component {
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
                 console.log("autoClusterDisable!!!",this.state.autoClusterDisable,":::",submitData.appinst.key.cluster_inst_key.cluster_key.name)
-                // if(this.state.autoClusterDisable){
-                //     submitData.appinst.key.cluster_inst_key.cluster_key.name = 'somecluster';
-                // }
                 services.createNewMultiAppInst('CreateAppInst', {params:submitData, token:store.userToken}, _self.receiveResult, nextProps.validateValue, this.state.cloudlets, this.state.autoClusterDisable)
                 setTimeout(() => {
                     if(this.state.regSuccess) {
                         this.props.handleLoadingSpinner(false);
-                        this.gotoUrl();
+                        this.gotoUrl('submit');
                     }
                 }, 1000)
             } else {

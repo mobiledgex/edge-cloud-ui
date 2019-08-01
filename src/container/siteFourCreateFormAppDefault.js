@@ -9,7 +9,7 @@ import './styles.css';
 
 const makeOption =(options)=> (
     options.map((value) =>(
-        {key:value, text:value, value:value}
+        {key:value, text:(value == 'tcp' || value == 'udp')? value.toUpperCase() : value, value:value}
     ))
 )
 

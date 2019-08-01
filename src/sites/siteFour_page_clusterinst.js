@@ -95,8 +95,9 @@ class SiteFourPageClusterInst extends React.Component {
             if(nextProps.viewMode === 'listView') {
                 this.setState({viewMode:nextProps.viewMode})
             } else {
-                this.setState({viewMode:nextProps.viewMode})
-                setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
+                this.setState({detailData:nextProps.detailData})
+                this.forceUpdate()
+                setTimeout(() => this.setState({viewMode:nextProps.viewMode}), 600)
             }
 
         }
@@ -124,15 +125,20 @@ class SiteFourPageClusterInst extends React.Component {
     }
 
     groupJoin(result,cmpt){
-        this.props.handleLoadingSpinner(false);
+
 
         if(cmpt == 'clusterInst') this.setState({clusterInstData:_self.state.clusterInstData.concat(result)})
         else if(cmpt == 'cloudlet') this.setState({cloudletData:_self.state.cloudletData.concat(result)})
 
         _self.loadCount ++;
-        if(rgn.length*2 == this.loadCount){
+        //if(rgn.length*2 == this.loadCount){
+
             _self.countJoin()
-            return
+            //return
+        //}
+
+        if(rgn.length*2 == this.loadCount) {
+            _self.props.handleLoadingSpinner(false);
         }
     }
     countJoin() {
@@ -150,6 +156,7 @@ class SiteFourPageClusterInst extends React.Component {
     }
     
     getDataDeveloper = (region) => {
+        _self.props.handleLoadingSpinner(true);
         console.log("changeRegion@@",region)
         _self.loadCount = 0;
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null

@@ -117,7 +117,7 @@ let generateData = (datas) => {
         console.log('20190729 dataSeries ->->->->',dataSeries)
         if(dataSeries.length) {
             dataSeries.map((item) => {
-                console.log('20190729 item ->->->->',item)
+                console.log('20190730 item ->->->->',moment(item[0]).utc().local().format())
                 // time, cluster, cpu, disk, mem, recvBytes, sendBytes
 
                 infoData = item;
@@ -126,7 +126,7 @@ let generateData = (datas) => {
                     alarm:infoData[2],
                     dName:infoData[1],
                     values:{
-                        time:infoData[0],
+                        time:moment(item[0]).utc().local().format(),
                         cluster:infoData[3],
                         cmsn:(_name.indexOf('cpu') > -1)?infoData[4] : (_name.indexOf('mem') > -1)? infoData[5] : [infoData[6],infoData[7]]
                     }})
