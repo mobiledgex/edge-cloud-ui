@@ -80,15 +80,16 @@ class SiteFourPageOrganization extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        if(!this.state.liveComp) {
-            return;
-        }
+        // if(!this.state.liveComp) {
+        //     return;
+        // }
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
         if(nextProps.computeRefresh.compute) {
-            //let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            //this.getDataDeveloper(store.userToken);
+            console.log('orgRefresh')
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            this.getDataDeveloper(store.userToken);
             this.props.handleComputeRefresh(false);
         }
 

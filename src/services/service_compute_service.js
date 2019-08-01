@@ -278,6 +278,7 @@ export function createNewClusterInst(resource, body, callback) {
 }
 //Multi Create
 export function createNewMultiClusterInst(resource, body, callback, multiData) {
+    axios.defaults.timeout = 1000000;
     axios.all(multiData.map((item) => {
         //console.log("itemneuemulit",item,body)
         //body.params.clusterinst.key.cloudlet_key.name = item

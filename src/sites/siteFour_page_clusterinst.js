@@ -207,7 +207,7 @@ class SiteFourPageClusterInst extends React.Component {
 
                 <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} title='Cluster Instance' region='US' dataRefresh={this.getDataDeveloperSub}></MapWithListView>
                 :
-                <PageDetailViewer data={this.state.detailData}/>
+                <PageDetailViewer data={this.state.detailData} page='clusterInst'/>
         );
     }
 

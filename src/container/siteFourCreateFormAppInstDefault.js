@@ -214,93 +214,95 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                         regKeys.map((key, i) => (
 
                                             (this.getLabel(key, pId))?
-                                            <Grid.Row columns={3} key={i}>
+                                                (!this.props.autoClusterDisable || (key !== 'AutoClusterInst' && key !== 'ClusterInst'))?
+                                                <Grid.Row columns={3} key={i}>
 
-                                                <Grid.Column width={4} className='detail_item'>
-                                                    <div>{this.getLabel(key, pId)}{this.getNecessary(key, pId)}</div>
-                                                </Grid.Column>
-                                                <Grid.Column width={11}>
-                                                    {
-                                                        (fieldKeys[pId][key]['type'] === 'RenderSelect') ?
-                                                        <Field
-                                                            component={renderSelect}
-                                                            placeholder={'Select '+fieldKeys[pId][key]['label']}
-                                                            value={data[key]}
-                                                            options={fieldKeys[pId][key]['items']}
-                                                            name={key}
-                                                            onChange={()=>console.log('onChange text..')}
-                                                            error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
-                                                        :
-                                                        (fieldKeys[pId][key]['type'] === 'RenderDropDown') ?
-                                                        <Field
-                                                            placeholder={'Select '+fieldKeys[pId][key]['label'] }
-                                                            component={renderDropDown}
-                                                            options={fieldKeys[pId][key]['items']}
-                                                            name={key}
-                                                            error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
-                                                        />
-                                                        :
-                                                        (fieldKeys[pId][key]['type'] === 'RenderCheckbox') ?
-                                                        <Field
-                                                            component={renderCheckbox}
-                                                            value={data[key]}
-                                                            name={key}
-                                                            onChange={(e)=>this.onHandleToggleChange(e)}
-                                                            disabled={this.props.autoClusterDisable}
+                                                    <Grid.Column width={4} className='detail_item'>
+                                                        <div>{this.getLabel(key, pId)}{this.getNecessary(key, pId)}</div>
+                                                    </Grid.Column>
+                                                    <Grid.Column width={11}>
+                                                        {
+                                                            (fieldKeys[pId][key]['type'] === 'RenderSelect') ?
+                                                            <Field
+                                                                component={renderSelect}
+                                                                placeholder={'Select '+fieldKeys[pId][key]['label']}
+                                                                value={data[key]}
+                                                                options={fieldKeys[pId][key]['items']}
+                                                                name={key}
+                                                                onChange={()=>console.log('onChange text..')}
+                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
+                                                            :
+                                                            (fieldKeys[pId][key]['type'] === 'RenderDropDown') ?
+                                                            <Field
+                                                                placeholder={'Select '+fieldKeys[pId][key]['label'] }
+                                                                component={renderDropDown}
+                                                                options={fieldKeys[pId][key]['items']}
+                                                                name={key}
+                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
                                                             />
-                                                        :
-                                                        (fieldKeys[pId][key]['type'] === 'RenderInputDisabled') ?
-                                                            (getUserRole == 'AdminManager') ?
-                                                                <Field
-                                                                    component={renderSelect}
-                                                                    placeholder={'Select Organization Name'}
-                                                                    options={fieldKeys[pId][key]['items']}
-                                                                    name={key}
-                                                                    onChange={()=>console.log('onChange text..')}
-                                                                    error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                             :
-                                                                <Field
-                                                                    disabled
-                                                                    component={renderInputDisabled}
-                                                                    type="input"
-                                                                    name={key}
-                                                                    value={data[key]}
-                                                                    />
-                                                        :
-                                                        (fieldKeys[pId][key]['type'] === 'RenderClusterDisabled') ?
-                                                            (!this.state.ClusterDisable) ?
-                                                                <Field
-                                                                    component={renderDropDown}
-                                                                    placeholder={'Select '+fieldKeys[pId][key]['label']}
-                                                                    value={data[key]}
-                                                                    options={fieldKeys[pId][key]['items']}
-                                                                    name={key}
-                                                                    onChange={()=>console.log('onChange text..')}
-                                                                    error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
-                                                                    disabled={this.props.autoClusterDisable}
-                                                                    />
+                                                            (fieldKeys[pId][key]['type'] === 'RenderCheckbox') ?
+                                                            <Field
+                                                                component={renderCheckbox}
+                                                                value={data[key]}
+                                                                name={key}
+                                                                onChange={(e)=>this.onHandleToggleChange(e)}
+                                                                disabled={this.props.autoClusterDisable}
+                                                                />
                                                             :
-                                                                <Field
-                                                                    disabled
-                                                                    component={renderInputDisabled}
-                                                                    type="input"
-                                                                    name={key}
-                                                                    placeholder={'autocluster'}
-                                                                    />
-                                                        :
-                                                        <Field
-                                                            component={renderInput}
-                                                            type="input"
-                                                            name={key}
-                                                            value={data[key]}
-                                                            error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
-                                                    }
-                                                </Grid.Column>
-                                                <Grid.Column width={1}>
-                                                {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
+                                                            (fieldKeys[pId][key]['type'] === 'RenderInputDisabled') ?
+                                                                (getUserRole == 'AdminManager') ?
+                                                                    <Field
+                                                                        component={renderSelect}
+                                                                        placeholder={'Select Organization Name'}
+                                                                        options={fieldKeys[pId][key]['items']}
+                                                                        name={key}
+                                                                        onChange={()=>console.log('onChange text..')}
+                                                                        error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
+                                                                :
+                                                                    <Field
+                                                                        disabled
+                                                                        component={renderInputDisabled}
+                                                                        type="input"
+                                                                        name={key}
+                                                                        value={data[key]}
+                                                                        />
+                                                            :
+                                                            (fieldKeys[pId][key]['type'] === 'RenderClusterDisabled') ?
+                                                                (!this.state.ClusterDisable) ?
+                                                                    <Field
+                                                                        component={renderDropDown}
+                                                                        placeholder={'Select '+fieldKeys[pId][key]['label']}
+                                                                        value={data[key]}
+                                                                        options={fieldKeys[pId][key]['items']}
+                                                                        name={key}
+                                                                        onChange={()=>console.log('onChange text..')}
+                                                                        error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
+                                                                        disabled={this.props.autoClusterDisable}
+                                                                        />
+                                                                :
+                                                                    <Field
+                                                                        disabled
+                                                                        component={renderInputDisabled}
+                                                                        type="input"
+                                                                        name={key}
+                                                                        placeholder={'autocluster'}
+                                                                        />
+                                                            :
+                                                            <Field
+                                                                component={renderInput}
+                                                                type="input"
+                                                                name={key}
+                                                                value={data[key]}
+                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
+                                                        }
+                                                    </Grid.Column>
+                                                    <Grid.Column width={1}>
+                                                    {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
 
-                                                </Grid.Column>
-                                            </Grid.Row>
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                                :null
                                             : null
                                         ))
                                         : ''

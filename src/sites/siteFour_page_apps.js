@@ -29,7 +29,7 @@ class SiteFourPageApps extends React.Component {
         this.loadCount = 0;
 
         this.headerLayout = [1,2,2,1,2,2,2,3];
-        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster']
+        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster','AuthPublicKey','DefaultFQDN','PackageName']
         this.userToken = null;
 
     }

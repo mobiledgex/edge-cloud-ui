@@ -84,8 +84,11 @@ class RegistryViewer extends React.Component {
                 'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (Kubernetes, Docker, or VM)', active:true, items:['Docker', 'Kubernetes', 'VM']},
                 'ImageType':{label:'Image Type', type:'RenderDT', necessary:true, tip:'ImageType specifies image type of an App',items:''},
                 'ImagePath':{label:'Image Path', type:'RenderPath', necessary:true, tip:'URI of where image resides', active:true,items:''},
+                'AuthPublicKey':{label:'Auth Public Key', type:'RenderTextArea', necessary:true, tip:'auth_public_key', active:true},
                 'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor.', active:true},
                 'Ports':{label:'Ports', type:'CustomPorts', necessary:false, tip:'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443', active:true, items:['TCP', 'UDP']},
+                'DefaultFQDN':{label:'Default FQDN', type:'RenderInput', necessary:false, tip:'Default FQDN', active:true},
+                'PackageName':{label:'Package Name', type:'RenderInput', necessary:false, tip:'Package Name', active:true},
                 // 'IpAccess':{label:'IP Access', type:'IPSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
                 'Command':{label:'Command', type:'RenderInput', necessary:false, tip:'Command that the container runs to start service', active:true},
                 'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file', active:true},
@@ -103,8 +106,11 @@ class RegistryViewer extends React.Component {
                 'DeploymentType':'',
                 'ImageType':'',
                 'ImagePath':'',
+                'AuthPublicKey':'',
                 'DefaultFlavor':'',
                 'Ports':'',
+                'DefaultFQDN':'',
+                'PackageName':'',
                 // 'IpAccess':'',
                 'Command':'',
                 'DeploymentMF':'',
@@ -370,7 +376,7 @@ class RegistryViewer extends React.Component {
                 defaultPath = 'docker.mobiledgex.net/OrganizationName/images/AppName:AppVersion';
             } else if(nextProps.formApps.values.DeploymentType == "VM") {
                 selectType = 'Qcow';
-                defaultPath = 'https://artifactory.mobiledgex.net/artifactory/mc-repo-OrganizationName';
+                defaultPath = 'https://artifactory.mobiledgex.net/artifactory/repo-OrganizationName';
             }
             let ImagePath = (nextProps.formApps.values.ImagePath)? nextProps.formApps.values.ImagePath : defaultPath;
             assObj[0].ImageType.items = selectType;
@@ -437,7 +443,9 @@ const createFormat = (data) => (
                 "access_ports":accessport(data),
                 "default_flavor":{"name":data['DefaultFlavor']},
                 "cluster":{"name":""},
-                // "ipaccess":data['IpAccess'],
+                "auth_public_key":data['AuthPublicKey'],
+                "official_fqdn":data['DefaultFQDN'],
+                "android_package_name":data['PackageName'],
                 "command":data['Command'],
                 "deployment_manifest":data['DeploymentMF']
             }
@@ -481,11 +489,14 @@ const mapStateToProps = (state) => {
     }
     
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
+        
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
+        
         if(enableValue.ImagePath == "") enableValue.ImagePath = submitImgPath;
         if(enableValue.DeploymentType === "Docker") enableValue.DeploymentType = "docker"
         if(enableValue.DeploymentType === "Kubernetes") enableValue.DeploymentType = "kubernetes"
         if(enableValue.DeploymentType === "VM") enableValue.DeploymentType = "vm"
+        console.log("state.form.createAppFormDefault.valuesxxx",enableValue)
         submitVal = createFormat(enableValue)
         validateValue = state.form.createAppFormDefault.values;
     }
