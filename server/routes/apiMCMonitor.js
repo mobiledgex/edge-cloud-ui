@@ -12,7 +12,7 @@ let _version = 'v0.0.0';
 
 
 //app instances
-exports.ShowclusterHealth = (req, res) => {
+exports.ShowappHealth = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
@@ -23,8 +23,8 @@ exports.ShowclusterHealth = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('20190719 show me cluster health-- ', serviceBody, 'mcUrl=',mcUrl, 'token=', superpass)
-    axios.post(mcUrl + '/api/v1/auth/metrics/cluster', serviceBody,
+    console.log('20190729 show me appinst health-- ', JSON.stringify(serviceBody), 'mcUrl=',mcUrl )
+    axios.post(mcUrl + '/api/v1/auth/metrics/app', serviceBody,
         {
             headers: {
                 'Authorization':`Bearer ${superpass}`}
@@ -47,7 +47,41 @@ exports.ShowclusterHealth = (req, res) => {
             res.json({error:'Request failed'})
         });
 }
+exports.ShowclusterHealth = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'US'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    console.log('20190730 show me cluster health-- ', JSON.stringify(serviceBody), 'mcUrl=',mcUrl)
+    axios.post(mcUrl + '/api/v1/auth/metrics/cluster', serviceBody,
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('20190730 success show clusetinst', response.data)
+            if(response.data && response.statusText === 'OK') {
+                res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
 
+            } else {
+                res.json({error:'Request failed'})
+            }
+        })
+        .catch(function (error) {
+            console.log('error show ..', String(error));
+            res.json({error:'Request failed'})
+        });
+}
 //Create Cloudlet
 exports.CreateCloudlet = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;

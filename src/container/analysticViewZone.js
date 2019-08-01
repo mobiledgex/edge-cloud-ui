@@ -12,7 +12,7 @@ import NetworkTcpUdpView from '../components/networkTcpUdpView';
 import NetworkTcpUdpComposeView from '../components/networkTcpUdpComposeView';
 import SelectFromTo from '../components/selectFromTo';
 
-import * as serviceCluster from '../services/service_clusters_service';
+import * as serviceCluster from '../services/service_instance_service';
 import * as serviceCompute from '../services/service_compute_service';
 
 import './styles.css';
@@ -184,7 +184,6 @@ class AnalysticViewZone extends React.Component {
     receiveClusterInfo(result) {
         //_self.setState({listData:result})
         console.log('20190719 result of cluster---', result)
-
     }
 
 
@@ -259,7 +258,7 @@ class AnalysticViewZone extends React.Component {
         }
     )
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('20190719 will receive props -- ', nextProps.clusterInstData)
+        console.log('20190729 will receive props -- ', nextProps.clusterInstData)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(nextProps.clusterInstData && nextProps.clusterInstData.length) {
             nextProps.clusterInstData.map((cluster) => {

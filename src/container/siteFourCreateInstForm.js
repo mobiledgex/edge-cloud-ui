@@ -82,40 +82,7 @@ const cloudletMap = (props, type) => (
 
         :
         <EditMap parentProps={{devData:props.cloudletData}}></EditMap>}
-        {/* <Form>
-            <Grid style={{margin:'0 -1rem'}}>
-                <Grid.Row columns={2}>
-                    <Grid.Column>
-                        <Form.Field
-                            id='form-input-control-first-name'
-                            control={renderLocationInput}
-                            label='Latitude'
-                            placeholder='Latitude'
-                        />
-                    </Grid.Column>
-                    <Grid.Column>
-                        <Form.Field
-                            id='form-input-control-first-name'
-                            control={renderLocationInput}
-                            label='Longitude'
-                            placeholder='Longitude'
-                        />
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
-        </Form> */}
-        {/*<Grid>*/}
-        {/*    <Grid.Row columns={2}>*/}
-        {/*        <Grid.Column>*/}
-        {/*            <span>Longitude</span>*/}
-        {/*            <Input placeholder='Search...'/>*/}
-        {/*        </Grid.Column>*/}
-        {/*        <Grid.Column>*/}
-        {/*            <span>Latitude</span>*/}
-        {/*            <Input placeholder='Search...'/>*/}
-        {/*        </Grid.Column>*/}
-        {/*    </Grid.Row>*/}
-        {/*</Grid>*/}
+
     </Fragment>
 )
 let _self = null;
@@ -410,7 +377,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
     render() {
         const { activeIndex, clusterName } = this.state;
         return (
-            <Grid>
+            <Grid style={{height:'100%'}}>
                 <Grid.Row columns={2}>
                     <Grid.Column width={8}>
                         <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole} gotoUrl={this.gotoUrl} clusterHide={this.clusterHide} toggleSubmit={this.props.toggleSubmit} validError={this.props.validError} onSubmit={() => console.log('submit form')} onChangeState={this.onChangeFormState}></SiteFourCreateFormDefault>

@@ -35,10 +35,11 @@ let newRegistKey = [
     'DeploymentType',
     'ImageType',
     'ImagePath',
+    'AuthPublicKey',
     'DefaultFlavor',
     'Ports',
-    // 'IpAccess',
-    //'Cluster',
+    'DefaultFQDN',
+    'PackageName',
     'Command',
     'DeploymentMF',
 ];
@@ -68,8 +69,11 @@ let generateData = (datas,body) => {
                     DeploymentType:'',
                     ImageType:'',
                     ImagePath:'',
+                    AuthPublicKey:'',
                     DefaultFlavor:'',
                     Ports:'',
+                    DefaultFQDN:'',
+                    PackageName:'',
                     // IpAccess:IpAccess,
                     //Cluster:Cluster,
                     Command:'',
@@ -78,7 +82,6 @@ let generateData = (datas,body) => {
 
                 })
             } else {
-                console.log("gogogo@#@")
                 let Index = i;
                 let Region = body.region || body.params.region || '-';
                 let DeveloperName = dataResult.data.key.developer_key.name || '-';
@@ -91,6 +94,9 @@ let generateData = (datas,body) => {
                 let ImagePath = dataResult.data.image_path || '-';
                 let DefaultFlavor = dataResult.data.default_flavor.name || '-';
                 let Ports = dataResult.data.access_ports || '-';
+                let AuthPublicKey = dataResult.data.auth_public_key || '-';
+                let DefaultFQDN = dataResult.data.official_fqdn || '-';
+                let PackageName = dataResult.data.android_package_name || '-'; 
                 //let DeploymentGenerator = dataResult.deployment_generator || '-';
 
 
@@ -103,8 +109,11 @@ let generateData = (datas,body) => {
                     DeploymentType:DeploymentType,
                     ImageType:ImageType,
                     ImagePath:ImagePath,
+                    AuthPublicKey:AuthPublicKey,
                     DefaultFlavor:DefaultFlavor,
                     Ports:Ports,
+                    DefaultFQDN:DefaultFQDN,
+                    PackageName:PackageName,
                     // IpAccess:IpAccess,
                     //Cluster:Cluster,
                     Command:Command,

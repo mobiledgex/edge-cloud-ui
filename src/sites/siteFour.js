@@ -765,7 +765,7 @@ class SiteFour extends React.Component {
 
                             </Grid.Row>
                             {
-                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'Users' && this.state.headerTitle !== 'Accounts'  && viewMode !== 'detailView') ?
+                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts'  && viewMode !== 'detailView') ?
                                     <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
                                         <label style={{padding:'0 10px'}}>Region</label>
                                         <Dropdown className='selection'
@@ -778,7 +778,7 @@ class SiteFour extends React.Component {
                                     : null
                             }
                             {
-                                (this.state.headerTitle == 'Users') ?
+                                (this.state.headerTitle == 'User Roles') ?
                                     <div className='user_search' style={{top:15, right:65, position:'absolute',zIndex:99}}>
                                         <Input icon='search' placeholder={'Search '+this.state.searchChangeValue} style={{marginRight:'20px'}}  onChange={this.searchClick} />
                                         <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange} />

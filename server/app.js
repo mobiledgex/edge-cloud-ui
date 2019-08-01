@@ -496,7 +496,10 @@ app.post('/SettingLock', apiMC.SettingLock)
 const apiMCMonitor = require('./routes/apiMCMonitor');
 console.log('====== process env mcurl ======='+process.env.MC_URL)
 apiMCMonitor.MC_URL = process.env.MC_URL;
-app.post('/timeCluster', apiMCMonitor.ShowclusterHealth)
+app.post('/timeAppinst', apiMCMonitor.ShowappHealth)
+app.post('/timeClusterinst', apiMCMonitor.ShowclusterHealth)
+
+
 /*
 http --auth-type=jwt --auth=$SUPERPASS POST
 https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app <<<

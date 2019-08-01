@@ -3,7 +3,7 @@ import { Grid, Dropdown } from 'semantic-ui-react'
 import sizeMe from 'react-sizeme'
 import NetworkInoutLegend from './network/networkInoutLegend';
 import TimeSeries from '../charts/plotly/timeseries';
-import * as serviceCluster from '../services/service_clusters_service';
+import * as serviceCluster from '../services/service_instance_service';
 import {connect} from "react-redux";
 import * as utils from '../utils';
 import SelectRange from '../components/selectRange';

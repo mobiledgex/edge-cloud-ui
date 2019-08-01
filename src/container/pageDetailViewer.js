@@ -1,71 +1,86 @@
-import React from 'react';
-import {Button, Divider, Table, Grid, Header, Image, Icon} from "semantic-ui-react";
+import React, {Fragment} from 'react';
+import {Button, Divider, Table, Grid, Header, Tab, Icon, Segment, Container} from "semantic-ui-react";
 import ContainerDimensions from 'react-container-dimensions';
 import * as moment from 'moment';
+import RGL, { WidthProvider } from "react-grid-layout";
 import ReactJson from 'react-json-view'
-import TimeSeries from '../charts/plotly/timeseries';
+import * as serviceInstance from '../services/service_instance_service';
+import * as aggregate from '../utils';
 
-const TableExampleCollapsing = () => (
-    <Table basic='very' celled collapsing>
-        <Table.Header>
-            <Table.Row>
-                <Table.HeaderCell>Employee</Table.HeaderCell>
-                <Table.HeaderCell>Correct Guesses</Table.HeaderCell>
-            </Table.Row>
-        </Table.Header>
+import MonitoringViewer from './monitoringViewer';
+import './styles.css';
 
-        <Table.Body>
-            <Table.Row>
-                <Table.Cell>
-                    <Header as='h4' image>
-                        <Image src='/assets/images/avatar/small/lena.png' rounded size='mini' />
-                        <Header.Content>
-                            Lena
-                            <Header.Subheader>Human Resources</Header.Subheader>
-                        </Header.Content>
-                    </Header>
-                </Table.Cell>
-                <Table.Cell>22</Table.Cell>
-            </Table.Row>
-            <Table.Row>
-                <Table.Cell>
-                    <Header as='h4' image>
-                        <Image src='/assets/images/avatar/small/matthew.png' rounded size='mini' />
-                        <Header.Content>
-                            Matthew
-                            <Header.Subheader>Fabric Design</Header.Subheader>
-                        </Header.Content>
-                    </Header>
-                </Table.Cell>
-                <Table.Cell>15</Table.Cell>
-            </Table.Row>
-            <Table.Row>
-                <Table.Cell>
-                    <Header as='h4' image>
-                        <Image src='/assets/images/avatar/small/lindsay.png' rounded size='mini' />
-                        <Header.Content>
-                            Lindsay
-                            <Header.Subheader>Entertainment</Header.Subheader>
-                        </Header.Content>
-                    </Header>
-                </Table.Cell>
-                <Table.Cell>12</Table.Cell>
-            </Table.Row>
-            <Table.Row>
-                <Table.Cell>
-                    <Header as='h4' image>
-                        <Image src='/assets/images/avatar/small/mark.png' rounded size='mini' />
-                        <Header.Content>
-                            Mark
-                            <Header.Subheader>Executive</Header.Subheader>
-                        </Header.Content>
-                    </Header>
-                </Table.Cell>
-                <Table.Cell>11</Table.Cell>
-            </Table.Row>
-        </Table.Body>
-    </Table>
+const ReactGridLayout = WidthProvider(RGL);
+
+const panes = [
+    { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> },
+    { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props}/></Tab.Pane> }
+]
+const detailViewer = (props, type) => (
+    <Fragment>
+        {(type === 'detailViewer')?
+            <Table celled collapsing style={{width:'100%'}}>
+                <Table.Header>
+                    <Table.Row>
+                        <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
+                        <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                    {
+                        props.data ? Object.keys(props.data).map((item, i) => makeTable(props.data, item, i)) : null
+                    }
+                </Table.Body>
+            </Table>
+
+            :
+            <div></div>
+        }
+
+    </Fragment>
 )
+
+const makeTable = (values, label, i) => (
+    (label !== 'Edit')?
+        <Table.Row key={i}>
+            <Table.Cell>
+                <Header as='h4' image>
+                    <Icon name={'dot'} />
+                    <Header.Content>
+                        {(label == 'CloudletName')?'Cloudlet Name'
+                            :(label == 'CloudletLocation')?'Cloudlet Location'
+                                :(label == 'Ip_support')?'IP Support'
+                                    :(label == 'Num_dynamic_ips')?'Number of Dynamic IPs' /* Cloudlets */
+                                        :(label == 'ClusterName')?'Cluster Name'
+                                            :(label == 'OrganizationName')?'Organization Name'
+                                                :(label == 'IpAccess')?'IP Access' /* Cluster Inst */
+                                                    :(label == 'Mapped_port')?'Mapped Port' /* Cluster Inst */
+
+                                                        :label}
+                    </Header.Content>
+                </Header>
+            </Table.Cell>
+            <Table.Cell onClick = {() => console.log('label@@@@',values)}>
+                {(label === 'Ip_support' && String(values[label]) == '1')?'Static'
+                    :(label === 'Ip_support' && String(values[label]) == '2')?'Dynamic' /* Cloudlets */
+                        :(label === 'IpAccess' && String(values[label]) == '1')?'Dedicated'
+                            :(label === 'IpAccess' && String(values[label]) == '3')?'Shared' /* Cluster Inst */
+                                :(label === 'Created')? String( makeUTC(values[label]) )
+                                    :(label === 'State')? _status[values[label]]
+                                        :(label === 'Liveness')? _liveness[values[label]]
+                                            :(typeof values[label] === 'object')? jsonView(values[label])
+                                                :String(values[label])}
+            </Table.Cell>
+        </Table.Row> : null
+)
+const jsonView = (jsonObj) => (
+    <ReactJson src={jsonObj} {..._self.jsonViewProps} />
+)
+
+const makeUTC = (time) => (
+    moment.unix( time.replace('seconds : ', '') ).format('YYYY-MM-DD HH:mm:ss') + ' UTC'
+)
+
 
 const _status = {
     "0" : "Tracked State Unknown",
@@ -86,13 +101,19 @@ const _liveness = {
     "1" : "Static",
     "2" : "Dynamic"
 }
-
+var layout = [
+    {"w":19,"x":0,"y":0,"i":"0", "minW":8, "moved":false,"static":false, "title":"Developer"}
+]
+let rgn = ['US','EU'];
 let _self = null;
 export default class PageDetailViewer extends React.Component {
     constructor() {
         super();
+        const layout = this.generateLayout();
         this.state = {
+            layout,
             listData:[],
+            monitorData:[],
             selected:{},
             open:false,
             dimmer:'',
@@ -109,6 +130,8 @@ export default class PageDetailViewer extends React.Component {
             cloudletResult:null,
             appResult:null,
             listOfDetail:null,
+            clusterName:null,
+            activeIndex:0,
             timeseriesDataCPUMEM:[
                 [0,1,2,3,4,5],[2,3,4,5,6,7]
             ],
@@ -122,8 +145,10 @@ export default class PageDetailViewer extends React.Component {
             timeseriesNET:[
                 ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
             ],
+            page:''
         }
         _self = this;
+        this.initData = null;
 
         this.jsonViewProps = {
             name:null,
@@ -139,9 +164,168 @@ export default class PageDetailViewer extends React.Component {
             displayDataTypes: false,
             iconStyle: "triangle"
         }
+        /*
+        Valid selectors for cluster: “cpu”, “mem”, “disk”, “network”, “tcp”, “udp”
+        Valid selectors for app api: “cpu”, “mem”, “network”
+         */
+        this.resources = {
+            clusterInst:['cpu', 'mem', 'disk', 'network', 'tcp', 'udp'],
+            appInst:['cpu', 'mem', 'network']
+        }
+
+    }
+    generateLayout() {
+
+        return layout
+    }
+    onLayoutChange(layout) {
+        //this.props.onLayoutChange(layout);
+        console.log('changed layout = ', JSON.stringify(layout))
+    }
+    onChangeTab = (e, data) => {
+        console.log('20190730 change..'+data.activeIndex, 'e=',e);
+        if(data.activeIndex === 1) {
+            _self.getInstanceHealth(_self.state.page, _self.state.listData)
+        }
+    }
+    generateDOM(open, dimmer, width, height, data, mData, keysData, hideHeader, region, page) {
+        console.log('20190730 generateDOM---- ', data)
+
+        let panelParams = {data:data, mData:mData, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
+
+        return layout.map((item, i) => (
+
+            (i === 0)?
+                <div className="round_panel" key={i} style={{ width:width, minWidth:670, display:'flex', flexGrow:1, flexShrink:1, flexBasis:'auto', flexDirection:'column'}} >
+                    <div className="grid_table" style={{width:'100%', overflowY:'auto'}}>
+                        <Tab style={{backgroundColor:'transparent'}} menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab}/>
+                    </div>
+                </div>
+                :
+                <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
+                    <div style={{width:'100%', height:'100%', overflowY:'auto'}}>
+
+                    </div>
+                </div>
+
+
+        ))
+    }
+    receiveInstanceInfo(result) {
+        _self.setState({monitorData:result})
+        console.log('20190730 result of resource info ===---====---====---====', result)
+        _self.forceUpdate()
+    }
+    getParams = (page, data, store) => (
+        (page === 'appInst')?
+            _self.resources[page].map((valid) => this.makeFormApp(data, valid, store.userToken)) :
+            _self.resources[page].map((valid) => this.makeFormCluster(data, valid, store.userToken))
+    )
+    getInstanceHealth (page, data) {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+
+        (page === 'appInst')  ?
+        serviceInstance.getAppinstHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
+        serviceInstance.getClusterHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo)
     }
 
+
+    /*
+    http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cluster <<<
+    '{"region":"US",
+    "clusterinst":{
+    "cluster_key":{"name":"autoclustermobiledgexsdkdemo"},
+    "cloudlet_key":{
+    "operator_key":{"name":"TDG"},
+    "name":"mexplat-stage-hamburg-cloudlet"},
+    "developer":"MobiledgeX"},
+    "selector":"cpu",
+    "starttime":"2019-07-30T01:41:03Z",
+    "endtime":"2019-07-30T01:44:54Z"}'
+     */
+    makeFormCluster = (inst, valid, store) => (
+        {
+            "token":store,
+            "params":{
+                "region":"US",
+                "clusterinst":{
+                    "cluster_key":{"name":"autoclustermobiledgexsdkdemo"},
+                    "cloudlet_key":{
+                        "operator_key":{"name":"TDG"},
+                        "name":"mexplat-stage-hamburg-cloudlet"
+                    },
+                    "developer":"MobiledgeX"
+                },
+                "selector":valid,
+                "starttime":moment.utc().subtract(50, 'hours').format(),
+                "endtime":moment.utc().subtract(32, 'hours').format()
+            }
+
+        }
+    )
+
+
+    /*
+    makeFormApp = (inst, valid, store) => (
+        {
+            "token":store,
+            "params":{
+                "region":inst.Region,
+                "appinst":{
+                    "app_key":{
+                        "developer_key":{"name":inst.OrganizationName},
+                        "name":inst.AppName,
+                        "version":inst.Version
+                    },
+                    "cluster_inst_key":{
+                        "cluster_key":{"name":inst.ClusterInst},
+                        "cloudlet_key":{
+                            "name":inst.Cloudlet,
+                            "operator_key":{"name":inst.Operator}
+                        }
+                    }
+                },
+                "selector":valid,
+                "starttime":moment.utc().subtract(12, 'hours').format(),
+                "endtime":moment.utc().subtract(1, 'hours').format()
+            }
+        }
+    )
+    */
+
+
+
+    makeFormApp = (inst, valid, store) => (
+        {
+            "token":store,
+            "params":{
+                "region":"US",
+                "appinst":{
+                    "app_key":{
+                        "developer_key":{"name":"MobiledgeX"},
+                        "name":"mobiledgexsdkdemo",
+                        "version":"1.0"
+                    },
+                    "cluster_inst_key":{
+                        "cluster_key":{"name":"autoclustermobiledgexsdkdemo"},
+                        "cloudlet_key":{
+                            "name":"mexplat-stage-hamburg-cloudlet",
+                            "operator_key":{"name":"TDG"}
+                        }
+                    }
+                },
+                "selector":valid,
+                "starttime":moment.utc().subtract(48, 'hours').format(),
+                "endtime":moment.utc().subtract(24, 'hours').format()
+            }
+        }
+    )
+
+
     componentDidMount() {
+        console.log('20190729 detail info of data == ', this.props)
+
+
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
@@ -149,12 +333,22 @@ export default class PageDetailViewer extends React.Component {
             let regKeys = [];
             let component = null;
             let data = [];
-            if(nextProps.data){
-                this.setState({listData:nextProps.data})
+            if(nextProps.data && !this.initData){
+                this.setState({listData:nextProps.data, page:nextProps.page})
+                //get info resource of app or cluster
+                console.log('20190730 detail info of data -- will recevive props == ', nextProps.data, nextProps.page)
+                this.getInstanceHealth( nextProps.page, nextProps.data)
+
+                this.initData = true;
             }
 
 
     }
+    componentWillUnmount() {
+        this.initData = false;
+    }
+
+    handleTabChange = (e, { activeIndex }) => this.setState({ activeIndex })
     makeList = (values, label, i) => (
         <Grid.Row columns={2} key={i}>
             <Grid.Column width={5} className='detail_item' style={{display:'flex', justifyContent:'flex-end'}}>
@@ -166,49 +360,7 @@ export default class PageDetailViewer extends React.Component {
             <Divider vertical></Divider>
         </Grid.Row>
     )
-    jsonView = (jsonObj) => (
-        <ReactJson src={jsonObj} {...this.jsonViewProps} />
-    )
 
-    makeUTC = (time) => (
-        moment.unix( time.replace('seconds : ', '') ).format('YYYY-MM-DD HH:mm:ss') + ' UTC'
-    )
-
-    makeTable = (values, label, i) => (
-        (label !== 'Edit')?
-        <Table.Row key={i}>
-            <Table.Cell>
-                <Header as='h4' image>
-                    <Icon name={'dot'} />
-                    <Header.Content>
-                        {(label == 'CloudletName')?'Cloudlet Name'
-                        :(label == 'CloudletLocation')?'Cloudlet Location'
-                        :(label == 'Ip_support')?'IP Support'
-                        :(label == 'Num_dynamic_ips')?'Number of Dynamic IPs' /* Cloudlets */
-                        :(label == 'ClusterName')?'Cluster Name'
-                        :(label == 'OrganizationName')?'Organization Name'
-                        :(label == 'IpAccess')?'IP Access' /* Cluster Inst */
-                        :(label == 'Mapped_port')?'Mapped Port' /* Cluster Inst */
-
-                        :label}
-                    </Header.Content>
-                </Header>
-            </Table.Cell>
-            <Table.Cell onClick = {() => console.log('label@@@@',values)}>
-                {(label === 'Ip_support' && String(values[label]) == '1')?'Static'
-                :(label === 'Ip_support' && String(values[label]) == '2')?'Dynamic' /* Cloudlets */
-                :(label === 'IpAccess' && String(values[label]) == '1')?'Dedicated'
-                :(label === 'IpAccess' && String(values[label]) == '3')?'Shared' /* Cluster Inst */
-                :(label === 'Created')? String( this.makeUTC(values[label]) )
-                :(label === 'State')? _status[values[label]]
-                :(label === 'Deployment' && String(values[label]) == 'docker')?'Docker'
-                :(label === 'Deployment' && String(values[label]) == 'kubernetes')?'Kubernetes'
-                :(label === 'Liveness')? _liveness[values[label]]
-                :(typeof values[label] === 'object')? this.jsonView(values[label])
-                :String(values[label])}
-            </Table.Cell>
-        </Table.Row> : null
-    )
 
     setCloudletList = (operNm) => {
         let cl = [];
@@ -227,46 +379,25 @@ export default class PageDetailViewer extends React.Component {
         this.props.close()
     }
 
-    changeLocation(data) {
-        // let loc = '';
-        // if(data['CloudletLocation'].latitude && data['CloudletLocation'].longitude){
-        //     loc = 'Latitude : '+data['CloudletLocation'].latitude+ ', Longitude : '+data['CloudletLocation'].longitude
-        //     data['CloudletLocation'] = loc
-        // }
-        return data
-    }
+
 
 
     render() {
-        let { listData } = this.state;
-        let keys = listData ? Object.keys(listData) : [];
+        let { listData, monitorData, clusterName, open, dimmer, hiddenKeys } = this.state;
+
         return (
             <ContainerDimensions>
-                {({width, height}) =>
-                    <div style={{width: width, height: height-90, display: 'flex', overflowY: 'auto', overflowX: 'hidden', marginTop:20}}>
-                        <Grid style={{width:width, backgroundColor:'#0d0e13', borderRadius:5}}>
-
-                                <Grid.Row>
-                                    <Table celled collapsing style={{width:'100%'}}>
-                                        <Table.Header>
-                                            <Table.Row>
-                                                <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
-                                                <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
-                                            </Table.Row>
-                                        </Table.Header>
-                                        <Table.Body>
-                                            {
-                                                (keys.length) && keys.map((item, i) => this.makeTable(this.changeLocation(listData), item, i))
-                                            }
-                                        </Table.Body>
-                                    </Table>
-
-                                </Grid.Row>
-                                {/*<Grid.Row style={{height:500, backgroundColor:'#252525'}}>*/}
-                                    {/*<TimeSeries style={{width:'100%', height:400}} chartData={this.state.timeseriesDataCPUMEM} series={this.state.timeseriesCPUMEM} margin={10} label={this.state.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>*/}
-                                {/*</Grid.Row>*/}
-
-                        </Grid>
+                { ({ width, height }) =>
+                    <div style={{width:width, height:height-20, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
+                        <ReactGridLayout
+                            draggableHandle
+                            layout={this.state.layout}
+                            onLayoutChange={this.onLayoutChange}
+                            {...this.props}
+                            style={{width:width, height:height-20, overflowY:'visible'}}
+                        >
+                            {this.generateDOM(open, dimmer, width, height, listData, monitorData, this.state.keysData, hiddenKeys, this.props.region, this.props.page)}
+                        </ReactGridLayout>
                     </div>
                 }
             </ContainerDimensions>

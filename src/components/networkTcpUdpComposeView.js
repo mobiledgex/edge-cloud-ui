@@ -7,7 +7,7 @@ import SelectRangeTcpudp from '../components/selectRangeTcpudp';
 import NetworkInOutSimple from "../container/developerSideInfo";
 import {connect} from "react-redux";
 import * as utils from '../utils';
-import * as serviceCluster from "../services/service_clusters_service";
+import * as serviceCluster from "../services/service_instance_service";
 
 let customMargin = {
     l: 50,

@@ -163,8 +163,6 @@ class MapWithListView extends React.Component {
         const { column, dummyData, direction } = _self.state
         //console.log('20190724 selected column == ', clickedColumn, a, ":", column, ":", dummyData);
         if ((column !== clickedColumn) && dummyData) {
-            console.log('20190724 sorting...... ==> ', clickedColumn,":", dummyData)
-            //let sorted = _.sortBy(dummyData, [clickedColumn])
             let sorted = _.sortBy(dummyData, [clm => String(clm[clickedColumn]).toLowerCase()])
             this.setState({
                 column: clickedColumn,
@@ -179,7 +177,6 @@ class MapWithListView extends React.Component {
                 dummyData: reverse,
                 direction: direction === 'ascending' ? 'descending' : 'ascending',
             })
-            console.log('20190724 reverse Data <== ', reverse)
 
         }
 
@@ -195,7 +192,6 @@ class MapWithListView extends React.Component {
     }
 
     generateDOM(open, dimmer, width, height, randomValue, dummyData) {
-        console.log('20190724 -- viewMode randomValue ---- ', randomValue, 'data ---- ',dummyData)
 
         return layout.map((item, i) => (
 
@@ -304,7 +300,7 @@ class MapWithListView extends React.Component {
         }
 
         Alert.info(
-            <div className='ProgressBox'>
+            <div className='ProgressBox' style={{minWidth:250}}>
                 <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}   />
             </div>, {
             position: 'top-right', timeout: 'none', limit:1,
@@ -381,8 +377,8 @@ class MapWithListView extends React.Component {
                                     (value === 'CloudletLocation' && item[value])?
                                         <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <div>
-                                            {`Latitude : ${item[value].latitude}`} <br />
-                                            {`Longitude : ${item[value].longitude}`}
+                                            {`Latitude : ${Math.round(item[value].latitude)}`} <br />
+                                            {`Longitude : ${Math.round(item[value].longitude)}`}
                                             </div>
                                         </Table.Cell>
                                     :
@@ -416,7 +412,7 @@ class MapWithListView extends React.Component {
                                     (!( String(hidden).indexOf(value) > -1 )) ?
                                         <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <div>
-                                            {String(item[value])}
+                                            {(item[value] !== 'somecluster' ) ? String(item[value]) : '-'}
                                             </div>
                                         </Table.Cell>
                                     : null

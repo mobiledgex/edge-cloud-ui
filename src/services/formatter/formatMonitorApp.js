@@ -96,21 +96,28 @@ const numberDes =(a,b)=> (
 
 
 /*
-{alarm:'3', dName:'Cluster-A', values:{cpu:35, mem:55, sys:33}}
+columns =
+0: "time"
+1: "app"
+2: "cloudlet"
+3: "cluster"
+4: "cpu"
+5: "dev"
+6: "operator"
  */
 let generateData = (datas) => {
     let result = datas.data.data[0].Series[0];
-    console.log('20190730 cluster health data ->->->->', result)
+    console.log('20190729 appinst health data ->->->->', result)
     let values = [];
     if(result){
         let _name = result.name;
         let dataSeries = result.values;
         let dataColumns = result.columns;
         let infoData = [];
-
+        console.log('20190729 dataSeries ->->->->',dataSeries)
         if(dataSeries.length) {
             dataSeries.map((item) => {
-
+                console.log('20190729 item ->->->->',item)
                 // time, cluster, cpu, disk, mem, recvBytes, sendBytes
 
                 infoData = item;
@@ -120,13 +127,8 @@ let generateData = (datas) => {
                     dName:infoData[1],
                     values:{
                         time:infoData[0],
-                        cluster:infoData[2],
-                        cmsn:
-                            (_name.indexOf('cpu') > -1)?infoData[3] :
-                                (_name.indexOf('mem') > -1)? infoData[4] :
-                                    (_name.indexOf('network') > -1)? [infoData[5],infoData[6]] :
-                                    (_name.indexOf('tcp') > -1)? [infoData[5],infoData[6]] :
-                                    (_name.indexOf('udp') > -1)? [infoData[5],infoData[7],infoData[6]] : [infoData[6],infoData[7]]
+                        cluster:infoData[3],
+                        cmsn:(_name.indexOf('cpu') > -1)?infoData[4] : (_name.indexOf('mem') > -1)? infoData[5] : [infoData[6],infoData[7]]
                     }})
             })
         } else {
@@ -157,8 +159,8 @@ const retunDate = (str) => {
     var date = new Date(year, month-1, day, hour, minute);
     return moment(date).format('hh:mm');
 }
-const FormatMonitorCluster = (props) => (
+const FormatMonitorApp = (props) => (
     generateData(props)
 )
 
-export default FormatMonitorCluster;
+export default FormatMonitorApp;

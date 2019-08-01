@@ -9,6 +9,7 @@ import FormatComputeApp from './formatter/formatComputeApp';
 import FormatComputeOper from './formatter/formatComputeOperator';
 import FormatComputeInst from './formatter/formatComputeInstance';
 import FormatMonitorCluster from "./formatter/formatMonitorCluster";
+import FormatMonitorApp from "./formatter/formatMonitorApp";
 import FormatApplicationInfo from "./formatter/formatApplicationInfo";
 
 let hostname = window.location.hostname;
@@ -46,44 +47,77 @@ export function getClusterService(resource, callback) {
         });
 
 }
-
-export function getClusterHealth(resource, callback) {
-    let reqCnt = resource.length;
-    let respCount = 0;
+export function getAppinstHealth(resource, callback) {
     let resResults = [];
-    resource.map((clusterParam) => {
+    //
+    axios.all(
+        resource.map((reso) => {
+            return axios.post('https://'+hostname+':3030/timeAppinst', qs.stringify({
+                service: 'timeAppinst',
+                serviceBody:reso,
+                serviceId: Math.round(Math.random()*10000)
+            }))
+                .then(function (response) {
+                    console.log('20190729 getAppinstHealth ---- response..', response)
+                    resResults = resResults.concat(FormatMonitorApp(response))
 
-        //
-        axios.post('https://'+hostname+':3030/timeCluster', qs.stringify({
-            service: 'timeCluster',
-            serviceBody:clusterParam,
-            serviceId: Math.round(Math.random()*10000)
-        }))
-            .then(function (response) {
-                console.log('20190719 getClusterHealth ---- response..', response)
-                resResults = resResults.concat(FormatMonitorCluster(response))
-                if(respCount === reqCnt-1) {
-                    callback(resResults)
-                    respCount = 0;
-                } else {
-                    respCount ++;
-                }
-            })
-            .catch(function (error) {
-                try {
-                    if(String(error).indexOf('Network Error') > -1){
-                        console.log("NETWORK ERROR@@@@@");
-                    } else {
-                        callback({error:error}, resource);
+                })
+                .catch(function (error) {
+                    try {
+                        if(String(error).indexOf('Network Error') > -1){
+                            console.log("NETWORK ERROR@@@@@");
+                        } else {
+                            callback({error:error}, resource);
+                        }
+                    } catch(e) {
+                        console.log('any error ??? ')
                     }
-                } catch(e) {
-                    console.log('any error ??? ')
-                }
-            });
-    })
+                });
+        })
+    )
+        .then(axios.spread((resOne, resTwo, resThree) => {
+            console.log('20190729 axios all == ', resOne, resTwo, resThree, '  resResults=', resResults )
+            callback(resResults)
+        }))
 
 
 }
+export function getClusterHealth(resource, callback) {
+    let resResults = [];
+        //
+    axios.all(
+        resource.map((reso) => {
+            return axios.post('https://'+hostname+':3030/timeClusterinst', qs.stringify({
+                service: 'timeClusterinst',
+                serviceBody:reso,
+                serviceId: Math.round(Math.random()*10000)
+            }))
+                .then(function (response) {
+                    console.log('20190730 getClusterHealth ---- response..', response)
+                    resResults = resResults.concat(FormatMonitorCluster(response))
+
+                })
+                .catch(function (error) {
+                    try {
+                        if(String(error).indexOf('Network Error') > -1){
+                            console.log("NETWORK ERROR@@@@@");
+                        } else {
+                            //callback({error:error}, resource);
+                        }
+                    } catch(e) {
+                        console.log('any error ??? ')
+                    }
+                });
+        })
+    )
+        .then(axios.spread((resOne, resTwo, resThree, resFour, resFive) => {
+            console.log('20190730 axios all == ',resOne, resTwo, resThree, resFour, resFive,  '  resResults=', resResults )
+            callback(resResults)
+        }))
+
+
+}
+
 export function getAppClusterInfo(cluster, app, callback, self) {
     axios.get('https://'+hostname+':3030/appInstanceList?cluster='+cluster+'&app='+app)
         .then(function (response) {

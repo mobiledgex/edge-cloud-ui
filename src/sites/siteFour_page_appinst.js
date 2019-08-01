@@ -179,7 +179,7 @@ class SiteFourPageAppInst extends React.Component {
             (viewMode === 'listView')?
             <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloper}></MapWithListView>
             :
-            <PageDetailViewer data={this.state.detailData}/>
+            <PageDetailViewer data={this.state.detailData} page='appInst'/>
         );
     }
 

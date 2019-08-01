@@ -265,3 +265,22 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
 .text-danger {color:#FF1902; }
 .login-danger {display: block; text-align: left; text-indent: 15px;}
 .s-alert-top-right {z-index: 9999;}
+
+
+/* cluster inst detail viewer*/
+.wrapperPercentage {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+    align-items: center;
+    margin:5px;
+}
+.childPercentage {
+    width: 250px;
+    padding:10px;
+    align-items: center;
+    justify-content: center;
+}
+.childPercentage {
+    margin-top: 14px !important;
+}

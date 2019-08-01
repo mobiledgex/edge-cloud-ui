@@ -25,7 +25,7 @@ const headerStyle = {
 var horizon = 6;
 var vertical = 20;
 var layout = [
-    {"w":19,"h":20,"x":0,"y":0,"i":"0", "minW":8,"minH":5, "moved":false,"static":false, "title":"Developer"}
+    {"w":19,"x":0,"y":0,"i":"0", "minW":8, "moved":false,"static":false, "title":"Developer"}
 ]
 let _self = null;
 const colors = [
@@ -154,14 +154,15 @@ class RegistryClusterInstViewer extends React.Component {
 
 
     generateDOM(open, dimmer, width, height, data, keysData, hideHeader, region) {
+        console.log('20190724 generateDOM---- ', height)
 
         let panelParams = {data:data, keys:keysData, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
 
         return layout.map((item, i) => (
 
             (i === 0)?
-                <div className="round_panel" key={i} style={{ width:width, minWidth:670, height:height, display:'flex', flexDirection:'column'}} >
-                    <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
+                <div className="round_panel" key={i} style={{ width:width, minWidth:670, display:'flex', flexGrow:1, flexShrink:1, flexBasis:'auto', flexDirection:'column'}} >
+                    <div className="grid_table" style={{width:'100%', overflowY:'auto'}}>
                         <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} />
                     </div>
                 </div>
@@ -314,14 +315,14 @@ class RegistryClusterInstViewer extends React.Component {
         return (
             <ContainerDimensions>
                 { ({ width, height }) =>
-                    <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
+                    <div style={{width:width, height:height-20, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
                         {/*<RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>*/}
                         <ReactGridLayout
                             draggableHandle
                             layout={this.state.layout}
                             onLayoutChange={this.onLayoutChange}
                             {...this.props}
-                            style={{width:width, height:height-20}}
+                            style={{width:width, height:height-20, overflowY:'visible'}}
                         >
                             {this.generateDOM(open, dimmer, width, height, dummyData, this.state.keysData, hiddenKeys, this.props.region)}
                         </ReactGridLayout>
