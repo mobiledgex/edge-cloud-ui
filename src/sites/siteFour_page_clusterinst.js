@@ -131,15 +131,12 @@ class SiteFourPageClusterInst extends React.Component {
         else if(cmpt == 'cloudlet') this.setState({cloudletData:_self.state.cloudletData.concat(result)})
 
         _self.loadCount ++;
-        //if(rgn.length*2 == this.loadCount){
+        if(rgn.length*2 == this.loadCount){
 
             _self.countJoin()
-            //return
-        //}
-
-        if(rgn.length*2 == this.loadCount) {
-            _self.props.handleLoadingSpinner(false);
+            return
         }
+
     }
     countJoin() {
         let clusterInst = this.state.clusterInstData;
