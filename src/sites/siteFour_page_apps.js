@@ -10,7 +10,7 @@ import DeveloperListView from '../container/developerListView';
 import Alert from "react-s-alert";
 
 let _self = null;
-let rgn = ['US','EU'];
+let rgn = ['US','KR','EU'];
 class SiteFourPageApps extends React.Component {
     constructor(props) {
         super(props);
@@ -120,7 +120,7 @@ class SiteFourPageApps extends React.Component {
         if(region !== 'All'){
             rgn = [region]
         } else {
-            rgn = ['US','EU'];
+            rgn = ['US','KR','EU'];
         }
 
         if(localStorage.selectRole == 'AdminManager') {

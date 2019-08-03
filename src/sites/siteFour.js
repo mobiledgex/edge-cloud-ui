@@ -101,7 +101,8 @@ class SiteFour extends React.Component {
             regions:[
                 { key: 1, text: 'All', value: 'All' },
                 { key: 2, text: 'US', value: 'US' },
-                { key: 3, text: 'EU', value: 'EU' }
+                { key: 3, text: 'KR', value: 'KR' },
+                { key: 4, text: 'EU', value: 'EU' }
             ],
             nextPosX:window.innerWidth / 2 ,
             nextPosY:window.innerHeight / 2,

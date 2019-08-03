@@ -77,9 +77,9 @@ class RegistryViewer extends React.Component {
         };
         this.keysData = [
             {
-                'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
+                'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU']},
                 'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Organization or Company Name that a Developer is part of', active:true},
-                'AppName':{label:'App Name', type:'RenderInput', necessary:true, tip:'App name', active:true},
+                'AppName':{label:'App Name', type:'RenderInputApp', necessary:true, tip:'App name', active:true},
                 'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:'App version', active:true},
                 'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (Kubernetes, Docker, or VM)', active:true, items:['Docker', 'Kubernetes', 'VM']},
                 'ImageType':{label:'Image Type', type:'RenderDT', necessary:true, tip:'ImageType specifies image type of an App',items:''},
@@ -453,14 +453,15 @@ const createFormat = (data) => (
 )
 // access_ports combine
 const accessport = (data) => {
+    console.log("accessportaccessport",data)
     let key = Object.keys(data);
     let num = 0;
     let portSum = '';
     key.map((item,i) => {
-        if(item.includes('Portsselect')){
+        if(data['Ports_'+num] && data['Portsselect_'+num]){
             portSum = portSum + data['Portsselect_'+num]+":"+data['Ports_'+num]+',';
-            num++;
         }
+        num++;
     })
     portSum = portSum.substr(0, portSum.length -1)
     return portSum;
@@ -470,7 +471,7 @@ const accessport = (data) => {
 //"image_path":"registry.mobiledgex.net:5000/mobiledgex/simapp",
 //"image_type":1,"access_ports":"udp:12001,tcp:80,http:7777","default_flavor":{"name":"x1.medium"},"cluster":{"name":""},"ipaccess":"IpAccessShared","command":"test","deployment_manifest":"test1111"}}'
 const mapStateToProps = (state) => {
-    console.log("store state:::",state);
+    console.log("store state:::",state.form.createAppFormDefault);
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;
     console.log('account -- '+account)
