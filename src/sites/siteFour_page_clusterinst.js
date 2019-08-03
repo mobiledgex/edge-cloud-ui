@@ -16,7 +16,7 @@ import * as aggregate from "../utils";
 
 
 let _self = null;
-let rgn = ['US','EU'];
+let rgn = ['US','KR','EU'];
 class SiteFourPageClusterInst extends React.Component {
     constructor(props) {
         super(props);
@@ -28,15 +28,15 @@ class SiteFourPageClusterInst extends React.Component {
             contWidth:0,
             bodyHeight:0,
             devData:[],
-            clusterInstData:[],
-            cloudletData:[],
             viewMode:'listView',
             detailData:null,
         };
+        this.clusterInstDummy = [];
+        this.cloudletDummy = [];
         this.headerH = 70;
         this.hgap = 0;
         this.loadCount = 0;
-
+        this.countObject = {};
         this.headerLayout = [1,2,2,2,2,1,2,2,1,2];
         this.hiddenKeys = ['Status','Deployment']
 
@@ -65,6 +65,9 @@ class SiteFourPageClusterInst extends React.Component {
         console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+        rgn.map((region) => {
+            this.countObject[region] = []
+        })
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -74,12 +77,14 @@ class SiteFourPageClusterInst extends React.Component {
         }
     }
     componentWillUnmount() {
-        this.setState({devData:[], clusterInstData:[], cloudletData:[]})
+        this.clusterInstDummy = [];
+        this.cloudletDummy = [];
+        this.setState({devData:[]})
     }
 
 
     componentWillReceiveProps(nextProps) {
-        console.log("infoCluster2",nextProps)
+        console.log("20190803 infoCluster2",nextProps)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
@@ -88,7 +93,7 @@ class SiteFourPageClusterInst extends React.Component {
             this.props.handleComputeRefresh(false);
         }
         if(this.props.changeRegion !== nextProps.changeRegion){
-            console.log("regionChange@@@@")
+            console.log("20190803 regionChange@@@@")
             this.getDataDeveloper(nextProps.changeRegion);
         }
         if(nextProps.viewMode) {
@@ -101,6 +106,12 @@ class SiteFourPageClusterInst extends React.Component {
             }
 
         }
+        //make hidden key
+        let tbHeader = nextProps.headerFilter;
+        if(tbHeader) {
+            this.setHiddenKey(tbHeader)
+        }
+        setTimeout(() => this.forceUpdate(), 1000)
     }
     receiveResult(result) {
         let join = null;
@@ -118,29 +129,34 @@ class SiteFourPageClusterInst extends React.Component {
     }
 
     receiveResultClusterInst(result) {
-        _self.groupJoin(result,'clusterInst')
+        console.log('20190802 result cluster == ', result)
+        _self.countObject[result[0]['Region']].push(result[0]['Region'])
+        _self.groupJoin(result,'clusterInst', result[0]['Region'])
     }
     receiveResultCloudlet(result) {
-        _self.groupJoin(result,'cloudlet')
+        console.log('20190802 result cloudlet == ', result)
+        _self.countObject[result[0]['Region']].push(result[0]['Region'])
+        _self.groupJoin(result,'cloudlet', result[0]['Region'])
     }
 
-    groupJoin(result,cmpt){
+    groupJoin(result,cmpt, rg){
 
 
-        if(cmpt == 'clusterInst') this.setState({clusterInstData:_self.state.clusterInstData.concat(result)})
-        else if(cmpt == 'cloudlet') this.setState({cloudletData:_self.state.cloudletData.concat(result)})
+        if(cmpt == 'clusterInst') this.clusterInstDummy = _self.clusterInstDummy.concat(result)
+        else if(cmpt == 'cloudlet') this.cloudletDummy = _self.cloudletDummy.concat(result)
 
         _self.loadCount ++;
-        if(rgn.length*2 == this.loadCount){
-
+        // if(rgn.length*2 == this.loadCount){
+        //     _self.countJoin()
+        // }
+        if(_self.countObject[rg].length >= 2){
             _self.countJoin()
-            return
         }
 
     }
     countJoin() {
-        let clusterInst = this.state.clusterInstData;
-        let cloudlet = this.state.cloudletData;
+        let clusterInst = this.clusterInstDummy;
+        let cloudlet = this.cloudletDummy;
         clusterInst.map((itemCinst,i) => {
             cloudlet.map((itemClet,j) => {
                 if(itemCinst.Cloudlet === itemClet.CloudletName) {
@@ -153,11 +169,13 @@ class SiteFourPageClusterInst extends React.Component {
     }
     
     getDataDeveloper = (region) => {
-        _self.props.handleLoadingSpinner(true);
+        //_self.props.handleLoadingSpinner(true);
         console.log("changeRegion@@",region)
         _self.loadCount = 0;
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
+        _self.clusterInstDummy = [];
+        _self.cloudletDummy = [];
+        _self.setState({devData:[]})
         //TODO: region에 대한 데이터를  DB에서 가져와야 함.
 
         let serviceBody = {}
@@ -165,7 +183,7 @@ class SiteFourPageClusterInst extends React.Component {
         if(region !== 'All'){
             rgn = [region];
         } else {
-            rgn = ['US','EU'];
+            rgn = ['US','KR','EU'];
         }
 
         if(localStorage.selectRole == 'AdminManager') {

@@ -80,8 +80,8 @@ class RegistryClusterInstViewer extends React.Component {
             errorClose:false,
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
-                    'ClusterName':{label:'Cluster Name', type:'RenderInput', necessary:true, tip:'Cluster name', active:true},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU']},
+                    'ClusterName':{label:'Cluster Name', type:'RenderInputCluster', necessary:true, tip:'Cluster name', active:true},
                     'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Name of Organization that this cluster belongs to', active:true, items:['','']},
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Company or Organization name of the operator', active:true, items:['','']},
                     'Cloudlet':{label:'Cloudlet', type:'RenderDropDown', necessary:true, tip:'Name of the cloudlet', active:true, items:['','']},

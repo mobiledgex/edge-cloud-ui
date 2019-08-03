@@ -104,7 +104,7 @@ const _liveness = {
 var layout = [
     {"w":19,"x":0,"y":0,"i":"0", "minW":8, "moved":false,"static":false, "title":"Developer"}
 ]
-let rgn = ['US','EU'];
+let rgn = ['US','KR','EU'];
 let _self = null;
 export default class PageDetailViewer extends React.Component {
     constructor() {
@@ -171,7 +171,7 @@ export default class PageDetailViewer extends React.Component {
     }
     onChangeTab = (e, data) => {
         console.log('20190730 change..'+data.activeIndex, 'e=',e);
-        if(data.activeIndex === 1) {
+        if(data.activeIndex === 1 && _self.state.page) {
             _self.getInstanceHealth(_self.state.page, _self.state.listData)
         }
     }
@@ -205,13 +205,12 @@ export default class PageDetailViewer extends React.Component {
         _self.forceUpdate()
     }
     getParams = (page, data, store) => (
-        (page === 'appInst')?
+        (page === 'appInst' && _self.resources[page].length)?
             _self.resources[page].map((valid) => this.makeFormApp(data, valid, store.userToken)) :
             _self.resources[page].map((valid) => this.makeFormCluster(data, valid, store.userToken))
     )
     getInstanceHealth (page, data) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
-
         (page === 'appInst')  ?
         serviceInstance.getAppinstHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
         serviceInstance.getClusterHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo)
@@ -370,8 +369,8 @@ export default class PageDetailViewer extends React.Component {
             if(nextProps.data && !this.initData){
                 this.setState({listData:nextProps.data, page:nextProps.page})
                 //get info resource of app or cluster
-                console.log('20190731 detail info of data -- will recevive props == ', nextProps.data, nextProps.page)
-                this.getInstanceHealth( nextProps.page, nextProps.data)
+                console.log('20190802 detail info of data -- will recevive props == ', nextProps.data, nextProps.page)
+                if(nextProps.page) this.getInstanceHealth( nextProps.page, nextProps.data)
 
                 this.initData = true;
             }

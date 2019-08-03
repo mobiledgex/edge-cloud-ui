@@ -24,7 +24,7 @@ const ContainerOne = (props) => (
     <AnimatedMap parentProps={props}/>
 
 );
-let rgn = ['US','EU'];
+let rgn = ['US','KR','EU'];
 class SiteTwoPageOne extends React.Component  {
     constructor(props){
         super(props)
@@ -287,7 +287,7 @@ class SiteTwoPageOne extends React.Component  {
         if(region !== 'All'){
             rgn = [region]
         } else {
-            rgn = ['US','EU'];
+            rgn = ['US','KR','EU'];
         }
 
             rgn.map((item) => {

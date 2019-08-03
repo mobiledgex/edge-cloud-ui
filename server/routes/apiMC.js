@@ -938,12 +938,13 @@ exports.CreateClusterInst = (req, res) => {
 
         {
             headers: {
-                'Authorization':`Bearer ${superpass}`}
+                'Authorization':`Bearer ${superpass}`},
+            responseType:'arraybuffer'
         }
     )
         .then(function (response) {
 
-            console.log('success Create ClusterInst', response.data)
+            console.log('success Create ClusterInst ==>==>==>==>==>', response)
 
             if(response.data) {
                 res.json(response.data)

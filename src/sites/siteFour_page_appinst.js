@@ -15,7 +15,7 @@ import DeveloperListView from "../container/developerListView";
 import * as aggregate from '../utils'
 
 let _self = null;
-let rgn = ['US','EU'];
+let rgn = ['US','KR','EU'];
 class SiteFourPageAppInst extends React.Component {
     constructor(props) {
         super(props);
@@ -129,10 +129,11 @@ class SiteFourPageAppInst extends React.Component {
         } else {
             join = this.state.devData;
         }
-        this.props.handleLoadingSpinner(false);
-        this.setState({devData:join})
         this.loadCount ++;
-        if(rgn.length == this.loadCount){
+        console.log('20190803 receive result...', result)
+        this.setState({devData:join})
+        this.props.handleLoadingSpinner(false);
+        if(rgn.length == this.loadCount-1){
             return
         }
     }
@@ -145,7 +146,7 @@ class SiteFourPageAppInst extends React.Component {
         if(region !== 'All'){
             rgn = [region]
         } else {
-            rgn = ['US','EU'];
+            rgn = ['US','KR','EU'];
         }
  
         if(localStorage.selectRole == 'AdminManager') {

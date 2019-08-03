@@ -137,7 +137,7 @@ class SiteFourPageCloudlet extends React.Component {
         //     return;
         // }
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let rgn = ['US','EU'];
+        let rgn = ['US','KR','EU'];
         this.setState({devData:[]})
         console.log("changeRegion###@@",_self.props.changeRegion)
         if(region !== 'All'){

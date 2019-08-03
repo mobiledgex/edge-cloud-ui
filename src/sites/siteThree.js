@@ -22,7 +22,7 @@ let _devOptionsTwo = [
     { key: 'cl', value: 'cl', text: 'Barcelona MWC' }
 ]
 
-let rgn = ['US','EU'];
+let rgn = ['US','KR','EU'];
 let _self = null;
 class SiteThree extends React.Component {
     constructor(props) {
@@ -148,7 +148,7 @@ class SiteThree extends React.Component {
         if(region !== 'All'){
             rgn = [region];
         } else {
-            rgn = ['US','EU'];
+            rgn = ['US','KR','EU'];
         }
 
         if(localStorage.selectRole == 'AdminManager') {

@@ -2,10 +2,12 @@ import React, { Fragment } from "react";
 
 import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup, Icon, Input} from "semantic-ui-react";
 
-import { Field, reduxForm, initialize, reset, stopSubmit } from "redux-form";
+import { Field, reduxForm, initialize, reset, stopSubmit, change } from "redux-form";
 import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
 import './styles.css';
+
+let portNum = 0;
 
 const makeOption =(options)=> (
     options.map((value) =>(
@@ -93,6 +95,23 @@ const renderInputPathType = field => (
     />
 );
 
+const renderInputApp = field => (
+    <div>
+        <Form.Input
+            {...field.input}
+            type={field.type}
+            label={field.label}
+            onChange={(e, { value }) => {
+                const reg = /^[0-9a-zA-Z][-0-9a-zA-Z.]*$/;
+                if(reg.test(value)){
+                    field.input.onChange(value)
+                }
+            }}
+        />
+        {field.error && <span className="text-danger">{field.error}</span>}
+    </div>
+);
+
 const style = {
     borderRadius: 0,
     opacity: 0.7,
@@ -146,7 +165,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("SiteFourCreateFormAppDefault22 --> ",nextProps.validError)
+        console.log("SiteFourCreateFormAppDefault22 --> ",this.state.portArray)
         if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
@@ -197,14 +216,20 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
     AddPorts = (e) => {
         e.preventDefault();
-        this.setState({portArray:this.state.portArray.concat('item')})
+        this.setState({portArray:this.state.portArray.concat(portNum)})
+        portNum++;
     }
-    RemovePorts = (e) => {
+    RemovePorts = (num) => {
         let arr = this.state.portArray;
+        
+        this.props.dispatch(change('createAppFormDefault', 'Ports_'+num, null));
+        this.props.dispatch(change('createAppFormDefault', 'Portsselect_'+num, null));
+
         if(arr.length > 0) {
-            arr.pop()
+            const idx = arr.indexOf(num)
+            if (idx > -1) arr.splice(idx, 1)
         }
-        this.setState({portArray:arr}); 
+        this.setState({portArray:arr});
     }
     receiveResult = (result) => {
         let arr = [];
@@ -357,7 +382,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                 <Field
                                                                                     component={renderInput}
                                                                                     type="input"
-                                                                                    name={key+'_'+i}
+                                                                                    name={key+'_'+item}
                                                                                     //value={data[key]}
                                                                                     error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
                                                                                     />
@@ -368,14 +393,14 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                     placeholder={'Select port'}
                                                                                     //value={data[key]}
                                                                                     options={fieldKeys[pId][key]['items']}
-                                                                                    name={key+'select_'+i}
+                                                                                    name={key+'select_'+item}
                                                                                     onChange={()=>console.log('onChange text..')}
                                                                                     error={(this.props.validError.indexOf(key+'select_'+i) !== -1)?'Required':''}
                                                                                     />
                                                                             </Grid.Column>
                                                                             <Grid.Column width={1}>
                                                                                 {/*<Button onClick={this.RemovePorts} sttle={{width:'100%'}}>Delete</Button>*/}
-                                                                                <div className='removePorts' onClick={this.RemovePorts}><i className="material-icons">clear</i></div>
+                                                                                <div className='removePorts' onClick={() => this.RemovePorts(item)}><i className="material-icons">clear</i></div>
                                                                             </Grid.Column>
                                                                         </Grid.Row>
                                                                     ))
@@ -387,6 +412,14 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                     </Grid.Column>
                                                                 </Grid.Row>
                                                             </Grid>
+                                                            :
+                                                            (fieldKeys[pId][key]['type'] === 'RenderInputApp') ?
+                                                            <Field
+                                                                component={renderInputApp}
+                                                                type="input"
+                                                                name={key}
+                                                                value={data[key]}
+                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                             :
                                                             <Field
                                                                 component={renderInput}

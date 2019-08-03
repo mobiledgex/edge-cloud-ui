@@ -49,6 +49,22 @@ const renderInput = field => (
         {field.error && <span className="text-danger">{field.error}</span>}
     </div>
 );
+const renderInputCluster = field => (
+    <div>
+        <Form.Input
+            {...field.input}
+            type={field.type}
+            label={field.label}
+            onChange={(e, { value }) => {
+                const reg = /^[0-9a-zA-Z][-0-9a-zA-Z.]*$/;
+                if(reg.test(value)){
+                    field.input.onChange(value)
+                }
+            }}
+        />
+        {field.error && <span className="text-danger">{field.error}</span>}
+    </div>
+);
 const renderInputDisabled = field => (
     <Form.Input
         {...field.input}
@@ -291,6 +307,14 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                         name={key}
                                                                         value={data[key]}
                                                                         />
+                                                            :
+                                                            (fieldKeys[pId][key]['type'] === 'RenderInputCluster') ?
+                                                            <Field
+                                                                component={renderInputCluster}
+                                                                type="input"
+                                                                name={key}
+                                                                value={data[key]}
+                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                             :
                                                             <Field
                                                                 component={renderInput}

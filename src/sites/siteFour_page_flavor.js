@@ -100,7 +100,7 @@ class SiteFourPageFlavor extends React.Component {
     }
     getDataDeveloper = (region) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let rgn = ['US','EU'];
+        let rgn = ['US','KR','EU'];
         this.setState({devData:[]})
         if(region !== 'All'){
             rgn = [region]
