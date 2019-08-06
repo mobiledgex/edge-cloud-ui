@@ -74,7 +74,6 @@ class AccountListView extends React.Component {
         this.setState({orgData:result})
     }
     receiveLockResult = (result) => {
-        console.log('20190723 result lock or unlock',JSON.stringify(result));
         _self.props.handleComputeRefresh(true);
     }
     

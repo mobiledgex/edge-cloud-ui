@@ -90,7 +90,6 @@ class SiteFourPageAppInst extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        console.log('20190731 nextProps detailData--- ', nextProps.detailData)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
 
         if(nextProps.computeRefresh.compute) {
@@ -130,7 +129,6 @@ class SiteFourPageAppInst extends React.Component {
             join = this.state.devData;
         }
         this.loadCount ++;
-        console.log('20190803 receive result...', result)
         this.setState({devData:join})
         this.props.handleLoadingSpinner(false);
         if(rgn.length == this.loadCount-1){

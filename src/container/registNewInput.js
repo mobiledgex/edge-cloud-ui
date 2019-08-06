@@ -206,7 +206,6 @@ class registNewInput extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {        
-        console.log("nextProps@@",nextProps)
         if(nextProps.locationLong || nextProps.locationLat){
             this.props.dispatch(change('registNewInput', 'Latitude', nextProps.locationLat));
             this.props.dispatch(change('registNewInput', 'Longitude', nextProps.locationLong));

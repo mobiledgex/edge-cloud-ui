@@ -89,7 +89,6 @@ export default class MonitoringViewer extends React.Component {
             this.state.mProp['timeseriesUDP'][0][this.udpCnt] = values['time'];
             this.udpCnt ++;
         }
-        console.log('20190730 ...last last ...', this.state.mProp['timeseriesDataDISK'], " -:- ", this.diskCnt)
         this.setState({props: this.state.mProp})
         this.setState({lastCPU: this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt-1]})
         this.setState({lastMEM: this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt-1]})
@@ -121,7 +120,6 @@ export default class MonitoringViewer extends React.Component {
         this.udpCnt = 0;
         if(data && data.mData.length) {
             data.mData.map(item => {
-                //console.log('20190730 ...monitoring viewer did Mount ...', item)
                 if(item.name.indexOf('cpu') > -1) {
                     this.setTimeseriesDataCPUMEM('cpu',item['values'])
                 } else if(item.name.indexOf('mem') > -1) {
@@ -140,7 +138,6 @@ export default class MonitoringViewer extends React.Component {
     }
 
     componentDidMount() {
-        console.log('20190730 ...monitoring viewer. ', this.props)
         if(this.props.data) {
             this.setState({data:this.props.data})
             this.feedData(this.props.data)
@@ -148,7 +145,6 @@ export default class MonitoringViewer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('20190730 ...monitoring viewer...next nextprops......', nextProps)
         this.feedData(nextProps.data);
     }
 

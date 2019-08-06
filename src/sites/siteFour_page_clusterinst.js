@@ -84,7 +84,6 @@ class SiteFourPageClusterInst extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        console.log("20190803 infoCluster2",nextProps)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
@@ -93,7 +92,6 @@ class SiteFourPageClusterInst extends React.Component {
             this.props.handleComputeRefresh(false);
         }
         if(this.props.changeRegion !== nextProps.changeRegion){
-            console.log("20190803 regionChange@@@@")
             this.getDataDeveloper(nextProps.changeRegion);
         }
         if(nextProps.viewMode) {
@@ -129,12 +127,10 @@ class SiteFourPageClusterInst extends React.Component {
     }
 
     receiveResultClusterInst(result) {
-        console.log('20190802 result cluster == ', result)
         _self.countObject[result[0]['Region']].push(result[0]['Region'])
         _self.groupJoin(result,'clusterInst', result[0]['Region'])
     }
     receiveResultCloudlet(result) {
-        console.log('20190802 result cloudlet == ', result)
         _self.countObject[result[0]['Region']].push(result[0]['Region'])
         _self.groupJoin(result,'cloudlet', result[0]['Region'])
     }

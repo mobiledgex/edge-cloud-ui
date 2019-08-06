@@ -21,7 +21,6 @@ export default class PopProfileViewer extends React.Component {
         return moment( time ).utc().format("YYYY-MM-DD HH:mm:ss") + ' UTC'
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('20190805 regist new item -- ', nextProps)
         if(nextProps.open) {
             this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
             let regKeys = [];
