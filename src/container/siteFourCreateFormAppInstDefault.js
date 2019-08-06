@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 
 import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup, Icon, Input, Dropdown} from "semantic-ui-react";
 
-import { Field, reduxForm, initialize, reset, stopSubmit } from "redux-form";
+import { Field, reduxForm, initialize, reset, stopSubmit, change } from "redux-form";
 import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
 import './styles.css';
@@ -195,11 +195,20 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
     onHandleToggleChange = (e) => {
         this.setState({ClusterDisable:e})
     }
+
+    onHandleChange = (key) => {
+        if(key === 'Region'){
+            // this.props.dispatch(change('createAppFormDefault', 'Cloudlet', null));
+            // this.props.dispatch(change('createAppFormDefault', 'ClusterInst', null));
+            this.handleInitialize(this.props.data.data[0]);
+        }
+        
+    }
     
     render (){
         const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
         const { data, regKeys, fieldKeys } = this.state;
-        console.log("data@fo@@",data, regKeys, fieldKeys)
+        console.log("data@fo@@", fieldKeys)
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         return (
 
@@ -229,7 +238,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                                                 value={data[key]}
                                                                 options={fieldKeys[pId][key]['items']}
                                                                 name={key}
-                                                                onChange={()=>console.log('onChange text..')}
+                                                                onChange={()=>this.onHandleChange(key)}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'RenderDropDown') ?

@@ -61,13 +61,26 @@ const asyncComponent = getComponent => (
  */
 const DashboardContainer = ( props, props2) => {
 
-    console.log('페이지 이동 =========== '+props.mainPath, props2.location.search, 'routed = '+self.routed)
+    console.log('20190804 페이지 이동 =========== '+props.mainPath, props2.location.search, 'routed = '+self.routed)
     if(props.mainPath === '/') props.mainPath = '/site1';
     if(props2.location.search) props2.location.search = props2.location.search.replace('?', '')
     let _params = {mainPath:props.mainPath, subPath:(props2.match.params.page) ? props2.match.params.page : (props2.location.search) ? props2.location.search : 'pg=0'};
     global.areaCode = _params;
 
     console.log('_params... ', _params)
+    /////////////////////////////////////////
+    // Login check
+    /////////////////////////////////////////
+    const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
+    if(self.routed){
+        self.profileView();
+    } else {
+        console.log('20190804 self.routed..', self.routed)
+    }
+
+
+
+
     //단 한번만 라우터 정보 기록 - 랜더링 타이밍 무한루프 피함
     if(!self.routed){
         self.props.handleChangeSite({mainPath:_params.mainPath, subPath:_params.subPath})
@@ -85,9 +98,7 @@ const DashboardContainer = ( props, props2) => {
     } else {
         self.routeCnt = 1;
     }
-    /////////////////////////////////////////
-    // Login check
-    /////////////////////////////////////////
+
 
     if(props.mainPath === '/logout') {
         localStorage.removeItem(LOCAL_STRAGE_KEY);
@@ -101,7 +112,7 @@ const DashboardContainer = ( props, props2) => {
         localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(params))
     }
 
-    const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
+
 
 
     console.log('storage data == ', storage_data)
@@ -181,10 +192,12 @@ class App extends Component {
             localStorage.removeItem('selectOrg');
             localStorage.removeItem('selectRole')
             localStorage.removeItem('selectMenu')
+            localStorage.removeItem(LOCAL_STRAGE_KEY);
         }
         //브라우져 입력창에 주소 기록
         let mainPath = main;
         let subPath = sub;
+        console.log('20190804 ...goto next', main, sub)
         history.push({
             pathname: mainPath,
             search: subPath,
@@ -197,20 +210,27 @@ class App extends Component {
     }
 
     receiveCurrentUser(result) {
+        console.log('20190804 result...', result.data)
         if(result.data && result.data.message) {
-            self.setState({tokenState:'expired'})
+
             Alert.error(result.data.message, {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
             });
-            setTimeout(() => self.goToNext('/logout',''),2000);
+
+            if(result.data.message.indexOf('expired') > -1) {
+                setTimeout(() => self.goToNext('/logout',''),2000);
+            }
         } else {
-            self.setState({tokenState:'live'})
-            self.setState({userInfo: result.data})
+            //self.setState({tokenState:'live'})
+            //self.setState({userInfo: result.data})
         }
     }
     profileView() {
+        //const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
+        console.log('20190804 profile view', localStorage, localStorage.PROJECT_INIT)
+        if(!localStorage.PROJECT_INIT) return;
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store.userToken;
         Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
@@ -231,8 +251,7 @@ class App extends Component {
         const storage_json = JSON.parse(storage_data)
 
         if ( storage_json ) {
-            //this.signinWithTokenRequest(storage_json.login_token)
-            //setTimeout(() => self.props.mapDispatchToLoginWithPassword(storage_json), 1000);
+
             self.props.mapDispatchToLoginWithPassword(storage_json)
 
 

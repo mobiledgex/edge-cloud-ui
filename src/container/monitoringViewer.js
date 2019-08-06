@@ -169,10 +169,9 @@ export default class MonitoringViewer extends React.Component {
                             </Header>
                             <Container>
                                 {
-                                    this.bytesToString(
-                                    (this.props.data.page !== 'appInst')?this.state.lastMEM * 1000000:this.state.lastMEM
-                                    )
+                                    this.state.lastMEM + '%'
                                 }
+
                             </Container>
                         </Segment>
 

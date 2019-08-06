@@ -65,6 +65,7 @@ export default class PopDetailViewer extends React.Component {
                                  :(key == 'ImagePath')?'Image Path'
                                  :(key == 'DefaultFlavor')?'Default Flavor'
                                  :(key == 'DeploymentMF')?'Deployment Manifest' /* 여기까지 Apps*/
+                                 :(key == 'AuthPublicKey')?'Auth Public Key'
                                  :key}
                             </div>
                         </Grid.Column>
@@ -153,7 +154,7 @@ export default class PopDetailViewer extends React.Component {
                                         </div>
                                         <div>
                                             {`curl -u<username>:<password> -T <path_to_file> `}<span
-                                            style={{color: 'rgba(136,221,0,.9)'}}>{`"https://artifactory.mobiledgex.net/artifactory/mc-repo-` + this.state.propsData.Organization + `/<target_file_path>"`}</span>
+                                            style={{color: 'rgba(136,221,0,.9)'}}>{`"https://artifactory.mobiledgex.net/artifactory/repo-` + this.state.propsData.Organization + `/<target_file_path>"`}</span>
                                         </div>
                                     </Grid.Column>
                                 </Grid.Row>
