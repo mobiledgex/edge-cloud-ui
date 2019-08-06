@@ -352,6 +352,13 @@ class SiteFour extends React.Component {
         this.setState({openProfile:true})
     }
 
+    var ID = function () {
+        // Math.random should be unique because of its seeding algorithm.
+        // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+        // after the decimal.
+        return '_' + Math.random().toString(36).substr(2, 9);
+    }
+
     //compute page menu view
     menuItemView = (item, i, activeItem) => (
         <Menu.Item
@@ -362,6 +369,7 @@ class SiteFour extends React.Component {
             <div className="left_menu_item">
                 <MaterialIcon icon={item.icon}/>
                 <div className='label'>{item.label}</div>
+                <div id=ID()/>
             </div>
         </Menu.Item>
     )
