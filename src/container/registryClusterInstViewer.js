@@ -205,7 +205,11 @@ class RegistryClusterInstViewer extends React.Component {
         if(paseData.error && !this.state.errorClose) {
             this.setState({clusterInstCreate:false})
             this.props.handleLoadingSpinner(false);
-            this.props.handleAlertInfo('error',paseData.error)
+            if(paseData.error == 'Key already exists'){
+                
+            } else {
+                this.props.handleAlertInfo('error',paseData.error)
+            }
         }
 
         // if(paseData.message) {

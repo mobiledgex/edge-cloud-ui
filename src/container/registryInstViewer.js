@@ -121,7 +121,7 @@ class RegistryInstViewer extends React.Component {
         this.setState({ dimmer:dim, openAdd: true, selected:data })
         //this.props.handleChangeSite(data.children.props.to)
     }
-    getDataDeveloper(token) {
+    getDataDeveloper(token,_region) {
         //get data cloudlet list , app list
         // let rgn = ['US','EU'];
         // if(this.props.region !== 'All'){
@@ -133,9 +133,9 @@ class RegistryInstViewer extends React.Component {
         //     services.getMCService('ShowClusterInst',{token:token,region:item}, this.receiveResultClusterInst)
         // })
 
-        services.getMCService('ShowApps',{token:token,region:'US'}, this.receiveResultApp)
+        services.getMCService('ShowApps',{token:token,region:_region}, this.receiveResultApp)
         //setTimeout(() => services.getMCService('ShowCloudlet',{token:token,region:'US'}, this.receiveResultCloudlet), 200);
-        setTimeout(() => services.getMCService('ShowClusterInst',{token:token,region:'US'}, this.receiveResultClusterInst), 200);
+        setTimeout(() => services.getMCService('ShowClusterInst',{token:token,region:_region}, this.receiveResultClusterInst), 200);
         
     }
     receiveResultCloudlet = (result) => {
@@ -200,10 +200,25 @@ class RegistryInstViewer extends React.Component {
             this.props.handleAlertInfo('error',result.data.error)
             return;
         } else {
-            this.props.handleAlertInfo('success','Your application instance created successfully')
+            
+
+            let toArray = result.data.split('\n')
+            toArray.pop();
+            let toJson = toArray.map((str)=>(JSON.parse(str)))
+
+            toJson.map((item) => {
+                console.log("success@@@@@",toJson)
+                if(item.result && item.result.code == 400){
+                    this.props.handleAlertInfo('error',item.result.message)
+                    return
+                } else {
+                    this.props.handleAlertInfo('success','Your application instance created successfully')
+                }
+            })
+
             setTimeout(() => {
                 this.gotoUrl('submit');
-            }, 1000)
+            }, 3000)
         }
     }
     
@@ -278,8 +293,8 @@ class RegistryInstViewer extends React.Component {
 
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) this.getDataDeveloper(store.userToken);
-        console.log('nextProps inst...nextProps.appLaunch=',this.props.appLaunch);
+        if(store.userToken) this.getDataDeveloper(store.userToken,'US');
+        console.log('nextProps inst...nextProps.appLaunch=',this.props);
         /************
          * set Organization Name
          * **********/
@@ -294,7 +309,7 @@ class RegistryInstViewer extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log("enenennen",nextProps)
+        console.log("enenennen",nextProps.submitData.createAppFormDefault,"::::::",this.props.submitData.createAppFormDefault)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -333,12 +348,15 @@ class RegistryInstViewer extends React.Component {
                         this.props.handleLoadingSpinner(false);
                         this.gotoUrl('submit');
                     }
-                }, 1000)
+                }, 4000)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }
             
         }
+
+        //
+        if(store.userToken && nextProps.formAppInst.values) this.getDataDeveloper(store.userToken,nextProps.formAppInst.values.Region);
 
         // if(nextProps.history.location.appdata) {
         //     console.log("appdata@@",nextProps.history.location.appdata)
@@ -349,6 +367,8 @@ class RegistryInstViewer extends React.Component {
          * **********/
         if(nextProps.selectedOperator) {
             let assObj = Object.assign([], this.state.keysData);
+            assObj[0].Cloudlet.items = [];
+            assObj[0].ClusterInst.items = [];
             assObj[0].Cloudlet.items = this.state.operators[nextProps.selectedOperator].map((cld) => (cld.Cloudlet));
             assObj[0].Cloudlet.items = reducer.removeDuplicate(assObj[0].Cloudlet.items)
             this.setState({keysData:assObj})
@@ -486,7 +506,7 @@ const createFormat = (data) => (
     }
 )
 const mapStateToProps = (state) => {
-    console.log("store state:::",state);
+    console.log("store state:::",state.form);
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;
     console.log('account -- '+account)

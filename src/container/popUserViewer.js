@@ -45,8 +45,7 @@ export default class PopUserViewer extends React.Component {
         this.props.close()
     }
     makeUTC = (time) => {
-        console.log('time... ', moment( time ).format("YYYY-MM-DD HH:mm:ss"))
-        return moment( time ).format("YYYY-MM-DD HH:mm:ss") + ' UTC'
+        return moment(time).utc().format("YYYY-MM-DD HH:mm:ss") + ' UTC'
     }
 
     render() {

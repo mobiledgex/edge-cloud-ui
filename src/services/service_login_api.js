@@ -43,10 +43,13 @@ export function getCurrentUserInfo(resource, body, callback, self) {
     }))
         .then(function (response) {
             let parseData = null;
+            console.log('20190804 response.==>==>', response.data)
             if(response.data) {
+                //test 20190804
+                //parseData = JSON.parse(JSON.stringify({data:{message:'expired jwt'}}));
                 parseData = JSON.parse(JSON.stringify(response));
-            } else {
 
+            } else {
             }
             if(parseData) callback(parseData, resource, self);
         })

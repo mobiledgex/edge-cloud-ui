@@ -32,7 +32,7 @@ var vertical = 20;
 
 var layout = [
     {"w":24,"h":9,"x":0,"y":0,"i":"0","minW":5,"minH":8,"moved":false,"static":false, "title":"LocationView"},
-    {"w":24,"h":11,"x":0,"y":9,"i":"1","minW":8,"minH":6,"moved":false,"static":false, "title":"Developer"}
+    {"w":24,"h":11,"x":0,"y":9,"i":"1","minW":8,"moved":false,"static":false, "title":"Developer"}
 ]
 const override = {
     display: 'fixed',
@@ -83,6 +83,7 @@ class MapWithListView extends React.Component {
             detailViewData:null,
             noData:false,
             updateData:{},
+            resize:null
         };
 
         _self = this;
@@ -191,14 +192,13 @@ class MapWithListView extends React.Component {
         setTimeout(() => this.generateStart(), 2000)
     }
 
-    generateDOM(open, dimmer, width, height, randomValue, dummyData) {
-
+    generateDOM(open, dimmer, width, height, randomValue, dummyData, resize) {
         return layout.map((item, i) => (
 
             (i === 1)?
-                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%', height:'100%'}} >
+                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%',height:resize ? resize-563 : height-500, marginTop:10}} >
 
-                    <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
+                    <div className="grid_table" style={{width:'100%', height:'100%', overflowY:'auto'}}>
                         {
                             this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys, dummyData)
                         }
@@ -226,7 +226,7 @@ class MapWithListView extends React.Component {
                     {/*페이저 기능 생길 때 까지 */}
                 </div>
                 :
-                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%', height:'100%'}} >
+                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%', height:400, marginTop:10}} >
                     <div className='panel_worldmap' style={{width:'100%', height:'100%'}}>
                         <ContainerOne ref={ref => this.container = ref} {...this.props} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
                     </div>
@@ -437,20 +437,22 @@ class MapWithListView extends React.Component {
 
         _self.props.handleRefreshData({params:{state:'refresh'}})
     }
-
+    updateDimensions(e) {
+        console.log('20190805 event is === ', e.currentTarget.innerHeight)
+        _self.setState({resize:e.currentTarget.innerHeight})
+    }
     componentDidMount() {
         let self = this;
-        setTimeout(() => self.setState({tooltipVisible:true}), 1000)
-
+        window.addEventListener("resize", this.updateDimensions);
     }
     componentWillUnmount() {
-
+        window.addEventListener("resize", this.updateDimensions);
         //alert('unmount map with list view')
         this.props.handleSetHeader([])
     }
-    // componentDidUpdate(prevProps, prevState, snapshot) {
-    //     console.log('-----component did update ------', prevState.dummyData, this.state.dummyData)
-    // }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log('-----component did update ------')
+    }
 
     componentWillReceiveProps(nextProps, nextContext) {
 
@@ -541,13 +543,13 @@ class MapWithListView extends React.Component {
     }
 
     render() {
-        const { open, dimmer, dummyData } = this.state;
+        const { open, dimmer, dummyData, resize } = this.state;
         const {randomValue} = this.props;
         
         return (
             <ContainerDimensions>
                 { ({ width, height }) =>
-                    <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
+                    <div style={{width:width, height:'100%', display:'flex', overflowY:'hidden', overflowX:'hidden'}}>
                         <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open}
                                        selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                                        userToken={this.props.userToken}
@@ -559,14 +561,14 @@ class MapWithListView extends React.Component {
                                     success={this.successfully} refresh={this.props.dataRefresh}
                         ></DeleteItem>
 
-                        <ReactGridLayout
+                        <Container
                             layout={this.state.layout}
                             onLayoutChange={this.onLayoutChange}
                             {...this.props}
-                            style={{width:width, height:height-20}}
+                            style={{width:width, height:height-20, justifyContent: 'space-between'}}
                         >
-                            {this.generateDOM(open, dimmer, width, height, randomValue, dummyData)}
-                        </ReactGridLayout>
+                            {this.generateDOM(open, dimmer, width, height, randomValue, dummyData, resize)}
+                        </Container>
 
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} centered={false} style={{right:400}}></PopDetailViewer>
                     </div>

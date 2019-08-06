@@ -141,7 +141,7 @@ class SiteFourPageClusterInst extends React.Component {
 
     groupJoin(result,cmpt, rg){
 
-
+        this.props.handleLoadingSpinner(false);
         if(cmpt == 'clusterInst') this.clusterInstDummy = _self.clusterInstDummy.concat(result)
         else if(cmpt == 'cloudlet') this.cloudletDummy = _self.cloudletDummy.concat(result)
 
@@ -149,7 +149,8 @@ class SiteFourPageClusterInst extends React.Component {
         // if(rgn.length*2 == this.loadCount){
         //     _self.countJoin()
         // }
-        if(_self.countObject[rg].length >= 2){
+        console.log("sssssdgdfdfdf",rg,_self.countObject[rg])
+        if(_self.countObject[rg].length == 2){
             _self.countJoin()
         }
 
@@ -185,6 +186,10 @@ class SiteFourPageClusterInst extends React.Component {
         } else {
             rgn = ['US','KR','EU'];
         }
+
+        rgn.map((region) => {
+            this.countObject[region] = []
+        })
 
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {

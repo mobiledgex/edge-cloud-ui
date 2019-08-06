@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 
 import axios from "axios-https-proxy-fix";
 import qs from "qs";
+import shell from 'shelljs';
 
 const API_KEY = '__apiMC_key__'
 let mcUrl = 'https://mc.mobiledgex.net:9900';
@@ -933,18 +934,29 @@ exports.CreateClusterInst = (req, res) => {
         region = req.body.serviceBody.region;
         serviceBody.clusterinst.key.cloudlet_key.name = req.body.multiData;
     }
+
+    /**
+     * steam
+     * http --stream --timeout 100000 --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateClusterInst <<< '{"region":"US","clusterinst":{"key":{"cluster_key":{"name":"dockertest20190802-9"},"cloudlet_key":{"operator_key":{"name":"TDG"},"name":"mexplat-stage-bonn-cloudlet"},"developer":"MobiledgeX"},"deployment":"docker","flavor":{"name":"c1.small"},"ip_access":1,"num_masters":0,"num_nodes":0}}'
+     */
+    // var url = `http --stream --timeout 100000 --auth-type=jwt --auth=${superpass} POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateClusterInst <<< '{"region":"KR","clusterinst":{"key":{"cluster_key":{"name":"dockertest20190805-15"},"cloudlet_key":{"operator_key":{"name":"TDG"},"name":"mexplat-stage-bonn-cloudlet"},"developer":"MobiledgeX"},"deployment":"docker","flavor":{"name":"c1.small"},"ip_access":1,"num_masters":0,"num_nodes":0}}'`
+    // var child = shell.exec(url, {async:true});
+    // child.stdout.on('data', function(data) {
+    //     console.log(data)
+    // });
+
+
     console.log('Create me cluster inst-- ', JSON.stringify(serviceBody), 'mcUrl=',mcUrl,'mdata=',req.body.multiData)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterInst', serviceBody,
 
         {
             headers: {
-                'Authorization':`Bearer ${superpass}`},
-            responseType:'arraybuffer'
+                'Authorization':`Bearer ${superpass}`}
         }
     )
         .then(function (response) {
 
-            console.log('success Create ClusterInst ==>==>==>==>==>', response)
+            console.log('success Create ClusterInst ==>==>==>==>==>', response.data)
 
             if(response.data) {
                 res.json(response.data)

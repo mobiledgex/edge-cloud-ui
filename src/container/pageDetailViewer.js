@@ -68,17 +68,23 @@ const makeTable = (values, label, i) => (
                                 :(label === 'Created')? String( makeUTC(values[label]) )
                                     :(label === 'State')? _status[values[label]]
                                         :(label === 'Liveness')? _liveness[values[label]]
-                                            :(typeof values[label] === 'object')? jsonView(values[label])
+                                            :(typeof values[label] === 'object')? jsonView(values[label],label)
                                                 :String(values[label])}
             </Table.Cell>
         </Table.Row> : null
 )
-const jsonView = (jsonObj) => (
-    <ReactJson src={jsonObj} {..._self.jsonViewProps} />
-)
+const jsonView = (jsonObj,_label) => {
+    if(_label === 'Mapped_port'){
+        jsonObj.map((item) => {
+            if(item.proto == 1) item.proto = 'TCP'
+            else if(item.proto == 2) item.proto = 'UDP'
+        })
+    }
+    return <ReactJson src={jsonObj} {..._self.jsonViewProps} />
+}
 
 const makeUTC = (time) => (
-    moment.unix( time.replace('seconds : ', '') ).format('YYYY-MM-DD HH:mm:ss') + ' UTC'
+    moment.unix( time.replace('seconds : ', '') ).utc().format('YYYY-MM-DD HH:mm:ss') + ' UTC'
 )
 
 

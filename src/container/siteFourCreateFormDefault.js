@@ -55,9 +55,10 @@ const renderInputCluster = field => (
             {...field.input}
             type={field.type}
             label={field.label}
+            placeholder={'Enter only English and numbers'}
             onChange={(e, { value }) => {
                 const reg = /^[0-9a-zA-Z][-0-9a-zA-Z.]*$/;
-                if(reg.test(value)){
+                if(reg.test(value) || value == ''){
                     field.input.onChange(value)
                 }
             }}

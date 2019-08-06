@@ -35,25 +35,39 @@ class DeleteItem extends React.Component {
      * @param result
      ***************************/
     receiveSubmit = (result, body) => {
-        let msg = '';
-        let msg2 = '';
-        if(this.props.siteId == 'ClusterInst') {
-            msg = 'Your cluster '+body.params.clusterinst.key.cluster_key.name
-        } else if(this.props.siteId == 'appinst') {
-            msg = 'Your application instance'
-            msg2 = ' from '+body.params.appinst.key.cluster_inst_key.cluster_key.name
-        }
+        let toArray = result.data.split('\n')
+        toArray.pop();
+        let toJson = toArray.map((str)=>(JSON.parse(str)))
 
-        this.props.handleLoadingSpinner(false);
-        this.props.refresh('All')
-        console.log('registry delete ... success result..', result.data)
+        toJson.map((item) => {
+            console.log("success@@@@@",toJson)
+            if(item.result && item.result.code == 400){
+                this.props.handleAlertInfo('error',item.result.message)
+                return
+            } else {
+                let msg = '';
+                let msg2 = '';
+                if(this.props.siteId == 'ClusterInst') {
+                    msg = 'Your cluster '+body.params.clusterinst.key.cluster_key.name
+                } else if(this.props.siteId == 'appinst') {
+                    msg = 'Your application instance'
+                    msg2 = ' from '+body.params.appinst.key.cluster_inst_key.cluster_key.name
+                }
+                this.props.handleAlertInfo('success',msg+' deleted successfully'+msg2)
+            }
+        })
+
+        setTimeout(() => {
+            _self.props.refresh('All');
+        }, 3000);
+        // console.log('registry delete ... success result..', result.data)
         
-        console.log("deleteCluster@@@",result.data)
-        if(result.data.error) {
-            this.props.handleAlertInfo('error',result.data.error)
-        } else if (result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
-            this.props.handleAlertInfo('success',msg+' deleted successfully'+msg2)
-        }
+        // console.log("deleteCluster@@@",result.data)
+        // if(result.data.error) {
+        //     this.props.handleAlertInfo('error',result.data.error)
+        // } else if (result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
+        //     this.props.handleAlertInfo('success',msg+' deleted successfully'+msg2)
+        // }
 
         
     }
@@ -103,7 +117,6 @@ class DeleteItem extends React.Component {
             this.props.handleSelectOrg('-')
             this.props.handleUserRole('')
         }
-
         _self.props.refresh('All');
     }
 
@@ -141,7 +154,10 @@ class DeleteItem extends React.Component {
                 }
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
-            setTimeout(() => this.props.refresh('All'), 2000)
+            setTimeout(() => {
+                this.props.refresh('All');
+                this.props.handleLoadingSpinner(false);
+            }, 2000)
             
         } else if(this.props.siteId === 'appinst') {
             const {OrganizationName, AppName, Version, Operator, Cloudlet, ClusterInst, Region} = this.props.selected
@@ -164,7 +180,10 @@ class DeleteItem extends React.Component {
                 }
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
-            setTimeout(() => this.props.refresh('All'), 2000)
+            setTimeout(() => {
+                this.props.refresh('All');
+                this.props.handleLoadingSpinner(false);
+            }, 1000)
         } else if(this.props.siteId === 'User') {
             let userArr = [];
             Object.values(this.props.selected).map((item,i) => {
