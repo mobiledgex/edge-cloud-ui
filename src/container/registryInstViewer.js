@@ -134,8 +134,8 @@ class RegistryInstViewer extends React.Component {
         // })
 
         services.getMCService('ShowApps',{token:token,region:_region}, this.receiveResultApp)
-        //setTimeout(() => services.getMCService('ShowCloudlet',{token:token,region:'US'}, this.receiveResultCloudlet), 200);
-        setTimeout(() => services.getMCService('ShowClusterInst',{token:token,region:_region}, this.receiveResultClusterInst), 200);
+        setTimeout(() => services.getMCService('ShowCloudlet',{token:token,region:_region}, this.receiveResultCloudlet), 200);
+        setTimeout(() => services.getMCService('ShowClusterInst',{token:token,region:_region}, this.receiveResultClusterInst), 400);
         
     }
     receiveResultCloudlet = (result) => {
@@ -143,11 +143,12 @@ class RegistryInstViewer extends React.Component {
 
         } else {
             let operatorGroup = reducer.groupBy(result, 'Operator')
-            console.log('submit receiveResultCloudlet 1...', operatorGroup)
+            let cloudletGroup = reducer.groupBy(result, 'CloudletName')
+            console.log('submit receiveResultCloudlet 1...', cloudletGroup)
             let keys = Object.keys(operatorGroup);
             let assObj = Object.assign([], this.state.keysData);
             assObj[0].Operator.items = keys;
-            this.setState({keysData:assObj, operators:operatorGroup})
+            this.setState({keysData:assObj, operators:operatorGroup, cloudlets:cloudletGroup})
         }
         // set list of operators
         if(this.props.devData.length > 0) {
@@ -175,13 +176,13 @@ class RegistryInstViewer extends React.Component {
             this.props.handleAlertInfo('error',String(result.error))
         } else {
             let clinstGroup = reducer.groupBy(result, 'ClusterName')
-            let cloudletGroup = reducer.groupBy(result, 'Cloudlet')
-            let operatorGroup = reducer.groupBy(result, 'Operator')
-            console.log('submit receiveResultCloudlet 1...', operatorGroup)
-            let keys = Object.keys(operatorGroup);
-            let assObj = Object.assign([], this.state.keysData);
-            assObj[0].Operator.items = keys;
-            this.setState({keysData:assObj, operators:operatorGroup, clustinst:clinstGroup, cloudlets:cloudletGroup})
+            //let cloudletGroup = reducer.groupBy(result, 'Cloudlet')
+            //let operatorGroup = reducer.groupBy(result, 'Operator')
+            //console.log('submit receiveResultCloudlet 1...', operatorGroup)
+            //let keys = Object.keys(operatorGroup);
+            //let assObj = Object.assign([], this.state.keysData);
+            //assObj[0].Operator.items = keys;
+            this.setState({ clustinst:clinstGroup})
         }
 
         // set list of operators
@@ -366,10 +367,11 @@ class RegistryInstViewer extends React.Component {
          * set list of cloudlet
          * **********/
         if(nextProps.selectedOperator) {
+            console.log("this.state.operators",this.state.operators)
             let assObj = Object.assign([], this.state.keysData);
             assObj[0].Cloudlet.items = [];
             assObj[0].ClusterInst.items = [];
-            assObj[0].Cloudlet.items = this.state.operators[nextProps.selectedOperator].map((cld) => (cld.Cloudlet));
+            assObj[0].Cloudlet.items = this.state.operators[nextProps.selectedOperator].map((cld) => (cld.CloudletName));
             assObj[0].Cloudlet.items = reducer.removeDuplicate(assObj[0].Cloudlet.items)
             this.setState({keysData:assObj})
 
@@ -416,7 +418,9 @@ class RegistryInstViewer extends React.Component {
 
         //set list of clusterInst filter
         if(Object.keys(nextProps.submitData).length > 0){
+            console.log("nextProps.submitData.createAppFormDefault.values",nextProps.submitData.createAppFormDefault.values)
             if(nextProps.submitData.createAppFormDefault.values.Operator && nextProps.submitData.createAppFormDefault.values.Cloudlet) {
+                console.log("fsdfasdfsafdsfasd")
                 let keys = Object.keys(this.state.clustinst);
                 let arr = []
                 let assObj = Object.assign([], this.state.keysData);
