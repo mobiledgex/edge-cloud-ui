@@ -209,7 +209,7 @@ class AccountListView extends React.Component {
     compareDate = (date) => {
         let isNew = false;
         let dName = 'd'
-        let fromNow = moment(date).startOf('day').fromNow();
+        let fromNow = moment(date).utc().startOf('day').fromNow();
         console.log('from now. ', fromNow)
         let darray = fromNow.split(' ')
         if(parseInt(darray[0]) <= 1 && darray[1] === 'days') isNew = true;

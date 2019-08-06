@@ -311,7 +311,7 @@ class MapWithListView extends React.Component {
         Alert.closeAll();
     }
     makeUTC = (time) => (
-        moment.unix( time.replace('seconds : ', '') ).format('YYYY-MM-DD HH:mm:ss')
+        moment.unix( time.replace('seconds : ', '') ).utc().format('YYYY-MM-DD HH:mm:ss')
     )
     compareDate = (date) => {
 
@@ -321,10 +321,10 @@ class MapWithListView extends React.Component {
         if(date) {
             let formatDate = this.makeUTC(date);
 
-            let fromNow = moment(formatDate).startOf('day').fromNow();
+            let fromNow = moment(formatDate).utc().startOf('day').fromNow();
             console.log('from now. ', fromNow)
             darray = fromNow.split(' ')
-            if(parseInt(darray[0]) <= 1 && darray[1] === 'days') isNew = true;
+            if(parseInt(darray[0]) <= 1 || fromNow === 'a day ago') isNew = true;
             console.log('is new... ', 'date=', formatDate, 'isNew =',isNew, parseInt(darray[0]))
         } else {
 
@@ -362,7 +362,7 @@ class MapWithListView extends React.Component {
                                     (value === 'AppName' && item[value])? //
                                         <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <div style={{display:'flex', justifyContent:'row'}}>
-                                                {this.compareDate(item['Created']).new ? <div className="userNewMark">{`New`}</div> : null} {String(item[value])}
+                                                 {String(item[value])}
                                             </div>
                                         </Table.Cell>
                                     :
@@ -408,8 +408,8 @@ class MapWithListView extends React.Component {
                                     :
                                     (!( String(hidden).indexOf(value) > -1 )) ?
                                         <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <div>
-                                            {String(item[value])}
+                                            <div style={{display:'flex', alignContent:'Column', justifyContent:'flex-start', alignItems:'center' }}>
+                                                <div>{String(item[value])}</div>{(this.compareDate(item['Created']).new && value === 'Region') ? <div className="userNewMark" style={{marginLeft:5, fontSize:10, padding:'0 5px'}}>{`New`}</div> : null}
                                             </div>
                                         </Table.Cell>
                                     : null
