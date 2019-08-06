@@ -1,6 +1,6 @@
 {
   "name": "02.mexexpress",
-  "version": "1.0.0",
+  "version": "0.8.26",
   "description": "mex compute influxdb with nodejs",
   "main": "app.js",
   "scripts": {
