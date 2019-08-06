@@ -107,17 +107,14 @@ columns =
  */
 let generateData = (datas) => {
     let result = datas.data.data[0].Series[0];
-    console.log('20190729 appinst health data ->->->->', result)
     let values = [];
     if(result){
         let _name = result.name;
         let dataSeries = result.values;
         let dataColumns = result.columns;
         let infoData = [];
-        console.log('20190729 dataSeries ->->->->',dataSeries)
         if(dataSeries.length) {
             dataSeries.map((item) => {
-                console.log('20190730 item ->->->->',moment(item[0]).utc().local().format())
                 // time, cluster, cpu, disk, mem, recvBytes, sendBytes
 
                 infoData = item;

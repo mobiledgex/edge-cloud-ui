@@ -83,7 +83,8 @@ class MapWithListView extends React.Component {
             detailViewData:null,
             noData:false,
             updateData:{},
-            resize:null
+            resize:null,
+            sorting:false
         };
 
         _self = this;
@@ -101,7 +102,6 @@ class MapWithListView extends React.Component {
             displayDataTypes: false,
             iconStyle: "triangle"
         }
-        this.sorting = false;
 
     }
 
@@ -160,7 +160,7 @@ class MapWithListView extends React.Component {
     }
     handleSort = clickedColumn => (a) => {
 
-        this.sorting = true;
+        _self.setState({sorting : true});
         const { column, dummyData, direction } = _self.state
         //console.log('20190724 selected column == ', clickedColumn, a, ":", column, ":", dummyData);
         if ((column !== clickedColumn) && dummyData) {
@@ -171,7 +171,6 @@ class MapWithListView extends React.Component {
                 direction: 'ascending',
             })
             this.forceUpdate()
-            return
         } else {
             let reverse = dummyData.reverse()
             this.setState({
@@ -181,7 +180,7 @@ class MapWithListView extends React.Component {
 
         }
 
-        setTimeout(() => this.sorting = false, 1000)
+        setTimeout(() => _self.setState({sorting : false}), 1000)
     }
     generateStart () {
 
@@ -286,14 +285,12 @@ class MapWithListView extends React.Component {
     }
     detailView(item) {
         //change popup to page view
-        console.log('20190731 =============  mapWithListView..detailView ==== ', item)
         _self.props.handleDetail({data:item, viewMode:'detailView'})
     }
     jsonView = (jsonObj) => (
         <ReactJson src={jsonObj} {...this.jsonViewProps} />
     )
     stateView(_item) {
-        console.log("dddddd@@",_item)
         Alert.closeAll();
         if(_item.Status.task_number === 1){
             localStorage.setItem('clusterinstCreateStep', _item.Status.task_name)
@@ -438,7 +435,6 @@ class MapWithListView extends React.Component {
         _self.props.handleRefreshData({params:{state:'refresh'}})
     }
     updateDimensions(e) {
-        console.log('20190805 event is === ', e.currentTarget.innerHeight)
         _self.setState({resize:e.currentTarget.innerHeight})
     }
     componentDidMount() {
@@ -455,8 +451,7 @@ class MapWithListView extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-
-        if(this.sorting) {
+        if(this.state.sorting) {
             return;
         }
 

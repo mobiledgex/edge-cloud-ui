@@ -122,7 +122,6 @@ class SiteTwoPageOne extends React.Component  {
 
     }
     receiveCloudlet(result) {
-        console.log('20190719 receive cloudlet  result... ', result)
 
         let locatData = _self.setLocationGroupData(result);
         _self.setState({
@@ -195,7 +194,6 @@ class SiteTwoPageOne extends React.Component  {
             })
 
         })
-        console.log('20190719 location data ..... data ....data....', locationData)
         return locationData;
     }
 
@@ -211,7 +209,6 @@ class SiteTwoPageOne extends React.Component  {
     }
 
     receiveAppInst(result) {
-        console.log('20190719 result app inst  ---->>>> ', result)
 
         if(result.length){
             let join = null;
@@ -221,12 +218,9 @@ class SiteTwoPageOne extends React.Component  {
                 join = _self.state.devGroup;
             }
 
-            console.log('20190719 11111 >>>>>> concated join ... ', join)
             if(result.error) {
-                console.log('20190719 eeeeeerrrr>>>>>> concated join ... ', join)
                 this.props.handleAlertInfo('error',result.error)
             } else {
-                console.log('20190719 >>>>>> concated join ... ', join)
                 _self.setState({devGroup:join})
 
             }
@@ -509,7 +503,6 @@ class SiteTwoPageOne extends React.Component  {
             let _cloudlets = [];
 
             groupby[value].map((obj) => {
-                console.log('20190719 grouped by organization..', _self.state.dropdownValueOne, _self.state.dropdownValueThree)
                 // condition of..
                 if(_self.state.dropdownValueOne !== 'default') {
 
@@ -531,7 +524,6 @@ class SiteTwoPageOne extends React.Component  {
                 }
             })
 
-            console.log('20190719 _cloudlets cloudlets..', _cloudlets, _self.state.cloudletsData)
             _cloudlets.map((cld) => {
                 _self.state.cloudletsData.map((cloudlet) => {
                     if(cloudlet['CloudletName'] === cld['Cloudlet']) {
@@ -540,7 +532,6 @@ class SiteTwoPageOne extends React.Component  {
                 })
             })
 
-            console.log('20190719 filtered..', filtered)
             if(filtered.length > 0) {
                 _self.setState({locationData:_self.setAppinstGroupData(filtered)});
             } else {
@@ -581,15 +572,12 @@ class SiteTwoPageOne extends React.Component  {
         _self.forceUpdate();
     }
     setDeveloperList(key) {
-        console.log('20190719 value and setDeveloperList === ', key, "  :  ", _self.state.devGroup)
         let groupbyDevel = aggregation.groupBy(_self.state.devGroup, 'Operator')
         let devData = (groupbyDevel[key]) ? aggregation.groupBy(groupbyDevel[key], 'OrganizationName'):{};
 
         let devKeys = Object.keys(devData)
-        console.log('20190719 groupbyData developKeys ==>==> ', devKeys)
         let developers1 = [{ key: 0, value: 'default', text: 'Select Developer' }]
         let developers2 = devKeys.map((opr, i) => ({ key: i+1, value: opr, text: opr }))
-        console.log('20190719 developers1 developers2 ==>==> ', developers1, developers2)
         _self.setState({countryOptionsDev:[...developers1,...developers2]})
         _self.forceUpdate();
         //&&&&&&&&&& until set MWC &&&&&&&&&&&&&

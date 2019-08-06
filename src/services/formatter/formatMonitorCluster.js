@@ -100,7 +100,6 @@ const numberDes =(a,b)=> (
  */
 let generateData = (datas) => {
     let result = datas.data.data[0].Series[0];
-    console.log('20190730 cluster health data ->->->->', result)
     let values = [];
     if(result){
         let _name = result.name;

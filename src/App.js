@@ -61,7 +61,6 @@ const asyncComponent = getComponent => (
  */
 const DashboardContainer = ( props, props2) => {
 
-    console.log('20190804 페이지 이동 =========== '+props.mainPath, props2.location.search, 'routed = '+self.routed)
     if(props.mainPath === '/') props.mainPath = '/site1';
     if(props2.location.search) props2.location.search = props2.location.search.replace('?', '')
     let _params = {mainPath:props.mainPath, subPath:(props2.match.params.page) ? props2.match.params.page : (props2.location.search) ? props2.location.search : 'pg=0'};
@@ -75,7 +74,6 @@ const DashboardContainer = ( props, props2) => {
     if(self.routed){
         self.profileView();
     } else {
-        console.log('20190804 self.routed..', self.routed)
     }
 
 
@@ -197,7 +195,6 @@ class App extends Component {
         //브라우져 입력창에 주소 기록
         let mainPath = main;
         let subPath = sub;
-        console.log('20190804 ...goto next', main, sub)
         history.push({
             pathname: mainPath,
             search: subPath,
@@ -210,7 +207,6 @@ class App extends Component {
     }
 
     receiveCurrentUser(result) {
-        console.log('20190804 result...', result.data)
         if(result.data && result.data.message) {
 
             Alert.error(result.data.message, {
@@ -229,7 +225,6 @@ class App extends Component {
     }
     profileView() {
         //const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
-        console.log('20190804 profile view', localStorage, localStorage.PROJECT_INIT)
         if(!localStorage.PROJECT_INIT) return;
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store.userToken;

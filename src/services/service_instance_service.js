@@ -58,7 +58,6 @@ export function getAppinstHealth(resource, callback) {
                 serviceId: Math.round(Math.random()*10000)
             }))
                 .then(function (response) {
-                    console.log('20190729 getAppinstHealth ---- response..', response)
                     resResults = resResults.concat(FormatMonitorApp(response))
 
                 })
@@ -76,7 +75,6 @@ export function getAppinstHealth(resource, callback) {
         })
     )
         .then(axios.spread((resOne, resTwo, resThree) => {
-            console.log('20190729 axios all == ', resOne, resTwo, resThree, '  resResults=', resResults )
             callback(resResults)
         }))
 
@@ -93,7 +91,6 @@ export function getClusterHealth(resource, callback) {
                 serviceId: Math.round(Math.random()*10000)
             }))
                 .then(function (response) {
-                    console.log('20190730 getClusterHealth ---- response..', response)
                     resResults = resResults.concat(FormatMonitorCluster(response))
 
                 })
@@ -111,7 +108,6 @@ export function getClusterHealth(resource, callback) {
         })
     )
         .then(axios.spread((resOne, resTwo, resThree, resFour, resFive) => {
-            console.log('20190730 axios all == ',resOne, resTwo, resThree, resFour, resFive,  '  resResults=', resResults )
             callback(resResults)
         }))
 

@@ -176,13 +176,11 @@ export default class PageDetailViewer extends React.Component {
         console.log('changed layout = ', JSON.stringify(layout))
     }
     onChangeTab = (e, data) => {
-        console.log('20190730 change..'+data.activeIndex, 'e=',e);
         if(data.activeIndex === 1 && _self.state.page) {
             _self.getInstanceHealth(_self.state.page, _self.state.listData)
         }
     }
     generateDOM(open, dimmer, width, height, data, mData, keysData, hideHeader, region, page) {
-        console.log('20190730 generateDOM---- ', data)
 
         let panelParams = {data:data, mData:mData, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
 
@@ -207,7 +205,6 @@ export default class PageDetailViewer extends React.Component {
     }
     receiveInstanceInfo(result) {
         _self.setState({monitorData:result})
-        console.log('20190730 result of resource info ===---====---====---====', result)
         _self.forceUpdate()
     }
     getParams = (page, data, store) => (
@@ -362,7 +359,6 @@ export default class PageDetailViewer extends React.Component {
     */
 
     componentDidMount() {
-        console.log('20190729 detail info of data == ', this.props)
 
 
 
@@ -375,7 +371,6 @@ export default class PageDetailViewer extends React.Component {
             if(nextProps.data && !this.initData){
                 this.setState({listData:nextProps.data, page:nextProps.page})
                 //get info resource of app or cluster
-                console.log('20190802 detail info of data -- will recevive props == ', nextProps.data, nextProps.page)
                 if(nextProps.page) this.getInstanceHealth( nextProps.page, nextProps.data)
 
                 this.initData = true;

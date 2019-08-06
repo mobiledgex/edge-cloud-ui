@@ -148,7 +148,6 @@ class AnalysticViewZone extends React.Component {
             });
         }
 
-        console.log('20190719 resize event..', this.props)
     };
     generateDOM(_applications) {
 
@@ -183,7 +182,6 @@ class AnalysticViewZone extends React.Component {
     }
     receiveClusterInfo(result) {
         //_self.setState({listData:result})
-        console.log('20190719 result of cluster---', result)
     }
 
 
@@ -258,7 +256,6 @@ class AnalysticViewZone extends React.Component {
         }
     )
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('20190729 will receive props -- ', nextProps.clusterInstData)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(nextProps.clusterInstData && nextProps.clusterInstData.length) {
             nextProps.clusterInstData.map((cluster) => {
@@ -280,7 +277,6 @@ class AnalysticViewZone extends React.Component {
         let newHOne = Math.round(divideH*(2/3) - 1.5);
         let newHTwo = Math.round(divideH*(1/3));
 
-        console.log('20190719 resize layout === ', width, height, newHOne, newHTwo)
         let resizeLayout = [
             {"w":6,"h":newHOne,"x":0,"y":0,"i":"0","moved":false,"static":false, "title":"Cluster Health"},
             {"w":6,"h":newHOne,"x":6,"y":0,"i":"1","moved":false,"static":false, "title":"Application Statistics"},

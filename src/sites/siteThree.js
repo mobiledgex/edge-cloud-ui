@@ -123,14 +123,12 @@ class SiteThree extends React.Component {
 
 
     receiveResultClusterInst(result) {
-        console.log('20190719 receive cluster inst..', result)
         if(result.length)_self.groupJoin(result,'clusterInst')
     }
 
 
     groupJoin(result,cmpt){
         let clinst = _self.state.clusterInstData;
-        console.log('20190719 data join siteTree...', clinst, "  :  ", _self.state.clusterInstData.concat(result) )
         if(cmpt == 'clusterInst') this.setState({clusterInstData:_self.state.clusterInstData.concat(result)})
         this.props.handleLoadingSpinner(false);
 

@@ -105,14 +105,12 @@ class CPUMEMListView extends React.PureComponent {
         })
         this.setState({listCluster: this.props.clusters})
         if(this.props.listData) {
-            console.log('20190719 has listdata ---- ', this.props.listData)
             this.setState({listData:this.props.listData})
         } else {
             this.setState({listData:listData})
         }
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('20190719 will receive props in cpumem   ', nextProps.listData)
         let list = [];
         if(nextProps.listData.length) {
             nextProps.listData.map((data,i) => {

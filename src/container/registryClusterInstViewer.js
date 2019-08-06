@@ -154,7 +154,6 @@ class RegistryClusterInstViewer extends React.Component {
 
 
     generateDOM(open, dimmer, width, height, data, keysData, hideHeader, region) {
-        console.log('20190724 generateDOM---- ', height)
 
         let panelParams = {data:data, keys:keysData, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
 
