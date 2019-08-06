@@ -324,7 +324,7 @@ class MapWithListView extends React.Component {
             let fromNow = moment(formatDate).utc().startOf('day').fromNow();
             console.log('from now. ', fromNow)
             darray = fromNow.split(' ')
-            if(parseInt(darray[0]) <= 1 || fromNow === 'a day ago') isNew = true;
+            if(fromNow.indexOf('hours') > -1 && (parseInt(darray[0]) <= 24 || fromNow === 'a day ago') ) isNew = true;
             console.log('is new... ', 'date=', formatDate, 'isNew =',isNew, parseInt(darray[0]))
         } else {
 

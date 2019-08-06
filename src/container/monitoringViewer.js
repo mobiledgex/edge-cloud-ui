@@ -195,8 +195,8 @@ export default class MonitoringViewer extends React.Component {
                                     <Header>
                                         TCP
                                     </Header>
-                                    <Container>{JSON.stringify(this.state.lastTCP[0])+' RCV'}</Container>
-                                    <Container>{JSON.stringify(this.state.lastTCP[1])+' SND'}</Container>
+                                    <Container>{JSON.stringify(this.state.lastTCP[0])+' TcpRetrans'}</Container>
+                                    <Container>{JSON.stringify(this.state.lastTCP[1])+' ConnsEst'}</Container>
                                 </Segment>
                             :
                             null
@@ -207,8 +207,8 @@ export default class MonitoringViewer extends React.Component {
                                     <Header>
                                         UDP
                                     </Header>
-                                    <Container>{JSON.stringify(this.state.lastUDP[0])+' RCV'}</Container>
-                                    <Container>{JSON.stringify(this.state.lastUDP[1])+' SND'}</Container>
+                                    <Container>{JSON.stringify(this.state.lastUDP[0])+' TcpRetrans'}</Container>
+                                    <Container>{JSON.stringify(this.state.lastUDP[1])+' ConnsEst'}</Container>
                                 </Segment>
                             :
                             null
