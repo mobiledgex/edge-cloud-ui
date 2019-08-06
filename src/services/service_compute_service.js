@@ -182,7 +182,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
         }
         filterData[itemCloudlet].map((items) => {
             multiData.ClusterInst.map((itemCluster) => {
-                if(items.ClusterName == itemCluster || itemCluster == '' || itemCluster.indexOf('autocluster') > -1){
+                if(items.CloudletName || itemCluster == '' || itemCluster.indexOf('autocluster') > -1){
                     return axios.post('https://'+hostname+':3030/CreateAppInst',qs.stringify({
                         service: resource,
                         serviceBody:body,
@@ -191,7 +191,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
                         multiCluster:itemCluster
                     }))
                         .then(function (response) {
-                            console.log('response  registry new obj result-',response);
+                            console.log('response  registry new obj result AppInst-',response.data);
                             callback(response, body)
                         })
                         .catch(function (error) {
@@ -282,6 +282,7 @@ export function createNewMultiClusterInst(resource, body, callback, multiData) {
     axios.all(multiData.map((item) => {
         //console.log("itemneuemulit",item,body)
         //body.params.clusterinst.key.cloudlet_key.name = item
+        console.log("clusterCreate@111")
         return axios.post('https://'+hostname+':3030/CreateClusterInst',{
             service: resource,
             serviceBody:body,
