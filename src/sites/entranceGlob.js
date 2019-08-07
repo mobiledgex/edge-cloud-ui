@@ -245,7 +245,7 @@ class EntranceGlobe extends Component {
                             />
                         </div>
                         <div style={{ position:'absolute', bottom:'40px', width:'100%', display:'flex', justifyContent:'center' }}>
-                            <img src="../assets/brand/MobiledgeX_skt_2.svg" />
+                            <img src="../assets/brand/MobiledgeX_skt_2.svg" style={{ width:'300px', height:'50px' }} />
                         </div>
                     </div>
                     :
