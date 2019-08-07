@@ -127,12 +127,12 @@ class SiteFour extends React.Component {
             {label:'Users', icon:'dvr', pg:1}
         ]
         this.menuItems = [
-            {label:'Cloudlets', icon:'cloud_queue', id:'CloudletLeftMenuItem', pg:2},
-            {label:'Flavor', icon:'free_breakfast', id:'FlavorLeftMenuItem', pg:3},
+            {label:'Cloudlets', icon:'cloud_queue', pg:2},
+            {label:'Flavor', icon:'free_breakfast', pg:3},
             {label:'Cluster Flavor', icon:'developer_board', pg:4},
-            {label:'Cluster Instances', icon:'storage', id:'ClusterInstLeftMenuItem', pg:5},
-            {label:'Apps', icon:'apps', id:'AppsLeftMenuItem', pg:6},
-            {label:'App Instances', icon:'storage', id:'AppInstLeftMenuItem', pg:7}
+            {label:'Cluster Instances', icon:'storage', pg:5},
+            {label:'Apps', icon:'apps', pg:6},
+            {label:'App Instances', icon:'storage', pg:7}
         ]
         this.auth_three = [this.menuItems[0], this.menuItems[1], this.menuItems[2]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_default = [{label:'Organization', icon:'people', pg:0}]
