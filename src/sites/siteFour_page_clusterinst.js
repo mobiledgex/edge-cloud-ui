@@ -145,23 +145,36 @@ class SiteFourPageClusterInst extends React.Component {
         // if(rgn.length*2 == this.loadCount){
         //     _self.countJoin()
         // }
-        console.log("sssssdgdfdfdf",rg,_self.countObject[rg])
-        if(_self.countObject[rg].length == 2){
-            _self.countJoin()
+        try{
+            console.log("sssssdgdfdfdf",rg,_self.countObject[rg])
+            if(_self.countObject[rg].length == 2){
+                _self.countJoin()
+            }
+        } catch(e) {
+            alert('Network unstable, Try again')
         }
+
 
     }
     countJoin() {
         let clusterInst = this.clusterInstDummy;
         let cloudlet = this.cloudletDummy;
-        clusterInst.map((itemCinst,i) => {
-            cloudlet.map((itemClet,j) => {
-                if(itemCinst.Cloudlet === itemClet.CloudletName) {
-                    itemCinst.CloudletLocation = itemClet.CloudletLocation;
-                }
-            })
-        })
-        _self.setState({devData:clusterInst})
+        if(clusterInst && clusterInst.length) {
+            try{
+                clusterInst.map((itemCinst,i) => {
+                    cloudlet.map((itemClet,j) => {
+                        if(itemCinst.Cloudlet === itemClet.CloudletName) {
+                            itemCinst.CloudletLocation = itemClet.CloudletLocation;
+                        }
+                    })
+                })
+                _self.setState({devData:clusterInst})
+            } catch(e) {
+
+            }
+
+        }
+
 
     }
     
