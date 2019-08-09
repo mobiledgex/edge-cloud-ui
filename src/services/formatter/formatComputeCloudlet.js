@@ -59,7 +59,7 @@ let generateData = (datas,body) => {
 
         })
     } else {
-
+        values.push({Region:'',CloudletLocation:''})
     }
 
 

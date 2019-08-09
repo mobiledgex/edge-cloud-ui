@@ -120,8 +120,8 @@ exports.currentUser = (req, res) => {
         })
         .catch(function (error) {
 
-            console.log('error......',Object.keys(error), error.response.data);
-            res.json(error.response.data)
+            console.log('error......');
+            res.json({message:'Certificated has expired'})
         });
 }
 exports.showAccounts = (req, res) => {

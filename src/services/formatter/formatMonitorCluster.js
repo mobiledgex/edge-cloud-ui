@@ -81,7 +81,7 @@
 
  */
 
-
+import * as d3 from 'd3';
 import * as moment from 'moment';
 let trimData = (datas) => {
     let newData = datas.splice(0,1);
@@ -94,7 +94,9 @@ const numberDes =(a,b)=> (
     b-a
 )
 
-
+const formatDigit = (dNum, value) => (
+    d3.format(dNum)(value)
+)
 /*
 {alarm:'3', dName:'Cluster-A', values:{cpu:35, mem:55, sys:33}}
  */
@@ -118,12 +120,12 @@ let generateData = (datas) => {
                     alarm:infoData[2],
                     dName:infoData[1],
                     values:{
-                        time:moment(item[0]).utc().local().format(),
+                        time:moment(item[0]).utc().format(),
                         cluster:infoData[2],
                         cmsn:
-                            (_name.indexOf('cpu') > -1)?infoData[3] :
-                                (_name.indexOf('mem') > -1)? infoData[4] :
-                                (_name.indexOf('disk') > -1)? infoData[4] :
+                            (_name.indexOf('cpu') > -1)? formatDigit('.2f',infoData[3]) :
+                                (_name.indexOf('mem') > -1)? formatDigit('.2f',infoData[4]) :
+                                (_name.indexOf('disk') > -1)? formatDigit('.2f',infoData[4]) :
                                     (_name.indexOf('network') > -1)? [infoData[5],infoData[6]] :
                                     (_name.indexOf('tcp') > -1)? [infoData[5],infoData[6]] :
                                     (_name.indexOf('udp') > -1)? [infoData[5],infoData[7],infoData[6]] : [infoData[6],infoData[7]]

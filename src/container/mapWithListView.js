@@ -309,6 +309,7 @@ class MapWithListView extends React.Component {
     setAlertRefresh = () => {
         this.props.dataRefresh();
         Alert.closeAll();
+        this.props.handleAlertInfo('success','Your cluster instance created successfully')
     }
     makeUTC = (time) => (
         moment.unix( time.replace('seconds : ', '') ).utc().format('YYYY-MM-DD HH:mm:ss')
@@ -606,8 +607,8 @@ const mapDispatchProps = (dispatch) => {
         handleDetail: (data) => { dispatch(actions.changeDetail(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleRefreshData: (data) => { dispatch(actions.refreshData(data))},
-        handleSetHeader: (data) => { dispatch(actions.tableHeaders(data))}
-
+        handleSetHeader: (data) => { dispatch(actions.tableHeaders(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 

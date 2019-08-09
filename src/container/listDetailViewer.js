@@ -4,7 +4,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import * as moment from 'moment';
 
 let _self = null;
-export default class PopDetailViewer extends React.Component {
+export default class ListDetailViewer extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -42,9 +42,7 @@ export default class PopDetailViewer extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('regist new item -- ', nextProps)
-        if(nextProps.open) {
-            this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
+
             let regKeys = [];
             let component = null;
             if(nextProps.data){
@@ -90,7 +88,7 @@ export default class PopDetailViewer extends React.Component {
                         :null
 
                 ))
-            }
+
             this.setState({listOfDetail:component,propsData:nextProps.data})
         }
 
@@ -117,11 +115,9 @@ export default class PopDetailViewer extends React.Component {
     render() {
 
         return (
-            <Modal size={'small'} open={this.state.open} dimmer={false}>
-                <Modal.Header >View Detail</Modal.Header>
-                <Modal.Content>
-                    <Modal.Description>
-                        <Grid divided style={{overflowY:'scroll'}}>
+
+                    <div className="apps_detail">
+                        <Grid divided>
                             {
                                 this.state.listOfDetail
                             }
@@ -162,14 +158,8 @@ export default class PopDetailViewer extends React.Component {
                             </Grid>
                             :null
                         }
-                    </Modal.Description>
-                </Modal.Content>
-                <Modal.Actions>
-                    <Button onClick={() => this.close()}>
-                        Close
-                    </Button>
-                </Modal.Actions>
-            </Modal>
+                    </div>
+
         )
     }
 }

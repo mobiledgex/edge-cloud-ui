@@ -306,9 +306,11 @@ class Login extends Component {
         } else if(nextProps.loginMode === 'resetPass'){
             this.setState({successCreate:false, loginMode:'resetPass', forgotMessage:false, forgotPass:false});
         } else if(nextProps.loginMode === 'signuped' && nextProps.createSuccess){
+            console.log('20190809 signuped usrinfo.. ', nextProps.userInfo)
+            let email = nextProps.userInfo && nextProps.userInfo.email;
             let msgTxt = `Thank you for signing up. Please verify your account.
                             In order to login to your account, you must verify your account. 
-                            An email has been sent to xxxx.com with a link to verify your account. 
+                            An email has been sent to ${email} with a link to verify your account. 
                             If you have not received the email after a few minutes check your spam folder or resend the verification email.`
             this.setState({successCreate:true, loginMode:'signuped', successMsg:'Account created', resultMsg:msgTxt})
         }
@@ -350,11 +352,11 @@ class Login extends Component {
                 effect: 'slide',
                 timeout: 5000
             });
-            self.props.handleCreateAccount(true)
+            self.props.handleCreateAccount({success:true, info:resource})
         } else {
             self.setState({successCreate:false, errorCreate:false, signup:false})
             self.forceUpdate();
-            self.props.handleCreateAccount(false)
+            self.props.handleCreateAccount({success:false, info:resource})
             Alert.error(message, {
                 position: 'top-right',
                 effect: 'slide',
@@ -606,12 +608,14 @@ class Login extends Component {
 const mapStateToProps = state => {
                                 let profile = state.form.profile ? state.form.profile : null;
                                 let loginmode = state.loginMode ? state.loginMode : null;
-                                let createSuccess = state.createAccount ? state.createAccount.created : null;
+                                let createSuccess = state.createAccount ? state.createAccount.created.success : null;
+                                let userInfo = state.createAccount ? state.createAccount.created.info : null;
     return {
             values: profile ? profile.values : null,
             submitSucceeded: profile ? profile.submitSucceeded : null,
             loginMode: loginmode ? loginmode.mode : null,
-            createSuccess : createSuccess
+            createSuccess : createSuccess,
+            userInfo: userInfo
         }
 };
 

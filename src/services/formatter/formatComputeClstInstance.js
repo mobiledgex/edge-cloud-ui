@@ -88,6 +88,7 @@ let generateData = (datas,body) => {
             }
         })
     } else {
+        values.push({Region:''})
         //values.push({Region:'', ClusterName:'', OrganizationName:'', Operator:'', Cloudlet:'', Flavor:'', IpAccess:'', CloudletLocation:'', State:'', Progress:'', Status:'', Edit:newRegistKey})
     }
 

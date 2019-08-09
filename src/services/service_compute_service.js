@@ -180,30 +180,37 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
         if(multiData.AutoClusterInst) {
             multiData.ClusterInst = ['autocluster' + multiData.AppName.replace(/(\s*)/g, "")];
         }
-        filterData[itemCloudlet].map((items) => {
-            multiData.ClusterInst.map((itemCluster) => {
-                if(items.CloudletName || itemCluster == '' || itemCluster.indexOf('autocluster') > -1){
-                    return axios.post('https://'+hostname+':3030/CreateAppInst',qs.stringify({
-                        service: resource,
-                        serviceBody:body,
-                        serviceDomain:serviceDomain,
-                        multiCloudlet:itemCloudlet,
-                        multiCluster:itemCluster
-                    }))
-                        .then(function (response) {
-                            console.log('response  registry new obj result AppInst-',response.data);
-                            callback(response, body)
-                        })
-                        .catch(function (error) {
-                            console.log("appinsterror",error);
-                        });
+        
+        if(filterData[itemCloudlet] && filterData[itemCloudlet].length > 0){
+            filterData[itemCloudlet].map((items) => {
+                multiData.ClusterInst.map((itemCluster) => {
+                    if(items.ClusterName == itemCluster || itemCluster == '' || itemCluster.indexOf('autocluster') > -1){
+                        return axios.post('https://'+hostname+':3030/CreateAppInst',qs.stringify({
+                            service: resource,
+                            serviceBody:body,
+                            serviceDomain:serviceDomain,
+                            multiCloudlet:itemCloudlet,
+                            multiCluster:itemCluster
+                        }))
+                            .then(function (response) {
+                                console.log('response  registry new obj result AppInst-',response.data);
+                                callback(response, body)
+                            })
+                            .catch(function (error) {
+                                console.log("appinsterror",error);
+                            });
+                    }
+                })
+                console.log("nullcluste!!@RR!",multiData.ClusterInst)
+                if(String(multiData.ClusterInst[0]).indexOf('autocluster') > -1 || multiData.ClusterInst[0] == ""){
+                    multiData.ClusterInst = [];
                 }
             })
-            console.log("nullcluste!!@RR!",multiData.ClusterInst)
-            if(String(multiData.ClusterInst[0]).indexOf('autocluster') > -1 || multiData.ClusterInst[0] == ""){
-                multiData.ClusterInst = [];
-            }
-        }) 
+        }
+
+
+        
+
     }))    
 }
 export function deleteCompute(resource, body, callback) {

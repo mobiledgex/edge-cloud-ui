@@ -89,7 +89,7 @@ class SiteFourPageOrganization extends React.Component {
         if(nextProps.computeRefresh.compute) {
             console.log('orgRefresh')
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            this.getDataDeveloper(store.userToken);
+            if(store.userToken) this.getDataDeveloper(store.userToken);
             this.props.handleComputeRefresh(false);
         }
 
@@ -99,6 +99,7 @@ class SiteFourPageOrganization extends React.Component {
 
         console.log("receive == ", result, resource, self)
         if(result.error) {
+            _self.setState({devData:[]})
             this.props.handleAlertInfo('error','There is no data')
             //setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
             // _self.gotoUrl('/site4', 'pg=newOrg')  /* CreatOrg 자동 연결... */

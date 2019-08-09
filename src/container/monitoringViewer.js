@@ -150,22 +150,22 @@ export default class MonitoringViewer extends React.Component {
 
     render() {
         return (
-            <Grid.Row style={{height:700, backgroundColor:'#282c33'}}>
+            <Grid.Row className="monitoring">
                 <Grid.Column>
                     <div className='wrapperPercentage'>
-                        <Segment className="childPercentage" inverted color='red'>
+                        <Segment className="childPercentage" inverted>
                             <Header>
                                 CPU
                             </Header>
-                            <Container>{this.state.lastCPU + '%'}</Container>
+                            <Container className="cpu">{this.state.lastCPU + '%'}</Container>
                         </Segment>
-                        <Segment className="childPercentage" inverted color='orange'>
+                        <Segment className="childPercentage" inverted>
                             <Header>
                                 MEMORY
                             </Header>
-                            <Container>
+                            <Container className="memory">
                                 {
-                                    this.state.lastMEM + '%'
+                                    (this.props.data.page !== 'appInst')?this.state.lastMEM+'%':this.bytesToString(this.state.lastMEM*100000)
                                 }
 
                             </Container>
@@ -173,42 +173,66 @@ export default class MonitoringViewer extends React.Component {
 
                         {
                             (this.props.data.page !== 'appInst')?
-                                <Segment className="childPercentage" inverted color='yellow'>
+                                <Segment className="childPercentage" inverted>
                                     <Header>
                                         DISK
                                     </Header>
-                                    <Container>{this.state.lastDISK + '%'}</Container>
+                                    <Container className="disk">{this.state.lastDISK + '%'}</Container>
                                 </Segment>
                                 :
                                 null
                         }
-                        <Segment className="childPercentage" inverted color='purple'>
+                        <Segment className="childPercentage" inverted>
                             <Header>
                                 NETWORK
                             </Header>
-                            <Container>{JSON.stringify(this.state.lastNET[0])+' RCV'}</Container>
-                            <Container>{JSON.stringify(this.state.lastNET[1])+' SND'}</Container>
+                            <div className="content">
+                                <Container className="network_rcv">
+                                    <div className="title">RCV</div>
+                                    {this.bytesToString(this.state.lastNET[0])}
+                                </Container>
+                                <Container className="network_snd">
+                                    <div className="title">SND</div>
+                                    {this.bytesToString(this.state.lastNET[1])}
+                                </Container>
+                            </div>
                         </Segment>
                         {
                             (this.props.data.page !== 'appInst')?
-                                <Segment className="childPercentage" inverted color='olive'>
+                                <Segment className="childPercentage" inverted>
                                     <Header>
                                         TCP
                                     </Header>
-                                    <Container>{JSON.stringify(this.state.lastTCP[0])+' TcpRetrans'}</Container>
-                                    <Container>{JSON.stringify(this.state.lastTCP[1])+' ConnsEst'}</Container>
+                                    <div className="content">
+                                        <Container className="tcp_tcpretrans">
+                                            <div className="title">TcpRetrans</div>
+                                            {d3.format('.2s')(this.state.lastTCP[0])}
+                                        </Container>
+                                        <Container className="tcp_connsest">
+                                            <div className="title">ConnsEst</div>
+                                            {d3.format('.2s')(this.state.lastTCP[1])}
+                                        </Container>
+                                    </div>
                                 </Segment>
                             :
                             null
                         }
                         {
                             (this.props.data.page !== 'appInst')?
-                                <Segment className="childPercentage" inverted color='green'>
+                                <Segment className="childPercentage" inverted>
                                     <Header>
                                         UDP
                                     </Header>
-                                    <Container>{JSON.stringify(this.state.lastUDP[0])+' TcpRetrans'}</Container>
-                                    <Container>{JSON.stringify(this.state.lastUDP[1])+' ConnsEst'}</Container>
+                                    <div className="content">
+                                        <Container className="udp_tcpretrans">
+                                            <div className="title">TcpRetrans</div>
+                                            {d3.format('.2s')(this.state.lastUDP[0])}
+                                        </Container>
+                                        <Container className="est_connsest">
+                                            <div className="title">ConnsEst</div>
+                                            {d3.format('.2s')(this.state.lastUDP[1])}
+                                        </Container>
+                                    </div>
                                 </Segment>
                             :
                             null
@@ -216,7 +240,7 @@ export default class MonitoringViewer extends React.Component {
 
                     </div>
                 </Grid.Column>
-                <Grid.Column style={{height:400}}>
+                <Grid.Column style={{width:'100%', height:400}}>
                     <Header>CPU & MEMORY</Header>
                     <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} margin={10} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                     {

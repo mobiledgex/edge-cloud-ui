@@ -202,7 +202,7 @@ class RegistryClusterInstViewer extends React.Component {
 
         let paseData = result.data;
         if(paseData.error && !this.state.errorClose) {
-            this.setState({clusterInstCreate:false})
+            //this.setState({clusterInstCreate:false})
             this.props.handleLoadingSpinner(false);
             if(paseData.error == 'Key already exists'){
                 
@@ -285,11 +285,9 @@ class RegistryClusterInstViewer extends React.Component {
                 this.props.handleLoadingSpinner(true);                
                 service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit, nextProps.validateValue.Cloudlet)
                 setTimeout(() => {
-                    if(this.state.clusterInstCreate){
-                        this.props.handleLoadingSpinner(false);
-                        this.props.gotoUrl();
-                        this.setState({errorClose:true})
-                    }
+                    this.props.handleLoadingSpinner(false);
+                    this.props.gotoUrl();
+                    this.setState({errorClose:true})
                 }, 3000)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})

@@ -187,10 +187,10 @@ export default class PageDetailViewer extends React.Component {
         return layout.map((item, i) => (
 
             (i === 0)?
-                <div className="round_panel" key={i} style={{ width:width, minWidth:670, display:'flex', flexGrow:1, flexShrink:1, flexBasis:'auto', flexDirection:'column'}} >
+                <div className="round_panel" key={i} style={{ width:width, minWidth:670, height: 'calc(100% - 36px)', display:'flex', padding:'0'}} >
 
-                    <div className="grid_table tabs" style={{width:'100%', overflowY:'auto', overflowX:'hidden'}}>
-                        <Tab style={{backgroundColor:'transparent'}} menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab}/>
+                    <div className="grid_table tabs" style={{width:'100%'}}>
+                        <Tab style={{backgroundColor:'transparent', height:'100%'}} menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab}/>
                     </div>
                 </div>
                 :
@@ -214,7 +214,7 @@ export default class PageDetailViewer extends React.Component {
     )
     getInstanceHealth (page, data) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
-        (page === 'appInst')  ?
+        (page === 'appInst' && store.userToken)  ?
         serviceInstance.getAppinstHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
         serviceInstance.getClusterHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo)
     }
@@ -423,7 +423,7 @@ export default class PageDetailViewer extends React.Component {
             <ContainerDimensions>
                 { ({ width, height }) =>
                     <div style={{width:width, height:height-20, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
-                        <ReactGridLayout
+                        <Container
                             draggableHandle
                             layout={this.state.layout}
                             onLayoutChange={this.onLayoutChange}
@@ -431,7 +431,7 @@ export default class PageDetailViewer extends React.Component {
                             style={{width:width, height:height-20, overflowY:'visible'}}
                         >
                             {this.generateDOM(open, dimmer, width, height, listData, monitorData, this.state.keysData, hiddenKeys, this.props.region, this.props.page)}
-                        </ReactGridLayout>
+                        </Container>
                     </div>
                 }
             </ContainerDimensions>

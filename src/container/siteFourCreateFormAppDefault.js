@@ -165,6 +165,10 @@ class SiteFourCreateFormAppDefault extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        portNum = 0;
+    }
+
     componentWillReceiveProps(nextProps) {
         console.log("SiteFourCreateFormAppDefault22 --> ",this.state.portArray)
         if(nextProps.data && nextProps.data.data.length){

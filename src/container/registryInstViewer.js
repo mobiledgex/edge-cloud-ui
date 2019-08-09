@@ -143,12 +143,12 @@ class RegistryInstViewer extends React.Component {
 
         } else {
             let operatorGroup = reducer.groupBy(result, 'Operator')
-            let cloudletGroup = reducer.groupBy(result, 'CloudletName')
-            console.log('submit receiveResultCloudlet 1...', cloudletGroup)
+            //let cloudletGroup = reducer.groupBy(result, 'CloudletName')
+            //console.log('submit receiveResultCloudlet 1...', cloudletGroup)
             let keys = Object.keys(operatorGroup);
             let assObj = Object.assign([], this.state.keysData);
             assObj[0].Operator.items = keys;
-            this.setState({keysData:assObj, operators:operatorGroup, cloudlets:cloudletGroup})
+            this.setState({keysData:assObj, operators:operatorGroup})
         }
         // set list of operators
         if(this.props.devData.length > 0) {
@@ -176,13 +176,13 @@ class RegistryInstViewer extends React.Component {
             this.props.handleAlertInfo('error',String(result.error))
         } else {
             let clinstGroup = reducer.groupBy(result, 'ClusterName')
-            //let cloudletGroup = reducer.groupBy(result, 'Cloudlet')
+            let cloudletGroup = reducer.groupBy(result, 'Cloudlet')
             //let operatorGroup = reducer.groupBy(result, 'Operator')
             //console.log('submit receiveResultCloudlet 1...', operatorGroup)
             //let keys = Object.keys(operatorGroup);
             //let assObj = Object.assign([], this.state.keysData);
             //assObj[0].Operator.items = keys;
-            this.setState({ clustinst:clinstGroup})
+            this.setState({ clustinst:clinstGroup, cloudlets:cloudletGroup})
         }
 
         // set list of operators
@@ -302,6 +302,7 @@ class RegistryInstViewer extends React.Component {
         let assObj = Object.assign([], this.state.fakeData);
         //assObj[0].DeveloperName = localStorage.selectOrg;
         if(Object.keys(this.props.appLaunch).length > 0) {
+            assObj[0].Region = this.props.appLaunch.Region;
             assObj[0].AppName = this.props.appLaunch.AppName;
             assObj[0].Version = this.props.appLaunch.Version;
             assObj[0].DeveloperName = this.props.appLaunch.OrganizationName;

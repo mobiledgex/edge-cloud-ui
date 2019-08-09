@@ -29,7 +29,7 @@ var layout = [
 ]
 let _self = null;
 
-class DeveloperListView extends React.Component {
+class InsideListView extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -253,11 +253,12 @@ class DeveloperListView extends React.Component {
     }
     detailView(item) {
         console.log("user >>>> ",item)
-        if(!item['Username']){
-            this.setState({detailViewData:item, openDetail:true})
-        } else {
-            this.setState({detailViewData:item, openUser:true})
-        }
+        // if(!item['Username']){
+        //     this.setState({detailViewData:item, openDetail:true})
+        // } else {
+        //     this.setState({detailViewData:item, openUser:true})
+        // }
+        _self.props.handleDetail({data:item, viewMode:'detailView'})
     }
     roleMark = (role) => (
         (role.indexOf('Admin')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markA markS">S</div> :
@@ -389,7 +390,7 @@ class DeveloperListView extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('nextProps@@3',nextProps,this.props.siteId)
+        console.log('20190808 developerListViewe nextProps@@3',nextProps,this.props.siteId,'rndid =', nextProps.randomId)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -484,9 +485,10 @@ const mapDispatchProps = (dispatch) => {
         handleRefreshData: (data) => { dispatch(actions.refreshData(data))},
         handleAppLaunch: (data) => { dispatch(actions.appLaunch(data))},
         handleChangeComputeItem: (data) => { dispatch(actions.computeItem(data))},
+        handleDetail: (data) => { dispatch(actions.changeDetail(data))},
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(DeveloperListView));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(InsideListView));
 
 

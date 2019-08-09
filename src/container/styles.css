@@ -252,7 +252,7 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
  }
 
 
-/* clusterInst chart *//
+/* clusterInst chart */
 .chart-tab{
     margin:0;
     justify-content:center;
@@ -270,18 +270,145 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
 /* cluster inst detail viewer*/
 .wrapperPercentage {
     display: flex;
-    justify-content: space-around;
     flex-direction: row;
-    align-items: center;
-    margin:5px;
+    margin: 20px 0;
 }
 .childPercentage {
-    width: 250px;
-    padding:10px;
-    align-items: center;
-    justify-content: center;
+    display: flex;
+    flex-grow: 1;
+    flex-basis: 100%;
+    flex-direction: column;
+    height: 130px;
+    margin: 0 20px 0 0 !important;
+    border: 1px solid #4b4d52 !important;
+    background: #292c33 !important;
+    padding: 5px 10px !important;
 }
-.childPercentage {
-    height:105px;
-    margin-top: 14px !important;
+.childPercentage:last-child {
+    margin: 0 !important;
+}
+.childPercentage .ui.header {
+    display: flex;
+    /* flex-grow: 1; */
+    color: #d4d5d8 !important;
+    margin: 5px 0 0 0;
+    font-size: 20px;
+}
+.childPercentage .ui.container {
+    width: unset;
+}
+.childPercentage .ui.container .content {
+    display: flex;
+    flex-direction: column;
+}
+.childPercentage .ui.container.cpu {
+    color: #dfcf18;
+    font-size: 24px;
+    margin: 5px 0 0 0 !important;
+    display: flex;
+    flex-grow: 1;
+    /* justify-content: flex-end;
+    align-items: center; */
+}
+.childPercentage .ui.container.memory {
+    color: #18c1df;
+    font-size: 24px;
+    margin: 5px 0 0 0 !important;
+    display: flex;
+    flex-grow: 1;
+    /* justify-content: flex-end;
+    align-items: center; */
+}
+.childPercentage .ui.container.disk {
+    color: #df8418;
+    font-size: 24px;
+    margin: 5px 0 0 0 !important;
+    display: flex;
+    flex-grow: 1;
+    /* justify-content: flex-end;
+    align-items: center; */
+}
+.childPercentage .content {
+    /* margin: 0 0 0 10px !important; */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+}
+.childPercentage .content .ui.container.network_rcv {
+    color: #18dfca;
+    font-size: 24px;
+    margin: 5px 0 0 0 !important;
+    display: flex;
+    flex-direction: column;
+    /* align-items: flex-end; */
+    width: 100%;
+}
+.childPercentage .content .ui.container.network_rcv .title {
+    color: #d4d5d8;
+    font-size: 14px;
+}
+.childPercentage .content .ui.container.network_snd {
+    color: #dd014f;
+    font-size: 24px;
+    display: flex;
+    flex-direction: column;
+    /* align-items: flex-end; */
+    width: 100%;
+}
+.childPercentage .content .ui.container.network_snd .title {
+    color: #d4d5d8;
+    font-size: 14px;
+}
+.childPercentage .content .ui.container.tcp_tcpretrans {
+    color: #0036ff;
+    font-size: 24px;
+    margin: 5px 0 0 0 !important;
+    display: flex;
+    flex-direction: column;
+    /* align-items: flex-end; */
+    width: 100%;
+}
+.childPercentage .content .ui.container.tcp_tcpretrans .title {
+    color: #d4d5d8;
+    font-size: 14px;
+}
+.childPercentage .content .ui.container.tcp_connsest {
+    color: #8a00ff;
+    font-size: 24px;
+    margin: 5px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    /* align-items: flex-end; */
+    width: 100%;
+}
+.childPercentage .content .ui.container.tcp_connsest .title {
+    color: #d4d5d8;
+    font-size: 14px;
+}
+.childPercentage .content .ui.container.udp_tcpretrans {
+    color: #aedf18;
+    font-size: 24px;
+    margin: 5px 0 0 0 !important;
+    display: flex;
+    flex-direction: column;
+    /* align-items: flex-end; */
+    width: 100%;
+}
+.childPercentage .content .ui.container.udp_tcpretrans .title {
+    color: #d4d5d8;
+    font-size: 14px;
+}
+.childPercentage .content .ui.container.est_connsest {
+    color: #ff00ba;
+    font-size: 24px;
+    margin: 5px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    /* align-items: flex-end; */
+    width: 100%;
+}
+.childPercentage .content .ui.container.est_connsest .title {
+    color: #d4d5d8;
+    font-size: 14px;
 }

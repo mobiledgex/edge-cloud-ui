@@ -384,13 +384,13 @@ class RegistryViewer extends React.Component {
                     (selectType == 'Qcow') ? 'ImageTypeQcow' : 
                     selectType;
             if(nextProps.formApps.values.OrganizationName){
-                ImagePath = ImagePath.replace('OrganizationName',nextProps.formApps.values.OrganizationName)
+                ImagePath = ImagePath.replace('OrganizationName',nextProps.formApps.values.OrganizationName.toLowerCase())
             }
             if(nextProps.formApps.values.AppName) {
-                ImagePath = ImagePath.replace('AppName',nextProps.formApps.values.AppName)
+                ImagePath = ImagePath.replace('AppName', nextProps.formApps.values.AppName.toLowerCase())
             }
             if(nextProps.formApps.values.Version) {
-                ImagePath = ImagePath.replace('AppVersion',nextProps.formApps.values.Version)
+                ImagePath = ImagePath.replace('AppVersion',nextProps.formApps.values.Version.toLowerCase())
             }
             assObj[0].ImagePath.items = ImagePath;
             submitImgPath = ImagePath;

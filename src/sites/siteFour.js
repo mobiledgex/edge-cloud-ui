@@ -504,7 +504,7 @@ class SiteFour extends React.Component {
         this.props.handleComputeRefresh(true)
     }
     disableBtn = () => {
-        const menuArr = ['Organization','Users','Cloudlets','Flavors','Cluster Instances','Apps','App Instances']
+        const menuArr = ['Organization','User Roles','Cloudlets','Flavors','Cluster Instances','Apps','App Instances']
         this.auth_list.map((item,i) => {
             if(item.role == localStorage.selectRole) {
                 item.view.map((item) => {
