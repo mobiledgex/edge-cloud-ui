@@ -142,12 +142,13 @@ body, button, input, textarea, optgroup, select, textarea,
      background: none;
  }
 
-.grid_table .ui.secondary.inverted.pointing.menu{
-    background-color: #292c33;
+.grid_table .ui.secondary.inverted.pointing.menu {
+    background-color: #181A21;
     border-bottom: 2px solid rgba(255,255,255,.125);
 }
 
-.grid_table .ui.secondary.inverted.pointing.menu .item.active{
+.grid_table .ui.secondary.inverted.pointing.menu .item.active {
+    background-color: #181A21 !important;
     border-bottom: 2px solid rgba(136,221,0,.9) !important;
     color: rgba(136,221,0,.9) !important;
 }
@@ -703,6 +704,14 @@ body, button, input, textarea, optgroup, select, textarea,
 .site_content_body .react-grid-layout.layout {
     overflow-y: hidden;
 }
+.site_content_body .apps_detail {
+    background-color: #292c33;
+    border-radius: 6px;
+    padding: 1.071em;
+    overflow: auto;
+    margin: 10px;
+    height: calc(100% - 76px);
+}
 .gnb_header {
     background-color: #3b3f47;
     height: 70px;
@@ -1106,12 +1115,27 @@ body, button, input, textarea, optgroup, select, textarea,
 .contents_body .grid_table.tabs .ui.attached.segment {
     border: none;
     padding: 0;
+    height: calc(100% - 42px);
+    width: 100%;
+    margin: 0;
+    overflow: auto;
+}
+.contents_body .grid_table.tabs .ui.attached.segment .monitoring {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 20px;
+}
+.contents_body .grid_table.tabs .ui.attached.segment .monitoring > .column:first-child {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
 }
 .contents_body .ui.table {
     background-color: #292c33 !important;
     color: rgba(255,255,255,.5);
     border-radius: 0;
     /* margin-top: 5px !important; */
+    height: 100%;
 }
 .contents_body .ui.table thead tr {
     box-shadow: 0 0.714em 1em 0 rgba(0,0,0,.1);

@@ -12,8 +12,7 @@ import * as services from '../services/service_compute_service';
 import './siteThree.css';
 import MapWithListView from "../container/mapWithListView";
 import Alert from "react-s-alert";
-import * as aggregate from "../utils";
-
+import * as reducer from '../utils'
 
 let _self = null;
 let rgn = ['US','KR','EU'];
@@ -127,38 +126,48 @@ class SiteFourPageClusterInst extends React.Component {
     }
 
     receiveResultClusterInst(result) {
-        _self.countObject[result[0]['Region']].push(result[0]['Region'])
+        console.log("resultresultresult",result)
+        //_self.countObject[result[0]['Region']].push(result[0]['Region'])
         _self.groupJoin(result,'clusterInst', result[0]['Region'])
     }
     receiveResultCloudlet(result) {
-        _self.countObject[result[0]['Region']].push(result[0]['Region'])
+        //_self.countObject[result[0]['Region']].push(result[0]['Region'])
         _self.groupJoin(result,'cloudlet', result[0]['Region'])
     }
 
     groupJoin(result,cmpt, rg){
+        let regionGroup = reducer.groupBy(result, 'Region');
+        
 
+        console.log("rgnrgnrgn",Object.keys(regionGroup)[0])
         this.props.handleLoadingSpinner(false);
-        if(cmpt == 'clusterInst') this.clusterInstDummy = _self.clusterInstDummy.concat(result)
-        else if(cmpt == 'cloudlet') this.cloudletDummy = _self.cloudletDummy.concat(result)
+        if(Object.keys(regionGroup)[0]) {
+            if(cmpt == 'clusterInst') this.clusterInstDummy = _self.clusterInstDummy.concat(result)
+            else if(cmpt == 'cloudlet') this.cloudletDummy = _self.cloudletDummy.concat(result)
+        }
 
         _self.loadCount ++;
-        // if(rgn.length*2 == this.loadCount){
-        //     _self.countJoin()
-        // }
-        try{
-            console.log("sssssdgdfdfdf",rg,_self.countObject[rg])
-            if(_self.countObject[rg].length == 2){
-                _self.countJoin()
-            }
-        } catch(e) {
-            alert('Network unstable, Try again')
+
+        console.log("loadCountloadCount",rgn.length*2,":::",this.loadCount)
+        if(rgn.length*2 == this.loadCount){
+            console.log("comedfdfdfdf")
+            _self.countJoin()
         }
+        // try{
+        //     console.log("sssssdgdfdfdf",rg,_self.countObject[rg])
+        //     if(_self.countObject[rg].length == 2){
+        //         _self.countJoin()
+        //     }
+        // } catch(e) {
+        //     alert('Network unstable, Try again')
+        // }
 
 
     }
     countJoin() {
         let clusterInst = this.clusterInstDummy;
         let cloudlet = this.cloudletDummy;
+        console.log("tttttdddd",clusterInst,":::",cloudlet)
         if(clusterInst && clusterInst.length) {
             try{
                 clusterInst.map((itemCinst,i) => {
@@ -196,9 +205,6 @@ class SiteFourPageClusterInst extends React.Component {
             rgn = ['US','KR','EU'];
         }
 
-        rgn.map((region) => {
-            this.countObject[region] = []
-        })
 
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {

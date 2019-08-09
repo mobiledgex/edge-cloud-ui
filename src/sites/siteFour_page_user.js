@@ -71,7 +71,7 @@ class SiteFourPageUser extends React.Component {
 
         if(nextProps.computeRefresh.compute) {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            this.getDataDeveloper(store.userToken);
+            if(store.userToken) this.getDataDeveloper(store.userToken);
             this.props.handleComputeRefresh(false);
         }
     }

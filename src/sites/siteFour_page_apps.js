@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
-import DeveloperListView from '../container/developerListView';
-import Alert from "react-s-alert";
+import InsideListView from '../container/insideListView';
+import ListDetailViewer from '../container/listDetailViewer';
 
 let _self = null;
 let rgn = ['US','KR','EU'];
@@ -22,7 +22,10 @@ class SiteFourPageApps extends React.Component {
             contWidth:0,
             bodyHeight:0,
             activeItem: 'Developers',
-            devData:[]
+            devData:[],
+            detailData:[],
+            viewMode:'listView',
+            randomId:0
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -68,7 +71,7 @@ class SiteFourPageApps extends React.Component {
         }
     }
     componentWillUnmount() {
-
+        this.setState({devData:[]})
     }
 
 
@@ -95,6 +98,21 @@ class SiteFourPageApps extends React.Component {
             this.getDataDeveloper(store.userToken,nextProps.region.value);
             this.props.handleComputeRefresh(false);
         }
+        console.log('20190808 listView=', nextProps.viewMode)
+        if(nextProps.viewMode) {
+            if(nextProps.viewMode === 'listView') {
+
+                console.log('20190808 viewmode..'+nextProps.viewMode,' : ', this.state.devData)
+                this.setState({viewMode:nextProps.viewMode});
+                setTimeout(() => this.setState({devData:this.state.devData, randomId:Math.random()*1000}), 300)
+            } else {
+                this.setState({detailData:nextProps.detailData})
+                this.forceUpdate()
+                setTimeout(() => this.setState({viewMode:nextProps.viewMode}), 600)
+            }
+
+        }
+        //setTimeout(() => this.forceUpdate(), 1100)
 
     }
     receiveResult = (result, region) => {
@@ -155,10 +173,12 @@ class SiteFourPageApps extends React.Component {
     }
 
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem } = this.state
+        const { viewMode, detailData, devData, randomId } = this.state;
         return (
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></DeveloperListView>
+            (viewMode === 'listView')?
+            <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} randomId={randomId} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
+                :
+                <ListDetailViewer data={detailData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} siteId={this.props.siteId}></ListDetailViewer>
         );
     }
 
@@ -177,12 +197,19 @@ const mapStateToProps = (state) => {
             value: state.changeRegion.region
         }
         : {};
+    let viewMode = null;
+    let detailData = null;
+    if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+        viewMode = state.changeViewMode.mode.viewMode;
+        detailData = state.changeViewMode.mode.data;
+    }
     return {
         receiveNewReg:registNew,
         region:region,
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
+        viewMode : viewMode, detailData:detailData,
     }
 };
 

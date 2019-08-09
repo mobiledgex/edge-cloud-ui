@@ -212,30 +212,20 @@ class EntranceGlobe extends Component {
                             </div>
                         </div>
                         }
-                        <Transition
-                            component={false} // don't use a wrapping component
-                            enter={{
-                                opacity: 1,
-                                translateY: spring(0, {stiffness: 400, damping: 10})
-                            }}
-                            leave={{
-                                opacity: 0,
-                                translateY: 250
-                            }}
-                        >
-                            { this.state.modalOpen &&
-                            <div className='intro_login'>
-                                <Login></Login>
-                            </div>
-                            }
-                            {!this.state.modalOpen &&
-                            <div className='intro_link'>
-                                <Button disabled key='0' onClick={() => this.goToNext('/site2')}>MobiledgeX Monitoring</Button>
-                                <Button key='1' onClick={() => this.goToNext('/site4')}>MobiledgeX Compute</Button>
-                            </div>
-                            }
 
-                        </Transition>
+                        { this.state.modalOpen &&
+                        <div className='intro_login'>
+                            <Login></Login>
+                        </div>
+                        }
+                        {!this.state.modalOpen &&
+                        <div className='intro_link'>
+                            <Button disabled key='0' onClick={() => this.goToNext('/site2')}>MobiledgeX Monitoring</Button>
+                            <Button key='1' onClick={() => this.goToNext('/site4')}>MobiledgeX Compute</Button>
+                        </div>
+                        }
+
+
                         <div className="loadingBox">
                             <GridLoader
                                 sizeUnit={"px"}

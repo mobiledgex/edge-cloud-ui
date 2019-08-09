@@ -49,13 +49,13 @@ class VerifyContent extends Component {
         //브라우져 입력창에 주소 기록
         let mainPath = site;
         let subPath = 'pg=0';
-        this.props.history.push({
+        _self.props.history.push({
             pathname: mainPath,
             search: subPath,
             state: { some: 'state' }
         });
-        this.props.history.location.search = subPath;
-        this.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     receiveData(result) {
