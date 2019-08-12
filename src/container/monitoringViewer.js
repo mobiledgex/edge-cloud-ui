@@ -89,6 +89,7 @@ export default class MonitoringViewer extends React.Component {
             this.state.mProp['timeseriesUDP'][0][this.udpCnt] = values['time'];
             this.udpCnt ++;
         }
+        console.log('20190812 lastMem..',this.state.mProp['timeseriesDataCPUMEM'],":",this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt-1])
         this.setState({props: this.state.mProp})
         this.setState({lastCPU: this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt-1]})
         this.setState({lastMEM: this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt-1]})
@@ -97,7 +98,8 @@ export default class MonitoringViewer extends React.Component {
         this.setState({lastTCP: [this.state.mProp['timeseriesDataTCP'][0][this.tcpCnt-1], this.state.mProp['timeseriesDataTCP'][1][this.tcpCnt-1] ]})
         this.setState({lastUDP: [this.state.mProp['timeseriesDataUDP'][0][this.udpCnt-1], this.state.mProp['timeseriesDataUDP'][1][this.udpCnt-1] ]})
     }
-    bytesToString =  (bytes) => {
+    bytesToString =  (bytes, inst) => {
+        console.log("20190812 bytes..",bytes, ":", inst)
         // One way to write it, not the prettiest way to write it.
 
         var fmt = d3.format('.0f');
@@ -165,7 +167,7 @@ export default class MonitoringViewer extends React.Component {
                             </Header>
                             <Container className="memory">
                                 {
-                                    (this.props.data.page !== 'appInst')?this.state.lastMEM+'%':this.bytesToString(this.state.lastMEM*100000)
+                                    (this.props.data.page !== 'appInst')?this.state.lastMEM+'%':this.bytesToString(this.state.lastMEM*100000, this.props.data.page, )
                                 }
 
                             </Container>
@@ -225,11 +227,11 @@ export default class MonitoringViewer extends React.Component {
                                     </Header>
                                     <div className="content">
                                         <Container className="udp_tcpretrans">
-                                            <div className="title">TcpRetrans</div>
+                                            <div className="title">RCV</div>
                                             {d3.format('.2s')(this.state.lastUDP[0])}
                                         </Container>
                                         <Container className="est_connsest">
-                                            <div className="title">ConnsEst</div>
+                                            <div className="title">SND</div>
                                             {d3.format('.2s')(this.state.lastUDP[1])}
                                         </Container>
                                     </div>

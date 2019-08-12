@@ -35,31 +35,37 @@ class DeleteItem extends React.Component {
      * @param result
      ***************************/
     receiveSubmit = (result, body) => {
-        let toArray = result.data.split('\n')
-        toArray.pop();
-        let toJson = toArray.map((str)=>(JSON.parse(str)))
-
-        toJson.map((item) => {
-            console.log("success@@@@@",toJson)
-            if(item.result && item.result.code == 400){
-                this.props.handleAlertInfo('error',item.result.message)
-                return
-            } else {
-                let msg = '';
-                let msg2 = '';
-                if(this.props.siteId == 'ClusterInst') {
-                    msg = 'Your cluster '+body.params.clusterinst.key.cluster_key.name
-                } else if(this.props.siteId == 'appinst') {
-                    msg = 'Your application instance'
-                    msg2 = ' from '+body.params.appinst.key.cluster_inst_key.cluster_key.name
+        if(result.data.error) {
+            this.props.handleAlertInfo('error',result.data.error)
+        } else {
+            let toArray = result.data.split('\n')
+            toArray.pop();
+            let toJson = toArray.map((str)=>(JSON.parse(str)))
+            
+            toJson.map((item) => {
+                console.log("success@@@@@",toJson)
+                if(item.result && item.result.code == 400){
+                    this.props.handleAlertInfo('error',item.result.message)
+                    return
+                } else {
+                    let msg = '';
+                    let msg2 = '';
+                    if(this.props.siteId == 'ClusterInst') {
+                        msg = 'Your cluster '+body.params.clusterinst.key.cluster_key.name
+                    } else if(this.props.siteId == 'appinst') {
+                        msg = 'Your application instance'
+                        msg2 = ' from '+body.params.appinst.key.cluster_inst_key.cluster_key.name
+                    }
+                    this.props.handleAlertInfo('success',msg+' deleted successfully'+msg2)
                 }
-                this.props.handleAlertInfo('success',msg+' deleted successfully'+msg2)
-            }
-        })
+            })
+            setTimeout(() => {
+                _self.props.refresh('All');
+            }, 3000);
+        }
+        
 
-        setTimeout(() => {
-            _self.props.refresh('All');
-        }, 3000);
+        
         // console.log('registry delete ... success result..', result.data)
         
         // console.log("deleteCluster@@@",result.data)

@@ -204,6 +204,7 @@ export default class PageDetailViewer extends React.Component {
         ))
     }
     receiveInstanceInfo(result) {
+                console.log('20190812 result...', result)
         _self.setState({monitorData:result})
         _self.forceUpdate()
     }
@@ -283,22 +284,25 @@ export default class PageDetailViewer extends React.Component {
 
 
     /*
-    http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app <<<
-    '{"region":"US",
-        "appinst":
-            {"app_key":
-                {"developer_key":{"name":"MobiledgeX"},
+     http --auth-type=jwt --auth=$SUPERPASS POST
+     https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app <<<
+     '{"region":"US",
+         "appinst":{
+             "app_key":{
+                "developer_key":{"name":"MobiledgeX"},
                 "name":"mobiledgexsdkdemo",
-                "version":"1.0"},
-                "cluster_inst_key":{
-                    "cluster_key":{"name":"autoclustermobiledgexsdkdemo"},
-                    "cloudlet_key":{"name":"mexplat-stage-hamburg-cloudlet","operator_key":{"name":"TDG"}
+                "version":"1.0"
+             },
+             "cluster_inst_key":{
+                "cluster_key":{"name":"metricsTest"},
+                "cloudlet_key":{
+                    "name":"mexplat-stage-hamburg-cloudlet",
+                    "operator_key":{"name":"TDG"}
                 }
             }
         },
         "selector":"cpu",
-        "starttime":"2019-07-28T23:25:35Z",
-        "endtime":"2019-07-28T23:33:13Z"
+        "last":20
     }'
      */
 
@@ -322,8 +326,7 @@ export default class PageDetailViewer extends React.Component {
                     }
                 },
                 "selector":valid,
-                "starttime":moment.utc().subtract(24, 'hours').format(),
-                "endtime":moment.utc().subtract(0, 'hours').format()
+                "last":20
             }
         }
     )

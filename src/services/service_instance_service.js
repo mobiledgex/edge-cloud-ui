@@ -52,11 +52,11 @@ export function getAppinstHealth(resource, callback) {
     //
     axios.all(
         resource.map((reso) => {
-            return axios.post('https://'+hostname+':3030/timeAppinst', qs.stringify({
+            return axios.post('https://'+hostname+':3030/timeAppinst', {
                 service: 'timeAppinst',
                 serviceBody:reso,
                 serviceId: Math.round(Math.random()*10000)
-            }))
+            })
                 .then(function (response) {
                     resResults = resResults.concat(FormatMonitorApp(response))
 
@@ -85,11 +85,11 @@ export function getClusterHealth(resource, callback) {
         //
     axios.all(
         resource.map((reso) => {
-            return axios.post('https://'+hostname+':3030/timeClusterinst', qs.stringify({
+            return axios.post('https://'+hostname+':3030/timeClusterinst', {
                 service: 'timeClusterinst',
                 serviceBody:reso,
                 serviceId: Math.round(Math.random()*10000)
-            }))
+            })
                 .then(function (response) {
                     resResults = resResults.concat(FormatMonitorCluster(response))
 
