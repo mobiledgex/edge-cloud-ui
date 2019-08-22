@@ -284,7 +284,6 @@ class SiteFour extends React.Component {
         let mainPath = '/site4';
         let subPath = 'pg='+pg;
         _self.props.history.location.search = "pg="+pg;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
         _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label })
         localStorage.setItem('selectMenu', label)
     }
