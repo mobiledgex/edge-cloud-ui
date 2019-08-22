@@ -74,70 +74,60 @@ export function loginWithEmailRedux ({ params }) {
     }
 }
 export function refreshData ({ params }) {
-    console.log('refreshdata reducer is ...', params)
     return {
         type: types.REFRESH_DATA,
         params
     }
 }
 export function btnManagement (view) {
-    console.log('BTN_MANAGEMENT == ', view)
     return {
         type: types.BTN_MANAGEMENT,
         view
     }
 }
 export function computeItem (item) {
-    console.log('COMPUTE_ITEM == ', item)
     return {
         type: types.COMPUTE_ITEM,
         item
     }
 }
 export function clickCityList (list) {
-    console.log('CLICK_CITY_LIST == ', list)
     return {
         type: types.CLICK_CITY_LIST,
         list
     }
 }
 export function userInfo (info) {
-    console.log('USER_INFO == ', info)
     return {
         type: types.USER_INFO,
         info
     }
 }
 export function mapCoordinatesLong (loc) {
-    console.log('MAP_COORDINATES_LONG == ', loc)
     return {
         type: types.MAP_COORDINATES_LONG,
         loc
     }
 }
 export function mapCoordinatesLat (loc) {
-    console.log('MAP_COORDINATES_LAT == ', loc)
     return {
         type: types.MAP_COORDINATES_LAT,
         loc
     }
 }
 export function showUserRole (role) {
-    console.log('SHOW_USER_ROLE == ', role)
     return {
         type: types.SHOW_USER_ROLE,
         role
     }
 }
 export function selectOrganiz (org) {
-    console.log('SELECT_ORG == ', org)
     return {
         type: types.SELECT_ORG,
         org
     }
 }
 export function searchValue (search,scType) {
-    console.log('SEARCH_VALUE == ', search,scType)
     return {
         type: types.SEARCH_VALUE,
         search,
@@ -145,21 +135,18 @@ export function searchValue (search,scType) {
     }
 }
 export function changeRegion (region) {
-    console.log('CHANGE_REGION == ', region)
     return {
         type: types.CHANGE_REGION,
         region
     }
 }
 export function computeRefresh (compute) {
-    console.log('COMPUTE_REFRESH == ', compute)
     return {
         type: types.COMPUTE_REFRESH,
         compute
     }
 }
 export function loadingSpinner (loading) {
-    console.log('LOADING_SPINNER == ', loading)
     return {
         type: types.LOADING_SPINNER,
         loading
@@ -173,28 +160,24 @@ export function showFlavor (flavor) {
     }
 }
 export function blinkMark (blink) {
-    console.log('BLINK_MARK == ', blink)
     return {
         type: types.BLINK_MARK,
         blink
     }
 }
 export function changeLoginMode (mode) {
-    console.log('LOGIN_MODE == ', mode)
     return {
         type: types.LOGIN_MODE,
         mode
     }
 }
 export function creatingSpinner (creating) {
-    console.log('CREATING_SPINNER == ', creating)
     return {
         type: types.CREATING_SPINNER,
         creating
     }
 }
 export function alertMsg (msg) {
-    console.log('ALERT_MSG == ', msg)
     return {
         type: types.ALERT_MSG,
         msg
@@ -207,21 +190,18 @@ export function changeDetail (mode) {
     }
 }
 export function roleInfo (role) {
-    console.log('ROLE_INFO == ', role)
     return {
         type: types.ROLE_INFO,
         role
     }
 }
 export function appLaunch (data) {
-    console.log('APP_LAUNCH == ', data)
     return {
         type: types.APP_LAUNCH,
         data
     }
 }
 export function alertInfo (mode,msg) {
-    console.log('ALERT_INFO == ', mode, msg)
     return {
         type: types.ALERT_INFO,
         mode,
@@ -229,7 +209,6 @@ export function alertInfo (mode,msg) {
     }
 }
 export function createAccount (created) {
-    console.log('created == ', created)
     return {
         type: types.CREATE_ACCOUNT,
         created
@@ -246,4 +225,10 @@ export function saveStateFilter (filter) {
         type: types.SAVE_FILTERS,
         filter
     }
+}
+export function changeStep(step) {
+    return {
+        type: types.CHANGE_STEP,
+        step:step
+    };
 }

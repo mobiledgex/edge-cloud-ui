@@ -11,7 +11,6 @@ const numberDes =(a,b)=> (
 )
 
 let generateData = (datas,body) => {
-    console.log('format data cluster- ', datas)
     let values = [];
     let toArray = null;
     let toJson = [];
@@ -26,7 +25,6 @@ let generateData = (datas,body) => {
     }else {
         toJson = null;
     }
-    console.log("tojson!!",toJson)
     if(toJson){
         toJson.map((dataResult, i) => {
             if(dataResult.message) {

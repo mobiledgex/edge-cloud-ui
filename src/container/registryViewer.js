@@ -122,30 +122,13 @@ class RegistryViewer extends React.Component {
     }
 
     onHandleClick(dim, data) {
-        console.log('on handle click == ', data)
         this.setState({ dimmer:dim, open: true, selected:data })
-        //this.props.handleChangeSite(data.children.props.to)
     }
     onHandleClicAdd(dim, data) {
-        console.log('on handle click == ', data)
         this.setState({ dimmer:dim, openAdd: true, selected:data })
-        //this.props.handleChangeSite(data.children.props.to)
     }
-    getDataDeveloper(token) {
-        //TODO: - get data cloudlet list , app list
-        //services.getMCService('ShowCloudlet',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultCloudlet)
-        //services.getMCService('ShowApps',{token:token,region:(this.props.region) ? this.props.region:'US'}, this.receiveResultApp)
-    }
-    receiveResultCloudlet = (result) => {
-        //this.setState({orgData:result})
-        console.log('submit result 1...', result)
-    }
-    receiveResultApp = (result) => {
-        //this.setState({orgData:result})
-        console.log('submit result 2...', result)
-    }
+
     receiveResult = (result, body) => {
-        console.log('result creat app ...', result.data.error, body)
         _self.props.handleLoadingSpinner(false);
         this.setState({toggleSubmit:false})
         if(result.data.error) {
@@ -241,7 +224,6 @@ class RegistryViewer extends React.Component {
         let filteredKeys = (visibles) ? reducer.filterDefine(keys, visibles) : keys;
 
         let widthDefault = Math.round(16/filteredKeys.length);
-        console.log('default width header -- ', widthDefault, filteredKeys)
         return filteredKeys.map((key, i) => (
             (i === filteredKeys.length -1) ?
                 <Table.HeaderCell width={3} textAlign='center' sorted={column === key ? direction : null} onClick={this.handleSort(key)}>
@@ -256,13 +238,11 @@ class RegistryViewer extends React.Component {
 
     onLayoutChange(layout) {
         //this.props.onLayoutChange(layout);
-        console.log('changed layout = ', JSON.stringify(layout))
     }
     onPortClick() {
 
     }
     detailView(item) {
-        console.log("user >>>> ",item)
         if(!item['UserName']){
             this.setState({detailViewData:item, openDetail:true})
         } else {
@@ -279,7 +259,6 @@ class RegistryViewer extends React.Component {
     )
 
     getOptionData = (region) => {
-        console.log('computeItem@@',localStorage.selectMenu)
         if(localStorage.selectMenu == "Apps") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // clusterFlavor
@@ -288,7 +267,6 @@ class RegistryViewer extends React.Component {
     }
 
     receiveF(result) {
-        console.log('receive Flavor ==>>>>>>>>>>>> ', result)
         let arr = []
         result.map((item,i) => {
             arr.push(item.FlavorName)
@@ -298,14 +276,6 @@ class RegistryViewer extends React.Component {
 
 
     componentDidMount() {
-
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) {
-            this.getDataDeveloper(store.userToken);
-
-        } else {
-            alert('Session Expired')
-        }
         if(this.props.devData.length > 0) {
             this.setState({dummyData:this.props.devData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
         } else {
@@ -318,12 +288,10 @@ class RegistryViewer extends React.Component {
         let assObj = Object.assign([], this.fakeData);
         assObj[0].OrganizationName = localStorage.selectOrg;
         //assObj[0].ImagePath.items = "docker.mobiledgex.net/OrganizationName/images/AppName:AppVersion";
-        console.log("jjjjkkkkkk",assObj);
         //this.setState({fakeData:assObj});
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('nextPropsapp@@',nextProps.formApps)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -338,11 +306,9 @@ class RegistryViewer extends React.Component {
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
-        console.log("submitValues2submitValues2",nextProps.submitValues,"::",nextProps.formApps.submitSucceeded,"::",!this.state.toggleSubmit)
         if(nextProps.submitValues && !this.state.toggleSubmit) {
             
             const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','DefaultFlavor']
-            console.log("validateValuevalidateValue",nextProps.validateValue)
             let error = [];
             apps.map((item) => {
                 if(!nextProps.validateValue[item]) {
@@ -359,7 +325,6 @@ class RegistryViewer extends React.Component {
                     "token":store.userToken,
                     "params": nextProps.submitValues
                 }
-                console.log("serviceBody@@",serviceBody)
                 services.createNewApp('CreateApp', serviceBody, this.receiveResult)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
@@ -453,7 +418,6 @@ const createFormat = (data) => (
 )
 // access_ports combine
 const accessport = (data) => {
-    console.log("accessportaccessport",data)
     let key = Object.keys(data);
     let num = 0;
     let portSum = '';
@@ -471,11 +435,8 @@ const accessport = (data) => {
 //"image_path":"registry.mobiledgex.net:5000/mobiledgex/simapp",
 //"image_type":1,"access_ports":"udp:12001,tcp:80,http:7777","default_flavor":{"name":"x1.medium"},"cluster":{"name":""},"ipaccess":"IpAccessShared","command":"test","deployment_manifest":"test1111"}}'
 const mapStateToProps = (state) => {
-    console.log("store state:::",state.form.createAppFormDefault);
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;
-    console.log('account -- '+account)
-    
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
@@ -497,7 +458,6 @@ const mapStateToProps = (state) => {
         if(enableValue.DeploymentType === "Docker") enableValue.DeploymentType = "docker"
         if(enableValue.DeploymentType === "Kubernetes") enableValue.DeploymentType = "kubernetes"
         if(enableValue.DeploymentType === "VM") enableValue.DeploymentType = "vm"
-        console.log("state.form.createAppFormDefault.valuesxxx",enableValue)
         submitVal = createFormat(enableValue)
         validateValue = state.form.createAppFormDefault.values;
     }

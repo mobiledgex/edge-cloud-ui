@@ -6,7 +6,6 @@ import './styles.css';
 
 const validate = values => {
     const errors = {}
-    console.log("validateaaa",values)
     if (!values.type) {
         errors.type = 'Required'
     }
@@ -188,7 +187,6 @@ class SiteFourOrgaOne extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("twoProps",nextProps)
         if(this.props.toggleSubmit) {
             this.props.dispatch(stopSubmit('orgaStepOne',{}))
         }
@@ -197,12 +195,7 @@ class SiteFourOrgaOne extends React.Component {
 
 
     onHandleSubmit = () => {
-        console.log("ADDSUER@@@@")
         this.props.handleSubmit();
-        // setTimeout(() => {
-        //     this.props.dispatch(stopSubmit('orgaStepOne'))
-        // },0);
-        //this.props.dispatch(stopSubmit('orgaStepOne',{}))
     }
 
     cancelClick = (e) => {
@@ -220,7 +213,7 @@ class SiteFourOrgaOne extends React.Component {
                             <Header>Create Your Organization.</Header>
                             <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
                                 <Grid>
-                                    <Grid.Row>
+                                    <Grid.Row className="newOrg1-1">
                                         <Grid.Column width={5}>
                                             <div>Type</div>
                                         </Grid.Column>
@@ -232,7 +225,7 @@ class SiteFourOrgaOne extends React.Component {
                             </Form.Group>
                             <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
                                 <Grid>
-                                    <Grid.Row>
+                                    <Grid.Row className="newOrg1-2">
                                         <Grid.Column width={5}>
                                             <div>Organization Name</div>
                                         </Grid.Column>
@@ -244,7 +237,7 @@ class SiteFourOrgaOne extends React.Component {
                                             />
                                         </Grid.Column>
                                     </Grid.Row>
-                                    <Grid.Row>
+                                    <Grid.Row className="newOrg1-3">
                                         <Grid.Column width={5}>
                                             <div>Address</div>
                                         </Grid.Column>
@@ -256,7 +249,7 @@ class SiteFourOrgaOne extends React.Component {
                                             />
                                         </Grid.Column>
                                     </Grid.Row>
-                                    <Grid.Row>
+                                    <Grid.Row className="newOrg1-4">
                                         <Grid.Column width={5}>
                                             <div>Phone</div>
                                         </Grid.Column>
@@ -272,7 +265,7 @@ class SiteFourOrgaOne extends React.Component {
                             </Form.Group>
                             <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row'}}>
                                 <Form.Button onClick={this.cancelClick}>Cancel</Form.Button>
-                                <Form.Button positive primary>Continue</Form.Button>
+                                <Form.Button className="newOrg1-5" positive primary>Continue</Form.Button>
                             </Form.Group>
                         </Form>
                     </Grid.Column>

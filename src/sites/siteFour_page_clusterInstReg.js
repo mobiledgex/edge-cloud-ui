@@ -61,15 +61,11 @@ class SiteFourPageClusterInstReg extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
-        console.log('info.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // console.log('info.. store == ', store)
-
 
         if(store.userToken) {
             if(this.props.region.value) {
@@ -82,14 +78,12 @@ class SiteFourPageClusterInstReg extends React.Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        console.log("gggggg@@",nextProps)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
 
     }
     receiveResult(result) {
-        console.log("clusterFlavorReg receive == ", result)
         if(result.error) {
             this.props.handleAlertInfo('error',result.error)
         } else {
@@ -124,7 +118,6 @@ class SiteFourPageClusterInstReg extends React.Component {
 
 };
 const mapStateToProps = (state) => {
-    console.log('props in region === ', state.changeRegion)
     let region = state.changeRegion
         ? {
             value: state.changeRegion.region

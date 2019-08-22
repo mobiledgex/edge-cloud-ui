@@ -41,7 +41,6 @@ const numberDes =(a,b)=> (
 )
 
 let generateData = (datas) => {
-    console.log('format data - ', datas)
     let result = datas;
     let values = [];
     if(result){
@@ -52,7 +51,6 @@ let generateData = (datas) => {
             let Address = data.result.address || '-';
             let Email = data.result.email || '-';
             let newRegistKey = ['DeveloperName', 'Username', 'Address', 'Email'];
-            //console.log('time -- '+time, 'score --'+score, 'instance -- '+instance)
             values.push({DeveloperName:DeveloperName, Username:Username, Address:Address, Email:Email, Edit:newRegistKey})
         })
     } else {

@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 
 import axios from "axios-https-proxy-fix";
 import qs from "qs";
+import fs from "fs";
 import shell from 'shelljs';
 
 const API_KEY = '__apiMC_key__'
@@ -887,6 +888,7 @@ exports.CreateAppInst = (req, res) => {
     let params = {};
     let superpass = '';
     let region = 'local'
+    let clusterId = 'cl_';
     axios.defaults.timeout = 1000000;
     if(req.body.serviceBody){
         params = req.body.serviceBody.params;
@@ -894,14 +896,20 @@ exports.CreateAppInst = (req, res) => {
         region = req.body.serviceBody.region;
         params.appinst.key.cluster_inst_key.cloudlet_key.name = req.body.multiCloudlet;
         params.appinst.key.cluster_inst_key.cluster_key.name = req.body.multiCluster;
+        if(req.body.multiCluster.indexOf('autocluster') > -1){
+            clusterId = req.body.multiCluster + req.body.multiCloudlet;
+        } else {
+            clusterId = params.appinst.key.app_key.name + req.body.multiCloudlet;
+            clusterId = clusterId.concat((req.body.multiCluster == '')?'DefaultVMCluster': req.body.multiCluster);
+        }
     }
-
-    console.log('Create me app inst--string...', JSON.stringify(params), 'mcUrl=',mcUrl)
+    res.send(clusterId);
+    console.log('Create me app inst--string...', JSON.stringify(params), 'mcUrl=',mcUrl,"vvv",req.body.multiCluster)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateAppInst', params,
 
         {
-            headers: {
-                'Authorization':`Bearer ${superpass}`}
+            headers: {'Authorization':`Bearer ${superpass}`},
+            responseType: 'stream'
         }
     )
         .then(function (response) {
@@ -909,7 +917,10 @@ exports.CreateAppInst = (req, res) => {
             console.log('success Create app', response.data)
 
             if(response.data) {
-                res.json(response.data)
+                //res.json(response.data)
+                response.data.pipe(
+                    fs.createWriteStream('./temp/'+clusterId+'.txt')
+                )
             } else {
                 res.json({error:'Fail'})
             }
@@ -920,19 +931,20 @@ exports.CreateAppInst = (req, res) => {
         });
 }
 
-
 exports.CreateClusterInst = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
-    let region = 'local'
+    let region = 'local';
+    let clusterId = 'cl_';
     axios.defaults.timeout = 1000000;
     if(req.body.serviceBody){
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
         serviceBody.clusterinst.key.cloudlet_key.name = req.body.multiData;
+        clusterId = serviceBody.clusterinst.key.cluster_key.name + req.body.multiData;
     }
 
     /**
@@ -946,12 +958,12 @@ exports.CreateClusterInst = (req, res) => {
     // });
 
 
-    console.log('Create me cluster inst-- ', JSON.stringify(serviceBody), 'mcUrl=',mcUrl,'mdata=',req.body.multiData)
+    console.log('Create me cluster inst-- ', JSON.stringify(serviceBody), 'mcUrl=',mcUrl,'mdata=',req.body.multiData, 'clusterId=', clusterId)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterInst', serviceBody,
 
         {
-            headers: {
-                'Authorization':`Bearer ${superpass}`}
+            headers: {'Authorization':`Bearer ${superpass}`},
+            responseType: 'stream'
         }
     )
         .then(function (response) {
@@ -959,16 +971,82 @@ exports.CreateClusterInst = (req, res) => {
             console.log('success Create ClusterInst ==>==>==>==>==>', response.data)
 
             if(response.data) {
-                res.json(response.data)
+                //res.json(response.data)
+                //
+
+                response.data.pipe(
+                    fs.createWriteStream('./temp/'+clusterId+'.txt')
+                )
             } else {
                 res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
             console.log('error show ...', error.response.data.message);
-            res.json({error:String(error.response.data.message)})
+            res.json(error)
         });
+
+
 }
+exports.CreteTempFile = (req, res) => {
+    let clusterId = '';
+    if(req.body.site == 'ClusterInst'){
+
+        clusterId = req.body.item.ClusterName + req.body.item.Cloudlet;
+
+        if(req.body.item.ClusterName.indexOf('autocluster') > -1){
+            clusterId
+        } else {
+            clusterId = req.body.item.ClusterName + req.body.item.Cloudlet;
+        }
+    } else if (req.body.site == 'appinst'){
+        if(req.body.item.ClusterInst.indexOf('autocluster') > -1) {
+            clusterId = req.body.item.ClusterInst + req.body.item.Cloudlet;
+        } else {
+            clusterId = req.body.item.AppName + req.body.item.Cloudlet +req.body.item.ClusterInst;
+        }
+        
+    }
+
+    console.log('read status inst....----.... CreteTempFile=', clusterId)
+
+    fs.readFileSync('./temp/'+clusterId+'.txt');
+    fs.createReadStream('./temp/'+clusterId+'.txt').pipe(res);
+
+
+}
+
+exports.DeleteTempFile = (req, res) => {   
+    let clusterId = '';
+    if(req.body.site == 'ClusterInst'){
+        if(req.body.item.ClusterName.indexOf('autocluster') > -1) return
+
+        clusterId = req.body.item.ClusterName + req.body.item.Cloudlet;
+    } else if (req.body.site == 'appinst'){
+        if(req.body.item.ClusterInst.indexOf('autocluster') > -1) {
+            clusterId = req.body.item.ClusterInst + req.body.item.Cloudlet;
+        } else {
+            clusterId = req.body.item.AppName + req.body.item.Cloudlet +req.body.item.ClusterInst;
+        }
+    }
+    console.log('read status inst....----.... DeleteTempFile=', req.body)
+
+    fs.readFileSync('./temp/'+clusterId+'.txt');
+    fs.unlink('./temp/'+clusterId+'.txt',function(){
+        console.log("DeleteTempFile!!")
+    });
+
+
+}
+
+exports.ErrorTempFile = (req, res) => {
+    console.log('read status inst....----.... ErrorTempFile=', req.body.item)
+
+    fs.readFileSync('./temp/'+req.body.item+'.txt');
+    fs.createReadStream('./temp/'+req.body.item+'.txt').pipe(res);
+}
+
+
 exports.DeleteService = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';

@@ -32,7 +32,6 @@ class PopAddUserViewer extends React.Component {
         //nextProps.data['Type'].substring(0,1).toUpperCase() + nextProps.data['Type'].substring(1)
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('regist new item popadduser -- ', nextProps.stepTwo)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(nextProps.open) {
             this.setState({open:nextProps.open, dimmer:nextProps.dimmer, typeOperator:(nextProps.data['Type'].substring(0,1).toUpperCase() + nextProps.data['Type'].substring(1)), organization:nextProps.data['Organization']});
@@ -40,7 +39,6 @@ class PopAddUserViewer extends React.Component {
         if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded && !this.state.toggleSubmit) {
             this.props.handleLoadingSpinner(true);
             this.setState({toggleSubmit:true});
-            console.log('stream form siteFour_page_createOrga.js  git to a role view ... ', nextProps, nextProps.stepTwo.values)
             //{username: "inkikim", orgName: "bicinkiOrg", orgType: "Developer", selectRole: "Manager"}
             let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
             let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
@@ -57,7 +55,6 @@ class PopAddUserViewer extends React.Component {
     }
 
     resultGiveToRole = (result,resource, self, body) => {
-        console.log("receive 3== ", result, resource, self, body)
         _self.props.handleLoadingSpinner(false);
         this.setState({toggleSubmit:false})
         if(result.data.error) {
@@ -129,7 +126,6 @@ class PopAddUserViewer extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log("popadduserstate@@",state)
     let formStepAdduser= state.form.orgaStepAddUser
     ? {
         values: state.form.orgaStepAddUser.values,

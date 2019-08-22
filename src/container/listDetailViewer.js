@@ -64,6 +64,8 @@ export default class ListDetailViewer extends React.Component {
                                  :(key == 'DefaultFlavor')?'Default Flavor'
                                  :(key == 'DeploymentMF')?'Deployment Manifest' /* 여기까지 Apps*/
                                  :(key == 'AuthPublicKey')?'Auth Public Key'
+                                 : (key === 'DefaultFQDN')? 'Default FQDN'
+                                 : (key === 'PackageName')? 'Package Name'
                                  :key}
                             </div>
                         </Grid.Column>
@@ -150,7 +152,7 @@ export default class ListDetailViewer extends React.Component {
                                             Account Credentials.
                                         </div>
                                         <div>
-                                            {`curl -u<username>:<password> -T <path_to_file> `}<span
+                                            {`curl -u<username> -T <path_to_file> `}<span
                                             style={{color: 'rgba(136,221,0,.9)'}}>{`"https://artifactory.mobiledgex.net/artifactory/repo-` + this.state.propsData.Organization + `/<target_file_path>"`}</span>
                                         </div>
                                     </Grid.Column>

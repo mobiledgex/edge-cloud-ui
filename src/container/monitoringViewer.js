@@ -8,35 +8,35 @@ export default class MonitoringViewer extends React.Component {
     state = {
         mProp : {
             timeseriesDataCPUMEM:[
-                [0,1,2,3,4,5],[2,3,4,5,6,7]
+                [],[]
             ],
             timeseriesCPUMEM:[
-                ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
+                []
             ],
 
             timeseriesDataNET:[
-                [0,1,2,3,4,5],[2,3,4,5,6,7]
+                [],[]
             ],
             timeseriesNET:[
-                ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
+                []
             ],
             timeseriesDataDISK:[
-                [0,1,2,3,4,5]
+                []
             ],
             timeseriesDISK:[
-                ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
+                []
             ],
             timeseriesDataTCP:[
-                [0,1,2,3,4,5],[2,3,4,5,6,7]
+                [],[]
             ],
             timeseriesTCP:[
-                ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
+                []
             ],
             timeseriesDataUDP:[
-                [0,1,2,3,4,5],[2,3,4,5,6,7],[2,3,4,5,6,7]
+                [],[],[]
             ],
             timeseriesUDP:[
-                ["2010-01-01 12:38:22", "2011-01-01 05:22:48", "2012-01-01 12:00:01", "2013-01-01 23:22:00", "2014-01-01 24:00:00", "2015-01-01 23:59:59"]
+                []
             ],
             dataLabel:['CPU', 'MEM'],
             dataLabelNET:['RCV', 'SND'],
@@ -191,11 +191,11 @@ export default class MonitoringViewer extends React.Component {
                             <div className="content">
                                 <Container className="network_rcv">
                                     <div className="title">RCV</div>
-                                    {this.bytesToString(this.state.lastNET[0])}
+                                    {this.bytesToString(this.state.lastNET[0]) + '/sec'}
                                 </Container>
                                 <Container className="network_snd">
                                     <div className="title">SND</div>
-                                    {this.bytesToString(this.state.lastNET[1])}
+                                    {this.bytesToString(this.state.lastNET[1]) + '/sec'}
                                 </Container>
                             </div>
                         </Segment>

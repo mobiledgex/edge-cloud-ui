@@ -11,7 +11,6 @@ const numberDes =(a,b)=> (
 )
 
 let generateData = (datas,body) => {
-    console.log('format data cloudlet@@ - ', datas)
     let values = [];
     let toArray = null;
     let toJson = [];
@@ -30,7 +29,6 @@ let generateData = (datas,body) => {
     }else {
         toJson = null;
     }
-    console.log("cloudlet tojson!!",toJson,body)
     let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {

@@ -21,7 +21,6 @@ import './styles.css';
 import '../css/index.css';
 
 const validate = values => {
-    console.log("validation@@",values)
     const errors = {}
     if (!values.FlavorName) {
         errors.FlavorName = 'Required'
@@ -123,7 +122,6 @@ class registNewListInput extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("regsit new input Props",nextProps)
 
     }
 

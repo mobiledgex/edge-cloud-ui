@@ -44,7 +44,6 @@ let newRegistKey = [
     'DeploymentMF',
 ];
 let generateData = (datas,body) => {
-    console.log('format data apps - ', JSON.stringify(datas.data))
     let values = [];
     let toArray = null;
     let toJson = [];
@@ -57,7 +56,6 @@ let generateData = (datas,body) => {
         toJson = toArray.map((str)=>(JSON.parse(str)))
     }
 
-    console.log("Apptojson!!",toJson, body)
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
             if(dataResult.error || dataResult.message || !dataResult.data) {

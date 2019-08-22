@@ -115,18 +115,6 @@ class RegistryClusterInstViewer extends React.Component {
 
     }
 
-    onHandleClick(dim, data) {
-        console.log('on handle click == ', data)
-        this.setState({ dimmer:dim, open: true, selected:data })
-        //this.props.handleChangeSite(data.children.props.to)
-    }
-    onHandleClicAdd(dim, data) {
-        console.log('on handle click == ', data)
-        this.setState({ dimmer:dim, openAdd: true, selected:data })
-        //this.props.handleChangeSite(data.children.props.to)
-    }
-
-
     
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
@@ -184,7 +172,6 @@ class RegistryClusterInstViewer extends React.Component {
 
     onLayoutChange(layout) {
         //this.props.onLayoutChange(layout);
-        console.log('changed layout = ', JSON.stringify(layout))
     }
 
     setFildData() {
@@ -197,9 +184,6 @@ class RegistryClusterInstViewer extends React.Component {
     }
     receiveSubmit = (result, body) => {
         
-
-        console.log('receive data ..', result.data, body)
-
         let paseData = result.data;
         if(paseData.error && !this.state.errorClose) {
             //this.setState({clusterInstCreate:false})
@@ -252,7 +236,6 @@ class RegistryClusterInstViewer extends React.Component {
          * **********/
         let assObj = Object.assign([], this.state.fakeData);
         assObj[0].OrganizationName = localStorage.selectOrg;
-        console.log("jjjjkkkkkk",assObj);
         this.setState({fakeData:assObj});
     }
     componentWillReceiveProps(nextProps, nextContext) {
@@ -268,11 +251,9 @@ class RegistryClusterInstViewer extends React.Component {
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
-        console.log("clusternextProps.validateValue",nextProps.validateValue)
         if(nextProps.submitValues && !this.state.toggleSubmit) {
             
             const cluster = ['Region','ClusterName','OrganizationName','Operator','Cloudlet','DeploymentType','Flavor'];
-            console.log("validateValuevalidateValue",nextProps.validateValue,":::",nextProps.formClusterInst.submitSucceeded)
             let error = [];
             cluster.map((item) => {
                 if(!nextProps.validateValue[item]) {
@@ -384,11 +365,8 @@ const createFormat = (data) => (
     }
 )
 const mapStateToProps = (state) => {
-    console.log("store state:::",state);
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;
-    console.log('account -- '+account)
-    
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
@@ -418,7 +396,6 @@ const mapStateToProps = (state) => {
 
         if(state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
             let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
-            console.log("enableValueenableValueenableValue222ss",enableValue)
             if(enableValue.DeploymentType === "Docker"){
                 enableValue.NumberOfMaster = 0;
                 enableValue.NumberOfNode = 0;
@@ -427,7 +404,6 @@ const mapStateToProps = (state) => {
             if(enableValue.DeploymentType === "Kubernetes"){
                 enableValue.DeploymentType = "kubernetes"
             }
-            console.log("ddddddfdfd",enableValue)
             submitVal = createFormat(enableValue);
             validateValue = state.form.createAppFormDefault.values;
         }

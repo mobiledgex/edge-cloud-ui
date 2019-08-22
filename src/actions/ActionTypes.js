@@ -34,3 +34,4 @@ export const ALERT_INFO = 'ALERT_INFO';
 export const CREATE_ACCOUNT = 'CREATE_ACCOUNT';
 export const TABLE_HEADER = 'TABLE_HEADER';
 export const SAVE_FILTERS = 'SAVE_FILTERS';
+export const CHANGE_STEP = 'CHANGE_STEP';

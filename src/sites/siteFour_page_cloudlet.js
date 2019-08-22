@@ -61,15 +61,12 @@ class SiteFourPageCloudlet extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
         this.setState({liveComp:true})
     }
     componentDidMount() {
-        console.log('info.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // console.log('info.. store == ', store)
         if(store.userToken) {
             this.getDataDeveloper(this.props.changeRegion);
             this.userToken = store.userToken;
@@ -86,11 +83,8 @@ class SiteFourPageCloudlet extends React.Component {
         
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-        // if(!this.state.liveComp) {
-        //     return;
-        // }
+ 
         if(nextProps.computeRefresh.compute) {
-            console.log("computerefresh@@@@")
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
         }
@@ -98,7 +92,6 @@ class SiteFourPageCloudlet extends React.Component {
             this.getDataDeveloper(nextProps.changeRegion);
         }
         if(nextProps.viewMode) {
-            console.log('cloudlet detail view == ', nextProps.viewMode)
             if(nextProps.viewMode === 'listView') {
                 this.setState({liveComp:false})
                 //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
@@ -120,7 +113,6 @@ class SiteFourPageCloudlet extends React.Component {
                 join = _self.state.devData;
             }
             _self.props.handleLoadingSpinner(false);
-            console.log("receive cloudlet == ", result)
 
             if(result.error) {
                 this.props.handleAlertInfo('error',result.error)
@@ -133,13 +125,9 @@ class SiteFourPageCloudlet extends React.Component {
 
     }
     getDataDeveloper = (region) => {
-        // if(!this.state.liveComp) {
-        //     return;
-        // }
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let rgn = ['US','KR','EU'];
         this.setState({devData:[]})
-        console.log("changeRegion###@@",_self.props.changeRegion)
         if(region !== 'All'){
             rgn = [region]
         }  

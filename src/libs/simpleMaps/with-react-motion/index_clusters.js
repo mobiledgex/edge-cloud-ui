@@ -150,7 +150,6 @@ class ClustersMap extends Component {
 
     // map marker text click
     handleAnnoteClick(city) {
-        console.log("@@@&&",city)
     }
 
     //-blink
@@ -165,7 +164,6 @@ class ClustersMap extends Component {
      */
     handleViewZone(country) {
         //change the data of detail Info
-        console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++', country)
         _self.setState({selectedCity: country.name})
         if(d3.selectAll('.detailMarker_'+_self.state.oldCountry)) {
             d3.selectAll('.detailMarker_'+_self.state.oldCountry)
@@ -210,7 +208,6 @@ class ClustersMap extends Component {
         _countries.map((data, i) => {
             _self.state.countries.map((cnt) => {
                 if(data.name === cnt.CapitalName) {
-                    console.log('_Country --- ' + i, "anem ---- " + data.name, "cnt.CountryName -- " + cnt.CapitalLatitude, cnt.CapitalLongitude)
                     _Country.push({ name: cnt.CapitalName, coordinates: [parseInt(cnt.CapitalLongitude) + indents[0], parseInt(cnt.CapitalLatitude) + indents[1]] })
                 }
             })
@@ -388,7 +385,6 @@ class ClustersMap extends Component {
             return nameArray;
         }
 
-        console.log('data locations -- ', Object.keys(groupbyData))
         Object.keys(groupbyData).map((key) => {
             locationData.push({ "name": cloundletName(key),    "coordinates": [groupbyData[key][0]['LON'], groupbyData[key][0]['LAT']], "population": 17843000, "cost":groupbyData[key].length })
         })
@@ -402,12 +398,10 @@ class ClustersMap extends Component {
 
         let groupbyClData = aggregation.groupBy(cloudlet, 'cloudlet');
 
-        console.log('data groupbyClData -- ', Object.keys(groupbyClData))
         Object.keys(groupbyClData).map((key) => {
             cloudletData.push({ "name": key,    "coordinates": [groupbyClData[key][0]['LON'], groupbyClData[key][0]['LAT']], "population": 17843000, "cost":groupbyClData[key].length })
         })
 
-        console.log('cloudletData  -- ', locationData)
         this.setState({
             cities: locationData
         })

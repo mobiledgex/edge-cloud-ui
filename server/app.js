@@ -473,6 +473,9 @@ app.post('/CreateFlavor', apiMC.CreateFlavor);
 app.post('/CreateClusterFlavor', apiMC.CreateClusterFlavor);
 app.post('/CreateCloudlet', apiMC.CreateCloudlet);
 app.post('/CreateClusterInst', apiMC.CreateClusterInst);
+app.post('/CreteTempFile', apiMC.CreteTempFile);
+app.post('/DeleteTempFile', apiMC.DeleteTempFile);
+app.post('/ErrorTempFile', apiMC.ErrorTempFile);
 
 app.post('/ShowRole', apiMC.ShowRole);
 /////

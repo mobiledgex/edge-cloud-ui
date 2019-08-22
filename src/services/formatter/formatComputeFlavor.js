@@ -11,7 +11,6 @@ const numberDes =(a,b)=> (
 )
 
 let generateData = (datas,body) => {
-    console.log('format data Flavor - ', datas)
     let values = [];
     let toArray = null;
     let toJson = [];
@@ -27,7 +26,6 @@ let generateData = (datas,body) => {
         toJson = null;
     }
     
-    console.log('format data toJson - ', toJson,body.region)
     if(toJson){
         toJson.map((dataResult, i) => {
             if(dataResult.error || dataResult.message) {

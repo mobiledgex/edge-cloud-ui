@@ -16,7 +16,6 @@ let generateData = (datas) => {
             let time = moment(data.value[0] * 1000).format('MM-DD-YYYY HH:mm:ss');
             let score = Number(data.value[1]);
             let instance = data.metric.instance;
-            //console.log('time -- '+time, 'score --'+parseFloat(score).toFixed(2), 'instance -- '+instance)
             values.push({time:time, score:parseFloat(score).toFixed(2), inst:instance})
         })
     } else {

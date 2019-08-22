@@ -53,7 +53,6 @@ class AccountListView extends React.Component {
 
     }
     gotoUrl(site, subPath) {
-        console.log('999',_self.props.history)
         _self.props.history.push({
             pathname: site,
             search: subPath
@@ -62,7 +61,6 @@ class AccountListView extends React.Component {
         _self.props.handleChangeSite({mainPath:site, subPath: subPath})
     }
     onHandleClick(dim, data) {
-        console.log('on handle click == ', data)
         this.setState({ dimmer:dim, open: true, selected:data })
     }
 
@@ -176,7 +174,6 @@ class AccountListView extends React.Component {
         let filteredKeys = (visibles) ? reducer.filterDefine(keys, visibles) : keys;
 
         let widthDefault = Math.round(16/filteredKeys.length);
-        console.log('default width header -- ', widthDefault, filteredKeys)
         return filteredKeys.map((key, i) => (
             (i === filteredKeys.length -1) ?
                 <Table.HeaderCell key={i} className='unsortable' width={2} textAlign='center'>
@@ -191,11 +188,9 @@ class AccountListView extends React.Component {
 
     onLayoutChange(layout) {
         //this.props.onLayoutChange(layout);
-        console.log('changed layout = ', JSON.stringify(layout))
     }
 
     detailView(item) {
-        console.log("user >>>> ",item)
         if(!item['Username']){
             this.setState({detailViewData:item, openDetail:true})
         } else {
@@ -210,11 +205,9 @@ class AccountListView extends React.Component {
         let isNew = false;
         let dName = 'd'
         let fromNow = moment(date).utc().startOf('day').fromNow();
-        console.log('from now. ', fromNow)
         let darray = fromNow.split(' ')
         if(parseInt(darray[0]) <= 1 && darray[1] === 'days') isNew = true;
         if(parseInt(darray[0]) <= 24 && darray[1] === 'hours') isNew = true; dName='h'
-        console.log('is new... ', 'date=', date, 'isNew =',isNew, parseInt(darray[0]))
         return {new:isNew, days:darray[0]+dName};
     }
 
@@ -311,7 +304,6 @@ class AccountListView extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('nextProps',nextProps,this.props.siteId)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -369,11 +361,8 @@ class AccountListView extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log("store state:::",state);
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;
-    console.log('account -- '+account)
-    
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
 

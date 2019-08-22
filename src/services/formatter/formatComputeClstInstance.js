@@ -27,14 +27,12 @@ const numberDes =(a,b)=> (
 }
  */
 let generateData = (datas,body) => {
-    console.log('format data clusterinst - ', datas)
     let values = [];
     let toArray = null;
     let toJson = [];
     let ipaccessArr = ['IpAccessUnknown','IpAccessDedicated','IpAccessDedicatedOrShared','IpAccessShared'];
     if(datas.data) {
         if(typeof datas.data === 'object') {
-            console.log("datas.data@@@",datas.data)
             toJson.push((datas.data)?datas.data:{});
         } else {
             toArray = datas.data.split('\n')
@@ -46,12 +44,10 @@ let generateData = (datas,body) => {
     }
     //20190409 transition string to json
     
-    console.log("clusterinst tojson!!",toJson)
     let newRegistKey = ['Region', 'ClusterName', 'OrganizationName', 'Operator', 'Cloudlet', 'Flavor', 'IpAccess', 'Number_of_Master', 'Number_of_Node', 'CloudletLocation'];
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
             if(dataResult.error || dataResult.message || !dataResult.data) {
-                console.log("error")
                 values.push({
                     Region:'',
                     ClusterName:'',

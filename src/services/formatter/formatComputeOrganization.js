@@ -11,7 +11,6 @@ const numberDes =(a,b)=> (
 )
 
 let generateData = (datas) => {
-    console.log('format data organization- ', datas)
     let result = datas;
     let values = [];
     if(result.data){

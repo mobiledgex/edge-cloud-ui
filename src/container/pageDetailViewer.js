@@ -55,12 +55,13 @@ const makeTable = (values, label, i) => (
                                             :(label == 'OrganizationName')?'Organization Name'
                                                 :(label == 'IpAccess')?'IP Access' /* Cluster Inst */
                                                     :(label == 'Mapped_port')?'Mapped Port' /* Cluster Inst */
-
-                                                        :label}
+                                                        :(label == 'AppName')?'App Name'
+                                                            :(label == 'ClusterInst')?'Cluster Instance'
+                                                                :label}
                     </Header.Content>
                 </Header>
             </Table.Cell>
-            <Table.Cell onClick = {() => console.log('label@@@@',values)}>
+            <Table.Cell>
                 {(label === 'Ip_support' && String(values[label]) == '1')?'Static'
                     :(label === 'Ip_support' && String(values[label]) == '2')?'Dynamic' /* Cloudlets */
                         :(label === 'IpAccess' && String(values[label]) == '1')?'Dedicated'
@@ -173,7 +174,6 @@ export default class PageDetailViewer extends React.Component {
     }
     onLayoutChange(layout) {
         //this.props.onLayoutChange(layout);
-        console.log('changed layout = ', JSON.stringify(layout))
     }
     onChangeTab = (e, data) => {
         if(data.activeIndex === 1 && _self.state.page) {
@@ -204,7 +204,6 @@ export default class PageDetailViewer extends React.Component {
         ))
     }
     receiveInstanceInfo(result) {
-                console.log('20190812 result...', result)
         _self.setState({monitorData:result})
         _self.forceUpdate()
     }

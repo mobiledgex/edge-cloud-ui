@@ -19,7 +19,6 @@ export default class PopUserViewer extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('regist new item -- ', nextProps)
         if(nextProps.open) {
             this.setState({open:nextProps.open, dimmer:nextProps.dimmer, propsData:nextProps.data});   
         }

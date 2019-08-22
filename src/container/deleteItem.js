@@ -43,7 +43,6 @@ class DeleteItem extends React.Component {
             let toJson = toArray.map((str)=>(JSON.parse(str)))
             
             toJson.map((item) => {
-                console.log("success@@@@@",toJson)
                 if(item.result && item.result.code == 400){
                     this.props.handleAlertInfo('error',item.result.message)
                     return
@@ -63,18 +62,6 @@ class DeleteItem extends React.Component {
                 _self.props.refresh('All');
             }, 3000);
         }
-        
-
-        
-        // console.log('registry delete ... success result..', result.data)
-        
-        // console.log("deleteCluster@@@",result.data)
-        // if(result.data.error) {
-        //     this.props.handleAlertInfo('error',result.data.error)
-        // } else if (result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
-        //     this.props.handleAlertInfo('success',msg+' deleted successfully'+msg2)
-        // }
-
         
     }
 
@@ -111,7 +98,6 @@ class DeleteItem extends React.Component {
         }
 
         this.props.handleLoadingSpinner(false);
-        console.log('user delete ... success result..', result.data, body);
         if(result.data.message) {
             this.props.handleAlertInfo('success',msg)
         } else if(result.data.error) {
@@ -134,7 +120,6 @@ class DeleteItem extends React.Component {
         }
     }
     onHandleDelete() {
-        console.log('on handle delete item == ',this.props.siteId, this.props.selected);
         let select = this.props.selected;
         let region = this.props.region;
         let serviceBody = {}
@@ -143,7 +128,6 @@ class DeleteItem extends React.Component {
         let serviceNm = '';
         if(this.props.siteId === 'ClusterInst'){
             const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region} = this.props.selected
-            console.log("clusterInst@@@@",this.props.selected);
             serviceNm = 'DeleteClusterInst';
             serviceBody = {
                 "token":store.userToken,
@@ -261,7 +245,6 @@ class DeleteItem extends React.Component {
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveListSubmit)
         } else if(this.props.siteId === 'App') {
-            console.log("select@@@##",this.props.selected)
             const {OrganizationName, AppName, Version, Region, ImagePath, ImageType, Ports, DefaultFlavor, DeploymentType} = this.props.selected
             serviceNm = 'DeleteApp'
             serviceBody = {
@@ -285,19 +268,10 @@ class DeleteItem extends React.Component {
             service.deleteCompute(serviceNm, serviceBody, this.receiveListSubmit)
         }
         
-
-
-        console.log("delete@@@",serviceNm,serviceBody)
-        //service_compute_service
-        //service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
-
-        //playing spinner
-        //this.props.handleSpinner(true)
     }
 
     /** ************************ **/
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log("dddnextProps",nextProps)
         if(nextProps.open){
             let name = '';
             this.setState({showWarning:nextProps.open})
@@ -350,8 +324,6 @@ class DeleteItem extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log("siteFour@@@stateRedux ::: ",state)
-
     return {
         selectOrg : state.selectOrg.org?state.selectOrg.org:null
     }

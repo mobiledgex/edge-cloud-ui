@@ -150,7 +150,6 @@ class EditMap extends Component {
 
     // map marker text click
     handleAnnoteClick(city) {
-        console.log("@@@&&",city)
     }
 
     // handleGotoAnalysis(country) {
@@ -163,7 +162,6 @@ class EditMap extends Component {
      */
     handleViewZone(country) {
         //change the data of detail Info
-        console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++', country)
         _self.setState({selectedCity: country.name})
         if(d3.selectAll('.detailMarker_'+_self.state.oldCountry)) {
             d3.selectAll('.detailMarker_'+_self.state.oldCountry)
@@ -220,13 +218,11 @@ class EditMap extends Component {
         const y = evt.clientY + window.pageYOffset
     }
     handleLeave() {
-        console.log('tooltip hide -- ')
         //this.props.dispatch(hide())
     }
 
     handleMapClick = (a,b,c,d) => {
-        console.log(a)
-        console.log(b)
+       
     }
 
     componentDidMount() {
@@ -250,7 +246,6 @@ class EditMap extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("location@@$$$",nextProps)
         if(nextProps.locationLongLat) {
             this.handleCityLocation(nextProps.locationLongLat)
         } else {

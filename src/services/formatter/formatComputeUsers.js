@@ -45,14 +45,12 @@ const numberDes =(a,b)=> (
 )
 
 let generateData = (datas) => {
-    console.log('format data users- ', datas)
     let result = datas;
     let values = [];
     //20190409 transition string to json
     //let toArray = result.data.split('\n')
 
     let toJson = result.data;
-    console.log('format data toJson- ', toJson)
 
     if(toJson){
         toJson.map((dataResult, i) => {

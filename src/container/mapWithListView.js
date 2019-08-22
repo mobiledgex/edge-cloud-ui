@@ -41,18 +41,6 @@ const override = {
     borderColor: 'red'
 }
 
-// const MyCustomContentTemplate = (item) => {
-//     console.log("mycuster@@",item)
-    
-//     return (
-//         <div className='ProgressBox'>
-//             <VerticalLinearStepper item={item} />
-//             {/* <button className="customButton" onClick={handleConfirm.bind(this)}>Confirm</button> */}
-//             <span className='s-alert-close' ></span>
-//         </div>
-//     );
-// }
-
 const ContainerOne = (props) => (
 
     <ClustersMap parentProps={props} />
@@ -106,24 +94,12 @@ class MapWithListView extends React.Component {
     }
 
     onHandleClick(dim, data) {
-        console.log('on handle click == ', data)
         this.setState({ dimmer:dim, open: true, selected:data })
     }
 
 
     onItemOver(itemData,key, evt) {
-        console.log('11',itemData,'22',this.state,'33',key)
-
         this.setState({selectedItem:key})
-        // this.state.orgData.data.map((item,i) => {
-        //     if(item.org == useData.Organization) {
-        //         console.log('item role =',item.role)
-        //         this.props.handleUserRole(item.role)
-        //     }
-        // })
-
-        // this.props.handleBlinkMark(true)
-
     }
 
     show = (dim) => this.setState({ dimmer:dim, open: true })
@@ -159,18 +135,16 @@ class MapWithListView extends React.Component {
         _self.setState({sideVisible:detailMode})
     }
     handleSort = clickedColumn => (a) => {
-
+        console.log('20190819 handle sort..', a)
         _self.setState({sorting : true});
         const { column, dummyData, direction } = _self.state
-        //console.log('20190724 selected column == ', clickedColumn, a, ":", column, ":", dummyData);
         if ((column !== clickedColumn) && dummyData) {
-            let sorted = _.sortBy(dummyData, [clm => String(clm[clickedColumn]).toLowerCase()])
+            let sorted = _.sortBy(dummyData, [clm => typeof clm[clickedColumn] === 'string' ? String(clm[clickedColumn]).toLowerCase(): clm[clickedColumn]])
             this.setState({
                 column: clickedColumn,
                 dummyData: sorted,
                 direction: 'ascending',
             })
-            this.forceUpdate()
         } else {
             let reverse = dummyData.reverse()
             this.setState({
@@ -180,7 +154,7 @@ class MapWithListView extends React.Component {
 
         }
 
-        setTimeout(() => _self.setState({sorting : false}), 1000)
+        //setTimeout(() => _self.setState({sorting : false}), 1000)
     }
     generateStart () {
 
@@ -252,7 +226,6 @@ class MapWithListView extends React.Component {
         const { column, direction } = this.state
         let keys = Object.keys(_keys);
         let widthDefault = Math.round(16/keys.length);
-        console.log('default width header -- ', widthDefault)
 
         return keys.map((key, i) => (
             (!( String(hidden).indexOf(key) > -1 ))?
@@ -261,7 +234,7 @@ class MapWithListView extends React.Component {
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell key={i} className={(key === 'CloudletLocation' || key === 'Edit' || key === 'Progress')?'unsortable':''} textAlign='center' sorted={column === key ? direction : null} onClick={(key == 'CloudletLocation' || key == 'Edit' || key == 'Progress')?null:this.handleSort(key)}>
+                <Table.HeaderCell key={i} className={(key === 'CloudletLocation' || key === 'Edit' || key === 'Progress')?'unsortable':''} textAlign='center' sorted={column === key ? direction : null} onClick={(key == 'CloudletLocation' || key == 'Edit' || key == 'Progress' || key == 'Ports' )?null:this.handleSort(key)}>
                     {(key === 'CloudletName')? 'Cloudlet Name'
                         : (key === 'CloudletLocation')? 'Cloudlet Location'
                             : (key === 'ClusterName')? 'Cluster Name'
@@ -278,7 +251,6 @@ class MapWithListView extends React.Component {
 
     onLayoutChange(layout) {
         //this.props.onLayoutChange(layout);
-        console.log('changed layout = ', JSON.stringify(layout))
     }
     onPortClick(a,b) {
         alert(b[a])
@@ -292,13 +264,10 @@ class MapWithListView extends React.Component {
     )
     stateView(_item) {
         Alert.closeAll();
-        if(_item.Status.task_number === 1){
-            localStorage.setItem('clusterinstCreateStep', _item.Status.task_name)
-        }
 
         Alert.info(
             <div className='ProgressBox' style={{minWidth:250}}>
-                <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}   />
+                <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh}  />
             </div>, {
             position: 'top-right', timeout: 'none', limit:1,
             //onShow: this.progressShow('clusterInst'),
@@ -307,10 +276,25 @@ class MapWithListView extends React.Component {
     }
 
     setAlertRefresh = () => {
+        let msg = '';
+        console.log("setAlertRefresh")
         this.props.dataRefresh();
         Alert.closeAll();
-        this.props.handleAlertInfo('success','Your cluster instance created successfully')
+        if(this.props.siteId == 'ClusterInst') msg = 'Your cluster instance created successfully'
+        else if(this.props.siteId == 'appinst') msg = 'Your app instance created successfully'
+
+        this.props.handleAlertInfo('success',msg)
+        
     }
+
+    setAlertFailRefresh = (msg) => {
+        console.log("setAlertFailRefresh")
+        this.props.dataRefresh();
+        Alert.closeAll();
+        this.props.handleAlertInfo('error',msg)
+    }
+
+    
     makeUTC = (time) => (
         moment.unix( time.replace('seconds : ', '') ).utc().format('YYYY-MM-DD HH:mm:ss')
     )
@@ -318,16 +302,13 @@ class MapWithListView extends React.Component {
 
         let isNew = false;
         let darray = [];
-        console.log('pure date........... ..', date)
         if(date) {
             let formatDate = this.makeUTC(date);
 
             let fromNow = moment(formatDate).utc().startOf('day').fromNow();
-            console.log('from now. ', fromNow)
             if(fromNow === 'a day ago') fromNow = '24 hours ago'
             darray = fromNow.split(' ')
             if(fromNow.indexOf('hours') > -1 && (parseInt(darray[0]) <= 24 || fromNow === 'a day ago') ) isNew = true;
-            console.log('is new... ', 'date=', formatDate, 'isNew =',isNew, parseInt(darray[0]),"::",darray[0])
         } else {
 
         }
@@ -344,7 +325,7 @@ class MapWithListView extends React.Component {
     TableExampleVeryBasic = (w, h, headL, hidden, dummyData) => (
         <Table className="viewListTable" basic='very' striped celled fixed sortable ref={ref => this.viewListTable = ref} style={{width:'100%'}}>
             <Table.Header className="viewListTableHeader"  style={{width:'100%'}}>
-                <Table.Row onMouseOver={() => console.log('onMouseOver..')}>
+                <Table.Row>
                     {(dummyData.length > 0)?this.makeHeader(dummyData[0], headL, hidden):null}
                 </Table.Row>
             </Table.Header>
@@ -426,7 +407,6 @@ class MapWithListView extends React.Component {
         </Table>
     )
     handleMouseOverCell(value) {
-        console.log('mouse over cell ', value, 'tooltip = ', this.tooltipref)
         this.setState({tooltipMsg:value})
         ReactTooltip.rebuild()
         ReactTooltip.show(this.tooltipref)
@@ -449,7 +429,6 @@ class MapWithListView extends React.Component {
         this.props.handleSetHeader([])
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log('-----component did update ------')
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -491,8 +470,6 @@ class MapWithListView extends React.Component {
              * filtering
              */
 
-            // console.log('20190718 newData...', this.state.dummyData)
-            // console.log('20190718 nextProps.devData...', nextProps.devData)
             // let newData = [];
             // let headers = Object.keys(nextProps.devData[0]);
             // let copyData = Object.assign([], nextProps.devData);
@@ -510,7 +487,6 @@ class MapWithListView extends React.Component {
 
 
 
-            // console.log('20190718 newData 2222222222222', copyData)
             // this.setState({dummyData:copyData})
 
 
@@ -586,10 +562,9 @@ class MapWithListView extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+    console.log("statestatestate",state)
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;
-    console.log('account -- '+account)
-    console.log(state)
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let viewMode = null;

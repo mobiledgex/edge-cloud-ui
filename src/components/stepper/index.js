@@ -12,7 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { Progress } from 'semantic-ui-react';
 
-
+let failFlag = false;
 
 
 
@@ -34,160 +34,98 @@ class VerticalLinearStepper extends React.Component {
 
     componentDidMount() {
         this.AlertInterval = setInterval(
-            () => this.receiveInterval(this.props.site,2),
-            5000
+            () => this.receiveInterval(this.props.site),
+            3000
         );       
     }
 
     componentWillMount() {
         this.setState({_item:this.props.item})
-        this.receiveInterval(this.props.site,1)
+        this.receiveInterval(this.props.site)
     }
     
 
     componentWillUnmount() {
-        console.log("componentWillUnmount")
         clearInterval(this.AlertInterval)
     }
 
-    receiveInterval = (data,num) => {
-        console.log("receiveInterval",data,this.props.item)
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
-        if(this.props.item.State !== 5) {
-            if(data === 'ClusterInst') {
-                computeService.getMCService('ShowClusterInst',{token:store.userToken, region:this.props.item.Region}, this.receiveResultClusterInst)
-            } else if(data === 'appinst') {
-                computeService.getMCService('ShowAppInst',{token:store.userToken, region:this.props.item.Region}, this.receiveResultClusterInst)
-            }
-            if(num === 2) {
-                if(this.percent(this.state._item) == 100) {
-                    this.props.alertRefresh();
-                    return false;
-                }
-            }
-            
-        } else {
-            this.receiveResultClusterInst([this.props.item])
+    receiveInterval = (data) => {
+        console.log("receiveIntervalreceiveInterval",this.props.item)
+        if(this.props.item.State == 3) {
+            computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusData)
+        } else if(this.props.item.State == 5) {
+            this.setState({steps:['Created successfully'],activeStep:1})
+            clearInterval(this.AlertInterval)
+        } else if(this.props.item.State == 10 || this.props.item.State == 12) {
+            this.setState({steps:['DeletePrepare', 'Deleting'],activeStep:1})
+            clearInterval(this.AlertInterval)
+        } else  {
+            this.setState({steps:['Create error'],activeStep:1})
         }
         
     }
 
-    receiveResultClusterInst = (result) => {
-        console.log("resultstepper",result,this.props.site)
-        result.map((item,i) => {
-            if((this.props.site === 'ClusterInst')?(item.ClusterName == this.props.item.ClusterName && item.Cloudlet == this.props.item.Cloudlet):(item.AppName == this.props.item.AppName && item.Cloudlet == this.props.item.Cloudlet && item.ClusterInst == this.props.item.ClusterInst)) {
-                this.setState({_item:item,steps:this.getSteps(item,this.props.site)})
-
-                let task_number = 0;
-                if(!item.Status.task_number){
-                    task_number = 0;
-                } else {
-                    task_number = item.Status.task_number;
+    receiveStatusData = (result) => {
+        let toArray = null;
+        let toJson = null;
+        let stepData = [];
+        toArray = result.data.split('\n')
+        toArray.pop();
+        toJson = toArray.map((str)=>(JSON.parse(str)))
+        toJson.map((item,i) => {
+            if(item.data) {
+                stepData.push(item.data.message)
+                if(item.data.message == 'Created successfully'){
+                    setTimeout(() => {
+                        this.props.alertRefresh();
+                        computeService.deleteTempFile(this.props.item, this.props.site)
+                    }, 2000);
                 }
-
-                let _activeStep = 0
-                //Delete
-                if(item.State == 10 || item.State == 12){
-                    if(item.State == 12) _activeStep = 0
-                    else if(item.State == 10) _activeStep = 1
-                    else _activeStep = 2
-                }
-                //Create
-                if(!task_number && item.State == 3){
-                    _activeStep = 0
-                } else if(task_number && item.State == 3) {
-                    _activeStep = task_number-1
-                } else {
-                    _activeStep = 3
-                }
-
-                
-                console.log("_activeStep@@",_activeStep)
-                this.setState({activeStep:_activeStep})
+            } else if(item.result && item.result.code == 400 && !failFlag){
+                console.log("failRefreshfailRefreshfailRefresh")
+                failFlag = true;
+                stepData.push(item.result.message)
+                setTimeout(() => {
+                    this.props.failRefresh(item.result.message);
+                    computeService.deleteTempFile(this.props.item, this.props.site)
+                }, 3000);
             }
         })
+        console.log("toArraytoArray",stepData)
+        this.setState({steps:stepData, activeStep:stepData.length-1})
+
     }
 
-    getSteps = (data,site) => {
-        let detailArr = [];
-        if(data && (data.State == 10 || data.State == 12)) {
-            return [
-                'DeletePrepare',
-                'Deleting'
-            ];
-        } else {
-            if(data.State == 5) {
-                detailArr.push('Created successfully')
-            } else if(data.State == 3) {
-                for(var i=0; i<data.Status.task_number; i++) {
-                    if(data.Status.task_number !== (i+1)){
-                        detailArr.push('step'+(i+1)+' Created ')
-                    } else{
-                        detailArr.push(data.Status.task_name)
-                    }
-                }
-            }
-            return detailArr
-        }
+    
+
         
-    }
-    // getSteps = (data,site) => {
-    //     if(data && (data.State == 10 || data.State == 12)) {
-    //         return [
-    //             'DeletePrepare',
-    //             'Deleting'
-    //         ];
+    // }
+    // percent = (item) => {
+    //     if(this.props.item.State == 10 || this.props.item.State == 12) {
+    //         if(item.State == 12) return 50
+    //         else if(item.State == 10) return 80
+    //         else return 100
     //     } else {
-    //         if(site && site == 'ClusterInst'){
-    //             return [
-    //                 (data.Status.task_name)?localStorage.clusterinstCreateStep:'Creating Heat Stack',
-    //                 'Waiting for Cluster to Initialize',
-    //                 'Updating Docker Credentials for cluster'
-    //             ];
-    //         } else if(site && site == 'appinst') {
-    //             return [
-    //                 'Setting up registry secret',
-    //                 'Creating Kubernetes App',
-    //                 'Configuring Service: LB, Firewall Rules and DNS'
-    //             ];
-    //         } else {
-    //             return ['no data']
+    //         if(this.props.site == 'ClusterInst') {
+    //             if(Object.keys(item.Status).length === 0 && item.State == 3) return 10
+    //             else if(item.Status.task_number == 1 && !item.Status.step_name) return 20
+    //             else if(item.Status.task_number == 1 && item.Status.step_name) return 30
+    //             else if(item.Status.task_number == 2 && !item.Status.step_name) return 50
+    //             else if(item.Status.task_number == 2 && item.Status.step_name) return 70
+    //             else if(item.Status.task_number == 3) return 90
+    //             else if(Object.keys(item.Status).length === 0 && item.State == 5) return 100
+    //         } else if(this.props.site == 'appinst') {
+    //             if(Object.keys(item.Status).length === 0 && item.State == 3) return 10
+    //             else if(item.Status.task_number == 1) return 30
+    //             else if(item.Status.task_number == 2) return 50
+    //             else if(item.Status.task_number == 3) return 80
+    //             else if(Object.keys(item.Status).length === 0 && item.State == 5) return 100
     //         }
             
     //     }
-        
     // }
-    percent = (item) => {
-        console.log("itemitem",item)
-        if(this.props.item.State == 10 || this.props.item.State == 12) {
-            if(item.State == 12) return 50
-            else if(item.State == 10) return 80
-            else return 100
-        } else {
-            if(this.props.site == 'ClusterInst') {
-                if(Object.keys(item.Status).length === 0 && item.State == 3) return 10
-                else if(item.Status.task_number == 1 && !item.Status.step_name) return 20
-                else if(item.Status.task_number == 1 && item.Status.step_name) return 30
-                else if(item.Status.task_number == 2 && !item.Status.step_name) return 50
-                else if(item.Status.task_number == 2 && item.Status.step_name) return 70
-                else if(item.Status.task_number == 3) return 90
-                else if(Object.keys(item.Status).length === 0 && item.State == 5) return 100
-            } else if(this.props.site == 'appinst') {
-                if(Object.keys(item.Status).length === 0 && item.State == 3) return 10
-                else if(item.Status.task_number == 1) return 30
-                else if(item.Status.task_number == 2) return 50
-                else if(item.Status.task_number == 3) return 80
-                else if(Object.keys(item.Status).length === 0 && item.State == 5) return 100
-            }
-            
-        }
-    }
 
-    getStepContent = (step,data) => {
-        console.log("datadata",data.Status.step_name)
-        return (data.Status.step_name)?data.Status.step_name:'';
-    }
+ 
 
     useStyles = makeStyles(theme => ({
         root: {
@@ -207,20 +145,16 @@ class VerticalLinearStepper extends React.Component {
 
     render() {
         const { steps,activeStep } = this.state;
-        console.log("getsteps222",steps)
         let classes = this.useStyles
         return (
             <div>
-                <div>
+                {/* <div>
                     <Progress percent={this.percent(this.state._item)} progress />
-                </div>
+                </div> */}
                 <Stepper activeStep={activeStep} orientation="vertical">
                     {steps.map((label, index) => (
                         <Step key={label}>
                             <StepLabel>{label}</StepLabel>
-                            <StepContent>
-                                <Typography>{this.getStepContent(index,this.state._item)}</Typography>
-                            </StepContent>
                         </Step>
                     ))}
                 </Stepper>

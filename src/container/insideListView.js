@@ -55,7 +55,6 @@ class InsideListView extends React.Component {
 
     }
     gotoUrl(site, subPath, pg) {
-        console.log('999',_self.props.history)
         _self.props.history.push({
             pathname: site,
             search: subPath,
@@ -65,28 +64,23 @@ class InsideListView extends React.Component {
         _self.props.handleChangeSite({mainPath:site, subPath: subPath})
     }
     onHandleClick(dim, data) {
-        console.log('on handle click == ', data)
         this.setState({ dimmer:dim, open: true, selected:data })
         //this.props.handleChangeSite(data.children.props.to)
     }
     onHandleClickAdd(dim, data) {
-        console.log('on handle click == ', data)
         this.setState({ dimmer:dim, openAdd: true, selected:data })
         //this.props.handleChangeSite(data.children.props.to)
     }
     onHandleClickAddApp(dim, data) {
-        console.log('on handle click == ', data)
         this.setState({page:'pg=createAppInst'})
     }
 
     onUseOrg(useData,key, evt) {
-        console.log("onuseorg",useData,this.props.roleInfo,key)
 
         this.setState({selectUse:key})
         if(this.props.roleInfo) {
             this.props.roleInfo.map((item,i) => {
                 if(i == key) {
-                    console.log('item role =',item.role)
                     this.props.handleUserRole(item.role)
                     localStorage.setItem('selectOrg', useData.Organization)
                     localStorage.setItem('selectRole', item.role)
@@ -195,9 +189,9 @@ class InsideListView extends React.Component {
 
         this.sorting = true;
         const { column, dummyData, direction } = _self.state
-        //console.log('20190724 selected column == ', clickedColumn, a, ":", column, ":", dummyData);
         if ((column !== clickedColumn) && dummyData) {
-            let sorted = _.sortBy(dummyData, [clm => String(clm[clickedColumn]).toLowerCase()])
+            //let sorted = _.sortBy(dummyData, [clm => String(clm[clickedColumn]).toLowerCase()])
+            let sorted = _.sortBy(dummyData, [clm => typeof clm[clickedColumn] === 'string' ? String(clm[clickedColumn]).toLowerCase(): clm[clickedColumn]])
             this.setState({
                 column: clickedColumn,
                 dummyData: sorted,
@@ -223,14 +217,13 @@ class InsideListView extends React.Component {
         let filteredKeys = (visibles) ? reducer.filterDefine(keys, visibles) : keys;
 
         let widthDefault = Math.round(16/filteredKeys.length);
-        console.log('default width header -- ', widthDefault, filteredKeys)
         return filteredKeys.map((key, i) => (
             (i === filteredKeys.length -1) ?
                 <Table.HeaderCell key={i} className='unsortable' width={(this.props.siteId == 'Organization')?3:2} textAlign='center'>
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell key={i} className={(key === 'Phone' || key === 'Address')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address')?this.handleSort(key):null}>
+                <Table.HeaderCell key={i} className={(key === 'Phone' || key === 'Address')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address' && key !== 'Ports')?this.handleSort(key):null}>
                     {(key === 'FlavorName')? 'Flavor Name'
                         : (key === 'RAM')? 'RAM Size'
                             : (key === 'vCPUs')? 'Number of vCPUs'
@@ -246,13 +239,11 @@ class InsideListView extends React.Component {
 
     onLayoutChange(layout) {
         //this.props.onLayoutChange(layout);
-        console.log('changed layout = ', JSON.stringify(layout))
     }
     onPortClick() {
 
     }
     detailView(item) {
-        console.log("user >>>> ",item)
         // if(!item['Username']){
         //     this.setState({detailViewData:item, openDetail:true})
         // } else {
@@ -274,7 +265,6 @@ class InsideListView extends React.Component {
             (type.indexOf('operator')!==-1) ? <div className="mark type markO markM"></div> : <div></div>
     )
     addUserDisable = (orgName) => {
-        console.log("disable@@",this.props.roleInfo)
         let dsb = false;
         if(this.props.roleInfo && localStorage.selectRole !== 'AdminManager'){
             this.props.roleInfo.map((item,i) => {
@@ -289,7 +279,6 @@ class InsideListView extends React.Component {
         return dsb;
     }
     appLaunch = (data) => {
-        console.log("launch@@",data)
         this.gotoUrl('/site4', 'pg=createAppInst','pg=5')
         this.props.handleAppLaunch(data)
         // this.props.handleChangeComputeItem('App Instances')
@@ -390,7 +379,6 @@ class InsideListView extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('20190808 developerListViewe nextProps@@3',nextProps,this.props.siteId,'rndid =', nextProps.randomId)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -402,7 +390,6 @@ class InsideListView extends React.Component {
         }
         if(nextProps.searchValue) {
             let searchData  = reducer.filterSearch(nextProps.devData,nextProps.searchValue,nextProps.searchType);
-            console.log("searchresult@@@",searchData)
             this.setState({dummyData:searchData})
         }
     }
@@ -451,11 +438,8 @@ class InsideListView extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log("store state:::",state);
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;
-    console.log('account -- '+account)
-    
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
 

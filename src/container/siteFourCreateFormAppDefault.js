@@ -137,7 +137,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
     // data.map((dt) => {
     handleInitialize(data) {
-        console.log('data,,,', data)
         const initData = [];
         if(data.length){
 
@@ -150,7 +149,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
 
     componentDidMount() {
-        console.log("this.props.data.data[0]",this.props.data.data[0])
         if(this.props.data && this.props.data.data.length){
             let keys = Object.keys(this.props.data.data[0])
             this.setState({data:this.props.data.data[0], regKeys:keys, fieldKeys:this.props.data.keys, pId:this.props.pId})
@@ -170,7 +168,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("SiteFourCreateFormAppDefault22 --> ",this.state.portArray)
         if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
@@ -189,7 +186,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
     }
 
     getLabel (key, pId) {
-        // console.log('key - ', key, 'pid -', pId, 'value-', this.state.fieldKeys[pId])
         return (this.state.fieldKeys && this.state.fieldKeys[pId][key]) ? this.state.fieldKeys[pId][key]['label'] : null
     }
     getNecessary (key, pId) {
@@ -206,12 +202,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
     )
     onHandleSubmit() {
         this.props.handleSubmit();
-        // setTimeout(() => {
-        //     this.props.dispatch(initialize('createAppFormDefault', {
-        //         submitSucceeded: false
-        //     }))
-        // },100);
-        //setTimeout(() => this.props.dispatch(reset('createAppFormDefault')),1000);
     }
 
     handleRegionChange = (e) => {
@@ -238,21 +228,20 @@ class SiteFourCreateFormAppDefault extends React.Component {
     }
     receiveResult = (result) => {
         let arr = [];
-        console.log("receive == ", result)
         result.map((item,i) => {
-            arr.push(item.Organization);
+            if(item.Type === 'developer'){
+                arr.push(item.Organization);
+            }
         })
         this.setState({orgArr:arr});
     }
 
     cancelClick = (e) => {
-        console.log("eeeesse@@",this.props)
         e.preventDefault();
         this.props.gotoUrl()
     }
 
     onHandleChange(key,value){
-        console.log("key@@@@@@",key,value)
         if(key === 'DeploymentType') {
             if(value == 'VM') {
                 this.setState({deployAPK:true})
@@ -265,7 +254,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
     render (){
         const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
         const { data, regKeys, fieldKeys } = this.state;
-        console.log("data@fo@@22",this.props.validError,':::',regKeys)
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         return (
 
@@ -295,7 +283,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                 placeholder={data[key]}
                                                                 value={data[key] || ''}
                                                                 name={key}
-                                                                onChange={()=>console.log('onChange text..')}/>
+                                                                />
 
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'RenderSelect') ?
@@ -315,7 +303,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                 value={data[key]}
                                                                 options={fieldKeys[pId][key]['items']}
                                                                 name={key}
-                                                                onChange={()=>console.log('onChange text..')}/>
+                                                                />
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'FlavorSelect') ?
                                                             <Field
@@ -324,7 +312,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                 value={data[key]}
                                                                 options={this.props.flavorData}
                                                                 name={key}
-                                                                onChange={()=>console.log('onChange text..')}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'RegionSelect') ?
@@ -344,7 +331,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                     placeholder={fieldKeys[pId][key].items}
                                                                     type="input"
                                                                     name={key}
-                                                                    onChange={()=>console.log('onChange text..')}
                                                                     value={fieldKeys[pId][key].items}
                                                                     error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
                                                                     />
@@ -366,7 +352,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                         placeholder={'Select Organization Name'}
                                                                         options={this.state.orgArr}
                                                                         name={key}
-                                                                        onChange={()=>console.log('onChange text..')}
                                                                         error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                                 :
                                                                     <Field
@@ -399,7 +384,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                     //value={data[key]}
                                                                                     options={fieldKeys[pId][key]['items']}
                                                                                     name={key+'select_'+item}
-                                                                                    onChange={()=>console.log('onChange text..')}
                                                                                     error={(this.props.validError.indexOf(key+'select_'+i) !== -1)?'Required':''}
                                                                                     />
                                                                             </Grid.Column>

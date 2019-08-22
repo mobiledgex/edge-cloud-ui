@@ -306,7 +306,6 @@ class Login extends Component {
         } else if(nextProps.loginMode === 'resetPass'){
             this.setState({successCreate:false, loginMode:'resetPass', forgotMessage:false, forgotPass:false});
         } else if(nextProps.loginMode === 'signuped' && nextProps.createSuccess){
-            console.log('20190809 signuped usrinfo.. ', nextProps.userInfo)
             let email = nextProps.userInfo && nextProps.userInfo.email;
             let msgTxt = `Thank you for signing up. Please verify your account.
                             In order to login to your account, you must verify your account. 
@@ -332,13 +331,6 @@ class Login extends Component {
     }
     resultCreateUser(result, resource) {
         let message = (result.data.message)? result.data.message : null;
-        // console.log('msg-',message)
-        // if(message.indexOf('duplicate') > -1){
-        //     message = 'Already exist ID!'
-        // }
-        // if(message.indexOf('Email' && 'already') > -1){
-        //     message = 'Email already in use'
-        // }
         self.onProgress(false)
 
         if(message.indexOf('created') > -1) {

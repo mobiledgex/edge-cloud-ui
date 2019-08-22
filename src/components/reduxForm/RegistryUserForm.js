@@ -6,7 +6,6 @@ import './styles.css';
 
 let _errors = null;
 const validate = values => {
-    // console.log("signupVali@@",values)
     const errors = {}
     if (!values.username) {
         errors.username = 'Required'
@@ -103,7 +102,6 @@ class RegistryUserForm extends React.Component{
         }
     }
     onHandleSubmit =(a,b)=> {
-        console.log('+++++++++on handle submit +++++', a, b, 'errors =',Object.keys(_errors))
 
         //if  any has error as validation
         this.props.handleSubmit();
