@@ -284,6 +284,7 @@ class SiteFour extends React.Component {
         let mainPath = '/site4';
         let subPath = 'pg='+pg;
         _self.props.history.location.search = "pg="+pg;
+        _self.props.handleChangeStep(pg)
         _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label })
         localStorage.setItem('selectMenu', label)
     }
@@ -402,7 +403,7 @@ class SiteFour extends React.Component {
         console.log('20190821 siteName==', this.props.siteName, 'change org step..', this.props.changeStep)
         let site = this.props.siteName;
         if(site.mainPath === "/site4" && site.subPath === "pg=newOrg") {
-            if(this.props.changeStep === 2){
+            if(this.props.changeStep === '02'){
                 this.setState({steps : this.state.stepsNewOrg2})
             } else {
                 this.setState({steps : this.state.stepsNewOrg})
@@ -533,7 +534,7 @@ class SiteFour extends React.Component {
         }
 
         // set step value of guide
-        console.log('20190821 siteName==', this.props.siteName)
+        console.log('20190821 step==', this.props.changeStep)
 
         // saved tutorial
         let tutorial = localStorage.getItem('TUTORIAL')
@@ -555,10 +556,7 @@ class SiteFour extends React.Component {
         }, 1000)
 
         let site = this.props.siteName;
-        if(site.mainPath === "/site4" && site.subPath === "pg=newOrg") {
-            this.setState({enable : true})
-
-        } else if(site.mainPath === "/site4" && site.subPath === "pg=0") {
+        if(!this.props.changeStep || this.props.changeStep === '02') {
             this.setState({enable : true})
         } else {
             this.setState({enable:false})
@@ -977,6 +975,7 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
+        handleChangeStep: (data) => { dispatch(actions.changeStep(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleChangeViewBtn: (data) => { dispatch(actions.btnManagement(data))},

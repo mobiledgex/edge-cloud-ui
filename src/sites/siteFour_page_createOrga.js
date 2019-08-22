@@ -117,7 +117,7 @@ class SiteFourPageCreateorga extends React.Component {
         } else {
             this.props.handleAlertInfo('success','Your organization '+body.name+' created successfully')
             //goto next step
-            this.props.handleChangeStep(2)
+            this.props.handleChangeStep('02')
             this.setState({step:2})
         }
     }
