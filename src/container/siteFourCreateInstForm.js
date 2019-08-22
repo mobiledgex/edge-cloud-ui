@@ -129,7 +129,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
         this.setState({ locationLat: null,locationLong:null,toggle:false })
     }
     receiveResultOper(result) {
-        console.log('operators ==>>>>>>>>>>>> ', result)
         let operArr = [];
         let CloudArr = [];
 
@@ -164,7 +163,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
     }
     groupJoin(result,cmpt){
 
-        console.log('cluster inst show app list.. ', result, cmpt)
         this.props.data.handleLoadingSpinner(false);
 
         if(cmpt == 'organization'){
@@ -206,7 +204,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
     }
     onChangeFormState = (state) => {
-        console.log("flavor##@@",state)
         let organizKeys = [];
         let flavorKeys = [];
         let regions = aggregate.groupBy(_self.state.cloudletData, 'Region')
@@ -316,7 +313,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
             ]
         }
-        console.log('input flavor ', flavor)
         _self.setState({flavorConfig:flconfig, clusterName:_self.props.clusterName})
     }
 
@@ -327,7 +323,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
         if(region !== 'All'){
             rgn = [region]
         }
-        console.log("dsssd@@",region,rgn)
         rgn.map((item) => {
             services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
             services.getMCService('ShowFlavor',{token:store.userToken, region:item}, _self.receiveResultFlavor)
@@ -343,7 +338,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log("rerererer@@",nextProps)
         if(nextProps.data) this.setState({devData: nextProps.data, keys:nextProps.keys})
         //reset cluster and node count
         if(nextProps.nodeNumber || nextProps.selectedFlavor) {
@@ -362,8 +356,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
     }
 
     clusterHide = (value) => {
-        console.log("clusterhide",value)
-        
         if(value === 'Docker' && panes.length == 2) {
             panes.pop();
             this.setState({clusterShow:false})
@@ -392,11 +384,8 @@ class SiteFourCreateInstForm extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    console.log("store state:::",state);
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;
-    console.log('account -- '+account)
-
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;

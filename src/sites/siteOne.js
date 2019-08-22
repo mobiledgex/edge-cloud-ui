@@ -74,7 +74,6 @@ class SiteOne extends Component  {
 
     }
     componentWillReceiveProps(nextProps) {
-        console.log('receive props in siteOne  ----- '+JSON.stringify(nextProps))
         /*
         라우터 사용 예제
         import React from "react";
@@ -97,7 +96,6 @@ class SiteOne extends Component  {
 
     }
     shouldComponentUpdate(nextProps, nextState) {
-        //console.log("업데이트 할지 말지: " + JSON.stringify(nextProps) + " " + JSON.stringify(nextState));
         return true;
     }
     render() {
@@ -110,7 +108,6 @@ class SiteOne extends Component  {
 
 const mapStateToProps = (state) => {
     let site = state.siteChanger.site;
-    console.log('site -- '+site)
     let tab = state.tabChanger.tab;
     return {
         tabName: tab,

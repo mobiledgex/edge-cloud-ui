@@ -31,9 +31,10 @@ import appLaunch from './appLaunch';
 import alertInfo from './alertInfo';
 import createAccount from './createAccount';
 import tableHeader from './tableHeader';
+import changeStep from './changeStep';
 
 const reducers = combineReducers({
-    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor, loginMode,injectData,changeViewMode,createAccount, tableHeader,
+    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor, loginMode,injectData,changeViewMode,createAccount, tableHeader, changeStep,
     registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, searchValue, computeRefresh, loadingSpinner, creatingSpinner, alertMsg, roleInfo, appLaunch, alertInfo, form: formReducer
 });
 

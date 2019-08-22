@@ -185,6 +185,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
             filterData[itemCloudlet].map((items) => {
                 multiData.ClusterInst.map((itemCluster) => {
                     if(items.ClusterName == itemCluster || itemCluster == '' || itemCluster.indexOf('autocluster') > -1){
+                        console.log("fanillslslsl",itemCloudlet,":::",itemCluster)
                         return axios.post('https://'+hostname+':3030/CreateAppInst',qs.stringify({
                             service: resource,
                             serviceBody:body,
@@ -205,6 +206,25 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
                 if(String(multiData.ClusterInst[0]).indexOf('autocluster') > -1 || multiData.ClusterInst[0] == ""){
                     multiData.ClusterInst = [];
                 }
+            })
+        } else if(vmCheck) {
+            //Create VM
+            multiData.Cloudlet.map((items) => {
+                console.log("itemsitems",items)
+                return axios.post('https://'+hostname+':3030/CreateAppInst',qs.stringify({
+                    service: resource,
+                    serviceBody:body,
+                    serviceDomain:serviceDomain,
+                    multiCloudlet:items,
+                    multiCluster:''
+                }))
+                    .then(function (response) {
+                        console.log('response  registry new obj result VM AppInst-',response.data);
+                        callback(response, body)
+                    })
+                    .catch(function (error) {
+                        console.log("appinsterror",error);
+                    });
             })
         }
 
@@ -276,7 +296,7 @@ export function createNewClusterInst(resource, body, callback) {
         serviceDomain:serviceDomain
     })
         .then(function (response) {
-            console.log('response clusterInst result-',response);
+            console.log('20190820 response clusterInst result-',response);
             callback(response, body)
         })
         .catch(function (error) {
@@ -285,11 +305,10 @@ export function createNewClusterInst(resource, body, callback) {
 }
 //Multi Create
 export function createNewMultiClusterInst(resource, body, callback, multiData) {
-    axios.defaults.timeout = 1000000;
+    
+    axios.defaults.timeout = 100000000;
     axios.all(multiData.map((item) => {
-        //console.log("itemneuemulit",item,body)
-        //body.params.clusterinst.key.cloudlet_key.name = item
-        console.log("clusterCreate@111")
+        console.log("20190820 clusterCreate@111",item)
         return axios.post('https://'+hostname+':3030/CreateClusterInst',{
             service: resource,
             serviceBody:body,
@@ -297,17 +316,63 @@ export function createNewMultiClusterInst(resource, body, callback, multiData) {
             multiData:item
         })
             .then(function (response) {
-                console.log('response clusterInst result-',response);
+                console.log('20190820 multi response clusterInst result-',response);
                 callback(response, body)
             })
             .catch(function (error) {
-                console.log(error);
+                console.log("error1",error);
             });
     }))
-
-
-    
+   
 }
+
+
+export function creteTempFile(_item, _site, callback) {
+    console.log("_item_item",_item)
+    axios.post('https://'+hostname+':3030/CreteTempFile',{
+        item: _item,
+        site: _site
+    })
+        .then(function (response) {
+            console.log('20190820 result read status progress cluster inst...',response.data);
+            //if(response.data.indexOf('successfully') > -1) clearInterval(readInterval)
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log("error2",error);
+        });  
+}
+
+export function deleteTempFile(_item, _site) {
+    
+    axios.post('https://'+hostname+':3030/DeleteTempFile',{
+        item: _item,
+        site: _site
+    })
+        .then(function (response) {
+            console.log('20190820 result read status progress cluster inst...',response);
+            
+        })
+        .catch(function (error) {
+            console.log("error2",error);
+        });  
+}
+
+export function errorTempFile(_item, callback) {
+    axios.post('https://'+hostname+':3030/ErrorTempFile',{
+        item: _item,
+    })
+        .then(function (response) {
+            console.log('20190820 result read status progress ErrorTempFile',response.data);
+            //if(response.data.indexOf('successfully') > -1) clearInterval(readInterval)
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log("error2",error);
+        });  
+}
+
+
 
 export function createNewFlavor(resource, body, callback) {
     axios.post('https://'+hostname+':3030/CreateFlavor',{

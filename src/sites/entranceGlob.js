@@ -46,7 +46,6 @@ class EntranceGlobe extends Component {
 
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT).userToken : null
-        console.log('user info entranceGlobal ...', this.props,store)
         if(store) {
             this.setState({modalOpen: false, logined:true})
 
@@ -58,7 +57,6 @@ class EntranceGlobe extends Component {
         }
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('new props... ', nextProps)
         if(nextProps.user.userToken) {
             this.setState({modalOpen: false, logined:true})
         }
@@ -113,7 +111,6 @@ class EntranceGlobe extends Component {
 
     }
     receiveUser(result, resource, self) {
-        console.log('receive user info..', resource, result)
 
         if(result) {
             // make Export usperpass
@@ -126,7 +123,6 @@ class EntranceGlobe extends Component {
     }
 
     getInfoSuperuser(service) {
-        console.log('start get current user info..', self.spuserToken, global.userInfo)
 
         //static token : test token
         //self.spuserToken = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTM0Njk3MjIsImlhdCI6MTU1MzM4MzMyMiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImtpZCI6M30.Ytg1JWV_iPXCcRfWtWtlVgp3JAKsDro6IqKWqngvf_iF06mLzTkHfCSb4a8E5jd0rWFrrXvfByKZPTjo44-ycQ'
@@ -153,7 +149,6 @@ class EntranceGlobe extends Component {
                 self.goToNext("/logout")
             })
             .catch((err) => {
-                console.log("err: ", err)
                 localStorage.removeItem(LOCAL_STRAGE_KEY);
                 self.gotoNext("/logout")
             })
@@ -233,9 +228,6 @@ class EntranceGlobe extends Component {
                                 color={'#70b2bc'}
                                 loading={this.state.loading}
                             />
-                        </div>
-                        <div style={{ position:'absolute', bottom:'40px', width:'100%', display:'flex', justifyContent:'center' }}>
-                            <img src="../assets/brand/MobiledgeX_skt_2.svg" style={{ width:'300px', height:'50px' }} />
                         </div>
                     </div>
                     :

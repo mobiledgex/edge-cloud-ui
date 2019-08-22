@@ -55,20 +55,16 @@ class SiteFourPageFlavor extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
-        console.log('info.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // console.log('info.. store == ', store)
         if(store.userToken) {
             this.getDataDeveloper(this.props.changeRegion);
         }
     }
     componentWillReceiveProps(nextProps) {
-        console.log("@@@@WWWW@@",nextProps,this.props.changeRegion)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
@@ -77,7 +73,6 @@ class SiteFourPageFlavor extends React.Component {
             this.props.handleComputeRefresh(false);
         }
         if(this.props.changeRegion !== nextProps.changeRegion){
-            console.log("regionChange@@@@")
             this.getDataDeveloper(nextProps.changeRegion);
         }
         
@@ -90,7 +85,6 @@ class SiteFourPageFlavor extends React.Component {
             join = this.state.devData;
         }
         this.props.handleLoadingSpinner(false);
-        console.log("receive == ", result)
         if(result.error) {
             this.props.handleAlertInfo('error',result.error)
         } else {

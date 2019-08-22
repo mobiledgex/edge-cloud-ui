@@ -21,10 +21,12 @@ import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
 import ContainerDimensions from 'react-container-dimensions'
 import {Motion, spring} from "react-motion";
+import { Steps, Hints } from 'intro.js-react';
+
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import './siteThree.css';
+
 import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
 import HeaderGlobalMini from '../container/headerGlobalMini';
 
@@ -32,7 +34,7 @@ import HeaderGlobalMini from '../container/headerGlobalMini';
 import SiteFourPageFlavor from './siteFour_page_flavor';
 import SiteFourPageUser from './siteFour_page_user';
 import SiteFourPageAccount from './siteFour_page_account';
-import SiteFourPageCluster from './siteFour_page_cluster';
+
 import SiteFourPageApps from './siteFour_page_apps';
 import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
@@ -48,8 +50,9 @@ import * as Service from '../services/service_login_api';
 import * as computeService from '../services/service_compute_service';
 
 import Alert from 'react-s-alert';
-import DropDownFilter from '../components/dropDownFilter';
 
+import '../css/introjs.css';
+import '../css/introjs-dark.css';
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 const locationOptions = [
@@ -119,6 +122,77 @@ class SiteFour extends React.Component {
             searchChangeValue:'Username',
             menuClick:false,
             showItem:false,
+            learned:false,
+
+            stepsEnabled: false,
+            initialStep: 0,
+            steps:[],
+            stepsZero: [
+                {
+                    element: '.selector1',
+                    // intro: "<span style='color: red; display: flex; height: 400px !important; width: 300px !important; background-color: #7a7a7a;'>create new</span>",
+                    intro: 'This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip!</span>',
+                },
+                {
+                    element: '.selector2',
+                    intro: 'select organization',
+                }
+
+            ],
+            stepsNewOrg: [
+                {
+                    element: '.newOrg1-1',
+                    intro: 'select organization',
+                },
+                {
+                    element: '.newOrg1-2',
+                    intro: 'select organization',
+                },
+                {
+                    element: '.newOrg1-3',
+                    intro: 'select organization',
+                },
+                {
+                    element: '.newOrg1-4',
+                    intro: 'select organization',
+                },
+                {
+                    element: '.newOrg1-5',
+                    intro: 'select organization',
+                },
+            ],
+            stepsNewOrg2: [
+                {
+                    element: '.newOrg2-1',
+                    intro: 'select organization',
+                },
+                {
+                    element: '.newOrg2-2',
+                    intro: 'select organization',
+                },
+                {
+                    element: '.newOrg2-3',
+                    intro: 'select organization',
+                },
+                {
+                    element: '.newOrg2-4',
+                    intro: 'select organization',
+                },
+                {
+                    element: '.newOrg2-5',
+                    intro: 'select organization',
+                },
+            ],
+            enable:false,
+            hideNext: true
+            // hintsEnabled: true,
+            // hints: [
+            //     {
+            //         element: '.selector3',
+            //         hint: 'Hello hint',
+            //         hintPosition: 'middle-right',
+            //     }
+            // ]
         };
         //this.controllerOptions({controllerRegions})
         this.headerH = 70;
@@ -186,11 +260,13 @@ class SiteFour extends React.Component {
         _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
     }
     gotoUrl(site, subPath) {
+        let mainPath = site;
         _self.props.history.push({
             pathname: site,
             search: subPath
         });
         _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
         _self.setState({ page:subPath})
     }
     handleItemClick ( id, label, pg, role ) {
@@ -205,7 +281,10 @@ class SiteFour extends React.Component {
             pathname: '/site4',
             search: "pg="+pg
         });
+        let mainPath = '/site4';
+        let subPath = 'pg='+pg;
         _self.props.history.location.search = "pg="+pg;
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
         _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label })
         localStorage.setItem('selectMenu', label)
     }
@@ -234,16 +313,12 @@ class SiteFour extends React.Component {
         }
     }
     receiveCurrentUser(result) {
-        console.log('receive user info ---', result.data)
         _self.props.handleUserInfo(result.data);
     }
     receiveResult(result) {
-        console.log("controllerList",result.data);
-        //this.setState({ controllerRegions:result.data })
         _self.controllerOptions(result.data);
     }
     receiveAdminInfo = (result) => {
-        console.log("adminInfo@@@",result.data,this.props,this.state);
         this.props.handleRoleInfo(result.data)
         if(result.error) {
 
@@ -319,19 +394,45 @@ class SiteFour extends React.Component {
             inverted
         />
     )
+    getGuidePopup =(key)=> (
+        <button className="ui circular icon button" onClick={this.enalbeSteps}><i aria-hidden="true" className="info icon"></i></button>
+    )
 
-    openModalCreate() {
+    enalbeSteps =()=> {
+        let enable = false;
+        console.log('20190821 siteName==', this.props.siteName, 'change org step..', this.props.changeStep)
+        let site = this.props.siteName;
+        if(site.mainPath === "/site4" && site.subPath === "pg=newOrg") {
+            if(this.props.changeStep === 2){
+                this.setState({steps : this.state.stepsNewOrg2})
+            } else {
+                this.setState({steps : this.state.stepsNewOrg})
+            }
+
+
+            enable = true;
+        } else if(site.mainPath === "/site4" && site.subPath === "pg=0") {
+            this.setState({steps : this.state.stepsZero})
+            enable = true;
+        }
+
+
+        let elmentName = this.steps.props.steps;
+        //this.steps.props.options.hideNext = true;
+        let element = document.getElementsByClassName(elmentName[0].element.replace('.', ''));
+        console.log('20190821 step..', this.steps, element)
+        if(enable && element.length>0) {
+            this.setState({stepsEnabled:true, enable: true})
+        }
 
     }
     getAdminInfo(token) {
-        console.log("showrole@@@@@@")
         Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
         computeService.getMCService('showController', {token:token}, this.receiveResult, this);
         computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
         computeService.getMCService('Version',{token:token}, this.receiveVersion, this)
     }
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
         this.setState({contWidth:(window.innerWidth-this.menuW)})
@@ -340,8 +441,6 @@ class SiteFour extends React.Component {
     }
     componentDidMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
-        console.log("stateProps@@",this.props,this.state)
-        console.log('store.. ', store.user)
         this.setState({activeItem: (localStorage.selectMenu)?localStorage.selectMenu:'Organizations', headerTitle:(localStorage.selectMenu)?localStorage.selectMenu:'Organizations'})
         //get list of customer's info
         // if(store.userToken) {
@@ -356,7 +455,6 @@ class SiteFour extends React.Component {
         //this.gotoPreview('/site4');
         //this.props.history.location.search = "pg=0";
 
-
         this.disableBtn();
 
         this.getAdminInfo(store.userToken);
@@ -364,10 +462,12 @@ class SiteFour extends React.Component {
             let elem = document.getElementById('animationWrapper')
             if(elem){
                 //_self.makeGhost(elem, _self)
+
+
             }
         }, 4000)
 
-
+        this.setState({steps: this.state.stepsZero})
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -380,7 +480,6 @@ class SiteFour extends React.Component {
         }
 
         // if(localStorage.selectRole && this.state.menuClick) {
-        //     console.log("Dddfdfdfdfdfdf")
         //     this.disableBtn();
         //     this.setState({menuClick:false})
         // }
@@ -393,13 +492,11 @@ class SiteFour extends React.Component {
         // }
 
         if(nextProps.viewMode){
-            console.log("viewmode@@@",nextProps.viewMode)
             this.setState({viewMode:nextProps.viewMode})
         } else {
             this.setState({viewMode:'listView'})
         }
         // if(nextProps.params.subPath && this.state.viewMode == 'detailView') {
-        //     console.log("viewMode!!!@")
         //     this.setState({viewMode:'listView'})
         // }
 
@@ -435,6 +532,38 @@ class SiteFour extends React.Component {
 
             }
         }
+
+        // set step value of guide
+        console.log('20190821 siteName==', this.props.siteName)
+
+        // saved tutorial
+        let tutorial = localStorage.getItem('TUTORIAL')
+        //
+        let enable = true;
+        setTimeout(() => {
+            let elem = document.getElementById('animationWrapper')
+            if(elem){
+                //_self.makeGhost(elem, _self)
+
+
+            }
+            console.log('20190822 tutorial=', tutorial)
+            if(enable && !this.state.learned && !tutorial) {
+                this.enalbeSteps();
+                _self.setState({stepsEnabled:true, learned:true})
+                localStorage.setItem('TUTORIAL', 'done')
+            }
+        }, 1000)
+
+        let site = this.props.siteName;
+        if(site.mainPath === "/site4" && site.subPath === "pg=newOrg") {
+            this.setState({enable : true})
+
+        } else if(site.mainPath === "/site4" && site.subPath === "pg=0") {
+            this.setState({enable : true})
+        } else {
+            this.setState({enable:false})
+        }
     }
 
     componentDidUpdate() {
@@ -442,6 +571,9 @@ class SiteFour extends React.Component {
             this.disableBtn();
             this.setState({menuClick:false})
         }
+    }
+    componentWillUnmount() {
+        this.setState({learned:false})
     }
 
     //compute page menu view
@@ -493,15 +625,13 @@ class SiteFour extends React.Component {
         setTimeout(() => self.setState({setMotion:{left: spring(nextPosX, self.speed),top: spring(nextPosY, self.speed), position: 'absolute', opacity:spring(0, self.speedOpacity)}}), 500);
     }
     onChangeRegion = (e, {value}) => {
-        console.log('region change...', value)
         _self.props.handleChangeRegion(value)
 
     }
 
     computeRefresh = () => {
-        //window.location.reload()
         this.props.handleLoadingSpinner(true);
-        this.props.handleComputeRefresh(true)
+        this.props.handleComputeRefresh(true);
     }
     disableBtn = () => {
         const menuArr = ['Organization','User Roles','Cloudlets','Flavors','Cluster Instances','Apps','App Instances']
@@ -544,14 +674,30 @@ class SiteFour extends React.Component {
             content: <Header icon='desktop' content='Desktop' subheader='The largest size' />,
         },
     ]
+    onExit() {
+        _self.setState({stepsEnabled: false})
+    }
 
 
     render() {
         const {shouldShowBox, shouldShowCircle, viewMode } = this.state;
-        const { activeItem, controllerRegions } = this.state
-        console.log('viewMode!!!',viewMode)
+        const { stepsEnabled, initialStep,hintsEnabled,hints, steps } = this.state;
+        console.log('20190821 stepsEnabled..', stepsEnabled)
         return (
             <Grid className='view_body'>
+                <Steps
+                    enabled={stepsEnabled}
+                    steps={steps}
+                    initialStep={initialStep}
+                    onExit={this.onExit}
+                    showButtons={true}
+                    options ={{hideNext:false}}
+                    ref={steps => (this.steps = steps)}
+                />
+                <Hints
+                    enabled={hintsEnabled}
+                    hints={hints}
+                />
                 {(this.props.loadingSpinner==true)?
                     <div className="loadingBox" style={{zIndex:9999}}>
                         <GridLoader
@@ -599,11 +745,11 @@ class SiteFour extends React.Component {
                         <div style={{cursor:'pointer'}} onClick={() => this.gotoUrl('/site1','pg=0')}>
                             <MaterialIcon icon={'public'} />
                         </div>
-                        <div style={{cursor:'pointer', display:'none'}} onClick={() => console.log('')}>
+                        <div style={{cursor:'pointer', display:'none'}}>
                             <MaterialIcon icon={'notifications_none'} />
                         </div>
                         <Popup
-                            trigger={<div style={{cursor:'pointer', display:'none'}} onClick={() => console.log('')}>
+                            trigger={<div style={{cursor:'pointer', display:'none'}}>
                                 <MaterialIcon icon={'add'} />
                             </div>}
                             content={this.menuAddItem()}
@@ -711,7 +857,7 @@ class SiteFour extends React.Component {
                                 {
                                     (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView') ?
                                         <Grid.Column className='title_align'>
-                                            <Item style={{marginLeft:20, marginRight:10}}>
+                                            <Item className={'selector1'} style={{marginLeft:20, marginRight:10}}>
                                                 <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
                                             </Item>
                                         </Grid.Column>
@@ -733,7 +879,9 @@ class SiteFour extends React.Component {
                                         :
                                         null
                                 } */}
-
+                                <div style={{marginLeft:'10px'}}>
+                                    {(this.state.enable)?this.getGuidePopup(this.state.headerTitle):null}
+                                </div>
                                 <div style={{position:'absolute', top:25, right:25}}>
                                     {this.getHelpPopup(this.state.headerTitle)}
                                 </div>
@@ -802,6 +950,8 @@ const mapStateToProps = (state) => {
     if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
         viewMode = state.changeViewMode.mode.viewMode;
     }
+    let action = state.action;
+    console.log('20190822 action is == ', state)
     return {
         viewBtn : state.btnMnmt?state.btnMnmt:null,
         userToken : (state.userToken) ? state.userToken: null,
@@ -819,7 +969,9 @@ const mapStateToProps = (state) => {
         searchValue : (state.searchValue.search) ? state.searchValue.search: null,
         changeRegion : (state.changeRegion.region) ? state.changeRegion.region : null,
         tableHeaders : (state.tableHeader)? state.tableHeader.headers : null,
-        filters : (state.tableHeader)? state.tableHeader.filters : null
+        filters : (state.tableHeader)? state.tableHeader.filters : null,
+        siteName: (state.siteChanger)?state.siteChanger.site:null,
+        changeStep: (state.changeStep.step)?state.changeStep.step:null
     }
 };
 

@@ -67,12 +67,10 @@ class SiteFourOrgaStepView extends React.Component {
 
 
     onHandleClick(dim, data) {
-        console.log('on handle click == ', data)
         this.setState({ dimmer:dim, open: true, selected:data })
         //this.props.handleChangeSite(data.children.props.to)
     }
     onHandleClicAdd(dim, data) {
-        console.log('on handle click == ', data)
         this.setState({ dimmer:dim, open: true, selected:data })
         //this.props.handleChangeSite(data.children.props.to)
     }
@@ -176,12 +174,10 @@ class SiteFourOrgaStepView extends React.Component {
 
     onLayoutChange(layout) {
         //this.props.onLayoutChange(layout);
-        console.log('changed layout = ', JSON.stringify(layout))
     }
 
 
     componentWillReceiveProps(nextProps, nextContext) {
-                console.log('nextProps22...', nextProps.stateForm)
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -233,7 +229,6 @@ class SiteFourOrgaStepView extends React.Component {
 const mapStateToProps = (state) => {
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;
-    console.log('SiteFourOrgaStepView state redux -- ', state)
 
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;

@@ -100,7 +100,6 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
 
     // data.map((dt) => {
     handleInitialize(data) {
-        console.log('data,,,', data)
         const initData = [];
         if(data.length){
 
@@ -128,7 +127,6 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("SiteFourCreateFormAppInstDefault --> ",nextProps)
         if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
@@ -146,7 +144,6 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
     }
 
     getLabel (key, pId) {
-        // console.log('key - ', key, 'pid -', pId, 'value-', this.state.fieldKeys[pId])
         return (this.state.fieldKeys && this.state.fieldKeys[pId][key]) ? this.state.fieldKeys[pId][key]['label'] : null
     }
     getNecessary (key, pId) {
@@ -163,23 +160,15 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
     )
     onHandleSubmit() {
         this.props.handleSubmit();
-        // setTimeout(() => {
-        //     this.props.dispatch(initialize('createAppFormDefault', {
-        //         submitSucceeded: false
-        //     }))
-        // },100);
-        //setTimeout(() => this.props.dispatch(reset('createAppFormDefault')),1000);
     }
 
     handleRegionChange = (e) => {
         this.props.getOptionData(e)
-        //this.props.dispatch(reset('createAppFormDefault'));
     }
 
 
     receiveResult = (result) => {
         let arr = [];
-        console.log("receive == ", result)
         result.map((item,i) => {
             arr.push(item.Organization);
         })
@@ -187,7 +176,6 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
     }
 
     cancelClick = (e) => {
-        console.log("eeeesse@@",this.props)
         e.preventDefault();
         this.props.gotoUrl()
     }
@@ -208,7 +196,6 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
     render (){
         const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
         const { data, regKeys, fieldKeys } = this.state;
-        console.log("data@fo@@", fieldKeys)
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         return (
 
@@ -266,7 +253,6 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                                                         placeholder={'Select Organization Name'}
                                                                         options={fieldKeys[pId][key]['items']}
                                                                         name={key}
-                                                                        onChange={()=>console.log('onChange text..')}
                                                                         error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                                 :
                                                                     <Field
@@ -285,7 +271,6 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                                                         value={data[key]}
                                                                         options={fieldKeys[pId][key]['items']}
                                                                         name={key}
-                                                                        onChange={()=>console.log('onChange text..')}
                                                                         error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
                                                                         disabled={this.props.autoClusterDisable}
                                                                         />

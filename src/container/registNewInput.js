@@ -21,7 +21,6 @@ import EditMap from '../libs/simpleMaps/with-react-motion/editMap';
 
 
 const validate = values => {
-    console.log("validation@@",values)
     const errors = {}
     if (!values.Region) {
         errors.Region = 'Required'
@@ -215,7 +214,6 @@ class registNewInput extends React.Component {
 
         }
 
-        console.log("this.props.validError",this.props.validError)
     }
 
     handleClose = () => {
@@ -226,7 +224,6 @@ class registNewInput extends React.Component {
     render() {
         const { handleSubmit, data, dimmer, selected, regKeys,open, close, option, value, change, longLoc, latLoc, zoomIn, zoomOut, resetMap, locationLongLat, resetLocation, handleChangeLong, handleChangeLat, locationLong, locationLat } = this.props;
         // this.changeCloudLoc(cloudLoc);
-        console.log("regKeysregKeysregKeys",regKeys,selected)
         return (
             <Fragment>
                 <Form onSubmit={handleSubmit} className={"fieldForm"}>
@@ -245,7 +242,7 @@ class registNewInput extends React.Component {
                                                         {(key === 'CloudletName')?'Cloudlet Name *'
                                                             :(key === 'OperatorName')?'Operator Name *'
                                                                 :(key === 'CloudletLocation')?'Cloudlet Location *'
-                                                                    :(key === 'Ip_support')?'IP Support'
+                                                                    :(key === 'Ip_support')?'IP Support *'
                                                                         :(key === 'Num_dynamic_ips')?'Number of Dynamic IPs *'
                                                                             :(key === 'Region')?'Region *'
                                                                                 :key}
@@ -277,7 +274,7 @@ class registNewInput extends React.Component {
                                                     : (key === 'IpAccess')?
                                                     <Field component={renderSelect} placeholder='Select IP Access' name='IPAccess' options={this.state.ipAccessStatic} />
                                                     : (key === 'Ip_support')?
-                                                    <Field component={renderSelect} placeholder='Select IP Support' name='IPSupport' options={this.state.Ip_support} />
+                                                    <Field component={renderSelect} placeholder='Dynamic' name='IPSupport' options={this.state.Ip_support} />
                                                     : (key === 'CloudletLocation')?
                                                     <Grid>
                                                         <Grid.Row columns={2}>

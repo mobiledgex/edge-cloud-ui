@@ -114,7 +114,6 @@ class SiteFourCreateFormDefault extends React.Component {
 
     // data.map((dt) => {
     handleInitialize(data) {
-        console.log('data,,,', data)
         const initData = [];
         if(data.length){
 
@@ -142,7 +141,6 @@ class SiteFourCreateFormDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("SiteFourCreateFormDefault --> ",nextProps)
         if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
@@ -160,7 +158,6 @@ class SiteFourCreateFormDefault extends React.Component {
     }
 
     getLabel (key, pId) {
-        // console.log('key - ', key, 'pid -', pId, 'value-', this.state.fieldKeys[pId])
         return (this.state.fieldKeys && this.state.fieldKeys[pId][key]) ? this.state.fieldKeys[pId][key]['label'] : null
     }
     getNecessary (key, pId) {
@@ -177,18 +174,11 @@ class SiteFourCreateFormDefault extends React.Component {
     )
     onHandleSubmit=(a,b)=> {
         this.props.handleSubmit();
-        // setTimeout(() => {
-        //     this.props.dispatch(initialize('createAppFormDefault', {
-        //         submitSucceeded: false
-        //     }))
-        //     //this.props.dispatch(reset('createAppFormDefault'))
-        // },100);
     }
     onFormState=(a,b)=> {
         alert('onForm state',a,b)
     }
     onHandleChange(key,value,c){
-        console.log("key@@@@@@",key,value,c)
         if(key === 'Region'){
             this.props.onChangeState(key)
         } else if(key === 'OrganizationName') {
@@ -227,9 +217,10 @@ class SiteFourCreateFormDefault extends React.Component {
     }
     receiveResult = (result) => {
         let arr = [];
-        console.log("receive == ", result)
         result.map((item,i) => {
-            arr.push(item.Organization);
+            if(item.Type === 'developer'){
+                arr.push(item.Organization);
+            }
         })
         this.setState({orgArr:arr});
     }
@@ -242,7 +233,6 @@ class SiteFourCreateFormDefault extends React.Component {
     render (){
         const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
         const { data, regKeys, fieldKeys } = this.state;
-        console.log("data@fo@@",data, regKeys, fieldKeys)
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         return (
 
@@ -298,7 +288,6 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                         placeholder={'Select Organization Name'}
                                                                         options={this.state.orgArr}
                                                                         name={key}
-                                                                        onChange={()=>console.log('onChange text..')}
                                                                         error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                                 :
                                                                     <Field

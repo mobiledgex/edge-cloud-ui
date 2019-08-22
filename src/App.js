@@ -66,7 +66,6 @@ const DashboardContainer = ( props, props2) => {
     let _params = {mainPath:props.mainPath, subPath:(props2.match.params.page) ? props2.match.params.page : (props2.location.search) ? props2.location.search : 'pg=0'};
     global.areaCode = _params;
 
-    console.log('20190808 _params... ', _params, 'rout-', self.routed)
     /////////////////////////////////////////
     // Login check
     /////////////////////////////////////////
@@ -113,11 +112,9 @@ const DashboardContainer = ( props, props2) => {
 
 
 
-    console.log('storage data == ', storage_data)
     if (!storage_data && props.mainPath !== '/createAccount' && props.mainPath !== '/verify' && props.mainPath !== '/passwordreset') {
         let mainPath = '/site1';
         let subPath = 'pg=1';
-        console.log('history..props history..............', history)
         history.push({
             pathname: mainPath,
             search: subPath,
@@ -207,7 +204,6 @@ class App extends Component {
     }
 
     receiveCurrentUser(result) {
-        console.log('20190808 result==- ', result.data)
         if(result.data && result.data.message) {
 
             Alert.error(result.data.message, {
@@ -229,7 +225,6 @@ class App extends Component {
         if(!localStorage.PROJECT_INIT) return;
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store.userToken;
-        console.log('20190808 profileView --- ', store, token)
         Service.getCurrentUserInfo('currentUser', {token:token}, self.receiveCurrentUser, self);
 
     }
@@ -270,7 +265,6 @@ class App extends Component {
 
     }
     render() {
-        console.log('history ???? ', history)
         return (
             <Router history={history} ref={router=> this.router = router}>
                 <div style={{width:'100%', height:'100%'}}>

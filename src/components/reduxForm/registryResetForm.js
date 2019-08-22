@@ -4,7 +4,6 @@ import {Form, Input, Message} from "semantic-ui-react";
 import './styles.css';
 
 const validate = values => {
-    console.log("signupVali@@",values)
     const errors = {}
     if (!values.username) {
         errors.username = 'Required'
@@ -98,7 +97,6 @@ class RegistryResetForm extends React.Component{
         _self = this;
     }
     onHandleSubmit =(a,b)=> {
-        console.log('+++++++++on handle submit +++++', a, b)
         this.props.handleSubmit();
         setTimeout(() => {
             _self.props.dispatch(initialize('profile', {

@@ -90,7 +90,6 @@ class RegistNewItem extends React.Component {
         
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('regist new item@ -- ', nextProps, this.props)
         if(nextProps.open) {
             this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
         }
@@ -100,9 +99,7 @@ class RegistNewItem extends React.Component {
             let cnArr = [];
             let locObj = null;
             const operValue = (nextProps.submitData.registNewInput.values)?nextProps.submitData.registNewInput.values.Operator:null;
-            console.log("operValue@@",operValue)
             if(operValue) {
-                console.log(this.state.operList)
                 this.state.operList.map((item,i) => {
                     if(item.Operator == operValue) {
                         cnArr.push(item.CloudletName);
@@ -114,22 +111,17 @@ class RegistNewItem extends React.Component {
                 ))})
             }
             const cloudletValue = (nextProps.submitData.registNewInput.values)?nextProps.submitData.registNewInput.values.Cloudlet:null;
-            console.log("LocationValue@@",cloudletValue)
             if(cloudletValue) {
-                console.log("SSSSS###",this.state.operList)
                 this.state.operList.map((item,i) => {
                     if(item.CloudletName == cloudletValue) {
                         locObj = item.CloudletLocation;
                     }
                 })
-                console.log("locArrlocArr",locObj)
                 this.setState({locationLong:locObj.longitude,locationLat:locObj.latitude,locationLongLat:[Number(locObj.longitude),Number(locObj.latitude)]});
             }
         }
         if(nextProps.data) {
-            console.log('next props data -- -', nextProps.data)
             let groupByOper = aggregate.groupBy(nextProps.data, 'CloudletName')
-            console.log('CloudletName ==>>>>>>>>> ', Object.keys(groupByOper));
             this.setCloudletList(Object.keys(groupByOper))
         }
         if(this.state.open && !this.state.toggle){
@@ -140,14 +132,8 @@ class RegistNewItem extends React.Component {
             }
             this.setState({toggle:true});
         }
-        // let self = this;
-        // setTimeout(()=>{
-        //     //console.log('ddd=', self['input_0'])
-        //     //if(self['input_0']) self['input_0'].focus();
-        // }, 1000)
     }
     handleChangeOne = (e, {value}) => {
-        console.log("operator@@@")
         this.setState({ dropdownValueOne: value })
         //reset list of sub dropwDown
         this.setCloudletList(value)
@@ -163,30 +149,24 @@ class RegistNewItem extends React.Component {
         this.setState({ dropdownValueFour: value })
     }
     handleChangeFive = (e, {value}) => {
-        console.log('change input value is ==', value)
         this.setState({ dropdownValueFive: value })
     }
     handleChangeSix = (e, {value}) => {
-        console.log('change input value is ==', value)
         this.setState({ dropdownValueSix: value })
     }
     handleChangeOrgType = (e, {value}) => {
-        console.log('change input value is ==', value)
         this.setState({ dropdownValueOrgType: value })
     }
     handleChangeOrgRole = (e, {value}) => {
-        console.log('change input value is ==', value)
         this.setState({ dropdownValueOrgRole: value })
     }
     handleChangeLong = (e, {value}) => {
-        console.log("longValue!@@",value)
         if(value == '-') {
             this.setState({ locationLong: value })
             return
         }
         let onlyNum = value;
         if(onlyNum > 180 || onlyNum < -180) {
-            console.log("in",onlyNum)
             this.props.handleAlertInfo('error',"-180 ~ 180")
             e.target.value=null;
             return
@@ -195,7 +175,6 @@ class RegistNewItem extends React.Component {
         this.locationValue(onlyNum,this.state.locationLat)
     }
     handleChangeLat = (e, {value}) => {
-        console.log("latValue!@@",value)
         if(value == '-') {
             this.setState({ locationLat: value })
             return
@@ -210,7 +189,6 @@ class RegistNewItem extends React.Component {
         this.locationValue(this.state.locationLong,onlyNum)
     }
     locationValue = (long,lat) => {
-        console.log("locationGo@@",long,lat)
         if(long && lat){
             this.setState({ locationLongLat: [Number(long),Number(lat)] })
         } else {
@@ -220,7 +198,6 @@ class RegistNewItem extends React.Component {
     }
 
     handleChangeLocate = (e, {value}) => {
-        console.log('change input value is ==', value)
 
     }
     resetLoc = () => {
@@ -272,7 +249,6 @@ class RegistNewItem extends React.Component {
     }
     //Show Option Operator(19.04.25)
     receiveOper(result) {
-        console.log('operators ==>>>>>>>>>>>> ', result)
         let operArr = [];
         let CloudArr = [];
         result.map((item,i) => {
@@ -285,7 +261,6 @@ class RegistNewItem extends React.Component {
     }
     //Show Option Organization(19.04.25)
     // receiveDev(result) {
-    //     console.log('receive developer ==>>>>>>>>>>>> ', result)
     //     _self.setState({devOptionsDeveloper: result.map((item, i) => (
 //             { key: i, value: item.Organization, text: item.Organization }
 //         ))})
@@ -293,7 +268,6 @@ class RegistNewItem extends React.Component {
 
     //Show Option clusterFlavor(19.04.25)
     receiveCF(result) {
-        console.log('receive CF ==>>>>>>>>>>>> ', result)
         _self.setState({devOptionsCF: result.map((item, i) => (
             { key: i, value: item.FlavorName, text: item.FlavorName }
         ))})
@@ -301,22 +275,18 @@ class RegistNewItem extends React.Component {
 
     receiveCloudlet(result) {
         let groupByOper = aggregate.groupBy(result, 'Operator')
-        console.log('receiveCloudlet ==>>>>>>>>> ', groupByOper)
         _self.setState({cloudletResult:groupByOper})
     }
     receiveApp(result) {
-        console.log('receive app ==>>>>>>>>>>>> ', result)
         let groupByOper = aggregate.groupBy(result, 'DeveloperName')
         _self.setState({appResult:groupByOper})
     }
     receiveOrg(result) {
-        console.log('receive Org ==>>>>>>>>>>>> ', result)
         _self.setState({devOptionsDeveloper: result.map((item, i) => (
             { key: i, value: item.Organization, text: item.Organization }
         ))})
     }
     receiveSubmit(result) {
-        console.log('registry new ... success result@..', result.data)
         // if(result.data.error) {
         //     // _self.props.handleCreatingSpinner(false);
         //     Alert.error(result.data.error, {
@@ -361,9 +331,6 @@ class RegistNewItem extends React.Component {
     }
 
     receiveSubmitCloudlet = (result, body) => {
-        
-        console.log('registry new ... success resultcloudlet@..', result.data, body)
-        
         this.props.refresh('All')
         if(result.data.error) {
             this.props.handleAlertInfo('error',result.data.error)
@@ -377,14 +344,12 @@ class RegistNewItem extends React.Component {
     onSubmit = () => {
         let serviceBody = {}
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        console.log("siteId@@@",this.props.submitData.registNewInput.values)
         //this.props.handleLoadingSpinner(true);
         // setTimeout(() => {
         //     this.props.handleLoadingSpinner(false);
         // },3000);
         //TODO: 20190410 메뉴 별 구분 필요
         if(localStorage.selectMenu === 'Cluster Instances'){
-            console.log("submitData@@",this.props.submitData)
             const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, Number_of_Master, Number_of_Node} = this.props.submitData.registNewInput.values
             // this.props.handleCreatingSpinner(true);
             serviceBody = {
@@ -407,7 +372,6 @@ class RegistNewItem extends React.Component {
             //this.props.handleLoadingSpinner(true);
             service.createNewClusterInst('CreateClusterInst', serviceBody, this.receiveSubmit)
         } else if(localStorage.selectMenu === 'Cloudlets') {
-            console.log("submitCloudlet@@",this.props.cloudletValue.values)
             const cloudlet = ['Region','CloudletName','OperatorName','Latitude','Longitude','Num_dynamic_ips']
             let error = [];
             cloudlet.map((item) => {
@@ -415,7 +379,6 @@ class RegistNewItem extends React.Component {
                     error.push(item)
                 }
             })
-            console.log("derrorerrorerror",error)
 
             const {CloudletName, OperatorName, Latitude, Longitude, IpSupport, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
             
@@ -455,12 +418,6 @@ class RegistNewItem extends React.Component {
         this.setState({ open: false, validateError:[] })
         this.props.close()
     }
-    onClickInput(a, b) {
-        // setTimeout(()=>{
-        //     console.log('ddd=', _self['input_'+b])
-        //     if(_self['input_'+b]) _self['input_'+b].focus();
-        // }, 2000)
-    }
 
     longLocProps = (refVal) => {
         if(refVal) this.props.handleMapLong(refVal);
@@ -490,11 +447,9 @@ class RegistNewItem extends React.Component {
         let {data, dimmer, selected} = this.props;
         const cloudletArr = ['Region','CloudletName','OperatorName','CloudletLocation','Ip_support','Num_dynamic_ips'];
         let regKeys = (data[0])?data[0]['Edit']:(this.props.siteId=='Cloudlet')?cloudletArr:[];
-        console.log("data@@",data)
         let optionArr = [this.state.devOptionsOperator, this.state.devOptionsDeveloper, this.state.devOptionsCloudlet, this.state.devOptionsFour, this.state.devOptionsSix, this.state.devOptionsFive, this.state.devOptionsOrgType, this.state.devOptionsOrgRole, this.state.devOptionsCF]
         let valueArr = [this.state.dropdownValueOne, this.state.dropdownValueTwo, this.state.dropdownValueThree, this.state.dropdownValueFour, this.state.dropdownValueSix, this.state.dropdownValueFive, this.state.handleChangeOrgType, this.state.handleChangeOrgRole, this.state.handleChangeCF]
         let changeArr = [this.handleChangeOne, this.handleChangeTwo, this.handleChangeThree, this.handleChangeFour, this.handleChangeSix, this.handleChangeFive, this.handleChangeOrgType, this.handleChangeOrgRole]
-        console.log('regKeys ===>>>', regKeys, this.props.siteId)
         return (
             <RegistNewInput
                 handleSubmit={this.onSubmit}
@@ -528,7 +483,6 @@ class RegistNewItem extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log("statestatestate",state.form.registNewInput)
     let formCloudlet= state.form.registNewInput
     ? {
         values: state.form.registNewInput.values

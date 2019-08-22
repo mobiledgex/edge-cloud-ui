@@ -46,7 +46,6 @@ class PopVerify extends React.Component {
 
     /** ************************ **/
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log("dddnextProps",nextProps)
         if(nextProps.open){
             let name = '';
             this.setState({showWarning:nextProps.open})
@@ -84,8 +83,6 @@ class PopVerify extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log("siteFour@@@stateRedux ::: ",state)
-
     return {
         selectOrg : state.selectOrg.org?state.selectOrg.org:null
     }

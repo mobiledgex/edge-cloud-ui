@@ -64,13 +64,11 @@ class SiteFourPageOrganization extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // console.log('info.. store == ', store)
         if(store.userToken) this.getDataDeveloper(store.userToken);
     }
     componentWillUnmount() {
@@ -87,7 +85,6 @@ class SiteFourPageOrganization extends React.Component {
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
         if(nextProps.computeRefresh.compute) {
-            console.log('orgRefresh')
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             if(store.userToken) this.getDataDeveloper(store.userToken);
             this.props.handleComputeRefresh(false);
@@ -97,7 +94,6 @@ class SiteFourPageOrganization extends React.Component {
     receiveResult = (result,resource, self) => {
         this.props.handleLoadingSpinner(false);
 
-        console.log("receive == ", result, resource, self)
         if(result.error) {
             _self.setState({devData:[]})
             this.props.handleAlertInfo('error','There is no data')
@@ -120,7 +116,6 @@ class SiteFourPageOrganization extends React.Component {
         services.getMCService('ShowRole',{token:store.userToken}, _self.receiveAdminInfo)
     }
     receiveAdminInfo = (result) => {
-        console.log("adminInfo###",result.data,this.props,this.state);
         this.props.handleRoleInfo(result.data)
         if(result.error) {
 
@@ -146,7 +141,6 @@ class SiteFourPageOrganization extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    console.log('props in userToken..', state)
     return {
         userToken : (state.user.userToken) ? state.userToken: null,
         userInfo: state.user.user,

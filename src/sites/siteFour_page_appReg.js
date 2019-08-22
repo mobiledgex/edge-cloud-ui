@@ -63,7 +63,6 @@ class SiteFourPageAppReg extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
@@ -71,24 +70,9 @@ class SiteFourPageAppReg extends React.Component {
         
     }
     componentDidMount() {
-        console.log('info.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // console.log('info.. store == ', store)
 
         this.getDataDeveloper(store.userToken, this.props.region.value)
-        // if(store.userToken) {
-        //     if(this.props.region.value) {
-        //         this.getDataDeveloper(store.userToken, this.props.region.value)
-        //     }
-        //     this.userToken = store.userToken;
-        // } else {
-        //     Alert.error('Invalid or expired token', {
-        //         position: 'top-right',
-        //         effect: 'slide',
-        //         timeout: 5000
-        //     });
-        //     setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
-        // }
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -97,7 +81,6 @@ class SiteFourPageAppReg extends React.Component {
 
     }
     receiveResult(result) {
-        console.log("receive == ", result)
         if(result.error) {
             this.props.handleAlertInfo('error',result.error.message)
         } else {
@@ -105,7 +88,6 @@ class SiteFourPageAppReg extends React.Component {
         }
     }
     getDataDeveloper(token, region) {
-        //services.getComputeService('app', this.receiveResult)
         services.getMCService('ShowApps',{token:token, region:(region === 'All') ? 'US' : region}, _self.receiveResult)
     }
 
@@ -122,7 +104,6 @@ class SiteFourPageAppReg extends React.Component {
 
 };
 const mapStateToProps = (state) => {
-    console.log('props in region === ', state.changeRegion)
     let region = state.changeRegion
         ? {
             value: state.changeRegion.region

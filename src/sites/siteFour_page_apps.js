@@ -57,14 +57,11 @@ class SiteFourPageApps extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
-        console.log('infof.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // console.log('info.. store == ', store)
         if(store.userToken) {
             this.getDataDeveloper(store.userToken, this.props.region.value);
             this.userToken = store.userToken;
@@ -80,11 +77,9 @@ class SiteFourPageApps extends React.Component {
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(nextProps.receiveNewReg && nextProps.receiveNewReg.values) {
-            console.log('submit on...', nextProps.receiveNewReg.values)
             //services.createNewApp('CreateApp', {params:nextProps.receiveNewReg.values, token:store.userToken, region:'US'}, _self.receiveResult)
         }
         if(this.props.region.value !== nextProps.region.value){
-            console.log("regionChange@@@@")
             this.getDataDeveloper(store.userToken, nextProps.region.value);
         }
 
@@ -94,15 +89,11 @@ class SiteFourPageApps extends React.Component {
         // }
         
         if(nextProps.computeRefresh.compute) {
-            console.log("refresh@@@")
             this.getDataDeveloper(store.userToken,nextProps.region.value);
             this.props.handleComputeRefresh(false);
         }
-        console.log('20190808 listView=', nextProps.viewMode)
         if(nextProps.viewMode) {
             if(nextProps.viewMode === 'listView') {
-
-                console.log('20190808 viewmode..'+nextProps.viewMode,' : ', this.state.devData)
                 this.setState({viewMode:nextProps.viewMode});
                 setTimeout(() => this.setState({devData:this.state.devData, randomId:Math.random()*1000}), 300)
             } else {
@@ -112,8 +103,6 @@ class SiteFourPageApps extends React.Component {
             }
 
         }
-        //setTimeout(() => this.forceUpdate(), 1100)
-
     }
     receiveResult = (result, region) => {
         let join = null;

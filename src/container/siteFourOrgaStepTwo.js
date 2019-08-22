@@ -8,7 +8,6 @@ import './styles.css';
 
 const validate = values => {
     const errors = {}
-    console.log("validatefwff",values)
     if (!values.username) {
         errors.username = 'Required'
     }
@@ -245,7 +244,6 @@ class SiteFourOrgaTwo extends React.Component {
     }
     
     componentWillReceiveProps(nextProps) {
-        console.log("twoProps",nextProps)
         if(this.props.toggleSubmitTwo) {
             this.props.dispatch(stopSubmit('orgaStepTwo',{}))
         }
@@ -288,7 +286,7 @@ class SiteFourOrgaTwo extends React.Component {
                                                 <Image src={userAvatar[avatarRandom]} width='210px' centered bordered/>
                                             </Grid.Column>
                                         </Grid.Row>
-                                        <Grid.Row>
+                                        <Grid.Row className="newOrg2-1">
                                             <Grid.Column width={5}>
                                                 <div>Username</div>
                                             </Grid.Column>
@@ -301,7 +299,7 @@ class SiteFourOrgaTwo extends React.Component {
                                                 />
                                             </Grid.Column>
                                         </Grid.Row>
-                                        <Grid.Row>
+                                        <Grid.Row className="newOrg2-2">
                                             <Grid.Column width={5}>
                                                 <div>Organization Name</div>
                                             </Grid.Column>
@@ -314,7 +312,7 @@ class SiteFourOrgaTwo extends React.Component {
                                                 />
                                             </Grid.Column>
                                         </Grid.Row>
-                                        <Grid.Row>
+                                        <Grid.Row className="newOrg2-3">
                                             <Grid.Column width={5}>
                                                 <div>Type</div>
                                             </Grid.Column>
@@ -327,7 +325,7 @@ class SiteFourOrgaTwo extends React.Component {
                                                 />
                                             </Grid.Column>
                                         </Grid.Row>
-                                        <Grid.Row>
+                                        <Grid.Row className="newOrg2-4">
                                             <Grid.Column width={5}>
                                                 <div>Role</div>
                                             </Grid.Column>
@@ -351,7 +349,7 @@ class SiteFourOrgaTwo extends React.Component {
                                 <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
                                     {/*<Form.Button >Preview</Form.Button>*/}
                                     <Form.Button primary positive>Continue</Form.Button>
-                                    <Form.Button onClick={this.continueClick}>Skip</Form.Button>
+                                    <Form.Button className="newOrg2-5" onClick={this.continueClick}>Skip</Form.Button>
 
                                 </Form.Group>
                             </Form>

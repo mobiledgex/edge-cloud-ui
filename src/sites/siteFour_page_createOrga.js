@@ -60,13 +60,11 @@ class SiteFourPageCreateorga extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // console.log('info.. store == ', store)
         if(store.userToken) this.getDataDeveloper(store.userToken);
     }
     componentWillReceiveProps(nextProps) {
@@ -81,7 +79,6 @@ class SiteFourPageCreateorga extends React.Component {
 
         if(nextProps.stepOne && nextProps.stepOne.submitSucceeded && !this.state.toggleSubmit) {
             this.setState({toggleSubmit:true});
-            console.log("stepOnestepOnestepOne")
             _self.props.handleLoadingSpinner(true);
             serviceOrganiz.organize('createOrg',
                 {
@@ -97,7 +94,6 @@ class SiteFourPageCreateorga extends React.Component {
         org=bigorg username=worker1 role=DeveloperContributor
          */
         if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded && !this.state.toggleSubmitTwo) {
-            console.log('stream form siteFour_page_createOrga.js  git to a role ... ', nextProps, nextProps.stepTwo.values)
             this.setState({toggleSubmitTwo:true});
             this.props.handleLoadingSpinner(true);
             let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
@@ -114,7 +110,6 @@ class SiteFourPageCreateorga extends React.Component {
 
     }
     resultCreateOrg = (result,resource, self, body) => {
-        console.log("receive ==@@ ", result, resource, self, body)
         this.setState({toggleSubmit:false})
         _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
@@ -122,11 +117,11 @@ class SiteFourPageCreateorga extends React.Component {
         } else {
             this.props.handleAlertInfo('success','Your organization '+body.name+' created successfully')
             //goto next step
+            this.props.handleChangeStep(2)
             this.setState({step:2})
         }
     }
     resultGiveToRole = (result,resource, self, body) => {
-        console.log("receive == ", result, resource, self)
         this.setState({toggleSubmitTwo:false})
         _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
@@ -138,7 +133,6 @@ class SiteFourPageCreateorga extends React.Component {
         }
     }
     receiveResult(result,resource, self) {
-        console.log("receive == ", result, resource, self)
         if(result.error) {
             // Alert.error('Invalid or expired token', {
             //     position: 'top-right',
@@ -165,7 +159,6 @@ class SiteFourPageCreateorga extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    console.log('props in userToken..', state)
     let formStepOne= state.form.orgaStepOne
         ? {
             values: state.form.orgaStepOne.values,
@@ -188,6 +181,7 @@ const mapStateToProps = (state) => {
 const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
+        handleChangeStep: (data) => { dispatch(actions.changeStep(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},

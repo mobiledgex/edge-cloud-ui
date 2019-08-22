@@ -72,13 +72,10 @@ class SiteFourPageAppInst extends React.Component {
     }
 
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
     }
     componentDidMount() {
- 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // console.log('info.. store == ', store,this.props.changeRegion)
         if(store.userToken) {
             this.getDataDeveloper(this.props.changeRegion);
         }
@@ -137,6 +134,7 @@ class SiteFourPageAppInst extends React.Component {
     }
 
     getDataDeveloper = (region) => {
+        console.log("getDataDevelopergetDataDevelopergetDataDeveloper",region)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let serviceBody = {}
         _self.loadCount = 0;
@@ -172,13 +170,16 @@ class SiteFourPageAppInst extends React.Component {
             })
         }
     }
+    getDataDeveloperSub = () => {
+        this.getDataDeveloper('All');
+    }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem, viewMode, devData, detailData } = this.state;
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
-            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloper}></MapWithListView>
+            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub}></MapWithListView>
             :
             <PageDetailViewer data={detailData} page='appInst'/>
         );
