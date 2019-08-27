@@ -14,17 +14,21 @@ let generateData = (datas) => {
     let result = datas;
     let values = [];
     if(result.data){
-        result.data.map((data, i) => {
-            let Index = i;
-            let Type = data.Type || '-';
-            let AdminUsername = data.AdminUsername || '-';
-            let Organization = data.Name || '-';
-            let Address = data.Address || '-';
-            let Phone = data.Phone || '-';
-            let newRegistKey = ['Organization', 'Type', 'Phone', 'Address'];
-
-            values.push({Organization:Organization, Type:Type, Phone:Phone, Address:Address, Edit:newRegistKey})
-        })
+        if(result.data.error){
+            console.log("result error")
+        }else {
+            result.data.map((data, i) => {
+                let Index = i;
+                let Type = data.Type || '-';
+                let AdminUsername = data.AdminUsername || '-';
+                let Organization = data.Name || '-';
+                let Address = data.Address || '-';
+                let Phone = data.Phone || '-';
+                let newRegistKey = ['Organization', 'Type', 'Phone', 'Address'];
+    
+                values.push({Organization:Organization, Type:Type, Phone:Phone, Address:Address, Edit:newRegistKey})
+            })
+        }
     } else {
         console.log('there is no result')
     }

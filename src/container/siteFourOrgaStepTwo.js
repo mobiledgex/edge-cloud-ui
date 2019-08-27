@@ -266,6 +266,7 @@ class SiteFourOrgaTwo extends React.Component {
 
     continueClick = (e) => {
         e.preventDefault();
+        this.props.handleChangeStep('03')
         this.props.nextstep(3)
     }
     
@@ -288,7 +289,7 @@ class SiteFourOrgaTwo extends React.Component {
                                         </Grid.Row>
                                         <Grid.Row className="newOrg2-1">
                                             <Grid.Column width={5}>
-                                                <div>Username</div>
+                                                <div>Username *</div>
                                             </Grid.Column>
                                             <Grid.Column width={11}>
                                                 <Field
@@ -301,7 +302,7 @@ class SiteFourOrgaTwo extends React.Component {
                                         </Grid.Row>
                                         <Grid.Row className="newOrg2-2">
                                             <Grid.Column width={5}>
-                                                <div>Organization Name</div>
+                                                <div>Organization Name *</div>
                                             </Grid.Column>
                                             <Grid.Column width={11}>
                                                 <Field
@@ -314,7 +315,7 @@ class SiteFourOrgaTwo extends React.Component {
                                         </Grid.Row>
                                         <Grid.Row className="newOrg2-3">
                                             <Grid.Column width={5}>
-                                                <div>Type</div>
+                                                <div>Type *</div>
                                             </Grid.Column>
                                             <Grid.Column width={11}>
                                                 <Field
@@ -327,7 +328,7 @@ class SiteFourOrgaTwo extends React.Component {
                                         </Grid.Row>
                                         <Grid.Row className="newOrg2-4">
                                             <Grid.Column width={5}>
-                                                <div>Role</div>
+                                                <div>Role *</div>
                                             </Grid.Column>
                                             <Grid.Column width={11}>
                                                 <Field
@@ -348,8 +349,8 @@ class SiteFourOrgaTwo extends React.Component {
 
                                 <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
                                     {/*<Form.Button >Preview</Form.Button>*/}
-                                    <Form.Button primary positive>Continue</Form.Button>
-                                    <Form.Button className="newOrg2-5" onClick={this.continueClick}>Skip</Form.Button>
+                                    <Form.Button className="newOrg2-5" primary positive>Add User</Form.Button>
+                                    <Form.Button className="newOrg2-6" onClick={this.continueClick}>Move to Step 3</Form.Button>
 
                                 </Form.Group>
                             </Form>
@@ -369,7 +370,8 @@ class SiteFourOrgaTwo extends React.Component {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleChangeStep: (data) => { dispatch(actions.changeStep(data))}
     };
 };
 

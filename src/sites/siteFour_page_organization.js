@@ -92,16 +92,18 @@ class SiteFourPageOrganization extends React.Component {
 
     }
     receiveResult = (result,resource, self) => {
+        console.log("resultresultresultresult",result)
         this.props.handleLoadingSpinner(false);
 
-        if(result.error) {
+        if(result.length == 0) {
             _self.setState({devData:[]})
+            this.props.handleDataExist(false)
             this.props.handleAlertInfo('error','There is no data')
             //setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
             // _self.gotoUrl('/site4', 'pg=newOrg')  /* CreatOrg 자동 연결... */
         } else {
             _self.setState({devData:result})
-
+            this.props.handleDataExist(true)
             // if(result.length === 0) {
             //     _self.gotoUrl('/site4', 'pg=newOrg')
             // } else {
@@ -156,7 +158,8 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data))},
         handleUserInfo: (data) => { dispatch(actions.userInfo(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleDataExist: (data) => { dispatch(actions.dataExist(data))},
     };
 };
 

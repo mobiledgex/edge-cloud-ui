@@ -49,6 +49,8 @@ import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import * as Service from '../services/service_login_api';
 import * as computeService from '../services/service_compute_service';
 
+import { organizationTutor } from '../tutorial'
+
 import Alert from 'react-s-alert';
 
 import '../css/introjs.css';
@@ -79,6 +81,8 @@ const locationOptions = [
     { key: 'Vietnamese', text: 'Vietnamese', value: 'Vietnamese' },
 ]
 let defaultMotion = {left: window.innerWidth/2,top: window.innerHeight/2, position: 'absolute', opacity:1}
+
+const orgaSteps = organizationTutor();
 let _self = null;
 class SiteFour extends React.Component {
     constructor(props) {
@@ -127,64 +131,10 @@ class SiteFour extends React.Component {
             stepsEnabled: false,
             initialStep: 0,
             steps:[],
-            stepsZero: [
-                {
-                    element: '.selector1',
-                    // intro: "<span style='color: red; display: flex; height: 400px !important; width: 300px !important; background-color: #7a7a7a;'>create new</span>",
-                    intro: 'This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip!</span>',
-                },
-                {
-                    element: '.selector2',
-                    intro: 'select organization',
-                }
 
-            ],
-            stepsNewOrg: [
-                {
-                    element: '.newOrg1-1',
-                    intro: 'select organization',
-                },
-                {
-                    element: '.newOrg1-2',
-                    intro: 'select organization',
-                },
-                {
-                    element: '.newOrg1-3',
-                    intro: 'select organization',
-                },
-                {
-                    element: '.newOrg1-4',
-                    intro: 'select organization',
-                },
-                {
-                    element: '.newOrg1-5',
-                    intro: 'select organization',
-                },
-            ],
-            stepsNewOrg2: [
-                {
-                    element: '.newOrg2-1',
-                    intro: 'select organization',
-                },
-                {
-                    element: '.newOrg2-2',
-                    intro: 'select organization',
-                },
-                {
-                    element: '.newOrg2-3',
-                    intro: 'select organization',
-                },
-                {
-                    element: '.newOrg2-4',
-                    intro: 'select organization',
-                },
-                {
-                    element: '.newOrg2-5',
-                    intro: 'select organization',
-                },
-            ],
             enable:false,
-            hideNext: true
+            hideNext: true,
+            camBtnStat:'leave'
             // hintsEnabled: true,
             // hints: [
             //     {
@@ -400,28 +350,74 @@ class SiteFour extends React.Component {
 
     enalbeSteps =()=> {
         let enable = false;
-        console.log('20190821 siteName==', this.props.siteName, 'change org step..', this.props.changeStep)
+        let currentStep = null;
+        console.log('20190821 siteName==', this.props, 'change org step..', this.props.changeStep, 'steps data=', orgaSteps, 'userRole=', this.props.userRole,this.props.userInfo.info, 'this.props.dataExist==',this.props.dataExist)
         let site = this.props.siteName;
-        if(site.mainPath === "/site4" && site.subPath === "pg=newOrg") {
+        let userName = (this.props.userInfo)?this.props.userInfo.info.Name:'';
+        if(this.props.params.mainPath === "/site4" && this.props.params.subPath === "pg=newOrg") {
             if(this.props.changeStep === '02'){
-                this.setState({steps : this.state.stepsNewOrg2})
+                currentStep = orgaSteps.stepsNewOrg2;
+            } else if(this.props.changeStep === '03') {
+                currentStep = orgaSteps.stepsNewOrg3;
             } else {
-                this.setState({steps : this.state.stepsNewOrg})
+                currentStep = orgaSteps.stepsNewOrg;
             }
-
+            
 
             enable = true;
-        } else if(site.mainPath === "/site4" && site.subPath === "pg=0") {
-            this.setState({steps : this.state.stepsZero})
+        } else if(this.props.params.subPath === "pg=0") {
+            if(this.props.dataExist){
+                if(userName === 'mexadmin') {
+                    currentStep = orgaSteps.stepsOrgDataAdmin;
+                } else {
+                    currentStep = orgaSteps.stepsOrgDataDeveloper;
+                }
+            } else {
+                if(userName === 'mexadmin') {
+                    currentStep = orgaSteps.stepsOrgAdmin;
+                } else {
+                    currentStep = orgaSteps.stepsOrgDeveloper;
+                }
+            }
+
+            enable = true;
+        } else if(this.props.params.subPath === "pg=2")  {
+            //Cloudlets  
+            currentStep = orgaSteps.stepsZero;
+            enable = true;
+        } else if(this.props.params.subPath === "pg=3")  {
+            //Flavors
+            currentStep = orgaSteps.stepsZero;
+            enable = true;
+        } else if(this.props.params.subPath === "pg=4")  {
+            //Cluster Instances
+            currentStep = orgaSteps.stepsClusterInst;
+            enable = true;
+        } else if(this.props.params.subPath === "pg=5")  {
+            //Apps
+            currentStep = orgaSteps.stepsApp;
+            enable = true;
+        } else if(this.props.params.subPath === "pg=6")  {
+            //App Instances
+            currentStep = orgaSteps.stepsAppInst;
+            enable = true;
+        } else if(this.props.params.subPath === "pg=createClusterInst") {
+            currentStep = orgaSteps.stepsClusterInstReg;
+            enable = true;
+        } else if(this.props.params.subPath === "pg=createAppInst") {
+            currentStep = orgaSteps.stepsCreateAppInst;
             enable = true;
         }
 
+        this.setState({steps : currentStep})
+        console.log('20190826 this.steps==', this.steps, currentStep)
 
-        let elmentName = this.steps.props.steps;
+        let elmentName = (this.steps)?currentStep:null;
         //this.steps.props.options.hideNext = true;
-        let element = document.getElementsByClassName(elmentName[0].element.replace('.', ''));
+        let element = (elmentName)?document.getElementsByClassName(elmentName[0].element.replace('.', '')):[];
         console.log('20190821 step..', this.steps, element)
-        if(enable && element.length>0) {
+        if(enable) {
+            console.log("elementelement111",element)
             this.setState({stepsEnabled:true, enable: true})
         }
 
@@ -455,6 +451,7 @@ class SiteFour extends React.Component {
         //this.gotoPreview('/site4');
         //this.props.history.location.search = "pg=0";
 
+
         this.disableBtn();
 
         this.getAdminInfo(store.userToken);
@@ -467,9 +464,10 @@ class SiteFour extends React.Component {
             }
         }, 4000)
 
-        this.setState({steps: this.state.stepsZero})
+        this.setState({steps: orgaSteps.stepsZero})
     }
     componentWillReceiveProps(nextProps) {
+        console.log("this.props.changeStep",this.props,":::",nextProps)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         this.setState({contWidth:(window.innerWidth-this.menuW)})
@@ -538,13 +536,15 @@ class SiteFour extends React.Component {
 
         // saved tutorial
         let tutorial = localStorage.getItem('TUTORIAL')
+        if(tutorial === 'done') {
+            _self.setState({stepsEnabled:false})
+        }
         //
         let enable = true;
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
             if(elem){
                 //_self.makeGhost(elem, _self)
-
 
             }
             console.log('20190822 tutorial=', tutorial)
@@ -553,6 +553,7 @@ class SiteFour extends React.Component {
                 _self.setState({stepsEnabled:true, learned:true})
                 localStorage.setItem('TUTORIAL', 'done')
             }
+
         }, 1000)
 
         let site = this.props.siteName;
@@ -561,6 +562,7 @@ class SiteFour extends React.Component {
         } else {
             this.setState({enable:false})
         }
+
     }
 
     componentDidUpdate() {
@@ -576,6 +578,7 @@ class SiteFour extends React.Component {
     //compute page menu view
     menuItemView = (item, i, activeItem) => (
         <Menu.Item
+            className={'leftMenu_'+item.label}
             key={i}
             name={item.label}
             active={activeItem === item.label}
@@ -778,7 +781,7 @@ class SiteFour extends React.Component {
                                 }
                                 <Grid.Row>
                                     <Segment>
-                                        <Grid>
+                                        <Grid className="stepOrgDeveloper2">
                                             <Grid.Row columns={2}>
                                                 <Grid.Column width={11} style={{lineHeight:'24px'}}>
                                                     {
@@ -854,7 +857,7 @@ class SiteFour extends React.Component {
                                 {
                                     (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView') ?
                                         <Grid.Column className='title_align'>
-                                            <Item className={'selector1'} style={{marginLeft:20, marginRight:10}}>
+                                            <Item className={'stepOrg2'} style={{marginLeft:20, marginRight:10}}>
                                                 <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
                                             </Item>
                                         </Grid.Column>
@@ -877,7 +880,8 @@ class SiteFour extends React.Component {
                                         null
                                 } */}
                                 <div style={{marginLeft:'10px'}}>
-                                    {(this.state.enable)?this.getGuidePopup(this.state.headerTitle):null}
+                                    {/* {(this.state.enable)?this.getGuidePopup(this.state.headerTitle):null} */}
+                                    {this.getGuidePopup(this.state.headerTitle)}
                                 </div>
                                 <div style={{position:'absolute', top:25, right:25}}>
                                     {this.getHelpPopup(this.state.headerTitle)}
@@ -948,6 +952,7 @@ const mapStateToProps = (state) => {
         viewMode = state.changeViewMode.mode.viewMode;
     }
     let action = state.action;
+    let tutorState = (state.tutorState)?state.tutorState.state:null;
     console.log('20190822 action is == ', state)
     return {
         viewBtn : state.btnMnmt?state.btnMnmt:null,
@@ -968,7 +973,9 @@ const mapStateToProps = (state) => {
         tableHeaders : (state.tableHeader)? state.tableHeader.headers : null,
         filters : (state.tableHeader)? state.tableHeader.filters : null,
         siteName: (state.siteChanger)?state.siteChanger.site:null,
-        changeStep: (state.changeStep.step)?state.changeStep.step:null
+        changeStep: (state.changeStep.step)?state.changeStep.step:null,
+        dataExist : state.dataExist.data,
+        tutorState : tutorState
     }
 };
 

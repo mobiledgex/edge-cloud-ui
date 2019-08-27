@@ -211,7 +211,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
 
                                             (this.getLabel(key, pId))?
                                                 (!this.props.autoClusterDisable || (key !== 'AutoClusterInst' && key !== 'ClusterInst'))?
-                                                <Grid.Row columns={3} key={i}>
+                                                <Grid.Row columns={3} key={i} className={'createAppInst'+i}>
 
                                                     <Grid.Column width={4} className='detail_item'>
                                                         <div>{this.getLabel(key, pId)}{this.getNecessary(key, pId)}</div>
@@ -291,10 +291,10 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                         }
                                                     </Grid.Column>
-                                                    <Grid.Column width={1}>
+                                                    {/* <Grid.Column width={1}>
                                                     {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
 
-                                                    </Grid.Column>
+                                                    </Grid.Column> */}
                                                 </Grid.Row>
                                                 :null
                                             : null
@@ -312,6 +312,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                     </Button>
                                 </span>
                                 <Button
+                                    className='createAppInst8'
                                     primary
                                     positive
                                     icon='checkmark'

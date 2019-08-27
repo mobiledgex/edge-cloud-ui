@@ -372,7 +372,7 @@ export default class SiteFourCreateOper extends React.Component{
                     <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
                         <ReactGridLayout
                             layout={this.state.layout}
-
+                            useCSSTransforms={false}
                             {...this.props}
                             style={{width:width, height:height-20}}
                         >

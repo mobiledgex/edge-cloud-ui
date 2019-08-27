@@ -89,7 +89,7 @@ export default class MonitoringViewer extends React.Component {
             this.state.mProp['timeseriesUDP'][0][this.udpCnt] = values['time'];
             this.udpCnt ++;
         }
-        console.log('20190812 lastMem..',this.state.mProp['timeseriesDataCPUMEM'],":",this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt-1])
+        //console.log('20190812 lastMem..',this.state.mProp['timeseriesDataCPUMEM'],":",this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt-1])
         this.setState({props: this.state.mProp})
         this.setState({lastCPU: this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt-1]})
         this.setState({lastMEM: this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt-1]})
@@ -120,6 +120,7 @@ export default class MonitoringViewer extends React.Component {
         this.netCnt = 0;
         this.tcpCnt = 0;
         this.udpCnt = 0;
+        console.log('20190824 feedData-- ', data)
         if(data && data.mData.length) {
             data.mData.map(item => {
                 if(item.name.indexOf('cpu') > -1) {
@@ -167,7 +168,7 @@ export default class MonitoringViewer extends React.Component {
                             </Header>
                             <Container className="memory">
                                 {
-                                    (this.props.data.page !== 'appInst')?this.state.lastMEM+'%':this.bytesToString(this.state.lastMEM*100000, this.props.data.page, )
+                                    (this.props.data.page !== 'appInst')?this.state.lastMEM+'%':this.bytesToString(this.state.lastMEM, this.props.data.page, )
                                 }
 
                             </Container>
@@ -244,33 +245,38 @@ export default class MonitoringViewer extends React.Component {
                 </Grid.Column>
                 <Grid.Column style={{width:'100%', height:400}}>
                     <Header>CPU & MEMORY</Header>
-                    <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} margin={10} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                    <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM}
+                                margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                     {
                         (this.props.data.page !== 'appInst')?
-                            <div style={{height:500}}>
+                            <div style={{width:'100%', height:400}}>
                                 <Header>DISK</Header>
-                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataDISK} series={this.state.mProp.timeseriesDISK} margin={10} label={this.state.mProp.dataLabelDISK} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataDISK} series={this.state.mProp.timeseriesDISK}
+                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelDISK} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                             </div>
                         :
                         null
                     }
 
                     <Header>NETWORK</Header>
-                    <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataNET} series={this.state.mProp.timeseriesNET} margin={10} label={this.state.mProp.dataLabelNET} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                    <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataNET} series={this.state.mProp.timeseriesNET}
+                                margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelNET} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                     {
                         (this.props.data.page !== 'appInst')?
-                            <div style={{height:500}}>
+                            <div style={{width:'100%', height:400}}>
                                 <Header>TCP</Header>
-                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataTCP} series={this.state.mProp.timeseriesTCP} margin={10} label={this.state.mProp.dataLabelTCP} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataTCP} series={this.state.mProp.timeseriesTCP}
+                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelTCP} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                             </div>
                                 :
                             null
                     }
                     {
                         (this.props.data.page !== 'appInst')?
-                            <div style={{height:500}}>
+                            <div style={{width:'100%', height:400, marginTop:20}}>
                                 <Header>UDP</Header>
-                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataUDP} series={this.state.mProp.timeseriesUDP} margin={10} label={this.state.mProp.dataLabelUDP} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataUDP} series={this.state.mProp.timeseriesUDP}
+                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelUDP} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                             </div>
                                 :
                             null

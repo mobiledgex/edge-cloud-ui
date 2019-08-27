@@ -215,7 +215,7 @@ class SiteFourOrgaOne extends React.Component {
                                 <Grid>
                                     <Grid.Row className="newOrg1-1">
                                         <Grid.Column width={5}>
-                                            <div>Type</div>
+                                            <div>Type *</div>
                                         </Grid.Column>
                                         <Grid.Column width={11}>
                                             {typeOperator(type)}
@@ -227,7 +227,7 @@ class SiteFourOrgaOne extends React.Component {
                                 <Grid>
                                     <Grid.Row className="newOrg1-2">
                                         <Grid.Column width={5}>
-                                            <div>Organization Name</div>
+                                            <div>Organization Name *</div>
                                         </Grid.Column>
                                         <Grid.Column width={11}>
                                             <Field
@@ -239,7 +239,7 @@ class SiteFourOrgaOne extends React.Component {
                                     </Grid.Row>
                                     <Grid.Row className="newOrg1-3">
                                         <Grid.Column width={5}>
-                                            <div>Address</div>
+                                            <div>Address *</div>
                                         </Grid.Column>
                                         <Grid.Column width={11}>
                                             <Field
@@ -251,7 +251,7 @@ class SiteFourOrgaOne extends React.Component {
                                     </Grid.Row>
                                     <Grid.Row className="newOrg1-4">
                                         <Grid.Column width={5}>
-                                            <div>Phone</div>
+                                            <div>Phone *</div>
                                         </Grid.Column>
                                         <Grid.Column width={11}>
                                             <Field
@@ -265,7 +265,7 @@ class SiteFourOrgaOne extends React.Component {
                             </Form.Group>
                             <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row'}}>
                                 <Form.Button onClick={this.cancelClick}>Cancel</Form.Button>
-                                <Form.Button className="newOrg1-5" positive primary>Continue</Form.Button>
+                                <Form.Button className="newOrg1-5" positive primary>Create Organization</Form.Button>
                             </Form.Group>
                         </Form>
                     </Grid.Column>
