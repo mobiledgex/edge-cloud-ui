@@ -261,7 +261,13 @@ class RegistryClusterInstViewer extends React.Component {
                 }
             })
 
+            //close tutorial
+            this.props.handleStateTutor('done');
+
             if(nextProps.formClusterInst.submitSucceeded && error.length == 0){
+
+
+
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);                
                 service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit, nextProps.validateValue.Cloudlet)
@@ -305,6 +311,7 @@ class RegistryClusterInstViewer extends React.Component {
                             onLayoutChange={this.onLayoutChange}
                             {...this.props}
                             style={{width:width, height:height-20, overflowY:'visible'}}
+                            useCSSTransforms={false}
                         >
                             {this.generateDOM(open, dimmer, width, height, dummyData, this.state.keysData, hiddenKeys, this.props.region)}
                         </ReactGridLayout>
@@ -449,7 +456,8 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleStateTutor: (data) => { dispatch(actions.tutorStatus(data))},
     };
 };
 

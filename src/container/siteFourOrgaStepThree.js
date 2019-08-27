@@ -166,7 +166,7 @@ class SiteFourOrgaThree extends React.Component {
                 <Grid>
                     <Grid.Column width={11}>
                         <Form>
-                            <Header>{`Organization "`+ org + `" has been created.`}</Header>
+                            <Header className="newOrg3-1">{`Organization "`+ org + `" has been created.`}</Header>
 
                             <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
                                 <Grid>
@@ -174,28 +174,32 @@ class SiteFourOrgaThree extends React.Component {
                                         {
                                             (type === 'Developer')?
                                             <Grid.Column>
-                                                <div>
-                                                    If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker command.
+                                                <div className="newOrg3-2">
+                                                    <div>
+                                                        If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker command.
+                                                    </div>
+                                                    <br></br>
+                                                    <div>
+                                                        {`$ docker login -u <username> docker.mobiledgex.net`}
+                                                    </div>
+                                                    <div>
+                                                        {`$ docker tag <your application> docker.mobiledgex.net/` + org + `/images/<application name>:<version>`}
+                                                    </div>
+                                                    <div>
+                                                        {`$ docker push docker.mobiledgex.net/` + org + `/images/<application name>:<version>`}
+                                                    </div>
+                                                    <div>
+                                                        $ docker logout docker.mobiledgex.net
+                                                    </div>
                                                 </div>
                                                 <br></br>
-                                                <div>
-                                                    {`$ docker login -u <username> docker.mobiledgex.net`}
-                                                </div>
-                                                <div>
-                                                    {`$ docker tag <your application> docker.mobiledgex.net/` + org + `/images/<application name>:<version>`}
-                                                </div>
-                                                <div>
-                                                    {`$ docker push docker.mobiledgex.net/` + org + `/images/<application name>:<version>`}
-                                                </div>
-                                                <div>
-                                                    $ docker logout docker.mobiledgex.net
-                                                </div>
-                                                <br></br>
-                                                <div>
-                                                    If you image is VM, please upload to our VM registry with your MobiledgeX Account Credentials.
-                                                </div>
-                                                <div>
-                                                    {`curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-` + org + `/<target_file_path>"`}
+                                                <div className="newOrg3-3">
+                                                    <div>
+                                                        If you image is VM, please upload to our VM registry with your MobiledgeX Account Credentials.
+                                                    </div>
+                                                    <div>
+                                                        {`curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-` + org + `/<target_file_path>"`}
+                                                    </div>
                                                 </div>
                                             </Grid.Column>
                                             :
@@ -206,7 +210,7 @@ class SiteFourOrgaThree extends React.Component {
                                 </Grid>
                             </Form.Group>
                             <Form.Group className='orgButton' style={{width:'100%'}}>
-                                <Button onClick={this.changeOrg} type='submit' positive style={{width:'100%'}}>Check your Organization</Button>
+                                <Button className="newOrg3-4" onClick={this.changeOrg} type='submit' positive style={{width:'100%'}}>Check your Organization</Button>
                             </Form.Group>
                         </Form>
                     </Grid.Column>

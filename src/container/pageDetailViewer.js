@@ -143,6 +143,7 @@ export default class PageDetailViewer extends React.Component {
         }
         _self = this;
         this.initData = null;
+        this.activeInterval = null;
 
         this.jsonViewProps = {
             name:null,
@@ -212,11 +213,22 @@ export default class PageDetailViewer extends React.Component {
             _self.resources[page].map((valid) => this.makeFormApp(data, valid, store.userToken)) :
             _self.resources[page].map((valid) => this.makeFormCluster(data, valid, store.userToken))
     )
+    loopGetHealth (page, data, store) {
+        (page === 'appInst' && store.userToken)  ?
+            serviceInstance.getAppinstHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
+            serviceInstance.getClusterHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo)
+    }
+
     getInstanceHealth (page, data) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
-        (page === 'appInst' && store.userToken)  ?
-        serviceInstance.getAppinstHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
-        serviceInstance.getClusterHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo)
+        _self.activeInterval = setInterval(
+            () => {
+                _self.loopGetHealth(page, data, store);
+            },
+            15000
+        )
+        _self.loopGetHealth(page, data, store);
+
     }
 
 
@@ -258,6 +270,12 @@ export default class PageDetailViewer extends React.Component {
     */
 
 
+    /*
+    const now = new Date()
+const nowCopy = new Date()
+const then = moment(nowCopy).subtract(20, "minutes").toDate()
+     */
+
 
     makeFormCluster = (inst, valid, store) => (
         {
@@ -273,8 +291,8 @@ export default class PageDetailViewer extends React.Component {
                     "developer":inst.OrganizationName
                 },
                 "selector":valid,
-                "starttime":moment.utc().subtract(24, 'hours').format(),
-                "endtime":moment.utc().subtract(0, 'hours').format()
+                "starttime":moment.utc().subtract(1440, 'minutes').format(),
+                "endtime":moment.utc().subtract(0, 'minutes').format()
             }
 
         }
@@ -304,7 +322,10 @@ export default class PageDetailViewer extends React.Component {
         "last":20
     }'
      */
-
+    getAppName = (name) => {
+        let lowerCaseName = name.toLowerCase()
+        return lowerCaseName.replace(/\s+/g, '');
+    }
     makeFormApp = (inst, valid, store) => (
         {
             "token":store,
@@ -313,7 +334,7 @@ export default class PageDetailViewer extends React.Component {
                 "appinst":{
                     "app_key":{
                         "developer_key":{"name":inst.OrganizationName},
-                        "name":inst.AppName,
+                        "name":this.getAppName(inst.AppName),
                         "version":inst.Version
                     },
                     "cluster_inst_key":{
@@ -325,7 +346,7 @@ export default class PageDetailViewer extends React.Component {
                     }
                 },
                 "selector":valid,
-                "last":20
+                "last":60
             }
         }
     )
@@ -372,8 +393,7 @@ export default class PageDetailViewer extends React.Component {
             let data = [];
             if(nextProps.data && !this.initData){
                 this.setState({listData:nextProps.data, page:nextProps.page})
-                //get info resource of app or cluster
-                if(nextProps.page) this.getInstanceHealth( nextProps.page, nextProps.data)
+
 
                 this.initData = true;
             }
@@ -382,6 +402,7 @@ export default class PageDetailViewer extends React.Component {
     }
     componentWillUnmount() {
         this.initData = false;
+        clearInterval(this.activeInterval);
     }
 
     handleTabChange = (e, { activeIndex }) => this.setState({ activeIndex })

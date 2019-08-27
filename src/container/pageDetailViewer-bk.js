@@ -171,7 +171,7 @@ export default class PageDetailViewerBk extends React.Component {
     )
 
     makeUTC = (time) => (
-        moment.unix( time.replace('seconds : ', '') ).format('YYYY-MM-DD HH:mm:ss') + ' UTC'
+        moment.unix( time.replace('seconds : ', '') ).utc().format('YYYY-MM-DD HH:mm:ss') + ' UTC'
     )
 
     makeTable = (values, label, i) => (

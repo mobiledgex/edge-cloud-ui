@@ -232,3 +232,15 @@ export function changeStep(step) {
         step:step
     };
 }
+export function dataExist(data) {
+    return {
+        type: types.DATA_EXIST,
+        data
+    };
+}
+export function tutorStatus(data) {
+    return {
+        type: types.TUTOR_STATE,
+        data
+    };
+}

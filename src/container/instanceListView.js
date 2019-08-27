@@ -145,6 +145,7 @@ class InstanceListView extends React.Component {
                             onLayoutChange={this.onLayoutChange}
                             {...this.props}
                             style={{width:width, height:height-20}}
+                            useCSSTransforms={false}
                         >
                             {this.generateDOM(open, dimmer, width, height)}
                         </ReactGridLayout>

@@ -248,7 +248,7 @@ class SiteFourCreateFormDefault extends React.Component {
 
                                             (this.getLabel(key, pId))?
                                                 (!this.state.deployTypeDocker || (key !== 'NumberOfMaster' && key !== 'NumberOfNode')) ?
-                                                <Grid.Row columns={3} key={i}>
+                                                <Grid.Row columns={3} key={i} className={'clusterInstReg'+i}>
 
                                                     <Grid.Column width={4} className='detail_item'>
                                                         <div>{this.getLabel(key, pId)}{this.getNecessary(key, pId)}</div>
@@ -315,10 +315,10 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                         }
                                                     </Grid.Column>
-                                                    <Grid.Column width={1}>
+                                                    {/* <Grid.Column width={1}>
                                                     {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
 
-                                                    </Grid.Column>
+                                                    </Grid.Column> */}
                                                 </Grid.Row>
                                                 :
                                                 null
@@ -337,6 +337,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                     </Button>
                                 </span>
                                 <Button
+                                    className='clusterInstReg10'
                                     primary
                                     positive
                                     icon='checkmark'

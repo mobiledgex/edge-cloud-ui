@@ -298,19 +298,20 @@ class DeveloperListView extends React.Component {
                                     String(item[value]) === 'null' ? <Table.Cell /> :
                                     <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
                                         {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager')?
-                                            <Button color={(this.state.selectUse == i)?'teal' :null} onClick={(evt) => this.onUseOrg(item,i, evt)}>
-                                                <Icon name='check' />
+                                            <Button className='stepOrgDeveloper1' color={(this.state.selectUse == i)?'teal' :null} onClick={(evt) => this.onUseOrg(item,i, evt)}>
+                                                {/* <Icon name='check' /> */}
+                                                Activate
                                             </Button>:null}
                                         <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                         {(this.props.siteId == 'Organization')?
-                                            <Button color='teal' disabled={this.addUserDisable(item)} onClick={() => this.onHandleClickAdd(true, item, i)}>
+                                            <Button className='stepOrgDeveloper3' color='teal' disabled={this.addUserDisable(item)} onClick={() => this.onHandleClickAdd(true, item, i)}>
                                                 Add User
                                             </Button>:null}
                                         {(this.props.siteId == 'App')?
                                             <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.appLaunch(item)}>
                                             Launch
                                             </Button>:null}
-                                        <Button disabled={(localStorage.selectMenu !== 'Organizations')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
+                                        <Button className='stepOrgDeveloper4' disabled={(localStorage.selectMenu !== 'Organizations')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>
                                 :
@@ -410,6 +411,7 @@ class DeveloperListView extends React.Component {
                             onLayoutChange={this.onLayoutChange}
                             {...this.props}
                             style={{width:width, height:height-20}}
+                            useCSSTransforms={false}
                         >
                             {this.generateDOM(open, dimmer, width, height, hiddenKeys)}
                         </ReactGridLayout>

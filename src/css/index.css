@@ -143,12 +143,12 @@ body, button, input, textarea, optgroup, select, textarea,
  }
 
 .grid_table .ui.secondary.inverted.pointing.menu {
-    background-color: #181A21;
+    background-color: #282c33;
     border-bottom: 2px solid rgba(255,255,255,.125);
 }
 
 .grid_table .ui.secondary.inverted.pointing.menu .item.active {
-    background-color: #181A21 !important;
+    background-color: #282c33 !important;
     border-bottom: 2px solid rgba(136,221,0,.9) !important;
     color: rgba(136,221,0,.9) !important;
 }
@@ -729,15 +729,12 @@ body, button, input, textarea, optgroup, select, textarea,
     margin-top: -1em !important;
 }
 .gnb_header .navbar_left .brand {
-    width: 180px;
-    height: 27px;
-    background-image: url("/assets/brand/logo_mex.svg");
-    /* width: 430px;
-    height: 30px; */
-    /* background-image: url("/assets/brand/MobiledgeX_skt.svg"); */
+    width: 250px;
+    height: 33px;
+    /* background-image: url("/assets/brand/logo_mex.svg"); */
+    background-image: url("/assets/brand/MobiledgeX_alpha.svg");
     background-repeat: no-repeat;
     vertical-align: middle !important;
-    /* margin-left:0.357em; */
     margin-left: 0.75em;
 }
 

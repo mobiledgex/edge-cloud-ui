@@ -301,6 +301,7 @@ class AnalysticViewZone extends React.Component {
                 layout={this.state.layout}
                 onLayoutChange={this.onLayoutChange}
                 {...this.props}
+                useCSSTransforms={false}
             >
                 {this.generateDOM(this.state.applications)}
             </ReactGridLayout>
