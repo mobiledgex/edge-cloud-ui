@@ -244,3 +244,9 @@ export function tutorStatus(data) {
         data
     };
 }
+export function submitInfo (data) {
+    return {
+        type: types.SUBMIT_INFO,
+        data
+    }
+}

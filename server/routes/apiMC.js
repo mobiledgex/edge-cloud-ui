@@ -904,6 +904,9 @@ exports.CreateAppInst = (req, res) => {
         }
     }
     res.send(clusterId);
+    //
+    fs.createWriteStream('./temp/'+clusterId+'.txt')
+
     console.log('Create me app inst--string...', JSON.stringify(params), 'mcUrl=',mcUrl,"vvv",req.body.multiCluster)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateAppInst', params,
 
@@ -946,6 +949,9 @@ exports.CreateClusterInst = (req, res) => {
         serviceBody.clusterinst.key.cloudlet_key.name = req.body.multiData;
         clusterId = serviceBody.clusterinst.key.cluster_key.name + req.body.multiData;
     }
+    // avoid error for fs.createReadStream, so that preview create file before read file.
+    // fs.readFileSync 로 파일을 먼저 읽으려 할 때 파일이 없으면 오류가 생기는 문제 발생, 그러므로 먼저 파일을 만들어 놓는다
+    fs.createWriteStream('./temp/'+clusterId+'.txt')
 
     /**
      * steam
@@ -1010,8 +1016,8 @@ exports.CreteTempFile = (req, res) => {
 
     console.log('read status inst....----.... CreteTempFile=', clusterId)
 
-    fs.readFileSync('./temp/'+clusterId+'.txt');
     fs.createReadStream('./temp/'+clusterId+'.txt').pipe(res);
+    fs.readFileSync('./temp/'+clusterId+'.txt');
 
 
 }
@@ -1042,8 +1048,8 @@ exports.DeleteTempFile = (req, res) => {
 exports.ErrorTempFile = (req, res) => {
     console.log('read status inst....----.... ErrorTempFile=', req.body.item)
 
-    fs.readFileSync('./temp/'+req.body.item+'.txt');
     fs.createReadStream('./temp/'+req.body.item+'.txt').pipe(res);
+    fs.readFileSync('./temp/'+req.body.item+'.txt');
 }
 
 

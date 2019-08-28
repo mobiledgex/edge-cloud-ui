@@ -55,7 +55,7 @@ const renderInputCluster = field => (
             {...field.input}
             type={field.type}
             label={field.label}
-            placeholder={'Enter only English and numbers'}
+            placeholder={'Please use numbers and English letters only'}
             onChange={(e, { value }) => {
                 const reg = /^[0-9a-zA-Z][-0-9a-zA-Z.]*$/;
                 if(reg.test(value) || value == ''){
@@ -342,7 +342,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                     positive
                                     icon='checkmark'
                                     labelPosition='right'
-                                    content="Save"
+                                    content="Create"
                                 />
                             </Form.Group>
 

@@ -206,14 +206,21 @@ class App extends Component {
     receiveCurrentUser(result) {
         if(result.data && result.data.message) {
 
-            Alert.error(result.data.message, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+
 
             if(result.data.message.indexOf('expired') > -1) {
                 setTimeout(() => self.goToNext('/logout',''),2000);
+                Alert.error('Login timeout expired. Please login again', {
+                    position: 'top-right',
+                    effect: 'slide',
+                    timeout: 5000
+                });
+            } else {
+                Alert.error(result.data.message, {
+                    position: 'top-right',
+                    effect: 'slide',
+                    timeout: 5000
+                });
             }
         } else {
             //self.setState({tokenState:'live'})

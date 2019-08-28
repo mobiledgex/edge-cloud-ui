@@ -346,7 +346,7 @@ const then = moment(nowCopy).subtract(20, "minutes").toDate()
                     }
                 },
                 "selector":valid,
-                "last":60
+                "last":1200
             }
         }
     )

@@ -160,6 +160,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
     )
     onHandleSubmit() {
         this.props.handleSubmit();
+        this.props.onSubmit();
     }
 
     handleRegionChange = (e) => {

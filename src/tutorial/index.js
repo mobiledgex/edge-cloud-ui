@@ -5,7 +5,7 @@ export const organizationTutor = () => {
                 {
                     element: '.stepOrg1',
                     // intro: "<span style='color: red; display: flex; height: 400px !important; width: 300px !important; background-color: #7a7a7a;'>create new</span>",
-                    intro: '<span>Organization page is used to create new organizations and to manage and view organizations that you are part of.<br />There are two types of organizations:<br />1) Developer 2) Operator</span>',
+                    intro: '<span>Organization page is used to create new organizations and to manage and view organizations that you are part of.</span>',
                 },
                 {
                     element: '.stepOrg2',
@@ -17,7 +17,7 @@ export const organizationTutor = () => {
             stepsOrgDeveloper: [
                 {
                     element: '.stepOrg1',
-                    intro: '<span>Organization page is used to create new organizations and to manage and view organizations that you are part of.<br />There are two types of organizations:<br />1) Developer 2) Operator</span>',
+                    intro: '<span>Organization page is used to create new organizations and to manage and view organizations that you are part of.</span>',
                 },
                 {
                     element: '.stepOrg2',
@@ -45,7 +45,7 @@ export const organizationTutor = () => {
             stepsOrgDataDeveloper: [
                 {
                     element: '.stepOrgDeveloper1',
-                    intro: 'Click activate to select organization that you would like to manage or view.',
+                    intro: 'Click manage to select organization that you would like to manage or view.',
                 },
                 {
                     element: '.stepOrgDeveloper2',
@@ -64,7 +64,7 @@ export const organizationTutor = () => {
             stepsNewOrg: [
                 {
                     element: '.newOrg1-1',
-                    intro: '<span>Select organization type.<br />You are a developer if you are a  consumer of edge computing resource.<br />You are a operator if you are a supplier of edge computing resource.</span>',
+                    intro: '<span>Select organization type.<br />You are a developer if you are a  consumer of edge computing resource.<br />You are an operator if you are a supplier of edge computing resource.</span>',
                 },
                 {
                     element: '.newOrg1-2',
@@ -90,97 +90,89 @@ export const organizationTutor = () => {
                 },
                 {
                     element: '.newOrg2-2',
-                    intro: '<span>This is the name of the organization you just created.</span>',
-                },
-                {
-                    element: '.newOrg2-3',
-                    intro: '<span>This shows the type of organization you just created.</span>',
-                },
-                {
-                    element: '.newOrg2-4',
                     intro: '<span>Which role would you like to give this to this user?<br />Depending on the role, the user has different privilege.<br />See right for what each role can do.</span>',
                 },
                 {
-                    element: '.newOrg2-5',
-                    intro: '<span>Click “Add User” button to add this user.<br />You may continue to add user.</span>',
+                    element: '.newOrg2-3',
+                    intro: '<span>Click “Add User” button to add this user.<br />You may continue to add users.</span>',
                 },
                 {
-                    element: '.newOrg2-6',
+                    element: '.newOrg2-4',
                     intro: '<span>This button is used to move to Step 3: Review your Organization.</span>',
                 },
             ],
             stepsNewOrg3: [
                 {
                     element: '.stepOrg1',
-                    intro: 'Please add instruction here',
+                    intro: 'Please read this page carefully, as it provides instruction to upload your backend image to MobiledgeX registry.',
                 },
                 {
                     element: '.newOrg3-2',
-                    intro: 'Please add instruction here',
+                    intro: 'Instruction to upload a docker image is provided here.',
                 },
                 {
                     element: '.newOrg3-3',
-                    intro: 'Please add instruction here',
+                    intro: 'Instruction to upload a VM image is provided here.',
                 },
                 {
                     element: '.newOrg3-4',
-                    intro: 'Please add instruction here',
+                    intro: 'Click this button to view the organization you have created.',
                 },
             ],
             stepsClusterInst: [
                 {
                     element: '.stepOrg1',
-                    intro: 'Please add instruction here'
+                    intro: 'Cluster Instances page is used to create new clusters and to manage and view clusters that are part of your organization.'
                 },
                 {
                     element: '.stepOrg2',
-                    intro: 'Please add instruction here'
+                    intro: '<span>Click “New” button to start creating new cluster.<br />Please note that user role of Developer Manager and Developer Contributor have permission to create clusters.</span>'
                 }
             ],
             stepsClusterInstReg: [
                 {
                     element: '.clusterInstReg0',
-                    intro: 'Please add instruction here'
+                    intro: 'Select region where you want to deploy the cluster.'
                 },
                 {
                     element: '.clusterInstReg1',
-                    intro: 'Please add instruction here'
+                    intro: 'Enter name of your cluster.'
                 },
                 {
                     element: '.clusterInstReg2',
-                    intro: 'Please add instruction here'
+                    intro: 'This is the name of the organization you are currently managing.'
                 },
                 {
                     element: '.clusterInstReg3',
-                    intro: 'Please add instruction here'
+                    intro: 'Which operator do you want to deploy this cluster? Please select one.'
                 },
                 {
                     element: '.clusterInstReg4',
-                    intro: 'Please add instruction here'
+                    intro: 'Which cloudlet(s) do you want to deploy this cluster?'
                 },
                 {
                     element: '.clusterInstReg5',
-                    intro: 'Please add instruction here'
+                    intro: '<span>Do you plan to deploy your application in kubernetes cluster?<br />Or do you plan to deploy it as a plain docker container?</span>'
                 },
                 {
                     element: '.clusterInstReg6',
-                    intro: 'Please add instruction here'
+                    intro: '<span>Shared IP Access represents that you would be sharing a Root Load Balancer with other developers.<br />Dedicated IP Access represents that you would have a dedicated Root Load Balancer.</span>'
                 },
                 {
                     element: '.clusterInstReg7',
-                    intro: 'Please add instruction here'
+                    intro: 'What flavor is needed to run your application?'
                 },
                 {
                     element: '.clusterInstReg8',
-                    intro: 'Please add instruction here'
+                    intro: 'This represents Kubernetes Master where it is responsible for maintaining the desired state for your cluster.'
                 },
                 {
                     element: '.clusterInstReg9',
-                    intro: 'Please add instruction here'
+                    intro: '<span>What is the number of nodes you want in this cluster?<br />The nodes in a cluster are the machines that run your applications.</span>'
                 },
                 {
                     element: '.clusterInstReg10',
-                    intro: 'Please add instruction here'
+                    intro: 'Click this button to start creating.'
                 }
             ],
             stepsApp: [
@@ -243,6 +235,16 @@ export const organizationTutor = () => {
                 },
             ],
 
+            stepsFlavors: [
+                {
+                    element: '.createAppInst0',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.stepOrg2',
+                    intro: 'Please add instruction here'
+                }
+            ]
         }
     )
 
@@ -262,6 +264,45 @@ export const UserRolesTutor = () => {
                 }
 
             ]
+        }
+    )
+}
+
+export const CloudletTutor = () => {
+    return (
+        {
+            stepsCloudlet: [
+                {
+                    element: '.createAppInst0',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.stepOrg2',
+                    intro: 'Please add instruction here'
+                }
+            ],
+            stepsCloudletReg: [
+                {
+                    element: '.cloudletReg0',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.cloudletReg1',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.cloudletReg2',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.cloudletReg3',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.cloudletReg4',
+                    intro: 'Please add instruction here'
+                }
+            ],
         }
     )
 }

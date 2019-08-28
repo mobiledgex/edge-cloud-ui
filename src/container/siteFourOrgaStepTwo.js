@@ -26,14 +26,14 @@ const validate = values => {
 const roles =
     {
         Developer: [
-            { Users:'Manage', Cloudlets:'View', Flavor:'View', 'Cluster Flavor':'View', 'Cluster Instance':'Manage', Apps:'Manage', 'App Instance':'Manage'},
-            { Users:'View', Cloudlets:'View', Flavor:'View', 'Cluster Flavor':'View', 'Cluster Instance':'Manage', Apps:'Manage', 'App Instance':'Manage'},
-            { Users:'View', Cloudlets:'View', Flavor:'View', 'Cluster Flavor':'View', 'Cluster Instance':'View', Apps:'View', 'App Instance':'View'}
+            { Users:'Manage', Cloudlets:'View', Flavor:'View', 'Cluster Instance':'Manage', Apps:'Manage', 'App Instance':'Manage'},
+            { Users:'View', Cloudlets:'View', Flavor:'View', 'Cluster Instance':'Manage', Apps:'Manage', 'App Instance':'Manage'},
+            { Users:'View', Cloudlets:'View', Flavor:'View', 'Cluster Instance':'View', Apps:'View', 'App Instance':'View'}
         ],
         Operator: [
-            { Users:'Manage', Cloudlets:'Manage', Flavor:'disabled', 'Cluster Flavor':'disabled', 'Cluster Instance':'disabled', Apps:'disabled', 'App Instance':'disabled'},
-            { Users:'View', Cloudlets:'View', Flavor:'disabled', 'Cluster Flavor':'disabled', 'Cluster Instance':'Manage', Apps:'disabled', 'App Instance':'disabled'},
-            { Users:'View', Cloudlets:'View', Flavor:'disabled', 'Cluster Flavor':'disabled', 'Cluster Instance':'disabled', Apps:'disabled', 'App Instance':'disabled'},
+            { Users:'Manage', Cloudlets:'Manage', Flavor:'disabled', 'Cluster Instance':'disabled', Apps:'disabled', 'App Instance':'disabled'},
+            { Users:'View', Cloudlets:'View', Flavor:'disabled', 'Cluster Instance':'Manage', Apps:'disabled', 'App Instance':'disabled'},
+            { Users:'View', Cloudlets:'View', Flavor:'disabled', 'Cluster Instance':'disabled', Apps:'disabled', 'App Instance':'disabled'},
         ]
     }
 
@@ -300,7 +300,7 @@ class SiteFourOrgaTwo extends React.Component {
                                                 />
                                             </Grid.Column>
                                         </Grid.Row>
-                                        <Grid.Row className="newOrg2-2">
+                                        <Grid.Row>
                                             <Grid.Column width={5}>
                                                 <div>Organization Name *</div>
                                             </Grid.Column>
@@ -313,7 +313,7 @@ class SiteFourOrgaTwo extends React.Component {
                                                 />
                                             </Grid.Column>
                                         </Grid.Row>
-                                        <Grid.Row className="newOrg2-3">
+                                        <Grid.Row>
                                             <Grid.Column width={5}>
                                                 <div>Type *</div>
                                             </Grid.Column>
@@ -326,7 +326,7 @@ class SiteFourOrgaTwo extends React.Component {
                                                 />
                                             </Grid.Column>
                                         </Grid.Row>
-                                        <Grid.Row className="newOrg2-4">
+                                        <Grid.Row className="newOrg2-2">
                                             <Grid.Column width={5}>
                                                 <div>Role *</div>
                                             </Grid.Column>
@@ -349,8 +349,8 @@ class SiteFourOrgaTwo extends React.Component {
 
                                 <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
                                     {/*<Form.Button >Preview</Form.Button>*/}
-                                    <Form.Button className="newOrg2-5" primary positive>Add User</Form.Button>
-                                    <Form.Button className="newOrg2-6" onClick={this.continueClick}>Move to Step 3</Form.Button>
+                                    <Form.Button className="newOrg2-3" primary positive>Add User</Form.Button>
+                                    <Form.Button className="newOrg2-4" onClick={this.continueClick}>Move to Step 3</Form.Button>
 
                                 </Form.Group>
                             </Form>

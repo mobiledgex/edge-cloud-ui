@@ -83,6 +83,7 @@
 
 
 import * as moment from 'moment';
+
 let trimData = (datas) => {
     let newData = datas.splice(0,1);
     return datas ;
@@ -113,20 +114,27 @@ let generateData = (datas) => {
         let dataSeries = result.values;
         let dataColumns = result.columns;
         let infoData = [];
+        let lastItem = null;
         if(dataSeries.length) {
+            //remove duplicated data
+
+
             dataSeries.map((item) => {
                 // time, cluster, cpu, disk, mem, recvBytes, sendBytes
+                if(lastItem !== item[0]) {
+                    infoData = item;
+                    values.push({
+                        name:_name,
+                        alarm:infoData[2],
+                        dName:infoData[1],
+                        values:{
+                            time:moment(item[0]).utc().local().format(),
+                            cluster:infoData[3],
+                            cmsn:(_name.indexOf('cpu') > -1)?infoData[4] : (_name.indexOf('mem') > -1)? infoData[5] : [infoData[6],infoData[7]]
+                        }})
+                }
 
-                infoData = item;
-                values.push({
-                    name:_name,
-                    alarm:infoData[2],
-                    dName:infoData[1],
-                    values:{
-                        time:moment(item[0]).utc().local().format(),
-                        cluster:infoData[3],
-                        cmsn:(_name.indexOf('cpu') > -1)?infoData[4] : (_name.indexOf('mem') > -1)? infoData[5] : [infoData[6],infoData[7]]
-                    }})
+                lastItem = item[0];
             })
         } else {
 
@@ -141,7 +149,7 @@ let generateData = (datas) => {
     //ascending or descending
 
     //values.sort(numberDes);
-    //values.reverse();
+    values = values.reverse();
 
     return values
 
