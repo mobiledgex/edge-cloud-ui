@@ -300,7 +300,7 @@ class DeveloperListView extends React.Component {
                                         {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager')?
                                             <Button className='stepOrgDeveloper1' color={(this.state.selectUse == i)?'teal' :null} onClick={(evt) => this.onUseOrg(item,i, evt)}>
                                                 {/* <Icon name='check' /> */}
-                                                Activate
+                                                Manage
                                             </Button>:null}
                                         <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                         {(this.props.siteId == 'Organization')?

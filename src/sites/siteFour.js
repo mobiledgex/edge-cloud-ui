@@ -49,7 +49,7 @@ import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import * as Service from '../services/service_login_api';
 import * as computeService from '../services/service_compute_service';
 
-import { organizationTutor } from '../tutorial'
+import { organizationTutor, CloudletTutor } from '../tutorial'
 
 import Alert from 'react-s-alert';
 
@@ -83,6 +83,7 @@ const locationOptions = [
 let defaultMotion = {left: window.innerWidth/2,top: window.innerHeight/2, position: 'absolute', opacity:1}
 
 const orgaSteps = organizationTutor();
+const cloudletSteps = CloudletTutor();
 let _self = null;
 class SiteFour extends React.Component {
     constructor(props) {
@@ -383,11 +384,11 @@ class SiteFour extends React.Component {
             enable = true;
         } else if(this.props.params.subPath === "pg=2")  {
             //Cloudlets  
-            currentStep = orgaSteps.stepsZero;
+            currentStep = cloudletSteps.stepsCloudlet;
             enable = true;
         } else if(this.props.params.subPath === "pg=3")  {
             //Flavors
-            currentStep = orgaSteps.stepsZero;
+            currentStep = orgaSteps.stepsFlavors;
             enable = true;
         } else if(this.props.params.subPath === "pg=4")  {
             //Cluster Instances
@@ -536,8 +537,20 @@ class SiteFour extends React.Component {
 
         // saved tutorial
         let tutorial = localStorage.getItem('TUTORIAL')
+
+        let formKey = Object.keys(nextProps.formInfo);
+        console.log('submitSucceeded formKey= ', formKey)
+        //let submitSucceeded = (nextProps.formInfo) ? nextProps.formInfo[formKey[0]]['submitSucceeded']: null
+        if(formKey.length){
+            console.log('submitSucceeded = ', nextProps.formInfo[formKey[0]], nextProps.formInfo[formKey[0]]['submitSucceeded'])
+            if(nextProps.formInfo[formKey[0]]['submitSucceeded']) {
+                if(nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
+                    _self.setState({stepsEnabled:false})
+                }
+            }
+        }
         if(tutorial === 'done') {
-            _self.setState({stepsEnabled:false})
+            //_self.setState({stepsEnabled:false})
         }
         //
         let enable = true;
@@ -881,7 +894,14 @@ class SiteFour extends React.Component {
                                 } */}
                                 <div style={{marginLeft:'10px'}}>
                                     {/* {(this.state.enable)?this.getGuidePopup(this.state.headerTitle):null} */}
-                                    {this.getGuidePopup(this.state.headerTitle)}
+                                    {
+                                        (
+                                            this.state.headerTitle !== 'User Roles' &&
+                                            this.state.headerTitle !== 'Accounts' &&
+                                            this.state.headerTitle !== 'Cloudlets' &&
+                                            this.state.headerTitle !== 'Flavors' &&
+                                            this.state.headerTitle !== 'Apps'
+                                        )?this.getGuidePopup(this.state.headerTitle):null}
                                 </div>
                                 <div style={{position:'absolute', top:25, right:25}}>
                                     {this.getHelpPopup(this.state.headerTitle)}
@@ -953,7 +973,8 @@ const mapStateToProps = (state) => {
     }
     let action = state.action;
     let tutorState = (state.tutorState)?state.tutorState.state:null;
-    console.log('20190822 action is == ', state)
+    let formInfo = (state.form)?state.form:null;
+    let submitInfo = (state.submitInfo)?state.submitInfo:null;
     return {
         viewBtn : state.btnMnmt?state.btnMnmt:null,
         userToken : (state.userToken) ? state.userToken: null,
@@ -975,7 +996,9 @@ const mapStateToProps = (state) => {
         siteName: (state.siteChanger)?state.siteChanger.site:null,
         changeStep: (state.changeStep.step)?state.changeStep.step:null,
         dataExist : state.dataExist.data,
-        tutorState : tutorState
+        tutorState : tutorState,
+        formInfo:formInfo,
+        submitInfo:submitInfo
     }
 };
 

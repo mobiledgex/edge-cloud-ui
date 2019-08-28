@@ -407,7 +407,6 @@ class RegistNewItem extends React.Component {
                 service.createNewCloudlet('CreateCloudlet', serviceBody, this.receiveSubmitCloudlet)
             }
             this.setState({validateError:error})
-            
 
         }
         //close
@@ -504,7 +503,8 @@ const mapDispatchProps = (dispatch) => {
         handleMapLong: (data) => { dispatch(actions.mapCoordinatesLong(data))},
         handleMapLat: (data) => { dispatch(actions.mapCoordinatesLat(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+
         // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))}
     };
 };
