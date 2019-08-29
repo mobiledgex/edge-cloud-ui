@@ -178,56 +178,55 @@ export const organizationTutor = () => {
             stepsApp: [
                 {
                     element: '.stepOrg1',
-                    intro: 'Please add instruction here'
+                    intro: 'Use App Instances page to deploy, manage and view app instances.'
                 },
                 {
                     element: '.stepOrg2',
-                    intro: 'Please add instruction here'
+                    intro: '<span>Click “New” button to start deploying new app instance.<br />Please note that user role of Developer Manager and Developer Contributor have permission to deploy app instances.</span>'
                 }
             ],
             stepsAppInst: [
                 {
                     element: '.stepOrg1',
-                    intro: 'Please add instruction here'
+                    intro: 'Use App Instances page to deploy, manage and view app instances.'
                 },
                 {
                     element: '.stepOrg2',
-                    intro: 'Please add instruction here'
+                    intro: '<span>Click “New” button to start deploying new app instance.<br />Please note that user role of Developer Manager and Developer Contributor have permission to deploy app instances.</span>'
                 }
             ],
             stepsCreateAppInst: [
                 {
                     element: '.createAppInst0',
-                    intro: 'Please add instruction here'
+                    intro: 'Select region where you want to deploy.'
                 },
                 {
                     element: '.createAppInst1',
-                    intro: 'Please add instruction here'
+                    intro: 'The name of the organization you are currently managing.'
                 },
                 {
                     element: '.createAppInst2',
-                    intro: 'Please add instruction here'
+                    intro: 'The name of the application to deploy.'
                 },
                 {
                     element: '.createAppInst3',
-                    intro: 'Please add instruction here'
+                    intro: 'The version of the application to deploy.'
                 },
                 {
                     element: '.createAppInst4',
-                    intro: 'Please add instruction here'
+                    intro: 'Which operator do you want to deploy this applicaton? Please select one.'
                 },
                 {
                     element: '.createAppInst5',
-                    intro: 'Please add instruction here'
+                    intro: 'Which cloudlet(s) do you want to deploy this application?'
                 },
-
                 {
                     element: '.createAppInst6',
-                    intro: 'Please add instruction here'
+                    intro: 'If you have yet to create a cluster, you can select this to auto create cluster instance.'
                 },
                 {
                     element: '.createAppInst7',
-                    intro: 'Please add instruction here'
+                    intro: 'Name of cluster instance to deploy this application.'
                 },
                 {
                     element: '.createAppInst8',
