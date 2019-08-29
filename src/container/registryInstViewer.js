@@ -78,15 +78,15 @@ class RegistryInstViewer extends React.Component {
             autoClusterDisable:false,
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU']},
-                    'DeveloperName':{label:'Organization Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'Organization or Company Name that a Developer is part of', active:true, items:[null]},
-                    'AppName':{label:'App Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'App name', active:true, items:[null]},
-                    'Version':{label:'App Version', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'App version', active:true, items:[null]},
-                    'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Company or Organization name of the operator', active:true, items:[null]},
-                    'Cloudlet':{label:'Cloudlet', type:'RenderDropDown', necessary:true, tip:'Name of the cloudlet', active:true, items:[null]},
-                    'AutoClusterInst':{label:'Auto Cluster Instance', type:'RenderCheckbox', necessary:false, tip:'When checked, this will inherit settings from application settings'},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:['US','KR', 'EU']},
+                    'DeveloperName':{label:'Organization Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'The name of the organization you are currently managing.', active:true, items:[null]},
+                    'AppName':{label:'App Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'The name of the application to deploy.', active:true, items:[null]},
+                    'Version':{label:'App Version', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'The version of the application to deploy.', active:true, items:[null]},
+                    'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Which operator do you want to deploy this applicaton? Please select one.', active:true, items:[null]},
+                    'Cloudlet':{label:'Cloudlet', type:'RenderDropDown', necessary:true, tip:'Which cloudlet(s) do you want to deploy this application?', active:true, items:[null]},
+                    'AutoClusterInst':{label:'Auto Cluster Instance', type:'RenderCheckbox', necessary:false, tip:'If you have yet to create a cluster, you can select this to auto create cluster instance.'},
                     'ClusterInst':{label:'Cluster Instance', type:'RenderClusterDisabled', necessary:true,
-                        tip:'When selecting cluster inst, default flavor and ip access specified in app setting gets overridden',
+                        tip:'Name of cluster instance to deploy this application.',
                         active:true, items:[null]},
                 },
                 {
@@ -133,8 +133,13 @@ class RegistryInstViewer extends React.Component {
             //let cloudletGroup = reducer.groupBy(result, 'CloudletName')
             let keys = Object.keys(operatorGroup);
             let assObj = Object.assign([], this.state.keysData);
-            assObj[0].Operator.items = keys;
+            if(result[0].Operator){
+                assObj[0].Operator.items = keys;
+            } else{
+                assObj[0].Operator.items = [];
+            }
             this.setState({keysData:assObj, operators:operatorGroup})
+            
         }
         // set list of operators
         if(this.props.devData.length > 0) {
@@ -142,6 +147,7 @@ class RegistryInstViewer extends React.Component {
         } else {
             this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
         }
+        this.props.handleLoadingSpinner(false);
 
     }
     receiveResultApp = (result) => {
@@ -153,6 +159,7 @@ class RegistryInstViewer extends React.Component {
             let assObj = Object.assign([], this.state.keysData);
             assObj[0].DeveloperName.items = keys;
             this.setState({keysData:assObj, apps:appGroup})
+            this.props.handleLoadingSpinner(false);
         }
     }
     receiveResultClusterInst = (result) => {
@@ -340,8 +347,13 @@ class RegistryInstViewer extends React.Component {
             
         }
 
-        //
-        if(store.userToken && nextProps.formAppInst.values) this.getDataDeveloper(store.userToken,nextProps.formAppInst.values.Region);
+        /************
+         * set list of Region
+         * **********/
+        if(nextProps.selectedRegion && nextProps.selectedRegion !== this.props.selectedRegion){
+            console.log("nextProps.selectedRegionnextProps.selectedRegion",nextProps.selectedRegion,":::",this.props.selectedRegion)
+            this.getDataDeveloper(store.userToken,nextProps.formAppInst.values.Region);
+        }
 
         /************
          * set list of cloudlet
@@ -379,6 +391,7 @@ class RegistryInstViewer extends React.Component {
         }
 
         if(nextProps.selectedVersion) {
+            console.log("this.state.versions",this.state.versions)
             if(this.state.versions.length !== 0 && this.state.versions[nextProps.selectedApp][0].DeploymentType === 'vm'){
                 this.setState({autoClusterDisable:true})
             } else if(this.state.versions.length !== 0){
@@ -513,6 +526,7 @@ const mapStateToProps = (state) => {
     let selectedVersion = null;
     let validateValue = null;
     let selectedOrgName = null;
+    let selectedRegion = null;
     // alert(JSON.stringify(state.form.createAppFormDefault))
 
     if(state.form.createAppFormDefault) {
@@ -531,7 +545,9 @@ const mapStateToProps = (state) => {
         if(state.form.createAppFormDefault.values.DeveloperName !== "") {
             selectedOrgName = state.form.createAppFormDefault.values.DeveloperName;
         }
-
+        if(state.form.createAppFormDefault.values.Region !== "") {
+            selectedRegion = state.form.createAppFormDefault.values.Region;
+        }
 
         if(state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
             let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
@@ -571,7 +587,8 @@ const mapStateToProps = (state) => {
         appLaunch : state.appLaunch?state.appLaunch.data:null,
         validateValue:validateValue,
         formAppInst : formAppInst,
-        selectedOrgName : selectedOrgName
+        selectedOrgName : selectedOrgName,
+        selectedRegion : selectedRegion
     }
     
     // return (dimm) ? {

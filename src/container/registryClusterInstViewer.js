@@ -80,16 +80,16 @@ class RegistryClusterInstViewer extends React.Component {
             errorClose:false,
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU']},
-                    'ClusterName':{label:'Cluster Name', type:'RenderInputCluster', necessary:true, tip:'Cluster name', active:true},
-                    'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Name of Organization that this cluster belongs to', active:true, items:['','']},
-                    'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Company or Organization name of the operator', active:true, items:['','']},
-                    'Cloudlet':{label:'Cloudlet', type:'RenderDropDown', necessary:true, tip:'Name of the cloudlet', active:true, items:['','']},
-                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (kubernetes or docker)', active:true, items:['Docker', 'Kubernetes']},
-                    'IpAccess':{label:'IP Access', type:'RenderSelect', necessary:false, tip:'IpAccess indicates the type of RootLB that Developer requires for their App',items:ipaccessArr},
-                    'Flavor':{label:'Flavor', type:'RenderSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor', active:true, items:['','']},
-                    'NumberOfMaster':{label:'Number of Masters', type:'RenderInputDisabled', necessary:false, tip:'Number of k8s masters (In case of docker deployment, this field is not required)', value:null},
-                    'NumberOfNode':{label:'Number of Nodes', type:'RenderInputNum', necessary:false, tip:'Number of k8s nodes (In case of docker deployment, this field is not required)', value:null},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy the cluster.', active:true, items:['US','KR', 'EU']},
+                    'ClusterName':{label:'Cluster Name', type:'RenderInputCluster', necessary:true, tip:'Enter name of your cluster.', active:true},
+                    'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'This is the name of the organization you are currently managing.', active:true, items:['','']},
+                    'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Which operator do you want to deploy this cluster? Please select one.', active:true, items:['','']},
+                    'Cloudlet':{label:'Cloudlet', type:'RenderDropDown', necessary:true, tip:'Which cloudlet(s) do you want to deploy this cluster?', active:true, items:['','']},
+                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Do you plan to deploy your application in kubernetes cluster? Or do you plan to deploy it as a plain docker container?', active:true, items:['Docker', 'Kubernetes']},
+                    'IpAccess':{label:'IP Access', type:'RenderSelect', necessary:false, tip:'Shared IP Access represents that you would be sharing a Root Load Balancer with other developers. Dedicated IP Access represents that you would have a dedicated Root Load Balancer.',items:ipaccessArr},
+                    'Flavor':{label:'Flavor', type:'RenderSelect', necessary:true, tip:'What flavor is needed to run your application?', active:true, items:['','']},
+                    'NumberOfMaster':{label:'Number of Masters', type:'RenderInputDisabled', necessary:false, tip:'This represents Kubernetes Master where it is responsible for maintaining the desired state for your cluster.', value:null},
+                    'NumberOfNode':{label:'Number of Nodes', type:'RenderInputNum', necessary:false, tip:'What is the number of nodes you want in this cluster? The nodes in a cluster are the machines that run your applications.', value:null},
                 },
                 {
 
