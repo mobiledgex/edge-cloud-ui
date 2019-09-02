@@ -111,7 +111,7 @@ const ResetPassword = (props) => (
         <RegistryResetForm onSubmit={() => console.log('ProfileForm was submitted')}/>
         <Grid.Row>
             <span>
-                By clicking SignUp, you agree to our <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms</a>, <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Data Policy</a>, and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:"0"}}>Cookies Policy</a>.
+                By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
             </span>
         </Grid.Row>
     </Grid>
@@ -337,9 +337,9 @@ class Login extends Component {
 
 
             //self.showAlert(resource)
-
+            let msg = `User ${resource.name} created successfully`
             self.setState({successCreate:true, loginMode:'signuped', signup:false})
-            Alert.success(message, {
+            Alert.success(msg, {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000

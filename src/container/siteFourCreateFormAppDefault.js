@@ -113,6 +113,16 @@ const renderInputApp = field => (
     </div>
 );
 
+const renderCheckbox = field => (
+    <Form.Checkbox toggle
+        style={{height:'33px', paddingTop:'8px'}}
+        checked={!!field.input.value}
+        name={field.input.name}
+        label={field.label}
+        onChange={(e, { checked }) => field.input.onChange(checked)}
+    />
+);
+
 const style = {
     borderRadius: 0,
     opacity: 0.7,
@@ -344,6 +354,12 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                     value={(fieldKeys[pId][key].items)?fieldKeys[pId][key].items:data[key]}
                                                                     error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
                                                                     />
+                                                            :
+                                                            (fieldKeys[pId][key]['type'] === 'RenderCheckbox') ?
+                                                            <Field
+                                                                component={renderCheckbox}
+                                                                name={key}
+                                                                />
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'RenderInputDisabled') ?
                                                                 (getUserRole == 'AdminManager') ?

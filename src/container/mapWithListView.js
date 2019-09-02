@@ -344,7 +344,7 @@ class MapWithListView extends React.Component {
                                     :
                                     (value === 'AppName' && item[value])? //
                                         <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <div style={{display:'flex', justifyContent:'row'}}>
+                                            <div style={{display:'flex', justifyContent:'row', wordBreak:'break-all'}}>
                                                  {String(item[value])}
                                             </div>
                                         </Table.Cell>
@@ -391,7 +391,7 @@ class MapWithListView extends React.Component {
                                     :
                                     (!( String(hidden).indexOf(value) > -1 )) ?
                                         <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <div style={{display:'flex', alignContent:'Column', justifyContent:'flex-start', alignItems:'center' }}>
+                                            <div style={{display:'flex', alignContent:'Column', justifyContent:'flex-start', alignItems:'center', wordBreak:'break-all' }}>
                                                 <div>{String(item[value])}</div>{(this.compareDate(item['Created']).new && value === 'Region') ? <div className="userNewMark" style={{marginLeft:5, fontSize:10, padding:'0 5px'}}>{`New`}</div> : null}
                                             </div>
                                         </Table.Cell>

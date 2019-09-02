@@ -47,15 +47,11 @@ class DeleteItem extends React.Component {
                     this.props.handleAlertInfo('error',item.result.message)
                     return
                 } else {
-                    let msg = '';
-                    let msg2 = '';
                     if(this.props.siteId == 'ClusterInst') {
-                        msg = 'Your cluster '+body.params.clusterinst.key.cluster_key.name
+                        this.props.handleAlertInfo('success','Your cluster '+body.params.clusterinst.key.cluster_key.name+' deleted successfully')
                     } else if(this.props.siteId == 'appinst') {
-                        msg = 'Your application instance'
-                        msg2 = ' from '+body.params.appinst.key.cluster_inst_key.cluster_key.name
+                        this.props.handleAlertInfo('success','Application Instance '+body.params.appinst.key.app_key.name+' successfully deleted')
                     }
-                    this.props.handleAlertInfo('success',msg+' deleted successfully'+msg2)
                 }
             })
             setTimeout(() => {

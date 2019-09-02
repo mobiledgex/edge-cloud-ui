@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { Progress } from 'semantic-ui-react';
 
 let failFlag = false;
+let deleteFlag = false;
 
 
 
@@ -75,7 +76,9 @@ class VerticalLinearStepper extends React.Component {
         toJson.map((item,i) => {
             if(item.data) {
                 stepData.push(item.data.message)
-                if(item.data.message == 'Created successfully'){
+                if(item.data.message == 'Created successfully' && !deleteFlag){
+                    deleteFlag = true;
+                    console.log("Created successfullyCreated successfully")
                     setTimeout(() => {
                         this.props.alertRefresh();
                         computeService.deleteTempFile(this.props.item, this.props.site)

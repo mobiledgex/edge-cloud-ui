@@ -1016,9 +1016,12 @@ exports.CreteTempFile = (req, res) => {
 
     console.log('read status inst....----.... CreteTempFile=', clusterId)
 
-    fs.createReadStream('./temp/'+clusterId+'.txt').pipe(res);
-    fs.readFileSync('./temp/'+clusterId+'.txt');
-
+    try {
+        fs.readFileSync('./temp/'+clusterId+'.txt');
+        fs.createReadStream('./temp/'+clusterId+'.txt').pipe(res);
+    } catch (error) {
+        console.log('CreteTempFile Error!!')
+    }
 
 }
 
@@ -1037,10 +1040,16 @@ exports.DeleteTempFile = (req, res) => {
     }
     console.log('read status inst....----.... DeleteTempFile=', req.body)
 
-    fs.readFileSync('./temp/'+clusterId+'.txt');
-    fs.unlink('./temp/'+clusterId+'.txt',function(){
-        console.log("DeleteTempFile!!")
-    });
+    try {
+        fs.readFileSync('./temp/'+clusterId+'.txt');
+        fs.unlink('./temp/'+clusterId+'.txt',function(){
+            console.log("DeleteTempFile!!")
+        });
+    } catch (error) {
+        console.log('DeleteTempFile Error!!')
+    }
+
+    
 
 
 }
@@ -1048,8 +1057,14 @@ exports.DeleteTempFile = (req, res) => {
 exports.ErrorTempFile = (req, res) => {
     console.log('read status inst....----.... ErrorTempFile=', req.body.item)
 
-    fs.createReadStream('./temp/'+req.body.item+'.txt').pipe(res);
-    fs.readFileSync('./temp/'+req.body.item+'.txt');
+    try {
+        fs.readFileSync('./temp/'+req.body.item+'.txt');
+        fs.createReadStream('./temp/'+req.body.item+'.txt').pipe(res);
+    } catch (error) {
+        console.log('ErrorTempFile Error!!')
+    }
+    
+    
 }
 
 

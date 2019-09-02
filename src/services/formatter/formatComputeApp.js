@@ -40,6 +40,7 @@ let newRegistKey = [
     'Ports',
     'DefaultFQDN',
     'PackageName',
+    'ScaleWithCluster',
     'Command',
     'DeploymentMF',
 ];
@@ -74,6 +75,7 @@ let generateData = (datas,body) => {
                     PackageName:'',
                     // IpAccess:IpAccess,
                     //Cluster:Cluster,
+                    ScaleWithCluster:'',
                     Command:'',
                     DeploymentMF:'',
                     Edit:null
@@ -93,6 +95,7 @@ let generateData = (datas,body) => {
                 let DefaultFlavor = dataResult.data.default_flavor.name || '-';
                 let Ports = dataResult.data.access_ports || '-';
                 let AuthPublicKey = dataResult.data.auth_public_key || '-';
+                let ScaleWithCluster = dataResult.data.scale_with_cluster || false;
                 let DefaultFQDN = dataResult.data.official_fqdn || '-';
                 let PackageName = dataResult.data.android_package_name || '-'; 
                 //let DeploymentGenerator = dataResult.deployment_generator || '-';
@@ -114,6 +117,7 @@ let generateData = (datas,body) => {
                     PackageName:PackageName,
                     // IpAccess:IpAccess,
                     //Cluster:Cluster,
+                    ScaleWithCluster:ScaleWithCluster,
                     Command:Command,
                     DeploymentMF:DeploymentMF,
                     Edit:newRegistKey

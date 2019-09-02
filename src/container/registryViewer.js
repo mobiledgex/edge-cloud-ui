@@ -90,6 +90,7 @@ class RegistryViewer extends React.Component {
                 'DefaultFQDN':{label:'Default FQDN', type:'RenderInput', necessary:false, tip:'Default FQDN', active:true},
                 'PackageName':{label:'Package Name', type:'RenderInput', necessary:false, tip:'Package Name', active:true},
                 // 'IpAccess':{label:'IP Access', type:'IPSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
+                'ScaleWithCluster':{label:'Scale With Cluster', type:'RenderCheckbox', necessary:false, items:false},
                 'Command':{label:'Command', type:'RenderInput', necessary:false, tip:'Command that the container runs to start service', active:true},
                 'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file', active:true},
             },
@@ -112,6 +113,7 @@ class RegistryViewer extends React.Component {
                 'DefaultFQDN':'',
                 'PackageName':'',
                 // 'IpAccess':'',
+                'ScaleWithCluster':'',
                 'Command':'',
                 'DeploymentMF':'',
             }
@@ -403,6 +405,7 @@ const createFormat = (data) => (
         "app":
             {
                 "key":{"developer_key":{"name":data['OrganizationName']},"name":data['AppName'],"version":data['Version']},
+                "scale_with_cluster":data['ScaleWithCluster'],
                 "deployment":data['DeploymentType'],
                 "image_type":itData,
                 "image_path":data['ImagePath'],
@@ -459,6 +462,7 @@ const mapStateToProps = (state) => {
         if(enableValue.DeploymentType === "Docker") enableValue.DeploymentType = "docker"
         if(enableValue.DeploymentType === "Kubernetes") enableValue.DeploymentType = "kubernetes"
         if(enableValue.DeploymentType === "VM") enableValue.DeploymentType = "vm"
+        if(enableValue.ScaleWithCluster == "") enableValue.ScaleWithCluster = false
         submitVal = createFormat(enableValue)
         validateValue = state.form.createAppFormDefault.values;
     }

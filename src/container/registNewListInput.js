@@ -62,10 +62,11 @@ const renderInputNum = ({ input, unit, label, placeholder, type, error }) => (
             {(unit)?
             <Input fluid
                    type="number"
+                   onChange={(e) => maxlength(e)}
                    label={{ basic: true, content: unit}}
                    labelPosition='right'></Input>
             :
-            <Input fluid type="number"></Input>}
+            <Input fluid type="number" onChange={(e) => maxlength(e)}></Input>}
         </Form.Field>
         {error && <span className="text-danger">{error}</span>}
     </div>
@@ -94,6 +95,14 @@ const renderTextArea = field => (
             placeholder={field.placeholder} />
     </Form>
 );
+
+const maxlength = (e) => {
+    if(e.target.value > 99999){
+        e.target.value = e.target.value.slice(0, 5);
+    } else if(e.target.value <= 0){
+        e.target.value = ''
+    }
+}
 
 
 class registNewListInput extends React.Component {

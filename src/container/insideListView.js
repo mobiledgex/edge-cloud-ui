@@ -361,7 +361,7 @@ class InsideListView extends React.Component {
                                 :
                                 (!( String(hideHeader).indexOf(value) > -1 )) ?
                                     <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
-                                        <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
+                                        <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace' style={{wordBreak:'break-all'}}>
                                             {String(item[value])}
                                         </div>
                                     </Table.Cell>
