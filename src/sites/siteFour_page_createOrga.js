@@ -65,7 +65,7 @@ class SiteFourPageCreateorga extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) this.getDataDeveloper(store.userToken);
+        if(store && store.userToken) this.getDataDeveloper(store.userToken);
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -86,7 +86,7 @@ class SiteFourPageCreateorga extends React.Component {
                     type:nextProps.stepOne.values.type.toLowerCase(),
                     address:nextProps.stepOne.values.address,
                     phone:nextProps.stepOne.values.phone,
-                    token:store.userToken
+                    token:store ? store.userToken : 'null'
                 }, this.resultCreateOrg, this)
             
         }
@@ -104,7 +104,7 @@ class SiteFourPageCreateorga extends React.Component {
                         username:_username,
                         org:_org,
                         role:_role,
-                        token:store.userToken
+                        token:store ? store.userToken : 'null'
                 }, this.resultGiveToRole, this)
         }
 

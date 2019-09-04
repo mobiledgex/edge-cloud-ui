@@ -16,8 +16,8 @@ import {withRouter} from "react-router-dom";
 
 
 const panes = [
-    { menuItem: 'Select Cloudlet', render: (props) => <Tab.Pane>{cloudletMap(props, 'cloudlets')}</Tab.Pane> },
-    { menuItem: 'Show Cluster', render: (props) => <Tab.Pane>{clusterNode(props)}</Tab.Pane> }
+    { menuItem: 'Select Region', render: (props) => <Tab.Pane>{cloudletMap(props, 'cloudlets')}</Tab.Pane> }
+
 ]
 
 const renderLocationInput = field => (
@@ -76,7 +76,7 @@ const clusterNode = (props) => (
 const cloudletMap = (props, type) => (
     <Fragment>
         {(type === 'cloudlets')?
-        <div className='panel_worldmap' style={{width:'100%', height:600}}>
+        <div className='panel_worldmap' style={{width:'100%'}}>
             <ClustersMap parentProps={{devData:props.cloudletData, reg:'cloudletAndClusterMap', zoomIn:()=>console.log('zoomin'), zoomOut:()=>console.log('zoomout'), resetMap:()=>console.log('resetmap') }} zoomControl={{center:[0, 0], zoom:1.5} }></ClustersMap>
         </div>
 
@@ -107,7 +107,11 @@ class SiteFourCreateInstForm extends React.PureComponent {
             organizeData:[],
             cloudletData:[],
             flavorData:[],
-            clusterShow:true
+            clusterShow:true,
+            regionInfo:{},
+            locationLong:null,
+            locationLat:null,
+            locationLongLat:[],
         }
         _self = this;
         this.loopReqCount = 3; //cloudlet(operators), cluster, flavor
@@ -196,13 +200,17 @@ class SiteFourCreateInstForm extends React.PureComponent {
         let tabNo = 0;
         let filteredKeys = aggregate.removeDuplicate(keys)
         let _keys = Object.assign({},_self.state.devData.keys[tabNo]);
-        _keys[field].items = filteredKeys;
-        _self.setState({keys: _keys})
+        if(_keys[field]) {
+            _keys[field].items = filteredKeys;
+            _self.setState({keys: _keys})
+        }
+
     }
     resetDevInputData(keys,field) {
         let tabNo = 0;
 
     }
+
     onChangeFormState = (state) => {
         let organizKeys = [];
         let flavorKeys = [];
@@ -324,12 +332,13 @@ class SiteFourCreateInstForm extends React.PureComponent {
             rgn = [region]
         }
         rgn.map((item) => {
-            services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
-            services.getMCService('ShowFlavor',{token:store.userToken, region:item}, _self.receiveResultFlavor)
+
+            services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
+            services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultFlavor)
 
         })
 
-        services.getMCService('showOrg',{token:store.userToken}, _self.receiveResultOrg, _self)
+        services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, _self.receiveResultOrg, _self)
     }
     handleTabChange = (e, { activeIndex }) => this.setState({ activeIndex })
     componentDidMount() {
@@ -344,15 +353,20 @@ class SiteFourCreateInstForm extends React.PureComponent {
             this.setFlavorNode([nextProps.masterNumber,nextProps.nodeNumber],nextProps.selectedFlavor);
         }
 
+        // case click a region on the map
+        if(nextProps.getRegion) {
+            this.setState({regionInfo:nextProps.getRegion})
+        }
+
     }
 
-    gotoUrl() {
+    gotoUrl(num) {
         _self.props.history.push({
             pathname: '/site4',
-            search: 'pg=4'
+            search: 'pg='+num
         });
-        _self.props.history.location.search = 'pg=4';
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=4'})
+        _self.props.history.location.search = 'pg='+num;
+        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg='+num})
     }
 
     clusterHide = (value) => {
@@ -365,17 +379,75 @@ class SiteFourCreateInstForm extends React.PureComponent {
             this.setState({clusterShow:true})
         } 
     }
+    handleChangeLong = (e, {value}) => {
+        console.log('20190902 value long = ', value)
+        if(value == '-') {
+            this.setState({ locationLong: value })
+            return
+        }
+        let onlyNum = value;
+        if(onlyNum > 180 || onlyNum < -180) {
+            //this.props.handleAlertInfo('error',"-180 ~ 180")
+            e.target.value=null;
+            return
+        }
+        this.setState({ locationLong: onlyNum })
+        this.locationValue(onlyNum,this.state.locationLat)
+    }
+    handleChangeLat = (e, {value}) => {
+        console.log('20190902 value lat = ', value)
+        if(value == '-') {
+            this.setState({ locationLat: value })
+            return
+        }
+        let onlyNum = value;
+        if(onlyNum > 90 || onlyNum < -90) {
+            //this.props.handleAlertInfo('error',"-90 ~ 90")
+            e.target.value=null;
+            return
+        }
+        this.setState({ locationLat: onlyNum })
+        this.locationValue(this.state.locationLong,onlyNum)
+    }
+    locationValue = (long,lat) => {
+        console.log('20190902 long lat === ', long, lat)
+        if(long && lat){
+            this.setState({ locationLongLat: [Number(long),Number(lat)] })
+
+        } else {
+            this.setState({ locationLongLat: null })
+        }
+        // handle input value to input filed that lat/long fileds as redux
+        let location = {region:'',name:'', lat:lat, long:long}
+        _self.props.handleGetRegion(location)
+
+        // handle send value to map for indicate lat/long
+
+    }
 
     render() {
         const { activeIndex, clusterName } = this.state;
+        let {data, dimmer, selected} = this.props;
         return (
-            <Grid style={{height:'100%'}}>
-                <Grid.Row columns={2}>
-                    <Grid.Column width={8}>
-                        <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole} gotoUrl={this.gotoUrl} clusterHide={this.clusterHide} toggleSubmit={this.props.toggleSubmit} validError={this.props.validError} onSubmit={() => console.log('submit form')} onChangeState={this.onChangeFormState}></SiteFourCreateFormDefault>
+            <Grid>
+                <Grid.Row columns={2} className="grid_map_container">
+                    <Grid.Column width={8} className="left">
+                        <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole}
+                                                   gotoUrl={this.gotoUrl} clusterHide={this.clusterHide}
+                                                   toggleSubmit={this.props.toggleSubmit}
+                                                   validError={this.props.validError}
+                                                   onSubmit={() => console.log('submit form')}
+                                                   selected={this.props.selectedRegion}
+                                                   regionInfo={this.state.regionInfo}
+                                                   dimmer={dimmer}
+                                                   handleChangeLat={this.handleChangeLat}
+                                                   handleChangeLong={this.handleChangeLong}
+                                                   onChangeState={this.onChangeFormState}>
+
+                        </SiteFourCreateFormDefault>
                     </Grid.Column>
-                    <Grid.Column width={8}>
-                        <Tab activeIndex={activeIndex} clusterName={clusterName} onTabChange={this.handleTabChange} panes={panes}{...this.state}></Tab>
+                    <Grid.Column width={8} className="right">
+                        <Tab className="globe_map" activeIndex={activeIndex} clusterName={clusterName} onTabChange={this.handleTabChange} panes={panes}{...this.state}></Tab>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -398,6 +470,7 @@ const mapStateToProps = (state) => {
     let clusterName = null;
     let masterNumber = null;
     let nodeNumber = null;
+    let getRegion = (state.getRegion)?state.getRegion.region:null
 
 
     if(state.form.createAppFormDefault) {
@@ -425,7 +498,7 @@ const mapStateToProps = (state) => {
 
 
     return {
-        selectedRegion, selectedOperator, clusterName, formValues, selectedFlavor, masterNumber, nodeNumber
+        selectedRegion, selectedOperator, clusterName, formValues, selectedFlavor, masterNumber, nodeNumber, getRegion
     }
 };
 const mapDispatchProps = (dispatch) => {
@@ -433,6 +506,7 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleGetRegion: (data) => { dispatch(actions.getRegion(data)) },
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };

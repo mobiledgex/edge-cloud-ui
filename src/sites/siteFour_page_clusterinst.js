@@ -69,7 +69,7 @@ class SiteFourPageClusterInst extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) {
+        if(store && store.userToken) {
             this.getDataDeveloper(this.props.changeRegion);
         }
     }
@@ -200,14 +200,14 @@ class SiteFourPageClusterInst extends React.Component {
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
                 // All show clusterInst
-                services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
-                services.getMCService('ShowClusterInst',{token:store.userToken, region:item}, _self.receiveResultClusterInst)
+                services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
+                services.getMCService('ShowClusterInst',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultClusterInst)
                 // setTimeout(()=>services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet), 0);
             })
         } else {
             rgn.map((item) => {
                 serviceBody = {
-                    "token":store.userToken,
+                    "token":store ? store.userToken : 'null',
                     "params": {
                         "region":item,
                         "clusterinst":{
@@ -218,7 +218,7 @@ class SiteFourPageClusterInst extends React.Component {
                     }
                 }
                 // org별 show clusterInst
-                services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet)
+                services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
                 services.getMCService('ShowClusterInsts',serviceBody, _self.receiveResultClusterInst)
                 //setTimeout(()=>services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet), 0);
             })
@@ -239,7 +239,7 @@ class SiteFourPageClusterInst extends React.Component {
 
                 <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub}></MapWithListView>
                 :
-                <PageDetailViewer data={this.state.detailData} page='clusterInst'/>
+                <PageDetailViewer className="ttt" data={this.state.detailData} page='clusterInst'/>
         );
     }
 

@@ -62,7 +62,7 @@ class SiteFourPageApps extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) {
+        if(store && store.userToken) {
             this.getDataDeveloper(store.userToken, this.props.region.value);
             this.userToken = store.userToken;
         }
@@ -80,7 +80,7 @@ class SiteFourPageApps extends React.Component {
             //services.createNewApp('CreateApp', {params:nextProps.receiveNewReg.values, token:store.userToken, region:'US'}, _self.receiveResult)
         }
         if(this.props.region.value !== nextProps.region.value){
-            this.getDataDeveloper(store.userToken, nextProps.region.value);
+            this.getDataDeveloper(store ? store.userToken : 'null', nextProps.region.value);
         }
 
         // if(nextProps.region.value) {
@@ -89,7 +89,7 @@ class SiteFourPageApps extends React.Component {
         // }
         
         if(nextProps.computeRefresh.compute) {
-            this.getDataDeveloper(store.userToken,nextProps.region.value);
+            this.getDataDeveloper(store ? store.userToken : 'null',nextProps.region.value);
             this.props.handleComputeRefresh(false);
         }
         if(nextProps.viewMode) {
@@ -158,7 +158,7 @@ class SiteFourPageApps extends React.Component {
     
     getDataDeveloperSub = () => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.getDataDeveloper(store.userToken, this.props.region.value);
+        this.getDataDeveloper(store ? store.userToken : 'null', this.props.region.value);
     }
 
     render() {

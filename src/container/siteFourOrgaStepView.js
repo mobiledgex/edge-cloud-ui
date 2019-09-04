@@ -141,20 +141,20 @@ class SiteFourOrgaStepView extends React.Component {
     )
 
 
-    generateDOM(open, dimmer, width, height, hideHeader) {
+    generateDOM(open, dimmer, hideHeader) {
 
         return layout.map((item, i) => (
 
             (i === 0)?
-                <div className="round_panel" key={i} style={{ width:width, minWidth:720, height:height, display:'flex', flexDirection:'column'}} >
-                    <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
+                <div className="round_panel" key={i}>
+                    <div className="grid_table" style={{overflow:'auto'}}>
                         {this.makeSteps()}
 
                     </div>
                 </div>
                 :
-                <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
-                    <div style={{width:'100%', height:'100%', overflowY:'auto'}}>
+                <div className="round_panel" key={i}>
+                    <div>
                         Map viewer
                     </div>
                 </div>
@@ -196,26 +196,20 @@ class SiteFourOrgaStepView extends React.Component {
         const { open, dimmer } = this.state;
         const { hideHeader } = this.props;
         return (
-            <ContainerDimensions>
-                { ({ width, height }) =>
-                    <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
-                        <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>
-                        <ReactGridLayout
-                            draggableHandle
-                            layout={this.state.layout}
-                            onLayoutChange={this.onLayoutChange}
-                            {...this.props}
-                            style={{width:width, height:height-20}}
-                            useCSSTransforms={false}
-                        >
-                            {this.generateDOM(open, dimmer, width, height, hideHeader)}
-                        </ReactGridLayout>
-                        <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
-                        <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
-                    </div>
-                }
-            </ContainerDimensions>
-
+            <div className="regis_container">
+                <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>
+                <div
+                    draggableHandle
+                    layout={this.state.layout}
+                    onLayoutChange={this.onLayoutChange}
+                    {...this.props}
+                    useCSSTransforms={false}
+                >
+                    {this.generateDOM(open, dimmer, hideHeader)}
+                </div>
+                <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
+                <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
+            </div>
         );
     }
     static defaultProps = {

@@ -103,7 +103,7 @@ export const organizationTutor = () => {
             ],
             stepsNewOrg3: [
                 {
-                    element: '.stepOrg1',
+                    element: '.newOrg3-1',
                     intro: 'Please read this page carefully, as it provides instruction to upload your backend image to MobiledgeX registry.',
                 },
                 {
@@ -178,11 +178,77 @@ export const organizationTutor = () => {
             stepsApp: [
                 {
                     element: '.stepOrg1',
-                    intro: 'Use App Instances page to deploy, manage and view app instances.'
+                    intro: 'Cluster Instances page is used to create new clusters and to manage and view clusters that are part of your organization.'
                 },
                 {
                     element: '.stepOrg2',
-                    intro: '<span>Click “New” button to start deploying new app instance.<br />Please note that user role of Developer Manager and Developer Contributor have permission to deploy app instances.</span>'
+                    intro: '<span>Click “New” button to start creating new cluster.<br />Please note that user role of Developer Manager and Developer Contributor have permission to create clusters.</span>'
+                }
+            ],
+            stepsCreateApp: [
+                {
+                    element: '.createApp0',
+                    intro: 'Select region where you want to deploy.'
+                },
+                {
+                    element: '.createApp1',
+                    intro: 'The name of the organization you are currently managing.'
+                },
+                {
+                    element: '.createApp2',
+                    intro: 'The name of the application to deploy.'
+                },
+                {
+                    element: '.createApp3',
+                    intro: 'The version of the application to deploy.'
+                },
+                {
+                    element: '.createApp4',
+                    intro: 'Which operator do you want to deploy this applicaton? Please select one.'
+                },
+                {
+                    element: '.createApp5',
+                    intro: 'Which cloudlet(s) do you want to deploy this application?'
+                },
+                {
+                    element: '.createApp6',
+                    intro: 'If you have yet to create a cluster, you can select this to auto create cluster instance.'
+                },
+                {
+                    element: '.createApp7',
+                    intro: 'Name of cluster instance to deploy this application.'
+                },
+                {
+                    element: '.createApp8',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.createApp9',
+                    intro: 'Name of cluster instance to deploy this application.'
+                },
+                {
+                    element: '.createApp10',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.createApp11',
+                    intro: 'Which cloudlet(s) do you want to deploy this application?'
+                },
+                {
+                    element: '.createApp12',
+                    intro: 'If you have yet to create a cluster, you can select this to auto create cluster instance.'
+                },
+                {
+                    element: '.createApp13',
+                    intro: 'Name of cluster instance to deploy this application.'
+                },
+                {
+                    element: '.createApp14',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.createApp15',
+                    intro: 'Name of cluster instance to deploy this application.'
                 }
             ],
             stepsAppInst: [
@@ -299,6 +365,18 @@ export const CloudletTutor = () => {
                 },
                 {
                     element: '.cloudletReg4',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.cloudletReg5',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.cloudletReg6',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.cloudletReg7',
                     intro: 'Please add instruction here'
                 }
             ],

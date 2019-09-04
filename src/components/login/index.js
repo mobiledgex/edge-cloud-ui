@@ -149,7 +149,7 @@ const FormSignUpContainer = (props) => (
         <RegistryUserForm onSubmit={() => console.log('ProfileForm was submitted')}/>
         <Grid.Row>
             <span>
-                By clicking SignUp, you agree to our <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms</a>, <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Data Policy</a>, and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:"0"}}>Cookies Policy</a>.
+            By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
             </span>
         </Grid.Row>
     </Grid>
@@ -281,7 +281,7 @@ class Login extends Component {
             if(nextProps.submitSucceeded) {
                 this.setState({email:nextProps.values.email, username:nextProps.values.username})
                 if(nextProps.loginMode === 'resetPass'){
-                    service.getMCService('passwordreset',{ password:nextProps.values.password, token: store.resetToken}, self.resultNewPass, self)
+                    service.getMCService('passwordreset',{ password:nextProps.values.password, token: store ? store.resetToken : 'null'}, self.resultNewPass, self)
                 } else {
                     serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email, callbackurl : 'https://'+host+'/verify'}, self.resultCreateUser, self)
                 }

@@ -196,7 +196,7 @@ class RegistNewListItem extends React.Component {
 
             const {FlavorName,RAM,vCPUs,Disk,Region} = this.props.submitData.registNewListInput.values
             serviceBody = {
-                "token":store.userToken,
+                "token":store ? store.userToken : 'null',
                 "params": {
                     "region":Region,
                     "flavor":{

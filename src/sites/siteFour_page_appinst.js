@@ -148,7 +148,7 @@ class SiteFourPageAppInst extends React.Component {
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
                 // All show appInst
-                services.getMCService('ShowAppInst',{token:store.userToken, region:item}, _self.receiveResult)
+                services.getMCService('ShowAppInst',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult)
             })
         } else {
             rgn.map((item) => {

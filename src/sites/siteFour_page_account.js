@@ -74,7 +74,7 @@ class SiteFourPageAccount extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) {
+        if(store && store.userToken) {
             this.getDataDeveloper(store.userToken);
         }
     }
@@ -84,7 +84,7 @@ class SiteFourPageAccount extends React.Component {
 
         if(nextProps.computeRefresh.compute) {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            if(store.userToken) this.getDataDeveloper(store.userToken);
+            if(store && store.userToken) this.getDataDeveloper(store.userToken);
             this.props.handleComputeRefresh(false);
         }
     }
@@ -96,7 +96,7 @@ class SiteFourPageAccount extends React.Component {
     getDataDeveloper(token) {
         _self.props.handleLoadingSpinner(true)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        services.getMCService('ShowAccounts',{token:store.userToken}, _self.receiveResult)
+        services.getMCService('ShowAccounts',{token:store ? store.userToken : 'null'}, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;

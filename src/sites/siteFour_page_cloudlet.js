@@ -12,12 +12,11 @@ import * as services from '../services/service_compute_service';
 import './siteThree.css';
 import MapWithListView from "../container/mapWithListView";
 import Alert from "react-s-alert";
+import * as reducer from '../utils'
 
-
-
-let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
+let rgn = ['US','KR','EU'];
 class SiteFourPageCloudlet extends React.Component {
     constructor(props) {
         super(props);
@@ -30,15 +29,16 @@ class SiteFourPageCloudlet extends React.Component {
             bodyHeight:0,
             activeItem: 'Developers',
             devData:[],
-            liveComp:false,
             viewMode:'listView',
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips'];
+        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips','Status'];
         this.headerLayout = [1,4,4,4];
         this.userToken = null;
         this._devData = [];
+        this.loadCount = 0;
+        this._cloudletDummy = [];
     }
 
     //go to
@@ -63,19 +63,17 @@ class SiteFourPageCloudlet extends React.Component {
     componentWillMount() {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
-        this.setState({liveComp:true})
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) {
+        if(store && store.userToken) {
             this.getDataDeveloper(this.props.changeRegion);
             this.userToken = store.userToken;
         }
     }
     componentWillUnmount() {
-
-        this.setState({liveComp:false})
         this._devData = [];
+        this._cloudletDummy = [];
     }
 
 
@@ -93,7 +91,6 @@ class SiteFourPageCloudlet extends React.Component {
         }
         if(nextProps.viewMode) {
             if(nextProps.viewMode === 'listView') {
-                this.setState({liveComp:false})
                 //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
                 //this.getDataDeveloper(this.props.changeRegion)
                 this.setState({viewMode:nextProps.viewMode})
@@ -105,34 +102,36 @@ class SiteFourPageCloudlet extends React.Component {
         }
     }
     receiveResult = (result) => {
-        if(result.length){
-            let join = null;
-            if(result[0]['Edit']) {
-                join = _self.state.devData.concat(result);
-            } else {
-                join = _self.state.devData;
-            }
-            _self.props.handleLoadingSpinner(false);
+        let regionGroup = reducer.groupBy(result, 'Region');
+        this.props.handleLoadingSpinner(false);
+        if(Object.keys(regionGroup)[0]) {
+            this._cloudletDummy = this._cloudletDummy.concat(result)
+        }
 
-            if(result.error) {
-                this.props.handleAlertInfo('error',result.error)
-            } else {
-                _self.setState({devData:join})
-            }
-        } else {
-            //alert('Loading Fail')
+        this.loadCount ++;
+        console.log("EditEditEdit",rgn.length,":::",this.loadCount)
+        if(rgn.length == this.loadCount){
+            _self.countJoin()            
         }
 
     }
+    countJoin() {
+        let cloudlet = this._cloudletDummy;
+        _self.setState({devData:cloudlet})
+    }
     getDataDeveloper = (region) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let rgn = ['US','KR','EU'];
         this.setState({devData:[]})
+        this._cloudletDummy = [];
+        _self.loadCount = 0;
         if(region !== 'All'){
             rgn = [region]
-        }  
+        } else {
+            rgn = ['US','KR','EU'];
+        }
         rgn.map((item, i) => {
-            setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 500 * i)
+            //setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 0)
+            services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult)
         })
     }
     getDataDeveloperSub = () => {
