@@ -166,7 +166,7 @@ class registNewInput extends React.Component {
 
     getHelpPopup =(key)=> (
         <Popup
-            trigger={<Icon name='question circle outline' size='large' style={{lineHeight: '38px'}}/>}
+            trigger={<Icon name='question circle outline' size='large' style={{lineHeight:'unset', margin:'10px 0'}} />}
             content=
                 {(key=='CloudletName')? 'Name of the cloudlet'
                     :(key=='OperatorName')? 'Company or Organization name of the operator'

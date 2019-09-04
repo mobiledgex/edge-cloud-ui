@@ -60,7 +60,7 @@ class SiteFourPageFlavor extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) {
+        if(store && store.userToken) {
             this.getDataDeveloper(this.props.changeRegion);
         }
     }
@@ -100,7 +100,7 @@ class SiteFourPageFlavor extends React.Component {
             rgn = [region]
         }  
         rgn.map((item) => {
-            services.getMCService('ShowFlavor',{token:store.userToken, region:item}, _self.receiveResult)
+            services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult)
         })
     }
     render() {

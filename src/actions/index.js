@@ -67,6 +67,12 @@ export function changeCity(state) {
         city:state
     };
 }
+export function getRegion(state) {
+    return {
+        type: types.GET_REGION,
+        region:state
+    };
+}
 export function loginWithEmailRedux ({ params }) {
     return {
         type: types.LOGIN_WITH_EMAIL,

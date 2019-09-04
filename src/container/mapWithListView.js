@@ -72,7 +72,8 @@ class MapWithListView extends React.Component {
             noData:false,
             updateData:{},
             resize:null,
-            sorting:false
+            sorting:false,
+            closeMap:false
         };
 
         _self = this;
@@ -90,6 +91,10 @@ class MapWithListView extends React.Component {
             displayDataTypes: false,
             iconStyle: "triangle"
         }
+        this.mapzoneStyle = [
+            {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', display:'flex', flexDirection:'column'},
+            {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', display:'flex', flexDirection:'column', height:'5px'}
+        ]
 
     }
 
@@ -165,15 +170,15 @@ class MapWithListView extends React.Component {
         setTimeout(() => this.generateStart(), 2000)
     }
 
-    generateDOM(open, dimmer, width, height, randomValue, dummyData, resize) {
+    generateDOM(open, dimmer, randomValue, dummyData, resize) {
         return layout.map((item, i) => (
 
             (i === 1)?
-                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%',height:resize ? resize-563 : height-500, marginTop:10}} >
+                <div className="round_panel" key={i} >
 
-                    <div className="grid_table" style={{width:'100%', height:'100%', overflowY:'auto'}}>
+                    <div className="grid_table" style={{overflow:'hidden'}}>
                         {
-                            this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys, dummyData)
+                            this.TableExampleVeryBasic(this.props.headerLayout, this.props.hiddenKeys, dummyData)
                         }
                     </div>
 
@@ -199,10 +204,12 @@ class MapWithListView extends React.Component {
                     {/*페이저 기능 생길 때 까지 */}
                 </div>
                 :
-                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column', width:'100%', height:400, marginTop:10}} >
-                    <div className='panel_worldmap' style={{width:'100%', height:'100%'}}>
+                <div className="round_panel" key={i} style={(!this.state.closeMap)?this.mapzoneStyle[0]:this.mapzoneStyle[1]}>
+                    <Icon name={(this.state.closeMap)?'angle up':'angle down'} style={{margin:'0 0 5px 0', cursor:'pointer'}} onClick={this.onCloseMap}/>
+                    <div className='panel_worldmap'>
                         <ContainerOne ref={ref => this.container = ref} {...this.props} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
                     </div>
+
 
                 </div>
 
@@ -242,6 +249,8 @@ class MapWithListView extends React.Component {
                                     : (key === 'IpAccess')? 'IP Access'
                                         : (key === 'AppName')? 'App Name'
                                             : (key === 'ClusterInst')? 'Cluster Instance'
+                                                : (key === 'Physical_name')? 'Physical Name'
+                                                    : (key === 'Platform_type')? 'Platform Type'
                     : key}
                 </Table.HeaderCell>
             :
@@ -266,7 +275,7 @@ class MapWithListView extends React.Component {
         Alert.closeAll();
 
         Alert.info(
-            <div className='ProgressBox' style={{minWidth:250}}>
+            <div className='ProgressBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
                 <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh}  />
             </div>, {
             position: 'top-right', timeout: 'none', limit:1,
@@ -282,6 +291,7 @@ class MapWithListView extends React.Component {
         Alert.closeAll();
         if(this.props.siteId == 'ClusterInst') msg = 'Your cluster instance created successfully'
         else if(this.props.siteId == 'appinst') msg = 'Your app instance created successfully'
+        else if(this.props.siteId == 'Cloudlet') msg = 'Your cloudlet created successfully'
 
         this.props.handleAlertInfo('success',msg)
         
@@ -322,7 +332,7 @@ class MapWithListView extends React.Component {
         return row;
     }
 
-    TableExampleVeryBasic = (w, h, headL, hidden, dummyData) => (
+    TableExampleVeryBasic = (headL, hidden, dummyData) => (
         <Table className="viewListTable" basic='very' striped celled fixed sortable ref={ref => this.viewListTable = ref} style={{width:'100%'}}>
             <Table.Header className="viewListTableHeader"  style={{width:'100%'}}>
                 <Table.Row>
@@ -418,6 +428,10 @@ class MapWithListView extends React.Component {
     }
     updateDimensions(e) {
         _self.setState({resize:e.currentTarget.innerHeight})
+    }
+    onCloseMap =()=> {
+        let close = !this.state.closeMap;
+        this.setState({closeMap:close})
     }
     componentDidMount() {
         let self = this;
@@ -520,9 +534,7 @@ class MapWithListView extends React.Component {
         const {randomValue} = this.props;
         
         return (
-            <ContainerDimensions>
-                { ({ width, height }) =>
-                    <div style={{width:width, height:'100%', display:'flex', overflowY:'hidden', overflowX:'hidden'}}>
+                    <div style={{display:'flex', overflowY:'hidden', overflowX:'hidden', width:'100%'}}>
                         <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open}
                                        selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                                        userToken={this.props.userToken}
@@ -538,16 +550,15 @@ class MapWithListView extends React.Component {
                             layout={this.state.layout}
                             onLayoutChange={this.onLayoutChange}
                             {...this.props}
-                            style={{width:width, height:height-20, justifyContent: 'space-between'}}
+                            style={{justifyContent: 'space-between', width:'100%'}}
                         >
-                            {this.generateDOM(open, dimmer, width, height, randomValue, dummyData, resize)}
+
+                            {this.generateDOM(open, dimmer, randomValue, dummyData, resize)}
                         </Container>
 
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} centered={false} style={{right:400}}></PopDetailViewer>
                     </div>
 
-                }
-            </ContainerDimensions>
 
         );
     }

@@ -28,28 +28,23 @@ var layout = [
     {"w":19,"x":0,"y":0,"i":"0", "minW":8, "moved":false,"static":false, "title":"Developer"}
 ]
 let _self = null;
-const colors = [
-    'red',
-    'orange',
-    'yellow',
-    'olive',
-    'green',
-    'teal',
-    'blue',
-    'violet',
-    'purple',
-    'pink',
-    'brown',
-    'grey',
-]
 
 const panes = [
     { menuItem: 'Cluster Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
+/*
+Web UI - need to add new fields for creating a new cloudlet
+
+we need to add the following fields when creating a new cloudlet:Type - with pulldown values of 'Openstack', 'Azure', 'GCP'. Location - this is a freeform string value but has to match what is configured in the vault. Right now we use the values of 'hamburg' and 'bonn'. Should we use a pulldown with the pulldown of 'Hamburg', 'Bonn'?
+
+Type needs to send the following in the create cloudlet message:for openstack: "platform_type":2for azure: "platform_type":3for gcp: "platform_type":4
+
+Location needs to send the following in the create cloudlet message:"physical_name":"hamburg""physical_name":"bonn"
+ */
 const ipaccessArr = ['Dedicated','Shared'];
-class RegistryClusterInstViewer extends React.Component {
+class RegistryCloudletViewer extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -80,16 +75,14 @@ class RegistryClusterInstViewer extends React.Component {
             errorClose:false,
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy the cluster.', active:true, items:['US','KR', 'EU']},
-                    'ClusterName':{label:'Cluster Name', type:'RenderInputCluster', necessary:true, tip:'Enter name of your cluster.', active:true},
-                    'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'This is the name of the organization you are currently managing.', active:true, items:['','']},
-                    'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Which operator do you want to deploy this cluster? Please select one.', active:true, items:['','']},
-                    'Cloudlet':{label:'Cloudlet', type:'RenderDropDown', necessary:true, tip:'Which cloudlet(s) do you want to deploy this cluster?', active:true, items:['','']},
-                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Do you plan to deploy your application in kubernetes cluster? Or do you plan to deploy it as a plain docker container?', active:true, items:['Docker', 'Kubernetes']},
-                    'IpAccess':{label:'IP Access', type:'RenderSelect', necessary:false, tip:'Shared IP Access represents that you would be sharing a Root Load Balancer with other developers. Dedicated IP Access represents that you would have a dedicated Root Load Balancer.',items:ipaccessArr},
-                    'Flavor':{label:'Flavor', type:'RenderSelect', necessary:true, tip:'What flavor is needed to run your application?', active:true, items:['','']},
-                    'NumberOfMaster':{label:'Number of Masters', type:'RenderInputDisabled', necessary:false, tip:'This represents Kubernetes Master where it is responsible for maintaining the desired state for your cluster.', value:null},
-                    'NumberOfNode':{label:'Number of Nodes', type:'RenderInputNum', necessary:false, tip:'What is the number of nodes you want in this cluster? The nodes in a cluster are the machines that run your applications.', value:null},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU']},
+                    'CloudletName':{label:'Cloudlet Name', type:'RenderInputCluster', necessary:true, tip:'Cloudlet name', active:true},
+                    'OperatorName':{label:'Operator Name', type:'RenderInputCluster', necessary:true, tip:'Company or Organization name of the operator', active:true, items:['','']},
+                    'CloudletLocation':{label:'Cloudlet Location', type:'CloudletLocation', necessary:true, tip:'Name of the cloudlet', active:true, items:['','']},
+                    'IPSupport':{label:'IP Support', type:'RenderSelect', necessary:true, tip:'Deployment type (kubernetes or docker)', active:true, items:['Static', 'Dynamic']},
+                    'NumberOfDynamicIPs':{label:'Number of Dynamic IPs', type:'RenderInput', necessary:false, tip:'IpAccess indicates the type of RootLB that Developer requires for their App'},
+                    'PhysicalName':{label:'Physical Name', type:'RenderInput', necessary:true, tip:'Physical name', active:true},
+                    'PlatformType':{label:'Platform Type', type:'RenderSelect', necessary:true, tip:'Platform Type', active:true, items:['Openstack', 'Azure', 'GCP']},
                 },
                 {
 
@@ -98,15 +91,13 @@ class RegistryClusterInstViewer extends React.Component {
             fakeData:[
                 {
                     'Region':'',
-                    'ClusterName':'',
-                    'OrganizationName':'',
-                    'Operator':'',
-                    'Cloudlet':'',
-                    'DeploymentType':'',
-                    'IpAccess':'',
-                    'Flavor':'',
-                    'NumberOfMaster':'1',
-                    'NumberOfNode':'1',
+                    'CloudletName':'',
+                    'OperatorName':'',
+                    'CloudletLocation':'',
+                    'IPSupport':'',
+                    'NumberOfDynamicIPs':'',
+                    'PhysicalName':'',
+                    'PlatformType':''
                 }
             ]
 
@@ -134,10 +125,10 @@ class RegistryClusterInstViewer extends React.Component {
     gotoUrl() {
         _self.props.history.push({
             pathname: '/site4',
-            search: 'pg=4'
+            search: 'pg=2'
         });
-        _self.props.history.location.search = 'pg=4';
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=4'})
+        _self.props.history.location.search = 'pg=2';
+        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=2'})
     }
 
 
@@ -155,6 +146,7 @@ class RegistryClusterInstViewer extends React.Component {
                 </div>
                 :
                 <div className="round_panel" key={i}>
+
                 </div>
 
 
@@ -180,7 +172,7 @@ class RegistryClusterInstViewer extends React.Component {
         }
     }
     receiveSubmit = (result, body) => {
-        
+        console.log("paseDatapaseDatapaseData",result)
         let paseData = result.data;
         if(paseData.error && !this.state.errorClose) {
             //this.setState({clusterInstCreate:false})
@@ -228,12 +220,6 @@ class RegistryClusterInstViewer extends React.Component {
 
         this.setFildData();
 
-        /************
-         * set Organization Name
-         * **********/
-        let assObj = Object.assign([], this.state.fakeData);
-        assObj[0].OrganizationName = localStorage.selectOrg;
-        this.setState({fakeData:assObj});
     }
     componentWillReceiveProps(nextProps, nextContext) {
 
@@ -250,7 +236,7 @@ class RegistryClusterInstViewer extends React.Component {
         this.setState({toggleSubmit:false});
         if(nextProps.submitValues && !this.state.toggleSubmit) {
             
-            const cluster = ['Region','ClusterName','OrganizationName','Operator','Cloudlet','DeploymentType','Flavor'];
+            const cluster = ['Region','CloudletName','OperatorName','IPSupport','NumberOfDynamicIPs','PhysicalName','PlatformType'];
             let error = [];
             cluster.map((item) => {
                 if(!nextProps.validateValue[item]) {
@@ -263,11 +249,12 @@ class RegistryClusterInstViewer extends React.Component {
 
             if(nextProps.formClusterInst.submitSucceeded && error.length == 0){
 
-
+                console.log("errorerrorerrorddd",nextProps.submitValues)
 
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);                
-                service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store ? store.userToken : 'null'}, this.receiveSubmit, nextProps.validateValue.Cloudlet)
+                //service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit, nextProps.validateValue.Cloudlet)
+                service.createNewCloudlet('CreateCloudlet', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
                 setTimeout(() => {
                     this.props.handleLoadingSpinner(false);
                     this.props.gotoUrl();
@@ -278,19 +265,6 @@ class RegistryClusterInstViewer extends React.Component {
             }
             
         }
-
-        /************
-         * set list of flavors
-         * **********/
-        // if(nextProps.flavors) {
-        //     let flavorGroup = reducer.groupBy(nextProps.flavors, 'FlavorName');
-        //     let flavorKeys = Object.keys(flavorGroup);
-        //     let assObj = Object.assign([], this.state.keysData);
-        //     assObj[0].MasterFlavor.items = flavorKeys;
-        //     assObj[0].NodeFlavor.items = flavorKeys;
-        //     this.setState({keysData:assObj})
-        //
-        // }
 
     }
 
@@ -314,6 +288,7 @@ class RegistryClusterInstViewer extends React.Component {
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                 <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
             </div>
+
         );
     }
     static defaultProps = {
@@ -338,29 +313,34 @@ class RegistryClusterInstViewer extends React.Component {
 }
  */
 const getInteger = (str) => (
-    (str === 'Dedicated')? 1 :
-    (str === 'Shared')? 3 : false
+    (str === 'Openstack')? 2 :
+    (str === 'Azure')? 3 :
+    (str === 'GCP')? 4 : false
 )
-const createFormat = (data) => (
+const getInteger_ip = (str) => (
+    (str === 'Static')? 1 :
+    (str === 'Dynamic')? 2 : false
+)
+const createFormat = (data,loc) => (
     {
         "region":data['Region'],
-        "clusterinst":
-            {
-                "key":
-                    {
-                        "cluster_key":{"name":data['ClusterName']},
-                        "cloudlet_key":{
-                            "operator_key":{"name":data['Operator']},
-                            "name":data['Cloudlet']
-                        },
-                        "developer":data['OrganizationName']
-                    },
-                "deployment":data['DeploymentType'],
-                "flavor":{"name":data['Flavor']},
-                "ip_access":parseInt(getInteger(data['IpAccess'])),
-                "num_masters":parseInt(data['NumberOfMaster']),
-                "num_nodes":parseInt(data['NumberOfNode'])
-            }
+        "cloudlet":{
+            "key":{
+                "operator_key":{"name":data['OperatorName']},
+                "name":data['CloudletName']
+            },
+            "location":{
+                // "latitude":Number(data['Latitude']),
+                // "longitude":Number(data['Longitude']),
+                "latitude":Number((loc)?loc.lat:0),
+                "longitude":Number((loc)?loc.long:0),
+                "timestamp":{}
+            },
+            "ip_support":getInteger_ip(data['IPSupport']),
+            "num_dynamic_ips":Number(data['NumberOfDynamicIPs']),
+            "physical_name":data['PhysicalName'],
+            "platform_type":getInteger(data['PlatformType'])
+        }
     }
 )
 const mapStateToProps = (state) => {
@@ -375,40 +355,35 @@ const mapStateToProps = (state) => {
     let selectedApp = null;
     let flavors = null;
     let validateValue = null;
+    
+    console.log("sdsdsdsdsdadasd",state.getRegion.region)
 
-    if(state.form.createAppFormDefault) {
-        if(state.form.createAppFormDefault.values.Region !== "") {
-            selectedRegion = state.form.createAppFormDefault.values.Region;
-        }
-        if(state.form.createAppFormDefault.values.Cloudlet !== "") {
-            selectedCloudlet = state.form.createAppFormDefault.values.Cloudlet;
-        }
-        if(state.form.createAppFormDefault.values.Operator !== "") {
-            selectedOperator = state.form.createAppFormDefault.values.Operator;
-        }
-        if(state.form.createAppFormDefault.values.AppName !== "") {
-            selectedApp = state.form.createAppFormDefault.values.AppName;
-        }
-        // if(state.form.createAppFormDefault.values.AppName !== "") {
-        //     selectedApp = state.form.createAppFormDefault.values.AppName;
-        // }
+    //TODO : 건희 20190902 새롭게 추가된 필드 'Cloudlet Type'데 대한 기능 구현 ()
+    /**
+     * EDGECLOUD-1187 Web UI - need to add new fields for creating a new cloudlet
+     * Web UI - need to add new fields for creating a new cloudlet
 
-        if(state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
-            let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
-            if(enableValue.DeploymentType === "Docker"){
-                enableValue.NumberOfMaster = 0;
-                enableValue.NumberOfNode = 0;
-                enableValue.DeploymentType = "docker"
-            }
-            if(enableValue.DeploymentType === "Kubernetes"){
-                enableValue.DeploymentType = "kubernetes"
-            }
-            submitVal = createFormat(enableValue);
-            validateValue = state.form.createAppFormDefault.values;
-        }
+     we need to add the following fields when creating a new cloudlet:
+     Type - with pulldown values of 'Openstack', 'Azure', 'GCP'.
+     Location - this is a freeform string value but has to match what is configured in the vault. Right now we use the values of 'hamburg' and 'bonn'. Should we use a pulldown with the pulldown of 'Hamburg', 'Bonn'?
+
+     Type needs to send the following in the create cloudlet message:
+     for openstack: "platform_type":2
+     for azure: "platform_type":3
+     for gcp: "platform_type":4
+
+     Location needs to send the following in the create cloudlet message:
+     "physical_name":"hamburg"
+     "physical_name":"bonn"
+     */
+
+    if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
+        let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
+        console.log("enableValueenableValue",state.getRegion.region)
+        submitVal = createFormat(enableValue,state.getRegion.region);
+        validateValue = state.form.createAppFormDefault.values;
     }
-
-
+    
     let region = state.changeRegion
         ? {
             value: state.changeRegion.region
@@ -433,7 +408,8 @@ const mapStateToProps = (state) => {
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
         validateValue:validateValue,
-        formClusterInst : formClusterInst
+        formClusterInst : formClusterInst,
+        getRegion : (state.getRegion)?state.getRegion.region:null
     }
     
     // return (dimm) ? {
@@ -453,6 +429,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(RegistryClusterInstViewer);
+export default connect(mapStateToProps, mapDispatchProps)(RegistryCloudletViewer);
 
 

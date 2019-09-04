@@ -118,7 +118,7 @@ let generateData = (datas) => {
         if(dataSeries.length) {
             //remove duplicated data
 
-
+            console.log('app inst metrics data == ', dataSeries)
             dataSeries.map((item) => {
                 // time, cluster, cpu, disk, mem, recvBytes, sendBytes
                 if(lastItem !== item[0]) {

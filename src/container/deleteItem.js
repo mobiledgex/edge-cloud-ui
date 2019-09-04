@@ -51,6 +51,8 @@ class DeleteItem extends React.Component {
                         this.props.handleAlertInfo('success','Your cluster '+body.params.clusterinst.key.cluster_key.name+' deleted successfully')
                     } else if(this.props.siteId == 'appinst') {
                         this.props.handleAlertInfo('success','Application Instance '+body.params.appinst.key.app_key.name+' successfully deleted')
+                    } else if(this.props.siteId == 'Cloudlet') {
+                        this.props.handleAlertInfo('success','Cloudlet '+body.params.cloudlet.key.name+' successfully deleted')
                     }
                 }
             })
@@ -126,7 +128,7 @@ class DeleteItem extends React.Component {
             const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region} = this.props.selected
             serviceNm = 'DeleteClusterInst';
             serviceBody = {
-                "token":store.userToken,
+                "token":store ? store.userToken : 'null',
                 "params": {
                     "region":Region,
                     "clusterinst":{
@@ -149,7 +151,7 @@ class DeleteItem extends React.Component {
             const {OrganizationName, AppName, Version, Operator, Cloudlet, ClusterInst, Region} = this.props.selected
             serviceNm = 'DeleteAppInst'
             serviceBody = {
-                "token":store.userToken,
+                "token":store ? store.userToken : 'null',
                 "params": {
                     "region":Region,
                     "appinst":{
@@ -177,7 +179,7 @@ class DeleteItem extends React.Component {
             })
             serviceNm = 'removeuser'
             serviceBody = {
-                "token":store.userToken,
+                "token":store ? store.userToken : 'null',
                 "params": {
                     "org":userArr[1],
                     "username":userArr[0],
@@ -192,7 +194,7 @@ class DeleteItem extends React.Component {
             })
             serviceNm = 'delete'
             serviceBody = {
-                "token":store.userToken,
+                "token":store ? store.userToken : 'null',
                 "params": {
                     "name":userArr[0]
                 }
@@ -239,7 +241,11 @@ class DeleteItem extends React.Component {
                     }
                 }
             }
-            service.deleteCompute(serviceNm, serviceBody, this.receiveListSubmit)
+            service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
+            setTimeout(() => {
+                this.props.refresh('All');
+                this.props.handleLoadingSpinner(false);
+            }, 2000)
         } else if(this.props.siteId === 'App') {
             const {OrganizationName, AppName, Version, Region, ImagePath, ImageType, Ports, DefaultFlavor, DeploymentType} = this.props.selected
             serviceNm = 'DeleteApp'

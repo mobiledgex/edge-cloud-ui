@@ -76,7 +76,8 @@ class VerticalLinearStepper extends React.Component {
         toJson.map((item,i) => {
             if(item.data) {
                 stepData.push(item.data.message)
-                if(item.data.message == 'Created successfully' && !deleteFlag){
+                console.log("successfullyzxxx",item.data.message,":::",item.data.message.toLowerCase().indexOf('created successfully'))
+                if( (item.data.message.toLowerCase().indexOf('created successfully') > -1 || item.data.message.toLowerCase().indexOf('deleted cloudlet successfully') > -1) && !deleteFlag){
                     deleteFlag = true;
                     console.log("Created successfullyCreated successfully")
                     setTimeout(() => {

@@ -800,17 +800,23 @@ exports.CreateCloudlet = (req, res) => {
     let serviceBody = {};
     let superpass = '';
     let region = 'local'
+    let clusterId = '';
+    axios.defaults.timeout = 10000000;
     if(req.body.serviceBody){
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
+        clusterId = serviceBody.cloudlet.key.operator_key.name + serviceBody.cloudlet.key.name;
     }
-    console.log('Create me cloudlet-- ', serviceBody, 'mcUrl=',mcUrl)
+
+    //fs.createWriteStream('./temp/'+clusterId+'.txt')
+
+    console.log('Create me cloudlet-- ', serviceBody, 'mcUrl=',mcUrl,":::",clusterId)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudlet', serviceBody,
 
         {
-            headers: {
-                'Authorization':`Bearer ${superpass}`}
+            headers: {'Authorization':`Bearer ${superpass}`},
+            responseType: 'stream'
         }
     )
         .then(function (response) {
@@ -818,14 +824,17 @@ exports.CreateCloudlet = (req, res) => {
             console.log('success Create cloudlet', response.data)
 
             if(response.data) {
-                res.json(response.data)
+                //res.json(response.data)
+                response.data.pipe(
+                    fs.createWriteStream('./temp/'+clusterId+'.txt')
+                )
             } else {
-                res.json({'message':'ok'})
+                res.json({error:'Fail'})
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
-            res.json({error:String(error.response.data.message)})
+            console.log('error show ...', error);
+            res.json(error)
         });
 }
 
@@ -995,6 +1004,7 @@ exports.CreateClusterInst = (req, res) => {
 
 }
 exports.CreteTempFile = (req, res) => {
+    console.log("reqreqreq12",req)
     let clusterId = '';
     if(req.body.site == 'ClusterInst'){
 
@@ -1012,6 +1022,8 @@ exports.CreteTempFile = (req, res) => {
             clusterId = req.body.item.AppName + req.body.item.Cloudlet +req.body.item.ClusterInst;
         }
         
+    } else if (req.body.site == 'Cloudlet'){
+        clusterId = req.body.item.Operator + req.body.item.CloudletName
     }
 
     console.log('read status inst....----.... CreteTempFile=', clusterId)
@@ -1037,6 +1049,8 @@ exports.DeleteTempFile = (req, res) => {
         } else {
             clusterId = req.body.item.AppName + req.body.item.Cloudlet +req.body.item.ClusterInst;
         }
+    } else if (req.body.site == 'Cloudlet'){
+        clusterId = req.body.item.Operator + req.body.item.CloudletName
     }
     console.log('read status inst....----.... DeleteTempFile=', req.body)
 

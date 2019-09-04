@@ -259,9 +259,9 @@ class AnalysticViewZone extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(nextProps.clusterInstData && nextProps.clusterInstData.length) {
             nextProps.clusterInstData.map((cluster) => {
-                this.clusters.push(this.makeForm(cluster, store.userToken));
+                this.clusters.push(this.makeForm(cluster, store ? store.userToken : 'null'));
             })
-            _self.getClusterHealth(store.userToken)
+            _self.getClusterHealth(store ? store.userToken : 'null')
         }
     }
 

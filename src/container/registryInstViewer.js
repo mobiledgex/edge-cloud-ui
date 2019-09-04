@@ -44,7 +44,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppInstDefault data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} autoClusterDisable={props.autoClusterDisable} onSubmit={props.onSubmit}/></Tab.Pane> },
+    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane style={{overflow:'auto'}} attached={false}><SiteFourCreateFormAppInstDefault data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} autoClusterDisable={props.autoClusterDisable} onSubmit={props.onSubmit}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
@@ -248,25 +248,23 @@ class RegistryInstViewer extends React.Component {
         _self.props.handleChangeSite({mainPath:'/site4', subPath: pg})
     }
 
-    generateDOM(open, dimmer, width, height, data, keysData, hideHeader) {
+    generateDOM(open, dimmer, data, keysData, hideHeader) {
 
         let panelParams = {data:data, keys:keysData, userrole:localStorage.selectRole}
 
         return layout.map((item, i) => (
 
             (i === 0)?
-                <div className="round_panel" key={i} style={{ width:width, minWidth:670, height:height, display:'flex', flexDirection:'column'}} >
-                    <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
+                <div className="round_panel" key={i}>
+                    <div className="grid_table">
 
-                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} autoClusterDisable={this.state.autoClusterDisable} onSubmit={this.onSubmit} />
+                        <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} autoClusterDisable={this.state.autoClusterDisable} onSubmit={this.onSubmit} />
 
                     </div>
                 </div>
                 :
-                <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
-                    <div style={{width:'100%', height:'100%', overflowY:'auto'}}>
-
-                    </div>
+                <div className="round_panel" key={i}>
+                    
                 </div>
 
 
@@ -290,7 +288,7 @@ class RegistryInstViewer extends React.Component {
 
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) this.getDataDeveloper(store.userToken,'US');
+        if(store && store.userToken) this.getDataDeveloper(store.userToken,'US');
         /************
          * set Organization Name
          * **********/
@@ -334,7 +332,7 @@ class RegistryInstViewer extends React.Component {
                 let submitData = nextProps.submitValues
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
-                services.createNewMultiAppInst('CreateAppInst', {params:submitData, token:store.userToken}, _self.receiveResult, nextProps.validateValue, this.state.cloudlets, this.state.autoClusterDisable)
+                services.createNewMultiAppInst('CreateAppInst', {params:submitData, token:store ? store.userToken : 'null'}, _self.receiveResult, nextProps.validateValue, this.state.cloudlets, this.state.autoClusterDisable)
                 setTimeout(() => {
                     if(this.state.regSuccess) {
                         this.props.handleLoadingSpinner(false);
@@ -352,7 +350,7 @@ class RegistryInstViewer extends React.Component {
          * **********/
         if(nextProps.selectedRegion && nextProps.selectedRegion !== this.props.selectedRegion){
             console.log("nextProps.selectedRegionnextProps.selectedRegion",nextProps.selectedRegion,":::",this.props.selectedRegion)
-            this.getDataDeveloper(store.userToken,nextProps.formAppInst.values.Region);
+            this.getDataDeveloper(store ? store.userToken : 'null',nextProps.formAppInst.values.Region);
         }
 
         /************
@@ -409,7 +407,8 @@ class RegistryInstViewer extends React.Component {
 
         //set list of clusterInst filter
         if(Object.keys(nextProps.submitData).length > 0){
-            if(nextProps.submitData.createAppFormDefault.values.Operator && nextProps.submitData.createAppFormDefault.values.Cloudlet) {
+            console.log("dfdfdfdgsgsdg",nextProps.submitData.createAppFormDefault)
+            if(nextProps.submitData.createAppFormDefault && nextProps.submitData.createAppFormDefault.values.Operator && nextProps.submitData.createAppFormDefault.values.Cloudlet) {
                 let keys = Object.keys(this.state.clustinst);
                 let arr = []
                 let assObj = Object.assign([], this.state.keysData);
@@ -453,26 +452,21 @@ class RegistryInstViewer extends React.Component {
         const { open, dimmer, dummyData } = this.state;
         const { hiddenKeys } = this.props;
         return (
-            <ContainerDimensions>
-                { ({ width, height }) =>
-                    <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
-                        {/*<RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>*/}
-                        <ReactGridLayout
-                            draggableHandle
-                            layout={this.state.layout}
-                            onLayoutChange={this.onLayoutChange}
-                            {...this.props}
-                            style={{width:width, height:height-20}}
-                            useCSSTransforms={false}
-                        >
-                            {this.generateDOM(open, dimmer, width, height, dummyData, this.state.keysData, hiddenKeys)}
-                        </ReactGridLayout>
-                        <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
-                        <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
-                        <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
-                    </div>
-                }
-            </ContainerDimensions>
+            <div className="regis_container">
+                {/*<RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>*/}
+                <div
+                    draggableHandle
+                    layout={this.state.layout}
+                    onLayoutChange={this.onLayoutChange}
+                    {...this.props}
+                    useCSSTransforms={false}
+                >
+                    {this.generateDOM(open, dimmer, dummyData, this.state.keysData, hiddenKeys)}
+                </div>
+                <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
+                <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
+                <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
+            </div>
 
         );
     }

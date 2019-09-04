@@ -131,14 +131,14 @@ class InsideListView extends React.Component {
         this.setState({noData:false})
         setTimeout(() => this.generateStart(), 2000)
     }
-     generateDOM(open, dimmer, width, height, hideHeader) {
+     generateDOM(open, dimmer, hideHeader) {
         return layout.map((item, i) => (
 
             (i === 0)?
-                <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
-                    <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
+                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
+                    <div className="grid_table" style={{overflowY:'auto'}}>
                         {
-                            this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)
+                            this.TableExampleVeryBasic(this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)
 
                         }
                     </div>
@@ -164,7 +164,7 @@ class InsideListView extends React.Component {
 
                 </div>
                 :
-                <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
+                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
                     <div style={{width:'100%', height:'100%', overflowY:'auto'}}>
                         Map viewer
                     </div>
@@ -284,7 +284,7 @@ class InsideListView extends React.Component {
         // this.props.handleChangeComputeItem('App Instances')
         localStorage.setItem('selectMenu', 'App Instances')
     }
-    TableExampleVeryBasic = (w, h, headL, hideHeader, datas) => (
+    TableExampleVeryBasic = (headL, hideHeader, datas) => (
         <Table className="viewListTable" basic='very' sortable striped celled fixed>
             <Table.Header className="viewListTableHeader">
                 <Table.Row>
@@ -398,30 +398,26 @@ class InsideListView extends React.Component {
         const { open, dimmer } = this.state;
         const { hiddenKeys } = this.props;
         return (
-            <ContainerDimensions>
-                { ({ width, height }) =>
-                    <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
-                        <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
-                        
-                        <DeleteItem open={this.state.openDelete}
-                                    selected={this.state.selected} close={this.close} siteId={this.props.siteId}
-                                    refresh={this.props.dataRefresh}
-                        ></DeleteItem>
-                        
-                        <ReactGridLayout
-                            layout={this.state.layout}
-                            onLayoutChange={this.onLayoutChange}
-                            {...this.props}
-                            style={{width:width, height:height-20}}
-                        >
-                            {this.generateDOM(open, dimmer, width, height, hiddenKeys)}
-                        </ReactGridLayout>
-                        <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} siteId={this.props.siteId}></PopDetailViewer>
-                        <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
-                        <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
-                    </div>
-                }
-            </ContainerDimensions>
+            <div style={{display:'flex', overflowY:'auto', overflowX:'hidden', width:'100%'}}>
+                <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
+                
+                <DeleteItem open={this.state.openDelete}
+                            selected={this.state.selected} close={this.close} siteId={this.props.siteId}
+                            refresh={this.props.dataRefresh}
+                ></DeleteItem>
+                
+                <div
+                    layout={this.state.layout}
+                    onLayoutChange={this.onLayoutChange}
+                    {...this.props}
+                    style={{width:'100%'}}
+                >
+                    {this.generateDOM(open, dimmer,hiddenKeys)}
+                </div>
+                <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} siteId={this.props.siteId}></PopDetailViewer>
+                <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
+                <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
+            </div>
 
         );
 

@@ -104,37 +104,37 @@ class AccountListView extends React.Component {
     }
 
 
-     generateDOM(open, dimmer, width, height, hideHeader) {
+     generateDOM(open, dimmer, hideHeader) {
         return layout.map((item, i) => (
 
             (i === 0)?
-                <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
-                    <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
-                        {this.TableExampleVeryBasic(width, height, this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)}
+                <div className="round_panel" key={i} style={{ display:'flex', flexDirection:'column'}} >
+                    <div className="grid_table" style={{overflow:'hidden'}}>
+                        {this.TableExampleVeryBasic(this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)}
                     </div>
 
-                    {/*<Table.Footer className='listPageContainer'>*/}
-                    {/*    <Table.Row>*/}
-                    {/*        <Table.HeaderCell>*/}
-                    {/*            <Menu pagination>*/}
-                    {/*                <Menu.Item as='a' icon>*/}
-                    {/*                    <Icon name='chevron left' />*/}
-                    {/*                </Menu.Item>*/}
-                    {/*                <Menu.Item as='a' active={true}>1</Menu.Item>*/}
-                    {/*                <Menu.Item as='a'>2</Menu.Item>*/}
-                    {/*                <Menu.Item as='a'>3</Menu.Item>*/}
-                    {/*                <Menu.Item as='a'>4</Menu.Item>*/}
-                    {/*                <Menu.Item as='a' icon>*/}
-                    {/*                    <Icon name='chevron right' />*/}
-                    {/*                </Menu.Item>*/}
-                    {/*            </Menu>*/}
-                    {/*        </Table.HeaderCell>*/}
-                    {/*    </Table.Row>*/}
-                    {/*</Table.Footer>*/}
+                    {/* <Table.Footer className='listPageContainer'>
+                       <Table.Row>
+                           <Table.HeaderCell>
+                               <Menu pagination>
+                                   <Menu.Item as='a' icon>
+                                       <Icon name='chevron left' />
+                                   </Menu.Item>
+                                   <Menu.Item as='a' active={true}>1</Menu.Item>
+                                   <Menu.Item as='a'>2</Menu.Item>
+                                   <Menu.Item as='a'>3</Menu.Item>
+                                   <Menu.Item as='a'>4</Menu.Item>
+                                   <Menu.Item as='a' icon>
+                                       <Icon name='chevron right' />
+                                   </Menu.Item>
+                               </Menu>
+                           </Table.HeaderCell>
+                       </Table.Row>
+                    </Table.Footer> */}
 
                 </div>
                 :
-                <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
+                <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
                     <div style={{width:'100%', height:'100%', overflowY:'auto'}}>
                         Map viewer
                     </div>
@@ -199,7 +199,7 @@ class AccountListView extends React.Component {
     }
     onLocking(value) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        services.getMCService('SettingLock',{token:store.userToken, params:{email:value.email, locked:value.lockState}}, this.receiveLockResult)
+        services.getMCService('SettingLock',{token:store ? store.userToken : 'null', params:{email:value.email, locked:value.lockState}}, this.receiveLockResult)
     }
     compareDate = (date) => {
         let isNew = false;
@@ -211,7 +211,7 @@ class AccountListView extends React.Component {
         return {new:isNew, days:darray[0]+dName};
     }
 
-    TableExampleVeryBasic = (w, h, headL, hideHeader, datas) => (
+    TableExampleVeryBasic = (headL, hideHeader, datas) => (
         <Table className="viewListTable" basic='very' sortable striped celled fixed>
             <Table.Header className="viewListTableHeader">
                 <Table.Row>
@@ -320,9 +320,7 @@ class AccountListView extends React.Component {
         const { open, dimmer } = this.state;
         const { hiddenKeys } = this.props;
         return (
-            <ContainerDimensions>
-                { ({ width, height }) =>
-                    <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
+                    <div style={{display:'flex', overflowY:'auto', overflowX:'hidden', width:'100%'}}>
 
                         <DeleteItem open={this.state.openDelete}
                                     selected={this.state.selected} close={this.close} siteId={this.props.siteId}
@@ -333,21 +331,19 @@ class AccountListView extends React.Component {
                                     success={this.successfully} receiveResendVerify={this.receiveResendVerify}
                         ></PopVerify>
                         
-                        <ReactGridLayout
+                        <div
                             layout={this.state.layout}
                             onLayoutChange={this.onLayoutChange}
                             {...this.props}
-                            style={{width:width, height:height-20}}
                             useCSSTransforms={false}
+                            style={{width:'100%'}}
                         >
-                            {this.generateDOM(open, dimmer, width, height, hiddenKeys)}
-                        </ReactGridLayout>
+                            {this.generateDOM(open, dimmer, hiddenKeys)}
+                        </div>
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                         <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                         <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
                     </div>
-                }
-            </ContainerDimensions>
 
         );
     }

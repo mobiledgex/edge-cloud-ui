@@ -9,7 +9,7 @@ import {
     Marker, Annotations, Annotation
 } from "react-simple-maps"
 import { Button, Icon, List } from 'semantic-ui-react';
-import ContainerDimensions from 'react-container-dimensions'
+import ContainerDimensions from 'react-container-dimensions';
 
 import { Motion, spring } from "react-motion"
 import * as d3 from 'd3';
@@ -25,15 +25,9 @@ import * as aggregation from '../../../utils';
 import ReactTooltip from 'react-tooltip';
 //style
 import styles from '../../../css/worldMapStyles';
-import './styles.css'
+import './styles.css';
+import CountryCode from '../../../libs/country-codes-lat-long-alpha3';
 
-const wrapperStyles = {
-    width: "100%",
-    height:"100%",
-    minWidth: 500,
-    margin: "0 auto",
-    overflow:'hidden'
-}
 const grdColors = ['#000000', '#00CC44', '#88ff00', '#FFEE00', '#FF7700', '#FF0022',
     '#66CCFF', '#FF78A5', '#fffba7']
 const zoomControls = {center:[30, 40], zoom:3}
@@ -65,7 +59,6 @@ class ClustersMap extends Component {
         this.state = {
             center: zoomControls.center,
             zoom: zoomControls.zoom,
-            minWidth: wrapperStyles.minWidth,
             cities:[],
             countries:[],
             citiesSecond:[],
@@ -316,6 +309,22 @@ class ClustersMap extends Component {
         ReactTooltip.hide(this.tooltipref)
         this.moveMouse = false;
     }
+    handleMouseDown = (a, b) => {
+        let countries = CountryCode.ref_country_codes;
+        let _lat = '';
+        let _long = '';
+        console.log('20190830 selected region = ', a.properties, 'location data all =', countries)
+        countries.map((country) => {
+            if(country.alpha2 === a.properties["ISO_A2"]){
+                console.log('20190830 country code = ', country)
+                _lat = country['latitude'];
+                _long = country['longitude'];
+            }
+        })
+
+        let location = {region:a.properties["REGION_UN"],name:a.properties["NAME"], lat:_lat, long:_long}
+        _self.props.handleGetRegion(location)
+    }
 
     componentDidMount() {
         //this.fetchCities();
@@ -348,6 +357,7 @@ class ClustersMap extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log('20190902 props in the map map map map... ', nextProps)
         let data = nextProps.parentProps.devData;
         function reduceUp(value) {
             return Math.round(value)
@@ -414,7 +424,7 @@ class ClustersMap extends Component {
     render() {
 
         return (
-            <div style={wrapperStyles}>
+            <div>
                 <div className="zoom-inout-reset-clusterMap" style={{left:8, bottom:4, position:'absolute', display:'block'}}>
                     <Button id="mapZoomCtl" size='larges' icon onClick={this.handleReset}>
                         <Icon name="expand" />
@@ -473,6 +483,7 @@ class ClustersMap extends Component {
                                                         projection={projection}
                                                         data-tip={geography.properties.NAME}
                                                         style={styles.geography}
+                                                        onMouseDown={this.handleMouseDown}
                                                         onMouseMove={this.handleMove}
                                                         onMouseLeave={this.handleLeave}
                                                     />
@@ -564,10 +575,12 @@ class ClustersMap extends Component {
 
 
 const mapStateToProps = (state, ownProps) => {
+    let getRegion = (state.getRegion)?state.getRegion.region:null
     return {
         data: state.receiveDataReduce.data,
         tabIdx: state.siteChanger.site.subPath,
-        itemLabel: state.computeItem.item
+        itemLabel: state.computeItem.item,
+        getRegion: state.getRegion
     };
 };
 const mapDispatchProps = (dispatch) => {
@@ -575,6 +588,7 @@ const mapDispatchProps = (dispatch) => {
         handleInjectData: (data) => { dispatch(actions.setUser(data)) },
         handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
         handleChangeCity: (data) => { dispatch(actions.changeCity(data)) },
+        handleGetRegion: (data) => { dispatch(actions.getRegion(data)) },
         handleChangeClickCity: (data) => { dispatch(actions.clickCityList(data))}
     };
 };

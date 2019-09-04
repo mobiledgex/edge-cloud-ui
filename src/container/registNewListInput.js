@@ -136,7 +136,7 @@ class registNewListInput extends React.Component {
 
     getHelpPopup =(key)=> (
         <Popup
-            trigger={<Icon name='question circle outline' size='large' style={{lineHeight: '38px'}}/>}
+            trigger={<Icon name='question circle outline' size='large' style={{lineHeight:'unset', margin:'10px 0'}}/>}
             content=
                 {(key=='FlavorName')? 'Name of the flavor'
                     :(key=='RAM')? 'RAM in megabytes'

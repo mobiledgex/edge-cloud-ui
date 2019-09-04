@@ -152,7 +152,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
 
     getHelpPopup =(value)=> (
         <Popup
-            trigger={<Icon name='question circle outline' size='large' style={{lineHeight:'38px'}} />}
+            trigger={<Icon name='question circle outline' size='large' style={{lineHeight:'unset', margin:'10px 0'}} />}
             content={value}
             style={style}
             inverted

@@ -38,3 +38,4 @@ export const CHANGE_STEP = 'CHANGE_STEP';
 export const DATA_EXIST = 'DATA_EXIST';
 export const TUTOR_STATE = 'TUTOR_STATE';
 export const SUBMIT_INFO = 'SUBMIT_INFO';
+export const GET_REGION = 'GET_REGION';

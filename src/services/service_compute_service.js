@@ -405,6 +405,7 @@ export function createNewClusterFlavor(resource, body, callback) {
 }
 
 export function createNewCloudlet(resource, body, callback) {
+    axios.defaults.timeout = 10000000;
     axios.post('https://'+hostname+':3030/CreateCloudlet',{
         service: resource,
         serviceBody:body,

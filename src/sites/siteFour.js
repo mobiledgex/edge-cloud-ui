@@ -39,6 +39,7 @@ import SiteFourPageApps from './siteFour_page_apps';
 import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
+import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
 import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
@@ -244,6 +245,9 @@ class SiteFour extends React.Component {
         if(localStorage.selectMenu === 'Organizations') {
             this.setState({page:'pg=newOrg'})
             this.gotoUrl('/site4', 'pg=newOrg')
+        } else if(localStorage.selectMenu === 'Cloudlets') {
+            this.setState({page: 'pg=createCloudlet'})
+            this.gotoUrl('/site4', 'pg=createCloudlet')
         } else if(localStorage.selectMenu === 'Apps') {
             this.setState({page: 'pg=createApp'})
             this.gotoUrl('/site4', 'pg=createApp')
@@ -405,8 +409,14 @@ class SiteFour extends React.Component {
         } else if(this.props.params.subPath === "pg=createClusterInst") {
             currentStep = orgaSteps.stepsClusterInstReg;
             enable = true;
+        } else if(this.props.params.subPath === "pg=createApp") {
+            currentStep = orgaSteps.stepsCreateApp;
+            enable = true;
         } else if(this.props.params.subPath === "pg=createAppInst") {
             currentStep = orgaSteps.stepsCreateAppInst;
+            enable = true;
+        } else if(this.props.params.subPath === "pg=createCloudlet") {
+            currentStep = cloudletSteps.stepsCloudletReg;
             enable = true;
         }
 
@@ -455,7 +465,7 @@ class SiteFour extends React.Component {
 
         this.disableBtn();
 
-        this.getAdminInfo(store.userToken);
+        if(store) this.getAdminInfo(store.userToken);
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
             if(elem){
@@ -721,7 +731,7 @@ class SiteFour extends React.Component {
                             //loading={this.props.creatingSpinner}
                             //loading={true}
                         />
-                        <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
+                        {/*<span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>*/}
                     </div>:null}
                 {/* <div className="creatingBox">
                     <PulseLoader
@@ -742,7 +752,7 @@ class SiteFour extends React.Component {
                             loading={this.props.creatingSpinner}
                             //loading={true}
                         />
-                        <span className={this.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
+                        {/*<span className={this.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>*/}
                     </div>:null}
 
                 <Grid.Row className='gnb_header'>
@@ -862,9 +872,9 @@ class SiteFour extends React.Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Container>
-                <Container className='contents_body_container' style={{width:this.state.contWidth, top:this.headerH, left:this.menuW}}>
-                    <Grid.Row  className='view_contents' style={{minWidth:1024-this.menuW}}>
-                        <Grid.Column style={{height:this.state.bodyHeight}} className='contents_body'>
+                <Container className='contents_body_container' style={{top:this.headerH, left:this.menuW}}>
+                    <Grid.Row  className='view_contents'>
+                        <Grid.Column className='contents_body'>
                             <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
                                 <Grid.Column className='title_align' style={{lineHeight:'36px'}}>{this.state.headerTitle}</Grid.Column>
                                 {
@@ -898,9 +908,8 @@ class SiteFour extends React.Component {
                                         (
                                             this.state.headerTitle !== 'User Roles' &&
                                             this.state.headerTitle !== 'Accounts' &&
-                                            this.state.headerTitle !== 'Cloudlets' &&
-                                            this.state.headerTitle !== 'Flavors' &&
-                                            this.state.headerTitle !== 'Apps'
+                                            this.state.headerTitle !== 'Apps' &&
+                                            this.state.headerTitle !== 'Flavors'
                                         )?this.getGuidePopup(this.state.headerTitle):null}
                                 </div>
                                 <div style={{position:'absolute', top:25, right:25}}>
@@ -929,11 +938,10 @@ class SiteFour extends React.Component {
                                     </div>
                                     : null
                             }
-                            <Grid.Row className='site_content_body' style={{height:'100%'}}>
-                                <Grid.Column style={{height:'100%'}}>
-                                    <ContainerDimensions>
-                                        { ({ width, height }) =>
-                                            <div className="table-no-resized" style={{width:width, height:height, display:'flex', overflow:'hidden'}}>
+
+                            <Grid.Row className='site_content_body'>
+                                <Grid.Column>
+                                            <div className="table-no-resized" style={{height:'100%', display:'flex', overflow:'hidden'}}>
                                                 {
                                                     (this.state.page === 'pg=0')?<SiteFourPageOrganization></SiteFourPageOrganization> :
                                                         (this.state.page === 'pg=1')?<SiteFourPageUser></SiteFourPageUser> :
@@ -946,12 +954,11 @@ class SiteFour extends React.Component {
                                                                                     (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                                         (this.state.page === 'pg=createApp')? <SiteFourPageAppReg></SiteFourPageAppReg> :
                                                                                             (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg></SiteFourPageAppInstReg> :
-                                                                                                (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> : <div> </div>
+                                                                                                (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
+                                                                                                (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
+                                                                                                    <div> </div>
                                                 }
                                             </div>
-                                        }
-                                    </ContainerDimensions>
-
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid.Column>

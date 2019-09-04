@@ -88,6 +88,21 @@ const renderDropDown = field => (
         {field.error && <span className="text-danger">{field.error}</span>}
     </div>
 );
+const renderLocationInput = ({ input, placeholder, change, type, error, initialValue }) => (
+    <div>
+        <Form.Field
+            {...input}
+            type={type}
+        >
+            <Input fluid type="number"
+                   onChange={change}
+                   value={initialValue}
+                   ></Input>
+        </Form.Field>
+        {error && <span className="text-danger">{error}</span>}
+    </div>
+
+);
 
 const style = {
     borderRadius: 0,
@@ -136,7 +151,7 @@ class SiteFourCreateFormDefault extends React.Component {
         }
         if(this.props.getUserRole == 'AdminManager') {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            services.getMCService('showOrg',{token:store.userToken}, this.receiveResult)
+            services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, this.receiveResult)
         }
     }
 
@@ -166,7 +181,7 @@ class SiteFourCreateFormDefault extends React.Component {
 
     getHelpPopup =(value)=> (
         <Popup
-            trigger={<Icon name='question circle outline' size='large' style={{lineHeight:'38px'}} />}
+            trigger={<Icon name='question circle outline' size='large' style={{lineHeight:'unset', margin:'10px 0'}} />}
             content={value}
             style={style}
             inverted
@@ -227,13 +242,19 @@ class SiteFourCreateFormDefault extends React.Component {
 
     cancelClick = (e) => {
         e.preventDefault();
-        this.props.gotoUrl()
+        let siteNum = 0;
+        console.log("cancelClickddd",e,":::",this.props)
+        if(localStorage.selectMenu == 'Cloudlets') siteNum = 2
+        else if(localStorage.selectMenu == 'Cluster Instances') siteNum = 4
+        this.props.gotoUrl(siteNum)
     }
     
     render (){
-        const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
+        const {  dimmer, selected, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat } = this.props;
         const { data, regKeys, fieldKeys } = this.state;
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
+        console.log('20190902 this.props.regionInfo ===>>>', this.props.regionInfo, 'dimmer=', dimmer)
+        console.log('20190902 longLoc ===>>>', longLoc, 'latLoc=', latLoc)
         return (
 
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
@@ -248,7 +269,7 @@ class SiteFourCreateFormDefault extends React.Component {
 
                                             (this.getLabel(key, pId))?
                                                 (!this.state.deployTypeDocker || (key !== 'NumberOfMaster' && key !== 'NumberOfNode')) ?
-                                                <Grid.Row columns={3} key={i} className={'clusterInstReg'+i}>
+                                                <Grid.Row columns={3} key={i} className={'cloudletReg'+i}>
 
                                                     <Grid.Column width={4} className='detail_item'>
                                                         <div>{this.getLabel(key, pId)}{this.getNecessary(key, pId)}</div>
@@ -306,6 +327,24 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 value={data[key]}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                             :
+                                                            (fieldKeys[pId][key]['type'] === 'CloudletLocation') ?
+                                                            <Grid>
+                                                                <Grid.Row columns={2}>
+                                                                    <Grid.Column><span>Latitude</span>
+                                                                        <Field ref={latLoc} name='Latitude' component={renderLocationInput}
+                                                                                                            change={handleChangeLat} error={(this.props.validError.indexOf('Latitude') !== -1)?'Required':''}
+                                                                                                            initialValue={Number(this.props.regionInfo.lat)}
+                                                                        />
+                                                                        </Grid.Column>
+                                                                    <Grid.Column><span>Longitude</span>
+                                                                        <Field ref={longLoc} name='Longitude' component={renderLocationInput}
+                                                                                                            change={handleChangeLong} error={(this.props.validError.indexOf('Longitude') !== -1)?'Required':''}
+                                                                                                            initialValue={Number(this.props.regionInfo.long)}
+                                                                        />
+                                                                        </Grid.Column>
+                                                                </Grid.Row>
+                                                            </Grid>
+                                                            :
                                                             <Field
                                                                 component={renderInput}
                                                                 type="input"
@@ -337,7 +376,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                     </Button>
                                 </span>
                                 <Button
-                                    className='clusterInstReg10'
+                                    className='cloudletReg7'
                                     primary
                                     positive
                                     icon='checkmark'

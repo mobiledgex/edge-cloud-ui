@@ -56,8 +56,8 @@ class headerGlobalMini extends React.Component {
 
     }
     componentDidMount() {
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        let token = store.userToken;
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+        let token = store ? store.userToken : 'null';
         Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
     }
 
@@ -84,8 +84,8 @@ class headerGlobalMini extends React.Component {
 
 
     profileView() {
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        let token = store.userToken;
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT):null;
+        let token = store ? store.userToken : 'null';
         Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
 
         this.setState({openProfile:true})

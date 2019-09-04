@@ -153,12 +153,12 @@ class SiteThree extends React.Component {
             rgn.map((item) => {
                 // All show clusterInst
                 console.log("changeRegionitem",item)
-                service.getMCService('ShowClusterInst',{token:store.userToken, region:item}, _self.receiveResultClusterInst)
+                service.getMCService('ShowClusterInst',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultClusterInst)
             })
         } else {
             rgn.map((item) => {
                 serviceBody = {
-                    "token":store.userToken,
+                    "token":store ? store.userToken : 'null',
                     "params": {
                         "region":item,
                         "clusterinst":{
@@ -191,7 +191,7 @@ class SiteThree extends React.Component {
         }
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         // console.log('info.. store == ', store)
-        if(store.userToken) {
+        if(store && store.userToken) {
             this.getDataDeveloper('All');
         }
 

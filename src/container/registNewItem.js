@@ -353,7 +353,7 @@ class RegistNewItem extends React.Component {
             const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, Number_of_Master, Number_of_Node} = this.props.submitData.registNewInput.values
             // this.props.handleCreatingSpinner(true);
             serviceBody = {
-                "token":store.userToken,
+                "token":store ? store.userToken : 'null',
                 "params": {
                     "region":Region,
                     "clusterinst":{
@@ -383,7 +383,7 @@ class RegistNewItem extends React.Component {
             const {CloudletName, OperatorName, Latitude, Longitude, IpSupport, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
             
             serviceBody = {
-                "token":store.userToken,
+                "token":store ? store.userToken : 'null',
                 "params": {
                     "region":Region,
                     "cloudlet":{
@@ -428,7 +428,7 @@ class RegistNewItem extends React.Component {
         if(localStorage.selectMenu == "Cluster Instances") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // operator, cloudlet
-            service.getMCService('ShowCloudlet',{token:store.userToken,region:region}, _self.receiveOper)
+            service.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null',region:region}, _self.receiveOper)
             // Flavor
             setTimeout(() => service.getMCService('ShowFlavor',{token:store.userToken,region:region}, _self.receiveCF), 500);
         }
@@ -437,7 +437,7 @@ class RegistNewItem extends React.Component {
     getOrgData = () => {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // Organization
-            service.getMCService('showOrg',{token:store.userToken}, this.receiveOrg)
+            service.getMCService('showOrg',{token:store ? store.userToken : 'null'}, this.receiveOrg)
         
     }
     

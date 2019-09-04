@@ -44,7 +44,7 @@ export default class MonitoringViewer extends React.Component {
             dataLabelTCP:['RCV', 'SND'],
             dataLabelUDP:['RCV', 'SND', 'ERROR'],
         },
-        lastCPU:0, lastMEM: 0, lastNET:[0,0], lastUDP:[0,0], lastTCP:[0,0],
+        lastCPU:0, lastMEM: 0, lastDISK:0, lastNET:[0,0], lastUDP:[0,0], lastTCP:[0,0],
         data:[]
     }
 

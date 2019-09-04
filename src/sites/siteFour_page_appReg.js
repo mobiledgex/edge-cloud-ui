@@ -72,7 +72,7 @@ class SiteFourPageAppReg extends React.Component {
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
-        this.getDataDeveloper(store.userToken, this.props.region.value)
+        this.getDataDeveloper(store ? store.userToken : 'null', this.props.region.value)
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})

@@ -48,7 +48,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getOptionData={props.regionf} flavorData={props.devoptionsf} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'App Deployment', render: (props) => <Tab.Pane style={{overflow:'auto'}} attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} getOptionData={props.regionf} flavorData={props.devoptionsf} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'VM Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateFormAppDefault data={props} pId={0} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
 ]
@@ -171,25 +171,23 @@ class RegistryViewer extends React.Component {
         _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=5'})
     }
 
-    generateDOM(open, dimmer, width, height, data, keysData, hideHeader) {
+    generateDOM(open, dimmer, data, keysData, hideHeader) {
 
         let panelParams = {data:data, keys:keysData, regionf:this.getOptionData, devoptionsf:this.state.devoptionsf, userrole:localStorage.selectRole}
 
         return layout.map((item, i) => (
 
             (i === 0)?
-                <div className="round_panel" key={i} style={{ width:width, minWidth:670, height:height, display:'flex', flexDirection:'column'}} >
-                    <div className="grid_table" style={{width:'100%', height:height, overflowY:'auto'}}>
+                <div className="round_panel" key={i}>
+                    <div className="grid_table">
 
-                        <Tab menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} />
+                        <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} />
 
                     </div>
                 </div>
                 :
-                <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
-                    <div style={{width:'100%', height:'100%', overflowY:'auto'}}>
-
-                    </div>
+                <div className="round_panel" key={i}>
+                    
                 </div>
 
 
@@ -324,7 +322,7 @@ class RegistryViewer extends React.Component {
                 this.props.handleLoadingSpinner(true);
                 //TODO: // 20190430 add spinner...(loading)
                 serviceBody = {
-                    "token":store.userToken,
+                    "token":store ? store.userToken : 'null',
                     "params": nextProps.submitValues
                 }
                 services.createNewApp('CreateApp', serviceBody, this.receiveResult)
@@ -368,27 +366,21 @@ class RegistryViewer extends React.Component {
         const { open, dimmer, dummyData } = this.state;
         const { hiddenKeys } = this.props;
         return (
-            <ContainerDimensions>
-                { ({ width, height }) =>
-                    <div style={{width:width, height:height, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
-                        {/*<RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>*/}
-                        <ReactGridLayout
-                            draggableHandle
-                            layout={this.state.layout}
-                            onLayoutChange={this.onLayoutChange}
-                            {...this.props}
-                            style={{width:width, height:height-20}}
-                            useCSSTransforms={false}
-                        >
-                            {this.generateDOM(open, dimmer, width, height, dummyData, this.keysData, hiddenKeys)}
-                        </ReactGridLayout>
-                        <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
-                        <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
-                        <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
-                    </div>
-                }
-            </ContainerDimensions>
-
+            <div className="regis_container">
+                {/*<RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>*/}
+                <div
+                    draggableHandle
+                    layout={this.state.layout}
+                    onLayoutChange={this.onLayoutChange}
+                    {...this.props}
+                    useCSSTransforms={false}
+                >
+                    {this.generateDOM(open, dimmer, dummyData, this.keysData, hiddenKeys)}
+                </div>
+                <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
+                <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
+                <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
+            </div>
         );
     }
     static defaultProps = {

@@ -231,7 +231,7 @@ class App extends Component {
         //const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
         if(!localStorage.PROJECT_INIT) return;
         let store = JSON.parse(localStorage.PROJECT_INIT);
-        let token = store.userToken;
+        let token = store ? store.userToken : 'null';
         Service.getCurrentUserInfo('currentUser', {token:token}, self.receiveCurrentUser, self);
 
     }

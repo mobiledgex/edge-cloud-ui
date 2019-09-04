@@ -268,7 +268,7 @@ class SiteTwoPageOne extends React.Component  {
             rgn = [region]
         }
         rgn.map((item, i) => {
-            setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 500 * i)
+            setTimeout(() => services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult), 500 * i)
         })
 
 
@@ -286,7 +286,7 @@ class SiteTwoPageOne extends React.Component  {
 
             rgn.map((item) => {
                 // All show appInst
-                services.getMCService('ShowAppInst',{token:store.userToken, region:item}, _self.receiveAppInst)
+                services.getMCService('ShowAppInst',{token:store ? store.userToken : 'null', region:item}, _self.receiveAppInst)
             })
 
     }
@@ -331,9 +331,9 @@ class SiteTwoPageOne extends React.Component  {
          * 2019 07 17 start monitoring console
          ********************************/
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) {
+        if(store && store.userToken) {
             this.getInfoCloudlet(this.props.changeRegion);
-            this.userToken = store.userToken;
+            this.userToken = store ? store.userToken : 'null';
             this.getInfoApp('All')
         }
 

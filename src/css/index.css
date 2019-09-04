@@ -46,6 +46,9 @@ body, button, input, textarea, optgroup, select, textarea,
     display: none;
     /*background: transparent;*/
 }
+.table-no-resized .regis_container {
+    width: 100%;
+}
 
 .CircularProgressbar .CircularProgressbar-path {
     stroke: url('#gradientTwo') !important;
@@ -138,8 +141,11 @@ body, button, input, textarea, optgroup, select, textarea,
 
 
  /*Form*/
-.ui.segment.active.tab{
+.ui.segment.active.tab {
      background: none;
+     height: calc(100% - 43px);
+     padding: 0;
+     margin: 0;
  }
 
 .grid_table .ui.secondary.inverted.pointing.menu {
@@ -365,6 +371,21 @@ body, button, input, textarea, optgroup, select, textarea,
 .ui.grid {
     background-color: transparent;
     z-index: 100;
+    margin: 0;
+    height: 100%;
+}
+.ui.grid .grid_map_container {
+    height: 100%;
+}
+.ui.grid .grid_map_container .left {
+    height: 100%;
+    overflow: auto;
+}
+.ui.grid .grid_map_container .right {
+    height: 100%;
+}
+.ui.grid .grid_map_container .right .globe_map {
+    height: 100%;
 }
 .console_gnb_header .ui.grid>.column:not(.row) {
     padding: 1em 0 !important;
@@ -699,10 +720,18 @@ body, button, input, textarea, optgroup, select, textarea,
 .view_body {
     background-color: #181a1f !important;
     width: 100%;
+    height: 100%;
     min-height: 100%;
     margin: 0 !important;
     display: block !important;
     overflow: hidden;
+}
+.site_content_body {
+    height: calc(100% - 49px);
+    padding: 10px 0 0 0;
+}
+.site_content_body > .column {
+    height: 100%;
 }
 .site_content_body .react-grid-layout.layout {
     overflow-y: hidden;
@@ -712,8 +741,8 @@ body, button, input, textarea, optgroup, select, textarea,
     border-radius: 6px;
     padding: 1.071em;
     overflow: auto;
-    margin: 10px;
-    height: calc(100% - 76px);
+    /* margin: 10px; */
+    height: 100%;
 }
 .gnb_header {
     background-color: #3b3f47;
@@ -777,6 +806,12 @@ body, button, input, textarea, optgroup, select, textarea,
     padding-right: 1em !important;
 }
 
+.ui.container.layout {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 .ui.container.view_left_container{
     /*float:left;*/
     padding:0 !important;
@@ -788,10 +823,13 @@ body, button, input, textarea, optgroup, select, textarea,
     padding: 0 !important;
     margin: 0 !important;
     position: absolute;
+    display: flex;
+    width: calc(100% - 240px);
+    height: calc(100% - 70px);
 }
 
 .view_contents {
-    /*width: 100% !important;*/
+    width: 100% !important;
     height: 100%;
     padding: 0 !important;
     margin: 0;
@@ -825,13 +863,14 @@ body, button, input, textarea, optgroup, select, textarea,
 .ui.secondary.menu.view_left_menu.org_menu .ui.segment{
     border-radius: .28571429rem!important;
     border: 1px solid rgba(255,255,255,.4);
-    padding: .78571429em .92857143em;
+    padding: 0;
     background: none;
     overflow: hidden;
 }
 
 .contents_body {
-    padding: 10px 10px 0 10px;
+    height: 100%;
+    padding: 10px;
 }
 
 
@@ -875,6 +914,8 @@ body, button, input, textarea, optgroup, select, textarea,
     border-radius: 6px;
     padding: 1.071em;
     overflow: hidden;
+    height: calc(100vh - 149px);
+    width: 100%;
 }
 .ui.header.panel_title {
     height: 1.643em;
@@ -919,6 +960,9 @@ body, button, input, textarea, optgroup, select, textarea,
     overflow: hidden;
     border: solid 0 rgba(255,255,255,.125);
     background-color: rgba(0,0,0,.2);
+}
+.panel_worldmap > div{
+    height: 100%;
 }
 
 
@@ -1102,11 +1146,11 @@ body, button, input, textarea, optgroup, select, textarea,
 
 /* grid table style */
 .contents_body .grid_table {
-    width:100%;
-    /* height:100%; */
+    width: 100%;
+    height: 100%;
     background: rgba(0,0,0,.15);
-    border-top: solid 2px rgba(51, 46, 46, 0.2);
-    border-bottom: solid 2px rgba(255,255,255,0.2);
+    /* border-top: solid 2px rgba(51, 46, 46, 0.2); */
+    /* border-bottom: solid 2px rgba(255,255,255,0.2); */
 }
 .contents_body .grid_table.tabs {
     border-top: none;
@@ -1130,15 +1174,20 @@ body, button, input, textarea, optgroup, select, textarea,
     flex-grow: 1;
     flex-direction: column;
 }
+.contents_body .grid_table .grid_tabs {
+    height: 100%;
+}
 .contents_body .ui.table {
-    background-color: #292c33 !important;
+    background-color: #23252c !important;
     color: rgba(255,255,255,.5);
     border-radius: 0;
-    /* margin-top: 5px !important; */
-    /* height: 100%; */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 .contents_body .ui.table thead tr {
     box-shadow: 0 0.714em 1em 0 rgba(0,0,0,.1);
+    display: flex;
 }
 .contents_body .ui.table thead th {
     /* border-top: 2px solid rgba(255,255,255,.2); */
@@ -1156,6 +1205,17 @@ body, button, input, textarea, optgroup, select, textarea,
 .contents_body .ui.sortable.table thead th.unsortable {
     cursor: default;
 }
+.contents_body .ui.table tbody {
+    /* display: flex;
+    flex-direction: column; */
+    overflow: auto;
+    /* height: calc(100vh - 233px); */
+    height: 100%;
+}
+.contents_body .ui.table tbody tr {
+    display: flex;
+    width: 100%;
+}
 
 .contents_body .ui.basic.striped.table tbody tr:nth-child(1n) {
     background: rgba(0,0,0,.15) !important;
@@ -1170,6 +1230,8 @@ body, button, input, textarea, optgroup, select, textarea,
 .contents_body .ui.celled.table tr td,
 .contents_body .ui.celled.table tr th {
     border-left: none;
+    width: 100%;
+    /* background: #23252c; */
 }
 .contents_body .ui.table tr td,
 .contents_body .ui.basic.table tbody tr {

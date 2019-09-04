@@ -64,7 +64,7 @@ class SiteFourPageCluster extends React.Component {
         console.log('info.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         // console.log('info.. store == ', store)
-        if(store.userToken) {
+        if(store && store.userToken) {
             this.getDataDeveloper(this.props.changeRegion);
         } else {
             Alert.error('Invalid or expired token', {
@@ -127,7 +127,7 @@ class SiteFourPageCluster extends React.Component {
             rgn = [region]
         }
         rgn.map((item) => {
-            services.getMCService('ShowClusterFlavor',{token:store.userToken, region:item}, _self.receiveResult)
+            services.getMCService('ShowClusterFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult)
         })
     }
     render() {

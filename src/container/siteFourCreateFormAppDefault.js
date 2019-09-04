@@ -169,7 +169,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
         }
         if(this.props.getUserRole == 'AdminManager') {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            services.getMCService('showOrg',{token:store.userToken}, this.receiveResult)
+            services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, this.receiveResult)
         }
     }
 
@@ -204,7 +204,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
     getHelpPopup =(value)=> (
         <Popup
-            trigger={<Icon name='question circle outline' size='large' style={{lineHeight:'38px'}} />}
+            trigger={<Icon name='question circle outline' size='large' style={{lineHeight:'unset', margin:'10px 0'}} />}
             content={value}
             style={style}
             inverted
@@ -279,7 +279,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
                                             (this.getLabel(key, pId))?
                                                 
-                                                <Grid.Row columns={3} key={i}>
+                                                <Grid.Row columns={3} key={i} className={'createApp'+i}>
 
                                                     <Grid.Column width={4} className='detail_item'>
                                                         <div>{this.getLabel(key, pId)}{this.getNecessary(key, pId)}</div>
@@ -456,6 +456,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                     </Button>
                                 </span>
                                 <Button
+                                    className='createApp15'
                                     primary
                                     positive
                                     icon='checkmark'

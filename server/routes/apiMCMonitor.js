@@ -23,7 +23,7 @@ exports.ShowappHealth = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('20190729 show me appinst health-- ', JSON.stringify(serviceBody), 'mcUrl=',mcUrl )
+    //console.log('20190729 show me appinst health-- ', JSON.stringify(serviceBody), 'mcUrl=',mcUrl )
     axios.post(mcUrl + '/api/v1/auth/metrics/app', serviceBody,
         {
             headers: {

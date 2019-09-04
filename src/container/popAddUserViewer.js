@@ -48,7 +48,7 @@ class PopAddUserViewer extends React.Component {
                         username:_username,
                         org:_org,
                         role:_role,
-                        token:store.userToken
+                        token:store ? store.userToken : 'null'
                 }, this.resultGiveToRole, this)
             
         }

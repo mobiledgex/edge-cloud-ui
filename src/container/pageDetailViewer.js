@@ -19,7 +19,7 @@ const panes = [
 const detailViewer = (props, type) => (
     <Fragment>
         {(type === 'detailViewer')?
-            <Table celled collapsing style={{width:'100%'}}>
+            <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
@@ -177,28 +177,29 @@ export default class PageDetailViewer extends React.Component {
         //this.props.onLayoutChange(layout);
     }
     onChangeTab = (e, data) => {
+        console.log('20190904 on change tab ..data --- ',data)
         if(data.activeIndex === 1 && _self.state.page) {
             _self.getInstanceHealth(_self.state.page, _self.state.listData)
+        } else {
+            _self.clearInterval();
         }
     }
-    generateDOM(open, dimmer, width, height, data, mData, keysData, hideHeader, region, page) {
+    generateDOM(open, dimmer, data, mData, keysData, hideHeader, region, page) {
 
         let panelParams = {data:data, mData:mData, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
 
         return layout.map((item, i) => (
 
             (i === 0)?
-                <div className="round_panel" key={i} style={{ width:width, minWidth:670, height: 'calc(100% - 36px)', display:'flex', padding:'0'}} >
+                <div className="round_panel" key={i} >
 
-                    <div className="grid_table tabs" style={{width:'100%'}}>
-                        <Tab style={{backgroundColor:'transparent', height:'100%'}} menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab}/>
+                    <div className="grid_table tabs">
+                        <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab}/>
                     </div>
                 </div>
                 :
-                <div className="round_panel" key={i} style={{ width:width, height:height, display:'flex', flexDirection:'column'}} >
-                    <div style={{width:'100%', height:'100%', overflowY:'auto'}}>
+                <div className="round_panel" key={i} >
 
-                    </div>
                 </div>
 
 
@@ -228,7 +229,11 @@ export default class PageDetailViewer extends React.Component {
             15000
         )
         _self.loopGetHealth(page, data, store);
+    }
 
+    clearInterval() {
+                console.log('20190904 clear interval 000 000 000')
+        if(_self.activeInterval) clearInterval(_self.activeInterval);
     }
 
 
@@ -401,14 +406,15 @@ const then = moment(nowCopy).subtract(20, "minutes").toDate()
 
     }
     componentWillUnmount() {
+        console.log('201904 unmount..')
         this.initData = false;
-        clearInterval(this.activeInterval);
+        this.clearInterval();
     }
 
     handleTabChange = (e, { activeIndex }) => this.setState({ activeIndex })
     makeList = (values, label, i) => (
         <Grid.Row columns={2} key={i}>
-            <Grid.Column width={5} className='detail_item' style={{display:'flex', justifyContent:'flex-end'}}>
+            <Grid.Column width={5} className='detail_item'>
                 <div>{label}</div>
             </Grid.Column>
             <Grid.Column width={11}>
@@ -433,6 +439,7 @@ const then = moment(nowCopy).subtract(20, "minutes").toDate()
 
     close() {
         this.setState({ open: false })
+        this.clearInterval();
         this.props.close()
     }
 
@@ -443,21 +450,9 @@ const then = moment(nowCopy).subtract(20, "minutes").toDate()
         let { listData, monitorData, clusterName, open, dimmer, hiddenKeys } = this.state;
 
         return (
-            <ContainerDimensions>
-                { ({ width, height }) =>
-                    <div style={{width:width, height:height-20, display:'flex', overflowY:'auto', overflowX:'hidden'}}>
-                        <Container
-                            draggableHandle
-                            layout={this.state.layout}
-                            onLayoutChange={this.onLayoutChange}
-                            {...this.props}
-                            style={{width:width, height:height-20, overflowY:'visible'}}
-                        >
-                            {this.generateDOM(open, dimmer, width, height, listData, monitorData, this.state.keysData, hiddenKeys, this.props.region, this.props.page)}
-                        </Container>
-                    </div>
-                }
-            </ContainerDimensions>
+            <div className="regis_container">
+                {this.generateDOM(open, dimmer, listData, monitorData, this.state.keysData, hiddenKeys, this.props.region, this.props.page)}
+            </div>
 
         )
     }

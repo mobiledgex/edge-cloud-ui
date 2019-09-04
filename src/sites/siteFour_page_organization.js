@@ -69,7 +69,7 @@ class SiteFourPageOrganization extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store.userToken) this.getDataDeveloper(store.userToken);
+        if(store && store.userToken) this.getDataDeveloper(store.userToken);
     }
     componentWillUnmount() {
 
@@ -86,7 +86,7 @@ class SiteFourPageOrganization extends React.Component {
 
         if(nextProps.computeRefresh.compute) {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            if(store.userToken) this.getDataDeveloper(store.userToken);
+            if(store && store.userToken) this.getDataDeveloper(store.userToken);
             this.props.handleComputeRefresh(false);
         }
 
@@ -114,8 +114,8 @@ class SiteFourPageOrganization extends React.Component {
     }
     getDataDeveloper(token) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        services.getMCService('showOrg',{token:store.userToken}, _self.receiveResult)
-        services.getMCService('ShowRole',{token:store.userToken}, _self.receiveAdminInfo)
+        services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, _self.receiveResult)
+        services.getMCService('ShowRole',{token:store ? store.userToken : 'null'}, _self.receiveAdminInfo)
     }
     receiveAdminInfo = (result) => {
         this.props.handleRoleInfo(result.data)

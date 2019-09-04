@@ -29,6 +29,7 @@ let generateData = (datas,body) => {
     }else {
         toJson = null;
     }
+    console.log("datasdatasdatasss",toJson)
     let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
@@ -40,6 +41,11 @@ let generateData = (datas,body) => {
                     CloudletLocation:'',
                     Ip_support:'',
                     Num_dynamic_ips:'',
+                    Physical_name:'',
+                    Platform_type:'',
+                    State:'',
+                    Progress:'',
+                    Status:'',
                     Edit:null
                 })
             } else {
@@ -50,9 +56,12 @@ let generateData = (datas,body) => {
                 let CloudletLocation = dataResult.data.location || '-';
                 let Ip_support = dataResult.data.ip_support || '-';
                 let Num_dynamic_ips = dataResult.data.num_dynamic_ips || '-';
+                let Physical_name = dataResult.data.physical_name || '-';
+                let Platform_type = dataResult.data.platform_type || '-';
+                let State = dataResult.data.state || '-';
+                let Status = dataResult.data.status;
 
-
-                values.push({Region:Region,  CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Ip_support:Ip_support, Num_dynamic_ips:Num_dynamic_ips, Edit:newRegistKey})
+                values.push({Region:Region,  CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Ip_support:Ip_support, Num_dynamic_ips:Num_dynamic_ips, Physical_name:Physical_name, Platform_type:Platform_type, State:State, Progress:'', Status:Status, Edit:newRegistKey})
             }
 
         })
