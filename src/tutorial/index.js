@@ -127,6 +127,10 @@ export const organizationTutor = () => {
                 {
                     element: '.stepOrg2',
                     intro: '<span>Click “New” button to start creating new cluster.<br />Please note that user role of Developer Manager and Developer Contributor have permission to create clusters.</span>'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'You can popup view to creating status instance'
                 }
             ],
             stepsClusterInstReg: [
@@ -178,11 +182,15 @@ export const organizationTutor = () => {
             stepsApp: [
                 {
                     element: '.stepOrg1',
-                    intro: 'Cluster Instances page is used to create new clusters and to manage and view clusters that are part of your organization.'
+                    intro: '<span>App belongs to developers and it provides information about their app.<br />Use this page to define your app.</span>'
                 },
                 {
                     element: '.stepOrg2',
-                    intro: '<span>Click “New” button to start creating new cluster.<br />Please note that user role of Developer Manager and Developer Contributor have permission to create clusters.</span>'
+                    intro: '<span>Click “New” button to  start creating new app.<br />Please note that Developer Managers and Developer Contributors have permission to create apps.</span>'
+                },
+                {
+                    element: '.launchButton',
+                    intro: '<span>Click “Launch” button to start deploying your app.</span>'
                 }
             ],
             stepsCreateApp: [
@@ -192,63 +200,59 @@ export const organizationTutor = () => {
                 },
                 {
                     element: '.createApp1',
-                    intro: 'The name of the organization you are currently managing.'
+                    intro: 'Name of the organization you are currently managing.'
                 },
                 {
                     element: '.createApp2',
-                    intro: 'The name of the application to deploy.'
+                    intro: 'App name.'
                 },
                 {
                     element: '.createApp3',
-                    intro: 'The version of the application to deploy.'
+                    intro: 'App version.'
                 },
                 {
                     element: '.createApp4',
-                    intro: 'Which operator do you want to deploy this applicaton? Please select one.'
+                    intro: 'Deployment type (kubernetes, docker, or vm)'
                 },
                 {
                     element: '.createApp5',
-                    intro: 'Which cloudlet(s) do you want to deploy this application?'
+                    intro: 'Skip this.. As it gets autofilled.'
                 },
                 {
                     element: '.createApp6',
-                    intro: 'If you have yet to create a cluster, you can select this to auto create cluster instance.'
+                    intro: '<div style="height: 200px; overflow-y: auto;"><span>URI of where image resides. If image has not be uploaded to MobiledgeX registry, please use following instructions.<br />If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker command.<br /><br />$ docker login -u <username> docker.mobiledgex.net<br />$ docker tag <your application> docker.mobiledgex.net/<organization name>/images/<application name>:<version><br />$ docker push docker.mobiledgex.net/<organization name>/images/<application name>:<version><br />$ docker logout docker.mobiledgex.net<br /><br />If you image is VM, please upload to our VM registry with your MobiledgeX Account Credentials.<br />curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-<organization name>/<target_file_path>"</span></div>'
                 },
                 {
                     element: '.createApp7',
-                    intro: 'Name of cluster instance to deploy this application.'
+                    intro: 'Public Key of this app used for client-side authentication.'
                 },
                 {
                     element: '.createApp8',
-                    intro: 'Please add instruction here'
+                    intro: 'Hardware resource requirement to run this app.'
                 },
                 {
                     element: '.createApp9',
-                    intro: 'Name of cluster instance to deploy this application.'
+                    intro: 'protocol:port pairs that the app listens on'
                 },
                 {
                     element: '.createApp10',
-                    intro: 'Please add instruction here'
+                    intro: 'Default FQDN the app uses to connect by default'
                 },
                 {
                     element: '.createApp11',
-                    intro: 'Which cloudlet(s) do you want to deploy this application?'
+                    intro: 'Android package name of the app.'
                 },
                 {
                     element: '.createApp12',
-                    intro: 'If you have yet to create a cluster, you can select this to auto create cluster instance.'
+                    intro: 'Option to run App on all nodes of the cluster.'
                 },
                 {
                     element: '.createApp13',
-                    intro: 'Name of cluster instance to deploy this application.'
+                    intro: 'Command that the container runs to start service.'
                 },
                 {
                     element: '.createApp14',
-                    intro: 'Please add instruction here'
-                },
-                {
-                    element: '.createApp15',
-                    intro: 'Name of cluster instance to deploy this application.'
+                    intro: '<span>Deployment manifest is the deployment specific manifest file/config.<br />For docker deployment, this file can be a docker-compose or docker run. For kubernetes deployment, this file can be a kubernetes yaml or helm chart file.<br />For VM deployment, this file can be a cloud config.</span>'
                 }
             ],
             stepsAppInst: [
@@ -259,6 +263,10 @@ export const organizationTutor = () => {
                 {
                     element: '.stepOrg2',
                     intro: '<span>Click “New” button to start deploying new app instance.<br />Please note that user role of Developer Manager and Developer Contributor have permission to deploy app instances.</span>'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'You can popup view to creating status instance'
                 }
             ],
             stepsCreateAppInst: [
@@ -320,7 +328,6 @@ export const UserRolesTutor = () => {
             stepsZero: [
                 {
                     element: '.selector1',
-                    // intro: "<span style='color: red; display: flex; height: 400px !important; width: 300px !important; background-color: #7a7a7a;'>create new</span>",
                     intro: 'This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip! This is a tooltip!</span>',
                 },
                 {
@@ -339,45 +346,53 @@ export const CloudletTutor = () => {
             stepsCloudlet: [
                 {
                     element: '.createAppInst0',
-                    intro: 'Please add instruction here'
+                    intro: 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator. Use this page to deploy, manage and view cloudlets.'
                 },
                 {
                     element: '.stepOrg2',
-                    intro: 'Please add instruction here'
+                    intro: 'Click “New” button to start deploying new cloudlet. Please note that Operator Managers and Operator Contributors have permission to deploy cloudlets.'
+                },
+                {
+                    element: '.progressIndicator',
+                    intro: 'You can popup view to creating status instance'
                 }
             ],
             stepsCloudletReg: [
                 {
                     element: '.cloudletReg0',
-                    intro: 'Please add instruction here'
+                    intro: 'Select region where you want to deploy.'
                 },
                 {
                     element: '.cloudletReg1',
-                    intro: 'Please add instruction here'
+                    intro: 'Name of the cloudlet.'
                 },
                 {
                     element: '.cloudletReg2',
-                    intro: 'Please add instruction here'
+                    intro: 'Name of the organization you are currently managing.'
                 },
                 {
                     element: '.cloudletReg3',
-                    intro: 'Please add instruction here'
+                    intro: 'Cloudlet Location'
                 },
                 {
                     element: '.cloudletReg4',
-                    intro: 'Please add instruction here'
+                    intro: '<span>Ip Support indicates the type of public IP support provided by the Cloudlet.<br />Static IP support indicates a set of static public IPs are available for use, and managed by the Controller.<br />Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.</span>'
                 },
                 {
                     element: '.cloudletReg5',
-                    intro: 'Please add instruction here'
+                    intro: 'Number of dynamic IPs available for dynamic IP support.'
                 },
                 {
                     element: '.cloudletReg6',
-                    intro: 'Please add instruction here'
+                    intro: 'Physical infrastructure cloudlet name.'
                 },
                 {
                     element: '.cloudletReg7',
-                    intro: 'Please add instruction here'
+                    intro: 'Supported list of cloudlet types.'
+                },
+                {
+                    element: '.cloudletRegSubmit',
+                    intro: 'Click this button to start creating.'
                 }
             ],
         }

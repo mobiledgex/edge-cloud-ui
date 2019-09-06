@@ -101,7 +101,7 @@ const renderInputApp = field => (
             {...field.input}
             type={field.type}
             label={field.label}
-            placeholder={'Enter only English and numbers'}
+            placeholder={'Please use numbers and English letters only'}
             onChange={(e, { value }) => {
                 const reg = /^[0-9a-zA-Z][-0-9a-zA-Z.]*$/;
                 if(reg.test(value) || value == ''){
@@ -186,10 +186,10 @@ class SiteFourCreateFormAppDefault extends React.Component {
                 this.props.dispatch(stopSubmit('createAppFormDefault',{}))
             }
 
-            // if(!this.state.dataInit){
-            //     this.handleInitialize(nextProps.data.data[0]);
-            //     this.setState({dataInit:true})
-            // }
+            if(!this.state.dataInit){
+                this.handleInitialize(nextProps.data.data[0]);
+                this.setState({dataInit:true})
+            }
         }
         
         
@@ -373,6 +373,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                     <Field
                                                                         disabled
                                                                         component={renderInputDisabled}
+                                                                        //placeholder={data[key]}
                                                                         type="input"
                                                                         name={key}
                                                                         value={data[key]}
@@ -435,10 +436,9 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                 />
                                                         }
                                                     </Grid.Column>
-                                                    {/* <Grid.Column width={1}>
-                                                    {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
-
-                                                    </Grid.Column> */}
+                                                    <Grid.Column width={1}>
+                                                        {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
+                                                    </Grid.Column>
                                                 </Grid.Row>
                                                 
                                             : null
@@ -456,7 +456,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                     </Button>
                                 </span>
                                 <Button
-                                    className='createApp15'
                                     primary
                                     positive
                                     icon='checkmark'

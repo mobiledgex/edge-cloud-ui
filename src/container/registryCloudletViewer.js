@@ -30,7 +30,7 @@ var layout = [
 let _self = null;
 
 const panes = [
-    { menuItem: 'Cluster Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'Cloudlet Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
@@ -75,14 +75,14 @@ class RegistryCloudletViewer extends React.Component {
             errorClose:false,
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU']},
-                    'CloudletName':{label:'Cloudlet Name', type:'RenderInputCluster', necessary:true, tip:'Cloudlet name', active:true},
-                    'OperatorName':{label:'Operator Name', type:'RenderInputCluster', necessary:true, tip:'Company or Organization name of the operator', active:true, items:['','']},
-                    'CloudletLocation':{label:'Cloudlet Location', type:'CloudletLocation', necessary:true, tip:'Name of the cloudlet', active:true, items:['','']},
-                    'IPSupport':{label:'IP Support', type:'RenderSelect', necessary:true, tip:'Deployment type (kubernetes or docker)', active:true, items:['Static', 'Dynamic']},
-                    'NumberOfDynamicIPs':{label:'Number of Dynamic IPs', type:'RenderInput', necessary:false, tip:'IpAccess indicates the type of RootLB that Developer requires for their App'},
-                    'PhysicalName':{label:'Physical Name', type:'RenderInput', necessary:true, tip:'Physical name', active:true},
-                    'PlatformType':{label:'Platform Type', type:'RenderSelect', necessary:true, tip:'Platform Type', active:true, items:['Openstack', 'Azure', 'GCP']},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:['US','KR', 'EU']},
+                    'CloudletName':{label:'Cloudlet Name', type:'RenderInputCluster', necessary:true, tip:'Name of the cloudlet.', active:true},
+                    'OperatorName':{label:'Operator Name', type:'RenderInputDisabled', necessary:true, tip:'Name of the organization you are currently managing.', active:true, items:['','']},
+                    'CloudletLocation':{label:'Cloudlet Location', type:'CloudletLocation', necessary:true, tip:'Cloudlet Location', active:true, items:['','']},
+                    'IPSupport':{label:'IP Support', type:'RenderSelect', necessary:true, tip:'Ip Support indicates the type of public IP support provided by the Cloudlet. Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.', active:true, items:['Dynamic']},
+                    'NumberOfDynamicIPs':{label:'Number of Dynamic IPs', type:'RenderInput', necessary:false, tip:'Number of dynamic IPs available for dynamic IP support.'},
+                    'PhysicalName':{label:'Physical Name', type:'RenderInput', necessary:true, tip:'Physical infrastructure cloudlet name.', active:true},
+                    'PlatformType':{label:'Platform Type', type:'RenderSelect', necessary:true, tip:'Supported list of cloudlet types.', active:true, items:['Openstack']},
                 },
                 {
 
@@ -220,6 +220,16 @@ class RegistryCloudletViewer extends React.Component {
 
         this.setFildData();
 
+        /************
+         * set Organization Name
+         * **********/
+        let assObj = Object.assign([], this.state.fakeData);
+        assObj[0].OperatorName = localStorage.selectOrg;
+        this.setState({fakeData:assObj});
+
+    }
+    componentWillUnmount() {
+        _self.props.handleGetRegion(null)
     }
     componentWillReceiveProps(nextProps, nextContext) {
 
@@ -356,8 +366,6 @@ const mapStateToProps = (state) => {
     let flavors = null;
     let validateValue = null;
     
-    console.log("sdsdsdsdsdadasd",state.getRegion.region)
-
     //TODO : 건희 20190902 새롭게 추가된 필드 'Cloudlet Type'데 대한 기능 구현 ()
     /**
      * EDGECLOUD-1187 Web UI - need to add new fields for creating a new cloudlet
@@ -426,6 +434,7 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleStateTutor: (data) => { dispatch(actions.tutorStatus(data))},
+        handleGetRegion: (data) => { dispatch(actions.getRegion(data)) }
     };
 };
 

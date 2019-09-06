@@ -32,7 +32,7 @@ const roles =
         ],
         Operator: [
             { Users:'Manage', Cloudlets:'Manage', Flavor:'disabled', 'Cluster Instance':'disabled', Apps:'disabled', 'App Instance':'disabled'},
-            { Users:'View', Cloudlets:'View', Flavor:'disabled', 'Cluster Instance':'Manage', Apps:'disabled', 'App Instance':'disabled'},
+            { Users:'View', Cloudlets:'Manage', Flavor:'disabled', 'Cluster Instance':'disabled', Apps:'disabled', 'App Instance':'disabled'},
             { Users:'View', Cloudlets:'View', Flavor:'disabled', 'Cluster Instance':'disabled', Apps:'disabled', 'App Instance':'disabled'},
         ]
     }

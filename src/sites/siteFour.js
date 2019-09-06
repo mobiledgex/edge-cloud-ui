@@ -908,7 +908,6 @@ class SiteFour extends React.Component {
                                         (
                                             this.state.headerTitle !== 'User Roles' &&
                                             this.state.headerTitle !== 'Accounts' &&
-                                            this.state.headerTitle !== 'Apps' &&
                                             this.state.headerTitle !== 'Flavors'
                                         )?this.getGuidePopup(this.state.headerTitle):null}
                                 </div>

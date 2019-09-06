@@ -6,8 +6,10 @@ import RGL, { WidthProvider } from "react-grid-layout";
 import ReactJson from 'react-json-view'
 import * as serviceInstance from '../services/service_instance_service';
 import * as aggregate from '../utils';
-
+import { connect } from 'react-redux';
+import * as actions from '../actions';
 import MonitoringViewer from './monitoringViewer';
+import CommandViewer from './commandViewer';
 import './styles.css';
 
 const ReactGridLayout = WidthProvider(RGL);
@@ -15,6 +17,11 @@ const ReactGridLayout = WidthProvider(RGL);
 const panes = [
     { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> },
     { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props}/></Tab.Pane> }
+]
+const panesCommand = [
+    { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> },
+    { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props}/></Tab.Pane> },
+    { menuItem: 'Command', render: (props) => <Tab.Pane><CommandViewer data={props}/></Tab.Pane> }
 ]
 const detailViewer = (props, type) => (
     <Fragment>
@@ -57,7 +64,9 @@ const makeTable = (values, label, i) => (
                                                     :(label == 'Mapped_port')?'Mapped Port' /* Cluster Inst */
                                                         :(label == 'AppName')?'App Name'
                                                             :(label == 'ClusterInst')?'Cluster Instance'
-                                                                :label}
+                                                                :(label == 'Physical_name')?'Physical Name'
+                                                                    :(label == 'Platform_type')?'Platform Type'
+                                                                        :label}
                     </Header.Content>
                 </Header>
             </Table.Cell>
@@ -70,7 +79,8 @@ const makeTable = (values, label, i) => (
                                     :(label === 'State')? _status[values[label]]
                                         :(label === 'Liveness')? _liveness[values[label]]
                                             :(typeof values[label] === 'object')? jsonView(values[label],label)
-                                                :String(values[label])}
+                                                :(label === 'Platform_type')? String( makePFT(values[label]) )
+                                                    :String(values[label])}
             </Table.Cell>
         </Table.Row> : null
 )
@@ -88,6 +98,14 @@ const makeUTC = (time) => (
     moment.unix( time.replace('seconds : ', '') ).utc().format('YYYY-MM-DD HH:mm:ss') + ' UTC'
 )
 
+const makePFT = (value) => (
+    (value == 0)? 'Fake':
+    (value == 1)? 'Docker in Docker':
+    (value == 2)? 'Openstack':
+    (value == 3)? 'Azure':
+    (value == 4)? 'GCP':
+    (value == 5)? 'Mobiledgex Docker in Docker': '-'
+)
 
 const _status = {
     "0" : "Tracked State Unknown",
@@ -113,7 +131,7 @@ var layout = [
 ]
 let rgn = ['US','KR','EU'];
 let _self = null;
-export default class PageDetailViewer extends React.Component {
+class PageDetailViewer extends React.Component {
     constructor() {
         super();
         const layout = this.generateLayout();
@@ -139,7 +157,8 @@ export default class PageDetailViewer extends React.Component {
             listOfDetail:null,
             clusterName:null,
             activeIndex:0,
-            page:''
+            page:'',
+            user:'AdminManager'
         }
         _self = this;
         this.initData = null;
@@ -180,21 +199,25 @@ export default class PageDetailViewer extends React.Component {
         console.log('20190904 on change tab ..data --- ',data)
         if(data.activeIndex === 1 && _self.state.page) {
             _self.getInstanceHealth(_self.state.page, _self.state.listData)
+            _self.props.handleLoadingSpinner(true);
         } else {
             _self.clearInterval();
+            _self.props.handleLoadingSpinner(false)
         }
     }
     generateDOM(open, dimmer, data, mData, keysData, hideHeader, region, page) {
 
         let panelParams = {data:data, mData:mData, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
-
+        console.log('20190904 gen dom..', panelParams)
         return layout.map((item, i) => (
 
             (i === 0)?
                 <div className="round_panel" key={i} >
 
                     <div className="grid_table tabs">
-                        <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab}/>
+                        <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }}
+                             panes={(this.state.userRole === 'AdminManager' && page === 'appInst')?panesCommand:panes}{...panelParams}
+                             gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab}/>
                     </div>
                 </div>
                 :
@@ -207,6 +230,7 @@ export default class PageDetailViewer extends React.Component {
     }
     receiveInstanceInfo(result) {
         _self.setState({monitorData:result})
+        _self.props.handleLoadingSpinner(false)
         _self.forceUpdate()
     }
     getParams = (page, data, store) => (
@@ -225,6 +249,7 @@ export default class PageDetailViewer extends React.Component {
         _self.activeInterval = setInterval(
             () => {
                 _self.loopGetHealth(page, data, store);
+                _self.forceUpdate()
             },
             15000
         )
@@ -277,8 +302,11 @@ export default class PageDetailViewer extends React.Component {
 
     /*
     const now = new Date()
-const nowCopy = new Date()
-const then = moment(nowCopy).subtract(20, "minutes").toDate()
+    const nowCopy = new Date()
+    const then = moment(nowCopy).subtract(20, "minutes").toDate()
+
+    "starttime":moment.utc().subtract(1440, 'minutes').format(),
+    "endtime":moment.utc().subtract(0, 'minutes').format()
      */
 
 
@@ -296,8 +324,8 @@ const then = moment(nowCopy).subtract(20, "minutes").toDate()
                     "developer":inst.OrganizationName
                 },
                 "selector":valid,
-                "starttime":moment.utc().subtract(1440, 'minutes').format(),
-                "endtime":moment.utc().subtract(0, 'minutes').format()
+                "last":1200
+
             }
 
         }
@@ -387,8 +415,10 @@ const then = moment(nowCopy).subtract(20, "minutes").toDate()
     */
 
     componentDidMount() {
-
-
+        let userRole = localStorage.getItem('selectRole');
+        console.log('20190904 userRole == ', userRole, 'store..', localStorage.selectRole, 'page=', this.props.page)
+        this.setState({userRole:localStorage.selectRole})
+        this.props.handleLoadingSpinner(true)
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
@@ -398,15 +428,14 @@ const then = moment(nowCopy).subtract(20, "minutes").toDate()
             let data = [];
             if(nextProps.data && !this.initData){
                 this.setState({listData:nextProps.data, page:nextProps.page})
-
-
                 this.initData = true;
+                this.props.handleLoadingSpinner(false)
             }
 
-
+            console.log('20190904 will receive props = ', nextProps)
     }
     componentWillUnmount() {
-        console.log('201904 unmount..')
+        console.log('20190904 unmount..')
         this.initData = false;
         this.clearInterval();
     }
@@ -447,8 +476,8 @@ const then = moment(nowCopy).subtract(20, "minutes").toDate()
 
 
     render() {
-        let { listData, monitorData, clusterName, open, dimmer, hiddenKeys } = this.state;
-
+        let { listData, monitorData, clusterName, open, dimmer, hiddenKeys, userRole } = this.state;
+        let { loading } = this.props;
         return (
             <div className="regis_container">
                 {this.generateDOM(open, dimmer, listData, monitorData, this.state.keysData, hiddenKeys, this.props.region, this.props.page)}
@@ -458,4 +487,21 @@ const then = moment(nowCopy).subtract(20, "minutes").toDate()
     }
 }
 
+const mapStateToProps = (state) => {
+    let viewMode = null;
+    if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+        viewMode = state.changeViewMode.mode.viewMode;
+    }
+    console.log('20190904 state to props..', state)
+    return {
+        viewMode:viewMode,
+        loading:(state.loadingSpinner)?state.loadingSpinner.loading:null
+    }
+}
+const mapDispatchProps = (dispatch) => {
+    return {
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+    };
+};
 
+export default connect(mapStateToProps, mapDispatchProps)(PageDetailViewer);

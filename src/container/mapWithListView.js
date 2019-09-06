@@ -93,7 +93,7 @@ class MapWithListView extends React.Component {
         }
         this.mapzoneStyle = [
             {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', display:'flex', flexDirection:'column'},
-            {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', display:'flex', flexDirection:'column', height:'5px'}
+            {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', display:'flex', flexDirection:'column', height:'28px'}
         ]
 
     }
@@ -205,15 +205,14 @@ class MapWithListView extends React.Component {
                 </div>
                 :
                 <div className="round_panel" key={i} style={(!this.state.closeMap)?this.mapzoneStyle[0]:this.mapzoneStyle[1]}>
-                    <Icon name={(this.state.closeMap)?'angle up':'angle down'} style={{margin:'0 0 5px 0', cursor:'pointer'}} onClick={this.onCloseMap}/>
+                    <div style={{margin:'0 0 5px 0', cursor:'pointer', display:'flex', alignItems:'column', justifyContent:'center'}} onClick={this.onCloseMap}>
+                        <span style={{color:'#c8c9cb'}}>{(this.state.closeMap)?'Show map':'Hide map'}</span>
+                        <Icon name={(this.state.closeMap)?'angle down':'angle up'}/>
+                    </div>
                     <div className='panel_worldmap'>
                         <ContainerOne ref={ref => this.container = ref} {...this.props} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
                     </div>
-
-
                 </div>
-
-
         ))
 
     }
@@ -225,7 +224,6 @@ class MapWithListView extends React.Component {
 
     generateLayout() {
         const p = this.props;
-
         return layout
     }
 
@@ -386,17 +384,17 @@ class MapWithListView extends React.Component {
                                     :
                                     (value === 'Progress'  && item['State'] == 3)?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <Popup content='View Progress' trigger={<Icon loading size={12} color='green' name='circle notch' />} />
+                                            <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='green' name='circle notch' />} />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && item['State'] == 5)?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <MaterialIcon icon='done' color='rgba(255,255,255,.5)' />
+                                            <MaterialIcon className={'progressIndicator'} icon='done' color='rgba(255,255,255,.5)' />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && (item['State'] == 10 || item['State'] == 12))?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <Popup content='View Progress' trigger={<Icon loading size={12} color='red' name='circle notch' />} />
+                                            <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='red' name='circle notch' />} />
                                         </Table.Cell>
                                     :
                                     (!( String(hidden).indexOf(value) > -1 )) ?
