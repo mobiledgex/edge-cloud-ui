@@ -94,7 +94,7 @@ const renderLocationInput = ({ input, placeholder, change, type, error, initialV
             {...input}
             type={type}
         >
-            <Input fluid type="number"
+            <Input fluid type="text"
                    onChange={change}
                    value={initialValue}
                    ></Input>
@@ -233,7 +233,7 @@ class SiteFourCreateFormDefault extends React.Component {
     receiveResult = (result) => {
         let arr = [];
         result.map((item,i) => {
-            if(item.Type === 'developer'){
+            if((localStorage.selectMenu == 'Cluster Instances' && item.Type === 'developer') || (localStorage.selectMenu == 'Cloudlets' && item.Type === 'operator')){
                 arr.push(item.Organization);
             }
         })
@@ -303,7 +303,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             />
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'RenderInputDisabled') ?
-                                                                (getUserRole == 'AdminManager' && fieldKeys[pId][key]['label'] === 'Organization Name') ?
+                                                                (getUserRole == 'AdminManager' && (fieldKeys[pId][key]['label'] === 'Organization Name' || fieldKeys[pId][key]['label'] === 'Operator Name')) ?
                                                                     <Field
                                                                         component={renderSelect}
                                                                         placeholder={'Select Organization Name'}
@@ -333,13 +333,13 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                     <Grid.Column><span>Latitude</span>
                                                                         <Field ref={latLoc} name='Latitude' component={renderLocationInput}
                                                                                                             change={handleChangeLat} error={(this.props.validError.indexOf('Latitude') !== -1)?'Required':''}
-                                                                                                            initialValue={Number(this.props.regionInfo.lat)}
+                                                                                                            initialValue={this.props.regionInfo.lat}
                                                                         />
                                                                         </Grid.Column>
                                                                     <Grid.Column><span>Longitude</span>
                                                                         <Field ref={longLoc} name='Longitude' component={renderLocationInput}
                                                                                                             change={handleChangeLong} error={(this.props.validError.indexOf('Longitude') !== -1)?'Required':''}
-                                                                                                            initialValue={Number(this.props.regionInfo.long)}
+                                                                                                            initialValue={this.props.regionInfo.long}
                                                                         />
                                                                         </Grid.Column>
                                                                 </Grid.Row>
@@ -376,7 +376,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                     </Button>
                                 </span>
                                 <Button
-                                    className='cloudletReg7'
+                                    className='cloudletRegSubmit'
                                     primary
                                     positive
                                     icon='checkmark'

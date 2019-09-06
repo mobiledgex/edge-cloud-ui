@@ -245,13 +245,13 @@ export default class MonitoringViewer extends React.Component {
                 </Grid.Column>
                 <Grid.Column style={{width:'100%', height:400}}>
                     <Header>CPU & MEMORY</Header>
-                    <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} showLegend={false}
+                    <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} showLegend={true}
                                 margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                     {
                         (this.props.data.page !== 'appInst')?
                             <div style={{width:'100%', height:400}}>
                                 <Header>DISK</Header>
-                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataDISK} series={this.state.mProp.timeseriesDISK}
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataDISK} series={this.state.mProp.timeseriesDISK} showLegend={true}
                                             margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelDISK} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                             </div>
                         :
@@ -259,13 +259,13 @@ export default class MonitoringViewer extends React.Component {
                     }
 
                     <Header>NETWORK</Header>
-                    <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataNET} series={this.state.mProp.timeseriesNET}
+                    <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataNET} series={this.state.mProp.timeseriesNET} showLegend={true}
                                 margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelNET} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                     {
                         (this.props.data.page !== 'appInst')?
                             <div style={{width:'100%', height:400}}>
                                 <Header>TCP</Header>
-                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataTCP} series={this.state.mProp.timeseriesTCP}
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataTCP} series={this.state.mProp.timeseriesTCP} showLegend={true}
                                             margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelTCP} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                             </div>
                                 :
@@ -275,7 +275,7 @@ export default class MonitoringViewer extends React.Component {
                         (this.props.data.page !== 'appInst')?
                             <div style={{width:'100%', height:400, marginTop:20}}>
                                 <Header>UDP</Header>
-                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataUDP} series={this.state.mProp.timeseriesUDP}
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataUDP} series={this.state.mProp.timeseriesUDP} showLegend={true}
                                             margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelUDP} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                             </div>
                                 :

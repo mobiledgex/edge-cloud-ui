@@ -381,31 +381,41 @@ class SiteFourCreateInstForm extends React.PureComponent {
     }
     handleChangeLong = (e, {value}) => {
         console.log('20190902 value long = ', value)
-        if(value == '-') {
-            this.setState({ locationLong: value })
-            return
-        }
+        // if(value == '-') {
+        //     this.setState({ locationLong: value })
+        //     return
+        // }
         let onlyNum = value;
         if(onlyNum > 180 || onlyNum < -180) {
             //this.props.handleAlertInfo('error',"-180 ~ 180")
             e.target.value=null;
             return
+        } else if(/[^-0-9]/g.test(onlyNum)){
+            return
         }
+
+        if(onlyNum != 0) {
+            onlyNum = onlyNum.replace(/(^0+)/, "")
+        } 
+
         this.setState({ locationLong: onlyNum })
         this.locationValue(onlyNum,this.state.locationLat)
     }
     handleChangeLat = (e, {value}) => {
-        console.log('20190902 value lat = ', value)
-        if(value == '-') {
-            this.setState({ locationLat: value })
-            return
-        }
+        console.log('20190902 value lat = ', value,":::",/[^-0-9]/g.test(value))
         let onlyNum = value;
         if(onlyNum > 90 || onlyNum < -90) {
             //this.props.handleAlertInfo('error',"-90 ~ 90")
             e.target.value=null;
             return
+        } else if(/[^-0-9]/g.test(onlyNum)){
+            return
         }
+        
+        if(onlyNum != 0) {
+            onlyNum = onlyNum.replace(/(^0+)/, "")
+        } 
+        
         this.setState({ locationLat: onlyNum })
         this.locationValue(this.state.locationLong,onlyNum)
     }
@@ -419,6 +429,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
         }
         // handle input value to input filed that lat/long fileds as redux
         let location = {region:'',name:'', lat:lat, long:long}
+        console.log("locationlocationlocation",location)
         _self.props.handleGetRegion(location)
 
         // handle send value to map for indicate lat/long
@@ -471,8 +482,6 @@ const mapStateToProps = (state) => {
     let masterNumber = null;
     let nodeNumber = null;
     let getRegion = (state.getRegion)?state.getRegion.region:null
-
-
     if(state.form.createAppFormDefault) {
         formValues = state.form.createAppFormDefault.values;
         if(state.form.createAppFormDefault.values.Region !== "") {

@@ -241,7 +241,7 @@ class AccountListView extends React.Component {
                                 (value === 'Username' && item[value])?
                                     <Table.Cell key={j} textAlign='left'>
                                         <div className="left_menu_item" onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
-                                        <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {this.compareDate(item['UpdatedAt']).new ? <div className="userNewMark">{`New`}</div> : null} {item[value]}
+                                        <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {this.compareDate(item['CreatedAt']).new ? <div className="userNewMark">{`New`}</div> : null} {item[value]}
                                         </div>
                                     </Table.Cell>
                                 :

@@ -33,8 +33,8 @@ class SiteFourPageCloudlet extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips','Status'];
-        this.headerLayout = [1,4,4,4];
+        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips','Status','Physical_name','Platform_type'];
+        this.headerLayout = [1,3,3,3,2,2,2];
         this.userToken = null;
         this._devData = [];
         this.loadCount = 0;
