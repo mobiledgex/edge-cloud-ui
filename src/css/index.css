@@ -841,31 +841,85 @@ body, button, input, textarea, optgroup, select, textarea,
     max-width: 240px; /* minWidth */
     border: 0;
     border-radius:0;
-    padding: 10px;
+    padding: 0;
     margin: 0;
 }
 .view_left_menu {
     width: 100% !important;
 }
-.ui.secondary.menu.view_left_menu.org_menu{
-    margin-bottom: 1em !important;
+.ui.secondary.menu.view_left_menu.org_menu {
+    /* margin-bottom: 1em !important;
     padding-bottom: 1em !important;
-    border-bottom: 1px solid rgba(255,255,255,.2) !important;
+    border-bottom: 1px solid rgba(255,255,255,.2) !important; */
 }
 
-.ui.secondary.menu.view_left_menu.org_menu .row{
+.ui.secondary.menu.view_left_menu.org_menu .row {
     border: none;
     padding-bottom: 1em;
     background: none;
     color: rgba(255,255,255,.7);
 }
 
-.ui.secondary.menu.view_left_menu.org_menu .ui.segment{
+.ui.secondary.menu.view_left_menu.org_menu .ui.segment {
     border-radius: .28571429rem!important;
     border: 1px solid rgba(255,255,255,.4);
     padding: 0;
     background: none;
     overflow: hidden;
+}
+.ui.secondary.menu.view_left_menu.org_menu .left_org {
+    background: #202329;
+    padding: 20px 20px 0 20px;
+}
+.ui.secondary.menu.view_left_menu.org_menu .left_org .left_org_title {
+    font-size: 12px;
+}
+.ui.secondary.menu.view_left_menu.org_menu .left_org .left_org_selected {
+    font-size: 14px;
+    /* font-weight: bold; */
+    color: #e2e4e7;
+}
+.ui.secondary.menu.view_left_menu.org_menu .left_authority {
+    background: #202329;
+    border-bottom: 1px solid #515661;
+    padding: 10px 20px 20px 20px;
+    margin: 0 0 10px 0;
+}
+.ui.secondary.menu.view_left_menu.org_menu .left_authority .ui.segment {
+    border: 1px solid #515661;
+    background: #292c33;
+    padding: 10px;
+}
+.ui.secondary.menu.view_left_menu.org_menu .left_authority .ui.segment:hover {
+    background: #393d45;
+}
+.ui.secondary.menu.view_left_menu.org_menu .left_authority .row {
+    padding: 0;
+}
+.ui.secondary.menu.view_left_menu.org_menu .left_authority .row > .column {
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+.ui.secondary.menu.view_left_menu.main_menu {
+    height: calc(100% - 186px);
+    overflow-y: auto;
+}
+.ui.secondary.menu.view_left_menu.main_menu .menuPart {
+    border-bottom: 1px solid rgba(255,255,255,.2) !important;
+    margin: 0 0 10px 0;
+}
+.ui.secondary.menu.view_left_menu.main_menu .menuPart:last-child {
+    border-bottom: none !important;
+    margin: 0 !important;
+}
+.ui.secondary.menu .item {
+    color: rgba(255,255,255,.5);
+    margin: 0 0 5px 0;
+}
+.ui.secondary.menu a.item:hover {
+    background: rgba(0, 0, 0, 0.25) !important;
+    color: rgba(136,221,0,.9) !important;
 }
 
 .contents_body {
@@ -1520,6 +1574,30 @@ rect.zoom {
     background-color: rgba(204, 236, 255, 0.3);
 }
 
+.modal_role .content .description .stepOrgDeveloper2 {
+    margin: 0;
+}
+.modal_role .content .description .stepOrgDeveloper2 > .row {
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+.modal_role .content .description .stepOrgDeveloper2 > .row > .column {
+    width: unset !important;
+    padding: 0;
+}
+.modal_role .content .description .stepOrgDeveloper2 > .row > .column > .column {
+    padding: 0;
+}
+.modal_role .content .description .stepOrgDeveloper2 > .row .table {
+    background: #1d1f23;
+    border: 1px solid #4a4b4f;
+    margin: 20px 0 0 0;
+}
+.modal_role .content .description .stepOrgDeveloper2 > .row .table tbody tr:hover {
+    background: unset !important;
+    color: unset !important;
+}
 
 .userNewMark {
     color:#fff;

@@ -10,7 +10,7 @@ const validate = values => {
         errors.type = 'Required'
     }
     if (!values.name) {
-        errors.name = 'Required!'
+        errors.name = 'Required'
     }else if(!/^[-_0-9a-zA-Z .&,!]+$/.test(values.name)){
         errors.name = 'Invalid characters in organization name'
     } else if(/\s/g.test(values.name)){
