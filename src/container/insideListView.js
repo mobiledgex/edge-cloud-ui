@@ -63,9 +63,11 @@ class InsideListView extends React.Component {
         _self.props.history.location.search = subPath;
         _self.props.handleChangeSite({mainPath:site, subPath: subPath})
     }
+
     onHandleClick(dim, data) {
-        this.setState({ dimmer:dim, open: true, selected:data })
-        //this.props.handleChangeSite(data.children.props.to)
+        //this.setState({ dimmer:dim, open: true, selected:data })
+        this.props.handleEditInstance(data);
+        this.gotoUrl('/site4', 'pg=editAppInst')
     }
     onHandleClickAdd(dim, data) {
         this.setState({ dimmer:dim, openAdd: true, selected:data })
@@ -219,11 +221,11 @@ class InsideListView extends React.Component {
         let widthDefault = Math.round(16/filteredKeys.length);
         return filteredKeys.map((key, i) => (
             (i === filteredKeys.length -1) ?
-                <Table.HeaderCell key={i} className='unsortable' width={(this.props.siteId == 'Organization')?3:2} textAlign='center'>
+                <Table.HeaderCell key={i} className='unsortable' width={4} textAlign='center'>
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell key={i} className={(key === 'Phone' || key === 'Address')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address' && key !== 'Ports')?this.handleSort(key):null}>
+                <Table.HeaderCell key={i} className={(key === 'Phone' || key === 'Address' || key === 'Ports')?'unsortable':''} textAlign='center'  sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address' && key !== 'Ports')?this.handleSort(key):null}>
                     {(key === 'FlavorName')? 'Flavor Name'
                         : (key === 'RAM')? 'RAM Size'
                             : (key === 'vCPUs')? 'Number of vCPUs'
@@ -285,7 +287,7 @@ class InsideListView extends React.Component {
         localStorage.setItem('selectMenu', 'App Instances')
     }
     TableExampleVeryBasic = (headL, hideHeader, datas) => (
-        <Table className="viewListTable" basic='very' sortable striped celled fixed>
+        <Table className="viewListTable" basic='very' sortable striped celled>
             <Table.Header className="viewListTableHeader">
                 <Table.Row>
                     {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hideHeader):null}
@@ -313,6 +315,8 @@ class InsideListView extends React.Component {
                                             <Button className='launchButton' color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.appLaunch(item)}>
                                             Launch
                                             </Button>:null}
+                                        {(this.props.siteId == 'App')?
+                                            (String(item[value]).indexOf('Editable') > -1 && localStorage.selectRole === 'AdminManager') ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button> : null:null}
                                         <Button disabled={(localStorage.selectMenu !== 'Organizations')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>
@@ -466,6 +470,7 @@ const mapDispatchProps = (dispatch) => {
         handleAppLaunch: (data) => { dispatch(actions.appLaunch(data))},
         handleChangeComputeItem: (data) => { dispatch(actions.computeItem(data))},
         handleDetail: (data) => { dispatch(actions.changeDetail(data))},
+        handleEditInstance: (data) => { dispatch(actions.editInstance(data))}
     };
 };
 

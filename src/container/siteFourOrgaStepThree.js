@@ -183,10 +183,10 @@ class SiteFourOrgaThree extends React.Component {
                                                         {`$ docker login -u <username> docker.mobiledgex.net`}
                                                     </div>
                                                     <div>
-                                                        {`$ docker tag <your application> docker.mobiledgex.net/` + org + `/images/<application name>:<version>`}
+                                                        {`$ docker tag <your application> docker.mobiledgex.net/` + String(org).toLowerCase() + `/images/<application name>:<version>`}
                                                     </div>
                                                     <div>
-                                                        {`$ docker push docker.mobiledgex.net/` + org + `/images/<application name>:<version>`}
+                                                        {`$ docker push docker.mobiledgex.net/` + String(org).toLowerCase() + `/images/<application name>:<version>`}
                                                     </div>
                                                     <div>
                                                         $ docker logout docker.mobiledgex.net

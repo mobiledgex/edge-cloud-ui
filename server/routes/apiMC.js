@@ -66,9 +66,9 @@ exports.createUser = (req, res) => {
         passhash: serviceBody.password,
         email: serviceBody.email,
         callbackurl: serviceBody.callbackurl,
-        operatingsystem:"mac OSX",
-        browser:"httpie",
-        clientip:"127.0.0.1"
+        operatingsystem:serviceBody.clientSysInfo.os.name,
+        browser:serviceBody.clientSysInfo.browser.name,
+        clientip:serviceBody.clientSysInfo.clientIP
       }),
 
   )
@@ -86,6 +86,7 @@ exports.createUser = (req, res) => {
           console.log('error create user **************** ',errMsg.response.data);
           res.json( errMsg.response.data )
       });
+
 }
 
 
@@ -108,7 +109,7 @@ exports.currentUser = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success current user..', response)
+            console.log('success current user..')
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -124,6 +125,7 @@ exports.currentUser = (req, res) => {
             console.log('error......');
             res.json({message:'Certificated has expired'})
         });
+
 }
 exports.showAccounts = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
@@ -914,7 +916,7 @@ exports.CreateAppInst = (req, res) => {
     }
     res.send(clusterId);
     //
-    fs.createWriteStream('./temp/'+clusterId+'.txt')
+    //fs.createWriteStream('./temp/'+clusterId+'.txt')
 
     console.log('Create me app inst--string...', JSON.stringify(params), 'mcUrl=',mcUrl,"vvv",req.body.multiCluster)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateAppInst', params,
@@ -960,7 +962,7 @@ exports.CreateClusterInst = (req, res) => {
     }
     // avoid error for fs.createReadStream, so that preview create file before read file.
     // fs.readFileSync 로 파일을 먼저 읽으려 할 때 파일이 없으면 오류가 생기는 문제 발생, 그러므로 먼저 파일을 만들어 놓는다
-    fs.createWriteStream('./temp/'+clusterId+'.txt')
+    //fs.createWriteStream('./temp/'+clusterId+'.txt')
 
     /**
      * steam
@@ -997,7 +999,7 @@ exports.CreateClusterInst = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show ...', error.response.data);
             res.json(error)
         });
 

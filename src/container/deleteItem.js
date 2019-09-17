@@ -143,6 +143,7 @@ class DeleteItem extends React.Component {
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
             setTimeout(() => {
+                this.props.handleDeleteReset(true);
                 this.props.refresh('All');
                 this.props.handleLoadingSpinner(false);
             }, 2000)
@@ -169,6 +170,7 @@ class DeleteItem extends React.Component {
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
             setTimeout(() => {
+                this.props.handleDeleteReset(true);
                 this.props.refresh('All');
                 this.props.handleLoadingSpinner(false);
             }, 1000)
@@ -243,6 +245,7 @@ class DeleteItem extends React.Component {
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
             setTimeout(() => {
+                this.props.handleDeleteReset(true);
                 this.props.refresh('All');
                 this.props.handleLoadingSpinner(false);
             }, 2000)
@@ -336,7 +339,8 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleSelectOrg: (data) => { dispatch(actions.selectOrganiz(data))},
         handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleDeleteReset: (data) => { dispatch(actions.deleteReset(data))}
     };
 };
 
