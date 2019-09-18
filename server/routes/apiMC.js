@@ -57,11 +57,12 @@ exports.createUser = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
+    let emailEncode = '';
   if(req.body.serviceBody){
         serviceBody = req.body.serviceBody;
   }
-  console.log('create user.. ', serviceBody, mcUrl)
-  axios.post(mcUrl + '/api/v1/usercreate', qs.stringify({
+  console.log('create user.. ', serviceBody,emailEncode, mcUrl)
+  axios.post(mcUrl + '/api/v1/usercreate', {
         name: serviceBody.name,
         passhash: serviceBody.password,
         email: serviceBody.email,
@@ -69,7 +70,8 @@ exports.createUser = (req, res) => {
         operatingsystem:serviceBody.clientSysInfo.os.name,
         browser:serviceBody.clientSysInfo.browser.name,
         clientip:serviceBody.clientSysInfo.clientIP
-      }),
+      },
+      {headers: {'Content-Type':'application/json; charset=utf-8'}}
 
   )
       .then(function (response) {
