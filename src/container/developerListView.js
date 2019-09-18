@@ -302,7 +302,7 @@ class DeveloperListView extends React.Component {
                                                 {/* <Icon name='check' /> */}
                                                 Manage
                                             </Button>:null}
-                                        <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
+                                        <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button>
                                         {(this.props.siteId == 'Organization')?
                                             <Button className='stepOrgDeveloper3' color='teal' disabled={this.addUserDisable(item)} onClick={() => this.onHandleClickAdd(true, item, i)}>
                                                 Add User

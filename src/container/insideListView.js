@@ -306,7 +306,7 @@ class InsideListView extends React.Component {
                                             <Button color={(this.state.selectUse == i)?'teal' :null} onClick={(evt) => this.onUseOrg(item,i, evt)}>
                                                 <Icon name='check' />
                                             </Button>:null}
-                                        <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
+                                        <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button>
                                         {(this.props.siteId == 'Organization')?
                                             <Button color='teal' disabled={this.addUserDisable(item)} onClick={() => this.onHandleClickAdd(true, item, i)}>
                                                 Add User
@@ -316,7 +316,7 @@ class InsideListView extends React.Component {
                                             Launch
                                             </Button>:null}
                                         {(this.props.siteId == 'App')?
-                                            (String(item[value]).indexOf('Editable') > -1 && localStorage.selectRole === 'AdminManager') ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button> : null:null}
+                                            (String(item[value]).indexOf('Editable') > -1 && localStorage.selectRole === 'AdminManager') ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button> : null:null}
                                         <Button disabled={(localStorage.selectMenu !== 'Organizations')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>
