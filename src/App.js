@@ -232,6 +232,7 @@ class App extends Component {
         if(!localStorage.PROJECT_INIT) return;
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
+        Service.getCurrentUserInfo('currentUser', {token:token}, self.receiveCurrentUser, self);
 
 
     }
