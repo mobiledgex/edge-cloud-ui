@@ -85,7 +85,7 @@ exports.createUser = (req, res) => {
       })
       .catch(function (error) {
         let errMsg = qs.parse(error);
-          console.log('error create user **************** ',errMsg.response.data);
+          console.log('error create user **************** ***',errMsg.response.data);
           res.json( errMsg.response.data )
       });
 
