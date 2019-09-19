@@ -66,6 +66,7 @@ export default class ListDetailViewer extends React.Component {
                                  :(key == 'AuthPublicKey')?'Auth Public Key'
                                  : (key === 'DefaultFQDN')? 'Default FQDN'
                                  : (key === 'PackageName')? 'Package Name'
+                                 : (key === 'ScaleWithCluster')? 'Scale With Cluster'
                                  :key}
                             </div>
                         </Grid.Column>
@@ -80,6 +81,8 @@ export default class ListDetailViewer extends React.Component {
                                 :(key == 'ImageType' && String(nextProps.data[key]) === '1')?"Docker"
                                 :(key == 'ImageType' && String(nextProps.data[key]) === '2')?"Qcow" /* 여기까지 Apps*/
                                 :(key == 'Created')? String("time is ==  "+nextProps.data[key])
+                                :(key == 'ScaleWithCluster' && String(nextProps.data[key]) === 'false')?"False"
+                                :(key == 'ScaleWithCluster' && String(nextProps.data[key]) === 'true')?"True"
                                 :(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key])
                                 :String(nextProps.data[key])}
                             </div>
@@ -138,10 +141,10 @@ export default class ListDetailViewer extends React.Component {
                                             {`$ docker login -u <username> docker.mobiledgex.net`}
                                         </div>
                                         <div>
-                                            {`$ docker tag <your application> docker.mobiledgex.net/` + this.state.propsData.Organization + `/images/<application name>:<version>`}
+                                            {`$ docker tag <your application> docker.mobiledgex.net/` + String(this.state.propsData.Organization).toLowerCase() + `/images/<application name>:<version>`}
                                         </div>
                                         <div>
-                                            {`$ docker push docker.mobiledgex.net/` + this.state.propsData.Organization + `/images/<application name>:<version>`}
+                                            {`$ docker push docker.mobiledgex.net/` + String(this.state.propsData.Organization).toLowerCase() + `/images/<application name>:<version>`}
                                         </div>
                                         <div>
                                             $ docker logout docker.mobiledgex.net

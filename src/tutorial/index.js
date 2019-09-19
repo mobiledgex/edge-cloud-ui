@@ -130,7 +130,7 @@ export const organizationTutor = () => {
                 },
                 {
                     element: '.progressIndicator',
-                    intro: 'You can popup view to creating status instance'
+                    intro: 'Click to view progress details.'
                 }
             ],
             stepsClusterInstReg: [

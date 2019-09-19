@@ -40,13 +40,13 @@ import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
+import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
 import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
 import SiteFourPageCreateorga from './siteFour_page_createOrga';
 
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
-import PopLegendViewer from '../container/popLegendViewer';
 
 import * as Service from '../services/service_login_api';
 import * as computeService from '../services/service_compute_service';
@@ -134,8 +134,6 @@ class SiteFour extends React.Component {
             stepsEnabled: false,
             initialStep: 0,
             steps:[],
-
-            openLegend:false,
 
             enable:false,
             hideNext: true,
@@ -260,9 +258,9 @@ class SiteFour extends React.Component {
         } else if(localStorage.selectMenu === '') {
             this.setState({page:'pg=createAppInst'})
             this.gotoUrl('/site4', 'pg=createAppInst')
-        } else if(localStorage.selectMenu === 'Cluster Flavors') {
-            this.setState({page:'pg=createClusterFlavor'})
-            this.gotoUrl('/site4', 'pg=createClusterFlavor')
+        } else if(localStorage.selectMenu === 'Flavors') {
+            this.setState({page:'pg=createFlavor'})
+            this.gotoUrl('/site4', 'pg=createFlavor')
         } else if(localStorage.selectMenu === 'Cluster Instances') {
             this.setState({page:'pg=createClusterInst'})
             this.gotoUrl('/site4', 'pg=createClusterInst')
@@ -528,7 +526,7 @@ class SiteFour extends React.Component {
                     position: 'top-right',
                     effect: 'slide',
                     beep: true,
-                    timeout: 5000,
+                    timeout: 'none',
                     offset: 100
                 });
             }
@@ -704,13 +702,6 @@ class SiteFour extends React.Component {
         _self.setState({stepsEnabled: false})
     }
 
-    orgTypeLegendShow=()=> {
-        _self.setState({openLegend: true})
-    }
-    closeLegend = () => {
-        this.setState({ openLegend: false })
-    }
-
 
     render() {
         const {shouldShowBox, shouldShowCircle, viewMode } = this.state;
@@ -802,19 +793,25 @@ class SiteFour extends React.Component {
                     </Grid.Column>
                 </Grid.Row>
                 <Container className='view_left_container' style={{width:this.menuW}}>
-                    {/* show name of organization */}
-                    <Grid.Row>
-                        <div>Organization</div>
-                        <div>{localStorage.selectOrg?localStorage.selectOrg:'Select Organization'}</div>
-                    </Grid.Row>
-                    {/* show role of user */}
                     <Grid.Row className='view_contents'>
                         <Grid.Column style={{height:this.state.bodyHeight}} className='view_left'>
                             <Menu secondary vertical className='view_left_menu org_menu'>
+                                {
+                                    this.OrgMenu.map((item, i)=>(
+                                        (item.label == 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
+                                            : (localStorage.selectRole == 'AdminManager') ? this.menuItemView(item, i, localStorage.selectMenu)
+                                            : this.menuItemView(item, i, localStorage.selectMenu)
+                                    ))
+                                }
                                 <Grid.Row>
                                     <Segment>
                                         <Grid className="stepOrgDeveloper2">
-                                            <Grid.Row columns={2} style={{cursor:'pointer'}} onClick={this.orgTypeLegendShow}>
+                                            <Grid.Row columns={2}>
+                                                <Grid.Column width={11} style={{lineHeight:'24px'}}>
+                                                    {
+                                                        (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole : localStorage.selectOrg
+                                                    }
+                                                </Grid.Column>
                                                 <Grid.Column width={5}>
                                                     <div className="markBox">
                                                         {
@@ -838,27 +835,14 @@ class SiteFour extends React.Component {
                                                                                     (localStorage.selectRole == 'OperatorViewer')?
                                                                                         <div className="mark markO markV">V</div>
                                                                                         :
-                                                                                        <div>Type and Role</div>
+                                                                                        <div></div>
                                                         }
                                                     </div>
-                                                </Grid.Column>
-                                                <Grid.Column width={11} style={{lineHeight:'24px'}}>
-                                                    {
-                                                        (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole : localStorage.selectRole
-                                                    }
                                                 </Grid.Column>
                                             </Grid.Row>
                                         </Grid>
                                     </Segment>
                                 </Grid.Row>
-                                {
-                                    this.OrgMenu.map((item, i)=>(
-                                        (item.label == 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
-                                            : (localStorage.selectRole == 'AdminManager') ? this.menuItemView(item, i, localStorage.selectMenu)
-                                            : this.menuItemView(item, i, localStorage.selectMenu)
-                                    ))
-                                }
-
                             </Menu>
                             <Menu secondary vertical className='view_left_menu'>
                                 {
@@ -969,11 +953,11 @@ class SiteFour extends React.Component {
                                                                                 (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
                                                                                     (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                                         (this.state.page === 'pg=createApp')? <SiteFourPageAppReg></SiteFourPageAppReg> :
-                                                                                            (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
-                                                                                            (this.state.page === 'pg=editAppInst')? <SiteFourPageAppInstReg editable={true}></SiteFourPageAppInstReg> :
+                                                                                            (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg></SiteFourPageAppInstReg> :
                                                                                                 (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
-                                                                                                (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
-                                                                                                    <div> </div>
+                                                                                                    (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
+                                                                                                        (this.state.page === 'pg=createFlavor')? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
+                                                                                                        <div> </div>
                                                 }
                                             </div>
                                 </Grid.Column>
@@ -981,7 +965,6 @@ class SiteFour extends React.Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Container>
-                <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend} close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
                 <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
                     {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
                 </Motion>
