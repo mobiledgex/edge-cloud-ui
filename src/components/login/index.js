@@ -373,8 +373,13 @@ class Login extends Component {
 
 
     receiveClientIp(result) {
-        console.log('client ip is = ', result)
-        if(result && result.data) self.clientSysInfo['clientIP'] = result.data
+        console.log('20190918 client ip is = ', result)
+        if(result && result.data) {
+            self.clientSysInfo['clientIP'] = result.data;
+        } else {
+            self.clientSysInfo['clientIP'] = '127.0.0.1';
+        }
+
     }
 
     resultCreateUser(result, resource) {
