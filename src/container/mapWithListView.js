@@ -73,7 +73,8 @@ class MapWithListView extends React.Component {
             updateData:{},
             resize:null,
             sorting:false,
-            closeMap:false
+            closeMap:false,
+            toggle:false
         };
 
         _self = this;
@@ -281,9 +282,10 @@ class MapWithListView extends React.Component {
     )
     stateView(_item) {
         Alert.closeAll();
+        
 
         Alert.info(
-            <div className='ProgressBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
+            <div className='ProgressBox' id='prgBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
                 <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh}  />
             </div>, {
             position: 'top-right', timeout: 'none', limit:1,
@@ -454,6 +456,7 @@ class MapWithListView extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
+        console.log("sdsdsdsfaf",nextProps.devData)
         if(this.state.sorting) {
             return;
         }
@@ -468,7 +471,8 @@ class MapWithListView extends React.Component {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-        if(nextProps.devData.length) {
+        if(nextProps.devData.length && !this.state.toggle) {
+            this.setState({toggle:true})
             //set filtering
             let filteredData = [];
             if(this.state.dummyData.length === 0) {

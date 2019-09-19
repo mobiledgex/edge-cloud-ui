@@ -66,9 +66,9 @@ exports.createUser = (req, res) => {
         passhash: serviceBody.password,
         email: serviceBody.email,
         callbackurl: serviceBody.callbackurl,
-        operatingsystem:"mac OSX",
-        browser:"httpie",
-        clientip:"127.0.0.1"
+        operatingsystem:serviceBody.clientSysInfo.os.name,
+        browser:serviceBody.clientSysInfo.browser.name,
+        clientip:serviceBody.clientSysInfo.clientIP
       }),
 
   )
