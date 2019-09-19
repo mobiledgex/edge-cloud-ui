@@ -40,6 +40,7 @@ import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
+import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
 import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
@@ -257,9 +258,9 @@ class SiteFour extends React.Component {
         } else if(localStorage.selectMenu === '') {
             this.setState({page:'pg=createAppInst'})
             this.gotoUrl('/site4', 'pg=createAppInst')
-        } else if(localStorage.selectMenu === 'Cluster Flavors') {
-            this.setState({page:'pg=createClusterFlavor'})
-            this.gotoUrl('/site4', 'pg=createClusterFlavor')
+        } else if(localStorage.selectMenu === 'Flavors') {
+            this.setState({page:'pg=createFlavor'})
+            this.gotoUrl('/site4', 'pg=createFlavor')
         } else if(localStorage.selectMenu === 'Cluster Instances') {
             this.setState({page:'pg=createClusterInst'})
             this.gotoUrl('/site4', 'pg=createClusterInst')
@@ -954,8 +955,9 @@ class SiteFour extends React.Component {
                                                                                         (this.state.page === 'pg=createApp')? <SiteFourPageAppReg></SiteFourPageAppReg> :
                                                                                             (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg></SiteFourPageAppInstReg> :
                                                                                                 (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
-                                                                                                (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
-                                                                                                    <div> </div>
+                                                                                                    (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
+                                                                                                        (this.state.page === 'pg=createFlavor')? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
+                                                                                                        <div> </div>
                                                 }
                                             </div>
                                 </Grid.Column>

@@ -73,6 +73,12 @@ export function getRegion(state) {
         region:state
     };
 }
+export function deleteReset(state) {
+    return {
+        type: types.DELETE_RESET,
+        reset:state
+    };
+}
 export function loginWithEmailRedux ({ params }) {
     return {
         type: types.LOGIN_WITH_EMAIL,

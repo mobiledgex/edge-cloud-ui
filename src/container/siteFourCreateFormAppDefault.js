@@ -140,7 +140,8 @@ class SiteFourCreateFormAppDefault extends React.Component {
             dataInit:false,
             portArray:[],
             orgArr:[],
-            deployAPK:false
+            deployAPK:false,
+            deploymentType:false
         };
 
     }
@@ -258,6 +259,12 @@ class SiteFourCreateFormAppDefault extends React.Component {
             } else {
                 this.setState({deployAPK:false})
             }
+
+            if(value == 'Kubernetes') {
+                this.setState({deploymentType:false})
+            } else {
+                this.setState({deploymentType:true})
+            }
         } 
     }
     
@@ -278,7 +285,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                         regKeys.map((key, i) => (
 
                                             (this.getLabel(key, pId))?
-                                                
+                                                (!this.state.deploymentType || key !== 'ScaleWithCluster')?
                                                 <Grid.Row columns={3} key={i} className={'createApp'+i}>
 
                                                     <Grid.Column width={4} className='detail_item'>
@@ -440,7 +447,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                         {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
                                                     </Grid.Column>
                                                 </Grid.Row>
-                                                
+                                                : null
                                             : null
                                         ))
                                         : ''
