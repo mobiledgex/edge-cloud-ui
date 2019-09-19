@@ -187,7 +187,7 @@ export default class PopLegendViewer extends React.Component {
         return (
             <Modal style={{width: '450px'}} className="modal_role" open={this.state.open} dimmer={false}>
                 <Modal.Header >Permission of Role</Modal.Header>
-                <Modal.Content>
+                <Modal.Content scrolling>
                     <Modal.Description>
                         <Grid divided>
                             <div role={"list"}>
@@ -200,7 +200,7 @@ export default class PopLegendViewer extends React.Component {
                                 <Grid.Column width={5}>
                                     <div className="markBox">
                                         {
-                                            (localStorage.selectRole == 'AdminManager')? <div className="mark markD markM">S</div>
+                                            (localStorage.selectRole == 'AdminManager')? <div className="mark markA markS">S</div>
                                                 :
                                                 (localStorage.selectRole == 'DeveloperManager')?
                                                     <div className="mark markD markM">M</div>
