@@ -526,7 +526,7 @@ class SiteFour extends React.Component {
                     position: 'top-right',
                     effect: 'slide',
                     beep: true,
-                    timeout: 5000,
+                    timeout: 'none',
                     offset: 100
                 });
             }
