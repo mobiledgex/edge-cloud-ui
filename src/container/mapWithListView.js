@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react';
 import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Popup, Container, Sticky } from 'semantic-ui-react';
-
+import { withRouter } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux';
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -97,9 +97,19 @@ class MapWithListView extends React.Component {
         ]
 
     }
+    gotoUrl(site, subPath) {
+        _self.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:site, subPath: subPath});
+    }
 
     onHandleClick(dim, data) {
-        this.setState({ dimmer:dim, open: true, selected:data })
+        //this.setState({ dimmer:dim, open: true, selected:data })
+        this.props.handleEditInstance(data);
+        this.gotoUrl('/site4', 'pg=editAppInst')
     }
 
 
@@ -346,7 +356,7 @@ class MapWithListView extends React.Component {
                                     (value === 'Edit')?
                                         String(item[value]) === 'null' ? <Table.Cell/> :
                                         <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
+                                            {(String(item[value]).indexOf('Editable') > -1 && localStorage.selectRole === 'AdminManager') ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button> : null}
                                             <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
                                         </Table.Cell>
                                     :
@@ -595,10 +605,11 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleRefreshData: (data) => { dispatch(actions.refreshData(data))},
         handleSetHeader: (data) => { dispatch(actions.tableHeaders(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleEditInstance: (data) => { dispatch(actions.editInstance(data))}
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(MapWithListView);
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(MapWithListView));
 
 

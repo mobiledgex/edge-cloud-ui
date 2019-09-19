@@ -104,8 +104,8 @@ class RegistryInstViewer extends React.Component {
                     'AutoClusterInst':false,
                     'ClusterInst':'',
                 }
-            ]
-
+            ],
+            editMode:false
 
         };
 
@@ -250,7 +250,7 @@ class RegistryInstViewer extends React.Component {
 
     generateDOM(open, dimmer, data, keysData, hideHeader) {
 
-        let panelParams = {data:data, keys:keysData, userrole:localStorage.selectRole}
+        let panelParams = {data:data, keys:keysData, userrole:localStorage.selectRole, editMode:this.state.editMode}
 
         return layout.map((item, i) => (
 
@@ -426,6 +426,8 @@ class RegistryInstViewer extends React.Component {
                 this.setState({keysData:assObj})
             }
         }
+
+        if(nextProps.editMode) this.setState({editMode:nextProps.editMode})
     }
 
     componentWillUnmount() {
@@ -454,7 +456,7 @@ class RegistryInstViewer extends React.Component {
     }
 
     render() {
-        const { open, dimmer, dummyData } = this.state;
+        const { open, dimmer, dummyData, editMode } = this.state;
         const { hiddenKeys } = this.props;
         return (
             <div className="regis_container">

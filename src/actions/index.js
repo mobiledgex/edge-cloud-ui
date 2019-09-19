@@ -262,3 +262,9 @@ export function submitInfo (data) {
         data
     }
 }
+export function editInstance (data) {
+    return {
+        type: types.EDIT_INSTANCE,
+        data
+    }
+}

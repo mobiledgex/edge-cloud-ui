@@ -25,7 +25,8 @@ export default class PopDetailViewer extends React.Component {
             cloudletResult:null,
             appResult:null,
             listOfDetail:null,
-            propsData:''
+            propsData:'',
+            orgType:''
         }
         _self = this;
     }
@@ -47,6 +48,7 @@ export default class PopDetailViewer extends React.Component {
             let regKeys = [];
             let component = null;
             if(nextProps.data){
+                this.setState({orgType:nextProps.data.Type})
                 regKeys = Object.keys(nextProps.data)
                 component = regKeys.map((key, i)=>(
                     (key !== 'Edit')?
@@ -114,7 +116,7 @@ export default class PopDetailViewer extends React.Component {
 
 
     render() {
-
+        let { orgType } = this.state;
         return (
             <Modal size={'small'} open={this.state.open} dimmer={false}>
                 <Modal.Header >View Detail</Modal.Header>
@@ -125,7 +127,7 @@ export default class PopDetailViewer extends React.Component {
                                 this.state.listOfDetail
                             }
                         </Grid>
-                        {(this.props.siteId === 'Organization') ?
+                        {(this.props.siteId === 'Organization' && orgType === 'developer') ?
                             <Grid>
                                 <Grid.Row>
                                     <Grid.Column>
