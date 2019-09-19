@@ -33,14 +33,13 @@ export default class React3DGlobe extends React.PureComponent {
 
   componentDidUpdate(prevProps, prevState) {
     const {height, width} = this.state;
-
-    if (this.globe && this.props.disableUnfocus !== prevProps.disableUnfocus) {
+    if (this.props.disableUnfocus !== prevProps.disableUnfocus) {
       this.globe.setDisableUnfocus(this.props.disableUnfocus);
     }
-    if (this.globe && this.props.markers !== prevProps.markers) {
+    if (this.props.markers !== prevProps.markers) {
       this.globe.setMarkers(this.props.markers);
     }
-    if (this.globe && this.state !== prevState) {
+    if (this.state !== prevState) {
       this.globe.updateSize(width, height);
     }
     return;

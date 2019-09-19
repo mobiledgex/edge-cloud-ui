@@ -34,14 +34,9 @@ class headerGlobalMini extends React.Component {
     }
     gotoPreview(value) {
         if(value == '/logout') {
-            try{
-                localStorage.removeItem('selectOrg');
-                localStorage.removeItem('selectRole')
-                localStorage.removeItem('selectMenu')
-            } catch (error) {
-
-            }
-
+            localStorage.removeItem('selectOrg');
+            localStorage.removeItem('selectRole')
+            localStorage.removeItem('selectMenu')
         }
         //브라우져 입력창에 주소 기록
         let mainPath = value;

@@ -43,7 +43,6 @@ let newRegistKey = [
     'ScaleWithCluster',
     'Command',
     'DeploymentMF',
-    'Editable'
 ];
 let generateData = (datas,body) => {
     let values = [];

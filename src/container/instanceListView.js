@@ -110,7 +110,7 @@ class InstanceListView extends React.Component {
                             <Grid.Column width={3} style={{display:'flex', alignItems:'flex-end', justifyContent:'flex-end'}}>
                                 <div>
                                     <Button onClick={() => alert('Are you sure?')}>Delete</Button>
-                                    <Button disabled color='teal' bId={'edit_'+i} onClick={() => this.onHandleClick(true, data)}><Icon name={'edit'}/></Button>
+                                    <Button disabled color='teal' bId={'edit_'+i} onClick={() => this.onHandleClick(true, data)}>Edit</Button>
                                 </div>
                             </Grid.Column>
                         </Grid.Row>

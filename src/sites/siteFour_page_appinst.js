@@ -33,7 +33,7 @@ class SiteFourPageAppInst extends React.Component {
         this.hgap = 0;
         this.loadCount = 0;
 
-        this.headerLayout = [2,2,2,1,1,2,2,2,1,1,3];
+        this.headerLayout = [1,2,2,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1];
         this._devData = [];
     }
 

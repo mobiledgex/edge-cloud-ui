@@ -187,7 +187,7 @@ class RegistryInstViewer extends React.Component {
         console.log("resultresultxxresult",result)
         setTimeout(() => {
             services.errorTempFile(result.data, this.receiveStatusData)
-        }, 3000);
+        }, 2500);
         
 
         //_self.props.handleLoadingSpinner(false);
@@ -333,12 +333,12 @@ class RegistryInstViewer extends React.Component {
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
                 services.createNewMultiAppInst('CreateAppInst', {params:submitData, token:store ? store.userToken : 'null'}, _self.receiveResult, nextProps.validateValue, this.state.cloudlets, this.state.autoClusterDisable)
-                // setTimeout(() => {
-                //     if(this.state.regSuccess) {
-                //         this.props.handleLoadingSpinner(false);
-                //         this.gotoUrl('submit');
-                //     }
-                // }, 4000)
+                setTimeout(() => {
+                    if(this.state.regSuccess) {
+                        this.props.handleLoadingSpinner(false);
+                        this.gotoUrl('submit');
+                    }
+                }, 4000)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }
@@ -442,17 +442,12 @@ class RegistryInstViewer extends React.Component {
         toArray.pop();
         toJson = toArray.map((str)=>(JSON.parse(str)))
         console.log("toJsontoJson",toJson)
-        this.props.handleLoadingSpinner(false);
         toJson.map((item) => {
             if(item.result && item.result.code == 400){
                 console.log("item.result",item.result.message)
-                this.setState({regSuccess:false});
                 this.props.handleAlertInfo('error',item.result.message)
             }
         })
-        if(this.state.regSuccess) {
-            this.gotoUrl('submit');
-        }
     }
 
     render() {

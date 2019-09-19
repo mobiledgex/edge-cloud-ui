@@ -40,5 +40,3 @@ export const TUTOR_STATE = 'TUTOR_STATE';
 export const SUBMIT_INFO = 'SUBMIT_INFO';
 export const GET_REGION = 'GET_REGION';
 export const EDIT_INSTANCE = 'EDIT_INSTANCE';
-export const DELETE_RESET = 'DELETE_RESET';
-

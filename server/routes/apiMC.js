@@ -57,21 +57,19 @@ exports.createUser = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
-    let emailEncode = '';
   if(req.body.serviceBody){
         serviceBody = req.body.serviceBody;
   }
-  console.log('create user.. ', serviceBody,emailEncode, mcUrl)
-  axios.post(mcUrl + '/api/v1/usercreate', {
+  console.log('create user.. ', serviceBody, mcUrl)
+  axios.post(mcUrl + '/api/v1/usercreate', qs.stringify({
         name: serviceBody.name,
         passhash: serviceBody.password,
         email: serviceBody.email,
         callbackurl: serviceBody.callbackurl,
-        operatingsystem:serviceBody.clientSysInfo.os.name,
-        browser:serviceBody.clientSysInfo.browser.name,
-        clientip:serviceBody.clientSysInfo.clientIP
-      },
-      {headers: {'Content-Type':'application/json; charset=utf-8'}}
+        operatingsystem:"mac OSX",
+        browser:"httpie",
+        clientip:"127.0.0.1"
+      }),
 
   )
       .then(function (response) {
@@ -85,10 +83,9 @@ exports.createUser = (req, res) => {
       })
       .catch(function (error) {
         let errMsg = qs.parse(error);
-          console.log('error create user **************** ***',errMsg.response.data);
+          console.log('error create user **************** ',errMsg.response.data);
           res.json( errMsg.response.data )
       });
-
 }
 
 
@@ -111,7 +108,7 @@ exports.currentUser = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success current user..')
+            console.log('success current user..', response)
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -127,7 +124,6 @@ exports.currentUser = (req, res) => {
             console.log('error......');
             res.json({message:'Certificated has expired'})
         });
-
 }
 exports.showAccounts = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
@@ -918,7 +914,7 @@ exports.CreateAppInst = (req, res) => {
     }
     res.send(clusterId);
     //
-    //fs.createWriteStream('./temp/'+clusterId+'.txt')
+    fs.createWriteStream('./temp/'+clusterId+'.txt')
 
     console.log('Create me app inst--string...', JSON.stringify(params), 'mcUrl=',mcUrl,"vvv",req.body.multiCluster)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateAppInst', params,
@@ -964,7 +960,7 @@ exports.CreateClusterInst = (req, res) => {
     }
     // avoid error for fs.createReadStream, so that preview create file before read file.
     // fs.readFileSync 로 파일을 먼저 읽으려 할 때 파일이 없으면 오류가 생기는 문제 발생, 그러므로 먼저 파일을 만들어 놓는다
-    //fs.createWriteStream('./temp/'+clusterId+'.txt')
+    fs.createWriteStream('./temp/'+clusterId+'.txt')
 
     /**
      * steam
@@ -1001,7 +997,7 @@ exports.CreateClusterInst = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data);
+            console.log('error show ...', error.response.data.message);
             res.json(error)
         });
 

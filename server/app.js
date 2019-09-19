@@ -11,7 +11,6 @@ var credentials = {key: privateKey, cert: certificate};
 
 
 const express = require('express')
-const expressip = require('express-ip');
 const cors = require('cors')
 const app = express()
 var port = 3030
@@ -48,9 +47,6 @@ app.use(session({
     saveUninitialized: false,
     rejectUnauthorized: false
 }))
-
-// if your server is behind a proxy
-app.set('trust proxy', true);
 
 
 // Add headers
@@ -173,6 +169,8 @@ app.get('/compute', function(req, res){
         res.json(body)
     });
 });
+
+
 
 /******************************************************
 //참고 : https://www.npmjs.com/package/influxdb-nodejs
@@ -503,52 +501,6 @@ console.log('====== process env mcurl ======='+process.env.MC_URL)
 apiMCMonitor.MC_URL = process.env.MC_URL;
 app.post('/timeAppinst', apiMCMonitor.ShowappHealth)
 app.post('/timeClusterinst', apiMCMonitor.ShowclusterHealth)
-
-
-/********
- *
- */
-//const requestIp = require('request-ip');
-// app.use(requestIp.mw())
-// app.use(function(req, res) {
-//     const ip = req.clientIp;
-//     console.log('ip..........', ip)
-//     res.end(ip);
-// });
-
-
-app.use(expressip().getIpInfoMiddleware);
-
-app.post('/clientIP', function(req, res){
-    //////////////////////
-    // const requestIp = require('request-ip');
-    // // inside middleware handler
-    // const ipMiddleware = function(req, res, next) {
-    //     const clientIp = requestIp.getClientIp(req);
-    //     console.log('clientIP..', clientIp)
-    //     next();
-    // };
-
-    // on localhost you'll see 127.0.0.1 if you're using IPv4
-    // or ::1, ::ffff:127.0.0.1 if you're using IPv6
-    //As Connect Middleware
-    console.log('get client ip //')
-
-    /*
-    app.use(requestIp.mw())
-    app.use(function(req, res) {
-        const ip = req.clientIp;
-        console.log('ip..', ip)
-        res.json({ip});
-    });
-    */
-
-    const ipInfo = req.ipInfo;
-    //var message = `Hey, you are browsing from ${ipInfo.city}, ${ipInfo.country}`;
-    res.send((ipInfo)?ipInfo:'127.0.0.1');
-
-})
-
 
 
 /*

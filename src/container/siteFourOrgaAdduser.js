@@ -45,7 +45,7 @@ const makeRoleList = (selectedType, i) => (
             <List.Content>
                 {
                     Object.keys(roles[selectedType][i]).map((key) => (
-                        <List.Header key={key}><div style={{color:((roles[selectedType][i][key] === 'Manage')?'rgba(255,255,255,.6)':'rgba(255,255,255,.6)')}}>{ key +" : "+ (roles[selectedType][i][key]) }</div></List.Header>
+                        <List.Header key={key}><div style={{color:((roles[selectedType][i][key] === 'Manage')?'rgba(136,221,0,.9)':'rgba(255,255,255,.6)')}}>{ key +" : "+ (roles[selectedType][i][key]) }</div></List.Header>
                     ))
                 }
 

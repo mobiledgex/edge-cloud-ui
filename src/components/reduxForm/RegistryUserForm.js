@@ -113,7 +113,7 @@ class RegistryUserForm extends React.Component{
         //if  any has error as validation
         this.props.handleSubmit();
         if(_errors && Object.keys(_errors).length) {
-            
+            alert('error')
             return;
 
         }
