@@ -279,7 +279,8 @@ class Login extends Component {
 
 
         //remove new user info data from localStorage
-        let oldUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+            let getUserInfo = localStorage.getItem('userInfo')
+        let oldUserInfo = getUserInfo ? JSON.parse(getUserInfo) : null;
         if(oldUserInfo) {
             if(oldUserInfo.date && moment().diff(oldUserInfo.date,'minute') >= 60) {
                 localStorage.setItem('userInfo', null)
@@ -298,10 +299,7 @@ class Login extends Component {
         let resultPs = parser.getResult();
         this.clientSysInfo = {os:resultPs.os, browser:resultPs.browser};
 
-        /**
-         * get IP of client
-         */
-        ServiceLogin.getCurrentClientIp('clientIP', {token:''}, self.receiveClientIp, self);
+
 
     }
 
@@ -373,8 +371,13 @@ class Login extends Component {
 
 
     receiveClientIp(result) {
-        console.log('client ip is = ', result)
-        if(result && result.data) self.clientSysInfo['clientIP'] = result.data
+        console.log('20190918 client ip is = ', result)
+        if(result && result.data) {
+            self.clientSysInfo['clientIP'] = result.data;
+        } else {
+            self.clientSysInfo['clientIP'] = '127.0.0.1';
+        }
+
     }
 
     resultCreateUser(result, resource) {
