@@ -173,7 +173,7 @@ class SiteFourCreateFormFlavorDefault extends React.Component {
                                         regKeys.map((key, i) => (
 
                                             (this.getLabel(key, pId))?
-                                                <Grid.Row columns={3} key={i} className={'createAppInst'+i}>
+                                                <Grid.Row columns={3} key={i} className={'createFlavorForm'+i}>
 
                                                     <Grid.Column width={4} className='detail_item'>
                                                         <div>{this.getLabel(key, pId)}{this.getNecessary(key, pId)}</div>
@@ -227,7 +227,7 @@ class SiteFourCreateFormFlavorDefault extends React.Component {
                                     </Button>
                                 </span>
                                 <Button
-                                    className='createAppInst8'
+                                    className='saveButton'
                                     primary
                                     positive
                                     icon='checkmark'

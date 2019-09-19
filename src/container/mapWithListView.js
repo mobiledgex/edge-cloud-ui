@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react';
 import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Popup, Container, Sticky } from 'semantic-ui-react';
-
+import { withRouter } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux';
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -73,7 +73,8 @@ class MapWithListView extends React.Component {
             updateData:{},
             resize:null,
             sorting:false,
-            closeMap:false
+            closeMap:false,
+            toggle:false
         };
 
         _self = this;
@@ -97,9 +98,19 @@ class MapWithListView extends React.Component {
         ]
 
     }
+    gotoUrl(site, subPath) {
+        _self.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:site, subPath: subPath});
+    }
 
     onHandleClick(dim, data) {
-        this.setState({ dimmer:dim, open: true, selected:data })
+        //this.setState({ dimmer:dim, open: true, selected:data })
+        this.props.handleEditInstance(data);
+        this.gotoUrl('/site4', 'pg=editAppInst')
     }
 
 
@@ -271,9 +282,10 @@ class MapWithListView extends React.Component {
     )
     stateView(_item) {
         Alert.closeAll();
+        
 
         Alert.info(
-            <div className='ProgressBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
+            <div className='ProgressBox' id='prgBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
                 <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh}  />
             </div>, {
             position: 'top-right', timeout: 'none', limit:1,
@@ -346,7 +358,7 @@ class MapWithListView extends React.Component {
                                     (value === 'Edit')?
                                         String(item[value]) === 'null' ? <Table.Cell/> :
                                         <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
+                                            {(String(item[value]).indexOf('Editable') > -1 && localStorage.selectRole === 'AdminManager') ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button> : null}
                                             <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
                                         </Table.Cell>
                                     :
@@ -444,6 +456,7 @@ class MapWithListView extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
+        console.log("sdsdsdsfaf",nextProps.devData)
         if(this.state.sorting) {
             return;
         }
@@ -458,7 +471,8 @@ class MapWithListView extends React.Component {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-        if(nextProps.devData.length) {
+        if(nextProps.devData.length && !this.state.toggle) {
+            this.setState({toggle:true})
             //set filtering
             let filteredData = [];
             if(this.state.dummyData.length === 0) {
@@ -595,10 +609,11 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleRefreshData: (data) => { dispatch(actions.refreshData(data))},
         handleSetHeader: (data) => { dispatch(actions.tableHeaders(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleEditInstance: (data) => { dispatch(actions.editInstance(data))}
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(MapWithListView);
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(MapWithListView));
 
 

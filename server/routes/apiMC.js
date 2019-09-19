@@ -66,9 +66,9 @@ exports.createUser = (req, res) => {
         passhash: serviceBody.password,
         email: serviceBody.email,
         callbackurl: serviceBody.callbackurl,
-        operatingsystem:"mac OSX",
-        browser:"httpie",
-        clientip:"127.0.0.1"
+        operatingsystem:serviceBody.clientSysInfo.os.name,
+        browser:serviceBody.clientSysInfo.browser.name,
+        clientip:serviceBody.clientSysInfo.clientIP
       }),
 
   )
@@ -86,6 +86,7 @@ exports.createUser = (req, res) => {
           console.log('error create user **************** ',errMsg.response.data);
           res.json( errMsg.response.data )
       });
+
 }
 
 
@@ -108,7 +109,7 @@ exports.currentUser = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success current user..', response)
+            console.log('success current user..')
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -124,6 +125,7 @@ exports.currentUser = (req, res) => {
             console.log('error......');
             res.json({message:'Certificated has expired'})
         });
+
 }
 exports.showAccounts = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;

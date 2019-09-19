@@ -51,7 +51,10 @@ class VerticalLinearStepper extends React.Component {
     }
 
     receiveInterval = (data) => {
-        console.log("receiveIntervalreceiveInterval",this.props.item)
+        const prgDiv = document.getElementById("prgBox");
+        if(prgDiv){
+            prgDiv.scrollTop = prgDiv.scrollHeight;
+        }
         if(this.props.item.State == 3) {
             computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusData)
         } else if(this.props.item.State == 5) {

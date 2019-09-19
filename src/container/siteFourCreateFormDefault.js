@@ -307,7 +307,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 (getUserRole == 'AdminManager' && (fieldKeys[pId][key]['label'] === 'Organization Name' || fieldKeys[pId][key]['label'] === 'Operator Name')) ?
                                                                     <Field
                                                                         component={renderSelect}
-                                                                        placeholder={'Select Organization Name'}
+                                                                        placeholder={'Select Operator'}
                                                                         options={this.state.orgArr}
                                                                         name={key}
                                                                         error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
@@ -377,7 +377,6 @@ class SiteFourCreateFormDefault extends React.Component {
                                     </Button>
                                 </span>
                                 <Button
-                                    className='cloudletRegSubmit'
                                     primary
                                     positive
                                     icon='checkmark'

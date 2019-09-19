@@ -58,6 +58,31 @@ export function getCurrentUserInfo(resource, body, callback, self) {
 
 
 }
+export function getCurrentClientIp(resource, body, callback, self) {
+
+
+    axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    }))
+        .then(function (response) {
+            let parseData = null;
+            if(response.data) {
+                //test 20190804
+                //parseData = JSON.parse(JSON.stringify({data:{message:'expired jwt'}}));
+                parseData = JSON.parse(JSON.stringify(response));
+
+            } else {
+            }
+            if(parseData) callback(parseData, resource, self);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
+}
 
 /*
 
