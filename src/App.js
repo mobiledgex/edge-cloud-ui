@@ -234,6 +234,7 @@ class App extends Component {
         let token = store ? store.userToken : 'null';
         Service.getCurrentUserInfo('currentUser', {token:token}, self.receiveCurrentUser, self);
 
+
     }
 
     componentDidMount() {
