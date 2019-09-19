@@ -317,6 +317,33 @@ export const organizationTutor = () => {
                     element: '.stepOrg2',
                     intro: 'Please add instruction here'
                 }
+            ],
+            stepsCreateFlavor: [
+                {
+                    element: '.createFlavorForm0',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.createFlavorForm1',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.createFlavorForm2',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.createFlavorForm3',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.createFlavorForm4',
+                    intro: 'Please add instruction here'
+                },
+                {
+                    element: '.saveButton',
+                    intro: 'Please add instruction here'
+                }
+
             ]
         }
     )

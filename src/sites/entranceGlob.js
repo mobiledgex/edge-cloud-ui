@@ -1,8 +1,5 @@
 import React, {Component} from 'react';
-import axios from 'axios';
 import {Grid, Button, Container, Input, Label, Popup} from 'semantic-ui-react';
-import { spring } from 'react-motion'
-import Transition from 'react-motion-ui-pack'
 import React3DGlobe from '../libs/react3dglobe';
 import { getMockData } from "../libs/react3dglobe/mockData";
 import Login from '../components/login';
@@ -17,7 +14,7 @@ import SiteOne from './siteOne';
 import * as serviceLogin from "../services/service_login_api";
 
 import {GridLoader} from "react-spinners";
-
+import Alert from 'react-s-alert';
 
 
 const pointMarkers = getMockData(0x97bcd8, 'point');
@@ -88,7 +85,28 @@ class EntranceGlobe extends Component {
         //     Alert.closeAll();
         // }
 
-
+        //Redux Alert
+        if(nextProps.alertInfo.mode) {
+            Alert.closeAll();
+            if(nextProps.alertInfo.mode === 'success') {
+                Alert.success(nextProps.alertInfo.msg, {
+                    position: 'top-right',
+                    effect: 'slide',
+                    beep: true,
+                    timeout: 5000,
+                    offset: 100
+                });
+            } else if(nextProps.alertInfo.mode === 'error') {
+                Alert.error(nextProps.alertInfo.msg, {
+                    position: 'top-right',
+                    effect: 'slide',
+                    beep: true,
+                    timeout: 5000,
+                    offset: 100
+                });
+            }
+            nextProps.handleAlertInfo('','');
+        }
 
     }
 
@@ -244,7 +262,11 @@ function mapStateToProps ( state ) {
     return {
         user:state.user,
         userInfo : state.userInfo?state.userInfo:null,
-        loginMode: state.loginMode?state.loginMode.mode:null
+        loginMode: state.loginMode?state.loginMode.mode:null,
+        alertInfo : {
+            mode: state.alertInfo.mode,
+            msg: state.alertInfo.msg
+        }
     }
 }
 const mapDispatchProps = (dispatch) => {
@@ -253,6 +275,7 @@ const mapDispatchProps = (dispatch) => {
         handleChangeTab: (data) => { dispatch(actions.changeTab(data))},
         handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))},
         handleUserInfo: (data) => { dispatch(actions.userInfo(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 
