@@ -92,7 +92,7 @@ export default class PopLegendViewer extends React.Component {
         <TextareaAutosize
             minRows={3}
             maxRows={10}
-            style={{ boxSizing: "border-box", width:'450px', backgroundColor:'#545b6b', color:'#eeeeee' }}
+            style={{ boxSizing: "border-box", width:'400px', backgroundColor:'#545b6b', color:'#eeeeee' }}
             defaultValue={value}></TextareaAutosize>
     )
 
@@ -185,22 +185,22 @@ export default class PopLegendViewer extends React.Component {
     render() {
         let { orgType } = this.state;
         return (
-            <Modal size={'small'} open={this.state.open} dimmer={false}>
-                <Modal.Header >Roles</Modal.Header>
-                <Modal.Content>
+            <Modal style={{width: '450px'}} className="modal_role" open={this.state.open} dimmer={false}>
+                <Modal.Header >Permission of Role</Modal.Header>
+                <Modal.Content scrolling>
                     <Modal.Description>
-                        <Grid divided style={{overflowY:'scroll'}}>
+                        <Grid divided>
                             <div role={"list"}>
 
                             </div>
 
                         </Grid>
                         <Grid className="stepOrgDeveloper2">
-                            <Grid.Row columns={2} style={{cursor:'pointer'}} onClick={this.orgTypeLegendShow}>
+                            <Grid.Row columns={2} onClick={this.orgTypeLegendShow}>
                                 <Grid.Column width={5}>
                                     <div className="markBox">
                                         {
-                                            (localStorage.selectRole == 'AdminManager')? null
+                                            (localStorage.selectRole == 'AdminManager')? <div className="mark markD markM">S</div>
                                                 :
                                                 (localStorage.selectRole == 'DeveloperManager')?
                                                     <div className="mark markD markM">M</div>
@@ -224,7 +224,7 @@ export default class PopLegendViewer extends React.Component {
                                         }
                                     </div>
                                 </Grid.Column>
-                                <Grid.Column width={11} style={{lineHeight:'24px'}}>
+                                <Grid.Column width={11}>
                                     {
                                         (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole : localStorage.selectRole
                                     }
@@ -232,17 +232,17 @@ export default class PopLegendViewer extends React.Component {
                             </Grid.Row>
                             <Grid.Row>
                                 <Table celled inverted selectable>
-                                    <Table.Header>
+                                    {/* <Table.Header>
                                         <Table.Row>
                                             <Table.HeaderCell>Name</Table.HeaderCell>
                                             <Table.HeaderCell>Status</Table.HeaderCell>
 
                                         </Table.Row>
-                                    </Table.Header>
+                                    </Table.Header> */}
 
                                     <Table.Body>
                                         <Table.Row>
-                                            <Table.Cell>Users</Table.Cell>
+                                            <Table.Cell style={{width:'35%'}}>Users</Table.Cell>
                                             <Table.Cell>
                                                 {this.getUserRole('Users')}
                                             </Table.Cell>

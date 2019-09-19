@@ -202,9 +202,7 @@ class App extends Component {
         history.location.search = subPath;
         self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
     }
-    receiveClientIp(result) {
-        console.log('client ip is = ', result)
-    }
+
     receiveCurrentUser(result) {
         if(result.data && result.data.message) {
 
@@ -235,7 +233,7 @@ class App extends Component {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         let token = store ? store.userToken : 'null';
         Service.getCurrentUserInfo('currentUser', {token:token}, self.receiveCurrentUser, self);
-        Service.getCurrentClientIp('clientIP', {token:token}, self.receiveClientIp, self);
+
 
     }
 

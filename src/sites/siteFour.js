@@ -810,51 +810,55 @@ class SiteFour extends React.Component {
                         <Grid.Column style={{height:this.state.bodyHeight}} className='view_left'>
                             <Menu secondary vertical className='view_left_menu org_menu'>
                                 {/* show name of organization */}
-                                <Grid.Column>
-                                    <div>Organization</div>
-                                    <div>{localStorage.selectOrg?localStorage.selectOrg:'Select Organization'}</div>
+                                <Grid.Column className="left_org">
+                                    <div className="left_org_title">Organization</div>
+                                    <div className="left_org_selected">{localStorage.selectOrg?localStorage.selectOrg:'No organization selected'}</div>
                                 </Grid.Column>
                                 {/* show role of user */}
-                                <Grid.Row>
+                                <Grid.Row className="left_authority">
                                     <Segment>
                                         <Grid className="stepOrgDeveloper2">
-                                            <Grid.Row columns={2} style={{cursor:'pointer'}} onClick={this.orgTypeLegendShow}>
-                                                <Grid.Column width={5}>
-                                                    <div className="markBox">
-                                                        {
-                                                            (localStorage.selectRole == 'AdminManager')? null
-                                                                :
-                                                                (localStorage.selectRole == 'DeveloperManager')?
-                                                                    <div className="mark markD markM">M</div>
+                                            <Grid.Row style={{cursor:'pointer'}} onClick={this.orgTypeLegendShow}>
+                                                <Grid.Column>
+                                                    {localStorage.selectRole?
+                                                        <div className="markBox">
+                                                            {
+                                                                (localStorage.selectRole == 'AdminManager')? <div className="mark markD markM">S</div>
                                                                     :
-                                                                    (localStorage.selectRole == 'DeveloperContributor')?
-                                                                        <div className="mark markD markC">C</div>
+                                                                    (localStorage.selectRole == 'DeveloperManager')?
+                                                                        <div className="mark markD markM">M</div>
                                                                         :
-                                                                        (localStorage.selectRole == 'DeveloperViewer')?
-                                                                            <div className="mark markD markV">V</div>
+                                                                        (localStorage.selectRole == 'DeveloperContributor')?
+                                                                            <div className="mark markD markC">C</div>
                                                                             :
-                                                                            (localStorage.selectRole == 'OperatorManager')?
-                                                                                <div className="mark markO markM">M</div>
+                                                                            (localStorage.selectRole == 'DeveloperViewer')?
+                                                                                <div className="mark markD markV">V</div>
                                                                                 :
-                                                                                (localStorage.selectRole == 'OperatorContributor')?
-                                                                                    <div className="mark markO markC">C</div>
+                                                                                (localStorage.selectRole == 'OperatorManager')?
+                                                                                    <div className="mark markO markM">M</div>
                                                                                     :
-                                                                                    (localStorage.selectRole == 'OperatorViewer')?
-                                                                                        <div className="mark markO markV">V</div>
+                                                                                    (localStorage.selectRole == 'OperatorContributor')?
+                                                                                        <div className="mark markO markC">C</div>
                                                                                         :
-                                                                                        <div>Type and Role</div>
-                                                        }
-                                                    </div>
-                                                </Grid.Column>
-                                                <Grid.Column width={11} style={{lineHeight:'24px'}}>
-                                                    {
-                                                        (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole : localStorage.selectRole
+                                                                                        (localStorage.selectRole == 'OperatorViewer')?
+                                                                                            <div className="mark markO markV">V</div>
+                                                                                            :
+                                                                                            <span></span>
+                                                            }
+                                                        </div>
+                                                        :null
                                                     }
+                                                    <div>
+                                                    {
+                                                        (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole?localStorage.selectRole:'Please select a role' : localStorage.selectRole?localStorage.selectRole:'Please select a role'
+                                                    }
+                                                    </div>
                                                 </Grid.Column>
                                             </Grid.Row>
                                         </Grid>
                                     </Segment>
                                 </Grid.Row>
+                                {/* <div className='test'> */}
                                 {
                                     this.OrgMenu.map((item, i)=>(
                                         (item.label == 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
@@ -862,7 +866,7 @@ class SiteFour extends React.Component {
                                             : this.menuItemView(item, i, localStorage.selectMenu)
                                     ))
                                 }
-
+                                {/* </div> */}
                             </Menu>
                             <Menu secondary vertical className='view_left_menu'>
                                 {
