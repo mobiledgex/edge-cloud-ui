@@ -357,8 +357,8 @@ class ClustersMap extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('20190902 props in the map map map map... ', nextProps.parentProps.deleteReset)
-        let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
+        console.log('20190902 props in the map map map map... ', nextProps)
+        let data = nextProps.parentProps.devData;
         function reduceUp(value) {
             return Math.round(value)
         }
@@ -415,12 +415,6 @@ class ClustersMap extends Component {
         this.setState({
             cities: locationData
         })
-
-        if(nextProps.deleteReset){
-            console.log("nextProps.deleteResetsss",nextProps.deleteReset)
-            this.handleReset();
-            this.props.handleDeleteReset(false);
-        }
 
     }
     componentWillUnmount() {
@@ -582,13 +576,11 @@ class ClustersMap extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     let getRegion = (state.getRegion)?state.getRegion.region:null
-    let deleteReset = state.deleteReset.reset;
     return {
         data: state.receiveDataReduce.data,
         tabIdx: state.siteChanger.site.subPath,
         itemLabel: state.computeItem.item,
-        getRegion: state.getRegion,
-        deleteReset
+        getRegion: state.getRegion
     };
 };
 const mapDispatchProps = (dispatch) => {
@@ -597,8 +589,7 @@ const mapDispatchProps = (dispatch) => {
         handleChangeTab: (data) => { dispatch(actions.changeTab(data)) },
         handleChangeCity: (data) => { dispatch(actions.changeCity(data)) },
         handleGetRegion: (data) => { dispatch(actions.getRegion(data)) },
-        handleChangeClickCity: (data) => { dispatch(actions.clickCityList(data))},
-        handleDeleteReset: (data) => { dispatch(actions.deleteReset(data))}
+        handleChangeClickCity: (data) => { dispatch(actions.clickCityList(data))}
     };
 };
 

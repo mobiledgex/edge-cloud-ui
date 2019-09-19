@@ -389,7 +389,7 @@ class MapWithListView extends React.Component {
                                     :
                                     (value === 'Progress' && item['State'] == 5)?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <Icon className="progressIndicator" name='check' color='rgba(255,255,255,.5)' />
+                                            <MaterialIcon className={'progressIndicator'} icon='done' color='rgba(255,255,255,.5)' />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && (item['State'] == 10 || item['State'] == 12))?
@@ -505,12 +505,11 @@ class MapWithListView extends React.Component {
         }else {
             this.checkLengthData();
         }
-        console.log("clickCityclickCity",nextProps.clickCity,":::",cityCoordinates)
+
         nextProps.clickCity.map((item) => {
             cityCoordinates.push(item.coordinates)
         })
-        //if(nextProps.clickCityList !== this.props.clickCity && cityCoordinates[0]) {
-        if(nextProps.clickCity.length > 0) {
+        if(nextProps.clickCityList !== this.props.clickCity && cityCoordinates[0]) {
             nextProps.devData.map((list)=>{
                 let arr = [];
                 arr.push(reduceUp(list.CloudletLocation.longitude))
@@ -578,12 +577,10 @@ const mapStateToProps = (state) => {
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let viewMode = null;
-    let deleteReset = state.deleteReset.reset
     return {
         accountInfo,
         dimmInfo,
-        clickCity: state.clickCityList.list,
-        deleteReset
+        clickCity: state.clickCityList.list
     }
 
 

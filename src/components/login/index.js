@@ -146,7 +146,7 @@ const FormSignUpContainer = (props) => (
         <Grid.Row>
             <span className='title'>Create New Account</span>
         </Grid.Row>
-        <RegistryUserForm onSubmit={() => console.log('ProfileForm was submitted')}/>
+        <RegistryUserForm onSubmit={(a,b) => console.log('20190906 ProfileForm was submitted', a, b)} userInfo={{username:props.self.state.username, email:props.self.state.email, commitDone:props.self.state.commitDone}}/>
         <Grid.Row>
             <span>
             By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
@@ -249,7 +249,8 @@ class Login extends Component {
             forgotMessage:false,
             created:false,
             store:null,
-            resultMsg:''
+            resultMsg:'',
+            submitDone: false
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
@@ -306,6 +307,7 @@ class Login extends Component {
         } else if(nextProps.loginMode === 'resetPass'){
             this.setState({successCreate:false, loginMode:'resetPass', forgotMessage:false, forgotPass:false});
         } else if(nextProps.loginMode === 'signuped' && nextProps.createSuccess){
+            localStorage.setItem('userInfo', null)
             let email = nextProps.userInfo && nextProps.userInfo.email;
             let msgTxt = `Thank you for signing up. Please verify your account.
                             In order to login to your account, you must verify your account. 
@@ -482,6 +484,7 @@ class Login extends Component {
         }
 
     }
+
     onSubmit() {
         const { username, password } = this.state
         if(!username && !password) {

@@ -110,7 +110,7 @@ let generateData = (datas,body) => {
                     Runtime:'',
                     Created:'',
                     Progress:'',
-                    Edit:null,
+                    Edit:'',
                     Status:''
                 })
             } else {

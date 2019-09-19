@@ -88,6 +88,7 @@ const renderInput = field => (
             type={field.type}
             label={field.label}
             placeholder={field.placeholder}
+            value={field.initialValue}
         />
         {field.meta.touched && ((field.meta.error && <span className="text-danger login-danger">{field.meta.error}</span>) || (field.meta.warning && <span>{field.meta.warning}</span>))}
     </div>
@@ -102,12 +103,17 @@ class RegistryUserForm extends React.Component{
         this.state = {
             lastProps: {}
         }
+        this.username = 'Username';
+        this.email = 'Email';
+        this.usernameValue = null;
+        this.emailValue = null
     }
     onHandleSubmit =(a,b)=> {
-
+        console.log('20190906 handle submit sign up ',a,b)
         //if  any has error as validation
         this.props.handleSubmit();
         if(_errors && Object.keys(_errors).length) {
+            alert('error')
             return;
 
         }
@@ -118,11 +124,28 @@ class RegistryUserForm extends React.Component{
         },1000);
 
     }
+    onChangeField =(a, b) => {
+        console.log('20190906 on change field ==', a, ':', b)
+        if(a.target.name === 'username') this.usernameValue = null;
+        if(a.target.name === 'email') this.emailValue = null;
+        localStorage.setItem('userInfo',null);
+    }
     componentWillReceiveProps(nextProps, nextContext) {
         this.setState({lastProps:nextProps})
+        //TODO : 20190906 이전 프롭스 다시 받아서 input filed에 다시 넣기
+
+        let userInfo = localStorage.getItem('userInfo');
+        console.log('20190906 receive user info... ', userInfo)
+        let userInfoObj = (userInfo)?JSON.parse(userInfo):null;
+        if(userInfoObj) {
+            this.usernameValue = userInfoObj.username;
+            this.emailValue = userInfoObj.email;
+        }
+
     }
 
     componentDidMount() {
+        //console.log('20190906 didmount reg user form..'+JSON.stringify(this.props))
     }
 
     render() {
@@ -136,7 +159,9 @@ class RegistryUserForm extends React.Component{
                                component={renderInput}
                                name="username"
                                type="input"
-                               placeholder="Username"
+                               placeholder={this.username}
+                               initialValue={this.usernameValue}
+                               onChange={this.onChangeField}
                         />
                         <Field className={"fieldInput"}
                                component={renderInput}
@@ -154,7 +179,9 @@ class RegistryUserForm extends React.Component{
                                component={renderInput}
                                name="email"
                                type="email"
-                               placeholder="Email"
+                               placeholder={this.email}
+                                initialValue={this.emailValue}
+                               onChange={this.onChangeField}
                         />
                     </Form.Group>
                     <Form.Group className={"submitButtonGroup"} id={"submitButtonGroup"} inline style={{flexDirection:'column', marginBottom:0}}>
