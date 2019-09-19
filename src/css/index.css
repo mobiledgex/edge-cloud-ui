@@ -883,6 +883,7 @@ body, button, input, textarea, optgroup, select, textarea,
     background: #202329;
     border-bottom: 1px solid #515661;
     padding: 10px 20px 20px 20px;
+    margin: 0 0 10px 0;
 }
 .ui.secondary.menu.view_left_menu.org_menu .left_authority .ui.segment {
     border: 1px solid #515661;

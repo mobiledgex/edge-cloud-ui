@@ -999,7 +999,7 @@ exports.CreateClusterInst = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show ...', error.response.data);
             res.json(error)
         });
 

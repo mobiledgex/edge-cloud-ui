@@ -22,7 +22,7 @@ import ReactJson from 'react-json-view'
 import * as aggregate from '../utils'
 
 const ReactGridLayout = WidthProvider(RGL);
-
+let prgInter = null;
 
 const headerStyle = {
     backgroundImage: 'url()'
@@ -74,7 +74,9 @@ class MapWithListView extends React.Component {
             resize:null,
             sorting:false,
             closeMap:false,
-            toggle:false
+            toggle:false,
+            stateCreate:false
+            
         };
 
         _self = this;
@@ -363,7 +365,7 @@ class MapWithListView extends React.Component {
                                         </Table.Cell>
                                     :
                                     (value === 'AppName' && item[value])? //
-                                        <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                        <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <div style={{display:'flex', justifyContent:'row', wordBreak:'break-all'}}>
                                                  {String(item[value])}
                                             </div>
@@ -409,9 +411,16 @@ class MapWithListView extends React.Component {
                                             <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='red' name='circle notch' />} />
                                         </Table.Cell>
                                     :
-                                    (!( String(hidden).indexOf(value) > -1 )) ?
-                                        <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                    (value.indexOf('Name')!==-1 || value === 'Cloudlet' || value === 'ClusterInst') ?
+                                        <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <div style={{display:'flex', alignContent:'Column', justifyContent:'flex-start', alignItems:'center', wordBreak:'break-all' }}>
+                                                <div>{String(item[value])}</div>{(this.compareDate(item['Created']).new && value === 'Region') ? <div className="userNewMark" style={{marginLeft:5, fontSize:10, padding:'0 5px'}}>{`New`}</div> : null}
+                                            </div>
+                                        </Table.Cell>
+                                    :
+                                    (!( String(hidden).indexOf(value) > -1 )) ?
+                                        <Table.Cell key={j} textAlign={'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                            <div style={{display:'flex', alignContent:'Column', justifyContent:'center', alignItems:'center', wordBreak:'break-all' }}>
                                                 <div>{String(item[value])}</div>{(this.compareDate(item['Created']).new && value === 'Region') ? <div className="userNewMark" style={{marginLeft:5, fontSize:10, padding:'0 5px'}}>{`New`}</div> : null}
                                             </div>
                                         </Table.Cell>
@@ -443,6 +452,44 @@ class MapWithListView extends React.Component {
         let close = !this.state.closeMap;
         this.setState({closeMap:close})
     }
+    receiveStatusData = (result, _item) => {
+        
+
+        let toArray = null;
+        let toJson = null;
+        toArray = result.data.split('\n')
+        toArray.pop();
+        toJson = toArray.map((str)=>(JSON.parse(str)))
+        console.log("resultsdsdsd",toJson)
+        toJson.map((item,i) => {
+            if(item.data) {
+                console.log("successfullyzxxx",item.data.message,":::",item.data.message.toLowerCase().indexOf('created successfully'))
+                if(item.data.message.toLowerCase().indexOf('created successfully') > -1){
+                    clearInterval(prgInter);
+                    console.log("Created successfullyCreated successfully")
+                    setTimeout(() => {
+                        this.setAlertRefresh();
+                        computeService.deleteTempFile(_item, this.props.siteId)
+                    }, 2000);
+                } else if(item.data.message.toLowerCase().indexOf('deleted cloudlet successfully') > -1){
+                    clearInterval(prgInter);
+                    console.log("Delete successfullyCreated successfully")
+                    setTimeout(() => {
+                        this.setAlertFailRefresh('Deleted cloudlet successfully');
+                        computeService.deleteTempFile(_item, this.props.siteId)
+                    }, 2000);
+                }
+            } else if(item.result && item.result.code == 400){
+                clearInterval(prgInter);
+                console.log("failRefreshfailRefreshfailRefresh")
+                setTimeout(() => {
+                    this.setAlertFailRefresh(item.result.message);
+                    computeService.deleteTempFile(_item, this.props.siteId)
+                }, 3000);
+            }
+        })
+        
+    }
     componentDidMount() {
         let self = this;
         window.addEventListener("resize", this.updateDimensions);
@@ -456,7 +503,23 @@ class MapWithListView extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log("sdsdsdsfaf",nextProps.devData)
+        console.log("sdsdsdsfaf",nextProps)
+
+        if(this.state.dummyData.length > 0){
+            this.state.dummyData.map((item) => {
+                //console.log("dummyDatadummyData",item.State)
+                if(item.State == 3 && !this.state.stateCreate){
+                    this.setState({stateCreate:true})
+                    console.log("dummyDatadummyData",item)
+                    //this.setState({stateCreate:item})
+                    //this.props.dataRefresh();
+                    prgInter = setInterval(() => {
+                        computeService.creteTempFile(item, nextProps.siteId, this.receiveStatusData);
+                    }, 3000);
+                }
+            })
+        }
+
         if(this.state.sorting) {
             return;
         }
