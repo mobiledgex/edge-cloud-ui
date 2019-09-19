@@ -336,7 +336,7 @@ export function creteTempFile(_item, _site, callback) {
         .then(function (response) {
             console.log('20190820 result read status progress cluster inst...',response.data);
             //if(response.data.indexOf('successfully') > -1) clearInterval(readInterval)
-            callback(response, _item)
+            callback(response)
         })
         .catch(function (error) {
             console.log("error2",error);

@@ -93,7 +93,7 @@ class PopAddUserViewer extends React.Component {
         return (
             <Modal open={this.state.open} dimmer={false}>
                 <Modal.Header>Add User</Modal.Header>
-                <Modal.Content scrolling>
+                <Modal.Content>
                     <Grid className='popup_user'>
                         {/*<Grid.Row>*/}
                         {/*    <Grid.Column>*/}

@@ -257,7 +257,7 @@ class PageDetailViewer extends React.Component {
     }
 
     clearInterval() {
-                console.log('20190904 clear interval 000 000 000 =',_self.activeInterval)
+                console.log('20190904 clear interval 000 000 000')
         if(_self.activeInterval) clearInterval(_self.activeInterval);
     }
 

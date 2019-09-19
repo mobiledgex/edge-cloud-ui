@@ -86,8 +86,7 @@ let generateData = (datas,body) => {
         'Cloudlet',
         'ClusterInst',
         'CloudletLocation',
-        'State',
-        'Editable'
+        'State'
     ];
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {

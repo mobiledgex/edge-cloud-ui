@@ -135,44 +135,48 @@ export const organizationTutor = () => {
             ],
             stepsClusterInstReg: [
                 {
-                    element: '.cloudletReg0',
+                    element: '.clusterInstReg0',
                     intro: 'Select region where you want to deploy the cluster.'
                 },
                 {
-                    element: '.cloudletReg1',
+                    element: '.clusterInstReg1',
                     intro: 'Enter name of your cluster.'
                 },
                 {
-                    element: '.cloudletReg2',
+                    element: '.clusterInstReg2',
                     intro: 'This is the name of the organization you are currently managing.'
                 },
                 {
-                    element: '.cloudletReg3',
+                    element: '.clusterInstReg3',
                     intro: 'Which operator do you want to deploy this cluster? Please select one.'
                 },
                 {
-                    element: '.cloudletReg4',
+                    element: '.clusterInstReg4',
                     intro: 'Which cloudlet(s) do you want to deploy this cluster?'
                 },
                 {
-                    element: '.cloudletReg5',
+                    element: '.clusterInstReg5',
                     intro: '<span>Do you plan to deploy your application in kubernetes cluster?<br />Or do you plan to deploy it as a plain docker container?</span>'
                 },
                 {
-                    element: '.cloudletReg6',
+                    element: '.clusterInstReg6',
                     intro: '<span>Shared IP Access represents that you would be sharing a Root Load Balancer with other developers.<br />Dedicated IP Access represents that you would have a dedicated Root Load Balancer.</span>'
                 },
                 {
-                    element: '.cloudletReg7',
+                    element: '.clusterInstReg7',
                     intro: 'What flavor is needed to run your application?'
                 },
                 {
-                    element: '.cloudletReg8',
+                    element: '.clusterInstReg8',
                     intro: 'This represents Kubernetes Master where it is responsible for maintaining the desired state for your cluster.'
                 },
                 {
-                    element: '.cloudletReg9',
+                    element: '.clusterInstReg9',
                     intro: '<span>What is the number of nodes you want in this cluster?<br />The nodes in a cluster are the machines that run your applications.</span>'
+                },
+                {
+                    element: '.clusterInstReg10',
+                    intro: 'Click this button to start creating.'
                 }
             ],
             stepsApp: [
@@ -313,33 +317,6 @@ export const organizationTutor = () => {
                     element: '.stepOrg2',
                     intro: 'Please add instruction here'
                 }
-            ],
-            stepsCreateFlavor: [
-                {
-                    element: '.createFlavorForm0',
-                    intro: 'Please add instruction here'
-                },
-                {
-                    element: '.createFlavorForm1',
-                    intro: 'Please add instruction here'
-                },
-                {
-                    element: '.createFlavorForm2',
-                    intro: 'Please add instruction here'
-                },
-                {
-                    element: '.createFlavorForm3',
-                    intro: 'Please add instruction here'
-                },
-                {
-                    element: '.createFlavorForm4',
-                    intro: 'Please add instruction here'
-                },
-                {
-                    element: '.saveButton',
-                    intro: 'Please add instruction here'
-                }
-
             ]
         }
     )
@@ -412,6 +389,10 @@ export const CloudletTutor = () => {
                 {
                     element: '.cloudletReg7',
                     intro: 'Supported list of cloudlet types.'
+                },
+                {
+                    element: '.cloudletRegSubmit',
+                    intro: 'Click this button to start creating.'
                 }
             ],
         }

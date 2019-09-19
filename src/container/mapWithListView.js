@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react';
 import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Popup, Container, Sticky } from 'semantic-ui-react';
-import { withRouter } from 'react-router-dom';
+
 import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux';
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -22,7 +22,7 @@ import ReactJson from 'react-json-view'
 import * as aggregate from '../utils'
 
 const ReactGridLayout = WidthProvider(RGL);
-let prgInter = null;
+
 
 const headerStyle = {
     backgroundImage: 'url()'
@@ -73,10 +73,7 @@ class MapWithListView extends React.Component {
             updateData:{},
             resize:null,
             sorting:false,
-            closeMap:false,
-            toggle:false,
-            stateCreate:false
-            
+            closeMap:false
         };
 
         _self = this;
@@ -100,19 +97,9 @@ class MapWithListView extends React.Component {
         ]
 
     }
-    gotoUrl(site, subPath) {
-        _self.props.history.push({
-            pathname: site,
-            search: subPath
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:site, subPath: subPath});
-    }
 
     onHandleClick(dim, data) {
-        //this.setState({ dimmer:dim, open: true, selected:data })
-        this.props.handleEditInstance(data);
-        this.gotoUrl('/site4', 'pg=editAppInst')
+        this.setState({ dimmer:dim, open: true, selected:data })
     }
 
 
@@ -284,10 +271,9 @@ class MapWithListView extends React.Component {
     )
     stateView(_item) {
         Alert.closeAll();
-        
 
         Alert.info(
-            <div className='ProgressBox' id='prgBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
+            <div className='ProgressBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
                 <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh}  />
             </div>, {
             position: 'top-right', timeout: 'none', limit:1,
@@ -360,12 +346,12 @@ class MapWithListView extends React.Component {
                                     (value === 'Edit')?
                                         String(item[value]) === 'null' ? <Table.Cell/> :
                                         <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            {(String(item[value]).indexOf('Editable') > -1 && localStorage.selectRole === 'AdminManager') ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button> : null}
+                                            <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                             <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
                                         </Table.Cell>
                                     :
                                     (value === 'AppName' && item[value])? //
-                                        <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                        <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <div style={{display:'flex', justifyContent:'row', wordBreak:'break-all'}}>
                                                  {String(item[value])}
                                             </div>
@@ -411,16 +397,9 @@ class MapWithListView extends React.Component {
                                             <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='red' name='circle notch' />} />
                                         </Table.Cell>
                                     :
-                                    (value.indexOf('Name')!==-1 || value === 'Cloudlet' || value === 'ClusterInst') ?
-                                        <Table.Cell key={j} textAlign='left' ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <div style={{display:'flex', alignContent:'Column', justifyContent:'flex-start', alignItems:'center', wordBreak:'break-all' }}>
-                                                <div>{String(item[value])}</div>{(this.compareDate(item['Created']).new && value === 'Region') ? <div className="userNewMark" style={{marginLeft:5, fontSize:10, padding:'0 5px'}}>{`New`}</div> : null}
-                                            </div>
-                                        </Table.Cell>
-                                    :
                                     (!( String(hidden).indexOf(value) > -1 )) ?
-                                        <Table.Cell key={j} textAlign={'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <div style={{display:'flex', alignContent:'Column', justifyContent:'center', alignItems:'center', wordBreak:'break-all' }}>
+                                        <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} ref={cell => this.tableCell = cell} onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                            <div style={{display:'flex', alignContent:'Column', justifyContent:'flex-start', alignItems:'center', wordBreak:'break-all' }}>
                                                 <div>{String(item[value])}</div>{(this.compareDate(item['Created']).new && value === 'Region') ? <div className="userNewMark" style={{marginLeft:5, fontSize:10, padding:'0 5px'}}>{`New`}</div> : null}
                                             </div>
                                         </Table.Cell>
@@ -452,44 +431,6 @@ class MapWithListView extends React.Component {
         let close = !this.state.closeMap;
         this.setState({closeMap:close})
     }
-    receiveStatusData = (result, _item) => {
-        
-
-        let toArray = null;
-        let toJson = null;
-        toArray = result.data.split('\n')
-        toArray.pop();
-        toJson = toArray.map((str)=>(JSON.parse(str)))
-        console.log("resultsdsdsd",toJson)
-        toJson.map((item,i) => {
-            if(item.data) {
-                console.log("successfullyzxxx",item.data.message,":::",item.data.message.toLowerCase().indexOf('created successfully'))
-                if(item.data.message.toLowerCase().indexOf('created successfully') > -1){
-                    clearInterval(prgInter);
-                    console.log("Created successfullyCreated successfully")
-                    setTimeout(() => {
-                        this.setAlertRefresh();
-                        computeService.deleteTempFile(_item, this.props.siteId)
-                    }, 2000);
-                } else if(item.data.message.toLowerCase().indexOf('deleted cloudlet successfully') > -1){
-                    clearInterval(prgInter);
-                    console.log("Delete successfullyCreated successfully")
-                    setTimeout(() => {
-                        this.setAlertFailRefresh('Deleted cloudlet successfully');
-                        computeService.deleteTempFile(_item, this.props.siteId)
-                    }, 2000);
-                }
-            } else if(item.result && item.result.code == 400){
-                clearInterval(prgInter);
-                console.log("failRefreshfailRefreshfailRefresh")
-                setTimeout(() => {
-                    this.setAlertFailRefresh(item.result.message);
-                    computeService.deleteTempFile(_item, this.props.siteId)
-                }, 3000);
-            }
-        })
-        
-    }
     componentDidMount() {
         let self = this;
         window.addEventListener("resize", this.updateDimensions);
@@ -503,23 +444,6 @@ class MapWithListView extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log("sdsdsdsfaf",nextProps)
-
-        if(this.state.dummyData.length > 0){
-            this.state.dummyData.map((item) => {
-                //console.log("dummyDatadummyData",item.State)
-                if(item.State == 3 && !this.state.stateCreate){
-                    this.setState({stateCreate:true})
-                    console.log("dummyDatadummyData",item)
-                    //this.setState({stateCreate:item})
-                    //this.props.dataRefresh();
-                    prgInter = setInterval(() => {
-                        computeService.creteTempFile(item, nextProps.siteId, this.receiveStatusData);
-                    }, 3000);
-                }
-            })
-        }
-
         if(this.state.sorting) {
             return;
         }
@@ -534,8 +458,7 @@ class MapWithListView extends React.Component {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-        if(nextProps.devData.length && !this.state.toggle) {
-            this.setState({toggle:true})
+        if(nextProps.devData.length) {
             //set filtering
             let filteredData = [];
             if(this.state.dummyData.length === 0) {
@@ -672,11 +595,10 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleRefreshData: (data) => { dispatch(actions.refreshData(data))},
         handleSetHeader: (data) => { dispatch(actions.tableHeaders(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
-        handleEditInstance: (data) => { dispatch(actions.editInstance(data))}
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(MapWithListView));
+export default connect(mapStateToProps, mapDispatchProps)(MapWithListView);
 
 

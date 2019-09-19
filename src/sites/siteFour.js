@@ -40,14 +40,12 @@ import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
-import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
 import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
 import SiteFourPageCreateorga from './siteFour_page_createOrga';
 
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
-import PopLegendViewer from '../container/popLegendViewer';
 
 import * as Service from '../services/service_login_api';
 import * as computeService from '../services/service_compute_service';
@@ -135,8 +133,6 @@ class SiteFour extends React.Component {
             stepsEnabled: false,
             initialStep: 0,
             steps:[],
-
-            openLegend:false,
 
             enable:false,
             hideNext: true,
@@ -261,9 +257,9 @@ class SiteFour extends React.Component {
         } else if(localStorage.selectMenu === '') {
             this.setState({page:'pg=createAppInst'})
             this.gotoUrl('/site4', 'pg=createAppInst')
-        } else if(localStorage.selectMenu === 'Flavors') {
-            this.setState({page:'pg=createFlavor'})
-            this.gotoUrl('/site4', 'pg=createFlavor')
+        } else if(localStorage.selectMenu === 'Cluster Flavors') {
+            this.setState({page:'pg=createClusterFlavor'})
+            this.gotoUrl('/site4', 'pg=createClusterFlavor')
         } else if(localStorage.selectMenu === 'Cluster Instances') {
             this.setState({page:'pg=createClusterInst'})
             this.gotoUrl('/site4', 'pg=createClusterInst')
@@ -422,9 +418,6 @@ class SiteFour extends React.Component {
         } else if(this.props.params.subPath === "pg=createCloudlet") {
             currentStep = cloudletSteps.stepsCloudletReg;
             enable = true;
-        } else if(this.props.params.subPath === "pg=createFlavor") {
-            currentStep = orgaSteps.stepsCreateFlavor;
-            enable = true;
         }
 
         this.setState({steps : currentStep})
@@ -532,7 +525,7 @@ class SiteFour extends React.Component {
                     position: 'top-right',
                     effect: 'slide',
                     beep: true,
-                    timeout: 'none',
+                    timeout: 5000,
                     offset: 100
                 });
             }
@@ -618,7 +611,7 @@ class SiteFour extends React.Component {
                 <MaterialIcon icon={item.icon}/>
                 <div className='label'>{item.label}</div>
                 {(activeItem === item.label)?
-                    <div style={{position:'absolute', right:'12px', top:'12px'}}>
+                    <div style={{position:'absolute', right:'10px', top:'center'}}>
                         <ClipLoader
                             size={20}
                             sizeUnit={'px'}
@@ -706,13 +699,6 @@ class SiteFour extends React.Component {
     ]
     onExit() {
         _self.setState({stepsEnabled: false})
-    }
-
-    orgTypeLegendShow=()=> {
-        _self.setState({openLegend: true})
-    }
-    closeLegend = () => {
-        this.setState({ openLegend: false })
     }
 
 
@@ -809,61 +795,6 @@ class SiteFour extends React.Component {
                     <Grid.Row className='view_contents'>
                         <Grid.Column style={{height:this.state.bodyHeight}} className='view_left'>
                             <Menu secondary vertical className='view_left_menu org_menu'>
-                                {/* show name of organization */}
-                                <Grid.Column className="left_org">
-                                    <div className="left_org_title">Organization</div>
-                                    <div className="left_org_selected">{localStorage.selectOrg?localStorage.selectOrg:'No organization selected'}</div>
-                                </Grid.Column>
-                                {/* show role of user */}
-                                <Grid.Row className="left_authority">
-                                    <Segment className="stepOrgDeveloper2">
-                                        <Grid>
-                                            <Grid.Row style={{cursor:'pointer'}} onClick={this.orgTypeLegendShow}>
-                                                <Grid.Column>
-                                                    {localStorage.selectRole?
-                                                        <div className="markBox">
-                                                            {
-                                                                (localStorage.selectRole == 'AdminManager')? <div className="mark markA markS">S</div>
-                                                                    :
-                                                                    (localStorage.selectRole == 'DeveloperManager')?
-                                                                        <div className="mark markD markM">M</div>
-                                                                        :
-                                                                        (localStorage.selectRole == 'DeveloperContributor')?
-                                                                            <div className="mark markD markC">C</div>
-                                                                            :
-                                                                            (localStorage.selectRole == 'DeveloperViewer')?
-                                                                                <div className="mark markD markV">V</div>
-                                                                                :
-                                                                                (localStorage.selectRole == 'OperatorManager')?
-                                                                                    <div className="mark markO markM">M</div>
-                                                                                    :
-                                                                                    (localStorage.selectRole == 'OperatorContributor')?
-                                                                                        <div className="mark markO markC">C</div>
-                                                                                        :
-                                                                                        (localStorage.selectRole == 'OperatorViewer')?
-                                                                                            <div className="mark markO markV">V</div>
-                                                                                            :
-                                                                                            <span></span>
-                                                            }
-                                                        </div>
-                                                        :null
-                                                    }
-                                                    <div>
-                                                    {
-                                                        (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole?localStorage.selectRole:'Please select a role' : localStorage.selectRole?localStorage.selectRole:'Please select a role'
-                                                    }
-                                                    </div>
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                    </Segment>
-                                </Grid.Row>
-
-
-
-                            </Menu>
-                            <Menu secondary vertical className='view_left_menu'>
-                                <div className='menuPart'>
                                 {
                                     this.OrgMenu.map((item, i)=>(
                                         (item.label == 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
@@ -871,9 +802,48 @@ class SiteFour extends React.Component {
                                             : this.menuItemView(item, i, localStorage.selectMenu)
                                     ))
                                 }
-                                </div>
-
-                                <div className='menuPart'>
+                                <Grid.Row>
+                                    <Segment>
+                                        <Grid className="stepOrgDeveloper2">
+                                            <Grid.Row columns={2}>
+                                                <Grid.Column width={11} style={{lineHeight:'24px'}}>
+                                                    {
+                                                        (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole : localStorage.selectOrg
+                                                    }
+                                                </Grid.Column>
+                                                <Grid.Column width={5}>
+                                                    <div className="markBox">
+                                                        {
+                                                            (localStorage.selectRole == 'AdminManager')? null
+                                                                :
+                                                                (localStorage.selectRole == 'DeveloperManager')?
+                                                                    <div className="mark markD markM">M</div>
+                                                                    :
+                                                                    (localStorage.selectRole == 'DeveloperContributor')?
+                                                                        <div className="mark markD markC">C</div>
+                                                                        :
+                                                                        (localStorage.selectRole == 'DeveloperViewer')?
+                                                                            <div className="mark markD markV">V</div>
+                                                                            :
+                                                                            (localStorage.selectRole == 'OperatorManager')?
+                                                                                <div className="mark markO markM">M</div>
+                                                                                :
+                                                                                (localStorage.selectRole == 'OperatorContributor')?
+                                                                                    <div className="mark markO markC">C</div>
+                                                                                    :
+                                                                                    (localStorage.selectRole == 'OperatorViewer')?
+                                                                                        <div className="mark markO markV">V</div>
+                                                                                        :
+                                                                                        <div></div>
+                                                        }
+                                                    </div>
+                                                </Grid.Column>
+                                            </Grid.Row>
+                                        </Grid>
+                                    </Segment>
+                                </Grid.Row>
+                            </Menu>
+                            <Menu secondary vertical className='view_left_menu'>
                                 {
                                     (localStorage.selectRole == 'AdminManager')?
                                         this.menuItems.map((item, i)=>(
@@ -892,10 +862,9 @@ class SiteFour extends React.Component {
                                                 :
                                                 null
                                 }
-                                </div>
 
                             </Menu>
-                            <div style={{position:'fixed', bottom:10, left:12, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
+                            <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
                                 {
                                     (localStorage.selectRole == 'AdminManager')? this.state.currentVersion : null
                                 }
@@ -938,7 +907,8 @@ class SiteFour extends React.Component {
                                     {
                                         (
                                             this.state.headerTitle !== 'User Roles' &&
-                                            this.state.headerTitle !== 'Accounts'
+                                            this.state.headerTitle !== 'Accounts' &&
+                                            this.state.headerTitle !== 'Flavors'
                                         )?this.getGuidePopup(this.state.headerTitle):null}
                                 </div>
                                 <div style={{position:'absolute', top:25, right:25}}>
@@ -982,12 +952,10 @@ class SiteFour extends React.Component {
                                                                                 (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
                                                                                     (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                                         (this.state.page === 'pg=createApp')? <SiteFourPageAppReg></SiteFourPageAppReg> :
-                                                                                            (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
-                                                                                            (this.state.page === 'pg=editAppInst')? <SiteFourPageAppInstReg editable={true}></SiteFourPageAppInstReg> :
+                                                                                            (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg></SiteFourPageAppInstReg> :
                                                                                                 (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
-                                                                                                    (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
-                                                                                                        (this.state.page === 'pg=createFlavor')? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
-                                                                                                        <div> </div>
+                                                                                                (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
+                                                                                                    <div> </div>
                                                 }
                                             </div>
                                 </Grid.Column>
@@ -995,7 +963,6 @@ class SiteFour extends React.Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Container>
-                <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend} close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
                 <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
                     {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
                 </Motion>

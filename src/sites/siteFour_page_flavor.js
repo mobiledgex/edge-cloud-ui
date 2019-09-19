@@ -17,7 +17,6 @@ import Alert from "react-s-alert";
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
-let rgn = ['US','KR','EU'];
 class SiteFourPageFlavor extends React.Component {
     constructor(props) {
         super(props);
@@ -95,12 +94,11 @@ class SiteFourPageFlavor extends React.Component {
     }
     getDataDeveloper = (region) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let rgn = ['US','KR','EU'];
         this.setState({devData:[]})
         if(region !== 'All'){
             rgn = [region]
-        } else {
-            rgn = ['US','KR','EU'];
-        }
+        }  
         rgn.map((item) => {
             services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult)
         })

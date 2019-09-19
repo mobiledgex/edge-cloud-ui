@@ -223,7 +223,7 @@ class InsideListView extends React.Component {
                     {key}
                 </Table.HeaderCell>
                 :
-                <Table.HeaderCell key={i} className={(key === 'Phone' || key === 'Address' || key === 'Ports')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address' && key !== 'Ports')?this.handleSort(key):null}>
+                <Table.HeaderCell key={i} className={(key === 'Phone' || key === 'Address')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address' && key !== 'Ports')?this.handleSort(key):null}>
                     {(key === 'FlavorName')? 'Flavor Name'
                         : (key === 'RAM')? 'RAM Size'
                             : (key === 'vCPUs')? 'Number of vCPUs'
