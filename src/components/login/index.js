@@ -1,8 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import { Container, Button, Checkbox, Form, Label, Grid, Input } from 'semantic-ui-react'
 import { Redirect } from 'react-router';
-import * as moment from 'moment';
-import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
@@ -14,7 +12,6 @@ import * as serviceLogin from '../../services/service_login_api';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
 import * as service from "../../services/service_compute_service";
-import * as ServiceLogin from '../../services/service_login_api';
 import CustomContentAlert from './CustomContentAlert';
 /*
 
@@ -114,7 +111,7 @@ const ResetPassword = (props) => (
         <RegistryResetForm onSubmit={() => console.log('ProfileForm was submitted')}/>
         <Grid.Row>
             <span>
-                By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
+                By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
             </span>
         </Grid.Row>
     </Grid>
@@ -149,10 +146,10 @@ const FormSignUpContainer = (props) => (
         <Grid.Row>
             <span className='title'>Create New Account</span>
         </Grid.Row>
-        <RegistryUserForm onSubmit={(a,b) => console.log('20190906 ProfileForm was submitted', a, b)} userInfo={{username:props.self.state.username, email:props.self.state.email, commitDone:props.self.state.commitDone}}/>
+        <RegistryUserForm onSubmit={() => console.log('ProfileForm was submitted')}/>
         <Grid.Row>
             <span>
-            By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
+            By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
             </span>
         </Grid.Row>
     </Grid>
@@ -252,15 +249,13 @@ class Login extends Component {
             forgotMessage:false,
             created:false,
             store:null,
-            resultMsg:'',
-            submitDone: false
+            resultMsg:''
         };
 
         this.onFocusHandle = this.onFocusHandle.bind(this);
         this.onConfirm = this.onConfirm.bind(this);
         this.onSignOut = this.onSignOut.bind(this);
         this.params = null;
-        this.clientSysInfo = {};
     }
     componentDidMount() {
         //로컬 스토리지의 저장공간에서 로그인 유지 상태 확인
@@ -277,32 +272,6 @@ class Login extends Component {
         //setTimeout(() =>self.resultCreateUser({data:{message:'good created'}}, {}, self), 2000);
         //inkikim1234
 
-
-        //remove new user info data from localStorage
-        let oldUserInfo = JSON.parse(localStorage.getItem('userInfo'));
-        if(oldUserInfo) {
-            if(oldUserInfo.date && moment().diff(oldUserInfo.date,'minute') >= 60) {
-                localStorage.setItem('userInfo', null)
-            }
-        }
-
-
-        /**********************
-         * Get info of client system : OS, browser
-         * @type {UAParser}
-         */
-        var parser = new UAParser();
-
-        // by default it takes ua string from current browser's window.navigator.userAgent
-        console.log('20190912 ',parser.getResult());
-        let resultPs = parser.getResult();
-        this.clientSysInfo = {os:resultPs.os, browser:resultPs.browser};
-
-        /**
-         * get IP of client
-         */
-        ServiceLogin.getCurrentClientIp('clientIP', {token:''}, self.receiveClientIp, self);
-
     }
 
     componentWillReceiveProps (nextProps) {
@@ -311,13 +280,10 @@ class Login extends Component {
         if(nextProps.values) {
             if(nextProps.submitSucceeded) {
                 this.setState({email:nextProps.values.email, username:nextProps.values.username})
-
-                //in case user press the button as a submit no matter send params
-                localStorage.setItem('userInfo', JSON.stringify({email:nextProps.values.email, username:nextProps.values.username, date:new Date()}))
                 if(nextProps.loginMode === 'resetPass'){
                     service.getMCService('passwordreset',{ password:nextProps.values.password, token: store ? store.resetToken : 'null'}, self.resultNewPass, self)
                 } else {
-                    serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email, clientSysInfo:self.clientSysInfo, callbackurl : 'https://'+host+'/verify'}, self.resultCreateUser, self)
+                    serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email, callbackurl : 'https://'+host+'/verify'}, self.resultCreateUser, self)
                 }
                 this.onProgress(true);
             }
@@ -340,7 +306,6 @@ class Login extends Component {
         } else if(nextProps.loginMode === 'resetPass'){
             this.setState({successCreate:false, loginMode:'resetPass', forgotMessage:false, forgotPass:false});
         } else if(nextProps.loginMode === 'signuped' && nextProps.createSuccess){
-            localStorage.setItem('userInfo', null)
             let email = nextProps.userInfo && nextProps.userInfo.email;
             let msgTxt = `Thank you for signing up. Please verify your account.
                             In order to login to your account, you must verify your account. 
@@ -356,12 +321,6 @@ class Login extends Component {
     //         nextState.loginSuccess != this.state.loginSuccess
     //     )
     // }
-
-
-    /****
-     * 커스텀 얼럿 : 지우지 말것
-     * @param resource
-     */
     showAlert = (resource) => {
         let verifyMessage = `Thank you for signing up. Please verify your account. In order to login to your account, you must verify your account. An email has been sent to ${resource.email} with a link to verify your account. If you have not received the email after a few minutes check your spam folder or resend the verification email.`
 
@@ -370,13 +329,6 @@ class Login extends Component {
         })
 
     }
-
-
-    receiveClientIp(result) {
-        console.log('client ip is = ', result)
-        if(result && result.data) self.clientSysInfo['clientIP'] = result.data
-    }
-
     resultCreateUser(result, resource) {
         let message = (result.data.message)? result.data.message : null;
         self.onProgress(false)
@@ -387,13 +339,21 @@ class Login extends Component {
             //self.showAlert(resource)
             let msg = `User ${resource.name} created successfully`
             self.setState({successCreate:true, loginMode:'signuped', signup:false})
-            self.props.handleAlertInfo('success', msg)
+            Alert.success(msg, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
             self.props.handleCreateAccount({success:true, info:resource})
         } else {
             self.setState({successCreate:false, errorCreate:false, signup:false})
             self.forceUpdate();
             self.props.handleCreateAccount({success:false, info:resource})
-            self.props.handleAlertInfo('error', message)
+            Alert.error(message, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
 
         }
 
@@ -404,11 +364,19 @@ class Login extends Component {
     resultNewPass(result) {
 
         let message = (result.data.message)? result.data.message : null;
-
+        alert(message)
         if(result.data.error) {
-            self.props.handleAlertInfo('error', result.data.error)
+            Alert.error(result.data.error, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
         } else {
-            self.props.handleAlertInfo('success', result.data.message)
+            Alert.success(result.data.message, {
+                position: 'top-right',
+                effect: 'slide',
+                timeout: 5000
+            });
             setTimeout(()=>self.props.handleChangeLoginMode('login'), 600);
         }
         self.onProgress(false);
@@ -442,7 +410,12 @@ class Login extends Component {
         } else {
             //display error message
             if(Alert){
-                self.props.handleAlertInfo('error', result.data.message)
+                Alert.error(result.data.message, {
+                    position: 'top-right',
+                    effect: 'slide',
+                    timeout: 5000
+                });
+
                 //goto reqeuset verify email ....
                 if(result.data.message.indexOf('not verified') > -1) {
                     self.setState({loginMode: 'verify'})
@@ -453,15 +426,20 @@ class Login extends Component {
 
         }
     }
-
     receiveForgoten(result) {
-
-        self.props.handleAlertInfo('success', 'Success')
+        Alert.success('Success ', {
+            position: 'top-right',
+            effect: 'slide',
+            timeout: 5000
+        });
         self.setState({loginMode:'forgotMessage', forgotMessage: true})
     }
     receiveResendVerify(result) {
-
-        self.props.handleAlertInfo('success', 'Success')
+        Alert.success('Success ', {
+            position: 'top-right',
+            effect: 'slide',
+            timeout: 5000
+        });
         self.setState({loginMode:'signup', forgotMessage: true})
     }
     returnSignin() {
@@ -504,7 +482,6 @@ class Login extends Component {
         }
 
     }
-
     onSubmit() {
         const { username, password } = this.state
         if(!username && !password) {
@@ -641,8 +618,7 @@ const mapDispatchProps = (dispatch) => {
         handleChangeTab: (data) => { dispatch(actions.changeTab(data))},
         mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data})),
         handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))},
-        handleCreateAccount: (data) => { dispatch(actions.createAccount(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleCreateAccount: (data) => { dispatch(actions.createAccount(data))}
     };
 };
 

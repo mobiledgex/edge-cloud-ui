@@ -26,8 +26,7 @@ class SiteFourPageAppInstReg extends React.Component {
             contWidth:0,
             bodyHeight:0,
             activeItem: 'Developers',
-            devData:[],
-            edit:false
+            devData:[]
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -76,18 +75,11 @@ class SiteFourPageAppInstReg extends React.Component {
         //     });
         //     setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         // }
-
-
-
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-        console.log('20190909 new app inst', this.props.editable, nextProps.editObj)
 
-        if(this.props.editable) {
-            this.setState({edit:this.props.editable})
-        }
 
     }
     receiveResult(result) {
@@ -109,7 +101,7 @@ class SiteFourPageAppInstReg extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <RegistryInstViewer devData={this.state.devData} editMode={this.state.edit}/>
+            <RegistryInstViewer devData={this.state.devData}/>
         );
     }
 
@@ -120,10 +112,8 @@ const mapStateToProps = (state) => {
             value: state.changeRegion.region
         }
         : {};
-    let editObj = state.editInstance.data;
-    //if(editObj) alert('eidtObj..'+JSON.stringify(editObj))
     return {
-        editObj:editObj,
+
         region:region
     }
 };
