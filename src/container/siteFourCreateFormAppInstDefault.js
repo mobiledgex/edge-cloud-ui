@@ -93,8 +93,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
             dataInit:false,
             portArray:['item'],
             orgArr:[],
-            ClusterDisable:false,
-            title:'Settings'
+            ClusterDisable:false
         };
 
     }
@@ -113,7 +112,6 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
 
 
     componentDidMount() {
-
         if(this.props.data && this.props.data.data.length){
             let keys = Object.keys(this.props.data.data[0])
             this.setState({data:this.props.data.data[0], regKeys:keys, fieldKeys:this.props.data.keys, pId:this.props.pId})
@@ -126,8 +124,6 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             services.getMCService('showOrg',{token:store.userToken}, this.receiveResult)
         }
-
-
     }
 
     componentWillReceiveProps(nextProps) {
@@ -143,8 +139,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                 this.setState({dataInit:true})
             }
         }
-        console.log('20190909 this.props.', this.props)
-        if(nextProps.data.editMode) this.setState({title:'Update Settings'})
+        
         
     }
 
@@ -201,12 +196,12 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
     
     render (){
         const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
-        const { data, regKeys, fieldKeys, title } = this.state;
+        const { data, regKeys, fieldKeys } = this.state;
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         return (
 
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
-                <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>{title}</Header>
+                <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>
                 <Fragment >
                     <Form onSubmit={() => this.onHandleSubmit()} className={"fieldForm"} >
                         <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>

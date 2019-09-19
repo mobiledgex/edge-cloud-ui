@@ -104,8 +104,8 @@ class RegistryInstViewer extends React.Component {
                     'AutoClusterInst':false,
                     'ClusterInst':'',
                 }
-            ],
-            editMode:false
+            ]
+
 
         };
 
@@ -187,7 +187,7 @@ class RegistryInstViewer extends React.Component {
         console.log("resultresultxxresult",result)
         setTimeout(() => {
             services.errorTempFile(result.data, this.receiveStatusData)
-        }, 2500);
+        }, 3000);
         
 
         //_self.props.handleLoadingSpinner(false);
@@ -250,7 +250,7 @@ class RegistryInstViewer extends React.Component {
 
     generateDOM(open, dimmer, data, keysData, hideHeader) {
 
-        let panelParams = {data:data, keys:keysData, userrole:localStorage.selectRole, editMode:this.state.editMode}
+        let panelParams = {data:data, keys:keysData, userrole:localStorage.selectRole}
 
         return layout.map((item, i) => (
 
@@ -333,12 +333,12 @@ class RegistryInstViewer extends React.Component {
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
                 services.createNewMultiAppInst('CreateAppInst', {params:submitData, token:store ? store.userToken : 'null'}, _self.receiveResult, nextProps.validateValue, this.state.cloudlets, this.state.autoClusterDisable)
-                setTimeout(() => {
-                    if(this.state.regSuccess) {
-                        this.props.handleLoadingSpinner(false);
-                        this.gotoUrl('submit');
-                    }
-                }, 4000)
+                // setTimeout(() => {
+                //     if(this.state.regSuccess) {
+                //         this.props.handleLoadingSpinner(false);
+                //         this.gotoUrl('submit');
+                //     }
+                // }, 4000)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }
@@ -426,8 +426,6 @@ class RegistryInstViewer extends React.Component {
                 this.setState({keysData:assObj})
             }
         }
-
-        if(nextProps.editMode) this.setState({editMode:nextProps.editMode})
     }
 
     componentWillUnmount() {
@@ -442,16 +440,21 @@ class RegistryInstViewer extends React.Component {
         toArray.pop();
         toJson = toArray.map((str)=>(JSON.parse(str)))
         console.log("toJsontoJson",toJson)
+        this.props.handleLoadingSpinner(false);
         toJson.map((item) => {
             if(item.result && item.result.code == 400){
                 console.log("item.result",item.result.message)
+                this.setState({regSuccess:false});
                 this.props.handleAlertInfo('error',item.result.message)
             }
         })
+        if(this.state.regSuccess) {
+            this.gotoUrl('submit');
+        }
     }
 
     render() {
-        const { open, dimmer, dummyData, editMode } = this.state;
+        const { open, dimmer, dummyData } = this.state;
         const { hiddenKeys } = this.props;
         return (
             <div className="regis_container">

@@ -77,7 +77,7 @@ const cloudletMap = (props, type) => (
     <Fragment>
         {(type === 'cloudlets')?
         <div className='panel_worldmap' style={{width:'100%'}}>
-            <ClustersMap parentProps={{devData:props.cloudletData, reg:'cloudletAndClusterMap', zoomIn:()=>console.log('zoomin'), zoomOut:()=>console.log('zoomout'), resetMap:()=>console.log('resetmap') }} zoomControl={{center:[0, 0], zoom:1.5} }></ClustersMap>
+            <ClustersMap parentProps={{locData:props.locData, reg:'cloudletAndClusterMap', zoomIn:()=>console.log('zoomin'), zoomOut:()=>console.log('zoomout'), resetMap:()=>console.log('resetmap') }} zoomControl={{center:[0, 0], zoom:1.5} }></ClustersMap>
         </div>
 
         :
@@ -112,6 +112,9 @@ class SiteFourCreateInstForm extends React.PureComponent {
             locationLong:null,
             locationLat:null,
             locationLongLat:[],
+            laterror:'',
+            longerror:'',
+            locData:[]
         }
         _self = this;
         this.loopReqCount = 3; //cloudlet(operators), cluster, flavor
@@ -355,7 +358,16 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
         // case click a region on the map
         if(nextProps.getRegion) {
-            this.setState({regionInfo:nextProps.getRegion})
+            console.log("ssregionregions",nextProps.getRegion)
+            this.setState({
+                regionInfo:nextProps.getRegion,
+                locData:[{CloudletLocation: {latitude: Number(nextProps.getRegion.lat), longitude: Number(nextProps.getRegion.long)}}],
+                locationLat:nextProps.getRegion.lat,
+                locationLong:nextProps.getRegion.long
+            })
+            // if(nextProps.getRegion.lat == '' && nextProps.getRegion.long == ''){
+            //     this.setState({locData:[]})
+            // }
         }
 
     }
@@ -386,11 +398,9 @@ class SiteFourCreateInstForm extends React.PureComponent {
         //     return
         // }
         let onlyNum = value;
-        if(onlyNum > 180 || onlyNum < -180) {
-            //this.props.handleAlertInfo('error',"-180 ~ 180")
+        if(onlyNum > 180 || onlyNum < -180 || /[^-0-9]/g.test(onlyNum)) {
+            this.setState({longerror:'-180 ~ 180'})
             e.target.value=null;
-            return
-        } else if(/[^-0-9]/g.test(onlyNum)){
             return
         }
 
@@ -398,34 +408,31 @@ class SiteFourCreateInstForm extends React.PureComponent {
             onlyNum = onlyNum.replace(/(^0+)/, "")
         } 
 
-        this.setState({ locationLong: onlyNum })
+        this.setState({ locationLong: onlyNum, longerror:'' })
         this.locationValue(onlyNum,this.state.locationLat)
     }
     handleChangeLat = (e, {value}) => {
         console.log('20190902 value lat = ', value,":::",/[^-0-9]/g.test(value))
         let onlyNum = value;
-        if(onlyNum > 90 || onlyNum < -90) {
-            //this.props.handleAlertInfo('error',"-90 ~ 90")
+        if(onlyNum > 90 || onlyNum < -90 || /[^-0-9]/g.test(onlyNum)) {
+            this.setState({laterror:'-90 ~ 90'})
             e.target.value=null;
-            return
-        } else if(/[^-0-9]/g.test(onlyNum)){
             return
         }
         
         if(onlyNum != 0) {
             onlyNum = onlyNum.replace(/(^0+)/, "")
         } 
-        
-        this.setState({ locationLat: onlyNum })
+        this.setState({ locationLat: onlyNum, laterror:'' })
         this.locationValue(this.state.locationLong,onlyNum)
     }
     locationValue = (long,lat) => {
-        console.log('20190902 long lat === ', long, lat)
+        console.log('20190902 long latㅇㅇㅇ === ', long, lat,":::",this.props.getRegion)
         if(long && lat){
             this.setState({ locationLongLat: [Number(long),Number(lat)] })
 
         } else {
-            this.setState({ locationLongLat: null })
+            this.setState({ locationLongLat: null})
         }
         // handle input value to input filed that lat/long fileds as redux
         let location = {region:'',name:'', lat:lat, long:long}
@@ -453,7 +460,9 @@ class SiteFourCreateInstForm extends React.PureComponent {
                                                    dimmer={dimmer}
                                                    handleChangeLat={this.handleChangeLat}
                                                    handleChangeLong={this.handleChangeLong}
-                                                   onChangeState={this.onChangeFormState}>
+                                                   onChangeState={this.onChangeFormState}
+                                                   latError={this.state.laterror}
+                                                   longError={this.state.longerror}>
 
                         </SiteFourCreateFormDefault>
                     </Grid.Column>

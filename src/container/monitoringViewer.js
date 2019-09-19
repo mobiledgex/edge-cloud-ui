@@ -257,11 +257,10 @@ export default class MonitoringViewer extends React.Component {
                         :
                         null
                     }
-                    <div style={{width:'100%', height:400}}>
-                        <Header>NETWORK</Header>
-                        <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataNET} series={this.state.mProp.timeseriesNET} showLegend={true}
+
+                    <Header>NETWORK</Header>
+                    <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataNET} series={this.state.mProp.timeseriesNET} showLegend={true}
                                 margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelNET} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
-                    </div>
                     {
                         (this.props.data.page !== 'appInst')?
                             <div style={{width:'100%', height:400}}>

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react';
 import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Popup, Container, Sticky } from 'semantic-ui-react';
-import { withRouter } from 'react-router-dom';
+
 import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux';
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -97,19 +97,9 @@ class MapWithListView extends React.Component {
         ]
 
     }
-    gotoUrl(site, subPath) {
-        _self.props.history.push({
-            pathname: site,
-            search: subPath
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:site, subPath: subPath});
-    }
 
     onHandleClick(dim, data) {
-        //this.setState({ dimmer:dim, open: true, selected:data })
-        this.props.handleEditInstance(data);
-        this.gotoUrl('/site4', 'pg=editAppInst')
+        this.setState({ dimmer:dim, open: true, selected:data })
     }
 
 
@@ -356,7 +346,7 @@ class MapWithListView extends React.Component {
                                     (value === 'Edit')?
                                         String(item[value]) === 'null' ? <Table.Cell/> :
                                         <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            {(String(item[value]).indexOf('Editable') > -1 && localStorage.selectRole === 'AdminManager') ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button> : null}
+                                            <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}>Edit</Button>
                                             <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
                                         </Table.Cell>
                                     :
@@ -399,7 +389,7 @@ class MapWithListView extends React.Component {
                                     :
                                     (value === 'Progress' && item['State'] == 5)?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            <MaterialIcon className={'progressIndicator'} icon='done' color='rgba(255,255,255,.5)' />
+                                            <Icon className="progressIndicator" name='check' color='rgba(255,255,255,.5)' />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && (item['State'] == 10 || item['State'] == 12))?
@@ -515,11 +505,12 @@ class MapWithListView extends React.Component {
         }else {
             this.checkLengthData();
         }
-
+        console.log("clickCityclickCity",nextProps.clickCity,":::",cityCoordinates)
         nextProps.clickCity.map((item) => {
             cityCoordinates.push(item.coordinates)
         })
-        if(nextProps.clickCityList !== this.props.clickCity && cityCoordinates[0]) {
+        //if(nextProps.clickCityList !== this.props.clickCity && cityCoordinates[0]) {
+        if(nextProps.clickCity.length > 0) {
             nextProps.devData.map((list)=>{
                 let arr = [];
                 arr.push(reduceUp(list.CloudletLocation.longitude))
@@ -587,10 +578,12 @@ const mapStateToProps = (state) => {
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let viewMode = null;
+    let deleteReset = state.deleteReset.reset
     return {
         accountInfo,
         dimmInfo,
-        clickCity: state.clickCityList.list
+        clickCity: state.clickCityList.list,
+        deleteReset
     }
 
 
@@ -602,11 +595,10 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleRefreshData: (data) => { dispatch(actions.refreshData(data))},
         handleSetHeader: (data) => { dispatch(actions.tableHeaders(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
-        handleEditInstance: (data) => { dispatch(actions.editInstance(data))}
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(MapWithListView));
+export default connect(mapStateToProps, mapDispatchProps)(MapWithListView);
 
 
