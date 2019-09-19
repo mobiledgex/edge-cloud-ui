@@ -97,7 +97,6 @@ const renderLocationInput = ({ input, placeholder, change, type, error, initialV
             <Input fluid type="text"
                    onChange={change}
                    value={initialValue}
-                   placeholder={placeholder}
                    ></Input>
         </Form.Field>
         {error && <span className="text-danger">{error}</span>}
@@ -307,7 +306,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 (getUserRole == 'AdminManager' && (fieldKeys[pId][key]['label'] === 'Organization Name' || fieldKeys[pId][key]['label'] === 'Operator Name')) ?
                                                                     <Field
                                                                         component={renderSelect}
-                                                                        placeholder={(fieldKeys[pId][key]['label'] === 'Organization Name')?'Select Organization Name':'Select Operator'}
+                                                                        placeholder={'Select Organization Name'}
                                                                         options={this.state.orgArr}
                                                                         name={key}
                                                                         error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
@@ -332,14 +331,14 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             <Grid>
                                                                 <Grid.Row columns={2}>
                                                                     <Grid.Column><span>Latitude</span>
-                                                                        <Field ref={latLoc} name='Latitude' component={renderLocationInput} placeholder={'-90 ~ 90'}
-                                                                                                            change={handleChangeLat} error={this.props.latError}
+                                                                        <Field ref={latLoc} name='Latitude' component={renderLocationInput}
+                                                                                                            change={handleChangeLat} error={(this.props.validError.indexOf('Latitude') !== -1)?'Required':''}
                                                                                                             initialValue={this.props.regionInfo.lat}
                                                                         />
                                                                         </Grid.Column>
                                                                     <Grid.Column><span>Longitude</span>
-                                                                        <Field ref={longLoc} name='Longitude' component={renderLocationInput} placeholder={'-180 ~ 180'}
-                                                                                                            change={handleChangeLong} error={this.props.longError}
+                                                                        <Field ref={longLoc} name='Longitude' component={renderLocationInput}
+                                                                                                            change={handleChangeLong} error={(this.props.validError.indexOf('Longitude') !== -1)?'Required':''}
                                                                                                             initialValue={this.props.regionInfo.long}
                                                                         />
                                                                         </Grid.Column>
@@ -377,6 +376,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                     </Button>
                                 </span>
                                 <Button
+                                    className='cloudletRegSubmit'
                                     primary
                                     positive
                                     icon='checkmark'

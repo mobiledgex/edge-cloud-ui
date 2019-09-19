@@ -22,7 +22,6 @@
     "curl-request": "^1.1.1",
     "express": "^4.16.4",
     "express-curl": "^1.0.1",
-    "express-ip": "^1.0.3",
     "express-session": "^1.15.6",
     "fs": "0.0.1-security",
     "influx": "^5.0.7",

@@ -87,7 +87,7 @@ class RegistryViewer extends React.Component {
                 'AuthPublicKey':{label:'Auth Public Key', type:'RenderTextArea', necessary:false, tip:'auth_public_key', active:true},
                 'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor.', active:true},
                 'Ports':{label:'Ports', type:'CustomPorts', necessary:false, tip:'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443', active:true, items:['tcp', 'udp']},
-                'DefaultFQDN':{label:'Official FQDN', type:'RenderInput', necessary:false, tip:'Official FQDN', active:true},
+                'DefaultFQDN':{label:'Default FQDN', type:'RenderInput', necessary:false, tip:'Default FQDN', active:true},
                 'PackageName':{label:'Package Name', type:'RenderInput', necessary:false, tip:'Package Name', active:true},
                 // 'IpAccess':{label:'IP Access', type:'IPSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
                 'ScaleWithCluster':{label:'Scale With Cluster', type:'RenderCheckbox', necessary:false, items:false},
@@ -349,7 +349,7 @@ class RegistryViewer extends React.Component {
                     (selectType == 'Qcow') ? 'ImageTypeQcow' : 
                     selectType;
             if(nextProps.formApps.values.OrganizationName){
-                ImagePath = ImagePath.replace('OrganizationName',(nextProps.formApps.values.DeploymentType == "VM")?nextProps.formApps.values.OrganizationName:nextProps.formApps.values.OrganizationName.toLowerCase())
+                ImagePath = ImagePath.replace('OrganizationName',nextProps.formApps.values.OrganizationName.toLowerCase())
             }
             if(nextProps.formApps.values.AppName) {
                 ImagePath = ImagePath.replace('AppName', nextProps.formApps.values.AppName.toLowerCase())

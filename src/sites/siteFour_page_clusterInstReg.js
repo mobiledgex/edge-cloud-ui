@@ -74,7 +74,7 @@ class SiteFourPageClusterInstReg extends React.Component {
             this.userToken = store.userToken;
         } else {
             this.props.handleAlertInfo('error','Invalid or expired token')
-            setTimeout(()=>_self.gotoPreview('/logout'), 2000)
+            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         }
     }
     componentWillReceiveProps(nextProps) {

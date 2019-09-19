@@ -72,7 +72,7 @@ class SiteFourPageCluster extends React.Component {
                 effect: 'slide',
                 timeout: 5000
             });
-            setTimeout(()=>_self.gotoPreview('/logout'), 2000)
+            setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
         }
     }
     componentWillUnmount() {

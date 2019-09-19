@@ -1,8 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import { Container, Button, Checkbox, Form, Label, Grid, Input } from 'semantic-ui-react'
 import { Redirect } from 'react-router';
-import * as moment from 'moment';
-import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
@@ -14,7 +12,6 @@ import * as serviceLogin from '../../services/service_login_api';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
 import * as service from "../../services/service_compute_service";
-import * as ServiceLogin from '../../services/service_login_api';
 import CustomContentAlert from './CustomContentAlert';
 /*
 
@@ -114,7 +111,7 @@ const ResetPassword = (props) => (
         <RegistryResetForm onSubmit={() => console.log('ProfileForm was submitted')}/>
         <Grid.Row>
             <span>
-                By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
+                By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
             </span>
         </Grid.Row>
     </Grid>
@@ -152,7 +149,7 @@ const FormSignUpContainer = (props) => (
         <RegistryUserForm onSubmit={(a,b) => console.log('20190906 ProfileForm was submitted', a, b)} userInfo={{username:props.self.state.username, email:props.self.state.email, commitDone:props.self.state.commitDone}}/>
         <Grid.Row>
             <span>
-            By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms of Use</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
+            By clicking SignUp, you agree to our <a href="https://mobiledgex.com/terms-of-use" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0'}}>Terms</a> and <a href="https://www.mobiledgex.com/privacy-policy" target="_blank" className="login-text" style={{fontStyle:'italic', textDecoration:'underline', cursor:'pointer', color:"rgba(255,255,255,.5)", padding:'0',}}>Privacy Policy</a>.
             </span>
         </Grid.Row>
     </Grid>
@@ -260,7 +257,6 @@ class Login extends Component {
         this.onConfirm = this.onConfirm.bind(this);
         this.onSignOut = this.onSignOut.bind(this);
         this.params = null;
-        this.clientSysInfo = {};
     }
     componentDidMount() {
         //로컬 스토리지의 저장공간에서 로그인 유지 상태 확인
@@ -277,32 +273,6 @@ class Login extends Component {
         //setTimeout(() =>self.resultCreateUser({data:{message:'good created'}}, {}, self), 2000);
         //inkikim1234
 
-
-        //remove new user info data from localStorage
-        let oldUserInfo = JSON.parse(localStorage.getItem('userInfo'));
-        if(oldUserInfo) {
-            if(oldUserInfo.date && moment().diff(oldUserInfo.date,'minute') >= 60) {
-                localStorage.setItem('userInfo', null)
-            }
-        }
-
-
-        /**********************
-         * Get info of client system : OS, browser
-         * @type {UAParser}
-         */
-        var parser = new UAParser();
-
-        // by default it takes ua string from current browser's window.navigator.userAgent
-        console.log('20190912 ',parser.getResult());
-        let resultPs = parser.getResult();
-        this.clientSysInfo = {os:resultPs.os, browser:resultPs.browser};
-
-        /**
-         * get IP of client
-         */
-        ServiceLogin.getCurrentClientIp('clientIP', {token:''}, self.receiveClientIp, self);
-
     }
 
     componentWillReceiveProps (nextProps) {
@@ -311,13 +281,11 @@ class Login extends Component {
         if(nextProps.values) {
             if(nextProps.submitSucceeded) {
                 this.setState({email:nextProps.values.email, username:nextProps.values.username})
-
-                //in case user press the button as a submit no matter send params
-                localStorage.setItem('userInfo', JSON.stringify({email:nextProps.values.email, username:nextProps.values.username, date:new Date()}))
+                localStorage.setItem('userInfo', JSON.stringify({email:nextProps.values.email, username:nextProps.values.username}))
                 if(nextProps.loginMode === 'resetPass'){
                     service.getMCService('passwordreset',{ password:nextProps.values.password, token: store ? store.resetToken : 'null'}, self.resultNewPass, self)
                 } else {
-                    serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email, clientSysInfo:self.clientSysInfo, callbackurl : 'https://'+host+'/verify'}, self.resultCreateUser, self)
+                    serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email, callbackurl : 'https://'+host+'/verify'}, self.resultCreateUser, self)
                 }
                 this.onProgress(true);
             }
@@ -370,18 +338,6 @@ class Login extends Component {
         })
 
     }
-
-
-    receiveClientIp(result) {
-        console.log('20190918 client ip is = ', result)
-        if(result && result.data) {
-            self.clientSysInfo['clientIP'] = result.data;
-        } else {
-            self.clientSysInfo['clientIP'] = '127.0.0.1';
-        }
-
-    }
-
     resultCreateUser(result, resource) {
         let message = (result.data.message)? result.data.message : null;
         self.onProgress(false)

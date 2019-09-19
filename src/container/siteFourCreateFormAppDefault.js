@@ -103,7 +103,7 @@ const renderInputApp = field => (
             label={field.label}
             placeholder={'Please use numbers and English letters only'}
             onChange={(e, { value }) => {
-                const reg = /^[0-9a-zA-Z_][-0-9a-zA-Z._]*$/;
+                const reg = /^[0-9a-zA-Z][-0-9a-zA-Z.]*$/;
                 if(reg.test(value) || value == ''){
                     field.input.onChange(value)
                 }
@@ -140,8 +140,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
             dataInit:false,
             portArray:[],
             orgArr:[],
-            deployAPK:false,
-            deploymentType:false
+            deployAPK:false
         };
 
     }
@@ -259,12 +258,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
             } else {
                 this.setState({deployAPK:false})
             }
-
-            if(value == 'Kubernetes') {
-                this.setState({deploymentType:false})
-            } else {
-                this.setState({deploymentType:true})
-            }
         } 
     }
     
@@ -285,7 +278,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                         regKeys.map((key, i) => (
 
                                             (this.getLabel(key, pId))?
-                                                (!this.state.deploymentType || key !== 'ScaleWithCluster')?
+                                                
                                                 <Grid.Row columns={3} key={i} className={'createApp'+i}>
 
                                                     <Grid.Column width={4} className='detail_item'>
@@ -447,7 +440,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                         {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
                                                     </Grid.Column>
                                                 </Grid.Row>
-                                                : null
+                                                
                                             : null
                                         ))
                                         : ''
