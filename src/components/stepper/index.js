@@ -48,6 +48,7 @@ class VerticalLinearStepper extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.AlertInterval)
+        deleteFlag = false;
     }
 
     receiveInterval = (data) => {
@@ -79,12 +80,19 @@ class VerticalLinearStepper extends React.Component {
         toJson.map((item,i) => {
             if(item.data) {
                 stepData.push(item.data.message)
-                console.log("successfullyzxxx",item.data.message,":::",item.data.message.toLowerCase().indexOf('created successfully'))
-                if( (item.data.message.toLowerCase().indexOf('created successfully') > -1 || item.data.message.toLowerCase().indexOf('deleted cloudlet successfully') > -1) && !deleteFlag){
+                //console.log("successfullyzxxx222",item.data.message,":::",item.data.message.toLowerCase().indexOf('created successfully'))
+                if(item.data.message.toLowerCase().indexOf('created successfully') > -1 && !deleteFlag){
                     deleteFlag = true;
                     console.log("Created successfullyCreated successfully")
                     setTimeout(() => {
                         this.props.alertRefresh();
+                        computeService.deleteTempFile(this.props.item, this.props.site)
+                    }, 2000);
+                } else if(item.data.message.toLowerCase().indexOf('deleted cloudlet successfully') > -1){
+                    deleteFlag = true;
+                    console.log("Delete successfullyCreated successfully")
+                    setTimeout(() => {
+                        this.props.failRefresh('Deleted cloudlet successfully');
                         computeService.deleteTempFile(this.props.item, this.props.site)
                     }, 2000);
                 }

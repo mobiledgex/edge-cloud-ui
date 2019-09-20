@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {Grid, Button, Container, Input, Label, Popup} from 'semantic-ui-react';
-import React3DGlobe from '../libs/react3dglobe';
-import { getMockData } from "../libs/react3dglobe/mockData";
+import {Grid, Button, Container, Input, Label, Popup, Image} from 'semantic-ui-react';
+// import React3DGlobe from '../libs/react3dglobe';
+// import { getMockData } from "../libs/react3dglobe/mockData";
 import Login from '../components/login';
 // API
 import * as MyAPI from '../components/utils/MyAPI';
@@ -17,8 +17,8 @@ import {GridLoader} from "react-spinners";
 import Alert from 'react-s-alert';
 
 
-const pointMarkers = getMockData(0x97bcd8, 'point');
-
+// const pointMarkers = getMockData(0x97bcd8, 'point');
+let src1 = 'assets/images/backgroundGlob.png'
 let self = null;
 class EntranceGlobe extends Component {
 
@@ -198,15 +198,13 @@ class EntranceGlobe extends Component {
             // add data to "data" attribute, and render <Gio> tag
 
                 (this.state.intro)?
-                    <div style={{width:'100%', height:'100%', overflow:'hidden'}}>
-                        <React3DGlobe
-                            markers={pointMarkers}
-                            onMarkerMouseover={this.handleMarkerMouseover}
-                            onMarkerMouseout={this.handleMarkerMouseout}
-                            onMarkerClick={this.handleMarkerClick}
-                        />
-
-
+                    <div style={{width:'100%', height:'100%', overflow:'hidden'}} className="intro_globe">
+                        {/*<React3DGlobe*/}
+                            {/*markers={pointMarkers}*/}
+                            {/*onMarkerMouseover={this.handleMarkerMouseover}*/}
+                            {/*onMarkerMouseout={this.handleMarkerMouseout}*/}
+                            {/*onMarkerClick={this.handleMarkerClick}*/}
+                        {/*/>*/}
 
                         {(this.state.modalOpen && !this.state.logined)?
                         <Grid style={{backgroundColor:'transparent', width:230, height:100, position:'absolute', top:20, right:(this.state.modalOpen)?50:185, alignSelf:'center'}}>
