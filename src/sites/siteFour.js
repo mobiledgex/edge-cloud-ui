@@ -618,7 +618,7 @@ class SiteFour extends React.Component {
                 <MaterialIcon icon={item.icon}/>
                 <div className='label'>{item.label}</div>
                 {(activeItem === item.label)?
-                    <div style={{position:'absolute', right:'10px', top:'center'}}>
+                    <div style={{position:'absolute', right:'12px', top:'12px'}}>
                         <ClipLoader
                             size={20}
                             sizeUnit={'px'}
@@ -816,14 +816,14 @@ class SiteFour extends React.Component {
                                 </Grid.Column>
                                 {/* show role of user */}
                                 <Grid.Row className="left_authority">
-                                    <Segment>
-                                        <Grid className="stepOrgDeveloper2">
+                                    <Segment className="stepOrgDeveloper2">
+                                        <Grid>
                                             <Grid.Row style={{cursor:'pointer'}} onClick={this.orgTypeLegendShow}>
                                                 <Grid.Column>
                                                     {localStorage.selectRole?
                                                         <div className="markBox">
                                                             {
-                                                                (localStorage.selectRole == 'AdminManager')? <div className="mark markD markM">S</div>
+                                                                (localStorage.selectRole == 'AdminManager')? <div className="mark markA markS">S</div>
                                                                     :
                                                                     (localStorage.selectRole == 'DeveloperManager')?
                                                                         <div className="mark markD markM">M</div>
@@ -858,7 +858,12 @@ class SiteFour extends React.Component {
                                         </Grid>
                                     </Segment>
                                 </Grid.Row>
-                                {/* <div className='test'> */}
+
+
+
+                            </Menu>
+                            <Menu secondary vertical className='view_left_menu main_menu'>
+                                <div className='menuPart'>
                                 {
                                     this.OrgMenu.map((item, i)=>(
                                         (item.label == 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
@@ -866,9 +871,9 @@ class SiteFour extends React.Component {
                                             : this.menuItemView(item, i, localStorage.selectMenu)
                                     ))
                                 }
-                                {/* </div> */}
-                            </Menu>
-                            <Menu secondary vertical className='view_left_menu'>
+                                </div>
+
+                                <div className='menuPart'>
                                 {
                                     (localStorage.selectRole == 'AdminManager')?
                                         this.menuItems.map((item, i)=>(
@@ -887,9 +892,10 @@ class SiteFour extends React.Component {
                                                 :
                                                 null
                                 }
+                                </div>
 
                             </Menu>
-                            <div style={{position:'fixed', bottom:10, zIndex:'100', color:'rgba(255,255,255,.2)'}}>
+                            <div style={{zIndex:'100', color:'rgba(255,255,255,.2)', padding:'10px'}}>
                                 {
                                     (localStorage.selectRole == 'AdminManager')? this.state.currentVersion : null
                                 }
@@ -932,7 +938,8 @@ class SiteFour extends React.Component {
                                     {
                                         (
                                             this.state.headerTitle !== 'User Roles' &&
-                                            this.state.headerTitle !== 'Accounts'
+                                            this.state.headerTitle !== 'Accounts' &&
+                                            this.state.headerTitle !== 'Flavors'
                                         )?this.getGuidePopup(this.state.headerTitle):null}
                                 </div>
                                 <div style={{position:'absolute', top:25, right:25}}>

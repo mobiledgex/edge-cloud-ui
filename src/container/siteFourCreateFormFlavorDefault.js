@@ -208,10 +208,10 @@ class SiteFourCreateFormFlavorDefault extends React.Component {
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                         }
                                                     </Grid.Column>
-                                                    <Grid.Column width={1}>
+                                                    {/* <Grid.Column width={1}>
                                                     {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
 
-                                                    </Grid.Column>
+                                                    </Grid.Column> */}
                                                 </Grid.Row>
                                             : null
                                         ))

@@ -200,7 +200,7 @@ export default class PopLegendViewer extends React.Component {
                                 <Grid.Column width={5}>
                                     <div className="markBox">
                                         {
-                                            (localStorage.selectRole == 'AdminManager')? <div className="mark markD markM">S</div>
+                                            (localStorage.selectRole == 'AdminManager')? <div className="mark markA markS">S</div>
                                                 :
                                                 (localStorage.selectRole == 'DeveloperManager')?
                                                     <div className="mark markD markM">M</div>

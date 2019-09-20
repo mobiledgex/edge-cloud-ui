@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react';
 import { Container, Button, Checkbox, Form, Label, Grid, Input } from 'semantic-ui-react'
 import { Redirect } from 'react-router';
 import * as moment from 'moment';
+import UAParser from 'ua-parser-js';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
@@ -278,13 +279,26 @@ class Login extends Component {
 
 
         //remove new user info data from localStorage
-        let userInfo = localStorage.getItem('userInfo')
-        let oldUserInfo = (userInfo && typeof userInfo == 'object') ? JSON.parse(localStorage.getItem('userInfo')) : null;
+            let getUserInfo = localStorage.getItem('userInfo')
+        let oldUserInfo = getUserInfo ? JSON.parse(getUserInfo) : null;
         if(oldUserInfo) {
             if(oldUserInfo.date && moment().diff(oldUserInfo.date,'minute') >= 60) {
                 localStorage.setItem('userInfo', null)
             }
         }
+
+
+        /**********************
+         * Get info of client system : OS, browser
+         * @type {UAParser}
+         */
+        var parser = new UAParser();
+
+        // by default it takes ua string from current browser's window.navigator.userAgent
+        console.log('20190912 ',parser.getResult());
+        let resultPs = parser.getResult();
+        this.clientSysInfo = {os:resultPs.os, browser:resultPs.browser};
+
 
 
     }
@@ -327,8 +341,8 @@ class Login extends Component {
             localStorage.setItem('userInfo', null)
             let email = nextProps.userInfo && nextProps.userInfo.email;
             let msgTxt = `Thank you for signing up. Please verify your account.
-                            In order to login to your account, you must verify your account.
-                            An email has been sent to ${email} with a link to verify your account.
+                            In order to login to your account, you must verify your account. 
+                            An email has been sent to ${email} with a link to verify your account. 
                             If you have not received the email after a few minutes check your spam folder or resend the verification email.`
             this.setState({successCreate:true, loginMode:'signuped', successMsg:'Account created', resultMsg:msgTxt})
         }
@@ -357,8 +371,13 @@ class Login extends Component {
 
 
     receiveClientIp(result) {
-        console.log('client ip is = ', result)
-        if(result && result.data) self.clientSysInfo['clientIP'] = result.data
+        console.log('20190918 client ip is = ', result)
+        if(result && result.data) {
+            self.clientSysInfo['clientIP'] = result.data;
+        } else {
+            self.clientSysInfo['clientIP'] = '127.0.0.1';
+        }
+
     }
 
     resultCreateUser(result, resource) {

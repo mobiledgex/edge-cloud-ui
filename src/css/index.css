@@ -247,6 +247,11 @@ body, button, input, textarea, optgroup, select, textarea,
     background-color: rgba(0,170,255,.15);
     padding: 0.714em 0;
 }
+.intro_globe {
+    background: url("/assets/images/backgroundGlob.png") no-repeat #000000;
+    background-position: center;
+    background-size: cover;
+}
 
 
 
@@ -847,20 +852,20 @@ body, button, input, textarea, optgroup, select, textarea,
 .view_left_menu {
     width: 100% !important;
 }
-.ui.secondary.menu.view_left_menu.org_menu{
-    margin-bottom: 1em !important;
+.ui.secondary.menu.view_left_menu.org_menu {
+    /* margin-bottom: 1em !important;
     padding-bottom: 1em !important;
-    border-bottom: 1px solid rgba(255,255,255,.2) !important;
+    border-bottom: 1px solid rgba(255,255,255,.2) !important; */
 }
 
-.ui.secondary.menu.view_left_menu.org_menu .row{
+.ui.secondary.menu.view_left_menu.org_menu .row {
     border: none;
     padding-bottom: 1em;
     background: none;
     color: rgba(255,255,255,.7);
 }
 
-.ui.secondary.menu.view_left_menu.org_menu .ui.segment{
+.ui.secondary.menu.view_left_menu.org_menu .ui.segment {
     border-radius: .28571429rem!important;
     border: 1px solid rgba(255,255,255,.4);
     padding: 0;
@@ -883,6 +888,7 @@ body, button, input, textarea, optgroup, select, textarea,
     background: #202329;
     border-bottom: 1px solid #515661;
     padding: 10px 20px 20px 20px;
+    margin: 0 0 10px 0;
 }
 .ui.secondary.menu.view_left_menu.org_menu .left_authority .ui.segment {
     border: 1px solid #515661;
@@ -899,6 +905,26 @@ body, button, input, textarea, optgroup, select, textarea,
     display: flex;
     align-items: center;
     padding: 0;
+}
+.ui.secondary.menu.view_left_menu.main_menu {
+    height: calc(100% - 186px);
+    overflow-y: auto;
+}
+.ui.secondary.menu.view_left_menu.main_menu .menuPart {
+    border-bottom: 1px solid rgba(255,255,255,.2) !important;
+    margin: 0 0 10px 0;
+}
+.ui.secondary.menu.view_left_menu.main_menu .menuPart:last-child {
+    border-bottom: none !important;
+    margin: 0 !important;
+}
+.ui.secondary.menu .item {
+    color: rgba(255,255,255,.5);
+    margin: 0 0 5px 0;
+}
+.ui.secondary.menu a.item:hover {
+    background: rgba(0, 0, 0, 0.25) !important;
+    color: rgba(136,221,0,.9) !important;
 }
 
 .contents_body {

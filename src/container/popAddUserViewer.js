@@ -60,7 +60,7 @@ class PopAddUserViewer extends React.Component {
         if(result.data.error) {
             this.props.handleAlertInfo('error',String(result.data.error))
             this.setState({successReset:true});
-            //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+            //setTimeout(()=>_self.gotoPreview('/logout'), 2000)
         } else {
             this.props.handleAlertInfo('success','User '+body.username+' added to organization '+body.org+' successfully')
             //popup close
