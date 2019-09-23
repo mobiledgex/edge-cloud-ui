@@ -295,11 +295,11 @@ class Login extends Component {
         var parser = new UAParser();
 
         // by default it takes ua string from current browser's window.navigator.userAgent
-        console.log('20190912 ',parser.getResult());
+        console.log('20190921 ',parser.getResult());
         let resultPs = parser.getResult();
         this.clientSysInfo = {os:resultPs.os, browser:resultPs.browser};
 
-
+        serviceLogin.getCurrentUserInfo('clientIP',{}, this.receiveClientIp, this)
 
     }
 
@@ -371,9 +371,9 @@ class Login extends Component {
 
 
     receiveClientIp(result) {
-        console.log('20190918 client ip is = ', result)
+        console.log('20190921 client ip is = ', result)
         if(result && result.data) {
-            self.clientSysInfo['clientIP'] = result.data;
+            self.clientSysInfo['clientIP'] = result.data.clientIp;
         } else {
             self.clientSysInfo['clientIP'] = '127.0.0.1';
         }

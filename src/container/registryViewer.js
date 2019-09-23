@@ -73,51 +73,53 @@ class RegistryViewer extends React.Component {
             resultData:null,
             devoptionsf:[],
             toggleSubmit:false,
-            validateError:[]
+            validateError:[],
+            keysData:[
+                {
+                    'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU']},
+                    'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Organization or Company Name that a Developer is part of', active:true},
+                    'AppName':{label:'App Name', type:'RenderInputApp', necessary:true, tip:'App name', active:true},
+                    'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:'App version', active:true},
+                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (Kubernetes, Docker, or VM)', active:true, items:['Docker', 'Kubernetes', 'VM']},
+                    'ImageType':{label:'Image Type', type:'RenderDT', necessary:true, tip:'ImageType specifies image type of an App',items:''},
+                    'ImagePath':{label:'Image Path', type:'RenderPath', necessary:true, tip:'URI of where image resides', active:true,items:''},
+                    'AuthPublicKey':{label:'Auth Public Key', type:'RenderTextArea', necessary:false, tip:'auth_public_key', active:true},
+                    'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor.', active:true},
+                    'Ports':{label:'Ports', type:'CustomPorts', necessary:false, tip:'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443', active:true, items:['tcp', 'udp']},
+                    'DefaultFQDN':{label:'Official FQDN', type:'RenderInput', necessary:false, tip:'Official FQDN', active:true},
+                    'PackageName':{label:'Package Name', type:'RenderInput', necessary:false, tip:'Package Name', active:true},
+                    // 'IpAccess':{label:'IP Access', type:'IPSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
+                    'ScaleWithCluster':{label:'Scale With Cluster', type:'RenderCheckbox', necessary:false, items:false},
+                    'Command':{label:'Command', type:'RenderInput', necessary:false, tip:'Command that the container runs to start service', active:true},
+                    'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file', active:true},
+                },
+                {
+    
+                }
+            ],
+            fakeData:[
+                {
+                    'Region':'',
+                    'OrganizationName':'',
+                    'AppName':'',
+                    'Version':'',
+                    'DeploymentType':'',
+                    'ImageType':'',
+                    'ImagePath':'',
+                    'AuthPublicKey':'',
+                    'DefaultFlavor':'',
+                    'Ports':'',
+                    'DefaultFQDN':'',
+                    'PackageName':'',
+                    // 'IpAccess':'',
+                    'ScaleWithCluster':'',
+                    'Command':'',
+                    'DeploymentMF':'',
+                }
+            ],
+            editMode:false
         };
-        this.keysData = [
-            {
-                'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU']},
-                'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Organization or Company Name that a Developer is part of', active:true},
-                'AppName':{label:'App Name', type:'RenderInputApp', necessary:true, tip:'App name', active:true},
-                'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:'App version', active:true},
-                'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (Kubernetes, Docker, or VM)', active:true, items:['Docker', 'Kubernetes', 'VM']},
-                'ImageType':{label:'Image Type', type:'RenderDT', necessary:true, tip:'ImageType specifies image type of an App',items:''},
-                'ImagePath':{label:'Image Path', type:'RenderPath', necessary:true, tip:'URI of where image resides', active:true,items:''},
-                'AuthPublicKey':{label:'Auth Public Key', type:'RenderTextArea', necessary:false, tip:'auth_public_key', active:true},
-                'DefaultFlavor':{label:'Default Flavor', type:'FlavorSelect', necessary:true, tip:'FlavorKey uniquely identifies a Flavor.', active:true},
-                'Ports':{label:'Ports', type:'CustomPorts', necessary:false, tip:'Comma separated list of protocol:port pairs that the App listens on i.e. TCP:80,UDP:10002,http:443', active:true, items:['tcp', 'udp']},
-                'DefaultFQDN':{label:'Official FQDN', type:'RenderInput', necessary:false, tip:'Official FQDN', active:true},
-                'PackageName':{label:'Package Name', type:'RenderInput', necessary:false, tip:'Package Name', active:true},
-                // 'IpAccess':{label:'IP Access', type:'IPSelect', necessary:false, tip:'aaa', active:true, items:['IpAccessShared', 'IpAcessDedicaterd']},
-                'ScaleWithCluster':{label:'Scale With Cluster', type:'RenderCheckbox', necessary:false, items:false},
-                'Command':{label:'Command', type:'RenderInput', necessary:false, tip:'Command that the container runs to start service', active:true},
-                'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file', active:true},
-            },
-            {
-
-            }
-        ]
-        this.fakeData = [
-            {
-                'Region':'',
-                'OrganizationName':'',
-                'AppName':'',
-                'Version':'',
-                'DeploymentType':'',
-                'ImageType':'',
-                'ImagePath':'',
-                'AuthPublicKey':'',
-                'DefaultFlavor':'',
-                'Ports':'',
-                'DefaultFQDN':'',
-                'PackageName':'',
-                // 'IpAccess':'',
-                'ScaleWithCluster':'',
-                'Command':'',
-                'DeploymentMF':'',
-            }
-        ]
+        
         //this.hiddenKeys = ['CloudletLocation', 'URI', 'Mapped_ports']
 
 
@@ -173,7 +175,7 @@ class RegistryViewer extends React.Component {
 
     generateDOM(open, dimmer, data, keysData, hideHeader) {
 
-        let panelParams = {data:data, keys:keysData, regionf:this.getOptionData, devoptionsf:this.state.devoptionsf, userrole:localStorage.selectRole}
+        let panelParams = {data:data, keys:keysData, regionf:this.getOptionData, devoptionsf:this.state.devoptionsf, userrole:localStorage.selectRole, editMode:this.state.editMode, editData:this.props.editData}
 
         return layout.map((item, i) => (
 
@@ -276,19 +278,25 @@ class RegistryViewer extends React.Component {
 
 
     componentDidMount() {
+        //edit(call flavorlist)
+        if(this.props.editMode && this.props.editData){
+            let region = this.props.editData.Region;
+            this.getOptionData(region);
+        }
         if(this.props.devData.length > 0) {
             this.setState({dummyData:this.props.devData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
         } else {
-            this.setState({dummyData:this.fakeData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
+            this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
         }
 
         /************
          * set Organization Name
          * **********/
-        let assObj = Object.assign([], this.fakeData);
+        let assObj = Object.assign([], this.state.fakeData);
         assObj[0].OrganizationName = localStorage.selectOrg;
         //assObj[0].ImagePath.items = "docker.mobiledgex.net/OrganizationName/images/AppName:AppVersion";
         //this.setState({fakeData:assObj});
+        
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
@@ -300,14 +308,15 @@ class RegistryViewer extends React.Component {
         if(nextProps.devData.length > 1) {
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         } else {
-            this.setState({dummyData:this.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+            this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         }
         ///////
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
+        console.log("updateCompete111")
         if(nextProps.submitValues && !this.state.toggleSubmit) {
-            
+            console.log("updateCompete222")
             const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','DefaultFlavor']
             let error = [];
             apps.map((item) => {
@@ -317,7 +326,12 @@ class RegistryViewer extends React.Component {
             })
 
             if(nextProps.formApps.submitSucceeded && error.length == 0){
+                console.log("updateCompete333")
                 let serviceBody = {}
+                let serviceResource = 'CreateApp'
+                if(nextProps.editMode){
+                    serviceResource = 'UpdateApp'
+                }
                 this.setState({toggleSubmit:true,validateError:error});
                 this.props.handleLoadingSpinner(true);
                 //TODO: // 20190430 add spinner...(loading)
@@ -325,7 +339,8 @@ class RegistryViewer extends React.Component {
                     "token":store ? store.userToken : 'null',
                     "params": nextProps.submitValues
                 }
-                services.createNewApp('CreateApp', serviceBody, this.receiveResult)
+                console.log("updateCompete444",serviceResource,":::",serviceBody,":::",)
+                services.createNewApp(serviceResource, serviceBody, this.receiveResult)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }
@@ -333,7 +348,7 @@ class RegistryViewer extends React.Component {
         }
 
         if(nextProps.formApps.values && nextProps.formApps.values.DeploymentType) {
-            let assObj = Object.assign([], this.keysData);
+            let assObj = Object.assign([], this.state.keysData);
             let selectType = '';
             let defaultPath = '';
             if(nextProps.formApps.values.DeploymentType == "Kubernetes" || nextProps.formApps.values.DeploymentType == "Docker") {
@@ -343,7 +358,9 @@ class RegistryViewer extends React.Component {
                 selectType = 'Qcow';
                 defaultPath = 'https://artifactory.mobiledgex.net/artifactory/repo-OrganizationName';
             }
-            let ImagePath = (nextProps.formApps.values.ImagePath)? nextProps.formApps.values.ImagePath : defaultPath;
+            console.log('nextProps.formApps.values.ImagePath',nextProps.formApps.values.ImagePath,"::::",this.props.formApps.values.ImagePath)
+            let ImagePath = (nextProps.formApps.values.ImagePath)? nextProps.formApps.values.ImagePath : (nextProps.formApps.values.ImagePath != this.props.formApps.values.ImagePath)? '': defaultPath;
+            
             assObj[0].ImageType.items = selectType;
             itData = (selectType == 'Docker') ? 'ImageTypeDocker' :
                     (selectType == 'Qcow') ? 'ImageTypeQcow' : 
@@ -357,13 +374,18 @@ class RegistryViewer extends React.Component {
             if(nextProps.formApps.values.Version) {
                 ImagePath = ImagePath.replace('AppVersion',nextProps.formApps.values.Version.toLowerCase())
             }
+            //if(ImagePath == '') ImagePath = ''
             assObj[0].ImagePath.items = ImagePath;
+            console.log("ImagePathImagePath",ImagePath)
             submitImgPath = ImagePath;
+            
         }
+
+        if(nextProps.editMode) this.setState({editMode:nextProps.editMode})
     }
 
     render() {
-        const { open, dimmer, dummyData } = this.state;
+        const { open, dimmer, dummyData, editMode } = this.state;
         const { hiddenKeys } = this.props;
         return (
             <div className="regis_container">
@@ -375,7 +397,7 @@ class RegistryViewer extends React.Component {
                     {...this.props}
                     useCSSTransforms={false}
                 >
-                    {this.generateDOM(open, dimmer, dummyData, this.keysData, hiddenKeys)}
+                    {this.generateDOM(open, dimmer, dummyData, this.state.keysData, hiddenKeys)}
                 </div>
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
@@ -483,7 +505,8 @@ const mapStateToProps = (state) => {
         userRole : state.showUserRole?state.showUserRole.role:null,
         selectedDeploymentType : selectedDeploymentType,
         validateValue:validateValue,
-        formApps : formApps
+        formApps : formApps,
+        editData : state.editInstance.data
     }
     
     // return (dimm) ? {
