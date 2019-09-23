@@ -141,25 +141,53 @@ class SiteFourCreateFormAppDefault extends React.Component {
             portArray:[],
             orgArr:[],
             deployAPK:false,
-            deploymentType:false
+            deploymentType:false,
+            title:'Settings',
+            editToggle:false
         };
 
     }
 
     // data.map((dt) => {
-    handleInitialize(data) {
-        const initData = [];
-        if(data.length){
+    handleInitialize(data,edit) {
+        let _data = data;
+        let _portArr = [];
+        let _statePort = [];
+        if(edit && _data){
+            (_data.DeploymentType == 'docker')?_data.DeploymentType = 'Docker':
+            (_data.DeploymentType == 'kubernetes')?_data.DeploymentType = 'Kubernetes':
+            _data.DeploymentType = 'VM'
+
+            this.onHandleChange('DeploymentType',_data.DeploymentType);
+
+            if(_data.Ports && _data.Ports != '-'){
+                _portArr = _data.Ports.split(',')
+                console.log("sddffw",_portArr)
+                _portArr.map((item,i) => {
+                    _data['Ports_'+i] = item.split(':')[1];
+                    _data['Portsselect_'+i] = (item.split(':')[0]=='tcp')?'TCP':'UDP';
+                    _statePort.push(i);
+                    portNum++;
+                })
+                this.setState({portArray:_statePort});
+            }
+            Object.keys(_data).map((item) => {
+                if(_data[item] == '-'){
+                    _data[item] = '';
+                }
+            })
+        }
+        if(_data.length){
 
         } else {
-            this.props.initialize(data);
-
+            this.props.initialize(_data);
         }
 
     }
 
 
     componentDidMount() {
+        console.log("fakedatasdfind",this.props.data)
         if(this.props.data && this.props.data.data.length){
             let keys = Object.keys(this.props.data.data[0])
             this.setState({data:this.props.data.data[0], regKeys:keys, fieldKeys:this.props.data.keys, pId:this.props.pId})
@@ -179,6 +207,12 @@ class SiteFourCreateFormAppDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        
+        if(nextProps.data.editMode && nextProps.data.editData && !this.state.editToggle){
+            console.log("nextPropsnextPropsds",nextProps.data.editData)
+            this.setState({editToggle:true});
+            this.handleInitialize(nextProps.data.editData,nextProps.data.editMode);
+        }
         if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
@@ -192,7 +226,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                 this.setState({dataInit:true})
             }
         }
-        
+        if(nextProps.data.editMode) this.setState({title:'Update Settings'})
         
     }
 
@@ -223,6 +257,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
     AddPorts = (e) => {
         e.preventDefault();
         this.setState({portArray:this.state.portArray.concat(portNum)})
+        console.log("portArrayportArray",this.state.portArray.concat(portNum))
         portNum++;
     }
     RemovePorts = (num) => {
@@ -270,12 +305,12 @@ class SiteFourCreateFormAppDefault extends React.Component {
     
     render (){
         const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
-        const { data, regKeys, fieldKeys } = this.state;
+        const { data, regKeys, fieldKeys, title } = this.state;
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         return (
 
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
-                <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>
+                <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>{title}</Header>
                 <Fragment >
                     <Form onSubmit={() => this.onHandleSubmit()} className={"fieldForm"} >
                         <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
@@ -397,7 +432,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                     component={renderInput}
                                                                                     type="input"
                                                                                     name={key+'_'+item}
-                                                                                    //value={data[key]}
+                                                                                    value={data[key]}
                                                                                     error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
                                                                                     />
                                                                             </Grid.Column>
@@ -405,14 +440,13 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                 <Field
                                                                                     component={renderSelect}
                                                                                     placeholder={'Select port'}
-                                                                                    //value={data[key]}
-                                                                                    options={fieldKeys[pId][key]['items']}
+                                                                                    value={data[key]}
+                                                                                    options={['TCP','UDP']}
                                                                                     name={key+'select_'+item}
                                                                                     error={(this.props.validError.indexOf(key+'select_'+i) !== -1)?'Required':''}
                                                                                     />
                                                                             </Grid.Column>
                                                                             <Grid.Column width={1}>
-                                                                                {/*<Button onClick={this.RemovePorts} sttle={{width:'100%'}}>Delete</Button>*/}
                                                                                 <div className='removePorts' onClick={() => this.RemovePorts(item)}><i className="material-icons">clear</i></div>
                                                                             </Grid.Column>
                                                                         </Grid.Row>

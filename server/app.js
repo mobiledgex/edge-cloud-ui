@@ -464,6 +464,7 @@ app.post('/ShowAppInsts', apiMC.ShowAppInsts);
 
 app.post('/create', apiMC.Create);
 app.post('/CreateApp', apiMC.CreateApp);
+app.post('/UpdateApp', apiMC.UpdateApp);
 app.post('/CreateAppInst', apiMC.CreateAppInst);
 app.post('/addUserRole', apiMC.addUserRole);
 
@@ -501,6 +502,7 @@ console.log('====== process env mcurl ======='+process.env.MC_URL)
 apiMCMonitor.MC_URL = process.env.MC_URL;
 app.post('/timeAppinst', apiMCMonitor.ShowappHealth)
 app.post('/timeClusterinst', apiMCMonitor.ShowclusterHealth)
+app.post('/clientIP', apiMCMonitor.getClientIP)
 
 
 

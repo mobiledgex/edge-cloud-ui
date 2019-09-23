@@ -982,7 +982,8 @@ class SiteFour extends React.Component {
                                                                             (this.state.page === 'pg=5')?<SiteFourPageApps></SiteFourPageApps>:
                                                                                 (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
                                                                                     (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
-                                                                                        (this.state.page === 'pg=createApp')? <SiteFourPageAppReg></SiteFourPageAppReg> :
+                                                                                        (this.state.page === 'pg=createApp')? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
+                                                                                        (this.state.page === 'pg=editApp')? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
                                                                                             (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
                                                                                             (this.state.page === 'pg=editAppInst')? <SiteFourPageAppInstReg editable={true}></SiteFourPageAppInstReg> :
                                                                                                 (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :

@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 
 import axios from "axios-https-proxy-fix";
 import qs from "qs";
+import requestIp from 'request-ip';
 
 const API_KEY = '__apiMC_key__'
 let mcUrl = 'https://mc.mobiledgex.net:9900';
@@ -116,5 +117,29 @@ exports.CreateCloudlet = (req, res) => {
             console.log('error show ...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
+}
+exports.getClientIP = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    // const forwarded = req.headers['x-forwarded-for']
+    // const ip = forwarded ? forwarded.split(/, /)[0] : req.connection.remoteAddress
+    // console.log('get client ip -- ', ip, 'forwarded=',forwarded, ":", req.connection.remoteAddress)
+    // const realIP = req.headers['x-real-ip']
+    // console.log('get client realIP -- ', realIP)
+
+
+        var clientIp = requestIp.getClientIp(req); // on localhost > 127.0.0.1
+        //next();
+    console.log('request ip == ', clientIp)
+
+    res.json({clientIp:clientIp})
 }
 

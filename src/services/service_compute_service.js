@@ -145,7 +145,7 @@ export function saveNewCompute(resource, body, callback) {
         });
 }
 export function createNewApp(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/CreateApp',{
+    axios.post('https://'+hostname+':3030/'+resource,{
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain

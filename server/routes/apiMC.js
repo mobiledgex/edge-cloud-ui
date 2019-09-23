@@ -62,7 +62,7 @@ exports.createUser = (req, res) => {
         serviceBody = req.body.serviceBody;
   }
   console.log('create user.. ', serviceBody,emailEncode, mcUrl)
-  axios.post(mcUrl + '/api/v1/usercreate', {
+  axios.post(mcUrl + '/api/v1/usercreate', qs.stringify({
         name: serviceBody.name,
         passhash: serviceBody.password,
         email: serviceBody.email,
@@ -71,7 +71,7 @@ exports.createUser = (req, res) => {
         browser:serviceBody.clientSysInfo.browser.name,
         clientip:serviceBody.clientSysInfo.clientIP
       },
-      {headers: {'Content-Type':'application/json; charset=utf-8'}}
+      {headers: {'Content-Type':'application/json; charset=utf-8'}})
 
   )
       .then(function (response) {
@@ -883,6 +883,41 @@ exports.CreateApp = (req, res) => {
         .then(function (response) {
 
             console.log('success Create app', response.data)
+
+            if(response.data) {
+                res.json(response.data)
+            } else {
+                res.json({error:'Fail'})
+            }
+        })
+        .catch(function (error) {
+            console.log('error show ...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
+        });
+}
+exports.UpdateApp = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    //params = JSON.stringify(params).replace('"1"', 1);
+    console.log('Update me app-- ', serviceBody, 'mcUrl=',mcUrl)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/UpdateApp', serviceBody,
+
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+
+            console.log('success Update app', response.data)
 
             if(response.data) {
                 res.json(response.data)

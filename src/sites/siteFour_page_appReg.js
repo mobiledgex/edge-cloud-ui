@@ -27,7 +27,8 @@ class SiteFourPageAppReg extends React.Component {
             contWidth:0,
             bodyHeight:0,
             activeItem: 'Developers',
-            devData:[]
+            devData:[],
+            edit:false
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -65,6 +66,10 @@ class SiteFourPageAppReg extends React.Component {
     componentWillMount() {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+
+        if(this.props.editable) {
+            this.setState({edit:this.props.editable})
+        }
     }
     componentWillUnmount() {
         
@@ -98,7 +103,7 @@ class SiteFourPageAppReg extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <RegistryViewer devData={this.state.devData} gotoApp={this.gotoApp}/>
+            <RegistryViewer devData={this.state.devData} gotoApp={this.gotoApp} editMode={this.state.edit}/>
         );
     }
 
