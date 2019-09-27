@@ -42,6 +42,7 @@ const renderSelect = ({ input, label, options, placeholder, error, disabled }) =
 const renderDropDown = field => (
     <div>
         <Form.Dropdown
+            {...field.input}
             placeholder={field.placeholder}
             fluid
             multiple
@@ -94,7 +95,9 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
             portArray:['item'],
             orgArr:[],
             ClusterDisable:false,
-            title:'Settings'
+            title:'Settings',
+            editToggle:false,
+            editDsb:false
         };
 
     }
@@ -102,6 +105,9 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
     // data.map((dt) => {
     handleInitialize(data) {
         const initData = [];
+        if(data.Cloudlet) data.Cloudlet = [data.Cloudlet];
+        if(data.OrganizationName) data.DeveloperName = data.OrganizationName;
+        if(data.ClusterInst) data.ClusterInst = [data.ClusterInst];
         if(data.length){
 
         } else {
@@ -144,6 +150,12 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
             }
         }
         console.log('20190909 this.props.', this.props)
+
+        if(nextProps.data.editMode && nextProps.data.editData && !this.state.editToggle){
+            this.setState({editToggle:true, editDsb:true});
+            this.handleInitialize(nextProps.data.editData,nextProps.data.editMode);
+        }
+        
         if(nextProps.data.editMode) this.setState({title:'Update Settings'})
         
     }

@@ -113,6 +113,39 @@ export function getClusterHealth(resource, callback) {
 
 
 }
+export function getCloudletHealth(resource, callback) {
+    let resResults = [];
+        //
+    axios.all(
+        resource.map((reso) => {
+            return axios.post('https://'+hostname+':3030/timeCloudlet', {
+                service: 'timeCloudlet',
+                serviceBody:reso,
+                serviceId: Math.round(Math.random()*10000)
+            })
+                .then(function (response) {
+                    resResults = resResults.concat(FormatMonitorCluster(response))
+
+                })
+                .catch(function (error) {
+                    try {
+                        if(String(error).indexOf('Network Error') > -1){
+                            console.log("NETWORK ERROR@@@@@");
+                        } else {
+                            //callback({error:error}, resource);
+                        }
+                    } catch(e) {
+                        console.log('any error ??? ')
+                    }
+                });
+        })
+    )
+        .then(axios.spread((resOne, resTwo, resThree, resFour, resFive) => {
+            callback(resResults)
+        }))
+
+
+}
 
 export function getAppClusterInfo(cluster, app, callback, self) {
     axios.get('https://'+hostname+':3030/appInstanceList?cluster='+cluster+'&app='+app)

@@ -124,8 +124,8 @@ exports.currentUser = (req, res) => {
         })
         .catch(function (error) {
 
-            console.log('error......');
-            res.json({message:'Certificated has expired'})
+            console.log('error......', error.data);
+            if(error.data.message.indexOf('expired') > -1) res.json({message:'Certificated has expired'})
         });
 
 }
@@ -230,7 +230,7 @@ exports.showOrg = (req, res) => {
         .catch(function (error) {
             // console.log('error show org..', String(error));
             // res.json({error:'There is no data'})
-            console.log('error show ...', error.response.data.message);
+            console.log('error show showOrg...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -274,7 +274,7 @@ exports.ShowFlavor = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
+            console.log('error show ShowFlavor..', String(error));
             res.json({error:'Request failed'})
         });
 }
@@ -312,7 +312,7 @@ exports.ShowClusterFlavor = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
+            console.log('error show ShowClusterFlavor..', String(error));
             res.json({error:'Request failed'})
         });
 }
@@ -344,7 +344,7 @@ exports.ShowUsers = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
+            console.log('error show ShowUsers..', String(error));
             res.json({error:'Request failed'})
         });
 }
@@ -382,7 +382,7 @@ exports.ShowCloudlet = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
+            console.log('error show ShowCloudlet..', String(error));
             res.json({error:'Request failed'})
         });
 }
@@ -417,7 +417,7 @@ exports.ShowClusterInst = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
+            console.log('error show ShowClusterInst..', String(error));
             res.json({error:'Request failed'})
         });
 }
@@ -453,7 +453,7 @@ exports.ShowClusterInsts = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
+            console.log('error show ShowClusterInsts..', String(error));
             res.json({error:'Request failed'})
         });
 }
@@ -489,7 +489,7 @@ exports.ShowApps = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
+            console.log('error show ShowApps..', String(error));
             res.json({error:'Request failed'})
         });
 }
@@ -525,7 +525,7 @@ exports.ShowApp = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
+            console.log('error show ShowApp..', String(error));
             res.json({error:'Request failed'})
         });
 }
@@ -563,7 +563,7 @@ exports.ShowAppInst = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
+            console.log('error show ShowAppInst..', String(error));
             res.json({error:'Request failed'})
         });
 }
@@ -599,7 +599,7 @@ exports.ShowAppInsts = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
+            console.log('error show ShowAppInsts..', String(error));
             res.json({error:'Request failed'})
         });
 }
@@ -645,7 +645,7 @@ exports.Create = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ..', String(error));
+            console.log('error show Create..', String(error));
             res.json({error:String(error)})
         });
 }
@@ -681,7 +681,7 @@ exports.CreateOrg= (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show CreateOrg...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -720,7 +720,7 @@ exports.addUserRole= (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show addUserRole...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -756,7 +756,7 @@ exports.CreateFlavor = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show CreateFlavor...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -792,7 +792,7 @@ exports.CreateClusterFlavor = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show CreateClusterFlavor...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -837,7 +837,7 @@ exports.CreateCloudlet = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error);
+            console.log('error show CreateCloudlet...', error);
             res.json(error)
         });
 }
@@ -891,7 +891,7 @@ exports.CreateApp = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show CreateApp...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -926,7 +926,7 @@ exports.UpdateApp = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show UpdateApp...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -977,7 +977,7 @@ exports.CreateAppInst = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show CreateAppInst...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -1036,7 +1036,7 @@ exports.CreateClusterInst = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data);
+            console.log('error show CreateClusterInst...', error.response.data);
             res.json(error)
         });
 
@@ -1151,7 +1151,7 @@ exports.DeleteService = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show DeleteService...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -1185,7 +1185,7 @@ exports.DeleteUser = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show DeleteUser...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -1219,7 +1219,7 @@ exports.DeleteAccount = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show DeleteAccount...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -1253,7 +1253,7 @@ exports.DeleteOrg = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show DeleteOrg...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -1288,7 +1288,7 @@ exports.ResetPassword = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show ResetPassword...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }
@@ -1316,7 +1316,7 @@ exports.UpdatePassword = (req, res) => {
         .catch(function (error) {
 
             res.json({error:'Invalid or expired token'})
-            console.log('error show ..', String(error));
+            console.log('error show UpdatePassword..', String(error));
         });
 }
 exports.ResendVerify = (req, res) => {
@@ -1342,7 +1342,7 @@ exports.ResendVerify = (req, res) => {
         })
         .catch(function (error) {
 
-            console.log('error show ..', String(error));
+            console.log('error show ResendVerify..', String(error));
             res.json({error:String(error)})
         });
 }
@@ -1371,7 +1371,7 @@ exports.UpdateVerify = (req, res) => {
         })
         .catch(function (error) {
 
-            console.log('error show ..', String(error));
+            console.log('error show UpdateVerify..', String(error));
             res.json({error:String(error)})
         });
 }
@@ -1410,7 +1410,7 @@ exports.ShowRole = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ...', error.response.data.message);
+            console.log('error show ShowRole...', error.response.data.message);
             res.json({error:String(error.response.data.message)})
         });
 }

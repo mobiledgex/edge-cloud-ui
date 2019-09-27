@@ -322,8 +322,10 @@ class ClustersMap extends Component {
             }
         })
 
-        let location = {region:a.properties["REGION_UN"],name:a.properties["NAME"], lat:_lat, long:_long}
-        _self.props.handleGetRegion(location)
+        if(localStorage.selectMenu == 'Cloudlets'){
+            let location = {region:a.properties["REGION_UN"],name:a.properties["NAME"], lat:_lat, long:_long}
+            _self.props.handleGetRegion(location)
+        }
     }
 
     componentDidMount() {

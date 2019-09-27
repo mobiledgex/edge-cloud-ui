@@ -291,7 +291,7 @@ class DeveloperListView extends React.Component {
 
             <Table.Body className="tbBodyList">
                 {
-                    datas.map((item, i) => (
+                    (datas.length) ? datas.map((item, i) => (
                         <Table.Row key={i} id={'tbRow_'+i} style={{position:'relative'}}>
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
@@ -311,7 +311,7 @@ class DeveloperListView extends React.Component {
                                             <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.appLaunch(item)}>
                                             Launch
                                             </Button>:null}
-                                        <Button className='stepOrgDeveloper4' disabled={(localStorage.selectMenu !== 'Organizations')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
+                                        <Button className='stepOrgDeveloper4' disabled={(localStorage.selectMenu !== 'Organizations')?((item['Role Type']=='AdminManager')?true:this.props.dimmInfo.onlyView):this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>
                                 :
@@ -367,7 +367,7 @@ class DeveloperListView extends React.Component {
 
                             ))}
                         </Table.Row>
-                    ))
+                    )) : null
                 }
             </Table.Body>
             

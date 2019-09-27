@@ -68,10 +68,10 @@ class RegistryInstViewer extends React.Component {
             selectUse:null,
             resultData:null,
             cloudlets:[],
-            operators:[],
+            operators:{},
             clustinst:[],
-            apps:[],
-            versions:[],
+            apps:{},
+            versions:{},
             toggleSubmit:false,
             validateError:[],
             regSuccess:true,
@@ -250,7 +250,7 @@ class RegistryInstViewer extends React.Component {
 
     generateDOM(open, dimmer, data, keysData, hideHeader) {
 
-        let panelParams = {data:data, keys:keysData, userrole:localStorage.selectRole, editMode:this.state.editMode}
+        let panelParams = {data:data, keys:keysData, userrole:localStorage.selectRole, editMode:this.state.editMode, editData:this.props.editData}
 
         return layout.map((item, i) => (
 
@@ -288,12 +288,12 @@ class RegistryInstViewer extends React.Component {
 
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store && store.userToken) this.getDataDeveloper(store.userToken,'US');
+        //if(store && store.userToken) this.getDataDeveloper(store.userToken,'US');
         /************
          * set Organization Name
          * **********/
         let assObj = Object.assign([], this.state.fakeData);
-        //assObj[0].DeveloperName = localStorage.selectOrg;
+        assObj[0].DeveloperName = localStorage.selectOrg;
         if(Object.keys(this.props.appLaunch).length > 0) {
             assObj[0].Region = this.props.appLaunch.Region;
             assObj[0].AppName = this.props.appLaunch.AppName;
@@ -356,19 +356,18 @@ class RegistryInstViewer extends React.Component {
         /************
          * set list of cloudlet
          * **********/
-        if(nextProps.selectedOperator) {
+        if(nextProps.selectedOperator && this.state.operators[nextProps.selectedOperator]) {
             let assObj = Object.assign([], this.state.keysData);
             assObj[0].Cloudlet.items = [];
             assObj[0].ClusterInst.items = [];
             assObj[0].Cloudlet.items = this.state.operators[nextProps.selectedOperator].map((cld) => (cld.CloudletName));
             assObj[0].Cloudlet.items = reducer.removeDuplicate(assObj[0].Cloudlet.items)
             this.setState({keysData:assObj})
-
         }
         /************
          * set list of Organization
          * **********/
-        if(nextProps.selectedOrgName) {
+        if(nextProps.selectedOrgName && this.state.apps[nextProps.selectedOrgName]) {
             if(Object.keys(this.props.appLaunch).length == 0) {
                 let assObj = Object.assign([], this.state.keysData);
                 assObj[0].AppName.items = this.state.apps[nextProps.selectedOrgName].map((cld) => (cld.AppName));
@@ -380,19 +379,17 @@ class RegistryInstViewer extends React.Component {
         /************
          * set list of version
          * **********/
-        if(nextProps.selectedApp) {
+        if(nextProps.selectedApp && this.state.versions[nextProps.selectedApp]) {
             if(Object.keys(this.props.appLaunch).length == 0) {
                 let assObj = Object.assign([], this.state.keysData);
                 assObj[0].Version.items = this.state.versions[nextProps.selectedApp].map((cld) => (cld.Version));
                 this.setState({keysData:assObj})
             }
         }
-
         if(nextProps.selectedVersion) {
-            console.log("this.state.versions",this.state.versions)
-            if(this.state.versions.length !== 0 && this.state.versions[nextProps.selectedApp][0].DeploymentType === 'vm'){
+            if(Object.keys(this.state.versions).length !== 0 && this.state.versions[nextProps.selectedApp][0].DeploymentType === 'vm'){
                 this.setState({autoClusterDisable:true})
-            } else if(this.state.versions.length !== 0){
+            } else if(Object.keys(this.state.versions).length !== 0){
                 this.setState({autoClusterDisable:false})
             }
 
@@ -407,11 +404,11 @@ class RegistryInstViewer extends React.Component {
 
         //set list of clusterInst filter
         if(Object.keys(nextProps.submitData).length > 0){
-            console.log("dfdfdfdgsgsdg",nextProps.submitData.createAppFormDefault)
             if(nextProps.submitData.createAppFormDefault && nextProps.submitData.createAppFormDefault.values.Operator && nextProps.submitData.createAppFormDefault.values.Cloudlet) {
                 let keys = Object.keys(this.state.clustinst);
                 let arr = []
                 let assObj = Object.assign([], this.state.keysData);
+                console.log("dfdfdfdgsgsdg",nextProps.submitData.createAppFormDefault.values.Cloudlet)
                 keys.map((item,i) => {
                     this.state.clustinst[item].map((items,j) => {
                         nextProps.submitData.createAppFormDefault.values.Cloudlet.map((cItem) => {
@@ -529,7 +526,6 @@ const mapStateToProps = (state) => {
     let selectedOrgName = null;
     let selectedRegion = null;
     // alert(JSON.stringify(state.form.createAppFormDefault))
-
     if(state.form.createAppFormDefault) {
         if(state.form.createAppFormDefault.values.Cloudlet !== "") {
             selectedCloudlet = state.form.createAppFormDefault.values.Cloudlet;
@@ -589,7 +585,8 @@ const mapStateToProps = (state) => {
         validateValue:validateValue,
         formAppInst : formAppInst,
         selectedOrgName : selectedOrgName,
-        selectedRegion : selectedRegion
+        selectedRegion : selectedRegion,
+        editData : state.editInstance.data
     }
     
     // return (dimm) ? {

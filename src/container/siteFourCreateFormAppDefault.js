@@ -21,7 +21,7 @@ const makeOptionNumber =(options)=> (
     ))
 )
 
-const renderSelect = ({ input, label, options, placeholder, error}) => (
+const renderSelect = ({ input, label, options, placeholder, error, disabled}) => (
     <div>
         <Form.Select
             label={label}
@@ -30,6 +30,7 @@ const renderSelect = ({ input, label, options, placeholder, error}) => (
             options={makeOption(options)}
             placeholder={placeholder}
             value={input.value}
+            disabled={disabled}
         />
         {error && <span className="text-danger">{error}</span>}
     </div>
@@ -54,13 +55,14 @@ const renderTextArea = field => (
     />
 );
 
-const renderInput = ({ input, placeholder, label, type, error}) => (
+const renderInput = ({ input, placeholder, label, type, error, disabled}) => (
     <div>
         <Form.Input
             {...input}
             type={type}
             label={label}
             // placeholder={placeholder}
+            disabled={disabled}
         />
         {error && <span className="text-danger">{error}</span>}
     </div>
@@ -108,6 +110,7 @@ const renderInputApp = field => (
                     field.input.onChange(value)
                 }
             }}
+            disabled={field.disabled}
         />
         {field.error && <span className="text-danger">{field.error}</span>}
     </div>
@@ -143,7 +146,8 @@ class SiteFourCreateFormAppDefault extends React.Component {
             deployAPK:false,
             deploymentType:false,
             title:'Settings',
-            editToggle:false
+            editToggle:false,
+            editDsb:false
         };
 
     }
@@ -165,7 +169,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                 console.log("sddffw",_portArr)
                 _portArr.map((item,i) => {
                     _data['Ports_'+i] = item.split(':')[1];
-                    _data['Portsselect_'+i] = (item.split(':')[0]=='tcp')?'TCP':'UDP';
+                    _data['Portsselect_'+i] = (item.split(':')[0].toLowerCase() =='tcp')?'TCP':'UDP';
                     _statePort.push(i);
                     portNum++;
                 })
@@ -187,7 +191,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
 
     componentDidMount() {
-        console.log("fakedatasdfind",this.props.data)
+        console.log("fakedatasdfind",this.props)
         if(this.props.data && this.props.data.data.length){
             let keys = Object.keys(this.props.data.data[0])
             this.setState({data:this.props.data.data[0], regKeys:keys, fieldKeys:this.props.data.keys, pId:this.props.pId})
@@ -207,10 +211,10 @@ class SiteFourCreateFormAppDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        
+        console.log("editmode333",nextProps.data)
         if(nextProps.data.editMode && nextProps.data.editData && !this.state.editToggle){
             console.log("nextPropsnextPropsds",nextProps.data.editData)
-            this.setState({editToggle:true});
+            this.setState({editToggle:true, editDsb:true});
             this.handleInitialize(nextProps.data.editData,nextProps.data.editMode);
         }
         if(nextProps.data && nextProps.data.data.length){
@@ -346,6 +350,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                 options={fieldKeys[pId][key]['items']}
                                                                 name={key}
                                                                 onChange={(e)=>this.onHandleChange(key,e)}
+                                                                disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'IpSelect') ?
@@ -373,7 +378,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                 value={data[key]}
                                                                 options={fieldKeys[pId][key]['items']}
                                                                 name={key}
-
+                                                                disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
                                                                 onChange={this.handleRegionChange}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                             :
@@ -410,10 +415,11 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                         placeholder={'Select Organization Name'}
                                                                         options={this.state.orgArr}
                                                                         name={key}
+                                                                        disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
                                                                         error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                                 :
                                                                     <Field
-                                                                        disabled
+                                                                        disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
                                                                         component={renderInputDisabled}
                                                                         //placeholder={data[key]}
                                                                         type="input"
@@ -466,6 +472,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                 type="input"
                                                                 name={key}
                                                                 value={data[key]}
+                                                                disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                             :
                                                             <Field
@@ -473,6 +480,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                 type="input"
                                                                 name={key}
                                                                 value={data[key]}
+                                                                disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
                                                                 />
                                                         }

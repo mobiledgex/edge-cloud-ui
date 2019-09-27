@@ -14,7 +14,7 @@ const validate = values => {
     }else if(!/^[-_0-9a-zA-Z .&,!]+$/.test(values.name)){
         errors.name = 'Invalid characters in organization name'
     } else if(/\s/g.test(values.name)){
-        errors.name = 'Invalid characters in organization name!'
+        errors.name = 'Invalid characters in organization name'
     }
     if (!values.address) {
         errors.address = 'Required'

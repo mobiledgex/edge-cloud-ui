@@ -195,10 +195,11 @@ class SiteFourCreateFormDefault extends React.Component {
         alert('onForm state',a,b)
     }
     onHandleChange(key,value,c){
+        console.log("onChangeFormState111",key,":::",value)
         if(key === 'Region'){
-            this.props.onChangeState(key)
+            this.props.onChangeState(key,value)
         } else if(key === 'OrganizationName') {
-            this.props.onChangeState(key)
+            this.props.onChangeState(key,value)
         } else if(key === 'DeploymentType') {
             if(value == 'Docker') {
                 this.setState({ipAccessValue:['Dedicated']})
@@ -208,9 +209,9 @@ class SiteFourCreateFormDefault extends React.Component {
                 this.setState({deployTypeDocker:false})
             }
             this.props.clusterHide(value);
-            this.props.onChangeState(key)
+            this.props.onChangeState(key,value)
         } else {
-            this.props.onChangeState(key)
+            this.props.onChangeState(key,value)
         }
     }
 
@@ -300,6 +301,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 component={renderDropDown}
                                                                 options={fieldKeys[pId][key]['items']}
                                                                 name={key}
+                                                                onChange={(e)=>this.onHandleChange(key,e,data[key])}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
                                                             />
                                                             :

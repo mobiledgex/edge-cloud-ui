@@ -184,7 +184,8 @@ class PageDetailViewer extends React.Component {
          */
         this.resources = {
             clusterInst:['cpu', 'mem', 'disk', 'network', 'tcp', 'udp'],
-            appInst:['cpu', 'mem', 'network']
+            appInst:['cpu', 'mem', 'network'],
+            cloudlet:['utilization']
         }
 
     }
@@ -196,7 +197,7 @@ class PageDetailViewer extends React.Component {
         //this.props.onLayoutChange(layout);
     }
     onChangeTab = (e, data) => {
-        console.log('20190904 on change tab ..data --- ',data)
+        console.log('20190923 on change tab ..data --- ',data)
         if(data.activeIndex === 1 && _self.state.page) {
             _self.getInstanceHealth(_self.state.page, _self.state.listData)
             _self.props.handleLoadingSpinner(true);
@@ -236,15 +237,20 @@ class PageDetailViewer extends React.Component {
     getParams = (page, data, store) => (
         (page === 'appInst' && _self.resources[page].length)?
             _self.resources[page].map((valid) => this.makeFormApp(data, valid, store.userToken)) :
+            (page === 'cloudlet' && _self.resources[page].length)?
+                _self.resources[page].map((valid) => this.makeFormCloudlet(data, valid, store.userToken)) :
             _self.resources[page].map((valid) => this.makeFormCluster(data, valid, store.userToken))
     )
     loopGetHealth (page, data, store) {
         (page === 'appInst' && store.userToken)  ?
             serviceInstance.getAppinstHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
+            (page === 'cloudlet' && store.userToken)  ?
+                serviceInstance.getCloudletHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
             serviceInstance.getClusterHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo)
     }
 
     getInstanceHealth (page, data) {
+                console.log('20190923 page=', page)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         _self.activeInterval = setInterval(
             () => {
@@ -260,54 +266,6 @@ class PageDetailViewer extends React.Component {
                 console.log('20190904 clear interval 000 000 000 =',_self.activeInterval)
         if(_self.activeInterval) clearInterval(_self.activeInterval);
     }
-
-
-    /*
-    http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cluster <<<
-    '{"region":"US",
-    "clusterinst":{
-    "cluster_key":{"name":"autoclustermobiledgexsdkdemo"},
-    "cloudlet_key":{
-    "operator_key":{"name":"TDG"},
-    "name":"mexplat-stage-hamburg-cloudlet"},
-    "developer":"MobiledgeX"},
-    "selector":"cpu",
-    "starttime":"2019-07-30T01:41:03Z",
-    "endtime":"2019-07-30T01:44:54Z"}'
-     */
-
-    /*
-    makeFormCluster = (inst, valid, store) => (
-        {
-            "token":store,
-            "params":{
-                "region":"US",
-                "clusterinst":{
-                    "cluster_key":{"name":"autoclustermobiledgexsdkdemo"},
-                    "cloudlet_key":{
-                        "operator_key":{"name":"TDG"},
-                        "name":"mexplat-stage-hamburg-cloudlet"
-                    },
-                    "developer":"MobiledgeX"
-                },
-                "selector":valid,
-                "starttime":moment.utc().subtract(24, 'hours').format(),
-                "endtime":moment.utc().subtract(0, 'hours').format()
-            }
-
-        }
-    )
-    */
-
-
-    /*
-    const now = new Date()
-    const nowCopy = new Date()
-    const then = moment(nowCopy).subtract(20, "minutes").toDate()
-
-    "starttime":moment.utc().subtract(1440, 'minutes').format(),
-    "endtime":moment.utc().subtract(0, 'minutes').format()
-     */
 
 
     makeFormCluster = (inst, valid, store) => (
@@ -333,28 +291,7 @@ class PageDetailViewer extends React.Component {
 
 
 
-    /*
-     http --auth-type=jwt --auth=$SUPERPASS POST
-     https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app <<<
-     '{"region":"US",
-         "appinst":{
-             "app_key":{
-                "developer_key":{"name":"MobiledgeX"},
-                "name":"mobiledgexsdkdemo",
-                "version":"1.0"
-             },
-             "cluster_inst_key":{
-                "cluster_key":{"name":"metricsTest"},
-                "cloudlet_key":{
-                    "name":"mexplat-stage-hamburg-cloudlet",
-                    "operator_key":{"name":"TDG"}
-                }
-            }
-        },
-        "selector":"cpu",
-        "last":20
-    }'
-     */
+
     getAppName = (name) => {
         let lowerCaseName = name.toLowerCase()
         return lowerCaseName.replace(/\s+/g, '');
@@ -387,32 +324,32 @@ class PageDetailViewer extends React.Component {
 
 
     /*
-    makeFormApp = (inst, valid, store) => (
+    http --verify=false --auth-type=jwt --auth=$SUPERPASS POST
+    https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cloudlet <<<
+    '{"region":"EU",
+        "cloudlet":{
+            "operator_key":{"name":"TDG"},
+            "name":"frankfurt-eu"
+        },
+        "selector":"utilization",
+        "last":2
+    }'
+    */
+    makeFormCloudlet =(inst, valid, store) => (
         {
-            "token":store,
-            "params":{
-                "region":"US",
-                "appinst":{
-                    "app_key":{
-                        "developer_key":{"name":"MobiledgeX"},
-                        "name":"mobiledgexsdkdemo",
-                        "version":"1.0"
-                    },
-                    "cluster_inst_key":{
-                        "cluster_key":{"name":"autoclustermobiledgexsdkdemo"},
-                        "cloudlet_key":{
-                            "name":"mexplat-stage-hamburg-cloudlet",
-                            "operator_key":{"name":"TDG"}
-                        }
-                    }
+            'token':store,
+            'params':{
+                "region":inst.Region,
+                "cloudlet":{
+                    "operator_key":{"name":inst.Operator},
+                    "name":inst.CloudletName
                 },
                 "selector":valid,
-                "starttime":moment.utc().subtract(48, 'hours').format(),
-                "endtime":moment.utc().subtract(24, 'hours').format()
+                "last":2
             }
         }
+
     )
-    */
 
     componentDidMount() {
         let userRole = localStorage.getItem('selectRole');
@@ -432,7 +369,7 @@ class PageDetailViewer extends React.Component {
                 this.props.handleLoadingSpinner(false)
             }
 
-            console.log('20190904 will receive props = ', nextProps)
+            console.log('20190923 will receive props = ', nextProps.data)
     }
     componentWillUnmount() {
         console.log('20190904 unmount..')

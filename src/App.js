@@ -73,6 +73,7 @@ const DashboardContainer = ( props, props2) => {
     if(self.routed){
         self.profileView();
     } else {
+        if(storage_data) Service.getCurrentUserInfo('currentUser', {}, self.receiveCurrentUser, self)
     }
 
 
@@ -206,7 +207,7 @@ class App extends Component {
     receiveCurrentUser(result) {
         if(result.data && result.data.message) {
 
-
+            console.log('20190924 current user...', result.data )
 
             if(result.data.message.indexOf('expired') > -1) {
                 setTimeout(() => self.goToNext('/logout',''),2000);
@@ -266,6 +267,7 @@ class App extends Component {
         //     let params = {params:{page:'pg='+nextProps.clickTab}}
         //     DashboardContainer({mainPath:nextProps.siteName.site.mainPath}, {match:params})
         // }
+        console.log('20190924 is app', nextProps)
         if(nextProps.siteName) {
             //this.setState({selectedCloudlet:nextProps.siteName.cloudlet})
         }

@@ -214,7 +214,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
     }
 
-    onChangeFormState = (state) => {
+    onChangeFormState = (state,value) => {
         let organizKeys = [];
         let flavorKeys = [];
         let regions = aggregate.groupBy(_self.state.cloudletData, 'Region')
@@ -296,6 +296,18 @@ class SiteFourCreateInstForm extends React.PureComponent {
             }, 500)
         } else if(state === 'DeploymentType') {
             _self.setState({activeIndex:0})
+        } else if(state === 'Cloudlet'){
+            this.state.cloudletData.map((item) => {
+                if(item.Region === this.props.selectedRegion && item.Operator === this.props.selectedOperator){
+                    value.map((_item) => {
+                        if(_item == item.CloudletName){
+                            let location = {region:'',name:'', lat:String(item.CloudletLocation.latitude), long:String(item.CloudletLocation.longitude)};
+                            this.props.handleGetRegion(location);
+                        }
+                    })
+                    if(value.length == 0) this.setState({locData:[]})
+                }
+            })
         }
     }
     setFlavorNode(keys, flavor) {
@@ -349,6 +361,9 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
 
     }
+    componentWillUnmount(){
+        this.props.handleGetRegion(null);
+    }
     componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.data) this.setState({devData: nextProps.data, keys:nextProps.keys})
         //reset cluster and node count
@@ -358,16 +373,17 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
         // case click a region on the map
         if(nextProps.getRegion) {
-            console.log("ssregionregions",nextProps.getRegion)
+            let data = {CloudletLocation: {latitude: Number(nextProps.getRegion.lat), longitude: Number(nextProps.getRegion.long)}};
             this.setState({
                 regionInfo:nextProps.getRegion,
-                locData:[{CloudletLocation: {latitude: Number(nextProps.getRegion.lat), longitude: Number(nextProps.getRegion.long)}}],
+                locData:(localStorage.selectMenu == 'Cluster Instances')?this.state.locData.concat(data):[data],
                 locationLat:nextProps.getRegion.lat,
                 locationLong:nextProps.getRegion.long
             })
             // if(nextProps.getRegion.lat == '' && nextProps.getRegion.long == ''){
             //     this.setState({locData:[]})
             // }
+            this.props.handleGetRegion(null);
         }
 
     }
@@ -382,8 +398,8 @@ class SiteFourCreateInstForm extends React.PureComponent {
     }
 
     clusterHide = (value) => {
-        if(value === 'Docker' && panes.length == 2) {
-            panes.pop();
+        if(value === 'Docker') {
+            //panes.pop();
             this.setState({clusterShow:false})
         }
         if(value === 'Kubernetes' && panes.length == 1){

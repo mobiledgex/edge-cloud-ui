@@ -316,7 +316,7 @@ class InsideListView extends React.Component {
                                             Launch
                                             </Button>:null}
                                         {/* {(this.props.siteId == 'App')?
-                                            (String(item[value]).indexOf('Editable') > -1 && localStorage.selectRole === 'AdminManager') ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button> : null:null} */}
+                                            (String(item[value]).indexOf('Editable') > -1) ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button> : null:null} */}
                                         <Button disabled={(localStorage.selectMenu !== 'Organizations')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>

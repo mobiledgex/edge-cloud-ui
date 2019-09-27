@@ -120,7 +120,7 @@ export default class MonitoringViewer extends React.Component {
         this.netCnt = 0;
         this.tcpCnt = 0;
         this.udpCnt = 0;
-        console.log('20190824 feedData-- ', data)
+        console.log('20190923 feedData-- ', data)
         if(data && data.mData.length) {
             data.mData.map(item => {
                 if(item.name.indexOf('cpu') > -1) {
