@@ -429,10 +429,25 @@ export function getMCService(resource, body, callback, self) {
         serviceId: Math.round(Math.random()*10000)
     }))
         .then(function (response) {
-
+            console.log('request get response ===== ', response)
             let parseData = null;
+
+            //test expired
+            //response.data.error = 'has expired jwt';
+
+
             if(response.data) {
-                parseData = JSON.parse(JSON.stringify(response));
+                if(response.data.error) {
+                    if(response.data.error.indexOf('expired') > -1) {
+                        callback({error:'Certificated has expired!'}, resource, self);
+                        return;
+                    } else {
+                        callback({error:response.data.error}, resource, self);
+                        return;
+                    }
+                } else {
+                    parseData = JSON.parse(JSON.stringify(response));
+                }
             } else {
                 parseData = response;
             }

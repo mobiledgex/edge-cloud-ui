@@ -145,7 +145,7 @@ class SiteFourPageCloudlet extends React.Component {
             (viewMode === 'listView')?
             <MapWithListView devData={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></MapWithListView>
             :
-            <PageDetailViewer data={this.state.detailData}/>
+            <PageDetailViewer data={this.state.detailData} page='cloudlet'/>
         );
     }
 

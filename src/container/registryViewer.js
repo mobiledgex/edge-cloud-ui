@@ -76,11 +76,11 @@ class RegistryViewer extends React.Component {
             validateError:[],
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU']},
-                    'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Organization or Company Name that a Developer is part of', active:true},
-                    'AppName':{label:'App Name', type:'RenderInputApp', necessary:true, tip:'App name', active:true},
-                    'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:'App version', active:true},
-                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (Kubernetes, Docker, or VM)', active:true, items:['Docker', 'Kubernetes', 'VM']},
+                    'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU'], editDisabled:true},
+                    'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Organization or Company Name that a Developer is part of', active:true, editDisabled:true},
+                    'AppName':{label:'App Name', type:'RenderInputApp', necessary:true, tip:'App name', active:true, editDisabled:true},
+                    'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:'App version', active:true, editDisabled:true},
+                    'DeploymentType':{label:'Deployment Type', type:'RenderSelect', necessary:true, tip:'Deployment type (Kubernetes, Docker, or VM)', active:true, items:['Docker', 'Kubernetes', 'VM'], editDisabled:true},
                     'ImageType':{label:'Image Type', type:'RenderDT', necessary:true, tip:'ImageType specifies image type of an App',items:''},
                     'ImagePath':{label:'Image Path', type:'RenderPath', necessary:true, tip:'URI of where image resides', active:true,items:''},
                     'AuthPublicKey':{label:'Auth Public Key', type:'RenderTextArea', necessary:false, tip:'auth_public_key', active:true},
@@ -136,6 +136,7 @@ class RegistryViewer extends React.Component {
         _self.props.handleLoadingSpinner(false);
         this.setState({toggleSubmit:false})
         if(result.data.error) {
+            if(result.data.error == 'Key already exists') result.data.error = 'App already exists';
             this.props.handleAlertInfo('error',result.data.error)
         } else {
             //this.props.gotoApp();
@@ -276,6 +277,34 @@ class RegistryViewer extends React.Component {
         _self.setState({devoptionsf: arr});
     }
 
+    updateFields(initData,updateData){
+        let fieldArr = [];
+        const fields = {
+            AppFieldImagePath:"4",
+            AppFieldAccessPorts:"7",
+            AppFieldDefaultFlavorName:"9.1",
+            AppFieldAuthPublicKey:"12",
+            AppFieldCommand:"13",
+            AppFieldDeploymentManifest:"16",
+            AppFieldAndroidPackageName:"18",
+            AppFieldScaleWithCluster:"22",
+            AppFieldOfficialFqdn:"25"
+        }
+
+        if(initData.ImagePath !== updateData.image_path) fieldArr.push(fields.AppFieldImagePath)
+        if(initData.Ports !== updateData.access_ports) fieldArr.push(fields.AppFieldAccessPorts)
+        if(initData.DefaultFlavor !== updateData.default_flavor.name) fieldArr.push(fields.AppFieldDefaultFlavorName)
+        if(initData.AuthPublicKey !== updateData.auth_public_key) fieldArr.push(fields.AppFieldAuthPublicKey)
+        if(initData.Command !== updateData.command) fieldArr.push(fields.AppFieldCommand)
+        if(initData.DeploymentMF !== updateData.deployment_manifest) fieldArr.push(fields.AppFieldDeploymentManifest)
+        if(initData.PackageName !== updateData.android_package_name) fieldArr.push(fields.AppFieldAndroidPackageName)
+        if(initData.ScaleWithCluster !== updateData.scale_with_cluster) fieldArr.push(fields.AppFieldScaleWithCluster)
+        if(initData.DefaultFQDN !== updateData.official_fqdn) fieldArr.push(fields.AppFieldOfficialFqdn)
+
+        return fieldArr;
+
+    }
+
 
     componentDidMount() {
         //edit(call flavorlist)
@@ -314,9 +343,7 @@ class RegistryViewer extends React.Component {
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
-        console.log("updateCompete111")
         if(nextProps.submitValues && !this.state.toggleSubmit) {
-            console.log("updateCompete222")
             const apps = ['Region','OrganizationName','AppName','Version','DeploymentType','DefaultFlavor']
             let error = [];
             apps.map((item) => {
@@ -324,13 +351,12 @@ class RegistryViewer extends React.Component {
                     error.push(item)
                 }
             })
-
             if(nextProps.formApps.submitSucceeded && error.length == 0){
-                console.log("updateCompete333")
                 let serviceBody = {}
                 let serviceResource = 'CreateApp'
                 if(nextProps.editMode){
                     serviceResource = 'UpdateApp'
+                    nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData,nextProps.submitValues.app)
                 }
                 this.setState({toggleSubmit:true,validateError:error});
                 this.props.handleLoadingSpinner(true);
@@ -339,7 +365,7 @@ class RegistryViewer extends React.Component {
                     "token":store ? store.userToken : 'null',
                     "params": nextProps.submitValues
                 }
-                console.log("updateCompete444",serviceResource,":::",serviceBody,":::",)
+                
                 services.createNewApp(serviceResource, serviceBody, this.receiveResult)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
