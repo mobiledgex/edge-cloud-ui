@@ -280,7 +280,7 @@ class SiteFour extends React.Component {
     receiveAdminInfo = (result) => {
         this.props.handleRoleInfo(result.data)
         if(result.error) {
-
+            this.gotoUrl('/logout','')
         } else {
             result.data.map((item,i) => {
                 if(item.role.indexOf('Admin') > -1){
