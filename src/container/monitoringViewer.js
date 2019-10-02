@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, Header, Segment, Container } from "semantic-ui-react";
 import TimeSeries from '../charts/plotly/timeseries';
+import historicalColumn from '../charts/plotly/historicalColumn';
 import * as d3 from 'd3';
 import './styles.css'
 
@@ -8,6 +9,9 @@ export default class MonitoringViewer extends React.Component {
     state = {
         mProp : {
             timeseriesDataCPUMEM:[
+                [],[]
+            ],
+            timeseriesDataCPUUSE:[
                 [],[]
             ],
             timeseriesCPUMEM:[
@@ -99,18 +103,34 @@ export default class MonitoringViewer extends React.Component {
         this.setState({lastUDP: [this.state.mProp['timeseriesDataUDP'][0][this.udpCnt-1], this.state.mProp['timeseriesDataUDP'][1][this.udpCnt-1] ]})
     }
     bytesToString =  (bytes, inst) => {
-        console.log("20190812 bytes..",bytes, ":", inst)
+        //console.log("20190812 bytes..",bytes, ":", inst)
         // One way to write it, not the prettiest way to write it.
 
         var fmt = d3.format('.0f');
-        if (bytes < 1024) {
+        if (bytes < 1000) {
             return fmt(bytes) + ' B';
-        } else if (bytes < 1024 * 1024) {
-            return fmt(bytes / 1024) + ' kB';
-        } else if (bytes < 1024 * 1024 * 1024) {
-            return fmt(bytes / 1024 / 1024) + ' MB';
+        } else if (bytes < 1000 * 1000) {
+            return fmt(bytes / 1000) + ' kB';
+        } else if (bytes < 1000 * 1000 * 1000) {
+            return fmt(bytes / 1000 / 1000) + ' MB';
         } else {
-            return fmt(bytes / 1024 / 1024 / 1024) + ' GB';
+            return fmt(bytes / 1000 / 1000 / 1000) + ' GB';
+        }
+    }
+    gigabytesToString =  (bytes, inst) => {
+        console.log("20190812 bytes..",bytes, ":", inst)
+        // One way to write it, not the prettiest way to write it.
+        var p = d3.precisionFixed(1),
+            fmt = d3.format("." + p + "f");
+
+        if (bytes < 1000) {
+            return fmt(bytes) + ' KB';
+        } else if (bytes < 1000 * 1000) {
+            return fmt(bytes / 1000) + ' MB';
+        } else if (bytes < 1000 * 1000 * 1000) {
+            return fmt(bytes / 1000 / 1000) + ' GB';
+        } else {
+            return fmt(bytes / 1000 / 1000 / 1000) + ' TB';
         }
     }
     feedData(data) {
@@ -120,7 +140,7 @@ export default class MonitoringViewer extends React.Component {
         this.netCnt = 0;
         this.tcpCnt = 0;
         this.udpCnt = 0;
-        console.log('20190923 feedData-- ', data)
+
         if(data && data.mData.length) {
             data.mData.map(item => {
                 if(item.name.indexOf('cpu') > -1) {
@@ -140,7 +160,45 @@ export default class MonitoringViewer extends React.Component {
         }
     }
 
+    feedDataCloudlet(data) {
+        this.cpuCnt = 0;
+        this.memCnt = 0;
+        this.diskCnt = 0;
+        this.netCnt = 0;
+        this.tcpCnt = 0;
+        this.udpCnt = 0;
+
+        console.log('20190930 feedData-- ', data)
+        if(data && data.length) {
+            this.setState({lastCPU: data[0].values['cmsn']['vCpuUsed']})
+            this.setState({lastMEM: data[0].values['cmsn']['memUsed'] * 1000})
+            this.setState({lastDISK: data[0].values['cmsn']['diskUsed'] * (1000 * 1000)})
+        }
+        if(data.length){
+            data.map((val) => {
+                if(val.values['cmsn']['vCpuUsed']) {
+                    this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt] = parseFloat(val.values['cmsn']['vCpuUsed']).toFixed(2);
+                    this.state.mProp['timeseriesCPUMEM'][0][this.cpuCnt] = val.values['time'];
+                    this.cpuCnt ++;
+                }
+                if(val.values['cmsn']['memUsed']) {
+                    this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt] = this.bytesToString(val.values['cmsn']['memUsed'] * 1000, 'cloudlet');
+                    this.memCnt ++;
+                }
+                if(val.values['cmsn']['diskUsed']) {
+                    this.state.mProp['timeseriesDataDISK'][0][this.diskCnt] = this.gigabytesToString(val.values['cmsn']['diskUsed']);
+                    this.state.mProp['timeseriesDISK'][0][this.diskCnt] = val.values['time'];
+                    this.diskCnt ++;
+                }
+
+            });
+        }
+
+        this.setState({props: this.state.mProp})
+    }
+
     componentDidMount() {
+
         if(this.props.data) {
             this.setState({data:this.props.data})
             this.feedData(this.props.data)
@@ -148,7 +206,14 @@ export default class MonitoringViewer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        this.feedData(nextProps.data);
+        console.log('20190930 monitoring viewer nextProps....', nextProps)
+        if(nextProps.data.page === 'cloudlet' && nextProps.data.mData.length) {
+            this.feedDataCloudlet(nextProps.data.mData);
+        } else {
+            this.feedData(nextProps.data);
+        }
+
+
     }
 
     render() {
@@ -160,7 +225,7 @@ export default class MonitoringViewer extends React.Component {
                             <Header>
                                 CPU
                             </Header>
-                            <Container className="cpu">{this.state.lastCPU + '%'}</Container>
+                            <Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?' Count' : '%')}</Container>
                         </Segment>
                         <Segment className="childPercentage" inverted>
                             <Header>
@@ -168,7 +233,7 @@ export default class MonitoringViewer extends React.Component {
                             </Header>
                             <Container className="memory">
                                 {
-                                    (this.props.data.page !== 'appInst')?this.state.lastMEM+'%':this.bytesToString(this.state.lastMEM, this.props.data.page, )
+                                    (this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?this.state.lastMEM+'%':this.bytesToString(this.state.lastMEM, this.props.data.page, )
                                 }
 
                             </Container>
@@ -180,28 +245,34 @@ export default class MonitoringViewer extends React.Component {
                                     <Header>
                                         DISK
                                     </Header>
-                                    <Container className="disk">{this.state.lastDISK + '%'}</Container>
+                                    <Container className="disk">{this.state.lastDISK + (this.props.data.page === 'cloudlet')?this.gigabytesToString(this.state.lastDISK):'%'}</Container>
                                 </Segment>
                                 :
                                 null
                         }
-                        <Segment className="childPercentage" inverted>
-                            <Header>
-                                NETWORK
-                            </Header>
-                            <div className="content">
-                                <Container className="network_rcv">
-                                    <div className="title">RCV</div>
-                                    {this.bytesToString(this.state.lastNET[0]) + '/sec'}
-                                </Container>
-                                <Container className="network_snd">
-                                    <div className="title">SND</div>
-                                    {this.bytesToString(this.state.lastNET[1]) + '/sec'}
-                                </Container>
-                            </div>
-                        </Segment>
                         {
-                            (this.props.data.page !== 'appInst')?
+                            (this.props.data.page !== 'cloudlet')?
+                                <Segment className="childPercentage" inverted>
+                                    <Header>
+                                        NETWORK
+                                    </Header>
+                                    <div className="content">
+                                        <Container className="network_rcv">
+                                            <div className="title">RCV</div>
+                                            {this.bytesToString(this.state.lastNET[0])}
+                                        </Container>
+                                        <Container className="network_snd">
+                                            <div className="title">SND</div>
+                                            {this.bytesToString(this.state.lastNET[1])}
+                                        </Container>
+                                    </div>
+                                </Segment>
+                                :
+                                null
+                        }
+
+                        {
+                            (this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?
                                 <Segment className="childPercentage" inverted>
                                     <Header>
                                         TCP
@@ -221,7 +292,7 @@ export default class MonitoringViewer extends React.Component {
                             null
                         }
                         {
-                            (this.props.data.page !== 'appInst')?
+                            (this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?
                                 <Segment className="childPercentage" inverted>
                                     <Header>
                                         UDP
@@ -244,9 +315,21 @@ export default class MonitoringViewer extends React.Component {
                     </div>
                 </Grid.Column>
                 <Grid.Column style={{width:'100%', height:400}}>
-                    <Header>CPU & MEMORY</Header>
-                    <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} showLegend={true}
-                                margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                    {
+                        (this.props.data.page === 'cloudlet')?
+                            <div style={{width:'100%', height:400}}>
+                                <Header>CPU</Header>
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} showLegend={true}
+                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                            </div>
+                            :
+                            <div style={{width:'100%', height:400}}>
+                                <Header>CPU & MEMORY</Header>
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} showLegend={true}
+                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                            </div>
+                    }
+
                     {
                         (this.props.data.page !== 'appInst')?
                             <div style={{width:'100%', height:400}}>
@@ -257,13 +340,20 @@ export default class MonitoringViewer extends React.Component {
                         :
                         null
                     }
-                    <div style={{width:'100%', height:400}}>
-                        <Header>NETWORK</Header>
-                        <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataNET} series={this.state.mProp.timeseriesNET} showLegend={true}
-                                margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelNET} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
-                    </div>
                     {
-                        (this.props.data.page !== 'appInst')?
+                        (this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?
+                            <div style={{width:'100%', height:400}}>
+                                <Header>NETWORK</Header>
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataNET} series={this.state.mProp.timeseriesNET} showLegend={true}
+                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelNET} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                            </div>
+                            :
+                            null
+
+                    }
+
+                    {
+                        (this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?
                             <div style={{width:'100%', height:400}}>
                                 <Header>TCP</Header>
                                 <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataTCP} series={this.state.mProp.timeseriesTCP} showLegend={true}
@@ -273,7 +363,7 @@ export default class MonitoringViewer extends React.Component {
                             null
                     }
                     {
-                        (this.props.data.page !== 'appInst')?
+                        (this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?
                             <div style={{width:'100%', height:400, marginTop:20}}>
                                 <Header>UDP</Header>
                                 <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataUDP} series={this.state.mProp.timeseriesUDP} showLegend={true}

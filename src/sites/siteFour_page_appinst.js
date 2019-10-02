@@ -134,7 +134,7 @@ class SiteFourPageAppInst extends React.Component {
     }
 
     getDataDeveloper = (region) => {
-        console.log("getDataDevelopergetDataDevelopergetDataDeveloper",region)
+        this.props.handleLoadingSpinner(true);
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let serviceBody = {}
         _self.loadCount = 0;

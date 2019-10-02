@@ -171,7 +171,6 @@ export default class PopLegendViewer extends React.Component {
         this.props.close()
     }
     getUserRole (type) {
-        console.log('20190911 item..', type)
         return (localStorage.selectRole == 'AdminManager') ? 'Manage' :
             (localStorage.selectRole == 'DeveloperManager') ? roles.Developer['Manager'][type] :
                 (localStorage.selectRole == 'DeveloperContributor') ? roles.Developer['Contributor'][type] :

@@ -408,7 +408,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
         } 
     }
     handleChangeLong = (e, {value}) => {
-        console.log('20190902 value long = ', value)
         // if(value == '-') {
         //     this.setState({ locationLong: value })
         //     return
@@ -428,7 +427,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
         this.locationValue(onlyNum,this.state.locationLat)
     }
     handleChangeLat = (e, {value}) => {
-        console.log('20190902 value lat = ', value,":::",/[^-0-9]/g.test(value))
         let onlyNum = value;
         if(onlyNum > 90 || onlyNum < -90 || /[^-0-9]/g.test(onlyNum)) {
             this.setState({laterror:'-90 ~ 90'})
@@ -443,7 +441,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
         this.locationValue(this.state.locationLong,onlyNum)
     }
     locationValue = (long,lat) => {
-        console.log('20190902 long latㅇㅇㅇ === ', long, lat,":::",this.props.getRegion)
         if(long && lat){
             this.setState({ locationLongLat: [Number(long),Number(lat)] })
 

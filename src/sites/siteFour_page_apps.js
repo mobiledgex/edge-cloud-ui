@@ -120,7 +120,7 @@ class SiteFourPageApps extends React.Component {
     }
 
     getDataDeveloper = (token, region) => {
-
+        this.props.handleLoadingSpinner(true);
         let serviceBody = {}
         _self.loadCount = 0;
         this.setState({devData:[]})

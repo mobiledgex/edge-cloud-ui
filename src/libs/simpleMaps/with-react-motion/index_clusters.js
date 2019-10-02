@@ -67,6 +67,7 @@ class ClustersMap extends Component {
             oldCountry:'',
             unselectCity:'',
             clickCities:[],
+            saveMarker:[],
             //blink
             keyName:''
             //-blink
@@ -135,7 +136,8 @@ class ClustersMap extends Component {
             })
         }
         this.setState({
-            clickCities:clickMarker
+            clickCities:clickMarker,
+            saveMarker:clickMarker
         })
         this.props.handleChangeClickCity(clickMarker);
         this.props.handleChangeCity(city)
@@ -348,7 +350,6 @@ class ClustersMap extends Component {
             _self.blinkAnimationMarker('rsm-markers', _self.dir)
         }, 900)
 
-
         if(_self.props.tabIdx === 'pg=1'){
             _self.handleCityClick({ "name": this.state.selectedCity, "coordinates": [2.1734, 41.3851], "population": 37843000, "cost":3 });
         }
@@ -359,7 +360,6 @@ class ClustersMap extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('20190902 props in the map map map map... ', nextProps.parentProps.deleteReset)
         let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
         function reduceUp(value) {
             return Math.round(value)
@@ -424,13 +424,41 @@ class ClustersMap extends Component {
             this.props.handleDeleteReset(false);
         }
 
+        if(nextProps.changeRegion !== 'All' && nextProps.parentProps.clickCity.length){
+            let clickMarker = [];
+            let cName = '';
+            let toggle = false;
+            if(nextProps.parentProps.siteId == 'Cloudlet') cName = 'CloudletName';
+            else if(nextProps.parentProps.siteId == 'ClusterInst') cName = 'ClusterName';
+            else if(nextProps.parentProps.siteId == 'appinst') cName = 'AppName';
+
+            nextProps.parentProps.devData.map((item) => {
+                if(nextProps.changeRegion == item.Region){
+                    nextProps.parentProps.clickCity.map((_item) => {
+                        if(_item.name == item[cName] && Math.round(_item.coordinates[0]) == Math.round(item.CloudletLocation.longitude) && Math.round(_item.coordinates[1]) == Math.round(item.CloudletLocation.latitude) && !toggle){
+                            clickMarker.push({ "name": item[cName], "coordinates": [item.CloudletLocation.longitude, item.CloudletLocation.latitude], "population": 17843000, "cost":1 });
+                            toggle = true;
+                        }
+                    })
+                                        
+                }
+                toggle = false;
+            })   
+            if(clickMarker.length){
+                this.setState({clickCities:clickMarker});
+            } else {
+                this.setState({clickCities:[]});
+            }          
+        } else {
+            this.setState({clickCities:this.state.saveMarker});
+        }
+
     }
     componentWillUnmount() {
         clearInterval(this.interval)
     }
 
     render() {
-
         return (
             <div>
                 <div className="zoom-inout-reset-clusterMap" style={{left:8, bottom:4, position:'absolute', display:'block'}}>
@@ -590,7 +618,8 @@ const mapStateToProps = (state, ownProps) => {
         tabIdx: state.siteChanger.site.subPath,
         itemLabel: state.computeItem.item,
         getRegion: state.getRegion,
-        deleteReset
+        deleteReset,
+        changeRegion : state.changeRegion.region?state.changeRegion.region:null
     };
 };
 const mapDispatchProps = (dispatch) => {

@@ -103,7 +103,6 @@ class SiteFourPageCloudlet extends React.Component {
     }
     receiveResult = (result) => {
         let regionGroup = reducer.groupBy(result, 'Region');
-        this.props.handleLoadingSpinner(false);
         if(Object.keys(regionGroup)[0]) {
             this._cloudletDummy = this._cloudletDummy.concat(result)
         }
@@ -117,9 +116,11 @@ class SiteFourPageCloudlet extends React.Component {
     }
     countJoin() {
         let cloudlet = this._cloudletDummy;
+        this.props.handleLoadingSpinner(false);
         _self.setState({devData:cloudlet})
     }
     getDataDeveloper = (region) => {
+        this.props.handleLoadingSpinner(true);
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         this._cloudletDummy = [];

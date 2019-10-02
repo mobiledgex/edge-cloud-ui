@@ -70,7 +70,7 @@ class TimeSeries extends React.Component {
                             data={this.state.chartData}
                             layout={{
                                 title: null,
-                                autosize: false,
+                                autosize: true,
                                 width:width-this.props.marginRight,
                                 height:height,
                                 margin:this.props.margin,
@@ -107,7 +107,8 @@ class TimeSeries extends React.Component {
                                     zerolinewidth: 1,
                                     linecolor: 'rgba(255,255,255,.2)',
                                     linewidth: 1,
-                                    color: 'rgba(255,255,255,.4)'
+                                    color: 'rgba(255,255,255,.4)',
+                                    rangemode: 'tozero'
                                 },
                                 yaxis2:{
                                     showgrid: true,
@@ -126,7 +127,8 @@ class TimeSeries extends React.Component {
                                     overlaying: 'y',
                                     side: 'right',
                                     position:this.props.y2Position,
-                                    range:this.props.y2Range
+                                    range:this.props.y2Range,
+                                    rangemode: 'tozero'
                                 },
                                 yaxis3:{
                                     showgrid: true,

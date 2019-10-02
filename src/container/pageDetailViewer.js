@@ -209,7 +209,6 @@ class PageDetailViewer extends React.Component {
     generateDOM(open, dimmer, data, mData, keysData, hideHeader, region, page) {
 
         let panelParams = {data:data, mData:mData, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
-        console.log('20190904 gen dom..', panelParams)
         return layout.map((item, i) => (
 
             (i === 0)?
@@ -250,7 +249,6 @@ class PageDetailViewer extends React.Component {
     }
 
     getInstanceHealth (page, data) {
-                console.log('20190923 page=', page)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         _self.activeInterval = setInterval(
             () => {
@@ -263,7 +261,6 @@ class PageDetailViewer extends React.Component {
     }
 
     clearInterval() {
-                console.log('20190904 clear interval 000 000 000 =',_self.activeInterval)
         if(_self.activeInterval) clearInterval(_self.activeInterval);
     }
 
@@ -345,7 +342,7 @@ class PageDetailViewer extends React.Component {
                     "name":inst.CloudletName
                 },
                 "selector":valid,
-                "last":2
+                "last":200
             }
         }
 
@@ -353,7 +350,6 @@ class PageDetailViewer extends React.Component {
 
     componentDidMount() {
         let userRole = localStorage.getItem('selectRole');
-        console.log('20190904 userRole == ', userRole, 'store..', localStorage.selectRole, 'page=', this.props.page)
         this.setState({userRole:localStorage.selectRole})
         this.props.handleLoadingSpinner(true)
 
@@ -369,10 +365,8 @@ class PageDetailViewer extends React.Component {
                 this.props.handleLoadingSpinner(false)
             }
 
-            console.log('20190923 will receive props = ', nextProps.data)
     }
     componentWillUnmount() {
-        console.log('20190904 unmount..')
         this.initData = false;
         this.clearInterval();
     }
@@ -429,7 +423,6 @@ const mapStateToProps = (state) => {
     if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
         viewMode = state.changeViewMode.mode.viewMode;
     }
-    console.log('20190904 state to props..', state)
     return {
         viewMode:viewMode,
         loading:(state.loadingSpinner)?state.loadingSpinner.loading:null

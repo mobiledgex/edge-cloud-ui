@@ -105,7 +105,7 @@ const renderInputApp = field => (
             label={field.label}
             placeholder={'Please use numbers and English letters only'}
             onChange={(e, { value }) => {
-                const reg = /^[0-9a-zA-Z_][-0-9a-zA-Z._]*$/;
+                const reg = /^[0-9a-zA-Z_][-0-9a-zA-Z_]*/;
                 if(reg.test(value) || value == ''){
                     field.input.onChange(value)
                 }

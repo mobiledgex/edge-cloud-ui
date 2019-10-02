@@ -62,8 +62,12 @@ class VerticalLinearStepper extends React.Component {
             this.setState({steps:['Created successfully'],activeStep:1})
             clearInterval(this.AlertInterval)
         } else if(this.props.item.State == 10 || this.props.item.State == 12) {
-            this.setState({steps:['DeletePrepare', 'Deleting'],activeStep:1})
-            clearInterval(this.AlertInterval)
+            if(this.props.site == 'Cloudlet'){
+                computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusData)
+            } else{
+                this.setState({steps:['DeletePrepare', 'Deleting'],activeStep:1})
+                clearInterval(this.AlertInterval)
+            }
         } else  {
             this.setState({steps:['Create error'],activeStep:1})
         }

@@ -206,8 +206,16 @@ class AccountListView extends React.Component {
         let dName = 'd'
         let fromNow = moment(date).utc().startOf('day').fromNow();
         let darray = fromNow.split(' ')
+        console.log('20191001 compare date ... ', date,":", fromNow, ":", darray)
         if(parseInt(darray[0]) <= 1 && darray[1] === 'days') isNew = true;
+
         if(parseInt(darray[0]) <= 24 && darray[1] === 'hours') isNew = true; dName='h'
+        if(darray[0] === 'an' && darray[1] === 'hour') isNew = true; dName='h'
+
+        if(parseInt(darray[0]) <= 60 && darray[1] === 'minutes') isNew = true; dName='m'
+
+        if(parseInt(darray[0]) <= 60 && darray[1] === 'seconds') isNew = true; dName='s'
+
         return {new:isNew, days:darray[0]+dName};
     }
 

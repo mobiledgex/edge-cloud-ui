@@ -837,8 +837,8 @@ exports.CreateCloudlet = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show CreateCloudlet...', error);
-            res.json(error)
+            console.log('error show CreateCloudlet...', error.response.statusText);
+            res.json({error:String(error.response.statusText)})
         });
 }
 

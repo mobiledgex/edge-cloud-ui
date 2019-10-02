@@ -83,7 +83,6 @@ class SiteFourPageAppInstReg extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-        console.log('20190909 new app inst', this.props.editable, nextProps.editObj)
 
         if(this.props.editable) {
             this.setState({edit:this.props.editable})

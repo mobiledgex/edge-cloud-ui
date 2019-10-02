@@ -8,6 +8,7 @@ import FormatComputeCloudlet from './formatter/formatComputeCloudlet';
 import FormatComputeApp from './formatter/formatComputeApp';
 import FormatComputeOper from './formatter/formatComputeOperator';
 import FormatComputeInst from './formatter/formatComputeInstance';
+import FormatMonitorCloudlet from "./formatter/formatMonitorCloudlet";
 import FormatMonitorCluster from "./formatter/formatMonitorCluster";
 import FormatMonitorApp from "./formatter/formatMonitorApp";
 import FormatApplicationInfo from "./formatter/formatApplicationInfo";
@@ -124,8 +125,8 @@ export function getCloudletHealth(resource, callback) {
                 serviceId: Math.round(Math.random()*10000)
             })
                 .then(function (response) {
-                    resResults = resResults.concat(FormatMonitorCluster(response))
-
+                    resResults = resResults.concat(FormatMonitorCloudlet(response))
+                    console.log('20190930 formated cloudlet result === ', resResults)
                 })
                 .catch(function (error) {
                     try {

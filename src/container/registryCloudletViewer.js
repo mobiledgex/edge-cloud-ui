@@ -245,8 +245,7 @@ class RegistryCloudletViewer extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
         if(nextProps.submitValues && !this.state.toggleSubmit) {
-            
-            const cluster = ['Region','CloudletName','OperatorName','IPSupport','NumberOfDynamicIPs','PhysicalName','PlatformType'];
+            const cluster = ['Region','CloudletName','OperatorName','IPSupport','NumberOfDynamicIPs','PhysicalName','PlatformType','Latitude','Longitude'];
             let error = [];
             cluster.map((item) => {
                 if(!nextProps.validateValue[item]) {
@@ -258,9 +257,6 @@ class RegistryCloudletViewer extends React.Component {
             this.props.handleStateTutor('done');
 
             if(nextProps.formClusterInst.submitSucceeded && error.length == 0){
-
-                console.log("errorerrorerrorddd",nextProps.submitValues)
-
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);                
                 //service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit, nextProps.validateValue.Cloudlet)
@@ -340,10 +336,10 @@ const createFormat = (data,loc) => (
                 "name":data['CloudletName']
             },
             "location":{
-                // "latitude":Number(data['Latitude']),
-                // "longitude":Number(data['Longitude']),
-                "latitude":Number((loc)?loc.lat:0),
-                "longitude":Number((loc)?loc.long:0),
+                // "latitude":Number((loc)?loc.lat:0),
+                // "longitude":Number((loc)?loc.long:0),
+                "latitude":Number(data['Latitude']),
+                "longitude":Number(data['Longitude']),
                 "timestamp":{}
             },
             "ip_support":getInteger_ip(data['IPSupport']),
@@ -364,7 +360,7 @@ const mapStateToProps = (state) => {
     let selectedOperator = null;
     let selectedApp = null;
     let flavors = null;
-    let validateValue = null;
+    let validateValue = {};
     
     //TODO : 건희 20190902 새롭게 추가된 필드 'Cloudlet Type'데 대한 기능 구현 ()
     /**
@@ -384,10 +380,13 @@ const mapStateToProps = (state) => {
      "physical_name":"hamburg"
      "physical_name":"bonn"
      */
-
+    if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.getRegion.region){
+        state.form.createAppFormDefault.values.Latitude = state.getRegion.region.lat;
+        state.form.createAppFormDefault.values.Longitude = state.getRegion.region.long;
+    }
+    
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
-        console.log("enableValueenableValue",state.getRegion.region)
         submitVal = createFormat(enableValue,state.getRegion.region);
         validateValue = state.form.createAppFormDefault.values;
     }
