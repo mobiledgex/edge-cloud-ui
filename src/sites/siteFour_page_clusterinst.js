@@ -135,8 +135,6 @@ class SiteFourPageClusterInst extends React.Component {
     groupJoin(result,cmpt, rg){
         let regionGroup = reducer.groupBy(result, 'Region');
         
-
-        this.props.handleLoadingSpinner(false);
         if(Object.keys(regionGroup)[0]) {
             if(cmpt == 'clusterInst') this.clusterInstDummy = _self.clusterInstDummy.concat(result)
             else if(cmpt == 'cloudlet') this.cloudletDummy = _self.cloudletDummy.concat(result)
@@ -169,6 +167,7 @@ class SiteFourPageClusterInst extends React.Component {
                         }
                     })
                 })
+                this.props.handleLoadingSpinner(false);
                 _self.setState({devData:clusterInst})
             } catch(e) {
 
@@ -180,7 +179,7 @@ class SiteFourPageClusterInst extends React.Component {
     }
     
     getDataDeveloper = (region) => {
-        //_self.props.handleLoadingSpinner(true);
+        _self.props.handleLoadingSpinner(true);
         _self.loadCount = 0;
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         _self.clusterInstDummy = [];

@@ -357,7 +357,7 @@ class InsideListView extends React.Component {
                                     </Table.Cell>
                                 :
                                 (value === 'Ports')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
+                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer',wordBreak:'break-all'}} >
                                         {
                                             String(item[value]).toUpperCase()
                                         }

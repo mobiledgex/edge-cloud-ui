@@ -485,7 +485,6 @@ class SiteFour extends React.Component {
         this.setState({steps: orgaSteps.stepsZero})
     }
     componentWillReceiveProps(nextProps) {
-        console.log("20190924 this.props.changeStep",nextProps)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         this.setState({contWidth:(window.innerWidth-this.menuW)})
@@ -942,9 +941,9 @@ class SiteFour extends React.Component {
                                             this.state.headerTitle !== 'Flavors'
                                         )?this.getGuidePopup(this.state.headerTitle):null}
                                 </div>
-                                <div style={{position:'absolute', top:25, right:25}}>
+                                {/* <div style={{position:'absolute', top:25, right:25}}>
                                     {this.getHelpPopup(this.state.headerTitle)}
-                                </div>
+                                </div> */}
 
                             </Grid.Row>
                             {

@@ -395,7 +395,7 @@ class RegistryViewer extends React.Component {
                 ImagePath = ImagePath.replace('OrganizationName',(nextProps.formApps.values.DeploymentType == "VM")?nextProps.formApps.values.OrganizationName:nextProps.formApps.values.OrganizationName.toLowerCase())
             }
             if(nextProps.formApps.values.AppName) {
-                ImagePath = ImagePath.replace('AppName', nextProps.formApps.values.AppName.toLowerCase())
+                ImagePath = ImagePath.replace('AppName', nextProps.formApps.values.AppName.toLowerCase().replace(/(\s*)/g, ""))
             }
             if(nextProps.formApps.values.Version) {
                 ImagePath = ImagePath.replace('AppVersion',nextProps.formApps.values.Version.toLowerCase())

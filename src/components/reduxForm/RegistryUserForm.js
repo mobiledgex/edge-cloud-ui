@@ -109,7 +109,6 @@ class RegistryUserForm extends React.Component{
         this.emailValue = null
     }
     onHandleSubmit =(a,b)=> {
-        console.log('20190906 handle submit sign up ',a,b)
         //if  any has error as validation
         this.props.handleSubmit();
         if(_errors && Object.keys(_errors).length) {
@@ -125,7 +124,6 @@ class RegistryUserForm extends React.Component{
 
     }
     onChangeField =(a, b) => {
-        console.log('20190906 on change field ==', a, ':', b)
         if(a.target.name === 'username') this.usernameValue = null;
         if(a.target.name === 'email') this.emailValue = null;
         localStorage.setItem('userInfo',null);
@@ -135,7 +133,6 @@ class RegistryUserForm extends React.Component{
         //TODO : 20190906 이전 프롭스 다시 받아서 input filed에 다시 넣기
 
         let userInfo = localStorage.getItem('userInfo');
-        console.log('20190906 receive user info... ', userInfo)
         let userInfoObj = (userInfo)?JSON.parse(userInfo):null;
         if(userInfoObj) {
             this.usernameValue = userInfoObj.username;

@@ -149,7 +149,6 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                 this.setState({dataInit:true})
             }
         }
-        console.log('20190909 this.props.', this.props)
 
         if(nextProps.data.editMode && nextProps.data.editData && !this.state.editToggle){
             this.setState({editToggle:true, editDsb:true});

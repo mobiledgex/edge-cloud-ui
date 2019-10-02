@@ -79,6 +79,7 @@ class SiteFourPageUser extends React.Component {
         _self.setState({devData:reverseResult})
     }
     getDataDeveloper(token) {
+        this.props.handleLoadingSpinner(true);
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         services.getMCService('ShowUsers',{token:store ? store.userToken : 'null'}, _self.receiveResult)
     }

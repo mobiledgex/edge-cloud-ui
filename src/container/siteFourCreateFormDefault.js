@@ -131,6 +131,8 @@ class SiteFourCreateFormDefault extends React.Component {
     // data.map((dt) => {
     handleInitialize(data) {
         const initData = [];
+        data.Latitude = '';
+        data.Longitude = '';
         if(data.length){
 
         } else {
@@ -255,8 +257,6 @@ class SiteFourCreateFormDefault extends React.Component {
         const {  dimmer, selected, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat } = this.props;
         const { data, regKeys, fieldKeys } = this.state;
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
-        console.log('20190902 this.props.regionInfo ===>>>', this.props.regionInfo, 'dimmer=', dimmer)
-        console.log('20190902 longLoc ===>>>', longLoc, 'latLoc=', latLoc)
         return (
 
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
@@ -335,13 +335,13 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 <Grid.Row columns={2}>
                                                                     <Grid.Column><span>Latitude</span>
                                                                         <Field ref={latLoc} name='Latitude' component={renderLocationInput} placeholder={'-90 ~ 90'}
-                                                                                                            change={handleChangeLat} error={this.props.latError}
+                                                                                                            change={handleChangeLat} error={(this.props.validError.indexOf('Latitude') !== -1)?'Required':this.props.latError}
                                                                                                             initialValue={this.props.regionInfo.lat}
                                                                         />
                                                                         </Grid.Column>
                                                                     <Grid.Column><span>Longitude</span>
                                                                         <Field ref={longLoc} name='Longitude' component={renderLocationInput} placeholder={'-180 ~ 180'}
-                                                                                                            change={handleChangeLong} error={this.props.longError}
+                                                                                                            change={handleChangeLong} error={(this.props.validError.indexOf('Longitude') !== -1)?'Required':this.props.longError}
                                                                                                             initialValue={this.props.regionInfo.long}
                                                                         />
                                                                         </Grid.Column>
