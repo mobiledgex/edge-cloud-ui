@@ -424,7 +424,7 @@ class ClustersMap extends Component {
             this.props.handleDeleteReset(false);
         }
 
-        if(nextProps.changeRegion !== 'All' && nextProps.parentProps.clickCity.length){
+        if(nextProps.changeRegion !== 'All' && (nextProps.parentProps && nextProps.parentProps.clickCity && nextProps.parentProps.clickCity.length)){
             let clickMarker = [];
             let cName = '';
             let toggle = false;

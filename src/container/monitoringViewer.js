@@ -1,7 +1,8 @@
 import React from 'react';
 import { Grid, Header, Segment, Container } from "semantic-ui-react";
 import TimeSeries from '../charts/plotly/timeseries';
-import historicalColumn from '../charts/plotly/historicalColumn';
+import HistoricalColumn from '../charts/plotly/historicalColumn';
+//import MethodCallChart from "../charts/plotly/methodCallChart";
 import * as d3 from 'd3';
 import './styles.css'
 
@@ -341,7 +342,7 @@ export default class MonitoringViewer extends React.Component {
                         null
                     }
                     {
-                        (this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?
+                        (this.props.data.page !== 'cloudlet')?
                             <div style={{width:'100%', height:400}}>
                                 <Header>NETWORK</Header>
                                 <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataNET} series={this.state.mProp.timeseriesNET} showLegend={true}
