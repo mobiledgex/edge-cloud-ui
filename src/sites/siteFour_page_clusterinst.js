@@ -125,7 +125,16 @@ class SiteFourPageClusterInst extends React.Component {
 
     receiveResultClusterInst(result) {
         //_self.countObject[result[0]['Region']].push(result[0]['Region'])
-        _self.groupJoin(result,'clusterInst', result[0]['Region'])
+        console.log('20191004 ', result)
+        if(result.length) {
+            if(result[0]['Region'] === "") {
+                _self.props.handleLoadingSpinner(false);
+                //_self.props.handleAlertInfo('error', 'There is no data to display')
+            } else {
+
+            }
+            _self.groupJoin(result,'clusterInst', result[0]['Region'])
+        }
     }
     receiveResultCloudlet(result) {
         //_self.countObject[result[0]['Region']].push(result[0]['Region'])
