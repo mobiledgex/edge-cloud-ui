@@ -1,28 +1,31 @@
 import React, { Component } from 'react';
-import { Header, Divider } from 'semantic-ui-react';
 import { Motion, spring } from 'react-motion';
 import * as d3 from "d3";
-import RainbowCircle from './rainbowCircle';
 
 
 const formatComma = d3.format(",");
+const formatFloat = d3.format(".2f");
 const formatPercent = d3.format(".1f",".1f");
+let divid = 4 / 6; //파이를 1조각에서 6조각으로 더 나눔
+let ratio = (360 - 60)/360; // 원에서 하단 좌,우 30도 씩 총60도를 빼준 비율
+let availPie = 360 - 60;
+let rotateOffset = 180 - 30;
 class Gauge extends Component {
     constructor() {
         super();
         this.state = {
             degree: 0,
-            boardSrc:'/assets/gauge_bk_blue.png',
-            currentTemp:50,
+            boardSrc:'/assets/images/chart_gauge_out_circle.png',
+            currentTemp:0,
             label:'NO TITLE',
             unit:'',
             g: null
         }
         this.minTemper = 0;
-        this.maxTemper = 100;
-        this.roundBoards = ['/assets/gauge_bk_blue.png', '/assets/gauge_bk_yellow.png', '/assets/gauge_bk_orange.png', '/assets/gauge_bk_red.png']
+        this.maxTemper = 200;
+        this.roundBoards = ['/assets/images/chart_gauge_out_circle.png', '/assets/gauge_bk_yellow.png', '/assets/gauge_bk_orange.png', '/assets/gauge_bk_red.png']
 
-
+        this.fakeDatas = [0,    1.41,	1.42,	1.43,	1.44,	1.45,	1.46,	1.47,	1.52,	1.53]
     }
 
     /*
@@ -32,19 +35,28 @@ class Gauge extends Component {
      */
     componentDidMount () {
         let self = this;
-        let delay = 5; //seconds
+        let delay = 3; //seconds
+        let count = 0;
+
         let interval = () => {
             //let currentTemper =  Math.random()*this.maxTemper;// 0 ~ 100
-            let currentTemper =  0;
-            currentTemper = formatPercent(currentTemper);
+            let fnum = Math.round(Math.random()*9)
+            let currentTemper = this.fakeDatas[0] ;// 0 ~ 100
+            let currentDegrees = currentTemper * ratio ;// 0 ~ 100
+            //let currentTemper =  0;
+            //currentTemper = formatPercent(currentTemper);
             //레벨에 따른 배경 색 변경
-            let statusBoard =
-                (currentTemper < 50) ? this.roundBoards[0] :
-                (currentTemper >= 50 && currentTemper < 70) ? this.roundBoards[1] :
-                (currentTemper >= 70 && currentTemper < 80) ? this.roundBoards[2] :
-                (currentTemper >= 80) ? this.roundBoards[3] : this.roundBoards[0];
-            self.setState({currentTemp:currentTemper, degree: (currentTemper * 180)/100 - 90, boardSrc: statusBoard})
-
+            // let statusBoard =
+            //     (currentTemper < 1.5) ? this.roundBoards[0] :
+            //     (currentTemper >= 1.5 && currentTemper < 2.0) ? this.roundBoards[1] :
+            //     (currentTemper >= 2.0 && currentTemper < 2.5) ? this.roundBoards[2] :
+            //     (currentTemper >= 2.5) ? this.roundBoards[3] : this.roundBoards[0];
+            let statusBoard = this.roundBoards[0];
+            //self.setState({currentTemp:currentTemper, degree: self.makeDegree(currentDegrees, self), boardSrc: statusBoard, label:this.props.label})
+            count ++;
+            if(count > self.fakeDatas.length) {
+                count = 0;
+            }
             //setTimeout(interval, 1000 * delay);
         }
 
@@ -60,28 +72,51 @@ class Gauge extends Component {
         major1:27
         minor1:26
          */
-        //console.log('gauge receive data ==== '+nextProps)
+        //console.log('20191009 ----- gauge receive data ==== '+nextProps.data)
         if(nextProps && nextProps.data) {
-            this.renderGauge(nextProps.data.curr, {critical1: nextProps.data.critical1, critical2: nextProps.data.critical2,
+            this.maxTemper = nextProps.data[1];
+            this.renderGauge(nextProps.data[0], {critical1: nextProps.data.critical1, critical2: nextProps.data.critical2,
                 major1: nextProps.data.major1, major2: nextProps.data.major2,
                 minor1: nextProps.data.minor1, minor2: nextProps.data.minor2
-            }, nextProps.type);
+            }, nextProps.type, nextProps.title);
             this.setState({label:nextProps.label, unit:nextProps.unit, type:nextProps.type});
-
-
         }
     }
 
 
-    renderGauge(value, limits, type) {
+    makeFormat = (value) => {
+        return value * ratio ;// 0 ~ 100
+    }
+    makeDegree = (currentDegrees, self) => {
+        let ratioForMax = availPie / self.maxTemper;
+        let degree = (currentDegrees*ratioForMax) - rotateOffset;
+        console.log('20191009 ----- make degree ==== '+ratioForMax, ":",self.maxTemper,": currentDegress=", currentDegrees,":",rotateOffset, ":degree=", degree)
+        return degree;
+    }
+
+    renderGauge(value, limits, type, title) {
         let self = this;
 
         //let currentTemper =  Math.random()*this.maxTemper;// 0 ~ 100
         let currentTemper =  value;
-        currentTemper = Number(formatPercent(currentTemper));
+        if(type === 'humi') {
+            currentTemper = Number(formatPercent(currentTemper))
+        } else if(type === 'Cores') {
+            currentTemper = currentTemper
+        };
+        if(type === 'MB'){
+            currentTemper = currentTemper/(1000*1000)
+        } else if(type === 'TB') {
+            currentTemper = currentTemper/(1000*1000*1000)
+        }
         let statusBoard = this.roundBoards[0];
 
         if(type === 'temp') {
+            statusBoard = (currentTemper < limits.minor1 && currentTemper > limits.major1) ? this.roundBoards[1] :
+                (currentTemper >= limits.major1 && currentTemper < limits.critical1) ? this.roundBoards[2] :
+                    (currentTemper >= limits.critical1) ? this.roundBoards[3] : this.roundBoards[0];
+        }
+        if(type === 'pue') {
             statusBoard = (currentTemper < limits.minor1 && currentTemper > limits.major1) ? this.roundBoards[1] :
                 (currentTemper >= limits.major1 && currentTemper < limits.critical1) ? this.roundBoards[2] :
                     (currentTemper >= limits.critical1) ? this.roundBoards[3] : this.roundBoards[0];
@@ -107,10 +142,16 @@ class Gauge extends Component {
 
         //degree : 바늘의 각도
         //총270도에서 sections개수(12, 20)개로 나누고 눈금단위를 5로 설정 (60, 100)
-        let totalValue = this.props.sections.length * 5;
+        /*
+		let totalValue = this.props.sections.length * 5;
         let currentValue = (270 * value) / totalValue;
         let rate = 0.75 / this.props.sections;
         self.setState({currentTemp:currentTemper, degree: (currentValue)- 135, boardSrc: statusBoard})
+		*/
+
+
+        self.setState({currentTemp:formatFloat(currentTemper), degree: self.makeDegree(value, self), boardSrc: statusBoard, label:title})
+
 
     }
     _percToDeg(perc) {
@@ -130,29 +171,29 @@ class Gauge extends Component {
     }
 
     render() {
-
+        let {degree} = this.state;
+        console.log('20191009 degree in render....... ', degree)
         return (
             <div style={{display:'flex'}}>
                 <div style={{position:'relative'}}>
-                    <Motion defaultStyle={{x: 0}} style={{x: spring(10)}}>
-                        {interpolatingStyle => <img src={this.state.boardSrc} style={interpolatingStyle} />}
-                    </Motion>
-                    <RainbowCircle value={15}
-                                   size={20}
-                                   radius={100}
-                                   type={this.props.type}
-                                   sections={this.props.sections}
-                                   legend={this.props.legend}
-                                   label="15%" />
+                    <div style={{top:5, position:'absolute'}}><img src={this.state.boardSrc} /></div>
+                    {/*<RainbowCircle value={0.5}*/}
+                                   {/*size={30}*/}
+                                   {/*radius={100}*/}
+                                   {/*type={this.props.type}*/}
+                                   {/*sections={this.props.sections}*/}
+                                   {/*legend={this.props.legend}*/}
+                                   {/*label="15%" />*/}
                     <div ref={ref => this.needleImg = ref} style={{position:'absolute', top:0, left:0}}>
                         <Motion
+                            key={degree}
                             defaultStyle={{ rotate: 0, scale: 1}}
-                            style={{ rotate: spring(this.state.degree), scale: spring(1)}}
+                            style={{ rotate: spring(degree), scale: spring(1)}}
                         >
 
                             {style =>
                                 (
-                                    <div style={{
+                                    <div style={{top:0, left:-5, position:'absolute',
                                         transform: `rotate( ${style.rotate}deg )`,
                                     }}><img src='/assets/gauge_needle_red.png' /> </div>
                                 )
@@ -161,17 +202,14 @@ class Gauge extends Component {
                         </Motion>
                     </div>
 
-                    <div style={{position:'absolute', top:36, left:35}}>
-                        <img src='/assets/gauge_cover_value.png' />
+                    <div style={{position:'absolute', top:10, left:0}}>
+                        <img src='/assets/images/chart_gauge_in_circle.png' />
                     </div>
-                    <div style={{position:'absolute', top:70, left:40}}>
-                        <Header style={{width:105, textAlign:'center', fontSize:20}}>{this.state.currentTemp}{this.state.unit}</Header>
+                    <div style={{position:'absolute', top:63, left:10, width:140, backgroundColor:'transparent'}}>
+                        <div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:20, color:'#bdbdbd'}}>{this.state.label}</div>
                     </div>
-                    <div style={{position:'absolute', top:85, left:40, width:90}}>
-                        <Divider />
-                    </div>
-                    <div style={{position:'absolute', top:95, left:40}}>
-                        <Header style={{width:105, textAlign:'center', fontSize:16}}>{this.state.label}</Header>
+                    <div style={{position:'absolute', top:90, left:10, width:140, backgroundColor:'transparent'}}>
+                        <div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:30, fontWeight:'bold', color:'#fff'}}>{this.state.currentTemp}</div>
                     </div>
 
                 </div>

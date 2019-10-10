@@ -48,6 +48,7 @@ export function getClusterService(resource, callback) {
         });
 
 }
+
 export function getAppinstHealth(resource, callback) {
     let resResults = [];
     //
@@ -81,6 +82,10 @@ export function getAppinstHealth(resource, callback) {
 
 
 }
+
+/*
+$ http --verify=false --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cluster <<< '{"region":"EU","clusterinst":{"cluster_key":{"name":"asdfqqq"},"cloudlet_key":{"operator_key":{"name":"TDG"},"name":"frankfurt-eu"},"developer":"MobiledgeX"},"selector":"cpu","last":2}'
+ */
 export function getClusterHealth(resource, callback) {
     let resResults = [];
         //

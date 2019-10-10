@@ -180,11 +180,11 @@ class PageDetailViewer extends React.Component {
         }
         /*
         Valid selectors for cluster: “cpu”, “mem”, “disk”, “network”, “tcp”, “udp”
-        Valid selectors for app api: “cpu”, “mem”, “network”
+        Valid selectors for app api: “cpu”, “mem”, “network”, "connections"
          */
         this.resources = {
             clusterInst:['cpu', 'mem', 'disk', 'network', 'tcp', 'udp'],
-            appInst:['cpu', 'mem', 'network'],
+            appInst:['cpu', 'mem', 'network','connections'],
             cloudlet:['utilization']
         }
 

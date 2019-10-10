@@ -501,6 +501,7 @@ const apiMCMonitor = require('./routes/apiMCMonitor');
 console.log('====== process env mcurl ======='+process.env.MC_URL)
 apiMCMonitor.MC_URL = process.env.MC_URL;
 app.post('/timeAppinst', apiMCMonitor.ShowappHealth)
+app.post('/connectAppinst', apiMCMonitor.ShowappConnection)
 app.post('/timeClusterinst', apiMCMonitor.ShowclusterHealth)
 app.post('/timeCloudlet', apiMCMonitor.ShowcloudletHealth)
 app.post('/clientIP', apiMCMonitor.getClientIP)

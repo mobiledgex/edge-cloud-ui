@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { Grid, List, Label, Table, Icon, Card } from 'semantic-ui-react';
 import Gauge from '../chartGauge/gauge';
+import * as d3 from "d3";
 
+
+const formatInt = d3.format(".0f");
+const formatComma = d3.format(",");
+const formatFloat = d3.format(".2f");
+const formatPercent = d3.format(".1f",".1f");
 
 class EnvironmentStatus extends Component {
     constructor() {
@@ -13,9 +19,12 @@ class EnvironmentStatus extends Component {
         this.sectionsProps_temp = [
             { fill: '#4ef43d', stroke: '#4ef43d' },
             { fill: '#4ef43d', stroke: '#4ef43d' },
-            { fill: '#4ef43d', stroke: '#4ef43d' },
             { fill: '#fad91d', stroke: '#fad91d' },
             { fill: '#db970b', stroke: '#db970b' },
+            { fill: '#28dba1', stroke: '#28dba1' },
+            { fill: '#21d0fa', stroke: '#21d0fa' },
+            { fill: '#21d0fa', stroke: '#21d0fa' },
+            { fill: '#DB312D', stroke: '#DB312D' },
             { fill: '#DB312D', stroke: '#DB312D' },
             { fill: '#DB312D', stroke: '#DB312D' },
             { fill: '#DB312D', stroke: '#DB312D' },
@@ -25,7 +34,7 @@ class EnvironmentStatus extends Component {
             { fill: '#DB312D', stroke: '#DB312D' }
         ];
 
-        this.legend_temp = ['5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60'];
+        this.legend_temp = ['1.0', '', '1.3', '', '1.5', '', '1.7', '', '1.9', '2.0', '2.1', '2.2', '2.3', '2.4', '2.5'];
         this.sectionsProps_humi = [
             { fill: '#DB312D', stroke: '#DB312D' },
             { fill: '#F46806', stroke: '#F46806' },
@@ -54,49 +63,13 @@ class EnvironmentStatus extends Component {
     }
 
 
-    chartComponent = (props, office, title) => (
-        <Card raised>
-            <Card.Content>
-                <Card.Header>
-                    {title ? title : 'NO TITLE'}
-                </Card.Header>
-            </Card.Content>
-            <Card.Content className='gaugeBorder'>
-                <Gauge data={props ? props[office[0]].temp : null} type={'temp'} label={'온도'} unit={'℃'}
-                       limits={props ? {minor:props[office[0]].temp.minor1, major:props[office[0]].temp.major1, critical: props[office[0]].temp.critical1}: {}}
-                       sections={this.sectionsProps_temp} legend={this.legend_temp}
-                />
+    chartComponent = (props, type, title) => (
 
-                <Gauge data={props ? props[office[0]].humi : null} type={'humi'} label={'습도'} unit={'%'}
-                       limits={props ? {minor:props[office[0]].temp.minor2, major:props[office[0]].temp.major2, critical: props[office[0]].temp.critical2}: {}}
-                       sections={this.sectionsProps_humi} legend={this.legend_humi}
-                />
-                {/*<div style={{position:'absolute', left:10, top:185, backgroundColor:'transparent'}}>
-                    <List className='legendDial'>
-                        <List.Item>MIN {props ? props[office[0]].temp.minor1:null}</List.Item>
-                        <List.Item>MAJ {props ? props[office[0]].temp.major1:null}</List.Item>
-                        <List.Item>CRI {props ? props[office[0]].temp.critical1:null}</List.Item>
-                    </List>
-                </div>
+        <Gauge data={props ? props : null} type={type} label={title} unit={'℃'}
+               limits={props ? props: {}}
+               sections={this.sectionsProps_temp} legend={this.legend_temp}
+        />
 
-                <div style={{position:'absolute', left:10, top:365, backgroundColor:'transparent'}}>
-                    <List className='legendDial'>
-                        <List.Item>MIN {props ? props[office[0]].humi.minor1:null}</List.Item>
-                        <List.Item>MAJ {props ? props[office[0]].humi.major1:null}</List.Item>
-                        <List.Item>CRI {props ? props[office[0]].humi.critical1:null}</List.Item>
-                    </List>
-                </div>
-                <div style={{position:'absolute', left:160, top:365, backgroundColor:'transparent'}}>
-                    <List className='legendDial'>
-                        <List.Item>MIN {props ? props[office[0]].humi.minor2:null}</List.Item>
-                        <List.Item>MAJ {props ? props[office[0]].humi.major2:null}</List.Item>
-                        <List.Item>CRI {props ? props[office[0]].humi.critical2:null}</List.Item>
-                    </List>
-                </div>*/}
-
-            </Card.Content>
-
-        </Card>
     )
     getOfficeName = (data, i) => {
         if(data && data.rows[i]) {
@@ -107,16 +80,11 @@ class EnvironmentStatus extends Component {
         }
 
     }
-    getOffice = (data, i) => (
-        (data && data.rows[i]) ? Object.keys(data.rows[i]) : null
-    )
+
     getHasData = (data, i) => {
+        console.log('20190927 getHasData data...', formatFloat(data))
         if(data) {
-            if(data.rows[i]){
-                return data.rows[i];
-            } else {
-                return data.rows[i] = null;
-            }
+            return formatInt(data)
 
         } else {
             return null;
@@ -130,25 +98,10 @@ class EnvironmentStatus extends Component {
     render() {
 
         return (
-            <Grid columns='equal' style={{paddingRight:15}}>
+            <Grid columns='equal' style={{paddingRight:15, width:160, justifyContent:'center'}}>
                 <Grid.Row style={{paddingTop:0}} stretched>
                     <Grid.Column style={{padding:0}}>
-                        {this.chartComponent(this.getHasData(this.state.data, 0), this.getOffice(this.state.data, 0) ,this.getOfficeName(this.state.data, 0))}
-                    </Grid.Column>
-                    <Grid.Column style={{padding:0}}>
-                        {this.chartComponent(this.getHasData(this.state.data, 1), this.getOffice(this.state.data, 1) ,this.getOfficeName(this.state.data, 1))}
-                    </Grid.Column>
-                    <Grid.Column style={{padding:0}}>
-                        {this.chartComponent(this.getHasData(this.state.data, 2), this.getOffice(this.state.data, 2) ,this.getOfficeName(this.state.data, 2))}
-                    </Grid.Column>
-                    <Grid.Column style={{padding:0}}>
-                        {this.chartComponent(this.getHasData(this.state.data, 3), this.getOffice(this.state.data, 3) ,this.getOfficeName(this.state.data, 3))}
-                    </Grid.Column>
-                    <Grid.Column style={{padding:0}}>
-                        {this.chartComponent(this.getHasData(this.state.data, 4), this.getOffice(this.state.data, 4) ,this.getOfficeName(this.state.data, 4))}
-                    </Grid.Column>
-                    <Grid.Column style={{padding:0}}>
-                        {this.chartComponent(this.getHasData(this.state.data, 5), this.getOffice(this.state.data, 5) ,this.getOfficeName(this.state.data, 5))}
+                        {this.chartComponent((this.state.data && this.state.data.length) ? this.state.data : null, this.props.type ,this.props.title)}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

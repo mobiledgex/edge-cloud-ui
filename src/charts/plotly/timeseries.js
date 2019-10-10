@@ -35,23 +35,49 @@ class TimeSeries extends React.Component {
     }
     componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.chartData && nextProps.series[0]) {
-            this.reloadChart(nextProps.chartData, nextProps.series[0], nextProps.label, nextProps.lineLimit);
+            this.reloadChart(nextProps.chartData, nextProps.series[0], nextProps.label, nextProps.single);
         }
 
     }
-    reloadChart(data, series,names, lineLimit) {
+    reloadChart(data, series,names, dataId) {
         let xaxis = series;
-        let seriesData = data.map((item, i) => (
-            {
+
+        let _data = dataId ? data[parseInt(dataId)] : data;
+
+        let seriesData = null;
+
+        if(!dataId) {
+            seriesData = data.map((item, i) => (
+                {
+                    type: 'scatter',
+                    x: series,
+                    y: item,
+                    yaxis:(i === 0)?'y':(i === 1)?'y2':(i === 2)?'y3':'y',
+                    name:(names && names.length>0)?names[i]:'',
+                    line: {color: (this.props.error)?this.colorsErr[i]:this.colors[i],width:1},
+                    marker:{size:5}
+                }
+            ))
+            //console.log('20191008 reloadChart seriesData... ',parseInt(dataId),":", data[parseInt(dataId)], ":",seriesData)
+        }  else {
+            let sData = [];
+
+            _data.map((dt) => {
+                sData.push(Number(dt))
+            })
+            seriesData = [{
                 type: 'scatter',
                 x: series,
-                y: item,
-                yaxis:(i === 0)?'y':(i === 1)?'y2':(i === 2)?'y3':'y',
-                name:(names && names.length>0)?names[i]:'',
-                line: {color: (this.props.error)?this.colorsErr[i]:this.colors[i],width:1},
+                y: sData,
+                yaxis:'y',
+                name:(names && names.length>0)?names[parseInt(dataId)]:'',
+                line: {color: (this.props.error)?this.colorsErr[parseInt(dataId)]:this.colors[parseInt(dataId)],width:1},
                 marker:{size:5}
-            }
-        ))
+            }];
+
+            console.log('20191008 reloadChart seriesData... ',parseInt(dataId),":", data[parseInt(dataId)], ":",seriesData)
+        }
+
         this.setState({
             chartData:seriesData
         })
@@ -65,14 +91,14 @@ class TimeSeries extends React.Component {
         return (
             <ContainerDimensions>
                 { ({ width, height }) =>
-                    <div  className="plotContainer" style={{width:width, height:height-2, display:'flex', overflowY:'hidden', overflowX:'auto'}}>
-                        <Plot style={{backgroundColor:'transparent', overflow:'hidden', width:width, height:height}}
+                    <div  className="plotContainer" style={{ display:'flex', overflowY:'hidden', overflowX:'auto'}}>
+                        <Plot style={{backgroundColor:'transparent', overflow:'hidden'}}
                             data={this.state.chartData}
                             layout={{
                                 title: null,
                                 autosize: true,
                                 width:width-this.props.marginRight,
-                                height:height,
+                                height:350,
                                 margin:this.props.margin,
                                 paper_bgcolor: 'transparent',
                                 plot_bgcolor: 'transparent',
@@ -108,7 +134,7 @@ class TimeSeries extends React.Component {
                                     linecolor: 'rgba(255,255,255,.2)',
                                     linewidth: 1,
                                     color: 'rgba(255,255,255,.4)',
-                                    rangemode: 'tozero'
+                                    //rangemode: 'tozero'
                                 },
                                 yaxis2:{
                                     showgrid: true,
@@ -128,7 +154,7 @@ class TimeSeries extends React.Component {
                                     side: 'right',
                                     position:this.props.y2Position,
                                     range:this.props.y2Range,
-                                    rangemode: 'tozero'
+                                    //rangemode: 'tozero'
                                 },
                                 yaxis3:{
                                     showgrid: true,

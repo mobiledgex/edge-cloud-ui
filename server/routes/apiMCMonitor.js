@@ -49,6 +49,62 @@ exports.ShowappHealth = (req, res) => {
         });
 }
 
+
+/*
+http --auth-type=jwt --auth=$WORKER1TOKEN POST 127.0.0.1:9900/api/v1/auth/metrics/app <<<
+'{"region":"local",
+   "appinst":{
+        "app_key":{
+            "developer_key":{"name":"MobiledgeX"},
+            "name":"facedetectiondemo",
+            "version":"1.0"
+        },
+        "cluster_inst_key":{
+            "cluster_key":{"name":"AppCluster"},
+            "cloudlet_key":{"operator_key":{"name":""}}
+        }
+    },
+    "selector":"connections",
+    "last":5
+}'
+
+http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app <<< '{"region":"EU","appinst":{"app_key":{"developer_key":{"name":"MobiledgeX"},"name":"MEXPrometheusAppName","version":"1.0"},"cluster_inst_key":{"cluster_key":{"name":"kkkkkkk"},"cloudlet_key":{"operator_key":{"name":"frankfurt-eu"}}}},"selector":"connections","last":5}'
+ */
+exports.ShowappConnection = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'US'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    axios.post(mcUrl + '/api/v1/auth/metrics/app', serviceBody,
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('20190719 success  ShowappConnection', response.data)
+            if(response.data && response.statusText === 'OK') {
+                res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('ShowappConnection empty')
+                res.json(null)
+
+            } else {
+                res.json({error:'Request failed'})
+            }
+        })
+        .catch(function (error) {
+            console.log('error ShowappConnection ..', String(error));
+            res.json({error:'Request failed'})
+        });
+}
+
 /*
 http --verify=false --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cloudlet <<<  '{"region":"EU","cloudlet":{"operator_key":{"name":"TDG"},"name":"frankfurt-eu"},"selector":"utilization","last":2}'
  */
@@ -87,6 +143,12 @@ exports.ShowcloudletHealth = (req, res) => {
             res.json({error:'Request failed'})
         });
 }
+
+/*
+$ http --verify=false --auth-type=jwt --auth=$SUPERPASS POST
+https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cluster <<<
+'{"region":"EU","clusterinst":{"cluster_key":{"name":"asdfqqq"},"cloudlet_key":{"operator_key":{"name":"TDG"},"name":"frankfurt-eu"},"developer":"MobiledgeX"},"selector":"cpu","last":2}'
+ */
 exports.ShowclusterHealth = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
@@ -99,7 +161,7 @@ exports.ShowclusterHealth = (req, res) => {
         region = req.body.serviceBody.region;
     }
     console.log('20190730 show me cloudlet health-- ', JSON.stringify(serviceBody), 'mcUrl=',mcUrl)
-    axios.post(mcUrl + '/api/v1/auth/metrics/clusterinst', serviceBody,
+    axios.post(mcUrl + '/api/v1/auth/metrics/cluster', serviceBody,
         {
             headers: {
                 'Authorization':`Bearer ${superpass}`}
