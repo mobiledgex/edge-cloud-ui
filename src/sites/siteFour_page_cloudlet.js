@@ -102,25 +102,39 @@ class SiteFourPageCloudlet extends React.Component {
         }
     }
     receiveResult = (result) => {
-        let regionGroup = reducer.groupBy(result, 'Region');
-        if(Object.keys(regionGroup)[0]) {
-            this._cloudletDummy = this._cloudletDummy.concat(result)
-        }
+        // let regionGroup = reducer.groupBy(result, 'Region');
+        // if(Object.keys(regionGroup)[0]) {
+        //     this._cloudletDummy = this._cloudletDummy.concat(result)
+        // }
 
+        // this.loadCount ++;
+        // console.log("EditEditEdit",rgn.length,":::",this.loadCount)
+        // //if(rgn.length == this.loadCount){
+        //     _self.countJoin()            
+        // //}
+
+
+        let join = null;
+        if(result[0]['Edit']) {
+            join = this.state.devData.concat(result);
+        } else {
+            join = this.state.devData;
+        }
         this.loadCount ++;
-        console.log("EditEditEdit",rgn.length,":::",this.loadCount)
-        if(rgn.length == this.loadCount){
-            _self.countJoin()            
+        this.setState({devData:join})
+        this.props.handleLoadingSpinner(false);
+        if(rgn.length == this.loadCount-1){
+            return
         }
 
     }
     countJoin() {
         let cloudlet = this._cloudletDummy;
-        this.props.handleLoadingSpinner(false);
         _self.setState({devData:cloudlet})
+        this.props.handleLoadingSpinner(false);
     }
     getDataDeveloper = (region) => {
-        this.props.handleLoadingSpinner(true);
+        // this.props.handleLoadingSpinner(true);
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         this._cloudletDummy = [];

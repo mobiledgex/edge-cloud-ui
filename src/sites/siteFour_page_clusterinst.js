@@ -125,43 +125,34 @@ class SiteFourPageClusterInst extends React.Component {
 
     receiveResultClusterInst(result) {
         //_self.countObject[result[0]['Region']].push(result[0]['Region'])
-        console.log('20191004 ', result)
-        if(result.length) {
-            if(result[0]['Region'] === "") {
-                _self.props.handleLoadingSpinner(false);
-                //_self.props.handleAlertInfo('error', 'There is no data to display')
-            } else {
+        // console.log('20191004 ', result)
+        // if(result.length) {
+        //     if(result[0]['Region'] === "") {
+        //         _self.props.handleLoadingSpinner(false);
+        //         //_self.props.handleAlertInfo('error', 'There is no data to display')
+        //     } else {
 
-            }
-            _self.groupJoin(result,'clusterInst', result[0]['Region'])
-        }
+        //     }
+        //     _self.groupJoin(result,'clusterInst', result[0]['Region'])
+        // }
+        _self.groupJoin(result,'clusterInst')
     }
     receiveResultCloudlet(result) {
         //_self.countObject[result[0]['Region']].push(result[0]['Region'])
-        _self.groupJoin(result,'cloudlet', result[0]['Region'])
+        _self.groupJoin(result,'cloudlet')
     }
 
-    groupJoin(result,cmpt, rg){
-        let regionGroup = reducer.groupBy(result, 'Region');
-        
+    groupJoin(result,cmpt){
+        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
         if(Object.keys(regionGroup)[0]) {
             if(cmpt == 'clusterInst') this.clusterInstDummy = _self.clusterInstDummy.concat(result)
             else if(cmpt == 'cloudlet') this.cloudletDummy = _self.cloudletDummy.concat(result)
         }
-
         _self.loadCount ++;
-
         if(rgn.length*2 == this.loadCount){
             _self.countJoin()
         }
-        // try{
-        //     if(_self.countObject[rg].length == 2){
-        //         _self.countJoin()
-        //     }
-        // } catch(e) {
-        //     alert('Network unstable, Try again')
-        // }
-
+        
 
     }
     countJoin() {

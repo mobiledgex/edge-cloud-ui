@@ -306,6 +306,31 @@ class SiteFourCreateFormAppDefault extends React.Component {
             }
         } 
     }
+
+    textUpload = (e) => {
+        e.preventDefault();
+        let input = document.createElement("input");
+        input.type = "file";
+        input.accept = "text/plain";
+        input.onchange = (event) => {
+            this.processFile(event.target.files[0]);
+        };
+        input.click();
+    }
+
+    processFile = (file) => {
+        let reader = new FileReader();
+        reader.onload = () => {
+            this.props.dispatch(change('createAppFormDefault', 'DeploymentMF', reader.result));
+        };
+     
+        reader.readAsText(file, /* optional */ "euc-kr");
+    }
+
+    textRemove = (e) => {
+        e.preventDefault();
+        this.props.dispatch(change('createAppFormDefault', 'DeploymentMF', ''));
+    }
     
     render (){
         const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
@@ -334,13 +359,24 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                         {
 
                                                             (fieldKeys[pId][key]['type'] === 'RenderTextArea') ?
-                                                            <Field
+                                                            <div>
+                                                                <Field
                                                                 component={renderTextArea}
                                                                 placeholder={data[key]}
-                                                                value={data[key] || ''}
+                                                                value={data[key]}
                                                                 name={key}
                                                                 />
-
+                                                                {
+                                                                    (fieldKeys[pId][key]['label'] === 'Deployment Manifest') ?
+                                                                    <div style={{marginTop:'1em'}}>
+                                                                        <span style={{marginRight:'1em'}}>
+                                                                            <Button onClick={this.textUpload}>upload</Button>
+                                                                        </span>
+                                                                        <Button onClick={this.textRemove}>remove</Button>
+                                                                    </div>
+                                                                    :null
+                                                                }
+                                                            </div>
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'RenderSelect') ?
                                                             <Field

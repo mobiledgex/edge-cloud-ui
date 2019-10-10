@@ -223,9 +223,9 @@ class DeveloperListView extends React.Component {
                 :
                 <Table.HeaderCell key={i} className={(key === 'Phone' || key === 'Address')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address')?this.handleSort(key):null}>
                     {(key === 'FlavorName')? 'Flavor Name'
-                        : (key === 'RAM')? 'RAM Size'
+                        : (key === 'RAM')? 'RAM Size(MB)'
                             : (key === 'vCPUs')? 'Number of vCPUs'
-                                : (key === 'Disk')? 'Disk Space'
+                                : (key === 'Disk')? 'Disk Space(GB)'
                                     : (key === 'OrganizationName')? 'Organization Name'
                                         : (key === 'AppName')? 'App Name'
                                             : (key === 'DeploymentType')? 'Deployment Type'

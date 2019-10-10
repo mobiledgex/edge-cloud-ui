@@ -398,8 +398,8 @@ class SiteFourCreateInstForm extends React.PureComponent {
     }
 
     clusterHide = (value) => {
-        if(value === 'Docker') {
-            //panes.pop();
+        if(value === 'Docker' && panes.length == 2) {
+            panes.pop();
             this.setState({clusterShow:false})
         }
         if(value === 'Kubernetes' && panes.length == 1){

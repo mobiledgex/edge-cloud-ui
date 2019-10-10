@@ -94,9 +94,9 @@ class SiteFourPageAccount extends React.Component {
         _self.setState({devData:reverseResult})
     }
     getDataDeveloper(token) {
-        _self.props.handleLoadingSpinner(true)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         services.getMCService('ShowAccounts',{token:store ? store.userToken : 'null'}, _self.receiveResult)
+        _self.props.handleLoadingSpinner(true)
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
