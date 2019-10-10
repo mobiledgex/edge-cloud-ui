@@ -577,8 +577,8 @@ class SiteFour extends React.Component {
 
             }
             console.log('20190822 tutorial=', tutorial)
-            if(enable && !this.state.learned && !tutorial) {
-                this.enalbeSteps();
+            if(enable && !_self.state.learned && !tutorial) {
+                _self.enalbeSteps();
                 _self.setState({stepsEnabled:true, learned:true})
                 localStorage.setItem('TUTORIAL', 'done')
             }
