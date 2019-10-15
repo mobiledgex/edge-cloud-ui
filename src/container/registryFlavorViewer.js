@@ -78,7 +78,7 @@ class RegistryFlavorViewer extends React.Component {
             this.props.handleAlertInfo('error',result.data.error)
             return;
         } else {
-            this.props.handleAlertInfo('success','flavor created successfully')
+            this.props.handleAlertInfo('success','Flavor '+body.params.flavor.key.name+' created successfully.')
             this.gotoUrl('submit');
         }
     }

@@ -232,7 +232,7 @@ export const organizationTutor = () => {
                 },
                 {
                     element: '.createApp10',
-                    intro: 'Default FQDN the app uses to connect by default'
+                    intro: 'Official FQDN the app uses to connect by default'
                 },
                 {
                     element: '.createApp11',
@@ -262,7 +262,7 @@ export const organizationTutor = () => {
                 },
                 {
                     element: '.progressIndicator',
-                    intro: 'You can popup view to creating status instance'
+                    intro: 'Click to View Detail Progress'
                 }
             ],
             stepsCreateAppInst: [
@@ -377,7 +377,7 @@ export const CloudletTutor = () => {
                 },
                 {
                     element: '.progressIndicator',
-                    intro: 'You can popup view to creating status instance'
+                    intro: 'Click to View Detail Progress'
                 }
             ],
             stepsCloudletReg: [

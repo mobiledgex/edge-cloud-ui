@@ -104,10 +104,10 @@ class Gauge extends Component {
         } else if(type === 'Cores') {
             currentTemper = currentTemper
         };
-        if(type === 'MB'){
-            currentTemper = currentTemper/(1000*1000)
+        if(type === 'GB'){
+            currentTemper = currentTemper/(1000)
         } else if(type === 'TB') {
-            currentTemper = currentTemper/(1000*1000*1000)
+            currentTemper = currentTemper/(1000*1000)
         }
         let statusBoard = this.roundBoards[0];
 

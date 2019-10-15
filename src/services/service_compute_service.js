@@ -17,11 +17,17 @@ import formatComputeAccounts from './formatter/formatComputeAccounts';
 
 const hostname = window.location.hostname;
 let serviceDomain = 'https://mc.mobiledgex.net:9900';
+let ServerUrl = 'https://'+hostname+':3030';
+console.log('20191011 process.env.USE_SERVER_SUFFIX is.. ', process.env)
 
+if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
+    ServerUrl = 'https://'+hostname+'/server';
+}
 export function setDomain(domain) {
     console.log('reset service domain ---- ', domain)
     serviceDomain = domain;
 }
+console.log('20191011 ServerUrl is.. ', ServerUrl)
 export function getOperator(resource, callback) {
     fetch('https://'+hostname+':3030')
         .then(response => response.json())
@@ -104,7 +110,7 @@ export function getComputeService(resource, callback) {
             }
         },
     ]
-    axios.get('https://'+hostname+':3030/compute?service='+resource)
+    axios.get(ServerUrl+'/compute?service='+resource)
         .then(function (response) {
             let paseData = JSON.parse(JSON.stringify(response.data));
             let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
@@ -131,7 +137,7 @@ export function getComputeService(resource, callback) {
 
 
 export function saveNewCompute(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/create',{
+    axios.post(ServerUrl+'/create',{
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
@@ -145,7 +151,7 @@ export function saveNewCompute(resource, body, callback) {
         });
 }
 export function createNewApp(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/'+resource,{
+    axios.post(ServerUrl+'/'+resource,{
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
@@ -159,7 +165,7 @@ export function createNewApp(resource, body, callback) {
         });
 }
 export function createNewAppInst(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/CreateAppInst',qs.stringify({
+    axios.post(ServerUrl+'/CreateAppInst',qs.stringify({
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
@@ -186,7 +192,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
                 multiData.ClusterInst.map((itemCluster) => {
                     if(items.ClusterName == itemCluster || itemCluster == '' || itemCluster.indexOf('autocluster') > -1){
                         console.log("fanillslslsl",itemCloudlet,":::",itemCluster)
-                        return axios.post('https://'+hostname+':3030/CreateAppInst',qs.stringify({
+                        return axios.post(ServerUrl+'/CreateAppInst',qs.stringify({
                             service: resource,
                             serviceBody:body,
                             serviceDomain:serviceDomain,
@@ -211,7 +217,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
             //Create VM
             multiData.Cloudlet.map((items) => {
                 console.log("itemsitems",items)
-                return axios.post('https://'+hostname+':3030/CreateAppInst',qs.stringify({
+                return axios.post(ServerUrl+'/CreateAppInst',qs.stringify({
                     service: resource,
                     serviceBody:body,
                     serviceDomain:serviceDomain,
@@ -234,7 +240,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
     }))    
 }
 export function deleteCompute(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/deleteService',{
+    axios.post(ServerUrl+'/deleteService',{
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
@@ -248,7 +254,7 @@ export function deleteCompute(resource, body, callback) {
         });
 }
 export function deleteUser(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/deleteUser',{
+    axios.post(ServerUrl+'/deleteUser',{
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
@@ -262,7 +268,7 @@ export function deleteUser(resource, body, callback) {
         });
 }
 export function deleteAccount(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/deleteAccount',{
+    axios.post(ServerUrl+'/deleteAccount',{
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
@@ -276,7 +282,7 @@ export function deleteAccount(resource, body, callback) {
         });
 }
 export function deleteOrg(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/deleteOrg',{
+    axios.post(ServerUrl+'/deleteOrg',{
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
@@ -290,7 +296,7 @@ export function deleteOrg(resource, body, callback) {
         });
 }
 export function createNewClusterInst(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/CreateClusterInst',{
+    axios.post(ServerUrl+'/CreateClusterInst',{
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
@@ -309,7 +315,7 @@ export function createNewMultiClusterInst(resource, body, callback, multiData) {
     axios.defaults.timeout = 100000000;
     axios.all(multiData.map((item) => {
         console.log("20190820 clusterCreate@111",item)
-        return axios.post('https://'+hostname+':3030/CreateClusterInst',{
+        return axios.post(ServerUrl+'/CreateClusterInst',{
             service: resource,
             serviceBody:body,
             serviceDomain:serviceDomain,
@@ -329,7 +335,7 @@ export function createNewMultiClusterInst(resource, body, callback, multiData) {
 
 export function creteTempFile(_item, _site, callback) {
     console.log("_item_item",_item)
-    axios.post('https://'+hostname+':3030/CreteTempFile',{
+    axios.post(ServerUrl+'/CreteTempFile',{
         item: _item,
         site: _site
     })
@@ -345,7 +351,7 @@ export function creteTempFile(_item, _site, callback) {
 
 export function deleteTempFile(_item, _site) {
     
-    axios.post('https://'+hostname+':3030/DeleteTempFile',{
+    axios.post(ServerUrl+'/DeleteTempFile',{
         item: _item,
         site: _site
     })
@@ -359,7 +365,7 @@ export function deleteTempFile(_item, _site) {
 }
 
 export function errorTempFile(_item, callback) {
-    axios.post('https://'+hostname+':3030/ErrorTempFile',{
+    axios.post(ServerUrl+'/ErrorTempFile',{
         item: _item,
     })
         .then(function (response) {
@@ -375,7 +381,7 @@ export function errorTempFile(_item, callback) {
 
 
 export function createNewFlavor(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/CreateFlavor',{
+    axios.post(ServerUrl+'/CreateFlavor',{
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
@@ -390,7 +396,7 @@ export function createNewFlavor(resource, body, callback) {
 }
 
 export function createNewClusterFlavor(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/CreateClusterFlavor',{
+    axios.post(ServerUrl+'/CreateClusterFlavor',{
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
@@ -406,7 +412,7 @@ export function createNewClusterFlavor(resource, body, callback) {
 
 export function createNewCloudlet(resource, body, callback) {
     axios.defaults.timeout = 10000000;
-    axios.post('https://'+hostname+':3030/CreateCloudlet',{
+    axios.post(ServerUrl+'/CreateCloudlet',{
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
@@ -420,10 +426,25 @@ export function createNewCloudlet(resource, body, callback) {
         });
 }
 
+export function updateAppInst(resource, body, callback) {
+    axios.post('https://'+hostname+':3030/UpdateAppInst',{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('response UpdateAppInst result-',response,body);
+            callback(response, body)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
 
 export function getMCService(resource, body, callback, self) {
     console.log('parse data get mc service ===>>>>>>>>>> ', resource)
-    axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
+    axios.post(ServerUrl+'/'+resource, qs.stringify({
         service: resource,
         serviceBody:body,
         serviceId: Math.round(Math.random()*10000)
@@ -489,7 +510,7 @@ export function getMCService(resource, body, callback, self) {
 
 }
 export function showAppInst(resource, body, callback, self) {
-    axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
+    axios.post(ServerUrl+'/'+resource, qs.stringify({
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
@@ -516,7 +537,7 @@ export function showAppInst(resource, body, callback, self) {
 
 export function getControlService(resource, body, callback, self) {
 
-    axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
+    axios.post(ServerUrl+'/'+resource, qs.stringify({
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain

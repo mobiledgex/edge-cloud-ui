@@ -316,7 +316,7 @@ class DeveloperListView extends React.Component {
                                     </Table.Cell>
                                 :
                                 (value === 'Type')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} >
+                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} >
                                         {/*<div className="markBox">{this.typeMark(item[value])}</div>*/}
                                         <span style={(item[value] == 'developer')?{color:'#9b9979'}:{color:'#7d969b'}}>{item[value]}</span>
                                     </Table.Cell>
@@ -334,7 +334,7 @@ class DeveloperListView extends React.Component {
                                     </Table.Cell>
                                 :   
                                 (value === 'Role Type')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
+                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
                                         <div className="markBox">{this.roleMark(item[value])}</div>
                                         {item[value]}
                                     </Table.Cell>
@@ -358,7 +358,7 @@ class DeveloperListView extends React.Component {
                                     </Table.Cell>
                                 :
                                 (!( String(hideHeader).indexOf(value) > -1 )) ?
-                                    <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
+                                    <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'left'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
                                         <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
                                             {String(item[value])}
                                         </div>

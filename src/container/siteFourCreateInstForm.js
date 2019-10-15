@@ -413,7 +413,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
         //     return
         // }
         let onlyNum = value;
-        if(onlyNum > 180 || onlyNum < -180 || /[^-0-9]/g.test(onlyNum)) {
+        if(onlyNum > 180 || onlyNum < -180 || /[^-0-9.]/g.test(onlyNum)) {
             this.setState({longerror:'-180 ~ 180'})
             e.target.value=null;
             return
@@ -428,7 +428,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
     }
     handleChangeLat = (e, {value}) => {
         let onlyNum = value;
-        if(onlyNum > 90 || onlyNum < -90 || /[^-0-9]/g.test(onlyNum)) {
+        if(onlyNum > 90 || onlyNum < -90 || /[^-0-9.]/g.test(onlyNum)) {
             this.setState({laterror:'-90 ~ 90'})
             e.target.value=null;
             return

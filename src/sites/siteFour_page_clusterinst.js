@@ -158,6 +158,7 @@ class SiteFourPageClusterInst extends React.Component {
     countJoin() {
         let clusterInst = this.clusterInstDummy;
         let cloudlet = this.cloudletDummy;
+        this.props.handleLoadingSpinner(false);
         if(clusterInst && clusterInst.length) {
             try{
                 clusterInst.map((itemCinst,i) => {
@@ -167,7 +168,6 @@ class SiteFourPageClusterInst extends React.Component {
                         }
                     })
                 })
-                this.props.handleLoadingSpinner(false);
                 _self.setState({devData:clusterInst})
             } catch(e) {
 

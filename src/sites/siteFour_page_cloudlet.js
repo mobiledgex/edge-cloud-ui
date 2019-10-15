@@ -102,30 +102,30 @@ class SiteFourPageCloudlet extends React.Component {
         }
     }
     receiveResult = (result) => {
-        // let regionGroup = reducer.groupBy(result, 'Region');
-        // if(Object.keys(regionGroup)[0]) {
-        //     this._cloudletDummy = this._cloudletDummy.concat(result)
-        // }
-
-        // this.loadCount ++;
-        // console.log("EditEditEdit",rgn.length,":::",this.loadCount)
-        // //if(rgn.length == this.loadCount){
-        //     _self.countJoin()            
-        // //}
-
-
-        let join = null;
-        if(result[0]['Edit']) {
-            join = this.state.devData.concat(result);
-        } else {
-            join = this.state.devData;
+        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
+        if(Object.keys(regionGroup)[0]) {
+            this._cloudletDummy = this._cloudletDummy.concat(result)
         }
+
         this.loadCount ++;
-        this.setState({devData:join})
-        this.props.handleLoadingSpinner(false);
-        if(rgn.length == this.loadCount-1){
-            return
+        console.log("EditEditEdit",rgn.length,":::",this.loadCount)
+        if(rgn.length == this.loadCount){
+            _self.countJoin()            
         }
+
+
+        // let join = null;
+        // if(result[0]['Edit']) {
+        //     join = this.state.devData.concat(result);
+        // } else {
+        //     join = this.state.devData;
+        // }
+        // this.loadCount ++;
+        // this.setState({devData:join})
+        // this.props.handleLoadingSpinner(false);
+        // if(rgn.length == this.loadCount-1){
+        //     return
+        // }
 
     }
     countJoin() {
@@ -134,7 +134,6 @@ class SiteFourPageCloudlet extends React.Component {
         this.props.handleLoadingSpinner(false);
     }
     getDataDeveloper = (region) => {
-        // this.props.handleLoadingSpinner(true);
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         this._cloudletDummy = [];
@@ -148,6 +147,7 @@ class SiteFourPageCloudlet extends React.Component {
             //setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 0)
             services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult)
         })
+        this.props.handleLoadingSpinner(true);
     }
     getDataDeveloperSub = () => {
         this.getDataDeveloper('All');

@@ -51,6 +51,7 @@ const renderTextArea = field => (
     <Form.TextArea
         {...field.input}
         label={field.label}
+        rows={field.row}
         // placeholder={field.placeholder}
     />
 );
@@ -147,7 +148,8 @@ class SiteFourCreateFormAppDefault extends React.Component {
             deploymentType:false,
             title:'Settings',
             editToggle:false,
-            editDsb:false
+            editDsb:false,
+            tah:4
         };
 
     }
@@ -320,6 +322,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
     processFile = (file) => {
         let reader = new FileReader();
+        this.setState({tah:10});
         reader.onload = () => {
             this.props.dispatch(change('createAppFormDefault', 'DeploymentMF', reader.result));
         };
@@ -365,6 +368,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                 placeholder={data[key]}
                                                                 value={data[key]}
                                                                 name={key}
+                                                                row={(fieldKeys[pId][key]['label'] === 'Deployment Manifest') ?this.state.tah:4}
                                                                 />
                                                                 {
                                                                     (fieldKeys[pId][key]['label'] === 'Deployment Manifest') ?
