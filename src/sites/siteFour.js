@@ -52,7 +52,8 @@ import PopLegendViewer from '../container/popLegendViewer';
 import * as Service from '../services/service_login_api';
 import * as computeService from '../services/service_compute_service';
 
-import { organizationTutor, CloudletTutor } from '../tutorial'
+import { organizationTutor, CloudletTutor } from '../tutorial';
+import SiteFourPageAudits from './siteFour_page_audits';
 
 import Alert from 'react-s-alert';
 
@@ -295,6 +296,7 @@ class SiteFour extends React.Component {
     receiveVersion(result) {
         _self.setState({currentVersion:result.data.version})
     }
+
     controllerOptions(option){
         let arr = []
         if(option) {
@@ -468,8 +470,6 @@ class SiteFour extends React.Component {
         //this.gotoUrl('/site4', 'pg=0')
         //this.gotoPreview('/site4');
         //this.props.history.location.search = "pg=0";
-
-
         this.disableBtn();
 
         if(store) this.getAdminInfo(store.userToken);
@@ -549,13 +549,11 @@ class SiteFour extends React.Component {
         }
 
         // set step value of guide
-        console.log('20190821 step==', this.props.changeStep)
 
         // saved tutorial
         let tutorial = localStorage.getItem('TUTORIAL')
 
         let formKey = Object.keys(nextProps.formInfo);
-        console.log('submitSucceeded formKey= ', formKey)
         //let submitSucceeded = (nextProps.formInfo) ? nextProps.formInfo[formKey[0]]['submitSucceeded']: null
         if(formKey.length){
             console.log('submitSucceeded = ', nextProps.formInfo[formKey[0]], nextProps.formInfo[formKey[0]]['submitSucceeded'])
@@ -590,6 +588,19 @@ class SiteFour extends React.Component {
             this.setState({enable : true})
         } else {
             this.setState({enable:false})
+        }
+        //{ key: 1, text: 'All', value: 'All' }
+        if(nextProps.regionInfo !== _self.props.regionInfo) {
+            let getRegions = []
+            if(nextProps.regionInfo.region){
+                nextProps.regionInfo.region.map((region, i) => {
+                    console.log('20191015 props for site for....',region, i)
+                    getRegions.push(region)
+                })
+            }
+
+            let newRegions = Object.assign([], _self.state.region).concat(getRegions)
+            _self.setState({region:newRegions})
         }
 
     }
@@ -988,6 +999,7 @@ class SiteFour extends React.Component {
                                                                                                 (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
                                                                                                     (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
                                                                                                         (this.state.page === 'pg=createFlavor')? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
+                                                                                                        (this.state.page === 'pg=audits')? <SiteFourPageAudits></SiteFourPageAudits> :
                                                                                                         <div> </div>
                                                 }
                                             </div>
@@ -1015,6 +1027,7 @@ const mapStateToProps = (state) => {
     let tutorState = (state.tutorState)?state.tutorState.state:null;
     let formInfo = (state.form)?state.form:null;
     let submitInfo = (state.submitInfo)?state.submitInfo:null;
+    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         viewBtn : state.btnMnmt?state.btnMnmt:null,
         userToken : (state.userToken) ? state.userToken: null,
@@ -1038,7 +1051,8 @@ const mapStateToProps = (state) => {
         dataExist : state.dataExist.data,
         tutorState : tutorState,
         formInfo:formInfo,
-        submitInfo:submitInfo
+        submitInfo:submitInfo,
+        regionInfo:regionInfo
     }
 };
 
@@ -1061,7 +1075,7 @@ const mapDispatchProps = (dispatch) => {
         // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))},
         handleDetail: (data) => { dispatch(actions.changeDetail(data))},
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
     };
 };
 

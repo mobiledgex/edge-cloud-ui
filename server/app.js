@@ -485,6 +485,7 @@ app.post('/deleteService', apiMC.DeleteService);
 app.post('/deleteUser', apiMC.DeleteUser);
 app.post('/deleteAccount', apiMC.DeleteAccount);
 app.post('/deleteOrg', apiMC.DeleteOrg);
+app.post('/ShowController', apiMC.ShowController);
 
 // mc-dev
 app.post('/passwordresetrequest', apiMC.ResetPassword)

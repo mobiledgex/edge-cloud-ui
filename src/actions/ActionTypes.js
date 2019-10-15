@@ -41,4 +41,5 @@ export const SUBMIT_INFO = 'SUBMIT_INFO';
 export const GET_REGION = 'GET_REGION';
 export const EDIT_INSTANCE = 'EDIT_INSTANCE';
 export const DELETE_RESET = 'DELETE_RESET';
+export const REGION_INFO = 'REGION_INFO';
 

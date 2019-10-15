@@ -10,14 +10,14 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
-import MapWithListView from "../container/mapWithListView";
+import TimelineAuditView from "../container/timelintAuditView";
 import Alert from "react-s-alert";
 import * as reducer from '../utils'
 
 
 let _self = null;
 let rgn = ['US','KR','EU'];
-class SiteFourPageCloudlet extends React.Component {
+class SiteFourPageAudits extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -30,7 +30,6 @@ class SiteFourPageCloudlet extends React.Component {
             activeItem: 'Developers',
             devData:[],
             viewMode:'listView',
-            regions:[]
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -101,61 +100,41 @@ class SiteFourPageCloudlet extends React.Component {
             }
 
         }
-
-        //{ key: 1, text: 'All', value: 'All' }
-        console.log('20191015 region', nextProps.regionInfo)
-        if(nextProps.regionInfo !== _self.props.regionInfo) {
-            console.log('20191015 region', nextProps.regionInfo)
-            let getRegions = []
-            if(nextProps.regionInfo.region){
-                nextProps.regionInfo.region.map((region, i) => {
-                    console.log('20191015 props for site for....',region, i)
-                    getRegions.push(region)
-                })
-            }
-
-            let newRegions = Object.assign([], _self.state.regions).concat(getRegions)
-            //_self.setState({regions:newRegions})
-
-
-        }
     }
     receiveResult = (result) => {
-        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-        if(Object.keys(regionGroup)[0]) {
-            this._cloudletDummy = this._cloudletDummy.concat(result)
-        }
-
-        this.loadCount ++;
-        console.log("EditEditEdit",rgn.length,":::",this.loadCount)
-        if(rgn.length == this.loadCount){
-            _self.countJoin()            
-        }
-
-
-        // let join = null;
-        // if(result[0]['Edit']) {
-        //     join = this.state.devData.concat(result);
-        // } else {
-        //     join = this.state.devData;
+        // let regionGroup = reducer.groupBy(result, 'Region');
+        // if(Object.keys(regionGroup)[0]) {
+        //     this._cloudletDummy = this._cloudletDummy.concat(result)
         // }
+
         // this.loadCount ++;
-        // this.setState({devData:join})
-        // this.props.handleLoadingSpinner(false);
-        // if(rgn.length == this.loadCount-1){
-        //     return
-        // }
+        // console.log("EditEditEdit",rgn.length,":::",this.loadCount)
+        // //if(rgn.length == this.loadCount){
+        //     _self.countJoin()            
+        // //}
+
+
+        let join = null;
+        if(result[0]['Edit']) {
+            join = this.state.devData.concat(result);
+        } else {
+            join = this.state.devData;
+        }
+        this.loadCount ++;
+        this.setState({devData:join})
+        this.props.handleLoadingSpinner(false);
+        if(rgn.length == this.loadCount-1){
+            return
+        }
 
     }
-
     countJoin() {
         let cloudlet = this._cloudletDummy;
         _self.setState({devData:cloudlet})
         this.props.handleLoadingSpinner(false);
     }
-
-
     getDataDeveloper = (region) => {
+        // this.props.handleLoadingSpinner(true);
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         this._cloudletDummy = [];
@@ -165,12 +144,10 @@ class SiteFourPageCloudlet extends React.Component {
         } else {
             rgn = ['US','KR','EU'];
         }
-
         rgn.map((item, i) => {
             //setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 0)
             services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult)
         })
-        this.props.handleLoadingSpinner(true);
     }
     getDataDeveloperSub = () => {
         this.getDataDeveloper('All');
@@ -181,7 +158,7 @@ class SiteFourPageCloudlet extends React.Component {
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
-            <MapWithListView devData={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></MapWithListView>
+            <TimelineAuditView devData={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Audit'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></TimelineAuditView>
             :
             <PageDetailViewer data={this.state.detailData} page='cloudlet'/>
         );
@@ -197,12 +174,10 @@ const mapStateToProps = (state) => {
         viewMode = state.changeViewMode.mode.viewMode;
         detailData = state.changeViewMode.mode.data;
     }
-    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
         changeRegion : state.changeRegion.region?state.changeRegion.region:null,
-        viewMode : viewMode, detailData:detailData,
-        regionInfo: regionInfo
+        viewMode : viewMode, detailData:detailData
     }
 };
 const mapDispatchProps = (dispatch) => {
@@ -216,4 +191,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCloudlet)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageAudits)));

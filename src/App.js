@@ -11,6 +11,7 @@ import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
 import { connect } from 'react-redux';
 import * as actions from './actions';
 import * as Service from './services/service_login_api';
+import * as computeService from './services/service_compute_service';
 // API
 
 import { LOCAL_STRAGE_KEY } from './components/utils/Settings'
@@ -206,8 +207,6 @@ class App extends Component {
 
     receiveCurrentUser(result) {
         if(result.data && result.data.message) {
-
-
             if(result.data.message.indexOf('expired') > -1) {
                 setTimeout(() => self.goToNext('/logout',''),2000);
                 Alert.error('Login timeout expired. Please login again', {
@@ -225,6 +224,23 @@ class App extends Component {
             }
         }
     }
+    receiveController = (result) => {
+        let regions = [];
+
+        if(result) {
+            if(result.data) {
+                result.data.map((data) => {
+                    regions.push(data.Region)
+                })
+            } else {
+                alert('There is no any controller')
+            }
+
+            //localStorage.setItem('regions', regions)
+            self.props.handleRegionInfo(regions)
+        }
+    }
+
     profileView() {
         //const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
         if(!localStorage.PROJECT_INIT) return;
@@ -238,7 +254,7 @@ class App extends Component {
         let pathName = window.location.pathname;
 
         //this.router.history.push(pathName);
-
+        let scope = this;
         // Login check
         const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
 
@@ -253,9 +269,8 @@ class App extends Component {
 
 
         }
-
-
-
+        let store = JSON.parse(localStorage.PROJECT_INIT);
+        if(store.userToken) computeService.showController('ShowController', {token:store.userToken}, scope.receiveController);
 
     }
     componentWillReceiveProps(nextProps) {
@@ -315,6 +330,7 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleChangeTab: (data) => { dispatch(actions.changeTab(data))},
         mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data})),
+        handleRegionInfo: (data) => { dispatch(actions.regionInfo(data))}
     };
 };
 

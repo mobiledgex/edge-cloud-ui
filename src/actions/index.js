@@ -268,3 +268,9 @@ export function editInstance (data) {
         data
     }
 }
+export function regionInfo (data) {
+    return {
+        type: types.REGION_INFO,
+        data
+    }
+}

@@ -1456,6 +1456,41 @@ exports.ShowRole = (req, res) => {
         });
 }
 
+/*
+mcctl --addr https://mc-stage.mobiledgex.net:9900 controller show
+ */
+exports.ShowController = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody;
+        superpass = req.body.serviceBody.token;
+    }
+    console.log('show controller-- ', serviceBody, 'mcUrl=',mcUrl)
+    axios.post(mcUrl + '/api/v1/auth/controller/show', {},
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+
+            console.log('success show controller', response.data)
+            if(response.data) {
+                res.json(response.data)
+            } else {
+                res.json({error:'Fail'})
+            }
+        })
+        .catch(function (error) {
+            console.log('error show controller...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
+        });
+}
+
+
 exports.getVersion = (req, res) => {
     if(process.env.BUILD_VERSION) _version =  process.env.BUILD_VERSION;
     console.log('get version = ', _version)
