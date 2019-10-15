@@ -509,22 +509,22 @@ export function getMCService(resource, body, callback, self) {
 
 
 }
-export function showAppInst(resource, body, callback, self) {
+export function showController(resource, body, callback, self) {
     axios.post(ServerUrl+'/'+resource, qs.stringify({
         service: resource,
         serviceBody:body,
         serviceDomain:serviceDomain
     }))
         .then(function (response) {
-            console.log("showInstName!!",response)
+            console.log("20191015 showController!!",response)
             let parseData = null;
             if(response.data) {
                 parseData = JSON.parse(JSON.stringify(response));
             } else {
                 parseData = response;
             }
-            console.log('parse data userinfo ===>>>>>>>>>> ', parseData)
-            callback(FormatComputeInst(parseData))
+            console.log('parse data showController ===>>>>>>>>>> ', parseData)
+            callback(parseData)
         })
         .catch(function (error) {
             console.log('error',error);
