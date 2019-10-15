@@ -57,7 +57,6 @@ let generateData = (datas,body) => {
         toArray.pop();
         toJson = toArray.map((str)=>(JSON.parse(str)))
     }
-
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
             if(dataResult.error || dataResult.message || !dataResult.data) {
@@ -79,6 +78,7 @@ let generateData = (datas,body) => {
                     ScaleWithCluster:'',
                     Command:'',
                     DeploymentMF:'',
+                    Revision:'',
                     Edit:null
 
                 })
@@ -99,6 +99,7 @@ let generateData = (datas,body) => {
                 let ScaleWithCluster = dataResult.data.scale_with_cluster || false;
                 let DefaultFQDN = dataResult.data.official_fqdn || '-';
                 let PackageName = dataResult.data.android_package_name || '-'; 
+                let Revision = dataResult.data.revision || '-'; 
                 //let DeploymentGenerator = dataResult.deployment_generator || '-';
 
 
@@ -121,6 +122,7 @@ let generateData = (datas,body) => {
                     ScaleWithCluster:ScaleWithCluster,
                     Command:Command,
                     DeploymentMF:DeploymentMF,
+                    Revision:Revision,
                     Edit:newRegistKey
                 })
             }

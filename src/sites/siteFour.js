@@ -362,7 +362,7 @@ class SiteFour extends React.Component {
         let currentStep = null;
         console.log('20190821 siteName==', this.props, 'change org step..', this.props.changeStep, 'steps data=', orgaSteps, 'userRole=', this.props.userRole,this.props.userInfo.info, 'this.props.dataExist==',this.props.dataExist)
         let site = this.props.siteName;
-        let userName = (this.props.userInfo)?this.props.userInfo.info.Name:'';
+        let userName = (this.props.userInfo && this.props.userInfo.info)?this.props.userInfo.info.Name:'';
         if(this.props.params.mainPath === "/site4" && this.props.params.subPath === "pg=newOrg") {
             if(this.props.changeStep === '02'){
                 currentStep = orgaSteps.stepsNewOrg2;

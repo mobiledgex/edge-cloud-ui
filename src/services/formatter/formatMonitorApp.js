@@ -118,7 +118,6 @@ let generateData = (datas) => {
         if(dataSeries.length) {
             //remove duplicated data
 
-            console.log('app inst metrics data == ', dataSeries)
             dataSeries.map((item) => {
                 // time, cluster, cpu, disk, mem, recvBytes, sendBytes
                 if(lastItem !== item[0]) {
@@ -130,7 +129,7 @@ let generateData = (datas) => {
                         values:{
                             time:moment(item[0]).utc().local().format(),
                             cluster:infoData[3],
-                            cmsn:(_name.indexOf('cpu') > -1)?infoData[4] : (_name.indexOf('mem') > -1)? infoData[5] : [infoData[6],infoData[7]]
+                            cmsn:(_name.indexOf('cpu') > -1)?infoData[4] : (_name.indexOf('mem') > -1)? infoData[5] : (_name.indexOf('connections') > -1)? infoData : [infoData[6],infoData[7]]
                         }})
                 }
 

@@ -124,8 +124,8 @@ exports.currentUser = (req, res) => {
         })
         .catch(function (error) {
 
-            console.log('error......', error.data);
-            if(error.data.message.indexOf('expired') > -1) res.json({message:'Certificated has expired'})
+            console.log('error......', error);
+            if(error.data && error.data.message.indexOf('expired') > -1) res.json({message:'Certificated has expired'})
         });
 
 }
@@ -981,7 +981,48 @@ exports.CreateAppInst = (req, res) => {
             res.json({error:String(error.response.data.message)})
         });
 }
+exports.UpdateAppInst = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local';
+    let updataId = '';
+    axios.defaults.timeout = 1000000;
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+        updataId = serviceBody.appinst.key.app_key.name + serviceBody.appinst.key.cluster_inst_key.cloudlet_key.name + serviceBody.appinst.key.cluster_inst_key.cluster_key.name;
+    }
+    res.send(updataId);
+    //params = JSON.stringify(params).replace('"1"', 1);
+    console.log('Update me appinst-- ', serviceBody, 'mcUrl=',updataId)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/UpdateAppInst', serviceBody,
 
+        {
+            headers: {'Authorization':`Bearer ${superpass}`},
+            responseType: 'stream'
+        }
+    )
+        .then(function (response) {
+
+            console.log('success Update appinst', response.data)
+
+            if(response.data) {
+                // res.json(response.data)
+                response.data.pipe(
+                    fs.createWriteStream('./temp/'+updataId+'.txt')
+                )
+            } else {
+                res.json({error:'Fail'})
+            }
+        })
+        .catch(function (error) {
+            console.log('error show UpdateApp...', error.response.data.message);
+            res.json({error:String(error.response.data.message)})
+        });
+}
 exports.CreateClusterInst = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';

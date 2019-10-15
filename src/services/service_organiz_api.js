@@ -6,7 +6,11 @@ import qs from "qs";
 
 let hostname = window.location.hostname;
 
+let ServerUrl = 'https://'+hostname+':3030';
 
+if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
+    ServerUrl = 'https://'+hostname+'/server';
+}
 
 /*
 $ http POST 127.0.0.1:9900/api/v1/usercreate name=orgman passhash=pointyears email="orgman@bigorg.com"
@@ -14,7 +18,7 @@ $ http POST 127.0.0.1:9900/api/v1/usercreate name=orgman passhash=pointyears ema
  */
 export function organize(resource, body, callback, self) {
 
-    axios.post('https://'+hostname+':3030/'+resource, qs.stringify({
+    axios.post(ServerUrl+'/'+resource, qs.stringify({
         service: resource,
         serviceBody:body
     }))
@@ -44,7 +48,7 @@ export function organize(resource, body, callback, self) {
 
 
 export function example(resource, body, callback) {
-    axios.post('https://'+hostname+':3030/register',qs.stringify({
+    axios.post(ServerUrl+'/register',qs.stringify({
         service: resource,
         serviceBody:body
     }))

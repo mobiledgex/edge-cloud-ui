@@ -56,7 +56,7 @@ class VerticalLinearStepper extends React.Component {
         if(prgDiv){
             prgDiv.scrollTop = prgDiv.scrollHeight;
         }
-        if(this.props.item.State == 3) {
+        if(this.props.item.State == 3 || this.props.item.State == 7) {
             computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusData)
         } else if(this.props.item.State == 5) {
             this.setState({steps:['Created successfully'],activeStep:1})
@@ -97,6 +97,13 @@ class VerticalLinearStepper extends React.Component {
                     console.log("Delete successfullyCreated successfully")
                     setTimeout(() => {
                         this.props.failRefresh('Deleted cloudlet successfully');
+                        computeService.deleteTempFile(this.props.item, this.props.site)
+                    }, 2000);
+                } else if(item.data.message.toLowerCase().indexOf('completed') > -1 && item.data.message.toLowerCase().indexOf('updated') > -1 && !deleteFlag){
+                    deleteFlag = true;
+                    console.log("Updated AppInst")
+                    setTimeout(() => {
+                        this.props.alertRefresh();
                         computeService.deleteTempFile(this.props.item, this.props.site)
                     }, 2000);
                 }

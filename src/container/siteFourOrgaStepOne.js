@@ -217,7 +217,7 @@ class SiteFourOrgaOne extends React.Component {
                             <Header>Create Your Organization.</Header>
                             <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
                                 <Grid>
-                                    <Grid.Row className="newOrg1-1">
+                                    <Grid.Row className="newOrg1-1" style={{alignItems:'center'}}>
                                         <Grid.Column width={5}>
                                             <div>Type *</div>
                                         </Grid.Column>

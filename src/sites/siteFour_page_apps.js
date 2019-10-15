@@ -32,7 +32,7 @@ class SiteFourPageApps extends React.Component {
         this.loadCount = 0;
 
         this.headerLayout = [1,3,3,1,3,1,3,4];
-        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster','AuthPublicKey','DefaultFQDN','PackageName','ScaleWithCluster']
+        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster','AuthPublicKey','DefaultFQDN','PackageName','ScaleWithCluster','Revision']
         this.userToken = null;
 
     }
@@ -174,7 +174,6 @@ class SiteFourPageApps extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-
     let registNew= state.form.registNewListInput
         ? {
             values: state.form.registNewListInput.values,

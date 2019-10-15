@@ -81,6 +81,8 @@ export default class PopDetailViewer extends React.Component {
                                 :(key == 'ImageType' && String(nextProps.data[key]) === '1')?"Docker"
                                 :(key == 'ImageType' && String(nextProps.data[key]) === '2')?"Qcow" /* 여기까지 Apps*/
                                 :(key == 'Created')? String("time is ==  "+nextProps.data[key])
+                                :(key == 'RAM')? String(nextProps.data[key]+' MB')
+                                :(key == 'Disk')? String(nextProps.data[key]+' GB')
                                 :(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key])
                                 :String(nextProps.data[key])}
                             </div>
@@ -122,7 +124,7 @@ export default class PopDetailViewer extends React.Component {
                 <Modal.Header >View Detail</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
-                        <Grid divided style={{overflowY:'scroll'}}>
+                        <Grid divided style={{overflowY:'auto'}}>
                             {
                                 this.state.listOfDetail
                             }

@@ -88,7 +88,7 @@ exports.ShowappConnection = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('20190719 success  ShowappConnection', response.data)
+            console.log('20190719 success  ShowappConnection', qs.parse(response.data))
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){

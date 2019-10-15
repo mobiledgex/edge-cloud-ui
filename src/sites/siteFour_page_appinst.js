@@ -12,7 +12,7 @@ import './siteThree.css';
 import MapWithListView from "../container/mapWithListView";
 import PageDetailViewer from '../container/pageDetailViewer';
 import DeveloperListView from "../container/developerListView";
-import * as aggregate from '../utils'
+import * as reducer from '../utils'
 
 let _self = null;
 let rgn = ['US','KR','EU'];
@@ -27,14 +27,17 @@ class SiteFourPageAppInst extends React.Component {
             devData:[],
             viewMode:'listView',
             detailData:null,
-            hiddenKeys:['Error','URI', 'Mapped_ports', 'Runtime', 'Created', 'Liveness','Flavor','Status']
+            hiddenKeys:['Error','URI', 'Mapped_ports', 'Runtime', 'Created', 'Liveness','Flavor','Status','Revision'],
+            AppRevision:[]
         };
         this.headerH = 70;
         this.hgap = 0;
         this.loadCount = 0;
 
-        this.headerLayout = [2,2,2,1,1,2,2,2,1,1,3];
+        this.headerLayout = [2,2,2,1,1,2,2,2,1,4];
         this._devData = [];
+        this._AppInstDummy = [];
+        this._diffRev = []
     }
 
     //go to
@@ -64,7 +67,7 @@ class SiteFourPageAppInst extends React.Component {
 
         } else {
             //remove key from hiddenKeys
-            newHiddenKeys = aggregate.filterDefine(this.state.hiddenKeys, [key.name])
+            newHiddenKeys = reducer.filterDefine(this.state.hiddenKeys, [key.name])
         }
 
         this.setState({hiddenKeys:newHiddenKeys})
@@ -78,11 +81,12 @@ class SiteFourPageAppInst extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(store.userToken) {
             this.getDataDeveloper(this.props.changeRegion);
+            // this.getUpdateData(this.props.changeRegion);
         }
         this._devData = [];
     }
     componentWillUnmount() {
-
+        this._AppInstDummy = []
     }
 
 
@@ -119,26 +123,60 @@ class SiteFourPageAppInst extends React.Component {
 
     }
     receiveResult = (result) => {
-        let join = null;
-        if(result[0]['Edit']) {
-            join = this.state.devData.concat(result);
-        } else {
-            join = this.state.devData;
+        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
+        if(Object.keys(regionGroup)[0]) {
+            this._AppInstDummy = this._AppInstDummy.concat(result)
         }
         this.loadCount ++;
-        this.setState({devData:join})
-        this.props.handleLoadingSpinner(false);
-        if(rgn.length == this.loadCount-1){
-            return
+        if(rgn.length == this.loadCount){
+            this.countJoin()            
         }
+
+        // console.log("appinstresult",result)
+        // let join = null;
+        // if(!result.error && result[0]['Edit']) {
+        //     join = this.state.devData.concat(result);
+        // } else {
+        //     join = this.state.devData;
+        // }
+        // this.loadCount ++;
+        // this.setState({devData:join})
+        // this.props.handleLoadingSpinner(false);
+        // console.log("rgn.lengthrgn.length",rgn.length,":::",this.loadCount)
+        // if(rgn.length == this.loadCount-1){
+        //     return
+        // }
+    }
+    countJoin() {
+        let AppInst = this._AppInstDummy;
+        _self.setState({devData:AppInst})
+        this.props.handleLoadingSpinner(false);
+        console.log("AppRevision",this.state.AppRevision,":::",AppInst)
+        this.getUpdateData(this.props.changeRegion);
+    }
+    receiveResultApp = (result) => {
+        let diff = []
+        console.log("receiveResultApp",result,":::",this.state.devData)
+        if(!result.error){
+            result.map((item) => {
+                this.state.devData.map((_data) => {
+                    if(item.Region == _data.Region && item.AppName == _data.AppName && item.Revision != _data.Revision){
+                        console.log("itemitemddd",item.Revision,":::",_data.Revision)
+                        this._diffRev.push(_data.AppName)
+                    }
+                })
+            })
+        }
+        
     }
 
     getDataDeveloper = (region) => {
         this.props.handleLoadingSpinner(true);
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let serviceBody = {}
-        _self.loadCount = 0;
+        this.loadCount = 0;
         this.setState({devData:[]})
+        this._AppInstDummy = []
         if(region !== 'All'){
             rgn = [region]
         } else {
@@ -171,7 +209,40 @@ class SiteFourPageAppInst extends React.Component {
         }
     }
     getDataDeveloperSub = () => {
+        this._diffRev = []
         this.getDataDeveloper('All');
+    }
+    getUpdateData = (region) => {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let serviceBody = {}
+        if(region !== 'All'){
+            rgn = [region]
+        } else {
+            rgn = ['US','KR','EU'];
+        }
+
+        if(localStorage.selectRole == 'AdminManager') {
+            rgn.map((item) => {
+                // All show app
+                services.getMCService('ShowApps',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultApp)
+            })
+        } else {
+            rgn.map((item) => {
+                serviceBody = {
+                    "token":store ? store.userToken : 'null',
+                    "params": {
+                        "region":item,
+                        "app":{
+                            "key":{
+                                "developer_key":{"name":localStorage.selectOrg},
+                            }
+                        }
+                    }
+                }
+                // org별 show app
+                services.getMCService('ShowApp',serviceBody, _self.receiveResultApp)
+            })
+        }
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -179,7 +250,7 @@ class SiteFourPageAppInst extends React.Component {
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
-            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub}></MapWithListView>
+            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev}></MapWithListView>
             :
             <PageDetailViewer data={detailData} page='appInst'/>
         );

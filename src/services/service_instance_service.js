@@ -2,6 +2,7 @@
 import axios from 'axios-jsonp-pro';
 import qs from 'qs';
 import request from 'request';
+import dotenv from 'dotenv';
 
 import FormatComputeDev from './formatter/formatComputeDeveloper';
 import FormatComputeCloudlet from './formatter/formatComputeCloudlet';
@@ -13,10 +14,24 @@ import FormatMonitorCluster from "./formatter/formatMonitorCluster";
 import FormatMonitorApp from "./formatter/formatMonitorApp";
 import FormatApplicationInfo from "./formatter/formatApplicationInfo";
 
+
 let hostname = window.location.hostname;
+/*
+if environment variable USE_SERVER_SUFFIX
+then
+   set variable ServerUrl to "https://<hostname>/server"
+else
+    set variable ServerUrl to "https://<hostname>:3030"
+    ---> axios.post(ServerUrl + '/CreateFlavor')
+ */
+let ServerUrl = 'https://'+hostname+':3030';
+
+if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
+    ServerUrl = 'https://'+hostname+'/server';
+}
 export function getOperator(resource, callback) {
 
-    fetch('https://'+hostname+':3030')
+    fetch(ServerUrl)
         .then(response => response.json())
         .then(data => {
             console.log('infux data == ', data)
@@ -28,7 +43,7 @@ export function getOperator(resource, callback) {
 //curl -X POST "https://mexdemo.ctrl.mobiledgex.net:36001/show/cloudlet" -H "accept: application/json" -H "Content-Type: application/json" --cacert mex-ca.crt --key mex-client.key --cert mex-client.crt
 
 export function getClusterService(resource, callback) {
-    axios.get('https://'+hostname+':3030/compute?service='+resource)
+    axios.get(ServerUrl+'/compute?service='+resource)
         .then(function (response) {
             let paseData = JSON.parse(JSON.stringify(response.data));
             let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
@@ -50,11 +65,12 @@ export function getClusterService(resource, callback) {
 }
 
 export function getAppinstHealth(resource, callback) {
+
     let resResults = [];
     //
     axios.all(
         resource.map((reso) => {
-            return axios.post('https://'+hostname+':3030/timeAppinst', {
+            return axios.post(ServerUrl+'/timeAppinst', {
                 service: 'timeAppinst',
                 serviceBody:reso,
                 serviceId: Math.round(Math.random()*10000)
@@ -91,7 +107,7 @@ export function getClusterHealth(resource, callback) {
         //
     axios.all(
         resource.map((reso) => {
-            return axios.post('https://'+hostname+':3030/timeClusterinst', {
+            return axios.post(ServerUrl+'/timeClusterinst', {
                 service: 'timeClusterinst',
                 serviceBody:reso,
                 serviceId: Math.round(Math.random()*10000)
@@ -124,7 +140,7 @@ export function getCloudletHealth(resource, callback) {
         //
     axios.all(
         resource.map((reso) => {
-            return axios.post('https://'+hostname+':3030/timeCloudlet', {
+            return axios.post(ServerUrl+'/timeCloudlet', {
                 service: 'timeCloudlet',
                 serviceBody:reso,
                 serviceId: Math.round(Math.random()*10000)
@@ -154,7 +170,7 @@ export function getCloudletHealth(resource, callback) {
 }
 
 export function getAppClusterInfo(cluster, app, callback, self) {
-    axios.get('https://'+hostname+':3030/appInstanceList?cluster='+cluster+'&app='+app)
+    axios.get(ServerUrl+'/appInstanceList?cluster='+cluster+'&app='+app)
         .then(function (response) {
             let parseData = JSON.parse(JSON.stringify(response.data));
             //callback(FormatApplicationInfo(parseData.results), self);
@@ -169,7 +185,7 @@ export function getAppClusterApp(clusters, callback) {
     let results = [];
     if(clusters.length) {
         clusters.map((cluster) => {
-            axios.get('https://'+hostname+':3030/appInstance?cluster='+cluster)
+            axios.get(ServerUrl+'/appInstance?cluster='+cluster)
                 .then(function (response) {
                     let parseData = JSON.parse(JSON.stringify(response.data));
                     results.push(parseData.results);
@@ -193,7 +209,7 @@ export function getAppClusterApp(clusters, callback) {
 export function getTcpUdpClusterInfo(cluster, app, callback, self) {
     let getCount = 0;
 
-    axios.get('https://'+hostname+':3030/tcpudpCluster?cluster='+cluster+'&app='+app)
+    axios.get(ServerUrl+'/tcpudpCluster?cluster='+cluster+'&app='+app)
         .then(function (response) {
             let parseData = JSON.parse(JSON.stringify(response.data));
 

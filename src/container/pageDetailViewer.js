@@ -231,7 +231,6 @@ class PageDetailViewer extends React.Component {
     receiveInstanceInfo(result) {
         _self.setState({monitorData:result})
         _self.props.handleLoadingSpinner(false)
-        _self.forceUpdate()
     }
     getParams = (page, data, store) => (
         (page === 'appInst' && _self.resources[page].length)?
@@ -243,9 +242,9 @@ class PageDetailViewer extends React.Component {
     loopGetHealth (page, data, store) {
         (page === 'appInst' && store.userToken)  ?
             serviceInstance.getAppinstHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
-            (page === 'cloudlet' && store.userToken)  ?
-                serviceInstance.getCloudletHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
-            serviceInstance.getClusterHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo)
+        (page === 'cloudlet' && store.userToken)  ?
+            serviceInstance.getCloudletHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
+        serviceInstance.getClusterHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo)
     }
 
     getInstanceHealth (page, data) {
@@ -253,7 +252,7 @@ class PageDetailViewer extends React.Component {
         _self.activeInterval = setInterval(
             () => {
                 _self.loopGetHealth(page, data, store);
-                _self.forceUpdate()
+
             },
             15000
         )

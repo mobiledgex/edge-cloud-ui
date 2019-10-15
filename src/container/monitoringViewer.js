@@ -7,6 +7,11 @@ import UsageMaxColumn from '../charts/plotly/usageMaxColumn';
 import * as d3 from 'd3';
 import './styles.css'
 
+const formatInt = d3.format(".0f");
+const formatComma = d3.format(",");
+const formatFloat = d3.format(".2f");
+const formatPercent = d3.format(".1f",".1f");
+
 export default class MonitoringViewer extends React.Component {
     state = {
         mProp : {
@@ -59,9 +64,14 @@ export default class MonitoringViewer extends React.Component {
             timeseriesDataHANDLED:[
                 []
             ],
+            timeseriesDataCONNECT:[
+                []
+            ],
+            timeseriesACCEPTS:[[]],
             dataLabel:['CPU', 'MEM'],
             dataLabelNET:['RCV', 'SND'],
             dataLabelDISK:['DISK'],
+            dataLabelCONN:[''],
             dataLabelTCP:['RCV', 'SND'],
             dataLabelUDP:['RCV', 'SND', 'ERROR'],
         },
@@ -75,10 +85,11 @@ export default class MonitoringViewer extends React.Component {
     diskCnt = 0;
     tcpCnt = 0;
     udpCnt = 0;
+    conCnt = 0;
 
     setTimeseriesDataCPUMEM (label, values) {
         if(label === 'cpu') {
-            this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt] = parseFloat(values['cmsn']).toFixed(2);
+            this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt] = formatFloat(values['cmsn']);
             this.state.mProp['timeseriesCPUMEM'][0][this.cpuCnt] = values['time'];
             this.cpuCnt ++;
         }
@@ -87,7 +98,7 @@ export default class MonitoringViewer extends React.Component {
             this.memCnt ++;
         }
         if(label === 'disk') {
-            this.state.mProp['timeseriesDataDISK'][0][this.diskCnt] = parseFloat(values['cmsn']).toFixed(2);
+            this.state.mProp['timeseriesDataDISK'][0][this.diskCnt] = formatFloat(values['cmsn']);
             this.state.mProp['timeseriesDISK'][0][this.diskCnt] = values['time'];
             this.diskCnt ++;
         }
@@ -110,25 +121,21 @@ export default class MonitoringViewer extends React.Component {
             this.state.mProp['timeseriesUDP'][0][this.udpCnt] = values['time'];
             this.udpCnt ++;
         }
-        if(label === 'accepts') {
-            this.state.mProp['timeseriesDataACCEPTS'][0][this.netCnt] = values['cmsn'][0];
-            this.state.mProp['timeseriesDataACCEPTS'][1][this.netCnt] = values['cmsn'][1];
-            this.state.mProp['timeseriesACCEPTS'][0][this.netCnt] = values['time'];
-            this.netCnt ++;
+        if(label === 'connections') {
+            console.log('20191014 connections series data --- ', values['cmsn'], ":", values['time'])
+            this.state.mProp['timeseriesDataACCEPTS'][0][this.connCnt] = values['cmsn'][1];
+            this.state.mProp['timeseriesACCEPTS'][0][this.connCnt] = values['cmsn'][0];
+
+            this.state.mProp['timeseriesDataACTIVE'][0][this.connCnt] = values['cmsn'][2];
+            this.state.mProp['timeseriesACCEPTS'][0][this.connCnt] = values['cmsn'][0];
+
+            this.state.mProp['timeseriesDataHANDLED'][0][this.connCnt] = values['cmsn'][7];
+            this.state.mProp['timeseriesACCEPTS'][0][this.connCnt] = values['cmsn'][0];
+
+            this.connCnt ++;
         }
-        if(label === 'active') {
-            this.state.mProp['timeseriesDataACTIVE'][0][this.tcpCnt] = values['cmsn'][0];
-            this.state.mProp['timeseriesDataACTIVE'][1][this.tcpCnt] = values['cmsn'][1];
-            this.state.mProp['timeseriesACTIVE'][0][this.tcpCnt] = values['time'];
-            this.tcpCnt ++;
-        }
-        if(label === 'handled') {
-            this.state.mProp['timeseriesDataHANDLED'][0][this.udpCnt] = values['cmsn'][0];
-            this.state.mProp['timeseriesDataHANDLED'][1][this.udpCnt] = values['cmsn'][1];
-            this.state.mProp['timeseriesHANDLED'][0][this.udpCnt] = values['time'];
-            this.udpCnt ++;
-        }
-        //console.log('20190812 lastMem..',this.state.mProp['timeseriesDataCPUMEM'],":",this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt-1])
+
+
         this.setState({props: this.state.mProp})
         this.setState({lastCPU: this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt-1]})
         this.setState({lastMEM: this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt-1]})
@@ -137,6 +144,7 @@ export default class MonitoringViewer extends React.Component {
         this.setState({lastNET: [this.state.mProp['timeseriesDataNET'][0][this.netCnt-1], this.state.mProp['timeseriesDataNET'][1][this.netCnt-1] ]})
         this.setState({lastTCP: [this.state.mProp['timeseriesDataTCP'][0][this.tcpCnt-1], this.state.mProp['timeseriesDataTCP'][1][this.tcpCnt-1] ]})
         this.setState({lastUDP: [this.state.mProp['timeseriesDataUDP'][0][this.udpCnt-1], this.state.mProp['timeseriesDataUDP'][1][this.udpCnt-1] ]})
+
     }
     bytesToString =  (bytes, inst) => {
         //console.log("20190812 bytes..",bytes, ":", inst)
@@ -176,6 +184,7 @@ export default class MonitoringViewer extends React.Component {
         this.netCnt = 0;
         this.tcpCnt = 0;
         this.udpCnt = 0;
+        this.connCnt = 0;
 
         if(data && data.mData.length) {
             data.mData.map(item => {
@@ -191,6 +200,10 @@ export default class MonitoringViewer extends React.Component {
                     this.setTimeseriesDataCPUMEM('tcp',item['values'])
                 } else if(item.name.indexOf('udp') > -1) {
                     this.setTimeseriesDataCPUMEM('udp',item['values'])
+                } else if(item.name.indexOf('accepts') > -1) {
+                    this.setTimeseriesDataCPUMEM('accepts',item['values'])
+                } else if(item.name.indexOf('connections') > -1) {
+                    this.setTimeseriesDataCPUMEM('connections',item['values'])
                 }
             })
         }
@@ -207,12 +220,12 @@ export default class MonitoringViewer extends React.Component {
         //console.log('20191007 feedData-- ', data)
         if(data && data.length) {
             this.setState({lastCPU: data[0].values['cmsn']['vCpuUsed']})
-            this.setState({lastMEM: data[0].values['cmsn']['memUsed'] * 1000})
-            this.setState({lastDISK: data[0].values['cmsn']['diskUsed'] * (1000 * 1000)})
+            this.setState({lastMEM: data[0].values['cmsn']['memUsed']})
+            this.setState({lastDISK: data[0].values['cmsn']['diskUsed']})
 
             this.setState({maxCPU: data[0].values['cmsn']['vCpuMax']})
-            this.setState({maxMEM: data[0].values['cmsn']['memMax'] * 1000})
-            this.setState({maxDISK: data[0].values['cmsn']['diskMax'] * (1000 * 1000)})
+            this.setState({maxMEM: data[0].values['cmsn']['memMax']})
+            this.setState({maxDISK: data[0].values['cmsn']['diskMax']})
         }
         if(data.length){
             data.map((val) => {
@@ -227,8 +240,8 @@ export default class MonitoringViewer extends React.Component {
 
                 }
                 if(val.values['cmsn']['memUsed']) {
-                    this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt] = val.values['cmsn']['memUsed'] * 1000;
-                    this.state.mProp['timeseriesDataMEM'][0][this.memCnt] = this.bytesToString(val.values['cmsn']['memUsed'] * 1000, 'cloudlet');
+                    this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt] = val.values['cmsn']['memUsed'];
+                    this.state.mProp['timeseriesDataMEM'][0][this.memCnt] = val.values['cmsn']['memUsed'];
                     this.memCnt ++;
                 }
                 if(val.values['cmsn']['diskUsed']) {
@@ -252,7 +265,7 @@ export default class MonitoringViewer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('20190930 monitoring viewer nextProps....', nextProps)
+        console.log('20191014  monitoring viewer nextProps....', nextProps)
         if(nextProps.data.page === 'cloudlet' && nextProps.data.mData.length) {
             this.feedDataCloudlet(nextProps.data.mData);
         } else {
@@ -269,17 +282,17 @@ export default class MonitoringViewer extends React.Component {
                     <div className='wrapperPercentage'>
                         <Segment className="childPercentage" inverted>
                             <Header>
-                                CPU
+                                {(this.props.data.page === 'cloudlet')?"vCPUs" : "CPU"}
                             </Header>
                             {
                                 (this.props.data.page === 'cloudlet') ?
-                                    <Container className="cpu">{'USED : ' + this.state.lastCPU + ((this.props.data.page === 'cloudlet')?' Count' : '%')}</Container>
+                                    <Container className="cpu">{'USED : ' + this.state.lastCPU + ((this.props.data.page === 'cloudlet')?'' : '%')}</Container>
                                 :
                                 <Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?' Count' : '%')}</Container>
                             }
                             {
                                 (this.props.data.page === 'cloudlet') ?
-                                    <Container className="cpu">{'MAX : ' + this.state.maxCPU + ((this.props.data.page === 'cloudlet')?' Count' : '%')}</Container>
+                                    <Container className="cpu">{'MAX : ' + this.state.maxCPU + ((this.props.data.page === 'cloudlet')?'' : '%')}</Container>
                                 :
                                 null
                             }
@@ -294,11 +307,11 @@ export default class MonitoringViewer extends React.Component {
                                     (this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?
                                         <Container className="memory">{this.state.lastMEM+'%'}</Container>
                                         :
-                                        <Container className="memory">{'USED : '+this.bytesToString(this.state.lastMEM, this.props.data.page)}</Container>
+                                        <Container className="memory">{'USED : '+this.state.lastMEM/1000 + ' GBs'}</Container>
                                 }
                                 {
                                     (this.props.data.page === 'cloudlet')?
-                                        <Container className="memory">{'MAX : '+this.bytesToString(this.state.maxMEM, this.props.data.page)}</Container>
+                                        <Container className="memory">{'MAX : '+this.state.maxMEM/1000 + ' GBs'}</Container>
                                         :
                                         null
                                 }
@@ -311,10 +324,10 @@ export default class MonitoringViewer extends React.Component {
                                     <Header>
                                         DISK
                                     </Header>
-                                    <Container className="disk">{(this.props.data.page === 'cloudlet')? 'USED : '+this.gigabytesToString(this.state.lastDISK):this.state.lastDISK + '%'}</Container>
+                                    <Container className="disk">{(this.props.data.page === 'cloudlet')? 'USED : '+this.state.lastDISK + ' GBs' : this.state.lastDISK + '%'}</Container>
                                     {
                                         (this.props.data.page === 'cloudlet') ?
-                                            <Container className="disk">{(this.props.data.page === 'cloudlet')? 'MAX : '+this.gigabytesToString(this.state.maxDISK):this.state.lastDISK + '%'}</Container>
+                                            <Container className="disk">{(this.props.data.page === 'cloudlet')? 'MAX : '+this.state.maxDISK + ' GBs' :this.state.lastDISK + '%'}</Container>
                                             :
                                             null
                                     }
@@ -396,12 +409,12 @@ export default class MonitoringViewer extends React.Component {
                                         <EnvironmentStatus style={{width:'100%'}} data={[this.state.lastCPU, this.state.maxCPU]} type={'Cores'} title='USED'/>
                                     </div>
                                     <div className="content" style={{marginTop:140, fontSize:30}}>
-                                        CPU
+                                        vCPUs
                                     </div>
                                 </Segment>
                                 <Segment className="childPercentage" inverted style={{height:230}}>
                                     <div className="content">
-                                        <EnvironmentStatus style={{width:'100%'}} data={[this.state.lastMEM, this.state.maxMEM]} type={'MB'} title='USED'/>
+                                        <EnvironmentStatus style={{width:'100%'}} data={[this.state.lastMEM, this.state.maxMEM]} type={'GB'} title='USED'/>
                                     </div>
                                     <div className="content" style={{marginTop:140, fontSize:30}}>
                                         MEMORY
@@ -409,7 +422,7 @@ export default class MonitoringViewer extends React.Component {
                                 </Segment>
                                 <Segment className="childPercentage" inverted style={{height:230}}>
                                     <div className="content">
-                                        <EnvironmentStatus style={{width:'100%'}} data={[this.state.lastDISK, this.state.maxDISK]} type={'TB'} title='USED'/>
+                                        <EnvironmentStatus style={{width:'100%'}} data={[this.state.lastDISK, this.state.maxDISK]} type={'GB'} title='USED'/>
                                     </div>
                                     <div className="content" style={{marginTop:140, fontSize:30}}>
                                         DISK
@@ -426,7 +439,7 @@ export default class MonitoringViewer extends React.Component {
                             null
                             :
                             <div style={{width:'100%', height:400}}>
-                                <Header>CPU</Header>
+                                <Header>{(this.props.data.page === 'cloudlet')?"vCPUs" : "CPU"}</Header>
                                 <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} showLegend={true} single='0'
                                             margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                             </div>
@@ -491,7 +504,7 @@ export default class MonitoringViewer extends React.Component {
                     {
                         (this.props.data.page === 'appInst')?
                             <div style={{width:'100%', height:35, display:'flex', alignContent:'center'}}>
-                                <div style={{fontSize:30, color:'#c5fffc', alignSelf:'center'}}>CONNECTIONS</div>
+                                <div style={{fontSize:24, color:'#c5fffc', alignSelf:'center'}}>CONNECTIONS</div>
                             </div>
                             :
                             null
@@ -500,8 +513,8 @@ export default class MonitoringViewer extends React.Component {
                         (this.props.data.page === 'appInst')?
                             <div style={{width:'100%', height:400}}>
                                 <Header>ACCEPTS</Header>
-                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataACCEPTS} series={this.state.mProp.timeseriesTCP} showLegend={true}
-                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelTCP} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataACCEPTS} series={this.state.mProp.timeseriesACCEPTS} showLegend={true}
+                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelCONN} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                             </div>
                             :
                             null
@@ -510,8 +523,8 @@ export default class MonitoringViewer extends React.Component {
                         (this.props.data.page === 'appInst')?
                             <div style={{width:'100%', height:400}}>
                                 <Header>ACTIVE</Header>
-                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataACTIVE} series={this.state.mProp.timeseriesTCP} showLegend={true}
-                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelTCP} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataACTIVE} series={this.state.mProp.timeseriesACCEPTS} showLegend={true}
+                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelCONN} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                             </div>
                             :
                             null
@@ -520,8 +533,8 @@ export default class MonitoringViewer extends React.Component {
                         (this.props.data.page === 'appInst')?
                             <div style={{width:'100%', height:400}}>
                                 <Header>HANDLED</Header>
-                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataHANDLED} series={this.state.mProp.timeseriesTCP} showLegend={true}
-                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelTCP} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataHANDLED} series={this.state.mProp.timeseriesACCEPTS} showLegend={true}
+                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabelCONN} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
                             </div>
                             :
                             null

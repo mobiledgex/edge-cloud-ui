@@ -110,12 +110,35 @@ class MapWithListView extends React.Component {
         _self.props.handleChangeSite({mainPath:site, subPath: subPath});
     }
 
-    onHandleClick(dim, data) {
+    onHandleEdit(data) {
         //this.setState({ dimmer:dim, open: true, selected:data })
-        this.props.handleEditInstance(data);
-        this.gotoUrl('/site4', 'pg=editAppInst')
+        //this.props.handleEditInstance(data);
+        //this.gotoUrl('/site4', 'pg=editAppInst')
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let createFormat = {
+            "region":data['Region'],
+            "appinst":{
+                "key":{
+                    "app_key":{"developer_key":{"name":data['OrganizationName']},"name":data['AppName'],"version":data['Version']},
+                    "cluster_inst_key":{
+                        "cluster_key":{"name":data['ClusterInst']},
+                        "cloudlet_key":{"operator_key":{"name":data['Operator']},"name":data['Cloudlet']}
+                    }
+                }
+            }
+        }
+        computeService.updateAppInst('UpdateAppInst', {params:createFormat, token:store ? store.userToken : 'null'}, _self.receiveResult)
+        
+        setTimeout(() => this.props.dataRefresh(), 2000)
+        
+        //this.props.handleLoadingSpinner(true);
     }
 
+    receiveResult = (result) => {
+        console.log("appupdateinst",result)
+        // this.props.handleLoadingSpinner(false);
+        
+    }
 
     onItemOver(itemData,key, evt) {
         this.setState({selectedItem:key})
@@ -368,7 +391,11 @@ class MapWithListView extends React.Component {
                                     (value === 'Edit')?
                                         String(item[value]) === 'null' ? <Table.Cell/> :
                                         <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            {/* {(String(item[value]).indexOf('Editable') > -1 && localStorage.selectRole === 'AdminManager') ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button> : null} */}
+                                            {
+                                                this.props.diffRev.map((_diff) => (
+                                                    (String(item[value]).indexOf('Editable') > -1 && _diff == item['AppName'] && item['State'] != 7) ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleEdit(item)}>Update</Button> : null
+                                                ))
+                                            }
                                             <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
                                         </Table.Cell>
                                     :
@@ -404,7 +431,7 @@ class MapWithListView extends React.Component {
                                             {/*{item[value]}*/}
                                         </Table.Cell>
                                     :
-                                    (value === 'Progress'  && item['State'] == 3)?
+                                    (value === 'Progress'  && (item['State'] == 3 || item['State'] == 7))?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='green' name='circle notch' />} />
                                         </Table.Cell>
@@ -616,7 +643,6 @@ class MapWithListView extends React.Component {
     render() {
         const { open, dimmer, dummyData, resize } = this.state;
         const {randomValue} = this.props;
-        
         return (
                     <div style={{display:'flex', overflowY:'hidden', overflowX:'hidden', width:'100%'}}>
                         <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open}
@@ -652,7 +678,8 @@ class MapWithListView extends React.Component {
         rowHeight: 30,
         cols: 12,
         width: 1600,
-        isDraggable:false
+        isDraggable:false,
+        diffRev:[]
     };
 }
 
@@ -681,7 +708,8 @@ const mapDispatchProps = (dispatch) => {
         handleRefreshData: (data) => { dispatch(actions.refreshData(data))},
         handleSetHeader: (data) => { dispatch(actions.tableHeaders(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
-        handleEditInstance: (data) => { dispatch(actions.editInstance(data))}
+        handleEditInstance: (data) => { dispatch(actions.editInstance(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 

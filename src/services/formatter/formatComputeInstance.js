@@ -112,7 +112,8 @@ let generateData = (datas,body) => {
                     Created:'',
                     Progress:'',
                     Edit:null,
-                    Status:''
+                    Status:'',
+                    Revision:''
                 })
             } else {
                 let Index = i;
@@ -133,6 +134,7 @@ let generateData = (datas,body) => {
                 let runtime = dataResult.data.runtime_info || '-';
                 let created = "seconds : "+dataResult.data.created_at.seconds  || '-' + "     nanos : "+dataResult.data.created_at.nanos || '-';
                 let Status = dataResult.data.status
+                let Revision = dataResult.data.revision || '-';
 
 
 
@@ -156,7 +158,8 @@ let generateData = (datas,body) => {
                     Created:created,
                     Progress:'',
                     Edit:newRegistKey,
-                    Status:Status
+                    Status:Status,
+                    Revision:Revision
                 })
             }
         })

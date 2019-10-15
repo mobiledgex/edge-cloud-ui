@@ -64,7 +64,7 @@ export default class ListDetailViewer extends React.Component {
                                  :(key == 'DefaultFlavor')?'Default Flavor'
                                  :(key == 'DeploymentMF')?'Deployment Manifest' /* 여기까지 Apps*/
                                  :(key == 'AuthPublicKey')?'Auth Public Key'
-                                 : (key === 'DefaultFQDN')? 'Default FQDN'
+                                 : (key === 'DefaultFQDN')? 'Official FQDN'
                                  : (key === 'PackageName')? 'Package Name'
                                  : (key === 'ScaleWithCluster')? 'Scale With Cluster'
                                  :key}

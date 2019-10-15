@@ -73,9 +73,9 @@ const DashboardContainer = ( props, props2) => {
     if(self.routed){
         self.profileView();
     } else {
-        if(storage_data) Service.getCurrentUserInfo('currentUser', {}, self.receiveCurrentUser, self)
+        //if(storage_data) Service.getCurrentUserInfo('currentUser', {}, self.receiveCurrentUser, self)
     }
-
+    Service.getCurrentUserInfo('currentUser', {}, self.receiveCurrentUser, self)
 
 
 
@@ -216,15 +216,13 @@ class App extends Component {
                     timeout: 5000
                 });
             } else {
-                Alert.error(result.data.message, {
-                    position: 'top-right',
-                    effect: 'slide',
-                    timeout: 5000
-                });
+
+                // Alert.error(result.data.message, {
+                //     position: 'top-right',
+                //     effect: 'slide',
+                //     timeout: 5000
+                // });
             }
-        } else {
-            //self.setState({tokenState:'live'})
-            //self.setState({userInfo: result.data})
         }
     }
     profileView() {
