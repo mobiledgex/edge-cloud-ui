@@ -54,15 +54,21 @@ class EntranceGlobe extends Component {
         }
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps.user.userToken) {
-            this.setState({modalOpen: false, logined:true})
-        }
+
+        //alert(nextProps.loginMode+":"+this.props.loginMode)
 
         if(nextProps.loginMode && nextProps.loginMode === 'verify') {
             this.setState({modalOpen: true, logined:true})
         } else if(nextProps.loginMode && nextProps.loginMode === 'forgot') {
             this.setState({modalOpen: true, logined:false})
+        } else if(nextProps.loginMode === 'logout') {
+            this.setState({modalOpen: true, logined:false})
+        } else if(nextProps.loginMode === 'login') {
+            if(nextProps.user.userToken) {
+                this.setState({modalOpen: false, logined:true})
+            }
         }
+
 
         // if(nextProps.user.login_token !== undefined) {
         //     this.setState({modalOpen: false})

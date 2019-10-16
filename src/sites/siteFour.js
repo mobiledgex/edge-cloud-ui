@@ -112,9 +112,6 @@ class SiteFour extends React.Component {
             controllerRegions:null,
             regions:[
                 { key: 1, text: 'All', value: 'All' },
-                { key: 2, text: 'US', value: 'US' },
-                { key: 3, text: 'KR', value: 'KR' },
-                { key: 4, text: 'EU', value: 'EU' }
             ],
             nextPosX:window.innerWidth / 2 ,
             nextPosY:window.innerHeight / 2,
@@ -141,7 +138,8 @@ class SiteFour extends React.Component {
 
             enable:false,
             hideNext: true,
-            camBtnStat:'leave'
+            camBtnStat:'leave',
+            regionToggle:false
             // hintsEnabled: true,
             // hints: [
             //     {
@@ -273,6 +271,9 @@ class SiteFour extends React.Component {
         }
     }
     receiveCurrentUser(result) {
+        if(result && result.data) {
+
+        }
         _self.props.handleUserInfo(result.data);
     }
     receiveResult(result) {
@@ -443,7 +444,9 @@ class SiteFour extends React.Component {
 
     }
     getAdminInfo(token) {
-        Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
+        // App에서 체그하기 때문에 아래 코드 막음.
+        //Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
+
         computeService.getMCService('showController', {token:token}, this.receiveResult, this);
         computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
         computeService.getMCService('Version',{token:token}, this.receiveVersion, this)
@@ -589,18 +592,24 @@ class SiteFour extends React.Component {
         } else {
             this.setState({enable:false})
         }
+
+
         //{ key: 1, text: 'All', value: 'All' }
-        if(nextProps.regionInfo !== _self.props.regionInfo) {
+        console.log("nextProps.regionInfo.region",nextProps.regionInfo,":::",_self.props.regionInfo)
+        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
+            
             let getRegions = []
+            _self.setState({regionToggle:true})
             if(nextProps.regionInfo.region){
                 nextProps.regionInfo.region.map((region, i) => {
-                    console.log('20191015 props for site for....',region, i)
-                    getRegions.push(region)
+                    getRegions.push({key:i+2, text:region, value:region})
                 })
             }
+            console.log('20191015 getRegions....',getRegions)
+            let newRegions = Object.assign([], _self.state.regions).concat(getRegions)
+            console.log('20191015 newRegions....',newRegions)
+            _self.setState({regions:newRegions})
 
-            let newRegions = Object.assign([], _self.state.region).concat(getRegions)
-            _self.setState({region:newRegions})
         }
 
     }

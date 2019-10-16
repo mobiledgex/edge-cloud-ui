@@ -78,7 +78,7 @@ class RegistryInstViewer extends React.Component {
             autoClusterDisable:false,
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:['US','KR', 'EU']},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', disable:(Object.keys(this.props.appLaunch).length == 0)?true:false, active:true, items:['US','KR', 'EU']},
                     'DeveloperName':{label:'Organization Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'The name of the organization you are currently managing.', active:true, items:[null]},
                     'AppName':{label:'App Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'The name of the application to deploy.', active:true, items:[null]},
                     'Version':{label:'App Version', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'The version of the application to deploy.', active:true, items:[null]},

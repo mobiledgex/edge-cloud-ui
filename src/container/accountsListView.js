@@ -177,7 +177,9 @@ class AccountListView extends React.Component {
         return filteredKeys.map((key, i) => (
             (i === filteredKeys.length -1) ?
                 <Table.HeaderCell key={i} className='unsortable' width={2} textAlign='center'>
-                    {key}
+                    {
+                        (key === 'Edit')? 'Action'
+                            : key}
                 </Table.HeaderCell>
                 :
                 <Table.HeaderCell key={i} className={(key === 'EmailVerified' || key === 'Locked')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'EmailVerified' && key !== 'Locked' )?this.handleSort(key):null}>

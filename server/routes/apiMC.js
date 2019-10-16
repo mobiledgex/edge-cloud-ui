@@ -111,20 +111,21 @@ exports.currentUser = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success current user..')
+            console.log('success current user..',response.data)
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
+                // test expired
+                //res.json({message:'Certificated has expired'})
             } else if(response.statusText === 'OK'){
                 console.log('empty')
                 res.json(null)
 
             } else {
-                res.json({error:'error...'})
+                res.json({message:'Retry'})
             }
         })
         .catch(function (error) {
-
-            console.log('error......', error);
+            console.log('get user info error......', error.data);
             if(error.data && error.data.message.indexOf('expired') > -1) res.json({message:'Certificated has expired'})
         });
 

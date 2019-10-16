@@ -222,7 +222,9 @@ class InsideListView extends React.Component {
         return filteredKeys.map((key, i) => (
             (i === filteredKeys.length -1) ?
                 <Table.HeaderCell key={i} className='unsortable' width={4} textAlign='center'>
-                    {key}
+                    {
+                        (key === 'Edit')? 'Action'
+                            : key}
                 </Table.HeaderCell>
                 :
                 <Table.HeaderCell key={i} className={(key === 'Phone' || key === 'Address' || key === 'Ports')?'unsortable':''} textAlign='center'  sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address' && key !== 'Ports')?this.handleSort(key):null}>

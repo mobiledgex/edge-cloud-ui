@@ -30,7 +30,8 @@ class SiteFourPageCloudlet extends React.Component {
             activeItem: 'Developers',
             devData:[],
             viewMode:'listView',
-            regions:[]
+            regions:[],
+            regionToggle:false
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -67,10 +68,8 @@ class SiteFourPageCloudlet extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store && store.userToken) {
-            this.getDataDeveloper(this.props.changeRegion);
-            this.userToken = store.userToken;
-        }
+        this.getDataDeveloper(this.props.changeRegion);
+        this.userToken = store.userToken;
     }
     componentWillUnmount() {
         this._devData = [];
@@ -103,22 +102,26 @@ class SiteFourPageCloudlet extends React.Component {
         }
 
         //{ key: 1, text: 'All', value: 'All' }
-        console.log('20191015 region', nextProps.regionInfo)
-        if(nextProps.regionInfo !== _self.props.regionInfo) {
-            console.log('20191015 region', nextProps.regionInfo)
-            let getRegions = []
-            if(nextProps.regionInfo.region){
-                nextProps.regionInfo.region.map((region, i) => {
-                    console.log('20191015 props for site for....',region, i)
-                    getRegions.push(region)
-                })
-            }
+        
+        // if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
+        //     let getRegions = []
+        //     _self.setState({regionToggle:true})
+        //     if(nextProps.regionInfo.region){
+        //         nextProps.regionInfo.region.map((region, i) => {
+        //             console.log('20191015 props for site for....',region, i)
+        //             getRegions.push(region)
+        //         })
+        //     }
 
-            let newRegions = Object.assign([], _self.state.regions).concat(getRegions)
-            //_self.setState({regions:newRegions})
+        //     let newRegions = Object.assign([], _self.state.regions).concat(getRegions)
+        //     //_self.setState({regions:newRegions})
+        //     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        //     if(store && store.userToken) {
+        //         this.getDataDeveloper(this.props.changeRegion);
+        //         this.userToken = store.userToken;
+        //     }
 
-
-        }
+        // }
     }
     receiveResult = (result) => {
         let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};

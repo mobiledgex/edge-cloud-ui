@@ -76,7 +76,23 @@ const DashboardContainer = ( props, props2) => {
     } else {
         //if(storage_data) Service.getCurrentUserInfo('currentUser', {}, self.receiveCurrentUser, self)
     }
-    Service.getCurrentUserInfo('currentUser', {}, self.receiveCurrentUser, self)
+    let storeData= localStorage.getItem('PROJECT_INIT')
+
+
+    if(storeData && !loaded) {
+        loaded = true;
+        let userInfo = JSON.parse(storeData);
+        if(userInfo.userToken) {
+            console.log('20191016 userinfo usertoken --- ', userInfo.userToken)
+            Service.getCurrentUserInfo('currentUser', {token:userInfo.userToken}, self.receiveCurrentUser, self)
+        }
+
+
+    } else {
+
+    }
+
+
 
 
 
@@ -168,15 +184,13 @@ const DashboardContainer = ( props, props2) => {
 }
 
 
-
+let loaded = false;
 class App extends Component {
     constructor() {
         super();
         self = this;
         this.clickTab = false;
-        this.routed = false;
         this.routeCnt = 0;
-
 
     }
     state = { animation: 'ani', duration: 500, user:{}, selectedCloudlet:'',tokenState:'' }
@@ -203,11 +217,14 @@ class App extends Component {
         history.location.pathName = main;
         history.location.search = subPath;
         self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        self.props.handleChangeLoginMode('logout');
     }
 
     receiveCurrentUser(result) {
         if(result.data && result.data.message) {
+
             if(result.data.message.indexOf('expired') > -1) {
+
                 setTimeout(() => self.goToNext('/logout',''),2000);
                 Alert.error('Login timeout expired. Please login again', {
                     position: 'top-right',
@@ -222,6 +239,8 @@ class App extends Component {
                 //     timeout: 5000
                 // });
             }
+
+            setTimeout(() => loaded = false)
         }
     }
     receiveController = (result) => {
@@ -251,27 +270,20 @@ class App extends Component {
     }
 
     componentDidMount() {
+        
         let pathName = window.location.pathname;
 
         //this.router.history.push(pathName);
-        let scope = this;
-        // Login check
+        
+        
         const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
-
         if (!storage_data) {
             return;
         }
         const storage_json = JSON.parse(storage_data)
-
         if ( storage_json ) {
-
             self.props.mapDispatchToLoginWithPassword(storage_json)
-
-
         }
-        let store = JSON.parse(localStorage.PROJECT_INIT);
-        if(store.userToken) computeService.showController('ShowController', {token:store.userToken}, scope.receiveController);
-
     }
     componentWillReceiveProps(nextProps) {
         // let props = nextProps;
@@ -279,8 +291,15 @@ class App extends Component {
         //     let params = {params:{page:'pg='+nextProps.clickTab}}
         //     DashboardContainer({mainPath:nextProps.siteName.site.mainPath}, {match:params})
         // }
-        if(nextProps.siteName) {
+        if(nextProps.siteName !== this.props.siteName) {
             //this.setState({selectedCloudlet:nextProps.siteName.cloudlet})
+            let scope = this;
+            // Login check
+            this.loaded = false;
+            if(localStorage && localStorage.PROJECT_INIT) {
+                let store = JSON.parse(localStorage.PROJECT_INIT);
+                if(store.userToken) computeService.showController('ShowController', {token:store.userToken}, scope.receiveController);
+            }
         }
 
     }
@@ -322,6 +341,7 @@ const mapStateToProps = (state) => {
         tab: (state.tabChanger.tab)?state.tabChanger.tab:null,
         clickTab: (state.tabClick.clickTab)?state.tabClick.clickTab:null,
         creatingSpinner : state.creatingSpinner.creating?state.creatingSpinner.creating:null,
+
     };
 };
 
@@ -330,7 +350,9 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleChangeTab: (data) => { dispatch(actions.changeTab(data))},
         mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data})),
-        handleRegionInfo: (data) => { dispatch(actions.regionInfo(data))}
+        handleRegionInfo: (data) => { dispatch(actions.regionInfo(data))},
+        handleUserInfo: (data) => { dispatch(actions.userInfo(data))},
+        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))},
     };
 };
 

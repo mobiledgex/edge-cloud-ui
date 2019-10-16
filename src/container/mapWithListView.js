@@ -273,7 +273,9 @@ class MapWithListView extends React.Component {
             (!( String(hidden).indexOf(key) > -1 ))?
                 (i === keys.length -1) ?
                 <Table.HeaderCell key={i} className='unsortable' textAlign='center'>
-                    {key}
+                    {
+                        (key === 'Edit')? 'Action'
+                            : key}
                 </Table.HeaderCell>
                 :
                 <Table.HeaderCell key={i} className={(key === 'CloudletLocation' || key === 'Edit' || key === 'Progress')?'unsortable':''} textAlign='center' sorted={column === key ? direction : null} onClick={(key == 'CloudletLocation' || key == 'Edit' || key == 'Progress' || key == 'Ports' )?null:this.handleSort(key)}>
@@ -286,6 +288,7 @@ class MapWithListView extends React.Component {
                                             : (key === 'ClusterInst')? 'Cluster Instance'
                                                 : (key === 'Physical_name')? 'Physical Name'
                                                     : (key === 'Platform_type')? 'Platform Type'
+                                                        : (key === 'Edit')? 'Action'
                     : key}
                 </Table.HeaderCell>
             :

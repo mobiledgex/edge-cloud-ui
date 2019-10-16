@@ -218,7 +218,9 @@ class DeveloperListView extends React.Component {
         return filteredKeys.map((key, i) => (
             (i === filteredKeys.length -1) ?
                 <Table.HeaderCell key={i} className='unsortable' width={(this.props.siteId == 'Organization')?3:2} textAlign='center'>
-                    {key}
+                    {
+                        (key === 'Edit')? 'Action'
+                            : key}
                 </Table.HeaderCell>
                 :
                 <Table.HeaderCell key={i} className={(key === 'Phone' || key === 'Address')?'unsortable':''} textAlign='center' width={(headL)?headL[i]:widthDefault} sorted={column === key ? direction : null} onClick={(key !== 'Phone' && key !== 'Address')?this.handleSort(key):null}>
