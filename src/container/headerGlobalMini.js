@@ -150,7 +150,7 @@ class headerGlobalMini extends React.Component {
                     className='gnb_logout'
                 />
                 {/*<PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')} usrUrl={this.props.userURL}></PopSettingViewer>*/}
-                <PopProfileViewer data={(this.props.location.pathname === "/site4")? this.props.data :this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile} ></PopProfileViewer>
+                <PopProfileViewer data={this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile} ></PopProfileViewer>
             </Fragment>
         )
     }
