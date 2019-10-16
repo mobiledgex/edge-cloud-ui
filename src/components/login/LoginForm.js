@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router'
-import { connect } from 'react-redux'
 
 // semantic-ui
 import { Container, Form, Input, Button, Grid } from 'semantic-ui-react'
 
 // alert
 import Alert from 'react-s-alert';
-
+import { connect } from 'react-redux';
+import * as actions from '../../actions';
 // API
 import * as MyAPI from '../utils/MyAPI'
 import { LOCAL_STRAGE_KEY } from '../utils/Settings'
@@ -49,7 +49,7 @@ class LoginForm extends Component {
             login_token: data.login_token,
             email:email
           }
-
+          this.props.handleChangeLoginMode('login')
           localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(params))
           this.props.mapDispatchToLoginWithPassword(params)
           resolve()
@@ -136,6 +136,7 @@ function mapStateToProps ( {user} ) {
 function mapDispatchToProps (dispatch) {
   return {
     mapDispatchToLoginWithPassword: (data) => dispatch(loginWithEmailRedux({ params: data})),
+    handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))},
   }
 }
 

@@ -243,6 +243,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                                                 options={fieldKeys[pId][key]['items']}
                                                                 name={key}
                                                                 onChange={()=>this.onHandleChange(key)}
+                                                                disabled={(fieldKeys[pId][key]['label'] == 'Region' && fieldKeys[pId][key]['disable'] == false)?true:false}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'RenderDropDown') ?

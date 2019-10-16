@@ -434,12 +434,20 @@ class Login extends Component {
     onProgress(value) {
         this.props.handleCreatingSpinner(value)
     }
+
+    /**
+     * success login
+     * 로그인이 성공했을 때 토큰을 저장한다.
+     * @param result
+     */
     receiveToken(result) {
 
         if(result.data.token) {
             self.params['userToken'] = result.data.token
             localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
             self.props.mapDispatchToLoginWithPassword(self.params)
+
+            self.props.handleChangeLoginMode('login')
         } else {
             //display error message
             if(Alert){
@@ -466,6 +474,7 @@ class Login extends Component {
         self.setState({loginMode:'signup', forgotMessage: true})
     }
     returnSignin() {
+            alert('login....')
         setTimeout(()=>self.setState({forgotPass:false, forgotMessage:false, loginMode:'login'}), 1000)
     }
     requestToken(self) {
@@ -473,7 +482,6 @@ class Login extends Component {
         //self.receiveToken({data:{token:'my test token'}})
     }
     handleClickLogin(mode) {
-        this.props.handleChangeLoginMode(mode)
         self.setState({loginMode:mode})
     }
     // onKeyPress = (e) => {
@@ -495,6 +503,7 @@ class Login extends Component {
             service.getMCService('ResetPassword',{service:'passwordreset',token:token, password:pass}, this.receiveData, this)
 
         } else if(mode === 'back') {
+            alert('login')
             self.setState({loginMode:'login'})
         }
         else {
