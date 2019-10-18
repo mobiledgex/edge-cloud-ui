@@ -76,7 +76,7 @@ class RegistryViewer extends React.Component {
             validateError:[],
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU'], editDisabled:true},
+                    'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:[], editDisabled:true},
                     'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'Organization or Company Name that a Developer is part of', active:true, editDisabled:true},
                     'AppName':{label:'App Name', type:'RenderInputApp', necessary:true, tip:'App name', active:true, editDisabled:true},
                     'Version':{label:'App Version', type:'RenderInput', necessary:true, tip:'App version', active:true, editDisabled:true},
@@ -332,7 +332,10 @@ class RegistryViewer extends React.Component {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-
+        if(nextProps.regionInfo.region.length){
+            let assObj = Object.assign([], this.state.keysData);
+            assObj[0].Region.items = nextProps.regionInfo.region;
+        }
         ////////
         if(nextProps.devData.length > 1) {
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
@@ -519,6 +522,7 @@ const mapStateToProps = (state) => {
             submitSucceeded: state.form.createAppFormDefault.submitSucceeded
         }
         : {};
+    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         accountInfo,
         dimmInfo,
@@ -532,7 +536,8 @@ const mapStateToProps = (state) => {
         selectedDeploymentType : selectedDeploymentType,
         validateValue:validateValue,
         formApps : formApps,
-        editData : state.editInstance.data
+        editData : state.editInstance.data,
+        regionInfo: regionInfo
     }
     
     // return (dimm) ? {

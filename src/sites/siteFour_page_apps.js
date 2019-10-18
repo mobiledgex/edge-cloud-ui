@@ -10,7 +10,7 @@ import InsideListView from '../container/insideListView';
 import ListDetailViewer from '../container/listDetailViewer';
 
 let _self = null;
-let rgn = ['US','KR','EU'];
+let rgn = [];
 class SiteFourPageApps extends React.Component {
     constructor(props) {
         super(props);
@@ -25,7 +25,8 @@ class SiteFourPageApps extends React.Component {
             devData:[],
             detailData:[],
             viewMode:'listView',
-            randomId:0
+            randomId:0,
+            regionToggle:false
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -61,11 +62,11 @@ class SiteFourPageApps extends React.Component {
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store && store.userToken) {
-            this.getDataDeveloper(store.userToken, this.props.region.value);
-            this.userToken = store.userToken;
-        }
+        // let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        // if(store && store.userToken) {
+        //     this.getDataDeveloper(store.userToken, this.props.region.value);
+        //     this.userToken = store.userToken;
+        // }
     }
     componentWillUnmount() {
         this.setState({devData:[]})
@@ -73,6 +74,7 @@ class SiteFourPageApps extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
+        console.log("nextPropsnextProps",nextProps.regionInfo)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -83,11 +85,10 @@ class SiteFourPageApps extends React.Component {
             this.getDataDeveloper(store ? store.userToken : 'null', nextProps.region.value);
         }
 
-        // if(nextProps.region.value) {
-        //     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        //     this.getDataDeveloper(store.userToken, nextProps.region.value)
-        // }
-        
+        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
+            _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
+            this.getDataDeveloper(store ? store.userToken : 'null',nextProps.region.value,nextProps.regionInfo.region);
+        }
         if(nextProps.computeRefresh.compute) {
             this.getDataDeveloper(store ? store.userToken : 'null',nextProps.region.value);
             this.props.handleComputeRefresh(false);
@@ -119,7 +120,7 @@ class SiteFourPageApps extends React.Component {
         }
     }
 
-    getDataDeveloper = (token, region) => {
+    getDataDeveloper = (token, region, regionArr) => {
         this.props.handleLoadingSpinner(true);
         let serviceBody = {}
         _self.loadCount = 0;
@@ -127,9 +128,8 @@ class SiteFourPageApps extends React.Component {
         if(region !== 'All'){
             rgn = [region]
         } else {
-            rgn = ['US','KR','EU'];
+            rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
-
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
                 // All show app
@@ -191,6 +191,7 @@ const mapStateToProps = (state) => {
         viewMode = state.changeViewMode.mode.viewMode;
         detailData = state.changeViewMode.mode.data;
     }
+    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         receiveNewReg:registNew,
         region:region,
@@ -198,6 +199,7 @@ const mapStateToProps = (state) => {
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
         viewMode : viewMode, detailData:detailData,
+        regionInfo: regionInfo
     }
 };
 

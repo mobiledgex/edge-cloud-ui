@@ -46,7 +46,7 @@ class RegistryFlavorViewer extends React.Component {
             autoClusterDisable:false,
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:['US','KR', 'EU']},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
                     'FlavorName':{label:'Flavor Name', type:'RenderInput', necessary:true, tip:'Name of the flavor', active:true},
                     'RAM':{label:'RAM Size', type:'renderInputNum', unit:'MB', necessary:true, tip:'RAM in megabytes', active:true},
                     'vCPUs':{label:'Number of vCPUs', type:'renderInputNum', necessary:true, tip:'Number of virtual CPUs', active:true},
@@ -143,7 +143,10 @@ class RegistryFlavorViewer extends React.Component {
         } else {
             this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         }
-
+        if(nextProps.regionInfo.region.length){
+            let assObj = Object.assign([], this.state.keysData);
+            assObj[0].Region.items = nextProps.regionInfo.region;
+        }
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
         if(nextProps.submitValues && !this.state.toggleSubmit) {
@@ -238,7 +241,7 @@ const mapStateToProps = (state) => {
             submitSucceeded: state.form.createAppFormDefault.submitSucceeded
         }
         : {};
-
+    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         accountInfo,
         userToken : (state.user.userToken) ? state.userToken: null,
@@ -248,6 +251,7 @@ const mapStateToProps = (state) => {
         appLaunch : state.appLaunch?state.appLaunch.data:null,
         validateValue:validateValue,
         formAppInst : formAppInst,
+        regionInfo: regionInfo
     }
 };
 const mapDispatchProps = (dispatch) => {

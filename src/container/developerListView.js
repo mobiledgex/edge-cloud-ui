@@ -49,7 +49,8 @@ class DeveloperListView extends React.Component {
             resultData:null,
             openDelete:false,
             isDraggable: false,
-            noData:false
+            noData:false,
+            viewMode:'listView'
         };
         this.sorting = false;
 
@@ -71,8 +72,11 @@ class DeveloperListView extends React.Component {
         this.setState({ dimmer:dim, openAdd: true, selected:data })
         //this.props.handleChangeSite(data.children.props.to)
     }
-    onHandleClickAddApp(dim, data) {
-        this.setState({page:'pg=createAppInst'})
+    onHandleClickAudit(dim, data) {
+        this.setState({page:'pg=audits'})
+        let orgName = data.Organization;
+        console.log('20191018 on handle click audit --- ', data)
+        this.gotoUrl('/site4', 'pg=audits&org='+orgName)
     }
 
     onUseOrg(useData,key, evt) {
@@ -219,7 +223,7 @@ class DeveloperListView extends React.Component {
             (i === filteredKeys.length -1) ?
                 <Table.HeaderCell key={i} className='unsortable' width={(this.props.siteId == 'Organization')?3:2} textAlign='center'>
                     {
-                        (key === 'Edit')? 'Action'
+                        (key === 'Edit')? 'Actions'
                             : key}
                 </Table.HeaderCell>
                 :
@@ -305,6 +309,10 @@ class DeveloperListView extends React.Component {
                                                 Manage
                                             </Button>:null}
                                         <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button>
+                                        {(this.props.siteId == 'Organization')?
+                                            <Button className='stepOrgDeveloper3' color='teal' disabled={this.addUserDisable(item)} onClick={() => this.onHandleClickAudit(true, item, i)}>
+                                                Audit
+                                            </Button>:null}
                                         {(this.props.siteId == 'Organization')?
                                             <Button className='stepOrgDeveloper3' color='teal' disabled={this.addUserDisable(item)} onClick={() => this.onHandleClickAdd(true, item, i)}>
                                                 Add User
@@ -395,8 +403,9 @@ class DeveloperListView extends React.Component {
     }
 
     render() {
-        const { open, dimmer } = this.state;
+        const { open, dimmer, viewMode } = this.state;
         const { hiddenKeys } = this.props;
+
         return (
             <div style={{display:'flex', overflowY:'auto', overflowX:'hidden', width:'100%'}}>
                 <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
@@ -407,7 +416,11 @@ class DeveloperListView extends React.Component {
                 ></DeleteItem>
                 
                 <div style={{width:'100%'}}>
-                    {this.generateDOM(open, dimmer, hiddenKeys)}
+                    {
+                        (viewMode === 'listView')? this.generateDOM(open, dimmer, hiddenKeys)
+                            :
+                            null
+                    }
                 </div>
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} siteId={this.props.siteId}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>

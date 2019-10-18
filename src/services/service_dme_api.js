@@ -6,7 +6,6 @@ import FormatDmeMethod from "./formatter/formatDmeMethod";
 let hostname = window.location.hostname;
 let serviceDomain = 'https://mc.mobiledgex.net:9900';
 let ServerUrl = 'https://'+hostname+':3030';
-console.log('20191011 process.env.USE_SERVER_SUFFIX is.. ', process.env)
 
 if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
     ServerUrl = 'https://'+hostname+'/server';

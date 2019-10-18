@@ -15,7 +15,7 @@ import Alert from "react-s-alert";
 import * as reducer from '../utils'
 
 let _self = null;
-let rgn = ['US','KR','EU'];
+let rgn = [];
 class SiteFourPageClusterInst extends React.Component {
     constructor(props) {
         super(props);
@@ -29,6 +29,7 @@ class SiteFourPageClusterInst extends React.Component {
             devData:[],
             viewMode:'listView',
             detailData:null,
+            regionToggle:false
         };
         this.clusterInstDummy = [];
         this.cloudletDummy = [];
@@ -68,10 +69,10 @@ class SiteFourPageClusterInst extends React.Component {
         })
     }
     componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store && store.userToken) {
-            this.getDataDeveloper(this.props.changeRegion);
-        }
+        // let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        // if(store && store.userToken) {
+        //     this.getDataDeveloper(this.props.changeRegion);
+        // }
     }
     componentWillUnmount() {
         this.clusterInstDummy = [];
@@ -90,6 +91,10 @@ class SiteFourPageClusterInst extends React.Component {
         }
         if(this.props.changeRegion !== nextProps.changeRegion){
             this.getDataDeveloper(nextProps.changeRegion);
+        }
+        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
+            _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
+            this.getDataDeveloper(nextProps.changeRegion,nextProps.regionInfo.region);
         }
         if(nextProps.viewMode) {
             if(nextProps.viewMode === 'listView') {
@@ -178,7 +183,7 @@ class SiteFourPageClusterInst extends React.Component {
 
     }
     
-    getDataDeveloper = (region) => {
+    getDataDeveloper = (region,regionArr) => {
         _self.props.handleLoadingSpinner(true);
         _self.loadCount = 0;
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -192,7 +197,7 @@ class SiteFourPageClusterInst extends React.Component {
         if(region !== 'All'){
             rgn = [region];
         } else {
-            rgn = ['US','KR','EU'];
+            rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
 
 
@@ -224,8 +229,9 @@ class SiteFourPageClusterInst extends React.Component {
         }
 
     }
-    getDataDeveloperSub = () => {
-        this.getDataDeveloper('All');
+    getDataDeveloperSub = (region) => {
+        let _region = (region)?region:'All';
+        this.getDataDeveloper(_region);
     }
     render() {
         const {shouldShowBox, shouldShowCircle, devData} = this.state;
@@ -251,12 +257,14 @@ const mapStateToProps = (state) => {
         viewMode = state.changeViewMode.mode.viewMode;
         detailData = state.changeViewMode.mode.data;
     }
+    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
         changeRegion : state.changeRegion.region?state.changeRegion.region:null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
-        viewMode : viewMode, detailData:detailData
+        viewMode : viewMode, detailData:detailData,
+        regionInfo: regionInfo
     }
 };
 const mapDispatchProps = (dispatch) => {

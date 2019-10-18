@@ -17,7 +17,7 @@ import Alert from "react-s-alert";
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
-let rgn = ['US','KR','EU'];
+let rgn = [];
 class SiteFourPageFlavor extends React.Component {
     constructor(props) {
         super(props);
@@ -29,7 +29,8 @@ class SiteFourPageFlavor extends React.Component {
             contWidth:0,
             bodyHeight:0,
             activeItem: 'Developers',
-            devData:[]
+            devData:[],
+            regionToggle:false
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -60,10 +61,10 @@ class SiteFourPageFlavor extends React.Component {
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store && store.userToken) {
-            this.getDataDeveloper(this.props.changeRegion);
-        }
+        // let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        // if(store && store.userToken) {
+        //     this.getDataDeveloper(this.props.changeRegion);
+        // }
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -75,6 +76,10 @@ class SiteFourPageFlavor extends React.Component {
         }
         if(this.props.changeRegion !== nextProps.changeRegion){
             this.getDataDeveloper(nextProps.changeRegion);
+        }
+        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
+            _self.setState({regionToggle:true})
+            this.getDataDeveloper(nextProps.changeRegion,nextProps.regionInfo.region);
         }
         
     }
@@ -93,16 +98,17 @@ class SiteFourPageFlavor extends React.Component {
 
         }
     }
-    getDataDeveloper = (region) => {
+    getDataDeveloper = (region,regionArr) => {
         this.props.handleLoadingSpinner(true);
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         if(region !== 'All'){
             rgn = [region]
         } else {
-            rgn = ['US','KR','EU'];
+            rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
         rgn.map((item) => {
+            
             services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult)
         })
     }
@@ -119,9 +125,11 @@ class SiteFourPageFlavor extends React.Component {
 };
 
 const mapStateToProps = (state) => {
+    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
-        changeRegion : state.changeRegion.region?state.changeRegion.region:null
+        changeRegion : state.changeRegion.region?state.changeRegion.region:null,
+        regionInfo: regionInfo
     }
 };
 const mapDispatchProps = (dispatch) => {

@@ -223,7 +223,7 @@ class InsideListView extends React.Component {
             (i === filteredKeys.length -1) ?
                 <Table.HeaderCell key={i} className='unsortable' width={4} textAlign='center'>
                     {
-                        (key === 'Edit')? 'Action'
+                        (key === 'Edit')? 'Actions'
                             : key}
                 </Table.HeaderCell>
                 :

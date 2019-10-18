@@ -58,7 +58,6 @@ class TimeSeries extends React.Component {
                     marker:{size:5}
                 }
             ))
-            //console.log('20191008 reloadChart seriesData... ',parseInt(dataId),":", data[parseInt(dataId)], ":",seriesData)
         }  else {
             let sData = [];
 
@@ -75,7 +74,6 @@ class TimeSeries extends React.Component {
                 marker:{size:5}
             }];
 
-            console.log('20191008 reloadChart seriesData... ',parseInt(dataId),":", data[parseInt(dataId)], ":",seriesData)
         }
 
         this.setState({

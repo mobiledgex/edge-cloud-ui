@@ -178,7 +178,7 @@ class AccountListView extends React.Component {
             (i === filteredKeys.length -1) ?
                 <Table.HeaderCell key={i} className='unsortable' width={2} textAlign='center'>
                     {
-                        (key === 'Edit')? 'Action'
+                        (key === 'Edit')? 'Actions'
                             : key}
                 </Table.HeaderCell>
                 :
@@ -208,7 +208,6 @@ class AccountListView extends React.Component {
         let dName = 'd'
         let fromNow = moment(date).utc().startOf('day').fromNow();
         let darray = fromNow.split(' ')
-        console.log('20191001 compare date ... ', date,":", fromNow, ":", darray)
         if(parseInt(darray[0]) <= 1 && darray[1] === 'days') isNew = true;
 
         if(parseInt(darray[0]) <= 24 && darray[1] === 'hours') isNew = true; dName='h'

@@ -114,7 +114,8 @@ class SiteFourCreateInstForm extends React.PureComponent {
             locationLongLat:[],
             laterror:'',
             longerror:'',
-            locData:[]
+            locData:[],
+            regionToggle:false
         }
         _self = this;
         this.loopReqCount = 3; //cloudlet(operators), cluster, flavor
@@ -339,15 +340,17 @@ class SiteFourCreateInstForm extends React.PureComponent {
         _self.setState({flavorConfig:flconfig, clusterName:_self.props.clusterName})
     }
 
-    getDataDeveloper = (region) => {
+    getDataDeveloper = (region,regionArr) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let rgn = ['US','KR','EU'];
+        let rgn = [];
         //this.setState({devData:[]})
         if(region !== 'All'){
             rgn = [region]
+        } else {
+            rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
-        rgn.map((item) => {
 
+        rgn.map((item) => {
             services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
             services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultFlavor)
 
@@ -357,14 +360,17 @@ class SiteFourCreateInstForm extends React.PureComponent {
     }
     handleTabChange = (e, { activeIndex }) => this.setState({ activeIndex })
     componentDidMount() {
-        this.getDataDeveloper(this.props.data.region)
-
-
+        // if(localStorage.selectMenu == 'Cluster Instances') this.getDataDeveloper(this.props.data.region)
     }
     componentWillUnmount(){
         this.props.handleGetRegion(null);
     }
     componentWillReceiveProps(nextProps, nextContext) {
+        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
+            _self.setState({regionToggle:true})
+            if(localStorage.selectMenu == 'Cluster Instances') this.getDataDeveloper(nextProps.data.region,nextProps.regionInfo.region)
+        }
+        
         if(nextProps.data) this.setState({devData: nextProps.data, keys:nextProps.keys})
         //reset cluster and node count
         if(nextProps.nodeNumber || nextProps.selectedFlavor) {
@@ -413,7 +419,11 @@ class SiteFourCreateInstForm extends React.PureComponent {
         //     return
         // }
         let onlyNum = value;
-        if(onlyNum > 180 || onlyNum < -180 || /[^-0-9.]/g.test(onlyNum)) {
+        let count = [];
+        if(onlyNum.match(/[.]/g) != null) {
+            count = onlyNum.match(/[.]/g)
+        }
+        if(onlyNum > 180 || onlyNum < -180 || /[^-0-9.]/g.test(onlyNum) || count.length > 1) {
             this.setState({longerror:'-180 ~ 180'})
             e.target.value=null;
             return
@@ -428,7 +438,11 @@ class SiteFourCreateInstForm extends React.PureComponent {
     }
     handleChangeLat = (e, {value}) => {
         let onlyNum = value;
-        if(onlyNum > 90 || onlyNum < -90 || /[^-0-9.]/g.test(onlyNum)) {
+        let count = [];
+        if(onlyNum.match(/[.]/g) != null) {
+            count = onlyNum.match(/[.]/g)
+        }
+        if(onlyNum > 90 || onlyNum < -90 || /[^-0-9.]/g.test(onlyNum) || count.length > 1) {
             this.setState({laterror:'-90 ~ 90'})
             e.target.value=null;
             return
@@ -504,6 +518,7 @@ const mapStateToProps = (state) => {
     let masterNumber = null;
     let nodeNumber = null;
     let getRegion = (state.getRegion)?state.getRegion.region:null
+    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     if(state.form.createAppFormDefault) {
         formValues = state.form.createAppFormDefault.values;
         if(state.form.createAppFormDefault.values.Region !== "") {
@@ -529,7 +544,8 @@ const mapStateToProps = (state) => {
 
 
     return {
-        selectedRegion, selectedOperator, clusterName, formValues, selectedFlavor, masterNumber, nodeNumber, getRegion
+        selectedRegion, selectedOperator, clusterName, formValues, selectedFlavor, masterNumber, nodeNumber, getRegion,
+        regionInfo: regionInfo
     }
 };
 const mapDispatchProps = (dispatch) => {

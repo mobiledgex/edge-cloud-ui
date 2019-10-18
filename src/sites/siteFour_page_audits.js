@@ -8,9 +8,9 @@ import PageDetailViewer from '../container/pageDetailViewer';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as services from '../services/service_compute_service';
+import * as services from '../services/service_audit_api';
 import './siteThree.css';
-import TimelineAuditView from "../container/timelintAuditView";
+import TimelineAuditView from "../container/timelineAuditView";
 import Alert from "react-s-alert";
 import * as reducer from '../utils'
 
@@ -30,6 +30,7 @@ class SiteFourPageAudits extends React.Component {
             activeItem: 'Developers',
             devData:[],
             viewMode:'listView',
+            auditMounted:false
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -60,68 +61,68 @@ class SiteFourPageAudits extends React.Component {
     onHandleRegistry() {
         this.props.handleInjectDeveloper('userInfo');
     }
+    readyToData(subPaths) {
+        console.log('20191018 subPaths.subPaths...', subPaths,":",subPaths.indexOf('&org='))
+        let subPath = '';
+        let subParam = null;
+        if(subPaths.indexOf('&org=') > -1) {
+            let paths = subPaths.split('&')
+            subPath = paths[0];
+            subParam = paths[1];
+        }
+        this.setState({devData:[]})
+        this.setState({page:subPath, OrganizationName:subParam})
+        this.props.handleLoadingSpinner(true);
+        // get audits data
+        this.getDataAudit(subParam);
+    }
+
+
     componentWillMount() {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store && store.userToken) {
-            this.getDataDeveloper(this.props.changeRegion);
-            this.userToken = store.userToken;
+
+        if(this.props.location && this.props.location.search) {
+            this.readyToData(this.props.location.search)
+
         }
     }
     componentWillUnmount() {
         this._devData = [];
         this._cloudletDummy = [];
+
     }
 
 
-    componentWillReceiveProps(nextProps) {
-        
+    componentWillReceiveProps(nextProps, nextContext) {
+
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
- 
-        if(nextProps.computeRefresh.compute) {
-            this.getDataDeveloper(nextProps.changeRegion);
-            this.props.handleComputeRefresh(false);
-        }
-        if(this.props.changeRegion !== nextProps.changeRegion){
-            this.getDataDeveloper(nextProps.changeRegion);
-        }
         if(nextProps.viewMode) {
             if(nextProps.viewMode === 'listView') {
-                //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
-                //this.getDataDeveloper(this.props.changeRegion)
                 this.setState({viewMode:nextProps.viewMode})
             } else {
                 this.setState({viewMode:nextProps.viewMode})
                 setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
             }
-
         }
+        //
+        if(nextProps.location && nextProps.location.search && (nextProps.location.search !== this.props.location.search)) {
+            console.log('20191018 nextProps.props...', nextProps.location.search, ":", this.props.location.search)
+            this.setState({auditMounted:true})
+            this.readyToData(nextProps.location.search);
+        }
+
+        /*
+
+        */
     }
     receiveResult = (result) => {
-        // let regionGroup = reducer.groupBy(result, 'Region');
-        // if(Object.keys(regionGroup)[0]) {
-        //     this._cloudletDummy = this._cloudletDummy.concat(result)
-        // }
-
-        // this.loadCount ++;
-        // console.log("EditEditEdit",rgn.length,":::",this.loadCount)
-        // //if(rgn.length == this.loadCount){
-        //     _self.countJoin()            
-        // //}
-
-
-        let join = null;
-        if(result[0]['Edit']) {
-            join = this.state.devData.concat(result);
-        } else {
-            join = this.state.devData;
-        }
+        console.log('20191018 audit result..', result)
         this.loadCount ++;
-        this.setState({devData:join})
+        this.setState({devData:result})
         this.props.handleLoadingSpinner(false);
         if(rgn.length == this.loadCount-1){
             return
@@ -133,34 +134,33 @@ class SiteFourPageAudits extends React.Component {
         _self.setState({devData:cloudlet})
         this.props.handleLoadingSpinner(false);
     }
-    getDataDeveloper = (region) => {
+    makeOga = (logName) => {
+        let lastSub = logName.substring(logName.lastIndexOf('=')+1);
+        return lastSub
+    }
+    getDataAudit = (orgName) => {
         // this.props.handleLoadingSpinner(true);
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         this._cloudletDummy = [];
         _self.loadCount = 0;
-        if(region !== 'All'){
-            rgn = [region]
+
+        if(orgName) {
+            services.showAuditOrg('ShowOrg',{token:store.userToken, params:`{"org":"${_self.makeOga(orgName)}"}`, limit:100}, _self.receiveResult, _self)
         } else {
-            rgn = ['US','KR','EU'];
+            services.showAuditSelf('ShowSelf',{token:store.userToken, params:'{}', limit:70}, _self.receiveResult, _self)
         }
-        rgn.map((item, i) => {
-            //setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 0)
-            services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult)
-        })
     }
-    getDataDeveloperSub = () => {
-        this.getDataDeveloper('All');
-    }
+
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem, viewMode } = this.state;
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
-            <TimelineAuditView devData={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Audit'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></TimelineAuditView>
+            <TimelineAuditView data={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Audit'} userToken={this.userToken} mounted={this.state.auditMounted}></TimelineAuditView>
             :
-            <PageDetailViewer data={this.state.detailData} page='cloudlet'/>
+            <div></div>
         );
     }
 
@@ -187,7 +187,8 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleDetail: (data) => { dispatch(actions.changeDetail(data))},
     };
 };
 

@@ -90,7 +90,6 @@ class Gauge extends Component {
     makeDegree = (currentDegrees, self) => {
         let ratioForMax = availPie / self.maxTemper;
         let degree = (currentDegrees*ratioForMax) - rotateOffset;
-        console.log('20191009 ----- make degree ==== '+ratioForMax, ":",self.maxTemper,": currentDegress=", currentDegrees,":",rotateOffset, ":degree=", degree)
         return degree;
     }
 
@@ -172,7 +171,6 @@ class Gauge extends Component {
 
     render() {
         let {degree} = this.state;
-        console.log('20191009 degree in render....... ', degree)
         return (
             <div style={{display:'flex'}}>
                 <div style={{position:'relative'}}>

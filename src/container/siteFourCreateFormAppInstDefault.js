@@ -55,13 +55,14 @@ const renderDropDown = field => (
     </div>
 );
 
-const renderInput = ({ input, placeholder, label, type, error }) => (
+const renderInput = ({ input, placeholder, label, type, error, disabled }) => (
     <div>
         <Form.Input
             {...input}
             type={type}
             label={label}
             placeholder={placeholder}
+            disabled = {disabled}
         />
         {error && <span className="text-danger">{error}</span>}
     </div>
@@ -306,6 +307,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                                                 type="input"
                                                                 name={key}
                                                                 value={data[key]}
+                                                                disabled={(fieldKeys[pId][key]['disable'] == false)?true:false}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                         }
                                                     </Grid.Column>

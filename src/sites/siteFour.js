@@ -163,7 +163,8 @@ class SiteFour extends React.Component {
             {label:'Flavors', icon:'free_breakfast', pg:3},
             {label:'Cluster Instances', icon:'storage', pg:4},
             {label:'Apps', icon:'apps', pg:5},
-            {label:'App Instances', icon:'storage', pg:6}
+            {label:'App Instances', icon:'storage', pg:6},
+            {label:'Audit Log', icon:'check', pg:'audits'}
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
@@ -452,9 +453,9 @@ class SiteFour extends React.Component {
         computeService.getMCService('Version',{token:token}, this.receiveVersion, this)
     }
     componentWillMount() {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
-        this.setState({contWidth:(window.innerWidth-this.menuW)})
+        //this.setState({bodyHeight : (window.innerHeight - this.headerH)})
+        //this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+        //this.setState({contWidth:(window.innerWidth-this.menuW)})
         //this.selectedfilters = [];
 
     }
@@ -487,14 +488,27 @@ class SiteFour extends React.Component {
 
         this.setState({steps: orgaSteps.stepsZero})
     }
-    componentWillReceiveProps(nextProps) {
+
+    componentWillReceiveProps(nextProps, nextContext) {
+
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         this.setState({contWidth:(window.innerWidth-this.menuW)})
         this.setState({userToken: nextProps.userToken})
         this.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
+
         if(nextProps.params && nextProps.params.subPath) {
-            this.setState({page:nextProps.params.subPath})
+            let subPaths = nextProps.params.subPath;
+            let subPath = '';
+            let subParam = '';
+            if(subPaths.indexOf('&org=')) {
+                let paths = subPaths.split('&')
+                subPath = paths[0];
+                subParam = paths[1];
+            }
+            this.setState({page:subPath, OrganizationName:subParam})
+            //console.log('20191018 nextProps.par....', subPath, "  :  ", subParam)
+
         }
 
         // if(localStorage.selectRole && this.state.menuClick) {
@@ -605,9 +619,7 @@ class SiteFour extends React.Component {
                     getRegions.push({key:i+2, text:region, value:region})
                 })
             }
-            console.log('20191015 getRegions....',getRegions)
             let newRegions = Object.assign([], _self.state.regions).concat(getRegions)
-            console.log('20191015 newRegions....',newRegions)
             _self.setState({regions:newRegions})
 
         }
@@ -826,7 +838,7 @@ class SiteFour extends React.Component {
                 </Grid.Row>
                 <Container className='view_left_container' style={{width:this.menuW}}>
                     <Grid.Row className='view_contents'>
-                        <Grid.Column style={{height:this.state.bodyHeight}} className='view_left'>
+                        <Grid.Column className='view_left'>
                             <Menu secondary vertical className='view_left_menu org_menu'>
                                 {/* show name of organization */}
                                 <Grid.Column className="left_org">
@@ -928,7 +940,7 @@ class SiteFour extends React.Component {
                             <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
                                 <Grid.Column className='title_align' style={{lineHeight:'36px'}}>{this.state.headerTitle}</Grid.Column>
                                 {
-                                    (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView') ?
+                                    (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1) ?
                                         <Grid.Column className='title_align'>
                                             <Item className={'stepOrg2'} style={{marginLeft:20, marginRight:10}}>
                                                 <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
@@ -967,7 +979,7 @@ class SiteFour extends React.Component {
 
                             </Grid.Row>
                             {
-                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts'  && viewMode !== 'detailView') ?
+                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts'  && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1 ) ?
                                     <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
                                         <label style={{padding:'0 10px'}}>Region</label>
                                         <Dropdown className='selection'
