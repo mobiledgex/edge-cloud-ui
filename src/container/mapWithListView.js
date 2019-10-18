@@ -274,7 +274,7 @@ class MapWithListView extends React.Component {
                 (i === keys.length -1) ?
                 <Table.HeaderCell key={i} className='unsortable' textAlign='center'>
                     {
-                        (key === 'Edit')? 'Action'
+                        (key === 'Edit')? 'Actions'
                             : key}
                 </Table.HeaderCell>
                 :
@@ -288,7 +288,7 @@ class MapWithListView extends React.Component {
                                             : (key === 'ClusterInst')? 'Cluster Instance'
                                                 : (key === 'Physical_name')? 'Physical Name'
                                                     : (key === 'Platform_type')? 'Platform Type'
-                                                        : (key === 'Edit')? 'Action'
+                                                        : (key === 'Edit')? 'Actions'
                     : key}
                 </Table.HeaderCell>
             :
@@ -394,11 +394,11 @@ class MapWithListView extends React.Component {
                                     (value === 'Edit')?
                                         String(item[value]) === 'null' ? <Table.Cell/> :
                                         <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            {
+                                            {/* {
                                                 this.props.diffRev.map((_diff) => (
-                                                    (String(item[value]).indexOf('Editable') > -1 && _diff == item['AppName'] && item['State'] != 7) ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleEdit(item)}>Update</Button> : null
+                                                    (String(item[value]).indexOf('Editable') > -1 && _diff.AppName == item['AppName'] && _diff.Region == item['Region'] && _diff.OrganizationName == item['OrganizationName'] && _diff.Operator == item['Operator'] && _diff.Cloudlet == item['Cloudlet'] && _diff.ClusterInst == item['ClusterInst'] && item['State'] != 7) ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleEdit(item)}>Update</Button> : null
                                                 ))
-                                            }
+                                            } */}
                                             <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
                                         </Table.Cell>
                                     :

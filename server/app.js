@@ -509,82 +509,20 @@ app.post('/timeCloudlet', apiMCMonitor.ShowcloudletHealth)
 app.post('/clientIP', apiMCMonitor.getClientIP)
 
 
-
-/*
-http --auth-type=jwt --auth=$SUPERPASS POST
-https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app <<<
-'{
-    "region":"US",
-    "appinst":{
-        "app_key":{
-            "developer_key":{"name":"MobiledgeX"},
-            "name":"aa-deployment","version":"aaa"
-        },
-        "cluster_inst_key":{
-            "cluster_key":{"name":"aaaa"},
-            "cloudlet_key":{"operator_key":{"name":"TDG"}}
-        }
-    },
-    "starttime":"2019-06-25T21:59:15Z",
-    "endtime":"2019-06-25T22:00:00Z"
-}'
+/****************************
+ * 20191016
+ * Audit
+ * @type {string}
  */
+const apiMCAudit = require('./routes/apiMCAudit');
+console.log('====== process apiMCAudit ======='+process.env.MC_URL)
+apiMCAudit.MC_URL = process.env.MC_URL;
+app.post('/showauditrog', apiMCAudit.ShowOrg)
+app.post('/showself', apiMCAudit.ShowSelf)
 
 
 
-/*
---auth-type=jwt --auth=$SUPERPASS
- */
-// app.post('/showRole', (req, res, next) => {
-//     let superpass = null;
-//     if(req.body.serviceBody){
-//         superpass = req.body.serviceBody.superuser;
-//     }
-//     console.log('***** get current user ... ', req.body.serviceBody)
-//
-//     if(req.body.serviceBody) {
-//         axios.post(
-//             mcUrl + '/api/v1/auth/role/show',
-//             {},
-//             {
-//                 headers: {
-//                     'Authorization':`Bearer ${superpass}`}
-//             }
-//         )
-//             .then(function (response) {
-//                 console.log('success get ..', response.data)
-//                 res.json(response.data)
-//             })
-//             .catch(function (error) {
-//                 console.log(error);
-//             });
-//     }
-// });
-// app.post('/showOrg', (req, res, next) => {
-//     let superpass = null;
-//     if(req.body.serviceBody){
-//         superpass = req.body.serviceBody.superuser;
-//     }
-//     console.log('***** get current user ... ', req.body.serviceBody)
-//
-//     if(req.body.serviceBody) {
-//         axios.post(
-//             mcUrl + '/api/v1/auth/org/show',
-//             {},
-//             {
-//                 headers: {
-//                     'Authorization':`Bearer ${superpass}`}
-//             }
-//         )
-//             .then(function (response) {
-//                 console.log('success get ..', response.data)
-//                 res.json(response.data)
-//             })
-//             .catch(function (error) {
-//                 console.log(error);
-//             });
-//     }
-// });
+
 
 // http
 

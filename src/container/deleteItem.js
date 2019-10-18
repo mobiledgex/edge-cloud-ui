@@ -57,7 +57,7 @@ class DeleteItem extends React.Component {
                 }
             })
             setTimeout(() => {
-                _self.props.refresh('All');
+                _self.props.refresh(this.props.changeRegion);
             }, 3000);
         }
         
@@ -70,7 +70,7 @@ class DeleteItem extends React.Component {
         else if(this.props.siteId == 'App') msg = 'Your application '+body.params.app.key.name
         
         this.props.handleLoadingSpinner(false);
-        this.props.refresh('All')
+        this.props.refresh(this.props.changeRegion)
         
         if(result.data.error) {
             if(result.data.error.indexOf('Flavor in use by Cluster') > -1) {
@@ -144,7 +144,7 @@ class DeleteItem extends React.Component {
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
             setTimeout(() => {
                 this.props.handleDeleteReset(true);
-                this.props.refresh('All');
+                this.props.refresh(this.props.changeRegion);
                 this.props.handleLoadingSpinner(false);
             }, 2000)
             
@@ -171,7 +171,7 @@ class DeleteItem extends React.Component {
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
             setTimeout(() => {
                 this.props.handleDeleteReset(true);
-                this.props.refresh('All');
+                this.props.refresh(this.props.changeRegion);
                 this.props.handleLoadingSpinner(false);
             }, 1000)
         } else if(this.props.siteId === 'User') {
@@ -246,7 +246,7 @@ class DeleteItem extends React.Component {
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
             setTimeout(() => {
                 this.props.handleDeleteReset(true);
-                this.props.refresh('All');
+                this.props.refresh(this.props.changeRegion);
                 this.props.handleLoadingSpinner(false);
             }, 2000)
         } else if(this.props.siteId === 'App') {
@@ -330,7 +330,8 @@ class DeleteItem extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        selectOrg : state.selectOrg.org?state.selectOrg.org:null
+        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
+        changeRegion : state.changeRegion.region?state.changeRegion.region:null
     }
 };
 

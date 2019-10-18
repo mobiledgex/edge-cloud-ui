@@ -75,7 +75,7 @@ class RegistryCloudletViewer extends React.Component {
             errorClose:false,
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:['US','KR', 'EU']},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
                     'CloudletName':{label:'Cloudlet Name', type:'RenderInputCluster', necessary:true, tip:'Name of the cloudlet.', active:true},
                     'OperatorName':{label:'Operator Name', type:'RenderInputDisabled', necessary:true, tip:'Name of the organization you are currently managing.', active:true, items:['','']},
                     'CloudletLocation':{label:'Cloudlet Location', type:'CloudletLocation', necessary:true, tip:'Cloudlet Location', active:true, items:['','']},
@@ -232,7 +232,10 @@ class RegistryCloudletViewer extends React.Component {
         _self.props.handleGetRegion(null)
     }
     componentWillReceiveProps(nextProps, nextContext) {
-
+        if(nextProps.regionInfo.region.length){
+            let assObj = Object.assign([], this.state.keysData);
+            assObj[0].Region.items = nextProps.regionInfo.region;
+        }
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -403,7 +406,7 @@ const mapStateToProps = (state) => {
             submitSucceeded: state.form.createAppFormDefault.submitSucceeded
         }
         : {};
-
+    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         accountInfo,
         dimmInfo,
@@ -416,7 +419,8 @@ const mapStateToProps = (state) => {
         userRole : state.showUserRole?state.showUserRole.role:null,
         validateValue:validateValue,
         formClusterInst : formClusterInst,
-        getRegion : (state.getRegion)?state.getRegion.region:null
+        getRegion : (state.getRegion)?state.getRegion.region:null,
+        regionInfo: regionInfo
     }
     
     // return (dimm) ? {

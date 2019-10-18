@@ -374,9 +374,9 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                     (fieldKeys[pId][key]['label'] === 'Deployment Manifest') ?
                                                                     <div style={{marginTop:'1em'}}>
                                                                         <span style={{marginRight:'1em'}}>
-                                                                            <Button onClick={this.textUpload}>upload</Button>
+                                                                            <Button positive onClick={this.textUpload}>Select Manifest</Button>
                                                                         </span>
-                                                                        <Button onClick={this.textRemove}>remove</Button>
+                                                                        <Button onClick={this.textRemove}>Clear Manifest</Button>
                                                                     </div>
                                                                     :null
                                                                 }

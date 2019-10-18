@@ -78,10 +78,10 @@ class RegistryInstViewer extends React.Component {
             autoClusterDisable:false,
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', disable:(Object.keys(this.props.appLaunch).length == 0)?true:false, active:true, items:['US','KR', 'EU']},
-                    'DeveloperName':{label:'Organization Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'The name of the organization you are currently managing.', active:true, items:[null]},
-                    'AppName':{label:'App Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'The name of the application to deploy.', active:true, items:[null]},
-                    'Version':{label:'App Version', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', necessary:true, tip:'The version of the application to deploy.', active:true, items:[null]},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', disable:(Object.keys(this.props.appLaunch).length == 0)?true:false, active:true, items:[]},
+                    'DeveloperName':{label:'Organization Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', disable:(Object.keys(this.props.appLaunch).length == 0)?true:false, necessary:true, tip:'The name of the organization you are currently managing.', active:true, items:[null]},
+                    'AppName':{label:'App Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', disable:(Object.keys(this.props.appLaunch).length == 0)?true:false, necessary:true, tip:'The name of the application to deploy.', active:true, items:[null]},
+                    'Version':{label:'App Version', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', disable:(Object.keys(this.props.appLaunch).length == 0)?true:false, necessary:true, tip:'The version of the application to deploy.', active:true, items:[null]},
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Which operator do you want to deploy this applicaton? Please select one.', active:true, items:[null]},
                     'Cloudlet':{label:'Cloudlet', type:'RenderDropDown', necessary:true, tip:'Which cloudlet(s) do you want to deploy this application?', active:true, items:[null]},
                     'AutoClusterInst':{label:'Auto Cluster Instance', type:'RenderCheckbox', necessary:false, tip:'If you have yet to create a cluster, you can select this to auto create cluster instance.'},
@@ -312,7 +312,10 @@ class RegistryInstViewer extends React.Component {
         } else {
             this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         }
-
+        if(nextProps.regionInfo.region.length){
+            let assObj = Object.assign([], this.state.keysData);
+            assObj[0].Region.items = nextProps.regionInfo.region;
+        }
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
         if(nextProps.submitValues && !this.state.toggleSubmit) {
@@ -566,7 +569,7 @@ const mapStateToProps = (state) => {
             submitSucceeded: state.form.createAppFormDefault.submitSucceeded
         }
         : {};
-
+    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         accountInfo,
         dimmInfo,
@@ -586,7 +589,8 @@ const mapStateToProps = (state) => {
         formAppInst : formAppInst,
         selectedOrgName : selectedOrgName,
         selectedRegion : selectedRegion,
-        editData : state.editInstance.data
+        editData : state.editInstance.data,
+        regionInfo: regionInfo
     }
     
     // return (dimm) ? {

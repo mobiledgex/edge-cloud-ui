@@ -129,7 +129,6 @@ const _liveness = {
 var layout = [
     {"w":19,"x":0,"y":0,"i":"0", "minW":8, "moved":false,"static":false, "title":"Developer"}
 ]
-let rgn = ['US','KR','EU'];
 let _self = null;
 class PageDetailViewer extends React.Component {
     constructor() {

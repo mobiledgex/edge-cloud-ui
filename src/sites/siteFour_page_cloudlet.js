@@ -16,7 +16,7 @@ import * as reducer from '../utils'
 
 
 let _self = null;
-let rgn = ['US','KR','EU'];
+let rgn = [];
 class SiteFourPageCloudlet extends React.Component {
     constructor(props) {
         super(props);
@@ -68,7 +68,7 @@ class SiteFourPageCloudlet extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.getDataDeveloper(this.props.changeRegion);
+        // this.getDataDeveloper(this.props.changeRegion);
         this.userToken = store.userToken;
     }
     componentWillUnmount() {
@@ -78,7 +78,6 @@ class SiteFourPageCloudlet extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
  
@@ -103,25 +102,10 @@ class SiteFourPageCloudlet extends React.Component {
 
         //{ key: 1, text: 'All', value: 'All' }
         
-        // if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
-        //     let getRegions = []
-        //     _self.setState({regionToggle:true})
-        //     if(nextProps.regionInfo.region){
-        //         nextProps.regionInfo.region.map((region, i) => {
-        //             console.log('20191015 props for site for....',region, i)
-        //             getRegions.push(region)
-        //         })
-        //     }
-
-        //     let newRegions = Object.assign([], _self.state.regions).concat(getRegions)
-        //     //_self.setState({regions:newRegions})
-        //     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        //     if(store && store.userToken) {
-        //         this.getDataDeveloper(this.props.changeRegion);
-        //         this.userToken = store.userToken;
-        //     }
-
-        // }
+        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
+            _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
+            this.getDataDeveloper(nextProps.changeRegion,nextProps.regionInfo.region);
+        }
     }
     receiveResult = (result) => {
         let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
@@ -158,7 +142,7 @@ class SiteFourPageCloudlet extends React.Component {
     }
 
 
-    getDataDeveloper = (region) => {
+    getDataDeveloper = (region,regionArr) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         this._cloudletDummy = [];
@@ -166,7 +150,7 @@ class SiteFourPageCloudlet extends React.Component {
         if(region !== 'All'){
             rgn = [region]
         } else {
-            rgn = ['US','KR','EU'];
+            rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
 
         rgn.map((item, i) => {
@@ -175,8 +159,9 @@ class SiteFourPageCloudlet extends React.Component {
         })
         this.props.handleLoadingSpinner(true);
     }
-    getDataDeveloperSub = () => {
-        this.getDataDeveloper('All');
+    getDataDeveloperSub = (region) => {
+        let _region = (region)?region:'All';
+        this.getDataDeveloper(_region);
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -193,6 +178,7 @@ class SiteFourPageCloudlet extends React.Component {
 };
 
 const mapStateToProps = (state) => {
+    console.log("regionssInfo",state.regionInfo)
     let viewMode = null;
     let detailData = null;
 

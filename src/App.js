@@ -25,6 +25,8 @@ import history from './history';
 import VerifyContent from './container/verifyContent';
 import './css/index.css';
 
+import './css/pages/audit.css';
+
 let self = null;
 
 const asyncComponent = getComponent => (
@@ -83,7 +85,6 @@ const DashboardContainer = ( props, props2) => {
         loaded = true;
         let userInfo = JSON.parse(storeData);
         if(userInfo.userToken) {
-            console.log('20191016 userinfo usertoken --- ', userInfo.userToken)
             Service.getCurrentUserInfo('currentUser', {token:userInfo.userToken}, self.receiveCurrentUser, self)
         }
 
@@ -252,7 +253,7 @@ class App extends Component {
                     regions.push(data.Region)
                 })
             } else {
-                alert('There is no any controller')
+
             }
 
             //localStorage.setItem('regions', regions)

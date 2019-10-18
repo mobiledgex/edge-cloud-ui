@@ -18,7 +18,6 @@ import formatComputeAccounts from './formatter/formatComputeAccounts';
 const hostname = window.location.hostname;
 let serviceDomain = 'https://mc.mobiledgex.net:9900';
 let ServerUrl = 'https://'+hostname+':3030';
-console.log('20191011 process.env.USE_SERVER_SUFFIX is.. ', process.env)
 
 if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
     ServerUrl = 'https://'+hostname+'/server';
@@ -27,7 +26,6 @@ export function setDomain(domain) {
     console.log('reset service domain ---- ', domain)
     serviceDomain = domain;
 }
-console.log('20191011 ServerUrl is.. ', ServerUrl)
 export function getOperator(resource, callback) {
     fetch('https://'+hostname+':3030')
         .then(response => response.json())
@@ -516,14 +514,12 @@ export function showController(resource, body, callback, self) {
         serviceDomain:serviceDomain
     }))
         .then(function (response) {
-            console.log("20191015 showController!!",response)
             let parseData = null;
             if(response.data) {
                 parseData = JSON.parse(JSON.stringify(response));
             } else {
                 parseData = response;
             }
-            console.log('parse data showController ===>>>>>>>>>> ', parseData)
             callback(parseData)
         })
         .catch(function (error) {

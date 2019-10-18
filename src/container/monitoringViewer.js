@@ -122,7 +122,6 @@ export default class MonitoringViewer extends React.Component {
             this.udpCnt ++;
         }
         if(label === 'connections') {
-            console.log('20191014 connections series data --- ', values['cmsn'], ":", values['time'])
             this.state.mProp['timeseriesDataACCEPTS'][0][this.connCnt] = values['cmsn'][1];
             this.state.mProp['timeseriesACCEPTS'][0][this.connCnt] = values['cmsn'][0];
 
@@ -265,7 +264,6 @@ export default class MonitoringViewer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('20191014  monitoring viewer nextProps....', nextProps)
         if(nextProps.data.page === 'cloudlet' && nextProps.data.mData.length) {
             this.feedDataCloudlet(nextProps.data.mData);
         } else {

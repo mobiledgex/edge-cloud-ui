@@ -80,7 +80,7 @@ class RegistryClusterInstViewer extends React.Component {
             errorClose:false,
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy the cluster.', active:true, items:['US','KR', 'EU']},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy the cluster.', active:true, items:[]},
                     'ClusterName':{label:'Cluster Name', type:'RenderInputCluster', necessary:true, tip:'Enter name of your cluster.', active:true},
                     'OrganizationName':{label:'Organization Name', type:'RenderInputDisabled', necessary:true, tip:'This is the name of the organization you are currently managing.', active:true, items:['','']},
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Which operator do you want to deploy this cluster? Please select one.', active:true, items:['','']},
@@ -245,7 +245,10 @@ class RegistryClusterInstViewer extends React.Component {
         } else {
             this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         }
-
+        if(nextProps.regionInfo.region.length){
+            let assObj = Object.assign([], this.state.keysData);
+            assObj[0].Region.items = nextProps.regionInfo.region;
+        }
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
         if(nextProps.submitValues && !this.state.toggleSubmit) {
@@ -421,7 +424,7 @@ const mapStateToProps = (state) => {
             submitSucceeded: state.form.createAppFormDefault.submitSucceeded
         }
         : {};
-
+    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         accountInfo,
         dimmInfo,
@@ -433,7 +436,8 @@ const mapStateToProps = (state) => {
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
         validateValue:validateValue,
-        formClusterInst : formClusterInst
+        formClusterInst : formClusterInst,
+        regionInfo: regionInfo
     }
     
     // return (dimm) ? {

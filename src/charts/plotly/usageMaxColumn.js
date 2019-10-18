@@ -78,7 +78,6 @@ class UsageMaxColumn extends React.Component {
             type: 'bar',
             marker:{color:'lightsalmon'}
         }
-        console.log('20191007 data mp... ', data, ":", series)
         if(series && series[0].length === 0) {
             return;
         }
@@ -98,9 +97,6 @@ class UsageMaxColumn extends React.Component {
 
         usageData.x = series[0];
         maxData.x = series[0];
-
-
-        console.log('20191008 chart data ---- ', usageData, ":", maxData)
 
         let dataComp = [usageData, maxData]
         //console.log('20191007 dataComp == ', dataComp)
