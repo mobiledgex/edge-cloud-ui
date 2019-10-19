@@ -122,7 +122,7 @@ class SiteFourPageAudits extends React.Component {
     receiveResult = (result) => {
         console.log('20191018 audit result..', result)
         this.loadCount ++;
-        this.setState({devData:result})
+        this.setState({devData:result, auditMounted:true})
         this.props.handleLoadingSpinner(false);
         if(rgn.length == this.loadCount-1){
             return
@@ -146,9 +146,9 @@ class SiteFourPageAudits extends React.Component {
         _self.loadCount = 0;
 
         if(orgName) {
-            services.showAuditOrg('ShowOrg',{token:store.userToken, params:`{"org":"${_self.makeOga(orgName)}"}`, limit:100}, _self.receiveResult, _self)
+            services.showAuditOrg('ShowOrg',{token:store.userToken, params:`{"org":"${_self.makeOga(orgName)}", "limit":90}`, limit:100}, _self.receiveResult, _self)
         } else {
-            services.showAuditSelf('ShowSelf',{token:store.userToken, params:'{}', limit:70}, _self.receiveResult, _self)
+            services.showAuditSelf('ShowSelf',{token:store.userToken, params:'{"limit":80}', limit:70}, _self.receiveResult, _self)
         }
     }
 

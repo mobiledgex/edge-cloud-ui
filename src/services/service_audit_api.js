@@ -53,7 +53,7 @@ export function showAuditSelf(resource, body, callback, self) {
         .then(function (response) {
             let parseData = null;
             if(response) {
-                parseData = JSON.parse(JSON.stringify(response));
+                if(JSON.stringify(response)) parseData = JSON.parse(JSON.stringify(response));
             } else {
 
             }

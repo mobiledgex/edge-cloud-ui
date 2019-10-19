@@ -28,11 +28,8 @@ exports.ShowSelf = (req, res) => {
     )
         .then(function (response) {
             if(response.data && response.statusText === 'OK') {
-                console.log('success show audit == ', response.data)
+                console.log('success show audit == ')
                 res.json(response.data)
-            } else if(response.statusText === 'OK'){
-                console.log('empty')
-                res.json(null)
 
             } else {
                 res.json({error:'Request failed'})

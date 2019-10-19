@@ -47,6 +47,7 @@ class TimelineAuditView extends React.Component {
         isOpenBeginning: true,
         dates:[],
         contData:[],
+        rawAllData: [],
         rawViewData: [],
         requestData: [],
         responseData: [],
@@ -84,22 +85,30 @@ class TimelineAuditView extends React.Component {
     }
     onHandleIndexClick = (value) => {
         let selectedId = parseInt(value.value);
+        console.log('20191018 selet..', selectedId)
         if(value.value) {
-            _self.setState({selectedIndex: selectedId, value:selectedId})
+            //_self.setState({selectedIndex: selectedId, value:selectedId})
         }
-        _self.setRequestView(_self.state.rawViewData[selectedId], selectedId)
-        _self.setResponseView(_self.state.rawViewData[selectedId], selectedId)
+        _self.setAllView(_self.state.rawAllData[selectedId], selectedId)
+        _self.setRequestView(_self.state.rawAllData[selectedId], selectedId)
+        _self.setResponseView(_self.state.rawAllData[selectedId], selectedId)
+    }
+    setAllView(dummyConts, sId) {
+        this.setState({rawViewData:dummyConts})
     }
     setRequestView(dummyConts, sId) {
 
         if(dummyConts && dummyConts['request'] && dummyConts['request'].indexOf('{') > -1) {
             let dataLenght = dummyConts['request'].split('{"data":').length;
             if(dataLenght > 1) {
-                //this.setState({requestData:{"data":dummyConts['request'].split('{"data":')}})
-                this.setState({requestData:{"data":'test1111'}})
+                this.setState({requestData:{"data":dummyConts['request'].split('{"data":')}})
+                //this.setState({requestData:{"data":'test1111'}})
             } else {
                 this.setState({requestData:JSON.parse(dummyConts['request'])})
             }
+        } else {
+            //alert(dummyConts['request'])
+            this.setState({requestData:{'request':dummyConts['request']}})
         }
 
     }
@@ -108,10 +117,10 @@ class TimelineAuditView extends React.Component {
         if(dummyConts && dummyConts['response'].indexOf('{') > -1) {
             let dataLenght = dummyConts['response'].split('{"data":').length;
             if(dataLenght > 1) {
-                //this.setState({responseData:{"data":dummyConts['response'].split('{"data":')}})
-                this.setState({responseData:{"data":"test2222"}})
+                this.setState({responseData:{"data":dummyConts['response'].split('{"data":')}})
+                //this.setState({responseData:{"data":"test2222"}})
             } else {
-                this.setState({responseData:JSON.parse(dummyConts['response'])})
+                this.setState({responseData:JSON.parse((dummyConts['response'] !== "") ? dummyConts['response'] : {})})
             }
 
         }
@@ -186,7 +195,7 @@ class TimelineAuditView extends React.Component {
              * reset data...
              * **/
             if(nextProps.mounted) {
-                this.setState({dates:dummys, rawViewData:dummyConts, auditCount:0})
+                this.setState({dates:dummys,rawViewData:dummyConts, rawAllData:dummyConts, auditCount:0, mounted:true})
             }
             /** ***/
             if(nextProps.data.data && nextProps.data.data.length) {
@@ -195,11 +204,16 @@ class TimelineAuditView extends React.Component {
                     dummyConts.push(item)
                     listId.push('timeline-dot-'+this.makeUTC(item['starttime']));
                 })
-                this.setState({dates:dummys, rawViewData:dummyConts, auditCount:nextProps.data.data.length})
+                console.log('20191018 will receive porps...', dummys,":", dummyConts)
+
+                this.setState({dates:dummys, rawAllData:dummyConts, auditCount:nextProps.data.data.length})
+                if(dummyConts[this.state.selectedIndex]) this.setAllView(dummyConts[this.state.selectedIndex], this.state.selectedIndex);
                 if(dummyConts[this.state.selectedIndex]) this.setRequestView(dummyConts[this.state.selectedIndex], this.state.selectedIndex);
                 if(dummyConts[this.state.selectedIndex]) this.setResponseView(dummyConts[this.state.selectedIndex], this.state.selectedIndex);
                 this.makeLabel(listId, nextProps.data.data);
             }
+
+
 
         }
 
@@ -271,7 +285,7 @@ class TimelineAuditView extends React.Component {
                                 Raw Viewer
                             </div>
                             <div className="page_audit_code_rawviewer_codebox">
-                                {(this.state.rawViewData) ? jsonView(this.state.rawViewData[this.state.selectedIndex],this):null}
+                                {(this.state.rawViewData) ? jsonView(this.state.rawViewData,this):null}
                             </div>
                         </div>
                     </div>
