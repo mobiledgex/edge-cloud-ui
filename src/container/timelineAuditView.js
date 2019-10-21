@@ -85,10 +85,19 @@ class TimelineAuditView extends React.Component {
     }
     onHandleIndexClick = (value) => {
         let selectedId = parseInt(value.value);
-        console.log('20191018 selet..', selectedId)
-        if(value.value) {
-            //_self.setState({selectedIndex: selectedId, value:selectedId})
+        let selectedDom = document.getElementById(listId[selectedId])
+        let selectChildNode = null
+        if(selectedDom) {
+            selectChildNode = selectedDom.childNodes
+            //reset style of circle
+            let oldSelected = document.getElementsByClassName('selectedCircle_timeline')
+            // if(oldSelected.length) oldSelected.map((element) => {
+            //     element.className = null;
+            // })
+            console.log('20191018 selet old..',oldSelected, ":", [...oldSelected])
+            selectChildNode[1].className = 'selectedCircle_timeline'
         }
+
         _self.setAllView(_self.state.rawAllData[selectedId], selectedId)
         _self.setRequestView(_self.state.rawAllData[selectedId], selectedId)
         _self.setResponseView(_self.state.rawAllData[selectedId], selectedId)
@@ -187,7 +196,7 @@ class TimelineAuditView extends React.Component {
 
         let dummys = [];
         let dummyConts = [];
-        listId = [];
+
 
         if(nextProps.data !== this.props.data) {
             /**
@@ -195,7 +204,8 @@ class TimelineAuditView extends React.Component {
              * reset data...
              * **/
             if(nextProps.mounted) {
-                this.setState({dates:dummys,rawViewData:dummyConts, rawAllData:dummyConts, auditCount:0, mounted:true})
+                listId = [];
+                this.setState({dates:dummys,rawViewData:dummyConts, rawAllData:dummyConts, auditCount:0, mounted:true, responseData:[], requestData:[]})
             }
             /** ***/
             if(nextProps.data.data && nextProps.data.data.length) {
@@ -212,8 +222,6 @@ class TimelineAuditView extends React.Component {
                 if(dummyConts[this.state.selectedIndex]) this.setResponseView(dummyConts[this.state.selectedIndex], this.state.selectedIndex);
                 this.makeLabel(listId, nextProps.data.data);
             }
-
-
 
         }
 

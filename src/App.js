@@ -26,6 +26,7 @@ import VerifyContent from './container/verifyContent';
 import './css/index.css';
 
 import './css/pages/audit.css';
+import './css/components/timelineH.css';
 
 let self = null;
 

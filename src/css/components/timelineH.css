@@ -1,0 +1,10 @@
+/*
+ * code by inki kim
+ * 20191019
+ */
+.selectedCircle_timeline {
+    width:18px !important;
+    height:18px !important;
+    background-color: rgba(165, 189, 238, 0.68) !important;
+    border: 2px solid rgb(20, 98, 151) !important;
+}

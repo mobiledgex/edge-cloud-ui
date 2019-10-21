@@ -458,6 +458,8 @@ export function getMCService(resource, body, callback, self) {
             if(response.data) {
                 if(response.data.error) {
                     if(response.data.error.indexOf('expired') > -1) {
+                        localStorage.setItem('userInfo', null)
+                        localStorage.setItem('sessionData', null)
                         callback({error:'Certificated has expired!'}, resource, self);
                         return;
                     } else {

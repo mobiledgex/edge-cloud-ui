@@ -313,7 +313,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
         e.preventDefault();
         let input = document.createElement("input");
         input.type = "file";
-        input.accept = "text/plain";
+        input.accept = "*";
         input.onchange = (event) => {
             this.processFile(event.target.files[0]);
         };
