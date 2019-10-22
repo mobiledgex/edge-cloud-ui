@@ -274,3 +274,15 @@ export function regionInfo (data) {
         data
     }
 }
+
+/**
+ * audit
+ * @param data
+ * @returns {{data: *, type: string}}
+ */
+export function setCheckedAudit (data) {
+    return {
+        type: types.CHECKED_AUDIT,
+        data
+    }
+}

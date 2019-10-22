@@ -119,9 +119,53 @@ class SiteFourPageAudits extends React.Component {
 
         */
     }
-    receiveResult = (result) => {
-        console.log('20191018 audit result..', result)
-        this.loadCount ++;
+    reduceAuditCount(all, data) {
+        let itemArray = [];
+        let addArray = [];
+        let savedArray = localStorage.getItem('auditUnChecked');
+        let checkedArray = localStorage.getItem('auditChecked');
+        let checked = [];
+        console.log('20191022 item is -- ', all, "  :  ",  JSON.parse(savedArray), typeof  JSON.parse(savedArray))
+        all.map((item, i) => {
+            if(savedArray && JSON.parse(savedArray).length) {
+                console.log('20191022 item is -- ', JSON.parse(savedArray).findIndex(k => k==item.traceid) )
+                //이전에 없던 데이터 이면 추가하기
+                if(JSON.parse(savedArray).findIndex(k => k==item.traceid) === -1) addArray.push(item.traceid)
+            } else {
+                itemArray.push(item.traceid)
+            }
+        })
+
+        if(addArray.length) {
+            console.log('20191022 if has new data ... ', addArray)
+            JSON.parse(savedArray).concat(addArray);
+        }
+
+
+        // 이제 새로운 데이터에서 체크된 오딧은 제거
+        let checkResult = null;
+
+        if(savedArray && JSON.parse(savedArray).length) {
+            checkResult = JSON.parse(savedArray);
+        } else if(itemArray.length) {
+            checkResult = itemArray;
+        }
+
+        checked = (checkedArray) ? JSON.parse(checkedArray) : [];
+        console.log('20191022  unchecked... is -- ',checkResult.length, ":", checked.length," - ", (checkResult.length - checked.length))
+        this.props.handleAuditCheckCount(checkResult.length - checked.length)
+        localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
+
+    }
+
+    receiveResult = (result, resource, self, body) => {
+        let unchecked = result.data.length;
+        let checked = localStorage.getItem('auditChecked')
+        if(resource === 'ShowSelf') {
+            console.log('20191021 audit result..', result,":",resource, ": unchecked : ", unchecked)
+            this.reduceAuditCount(result.data, checked)
+
+        }
         this.setState({devData:result, auditMounted:true})
         this.props.handleLoadingSpinner(false);
         if(rgn.length == this.loadCount-1){
@@ -146,10 +190,47 @@ class SiteFourPageAudits extends React.Component {
         _self.loadCount = 0;
 
         if(orgName) {
-            services.showAuditOrg('ShowOrg',{token:store.userToken, params:`{"org":"${_self.makeOga(orgName)}", "limit":90}`, limit:100}, _self.receiveResult, _self)
+            services.showAuditOrg('ShowOrg',{token:store.userToken, params:{"org":_self.makeOga(orgName)}}, _self.receiveResult, _self)
         } else {
-            services.showAuditSelf('ShowSelf',{token:store.userToken, params:'{"limit":80}', limit:70}, _self.receiveResult, _self)
+            services.showAuditSelf('ShowSelf',{token:store.userToken, params:'{}'}, _self.receiveResult, _self)
         }
+    }
+    selectedAudit = (selectedAudit) => {
+        // if get same item find from storage should remove it.
+        let savedData = localStorage.getItem('auditUnChecked');
+        let checkData = localStorage.getItem('auditChecked');
+        let newCheckData = null;
+        let newData = null;
+        if(savedData) {
+            let parseSavedData = JSON.parse(savedData)
+            newData = parseSavedData.filter(function(item) {
+                return item !== selectedAudit.traceid
+            })
+            newCheckData = JSON.parse(checkData);
+
+            if(newCheckData) {
+                //만약 이미 체크된 오딧 이면 배열에 넣지 않는다
+                if(newCheckData.findIndex(k => k==selectedAudit.traceid) === -1) {
+                    newCheckData.push(selectedAudit.traceid)
+                } else {
+
+                }
+
+            } else {
+                newCheckData = [selectedAudit.traceid]
+            }
+            console.log('20191022 newData // newCheckData ...', newCheckData, ":", typeof newCheckData)
+
+
+        }
+        //console.log('20191022 filtering audit checked ...', newData, ":", newData.length)
+        localStorage.setItem('auditChecked', JSON.stringify(newCheckData))
+
+        //refresh number badge of Audit Log button
+        let allCnt = JSON.parse(savedData).length;
+        let selectedCnt = newCheckData.length;
+        if(newData && newData.length) _self.props.handleAuditCheckCount(allCnt - selectedCnt)
+
     }
 
     render() {
@@ -158,7 +239,7 @@ class SiteFourPageAudits extends React.Component {
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
-            <TimelineAuditView data={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Audit'} userToken={this.userToken} mounted={this.state.auditMounted}></TimelineAuditView>
+            <TimelineAuditView data={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Audit'} userToken={this.userToken} mounted={this.state.auditMounted} handleSelectedAudit={this.selectedAudit}></TimelineAuditView>
             :
             <div></div>
         );
@@ -189,6 +270,7 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleDetail: (data) => { dispatch(actions.changeDetail(data))},
+        handleAuditCheckCount: (data) => { dispatch(actions.setCheckedAudit(data))},
     };
 };
 

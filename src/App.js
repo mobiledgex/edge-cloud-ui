@@ -119,6 +119,11 @@ const DashboardContainer = ( props, props2) => {
 
     if(props.mainPath === '/logout') {
         localStorage.removeItem(LOCAL_STRAGE_KEY);
+        localStorage.setItem('userInfo', null)
+        localStorage.setItem('sessionData', null)
+        localStorage.removeItem('selectOrg')
+        localStorage.setItem('selectRole', null)
+        localStorage.setItem('selectMenu', null)
         self.props.mapDispatchToLoginWithPassword({})
 
     }

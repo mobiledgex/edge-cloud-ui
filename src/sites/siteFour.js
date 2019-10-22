@@ -7,7 +7,7 @@ import {
     Dropdown,
     Button,
     Popup,
-    Divider,
+    Label,
     Modal,
     Item,
     Input,
@@ -48,12 +48,13 @@ import SiteFourPageCreateorga from './siteFour_page_createOrga';
 
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import PopLegendViewer from '../container/popLegendViewer';
-
+import * as services from '../services/service_audit_api';
 import * as Service from '../services/service_login_api';
 import * as computeService from '../services/service_compute_service';
 
 import { organizationTutor, CloudletTutor } from '../tutorial';
 import SiteFourPageAudits from './siteFour_page_audits';
+import * as utile from '../utils'
 
 import Alert from 'react-s-alert';
 
@@ -364,6 +365,9 @@ class SiteFour extends React.Component {
     enalbeSteps =()=> {
         let enable = false;
         let currentStep = null;
+
+        if(this.props.viewMode === 'detailView') return;
+
         console.log('20190821 siteName==', this.props, 'change org step..', this.props.changeStep, 'steps data=', orgaSteps, 'userRole=', this.props.userRole,this.props.userInfo.info, 'this.props.dataExist==',this.props.dataExist)
         let site = this.props.siteName;
         let userName = (this.props.userInfo && this.props.userInfo.info)?this.props.userInfo.info.Name:'';
@@ -486,7 +490,11 @@ class SiteFour extends React.Component {
             }
         }, 4000)
 
-        this.setState({steps: orgaSteps.stepsZero})
+        this.setState({steps: orgaSteps.stepsZero});
+        //
+        if(this.props.params.subPath !== 'pg=audits'){
+            this.getDataAudit();
+        }
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -657,8 +665,22 @@ class SiteFour extends React.Component {
                             loading={this.props.loadingSpinner}
                             // loading={true}
                         />
+                        {(item.label === 'Audit Log' && this.props.audit > 0)?
+                            <Label circular color={'red'} key={'red'}>
+                                {this.props.audit}
+                            </Label>:null}
                     </div>
+
                     :null}
+
+
+                    <div style={{position:'absolute', right:'12px', top:'12px'}}>
+                        {(item.label === 'Audit Log' && this.props.audit > 0)?
+                            <Label circular color={'red'} key={'red'}>
+                                {this.props.audit}
+                            </Label>:null}
+                    </div>
+
             </div>
 
         </Menu.Item>
@@ -745,6 +767,70 @@ class SiteFour extends React.Component {
     closeLegend = () => {
         this.setState({ openLegend: false })
     }
+
+
+    /**
+     * audit
+     * */
+    reduceAuditCount(all, data) {
+        let itemArray = [];
+        let addArray = [];
+        let savedArray = localStorage.getItem('auditUnChecked');
+        let checkedArray = localStorage.getItem('auditChecked');
+        let checked = [];
+        console.log('20191022 item is -- ', all, "  :  ", savedArray, typeof savedArray)
+        all.map((item, i) => {
+            if(savedArray && JSON.parse(savedArray).length) {
+                console.log('20191022 item is -- ', JSON.parse(savedArray).findIndex(k => k==item.traceid) )
+                //이전에 없던 데이터 이면 추가하기
+                if(JSON.parse(savedArray).findIndex(k => k==item.traceid) === -1) addArray.push(item.traceid)
+            } else {
+                itemArray.push(item.traceid)
+            }
+        })
+
+        if(addArray.length) {
+            console.log('20191022 if has new data ... ', addArray)
+            JSON.parse(savedArray).concat(addArray);
+        }
+
+
+        // 이제 새로운 데이터에서 체크된 오딧은 제거
+        let checkResult = null;
+
+        if(savedArray && JSON.parse(savedArray).length) {
+            checkResult = JSON.parse(savedArray);
+        } else if(itemArray.length) {
+            checkResult = itemArray;
+        }
+
+        checked = (checkedArray) ? JSON.parse(checkedArray) : [];
+        console.log('20191022  unchecked... is -- ',checkResult.length, ":", checked.length," - ", (checkResult.length - checked.length))
+        this.props.handleAuditCheckCount(checkResult.length - checked.length)
+        localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
+
+    }
+    receiveResult = (result, resource, self, body) => {
+        let unchecked = result.data.length;
+        let checked = localStorage.getItem('auditChecked')
+        if(resource === 'ShowSelf') {
+            this.reduceAuditCount(result.data, checked)
+        }
+        this.props.handleLoadingSpinner(false);
+
+    }
+    makeOga = (logName) => {
+        let lastSub = logName.substring(logName.lastIndexOf('=')+1);
+        return lastSub
+    }
+    getDataAudit = () => {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        this.setState({devData:[]})
+        _self.loadCount = 0;
+        services.showAuditSelf('ShowSelf',{token:store.userToken, params:'{}'}, _self.receiveResult, _self)
+    }
+
+    /** audit ********/
 
 
     render() {
@@ -968,6 +1054,7 @@ class SiteFour extends React.Component {
                                     {/* {(this.state.enable)?this.getGuidePopup(this.state.headerTitle):null} */}
                                     {
                                         (
+                                            this.props.viewMode !== 'detailView' &&
                                             this.state.headerTitle !== 'User Roles' &&
                                             this.state.headerTitle !== 'Accounts' &&
                                             this.state.headerTitle !== 'Flavors'
@@ -983,10 +1070,10 @@ class SiteFour extends React.Component {
                                     <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
                                         <label style={{padding:'0 10px'}}>Region</label>
                                         <Dropdown className='selection'
-                                                  options={this.state.regions}
-                                            // defaultValue={this.state.regions[0].value}
-                                                  value={this.props.changeRegion}
-                                                  onChange={this.onChangeRegion}
+                                                options={this.state.regions}
+                                                defaultValue={this.state.regions[0].value}
+                                                value={this.props.changeRegion}
+                                                onChange={this.onChangeRegion}
                                         />
                                     </Grid.Row>
                                     : null
@@ -1049,6 +1136,8 @@ const mapStateToProps = (state) => {
     let formInfo = (state.form)?state.form:null;
     let submitInfo = (state.submitInfo)?state.submitInfo:null;
     let regionInfo = (state.regionInfo)?state.regionInfo:null;
+    let checkedAudit = (state.checkedAudit)?state.checkedAudit.audit:null;
+
     return {
         viewBtn : state.btnMnmt?state.btnMnmt:null,
         userToken : (state.userToken) ? state.userToken: null,
@@ -1073,7 +1162,8 @@ const mapStateToProps = (state) => {
         tutorState : tutorState,
         formInfo:formInfo,
         submitInfo:submitInfo,
-        regionInfo:regionInfo
+        regionInfo:regionInfo,
+        audit: checkedAudit
     }
 };
 
@@ -1097,6 +1187,7 @@ const mapDispatchProps = (dispatch) => {
         handleDetail: (data) => { dispatch(actions.changeDetail(data))},
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleAuditCheckCount: (data) => { dispatch(actions.setCheckedAudit(data))},
     };
 };
 

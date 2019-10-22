@@ -29,7 +29,8 @@ class SiteFourPageClusterInst extends React.Component {
             devData:[],
             viewMode:'listView',
             detailData:null,
-            regionToggle:false
+            regionToggle:false,
+            dataSort:false
         };
         this.clusterInstDummy = [];
         this.cloudletDummy = [];
@@ -88,6 +89,7 @@ class SiteFourPageClusterInst extends React.Component {
         if(nextProps.computeRefresh.compute) {
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
+            this.setState({dataSort:true});
         }
         if(this.props.changeRegion !== nextProps.changeRegion){
             this.getDataDeveloper(nextProps.changeRegion);
@@ -173,7 +175,7 @@ class SiteFourPageClusterInst extends React.Component {
                         }
                     })
                 })
-                _self.setState({devData:clusterInst})
+                _self.setState({devData:clusterInst,dataSort:false})
             } catch(e) {
 
             }
@@ -242,7 +244,7 @@ class SiteFourPageClusterInst extends React.Component {
             //<DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
             (viewMode === 'listView')?
 
-                <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub}></MapWithListView>
+                <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
                 :
                 <PageDetailViewer className="ttt" data={this.state.detailData} page='clusterInst'/>
         );

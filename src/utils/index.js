@@ -91,6 +91,15 @@ export const filterDeleteKey = (object, prop) => {
     }, {})
     return newObj;
 }
+export const filterArrayDeleteKey = (object, prop) => {
+    const newObj = Object.keys(object).reduce((obj, key) => {
+        if (key !== prop) {
+            obj[key] = object[key]
+        }
+        return obj
+    }, [])
+    return newObj;
+}
 export const filterDefineKey = (object, values) => {
 
     object.map((obj) => {

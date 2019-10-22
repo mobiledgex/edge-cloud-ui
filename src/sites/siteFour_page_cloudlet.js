@@ -31,7 +31,8 @@ class SiteFourPageCloudlet extends React.Component {
             devData:[],
             viewMode:'listView',
             regions:[],
-            regionToggle:false
+            regionToggle:false,
+            dataSort:false
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -84,6 +85,7 @@ class SiteFourPageCloudlet extends React.Component {
         if(nextProps.computeRefresh.compute) {
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
+            this.setState({dataSort:true});
         }
         if(this.props.changeRegion !== nextProps.changeRegion){
             this.getDataDeveloper(nextProps.changeRegion);
@@ -137,7 +139,7 @@ class SiteFourPageCloudlet extends React.Component {
 
     countJoin() {
         let cloudlet = this._cloudletDummy;
-        _self.setState({devData:cloudlet})
+        _self.setState({devData:cloudlet,dataSort:false})
         this.props.handleLoadingSpinner(false);
     }
 
@@ -169,7 +171,7 @@ class SiteFourPageCloudlet extends React.Component {
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
-            <MapWithListView devData={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></MapWithListView>
+            <MapWithListView devData={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
             :
             <PageDetailViewer data={this.state.detailData} page='cloudlet'/>
         );

@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 
-import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup, Icon, Input} from "semantic-ui-react";
+import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup, Icon, Input, Checkbox} from "semantic-ui-react";
 
 import { Field, reduxForm, initialize, reset, stopSubmit, change } from "redux-form";
 import MaterialIcon from "material-icons-react";
@@ -262,19 +262,28 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
     AddPorts = (e) => {
         e.preventDefault();
-        this.setState({portArray:this.state.portArray.concat(portNum)})
-        console.log("portArrayportArray",this.state.portArray.concat(portNum))
+        let pn = {
+            num:portNum,
+            name:'single'
+        }
+        this.setState({portArray:this.state.portArray.concat(pn)})
         portNum++;
     }
-    RemovePorts = (num) => {
+    AddMultiPorts = (e) => {
+        e.preventDefault();
+        let pn = {
+            num:portNum,
+            name:'multi'
+        }
+        this.setState({portArray:this.state.portArray.concat(pn)})
+        portNum++;
+    }
+    RemovePorts = (num,cnum) => {
         let arr = this.state.portArray;
-        
-        this.props.dispatch(change('createAppFormDefault', 'Ports_'+num, null));
-        this.props.dispatch(change('createAppFormDefault', 'Portsselect_'+num, null));
-
+        this.props.dispatch(change('createAppFormDefault', 'Ports_'+cnum, null));
+        this.props.dispatch(change('createAppFormDefault', 'Portsselect_'+cnum, null));
         if(arr.length > 0) {
-            const idx = arr.indexOf(num)
-            if (idx > -1) arr.splice(idx, 1)
+            arr.splice(num, 1)
         }
         this.setState({portArray:arr});
     }
@@ -471,36 +480,76 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                             <Grid>
                                                                 {
                                                                     this.state.portArray.map((item,i) => (
-
-                                                                        <Grid.Row key={i} columns={3} style={{paddingBottom:'0px'}}>
-                                                                            <Grid.Column width={10}>
-                                                                                <Field
-                                                                                    component={renderInput}
-                                                                                    type="input"
-                                                                                    name={key+'_'+item}
-                                                                                    value={data[key]}
-                                                                                    error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
-                                                                                    />
-                                                                            </Grid.Column>
-                                                                            <Grid.Column width={5}>
-                                                                                <Field
-                                                                                    component={renderSelect}
-                                                                                    placeholder={'Select port'}
-                                                                                    value={data[key]}
-                                                                                    options={['TCP','UDP']}
-                                                                                    name={key+'select_'+item}
-                                                                                    error={(this.props.validError.indexOf(key+'select_'+i) !== -1)?'Required':''}
-                                                                                    />
-                                                                            </Grid.Column>
-                                                                            <Grid.Column width={1}>
-                                                                                <div className='removePorts' onClick={() => this.RemovePorts(item)}><i className="material-icons">clear</i></div>
-                                                                            </Grid.Column>
-                                                                        </Grid.Row>
+                                                                        (item.name == 'single')?
+                                                                            <Grid.Row key={i} columns={3} style={{paddingBottom:'0px'}}>
+                                                                                <Grid.Column width={11}>
+                                                                                    <Field
+                                                                                        component={renderInput}
+                                                                                        type="input"
+                                                                                        name={key+'_'+item.num}
+                                                                                        value={data[key]}
+                                                                                        error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
+                                                                                        />
+                                                                                </Grid.Column>
+                                                                                <Grid.Column width={4} style={{padding:0}}>
+                                                                                    <Field
+                                                                                        component={renderSelect}
+                                                                                        placeholder={'Select port'}
+                                                                                        value={data[key]}
+                                                                                        options={['TCP','UDP']}
+                                                                                        name={key+'select_'+item.num}
+                                                                                        error={(this.props.validError.indexOf(key+'select_'+i) !== -1)?'Required':''}
+                                                                                        />
+                                                                                </Grid.Column>
+                                                                                <Grid.Column width={1}>
+                                                                                    <div className='removePorts' onClick={() => this.RemovePorts(i,item.num)}><i className="material-icons">clear</i></div>
+                                                                                </Grid.Column>
+                                                                            </Grid.Row>
+                                                                        :
+                                                                            <Grid.Row key={i} columns={3} style={{paddingBottom:'0px'}}>
+                                                                                <Grid.Column width={5}>
+                                                                                    <Field
+                                                                                        component={renderInput}
+                                                                                        type="input"
+                                                                                        name={'multiF_'+item.num}
+                                                                                        value={data[key]}
+                                                                                        error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
+                                                                                        />
+                                                                                </Grid.Column>
+                                                                                <Grid.Column width={1}>
+                                                                                    <center style={{lineHeight:'35px',fontSize:'18px'}}>~</center>
+                                                                                </Grid.Column>
+                                                                                <Grid.Column width={5}>
+                                                                                    <Field
+                                                                                        component={renderInput}
+                                                                                        type="input"
+                                                                                        name={'multiS_'+item.num}
+                                                                                        value={data[key]}
+                                                                                        error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
+                                                                                        />
+                                                                                </Grid.Column>
+                                                                                <Grid.Column width={4} style={{padding:0}}>
+                                                                                    <Field
+                                                                                        component={renderSelect}
+                                                                                        placeholder={'Select port'}
+                                                                                        value={data[key]}
+                                                                                        options={['TCP','UDP']}
+                                                                                        name={key+'select_'+item.num}
+                                                                                        error={(this.props.validError.indexOf(key+'select_'+i) !== -1)?'Required':''}
+                                                                                        />
+                                                                                </Grid.Column>
+                                                                                <Grid.Column width={1}>
+                                                                                    <div className='removePorts' onClick={() => this.RemovePorts(i,item.num)}><i className="material-icons">clear</i></div>
+                                                                                </Grid.Column>
+                                                                            </Grid.Row>
                                                                     ))
                                                                 }
                                                                 <Grid.Row>
                                                                     <Grid.Column>
-                                                                        <Button positive onClick={this.AddPorts}>Add Port Mapping</Button>
+                                                                        <span style={{marginRight:'1em'}}>
+                                                                            <Button positive onClick={this.AddPorts}>Add Port Mapping</Button>
+                                                                        </span>
+                                                                        <Button positive onClick={this.AddMultiPorts}>Add MultiPort Mapping</Button>
                                                                         {/*<div className="addPortMapping" onClick={this.AddPorts}>+ Add Port Mapping</div>*/}
                                                                     </Grid.Column>
                                                                 </Grid.Row>
@@ -549,7 +598,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                     positive
                                     icon='checkmark'
                                     labelPosition='right'
-                                    content="Save"
+                                    content="Create"
                                 />
                             </Form.Group>
 
