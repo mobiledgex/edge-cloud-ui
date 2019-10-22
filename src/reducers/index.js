@@ -39,9 +39,10 @@ import getRegion from './getRegion';
 import regionInfo from './regionInfo';
 import editInstance from './editInstance';
 import deleteReset from './deleteReset';
+import checkedAudit from './checkedAudit';
 
 const reducers = combineReducers({
-    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor, loginMode,injectData,changeViewMode,createAccount, tableHeader, changeStep, tutorState,submitInfo,getRegion,deleteReset,editInstance, regionInfo,
+    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor, loginMode,injectData,changeViewMode,createAccount, tableHeader, changeStep, tutorState,submitInfo,getRegion,deleteReset,editInstance, regionInfo,checkedAudit,
     registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, searchValue, computeRefresh, loadingSpinner, creatingSpinner, alertMsg, roleInfo, appLaunch, alertInfo, dataExist, form: formReducer
 });
 

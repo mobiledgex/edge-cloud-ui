@@ -482,6 +482,8 @@ const accessport = (data) => {
 //"image_path":"registry.mobiledgex.net:5000/mobiledgex/simapp",
 //"image_type":1,"access_ports":"udp:12001,tcp:80,http:7777","default_flavor":{"name":"x1.medium"},"cluster":{"name":""},"ipaccess":"IpAccessShared","command":"test","deployment_manifest":"test1111"}}'
 const mapStateToProps = (state) => {
+    
+    
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;
     let accountInfo = account ? account + Math.random()*10000 : null;
@@ -498,6 +500,26 @@ const mapStateToProps = (state) => {
     }
     
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
+        if(state.form && state.form.createAppFormDefault){
+            let objArr = Object.keys(state.form.createAppFormDefault.values)
+            let first = [];
+            let second = [];
+            let num = [];
+            objArr.map((item) => {
+                if(item.indexOf('multiF')>-1){
+                    first.push(state.form.createAppFormDefault.values[item]);
+                    num.push(item.charAt(item.length-1));
+                }
+                if(item.indexOf('multiS')>-1){
+                    second.push(state.form.createAppFormDefault.values[item]);
+                }
+            })
+            if(first.length && second.length && num.length){
+                num.map((item,key) => {
+                    state.form.createAppFormDefault.values['Ports_'+item] = first[key]+"-"+second[key];
+                })
+            }
+        }
         
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
         

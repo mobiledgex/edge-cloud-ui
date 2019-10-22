@@ -337,7 +337,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                     positive
                                     icon='checkmark'
                                     labelPosition='right'
-                                    content="Save"
+                                    content="Create"
                                 />
                             </Form.Group>
 

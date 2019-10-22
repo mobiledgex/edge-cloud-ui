@@ -29,7 +29,8 @@ class SiteFourPageAppInst extends React.Component {
             detailData:null,
             hiddenKeys:['Error','URI', 'Mapped_ports', 'Runtime', 'Created', 'Liveness','Flavor','Status','Revision'],
             AppRevision:[],
-            regionToggle:false
+            regionToggle:false,
+            dataSort:false
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -97,6 +98,7 @@ class SiteFourPageAppInst extends React.Component {
         if(nextProps.computeRefresh.compute) {
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
+            this.setState({dataSort:true});
         }
         if(this.props.changeRegion !== nextProps.changeRegion){
             this.getDataDeveloper(nextProps.changeRegion);
@@ -154,7 +156,7 @@ class SiteFourPageAppInst extends React.Component {
     }
     countJoin() {
         let AppInst = this._AppInstDummy;
-        _self.setState({devData:AppInst})
+        _self.setState({devData:AppInst,dataSort:false})
         this.props.handleLoadingSpinner(false);
         this.getUpdateData(this.props.changeRegion);
     }
@@ -256,7 +258,7 @@ class SiteFourPageAppInst extends React.Component {
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
-            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev}></MapWithListView>
+            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort}></MapWithListView>
             :
             <PageDetailViewer data={detailData} page='appInst'/>
         );

@@ -176,7 +176,7 @@ class MapWithListView extends React.Component {
     resetMap(detailMode) {
         _self.setState({sideVisible:detailMode})
     }
-    handleSort = clickedColumn => (a) => {
+    handleSort = clickedColumn => (a) => { 
         console.log('20190819 handle sort..', a)
         _self.setState({sorting : true});
         const { column, dummyData, direction } = _self.state
@@ -417,8 +417,8 @@ class MapWithListView extends React.Component {
                                     (value === 'CloudletLocation' && item[value])?
                                         <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <div>
-                                            {`Latitude : ${Math.round(item[value].latitude)}`} <br />
-                                            {`Longitude : ${Math.round(item[value].longitude)}`}
+                                            {`Latitude : ${item[value].latitude}`} <br />
+                                            {`Longitude : ${item[value].longitude}`}
                                             </div>
                                         </Table.Cell>
                                     :
@@ -558,6 +558,10 @@ class MapWithListView extends React.Component {
             })
         }
 
+        if(nextProps.dataSort){
+            this.setState({sorting:false,direction:null})
+        }
+
         if(this.state.sorting) {
             return;
         }
@@ -682,7 +686,8 @@ class MapWithListView extends React.Component {
         cols: 12,
         width: 1600,
         isDraggable:false,
-        diffRev:[]
+        diffRev:[],
+        dataSort:false
     };
 }
 

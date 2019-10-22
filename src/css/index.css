@@ -761,6 +761,7 @@ body, button, input, textarea, optgroup, select, textarea,
     display: flex !important;
     align-items: center;
     margin-top: -1em !important;
+    height: 70px;
 }
 .gnb_header .navbar_left .brand {
     width: 250px;

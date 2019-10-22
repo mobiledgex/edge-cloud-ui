@@ -80,7 +80,7 @@ class RegistryCloudletViewer extends React.Component {
                     'OperatorName':{label:'Operator Name', type:'RenderInputDisabled', necessary:true, tip:'Name of the organization you are currently managing.', active:true, items:['','']},
                     'CloudletLocation':{label:'Cloudlet Location', type:'CloudletLocation', necessary:true, tip:'Cloudlet Location', active:true, items:['','']},
                     'IPSupport':{label:'IP Support', type:'RenderSelect', necessary:true, tip:'Ip Support indicates the type of public IP support provided by the Cloudlet. Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.', active:true, items:['Dynamic']},
-                    'NumberOfDynamicIPs':{label:'Number of Dynamic IPs', type:'RenderInput', necessary:false, tip:'Number of dynamic IPs available for dynamic IP support.'},
+                    'NumberOfDynamicIPs':{label:'Number of Dynamic IPs', type:'RenderInput', necessary:true, tip:'Number of dynamic IPs available for dynamic IP support.'},
                     'PhysicalName':{label:'Physical Name', type:'RenderInput', necessary:true, tip:'Physical infrastructure cloudlet name.', active:true},
                     'PlatformType':{label:'Platform Type', type:'RenderSelect', necessary:true, tip:'Supported list of cloudlet types.', active:true, items:['Openstack']},
                 },

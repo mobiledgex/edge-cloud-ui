@@ -89,7 +89,7 @@ class TimelineAuditView extends React.Component {
         let selectChildNode = null
         if(selectedDom) {
             selectChildNode = selectedDom.childNodes
-            //reset style of circle
+            // reset style of circle
             let oldSelected = document.getElementsByClassName('selectedCircle_timeline')
             // if(oldSelected.length) oldSelected.map((element) => {
             //     element.className = null;
@@ -101,6 +101,8 @@ class TimelineAuditView extends React.Component {
         _self.setAllView(_self.state.rawAllData[selectedId], selectedId)
         _self.setRequestView(_self.state.rawAllData[selectedId], selectedId)
         _self.setResponseView(_self.state.rawAllData[selectedId], selectedId)
+
+        _self.props.handleSelectedAudit(_self.state.rawAllData[selectedId]);
     }
     setAllView(dummyConts, sId) {
         this.setState({rawViewData:dummyConts})
@@ -146,27 +148,27 @@ class TimelineAuditView extends React.Component {
                 let ttspan = document.createElement('span');
                 ttspan.style.fontSize = "12px";
                 ttspan.style.color = "#c5c6c8";
-                ttspan.style.position = 'absolute';
+                // ttspan.style.position = 'absolute';
                 ttspan.style.left = '0px';
-                ttspan.style.top = '40px';
+                // ttspan.style.top = '40px';
                 ttspan.style.width = 'max-content';
                 ttspan.appendChild(stNode);
 
                 if(liDom) liDom.replaceChild(ttspan, liDom.childNodes[0]);
 
                 // text for traceid
-                /*
-                let tId = auditList[i]['traceid'];
+
+                let tId = auditList[i]['traceid'] +":"+i;
                 let textNode = document.createTextNode(tId);
                 textNode.className = 'text_'+i;
-                */
+
                 //
-                /*
+
                 let span = document.createElement('span');
                 span.style.fontSize = "16px";
                 span.style.color = "#ffcf25";
                 span.appendChild(textNode);
-                */
+
 
                 // text for operation name
                 let errorColor = auditList[i]['error'] !== "" ? "#ff0000" : "#e2e4e7";
@@ -174,12 +176,27 @@ class TimelineAuditView extends React.Component {
                 contentContainer.className = 'lineContent_'+i;
                 contentContainer.style.fontSize = "16px";
                 contentContainer.style.color = errorColor;
-                contentContainer.style.position = "absolute";
-                contentContainer.style.top = "24px";
+                // contentContainer.style.position = "absolute";
+                // contentContainer.style.top = "24px";
                 let operNm = auditList[i]['operationname'];
                 let contentNode = document.createTextNode(this.makeOper(operNm));
 
                 contentContainer.appendChild(contentNode);
+
+
+                //TODO 이미 체크된 오딧은 변경된 스타일을 적용해 주어야 한다.
+                let checkedCircle = localStorage.getItem('auditChecked');
+                if(checkedCircle && JSON.parse(checkedCircle).length) {
+                    JSON.parse(checkedCircle).map((check) => {
+                        if(check === auditList[i]['traceid']){
+                            let findCircle = liDom.childNodes;
+                            findCircle[1].className = 'selectedCircle_timeline'
+                        }
+                    })
+                }
+
+
+
 
 
                 //
@@ -223,11 +240,22 @@ class TimelineAuditView extends React.Component {
                 this.makeLabel(listId, nextProps.data.data);
             }
 
+            //get timeline comp
+            let getTimeline = document.getElementsByClassName('page_audit_history_timeline');
+            //let children = getTimeline.getChildren()
+            console.log('20191021 child node...', getTimeline[0])
+            if(getTimeline[0]){
+                getTimeline[0].childNodes[0].className = "page_audit_history_timeline_container";
+                getTimeline[0].childNodes[0].childNodes[0].className = "page_audit_history_timeline_container_wrapper"
+            }
+
+
         }
 
     }
     componentDidMount() {
         this.setState({mounted:true})
+
     }
 
     componentWillUnmount() {
@@ -240,10 +268,11 @@ class TimelineAuditView extends React.Component {
             <div className="page_audit">
                 <div className="page_audit_history">
                     <div className="page_audit_history_option">
-                        <div className="page_audit_history_option_counting">
-                            <div className="page_audit_history_option_counting_title">Unchecked Error</div>
-                            <div className="page_audit_history_option_counting_number">{this.state.auditCount}</div>
-                        </div>
+                        {/*<div className="page_audit_history_option_counting">*/}
+                            {/*<div className="page_audit_history_option_counting_title">Unchecked Error</div>*/}
+                            {/*<div className="page_audit_history_option_counting_number">{this.state.auditCount}</div>*/}
+                        {/*</div>*/}
+                        <div></div>
                         <div className="page_audit_history_option_period">
                             <Dropdown
                                 placeholder='Custom Time Range'
