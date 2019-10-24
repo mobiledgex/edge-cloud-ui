@@ -1698,3 +1698,30 @@ body ::-webkit-scrollbar-track {
 .s-alert-box {
     word-break: break-all;
 }
+
+/* give the min-width to table : code by inki kim*/
+/* .round_panel {
+    overflow: auto !important;
+} */
+.round_panel .Organization,
+.round_panel .User,
+.round_panel .Account,
+.round_panel .Cloudlet,
+.round_panel .Flavors,
+.round_panel .ClusterInst,
+.round_panel .App,
+.round_panel .appinst {
+    overflow: auto;
+}
+.round_panel .Organization > table {
+    min-width: 1600px;
+}
+.round_panel .ClusterInst > table {
+    min-width: 1600px;
+}
+.round_panel .App > table {
+    min-width: 1600px;
+}
+.round_panel .appinst > table {
+    min-width: 2000px;
+}

@@ -213,7 +213,7 @@ class MapWithListView extends React.Component {
             (i === 1)?
                 <div className="round_panel" key={i} >
 
-                    <div className="grid_table" style={{overflow:'hidden'}}>
+                    <div className={this.props.siteId}>
                         {
                             this.TableExampleVeryBasic(this.props.headerLayout, this.props.hiddenKeys, dummyData)
                         }
@@ -273,9 +273,7 @@ class MapWithListView extends React.Component {
             (!( String(hidden).indexOf(key) > -1 ))?
                 (i === keys.length -1) ?
                 <Table.HeaderCell key={i} className='unsortable' textAlign='center'>
-                    {
-                        (key === 'Edit')? 'Actions'
-                            : key}
+                    {(key === 'Edit')? 'Actions' : key}
                 </Table.HeaderCell>
                 :
                 <Table.HeaderCell key={i} className={(key === 'CloudletLocation' || key === 'Edit' || key === 'Progress')?'unsortable':''} textAlign='center' sorted={column === key ? direction : null} onClick={(key == 'CloudletLocation' || key == 'Edit' || key == 'Progress' || key == 'Ports' )?null:this.handleSort(key)}>

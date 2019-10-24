@@ -141,7 +141,7 @@ class DeveloperListView extends React.Component {
             (i === 0)?
 
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
-                    <div className="grid_table">
+                    <div className={this.props.siteId}>
                         {
                             this.TableExampleVeryBasic(this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)
                         }
@@ -281,6 +281,15 @@ class DeveloperListView extends React.Component {
         }
         return dsb;
     }
+    userRoleActive = (data) => {
+        let btn = true;
+        this.props.roleInfo.map((item) => {
+            if(item.role.indexOf('Manager') > -1 && item.org == data.Organization){
+                btn = false;
+            } 
+        })
+        return btn;
+    }
     appLaunch = (data) => {
         this.gotoUrl('/site4', 'pg=createAppInst','pg=5')
         this.props.handleAppLaunch(data)
@@ -288,7 +297,7 @@ class DeveloperListView extends React.Component {
         localStorage.setItem('selectMenu', 'App Instances')
     }
     TableExampleVeryBasic = (headL, hideHeader, datas) => (
-        <Table className="viewListTable" basic='very' sortable striped celled fixed>
+        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
             <Table.Header className="viewListTableHeader">
                 <Table.Row>
                     {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hideHeader):null}
@@ -321,7 +330,7 @@ class DeveloperListView extends React.Component {
                                             <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.appLaunch(item)}>
                                             Launch
                                             </Button>:null}
-                                        <Button className='stepOrgDeveloper4' disabled={(localStorage.selectMenu !== 'Organizations')?((item['Role Type']=='AdminManager')?true:this.props.dimmInfo.onlyView):this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
+                                        <Button className='stepOrgDeveloper4' disabled={(localStorage.selectMenu !== 'Organizations')?((item['Role Type']=='AdminManager')?true:(localStorage.selectMenu == 'User Roles')?this.userRoleActive(item):this.props.dimmInfo.onlyView):this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>
                                 :
@@ -405,7 +414,6 @@ class DeveloperListView extends React.Component {
     render() {
         const { open, dimmer, viewMode } = this.state;
         const { hiddenKeys } = this.props;
-
         return (
             <div style={{display:'flex', overflowY:'auto', overflowX:'hidden', width:'100%'}}>
                 <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
