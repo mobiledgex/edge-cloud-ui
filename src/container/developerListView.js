@@ -288,6 +288,9 @@ class DeveloperListView extends React.Component {
                 btn = false;
             } 
         })
+        if(localStorage.selectRole == 'AdminManager'){
+            btn = false;
+        }
         return btn;
     }
     appLaunch = (data) => {
@@ -330,7 +333,14 @@ class DeveloperListView extends React.Component {
                                             <Button color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.appLaunch(item)}>
                                             Launch
                                             </Button>:null}
-                                        <Button className='stepOrgDeveloper4' disabled={(localStorage.selectMenu !== 'Organizations')?((item['Role Type']=='AdminManager')?true:(localStorage.selectMenu == 'User Roles')?this.userRoleActive(item):this.props.dimmInfo.onlyView):this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
+                                        <Button className='stepOrgDeveloper4' 
+                                            disabled={
+                                                (localStorage.selectMenu !== 'Organizations')?
+                                                ((item['Role Type']=='AdminManager')?true:(localStorage.selectMenu == 'User Roles')?this.userRoleActive(item):this.props.dimmInfo.onlyView):
+                                                this.addUserDisable(item)
+                                            } 
+                                            
+                                            onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
                                     </Table.Cell>
                                 :
@@ -444,7 +454,8 @@ class DeveloperListView extends React.Component {
         rowHeight: 30,
         cols: 12,
         width: 1600,
-        isDraggable:false
+        isDraggable:false,
+        roleInfo:[]
 
     };
 }
