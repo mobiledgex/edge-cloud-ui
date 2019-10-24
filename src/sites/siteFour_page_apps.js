@@ -167,7 +167,7 @@ class SiteFourPageApps extends React.Component {
             (viewMode === 'listView')?
             <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} randomId={randomId} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
                 :
-                <ListDetailViewer data={detailData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} siteId={this.props.siteId}></ListDetailViewer>
+                <ListDetailViewer data={detailData} dimmer={false} open={this.state.openDetail} siteId={'App'} close={this.closeDetail} siteId={this.props.siteId}></ListDetailViewer>
         );
     }
 
