@@ -1703,7 +1703,7 @@ body ::-webkit-scrollbar-track {
 /* .round_panel {
     overflow: auto !important;
 } */
-.round_panel .Organization,
+/* .round_panel .Organization,
 .round_panel .User,
 .round_panel .Account,
 .round_panel .Cloudlet,
@@ -1724,4 +1724,4 @@ body ::-webkit-scrollbar-track {
 }
 .round_panel .appinst > table {
     min-width: 2000px;
-}
+} */
