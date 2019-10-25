@@ -180,8 +180,12 @@ class MapWithListView extends React.Component {
         console.log('20190819 handle sort..', a)
         _self.setState({sorting : true});
         const { column, dummyData, direction } = _self.state
+        this.stateSort(dummyData)
         if ((column !== clickedColumn) && dummyData) {
-            let sorted = _.sortBy(dummyData, [clm => typeof clm[clickedColumn] === 'string' ? String(clm[clickedColumn]).toLowerCase(): clm[clickedColumn]])
+            let sorted = _.sortBy(dummyData, [clm => typeof clm[(clickedColumn == 'State')?'StateData':clickedColumn] === 'string' ? String(clm[(clickedColumn == 'State')?'StateData':clickedColumn]).toLowerCase(): clm[(clickedColumn == 'State')?'StateData':clickedColumn]])
+            sorted.map((item) => {
+                delete item['StateData']
+            })
             this.setState({
                 column: clickedColumn,
                 dummyData: sorted,
@@ -189,6 +193,9 @@ class MapWithListView extends React.Component {
             })
         } else {
             let reverse = dummyData.reverse()
+            reverse.map((item) => {
+                delete item['StateData']
+            })
             this.setState({
                 dummyData: reverse,
                 direction: direction === 'ascending' ? 'descending' : 'ascending',
@@ -197,6 +204,25 @@ class MapWithListView extends React.Component {
         }
 
         //setTimeout(() => _self.setState({sorting : false}), 1000)
+    }
+    stateSort = (_sortData) => {
+        _sortData.map((item) => {
+            (item.State == 0)?item['StateData'] = 'TrackedStateUnknown':
+            (item.State == 1)?item['StateData'] = 'NotPresent':
+            (item.State == 2)?item['StateData'] = 'CreateRequested':
+            (item.State == 3)?item['StateData'] = 'Creating':
+            (item.State == 4)?item['StateData'] = 'CreateError':
+            (item.State == 5)?item['StateData'] = 'Ready':
+            (item.State == 6)?item['StateData'] = 'UpdateRequested':
+            (item.State == 7)?item['StateData'] = 'Updating':
+            (item.State == 8)?item['StateData'] = 'UpdateError':
+            (item.State == 9)?item['StateData'] = 'DeleteRequested':
+            (item.State == 10)?item['StateData'] = 'Deleting':
+            (item.State == 11)?item['StateData'] = 'DeleteError':
+            (item.State == 12)?item['StateData'] = 'DeletePrepare':
+            item['StateData'] = item.State
+        })
+        return _sortData
     }
     generateStart () {
 
