@@ -1066,7 +1066,7 @@ class SiteFour extends React.Component {
 
                             </Grid.Row>
                             {
-                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts'  && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1 ) ?
+                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log'  && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1 ) ?
                                     <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
                                         <label style={{padding:'0 10px'}}>Region</label>
                                         <Dropdown className='selection'
