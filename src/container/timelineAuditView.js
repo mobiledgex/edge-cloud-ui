@@ -32,8 +32,8 @@ class TimelineAuditView extends React.Component {
         previous: 0,
         // timelineConfig
         minEventPadding: 20,
-        maxEventPadding: 120,
-        linePadding: 100,
+        maxEventPadding: 100,
+        linePadding: 50,
         labelWidth: 170,
         fillingMotionStiffness: 150,
         fillingMotionDamping: 25,
@@ -59,7 +59,8 @@ class TimelineAuditView extends React.Component {
     constructor() {
         super();
         _self = this;
-
+        this.sameTime = '0';
+        this.addCount = 0;
     }
 
     jsonViewProps = {
@@ -76,13 +77,25 @@ class TimelineAuditView extends React.Component {
         displayDataTypes: false,
         iconStyle: "triangle"
     }
+    makeUnixUTC = (time) => {
+        let newTime = moment(time).unix()
+        return moment(newTime).utc().format('YYYY/MM/DD HH:mm:ss.SSS')
+    }
     makeUTC = (time) => {
         let newTime = moment(time).unix()
         return moment(newTime).utc().format('YYYY/MM/DD')
     }
     makeNotUTC = (time) => {
-        let newTime = moment(time)
-        return moment(newTime).format('HH:mm:ss.SSS')
+        let newTime = moment(time).unix();
+        let makeTime = moment(newTime).utc().format('HH:mm:ss.SSS');
+        if(newTime === _self.sameTime) {
+            _self.addCount ++;
+            makeTime = moment(newTime).utc().format('HH:mm:ss.SSS') + _self.addCount;
+        } else {
+            _self.addCount = 0;
+        }
+        _self.sameTime = newTime;
+        return makeTime;
     }
     makeOper = (logName) => {
         let lastSub = logName.substring(logName.lastIndexOf('/')+1);
