@@ -3,6 +3,7 @@ import { Motion, spring } from 'react-motion';
 import * as d3 from "d3";
 
 
+const formatInt = d3.format(".0f");
 const formatComma = d3.format(",");
 const formatFloat = d3.format(".2f");
 const formatPercent = d3.format(".1f",".1f");
@@ -149,7 +150,7 @@ class Gauge extends Component {
 		*/
 
 
-        self.setState({currentTemp:formatFloat(currentTemper), degree: self.makeDegree(value, self), boardSrc: statusBoard, label:title})
+        self.setState({currentTemp:formatInt(currentTemper), degree: self.makeDegree(value, self), boardSrc: statusBoard, label:title})
 
 
     }
@@ -207,7 +208,7 @@ class Gauge extends Component {
                         <div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:20, color:'#bdbdbd'}}>{this.state.label}</div>
                     </div>
                     <div style={{position:'absolute', top:90, left:10, width:140, backgroundColor:'transparent'}}>
-                        <div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:30, fontWeight:'bold', color:'#fff'}}>{this.state.currentTemp}</div>
+                        <div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:30, fontWeight:'bold', color:'#fff'}}>{this.state.currentTemp+" %"}</div>
                     </div>
 
                 </div>

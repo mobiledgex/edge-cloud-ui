@@ -213,7 +213,7 @@ class MapWithListView extends React.Component {
             (i === 1)?
                 <div className="round_panel" key={i} >
 
-                    <div className={this.props.siteId}>
+                    <div className={'grid_table '+this.props.siteId}>
                         {
                             this.TableExampleVeryBasic(this.props.headerLayout, this.props.hiddenKeys, dummyData)
                         }
