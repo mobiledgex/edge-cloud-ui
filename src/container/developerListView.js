@@ -135,13 +135,13 @@ class DeveloperListView extends React.Component {
         this.setState({noData:false})
         setTimeout(() => this.generateStart(), 2000)
     }
-     generateDOM(open, dimmer, hideHeader) {
+    generateDOM(open, dimmer, hideHeader) {
         return layout.map((item, i) => (
 
             (i === 0)?
 
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
-                    <div className={this.props.siteId}>
+                    <div className={'grid_table '+this.props.siteId}>
                         {
                             this.TableExampleVeryBasic(this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)
                         }

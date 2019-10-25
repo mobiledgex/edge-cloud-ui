@@ -109,7 +109,7 @@ class AccountListView extends React.Component {
 
             (i === 0)?
                 <div className="round_panel" key={i} style={{ display:'flex', flexDirection:'column'}} >
-                    <div className={this.props.siteId} style={{overflow:'hidden'}}>
+                    <div className={'grid_table '+this.props.siteId} style={{overflow:'hidden'}}>
                         {this.TableExampleVeryBasic(this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)}
                     </div>
 

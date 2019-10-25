@@ -115,9 +115,6 @@ class SiteFourPageAudits extends React.Component {
             this.readyToData(nextProps.location.search);
         }
 
-        /*
-
-        */
     }
     reduceAuditCount(all, data) {
         let itemArray = [];

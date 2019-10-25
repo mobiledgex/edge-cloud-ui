@@ -3,6 +3,7 @@ import HorizontalTimeline from 'react-horizontal-timeline';
 import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
+import * as d3 from 'd3';
 
 // TODO : https://codepen.io/AdamKimmerer/pen/RraRbb
 
@@ -33,7 +34,7 @@ class TimelineAuditView extends React.Component {
         minEventPadding: 20,
         maxEventPadding: 120,
         linePadding: 100,
-        labelWidth: 100,
+        labelWidth: 170,
         fillingMotionStiffness: 150,
         fillingMotionDamping: 25,
         slidingMotionStiffness: 150,
@@ -77,7 +78,11 @@ class TimelineAuditView extends React.Component {
     }
     makeUTC = (time) => {
         let newTime = moment(time).unix()
-        return moment(newTime).utc().format('YYYY/MM/DD HH:mm:ss')
+        return moment(newTime).utc().format('YYYY/MM/DD')
+    }
+    makeNotUTC = (time) => {
+        let newTime = moment(time)
+        return moment(newTime).format('HH:mm:ss.SSS')
     }
     makeOper = (logName) => {
         let lastSub = logName.substring(logName.lastIndexOf('/')+1);
@@ -102,24 +107,24 @@ class TimelineAuditView extends React.Component {
         _self.setRequestView(_self.state.rawAllData[selectedId], selectedId)
         _self.setResponseView(_self.state.rawAllData[selectedId], selectedId)
 
-        _self.props.handleSelectedAudit(_self.state.rawAllData[selectedId]);
+        if(_self.state.rawAllData[selectedId]) _self.props.handleSelectedAudit(_self.state.rawAllData[selectedId]);
     }
     setAllView(dummyConts, sId) {
         this.setState({rawViewData:dummyConts})
     }
     setRequestView(dummyConts, sId) {
 
-        if(dummyConts && dummyConts['request'] && dummyConts['request'].indexOf('{') > -1) {
-            let dataLenght = dummyConts['request'].split('{"data":').length;
-            if(dataLenght > 1) {
-                this.setState({requestData:{"data":dummyConts['request'].split('{"data":')}})
-                //this.setState({requestData:{"data":'test1111'}})
+        if(dummyConts && dummyConts['request']) {
+            if(dummyConts['request'].indexOf('{') > -1) {
+                let dataLenght = dummyConts['request'].split('{"data":').length;
+                if(dataLenght > 1) {
+                    this.setState({requestData:{"data":dummyConts['request'].split('{"data":')}})
+                } else {
+                    this.setState({requestData:JSON.parse(dummyConts['request'])})
+                }
             } else {
-                this.setState({requestData:JSON.parse(dummyConts['request'])})
+                this.setState({requestData:{'request':dummyConts['request']}})
             }
-        } else {
-            //alert(dummyConts['request'])
-            this.setState({requestData:{'request':dummyConts['request']}})
         }
 
     }
@@ -142,8 +147,10 @@ class TimelineAuditView extends React.Component {
             listId.map((li, i) => {
                 let liDom = document.getElementById(li);
                 //set text to date format
-                let sttime = this.makeUTC(auditList[i]['starttime'])
-                let stNode = document.createTextNode(sttime);
+                let stdate = this.makeUTC(auditList[i]['starttime'])
+                let sttime = this.makeNotUTC(auditList[i]['starttime'])
+                console.log('20191025 sstime...', stdate +":"+sttime)
+                let stNode = document.createTextNode(stdate+" "+sttime);
                 stNode.className = 'ttime_'+i;
                 let ttspan = document.createElement('span');
                 ttspan.style.fontSize = "12px";
@@ -152,6 +159,7 @@ class TimelineAuditView extends React.Component {
                 ttspan.style.left = '0px';
                 // ttspan.style.top = '40px';
                 ttspan.style.width = 'max-content';
+                ttspan.style.height = '50px'
                 ttspan.appendChild(stNode);
 
                 if(liDom) liDom.replaceChild(ttspan, liDom.childNodes[0]);
@@ -227,9 +235,12 @@ class TimelineAuditView extends React.Component {
             /** ***/
             if(nextProps.data.data && nextProps.data.data.length) {
                 nextProps.data.data.map((item) => {
-                    dummys.push(this.makeUTC(item['starttime']))
+                    let stdate = this.makeUTC(item['starttime'])
+                    let sttime = this.makeNotUTC(item['starttime'])
+                    let composit = stdate+" "+sttime;
+                    dummys.push(composit)
                     dummyConts.push(item)
-                    listId.push('timeline-dot-'+this.makeUTC(item['starttime']));
+                    listId.push('timeline-dot-'+composit);
                 })
                 console.log('20191018 will receive porps...', dummys,":", dummyConts)
 
