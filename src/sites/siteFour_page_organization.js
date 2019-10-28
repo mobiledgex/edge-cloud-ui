@@ -94,6 +94,13 @@ class SiteFourPageOrganization extends React.Component {
     receiveResult = (result,resource, self) => {
         console.log("resultresultresultresult",result)
         this.props.handleLoadingSpinner(false);
+        // @inki if data has expired token
+        let scope = this;
+        if(result.error && result.error.indexOf('expired')> 0) {
+            this.props.handleAlertInfo('error', result.error);
+            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            return;
+        }
 
         if(result.length == 0) {
             _self.setState({devData:[]})
