@@ -56,9 +56,13 @@ class DeleteItem extends React.Component {
                     }
                 }
             })
-            setTimeout(() => {
-                _self.props.refresh(this.props.changeRegion);
-            }, 3000);
+
+            if(this.props.siteId !== 'appinst'){
+                setTimeout(() => {
+                    _self.props.refresh(this.props.changeRegion);
+                }, 3000);
+            }
+            
         }
         
     }
