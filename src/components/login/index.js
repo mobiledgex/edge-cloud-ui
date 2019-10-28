@@ -474,7 +474,7 @@ class Login extends Component {
         self.setState({loginMode:'signup', forgotMessage: true})
     }
     returnSignin() {
-            alert('login....')
+
         setTimeout(()=>self.setState({forgotPass:false, forgotMessage:false, loginMode:'login'}), 1000)
     }
     requestToken(self) {
@@ -503,7 +503,7 @@ class Login extends Component {
             service.getMCService('ResetPassword',{service:'passwordreset',token:token, password:pass}, this.receiveData, this)
 
         } else if(mode === 'back') {
-            alert('login')
+
             self.setState({loginMode:'login'})
         }
         else {
