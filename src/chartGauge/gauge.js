@@ -15,7 +15,7 @@ class Gauge extends Component {
     constructor() {
         super();
         this.state = {
-            degree: 0,
+            degree: -90,
             boardSrc:'/assets/images/chart_gauge_out_circle.png',
             currentTemp:0,
             currentPercentTemp:0,
@@ -24,7 +24,7 @@ class Gauge extends Component {
             g: null
         }
         this.minTemper = 0;
-        this.maxTemper = 200;
+        this.maxTemper = 180;
         this.roundBoards = ['/assets/images/chart_gauge_out_circle.png', '/assets/gauge_bk_yellow.png', '/assets/gauge_bk_orange.png', '/assets/gauge_bk_red.png']
 
         this.fakeDatas = [0,    1.41,	1.42,	1.43,	1.44,	1.45,	1.46,	1.47,	1.52,	1.53]
@@ -64,6 +64,7 @@ class Gauge extends Component {
 
         setTimeout(interval, 500)
 
+        this.renderGauge(0, {}, 'Cores', '');
 
     }
     componentWillReceiveProps (nextProps) {
@@ -82,6 +83,8 @@ class Gauge extends Component {
                 minor1: nextProps.data.minor1, minor2: nextProps.data.minor2
             }, nextProps.type, nextProps.title);
             this.setState({label:nextProps.label, unit:nextProps.unit, type:nextProps.type});
+        } else {
+
         }
     }
 
@@ -150,7 +153,7 @@ class Gauge extends Component {
         self.setState({currentTemp:currentTemper, degree: (currentValue)- 135, boardSrc: statusBoard})
 		*/
         let percentVal = 0;
-        if(value) percentVal = (value/self.maxTemper)*100;
+        if(value) percentVal = formatFloat((value/self.maxTemper)*100);
 
         self.setState({currentTemp:percentVal, degree: self.makeDegree(value, self), boardSrc: statusBoard, label:title})
 
