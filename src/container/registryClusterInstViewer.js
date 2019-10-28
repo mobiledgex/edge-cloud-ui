@@ -44,7 +44,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'Cluster Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'Cluster Instance Deployment', render: (props) => <Tab.Pane attached={false}><SiteFourCreateInstForm data={props} pId={0} getUserRole={props.userrole} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
@@ -130,16 +130,6 @@ class RegistryClusterInstViewer extends React.Component {
     closeAddUser = () => {
         this.setState({ openAdd: false })
     }
-
-    gotoUrl() {
-        _self.props.history.push({
-            pathname: '/site4',
-            search: 'pg=4'
-        });
-        _self.props.history.location.search = 'pg=4';
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=4'})
-    }
-
 
     generateDOM(open, dimmer, data, keysData, hideHeader, region) {
 

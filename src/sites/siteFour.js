@@ -284,7 +284,8 @@ class SiteFour extends React.Component {
     receiveAdminInfo = (result) => {
         this.props.handleRoleInfo(result.data)
         if(result.error) {
-            this.gotoUrl('/logout','')
+            _self.props.handleAlertInfo('error', result.error)
+            setTimeout(() => _self.gotoUrl('/logout',''), 2500);
         } else {
             result.data.map((item,i) => {
                 if(item.role.indexOf('Admin') > -1){
@@ -480,7 +481,11 @@ class SiteFour extends React.Component {
         //this.props.history.location.search = "pg=0";
         this.disableBtn();
 
-        if(store) this.getAdminInfo(store.userToken);
+        if(store){
+            this.getAdminInfo(store.userToken);
+        } else {
+            this.gotoUrl('/logout')
+        }
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
             if(elem){
@@ -559,6 +564,7 @@ class SiteFour extends React.Component {
                     timeout: 'none',
                     offset: 100
                 });
+
             }
             nextProps.handleAlertInfo('','');
         }
