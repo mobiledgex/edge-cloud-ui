@@ -35,7 +35,14 @@ class SiteFourPageAppInstReg extends React.Component {
         this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType']
         this.userToken = null;
     }
+    gotoUrl(site, subPath) {
+        _self.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
 
+    }
     //go to
     gotoPreview(site) {
         //브라우져 입력창에 주소 기록
@@ -90,6 +97,14 @@ class SiteFourPageAppInstReg extends React.Component {
 
     }
     receiveResult(result) {
+        // @inki if data has expired token
+        let scope = this;
+        if(result.error && result.error.indexOf('expired') > -1) {
+            scope.props.handleAlertInfo('error', result.error);
+            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            return;
+        }
+
         if(result.error) {
             this.props.handleAlertInfo('error',result.error)
         } else {

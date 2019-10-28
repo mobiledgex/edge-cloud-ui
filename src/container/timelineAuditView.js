@@ -4,6 +4,7 @@ import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import * as d3 from 'd3';
+import CalendarTimeline from '../components/timeline/calendarTimeline';
 
 // TODO : https://codepen.io/AdamKimmerer/pen/RraRbb
 
@@ -87,14 +88,15 @@ class TimelineAuditView extends React.Component {
     }
     makeNotUTC = (time) => {
         let newTime = moment(time).unix();
-        let makeTime = moment(newTime).utc().format('HH:mm:ss.SSS');
-        if(newTime === _self.sameTime) {
+        let makeTime = moment(newTime).utc().format('HH:mm:ss');
+        if(makeTime === _self.sameTime) {
             _self.addCount ++;
-            makeTime = moment(newTime).utc().format('HH:mm:ss.SSS') + _self.addCount;
+            makeTime = moment(newTime+1000).utc().format('HH:mm:ss');
+            //makeTime = moment(newTime).utc().format('HH:mm:ss.SSS') + "00"+ (_self.addCount < 10)? '0'+_self.addCount : _self.addCount;
         } else {
             _self.addCount = 0;
         }
-        _self.sameTime = newTime;
+        _self.sameTime = makeTime;
         return makeTime;
     }
     makeOper = (logName) => {
@@ -204,7 +206,6 @@ class TimelineAuditView extends React.Component {
 
                 contentContainer.appendChild(contentNode);
 
-
                 //TODO 이미 체크된 오딧은 변경된 스타일을 적용해 주어야 한다.
                 let checkedCircle = localStorage.getItem('auditChecked');
                 if(checkedCircle && JSON.parse(checkedCircle).length) {
@@ -215,10 +216,6 @@ class TimelineAuditView extends React.Component {
                         }
                     })
                 }
-
-
-
-
 
                 //
                 if(liDom) {
@@ -335,9 +332,9 @@ class TimelineAuditView extends React.Component {
                             isOpenBeginning={state.isOpenBeginning}
                         />
                     </div>
-                    <div className="page_audit_history_grid">
-                        Grid
-                    </div>
+                    {/*<div className="page_audit_history_grid">*/}
+                        {/*<CalendarTimeline></CalendarTimeline>*/}
+                    {/*</div>*/}
                 </div>
                 <div className="page_audit_code">
                     <div className="page_audit_code_left">
