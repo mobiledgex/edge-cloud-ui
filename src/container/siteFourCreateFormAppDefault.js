@@ -149,7 +149,8 @@ class SiteFourCreateFormAppDefault extends React.Component {
             title:'Settings',
             editToggle:false,
             editDsb:false,
-            tah:4
+            tah:4,
+            submitButton:'Create'
         };
 
     }
@@ -193,7 +194,6 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
 
     componentDidMount() {
-        console.log("fakedatasdfind",this.props)
         if(this.props.data && this.props.data.data.length){
             let keys = Object.keys(this.props.data.data[0])
             this.setState({data:this.props.data.data[0], regKeys:keys, fieldKeys:this.props.data.keys, pId:this.props.pId})
@@ -232,7 +232,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                 this.setState({dataInit:true})
             }
         }
-        if(nextProps.data.editMode) this.setState({title:'Update Settings'})
+        if(nextProps.data.editMode) this.setState({title:'Update Settings',submitButton:'Update'})
         
     }
 
@@ -598,7 +598,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                     positive
                                     icon='checkmark'
                                     labelPosition='right'
-                                    content="Create"
+                                    content={this.state.submitButton}
                                 />
                             </Form.Group>
 
