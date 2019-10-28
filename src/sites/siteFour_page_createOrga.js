@@ -39,7 +39,14 @@ class SiteFourPageCreateorga extends React.Component {
         this.headerLayout = [3,3,3,3,4]
         //this.hideHeader = ['Address','Phone']
     }
+    gotoUrl(site, subPath) {
+        _self.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
 
+    }
     //go to
     gotoPreview(site) {
         //브라우져 입력창에 주소 기록
@@ -133,13 +140,17 @@ class SiteFourPageCreateorga extends React.Component {
         }
     }
     receiveResult(result,resource, self) {
+        _self.props.handleLoadingSpinner(false);
+        // @inki if data has expired token
+        let scope = this;
+        if(result.error && result.error.indexOf('expired') > -1) {
+            scope.props.handleAlertInfo('error', result.error);
+            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            return;
+        }
+
         if(result.error) {
-            // Alert.error('Invalid or expired token', {
-            //     position: 'top-right',
-            //     effect: 'slide',
-            //     timeout: 5000
-            // });
-            //setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
+
         } else {
             _self.setState({devData:result})
 

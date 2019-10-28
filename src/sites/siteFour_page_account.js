@@ -48,7 +48,14 @@ class SiteFourPageAccount extends React.Component {
         this.headerLayout = [4,4,4,3]
         this.hiddenKeys = ['Passhash', 'Salt', 'Iter','FamilyName','GivenName','Picture','Nickname','CreatedAt','UpdatedAt']
     }
+    gotoUrl(site, subPath) {
+        _self.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
 
+    }
     //go to
     gotoPreview(site) {
         //브라우져 입력창에 주소 기록
@@ -90,6 +97,13 @@ class SiteFourPageAccount extends React.Component {
     }
     receiveResult = (result) => {
         this.props.handleLoadingSpinner(false);
+        // @inki if data has expired token
+        let scope = this;
+        if(result.error && result.error.indexOf('expired') > -1) {
+            this.props.handleAlertInfo('error', result.error);
+            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            return;
+        }
         let reverseResult = result.reverse();
         _self.setState({devData:reverseResult})
     }

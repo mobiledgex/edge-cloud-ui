@@ -40,7 +40,14 @@ class SiteFourPageClusterInstReg extends React.Component {
         this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType']
         this.userToken = null;
     }
+    gotoUrl(site, subPath) {
+        _self.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
 
+    }
     //go to
     gotoPreview(site) {
         //브라우져 입력창에 주소 기록
