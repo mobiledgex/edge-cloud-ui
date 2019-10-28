@@ -18,6 +18,7 @@ class Gauge extends Component {
             degree: 0,
             boardSrc:'/assets/images/chart_gauge_out_circle.png',
             currentTemp:0,
+            currentPercentTemp:0,
             label:'NO TITLE',
             unit:'',
             g: null
@@ -148,9 +149,10 @@ class Gauge extends Component {
         let rate = 0.75 / this.props.sections;
         self.setState({currentTemp:currentTemper, degree: (currentValue)- 135, boardSrc: statusBoard})
 		*/
+        let percentVal = 0;
+        if(value) percentVal = (value/self.maxTemper)*100;
 
-
-        self.setState({currentTemp:formatInt(currentTemper), degree: self.makeDegree(value, self), boardSrc: statusBoard, label:title})
+        self.setState({currentTemp:percentVal, degree: self.makeDegree(value, self), boardSrc: statusBoard, label:title})
 
 
     }

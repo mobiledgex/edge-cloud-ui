@@ -32,8 +32,8 @@ class TimelineAuditView extends React.Component {
         previous: 0,
         // timelineConfig
         minEventPadding: 20,
-        maxEventPadding: 120,
-        linePadding: 100,
+        maxEventPadding: 100,
+        linePadding: 50,
         labelWidth: 170,
         fillingMotionStiffness: 150,
         fillingMotionDamping: 25,
