@@ -4,9 +4,8 @@ import { Grid, Image, Header, Modal, Dropdown, Button } from 'semantic-ui-react'
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
-import * as d3 from 'd3';
-import CalendarTimeline from '../components/timeline/calendarTimeline';
-import * as services from '../services/service_audit_api';
+
+
 import PopSendEmailView from '../container/popSendEmailView';
 
 // TODO : https://codepen.io/AdamKimmerer/pen/RraRbb
