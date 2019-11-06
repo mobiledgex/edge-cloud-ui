@@ -457,10 +457,10 @@ export function getMCService(resource, body, callback, self) {
 
             if(response.data) {
                 if(response.data.error) {
-                    if(response.data.error.indexOf('expired') > -1) {
+                    if(response.data.error.indexOf('Expired') > -1) {
                         localStorage.setItem('userInfo', null)
                         localStorage.setItem('sessionData', null)
-                        callback({error:'Certificated has expired!'}, resource, self);
+                        callback({error:'Login Timeout Expired. Please login again'}, resource, self);
                         return;
                     } else {
                         callback({error:response.data.error}, resource, self);

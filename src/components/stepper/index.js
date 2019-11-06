@@ -57,7 +57,11 @@ class VerticalLinearStepper extends React.Component {
             prgDiv.scrollTop = prgDiv.scrollHeight;
         }
         if(this.props.item.State == 3 || this.props.item.State == 7) {
-            computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusData)
+            if(this.props.item.ClusterInst.indexOf('autocluster') > -1 && this.props.auto == 'auto'){
+                computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusAuto)
+            } else {
+                computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusData)
+            }
         } else if(this.props.item.State == 5) {
             this.setState({steps:['Created successfully'],activeStep:1})
             clearInterval(this.AlertInterval)
@@ -74,10 +78,12 @@ class VerticalLinearStepper extends React.Component {
         
     }
 
-    receiveStatusData = (result) => {
+    receiveStatusData = (result, _item) => {
+        console.log("receiveStatusAuto222",result,":::",_item)
         let toArray = null;
         let toJson = null;
         let stepData = [];
+        let count = 0;
         toArray = result.data.split('\n')
         toArray.pop();
         toJson = toArray.map((str)=>(JSON.parse(str)))
@@ -88,6 +94,11 @@ class VerticalLinearStepper extends React.Component {
                 if(item.data.message.toLowerCase().indexOf('created successfully') > -1 && !deleteFlag){
                     deleteFlag = true;
                     console.log("Created successfullyCreated successfully")
+                    count++;
+                    if(_item.ClusterInst.indexOf('autocluster') > -1 && count < 2){
+                        deleteFlag = false;
+                        return;
+                    };
                     setTimeout(() => {
                         this.props.alertRefresh();
                         computeService.deleteTempFile(this.props.item, this.props.site)
@@ -122,6 +133,31 @@ class VerticalLinearStepper extends React.Component {
 
     }
 
+    receiveStatusAuto = (result, _item) => {
+        let toArray = null;
+        let toJson = null;
+        let count = 0;
+        let stepData = [];
+        toArray = result.data.split('\n')
+        toArray.pop();
+        toJson = toArray.map((str)=>(JSON.parse(str)))
+        toJson.map((item,i) => {
+            stepData.push(item.data.message)
+            if(item.data) {
+                if(item.data.message.toLowerCase().indexOf('created successfully') > -1){
+                    console.log("Created successfullyCreated successfully")
+                    count++;
+                    setTimeout(() => {
+                        if(count == 1){
+                            this.props.autoRefresh();
+                        }
+                    }, 1000);
+                    
+                }
+            }
+        })
+        this.setState({steps:stepData, activeStep:stepData.length-1})
+    }
     
 
         

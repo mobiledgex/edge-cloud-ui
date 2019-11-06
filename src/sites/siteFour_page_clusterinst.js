@@ -42,7 +42,14 @@ class SiteFourPageClusterInst extends React.Component {
         this.hiddenKeys = ['Status','Deployment']
 
     }
+    gotoUrl(site, subPath) {
+        _self.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
 
+    }
     //go to
     gotoPreview(site) {
         //브라우져 입력창에 주소 기록
@@ -131,6 +138,15 @@ class SiteFourPageClusterInst extends React.Component {
     }
 
     receiveResultClusterInst(result) {
+        _self.props.handleLoadingSpinner();
+        // @inki if data has expired token
+        let scope = this;
+        if(result.error && result.error.indexOf('Expired') > -1) {
+            scope.props.handleAlertInfo('error', result.error);
+            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            return;
+        }
+
         //_self.countObject[result[0]['Region']].push(result[0]['Region'])
         // console.log('20191004 ', result)
         // if(result.length) {
@@ -145,6 +161,14 @@ class SiteFourPageClusterInst extends React.Component {
         _self.groupJoin(result,'clusterInst')
     }
     receiveResultCloudlet(result) {
+        _self.props.handleLoadingSpinner();
+        // @inki if data has expired token
+        let scope = this;
+        if(result.error && result.error.indexOf('Expired') > -1) {
+            scope.props.handleAlertInfo('error', result.error);
+            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            return;
+        }
         //_self.countObject[result[0]['Region']].push(result[0]['Region'])
         _self.groupJoin(result,'cloudlet')
     }

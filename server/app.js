@@ -521,8 +521,12 @@ app.post('/showauditrog', apiMCAudit.ShowOrg)
 app.post('/showself', apiMCAudit.ShowSelf)
 
 
-
-
+/******
+ * 20191028
+ * send mail to audit
+ * @type {string}
+ */
+app.post('/sendMail', apiMCAudit.SendMail)
 
 // http
 

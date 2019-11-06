@@ -227,6 +227,7 @@ class SiteFour extends React.Component {
         _self.setState({ page:subPath})
     }
     handleItemClick ( id, label, pg, role ) {
+        localStorage.setItem('selectMenu', label)
         _self.setState({menuClick:true})
         _self.props.handleDetail({data:null, viewMode:'listView'})
         _self.props.handleChangeViewBtn(false);
@@ -243,7 +244,7 @@ class SiteFour extends React.Component {
         _self.props.history.location.search = "pg="+pg;
         _self.props.handleChangeStep(pg)
         _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label })
-        localStorage.setItem('selectMenu', label)
+
     }
 
     onHandleRegistry() {
@@ -284,7 +285,8 @@ class SiteFour extends React.Component {
     receiveAdminInfo = (result) => {
         this.props.handleRoleInfo(result.data)
         if(result.error) {
-            this.gotoUrl('/logout','')
+            _self.props.handleAlertInfo('error', result.error)
+            setTimeout(() => _self.gotoUrl('/logout',''), 2500);
         } else {
             result.data.map((item,i) => {
                 if(item.role.indexOf('Admin') > -1){
@@ -480,7 +482,11 @@ class SiteFour extends React.Component {
         //this.props.history.location.search = "pg=0";
         this.disableBtn();
 
-        if(store) this.getAdminInfo(store.userToken);
+        if(store){
+            this.getAdminInfo(store.userToken);
+        } else {
+            this.gotoUrl('/logout')
+        }
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
             if(elem){
@@ -559,6 +565,7 @@ class SiteFour extends React.Component {
                     timeout: 'none',
                     offset: 100
                 });
+
             }
             nextProps.handleAlertInfo('','');
         }
@@ -1066,7 +1073,7 @@ class SiteFour extends React.Component {
 
                             </Grid.Row>
                             {
-                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts'  && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1 ) ?
+                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log'  && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1 ) ?
                                     <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
                                         <label style={{padding:'0 10px'}}>Region</label>
                                         <Dropdown className='selection'

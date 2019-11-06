@@ -23,7 +23,7 @@ import * as aggregate from '../utils'
 
 const ReactGridLayout = WidthProvider(RGL);
 let prgInter = null;
-
+let autoInter = null;
 const headerStyle = {
     backgroundImage: 'url()'
 }
@@ -111,6 +111,7 @@ class MapWithListView extends React.Component {
     }
 
     onHandleEdit(data) {
+        this.props.handleLoadingSpinner(true);
         //this.setState({ dimmer:dim, open: true, selected:data })
         //this.props.handleEditInstance(data);
         //this.gotoUrl('/site4', 'pg=editAppInst')
@@ -180,8 +181,12 @@ class MapWithListView extends React.Component {
         console.log('20190819 handle sort..', a)
         _self.setState({sorting : true});
         const { column, dummyData, direction } = _self.state
+        this.stateSort(dummyData)
         if ((column !== clickedColumn) && dummyData) {
-            let sorted = _.sortBy(dummyData, [clm => typeof clm[clickedColumn] === 'string' ? String(clm[clickedColumn]).toLowerCase(): clm[clickedColumn]])
+            let sorted = _.sortBy(dummyData, [clm => typeof clm[(clickedColumn == 'State')?'StateData':clickedColumn] === 'string' ? String(clm[(clickedColumn == 'State')?'StateData':clickedColumn]).toLowerCase(): clm[(clickedColumn == 'State')?'StateData':clickedColumn]])
+            sorted.map((item) => {
+                delete item['StateData']
+            })
             this.setState({
                 column: clickedColumn,
                 dummyData: sorted,
@@ -189,6 +194,9 @@ class MapWithListView extends React.Component {
             })
         } else {
             let reverse = dummyData.reverse()
+            reverse.map((item) => {
+                delete item['StateData']
+            })
             this.setState({
                 dummyData: reverse,
                 direction: direction === 'ascending' ? 'descending' : 'ascending',
@@ -197,6 +205,25 @@ class MapWithListView extends React.Component {
         }
 
         //setTimeout(() => _self.setState({sorting : false}), 1000)
+    }
+    stateSort = (_sortData) => {
+        _sortData.map((item) => {
+            (item.State == 0)?item['StateData'] = 'TrackedStateUnknown':
+            (item.State == 1)?item['StateData'] = 'NotPresent':
+            (item.State == 2)?item['StateData'] = 'CreateRequested':
+            (item.State == 3)?item['StateData'] = 'Creating':
+            (item.State == 4)?item['StateData'] = 'CreateError':
+            (item.State == 5)?item['StateData'] = 'Ready':
+            (item.State == 6)?item['StateData'] = 'UpdateRequested':
+            (item.State == 7)?item['StateData'] = 'Updating':
+            (item.State == 8)?item['StateData'] = 'UpdateError':
+            (item.State == 9)?item['StateData'] = 'DeleteRequested':
+            (item.State == 10)?item['StateData'] = 'Deleting':
+            (item.State == 11)?item['StateData'] = 'DeleteError':
+            (item.State == 12)?item['StateData'] = 'DeletePrepare':
+            item['StateData'] = item.State
+        })
+        return _sortData
     }
     generateStart () {
 
@@ -307,13 +334,13 @@ class MapWithListView extends React.Component {
     jsonView = (jsonObj) => (
         <ReactJson src={jsonObj} {...this.jsonViewProps} />
     )
-    stateView(_item,_siteId) {
+    stateView(_item,_siteId,_auto) {
+        console.log("stateViewstateView",_item,":::",_auto)
         Alert.closeAll();
-        //clearInterval(prgInter);
         this.setState({stateViewToggle:true})
         Alert.info(
             <div className='ProgressBox' id='prgBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
-                <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh}  />
+                <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh} autoRefresh={this.setAlertAutoRefresh} auto={_auto}  />
             </div>, {
             position: 'top-right', timeout: 'none', limit:1,
             //onShow: this.setState({stateViewToggle:true}),
@@ -329,7 +356,7 @@ class MapWithListView extends React.Component {
         let msg = '';
         console.log("setAlertRefresh")
         clearInterval(prgInter);
-        this.props.dataRefresh();
+        
         Alert.closeAll();
         if(this.props.siteId == 'ClusterInst') msg = 'Your cluster instance created successfully'
         else if(this.props.siteId == 'appinst') msg = 'Your app instance created successfully'
@@ -337,6 +364,7 @@ class MapWithListView extends React.Component {
 
         this.props.handleAlertInfo('success',msg)
         
+        this.props.dataRefresh();
     }
 
     setAlertFailRefresh = (msg) => {
@@ -347,6 +375,15 @@ class MapWithListView extends React.Component {
         this.props.handleAlertInfo('error',msg)
     }
 
+    setAlertAutoRefresh = () => {
+        Alert.closeAll();
+        this.props.handleAlertInfo('success','Your auto cluster instance created successfully');
+        this.props.dataRefresh();
+    }
+
+    autoClusterAlert = (_data) => {
+        this.stateView(_data,this.props.siteId,'auto');
+    }
     
     makeUTC = (time) => (
         moment.unix( time.replace('seconds : ', '') ).utc().format('YYYY-MM-DD HH:mm:ss')
@@ -489,9 +526,10 @@ class MapWithListView extends React.Component {
         this.setState({closeMap:close})
     }
     receiveStatusData = (result, _item) => {
-
+        console.log("__receiveStatusData",result,":::",_item)
         let toArray = null;
         let toJson = null;
+        let count = 0;
         toArray = result.data.split('\n')
         toArray.pop();
         toJson = toArray.map((str)=>(JSON.parse(str)))
@@ -499,14 +537,20 @@ class MapWithListView extends React.Component {
             if(item.data) {
                 //console.log("successfullyzxxx111",item.data.message,":::",item.data.message.toLowerCase().indexOf('created successfully'))
                 if(item.data.message.toLowerCase().indexOf('created successfully') > -1){
-                    //clearInterval(prgInter);
+                    count++;
                     console.log("Created successfullyCreated successfully")
-                    setTimeout(() => {
-                        this.setAlertRefresh();
-                        computeService.deleteTempFile(_item, this.props.siteId)
-                    }, 2000);
+                    //setTimeout(() => {
+                        if(_item.ClusterInst.indexOf('autocluster') > -1 && count == 2){
+                            this.setAlertRefresh();
+                            computeService.deleteTempFile(_item, this.props.siteId)
+                        } else if(_item.ClusterInst.indexOf('autocluster') == -1 && count == 1) {
+                            this.setAlertRefresh();
+                            computeService.deleteTempFile(_item, this.props.siteId)
+                        }
+                        
+                    //}, 2000);
+                    
                 } else if(item.data.message.toLowerCase().indexOf('deleted cloudlet successfully') > -1){
-                    //clearInterval(prgInter);
                     console.log("Delete successfullyCreated successfully")
                     setTimeout(() => {
                         this.setAlertFailRefresh('Deleted cloudlet successfully');
@@ -514,7 +558,6 @@ class MapWithListView extends React.Component {
                     }, 2000);
                 }
             } else if(item.result && item.result.code == 400){
-                //clearInterval(prgInter);
                 console.log("failRefreshfailRefreshfailRefresh")
                 setTimeout(() => {
                     this.setAlertFailRefresh(item.result.message);
@@ -524,9 +567,46 @@ class MapWithListView extends React.Component {
         })
         
     }
+
+    receiveStatusAuto = (result, _item) => {
+        console.log("receiveStatusAuto111",result,":::",_item)
+        let toArray = null;
+        let toJson = null;
+        let count = 0;
+        toArray = result.data.split('\n')
+        toArray.pop();
+        toJson = toArray.map((str)=>(JSON.parse(str)))
+        toJson.map((item,i) => {
+            if(item.data) {
+                if(item.data.message.toLowerCase().indexOf('created successfully') > -1){
+                    console.log("Created successfullyCreated successfully")
+                    count++;
+                    setTimeout(() => {
+                        // this.setAlertRefresh();
+                        // computeService.deleteTempFile(_item, this.props.siteId)
+                        // this.props.handleAlertInfo('success',msg)
+                        if(count == 1){
+                            Alert.closeAll();
+                            this.props.handleAlertInfo('success','Your auto cluster instance created successfully');
+                            this.props.dataRefresh();
+                            clearInterval(autoInter);
+                        }
+                         
+                        
+                    }, 0);
+                    
+                }
+            }
+        })
+        
+    }
+
     componentDidMount() {
         let self = this;
         window.addEventListener("resize", this.updateDimensions);
+        if(this.props.location && this.props.location.pgname=='appinst'){
+            this.autoClusterAlert(this.props.location.pgnameData)
+        }
     }
     componentWillUnmount() {
         window.addEventListener("resize", this.updateDimensions);
@@ -537,8 +617,6 @@ class MapWithListView extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log("sdsdsdsfaf",nextProps)
-
         if(this.state.dummyData.length > 0){
             this.state.dummyData.map((item) => {
                 //console.log("dummyDatadummyData",item.State)

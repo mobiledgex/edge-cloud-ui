@@ -8,3 +8,7 @@
     background-color: rgba(165, 189, 238, 0.68) !important;
     border: 2px solid rgb(20, 98, 151) !important;
 }
+
+.events-bar {
+    background-color: #dd014f;
+}
