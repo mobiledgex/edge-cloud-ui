@@ -1,6 +1,6 @@
 
 import axios from 'axios-https-proxy-fix';
-
+import qs from "qs";
 const API_KEY = '__apiMC_key__'
 let mcUrl = 'https://mc.mobiledgex.net:9900';
 let mcDevUrl = 'https://mc-stage.mobiledgex.net:9900';
@@ -73,4 +73,66 @@ exports.ShowOrg = (req, res) => {
 }
 
 
+/***************
+ * send mail to audit
+ */
+const nodemailer = require('nodemailer');
+var smtpTransport = require('nodemailer-smtp-transport');
+let smtpTrans = null;
 
+exports.SendMail = (req, res) => {
+    if (process.env.MC_URL) mcUrl = process.env.MC_URL;
+    if(process.env.SMTP_TRANS) smtpTrans =  JSON.parse(process.env.SMTP_TRANS);
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    if (req.body.serviceBody) {
+        serviceBody = {
+            fromEmail: req.body.serviceBody.fromEmail,
+            toEmail: req.body.serviceBody.toEmail,
+            audit: req.body.serviceBody.message,
+            title: req.body.serviceBody.title,
+            traceId: req.body.serviceBody.traceId
+        };
+        superpass = req.body.serviceBody.token;
+    }
+    console.log('send email  -- ', qs.stringify(serviceBody), 'mcUrl=', mcUrl, 'token=', superpass)
+
+    // Generate test SMTP service account from ethereal.email
+    // Only needed if you don't have a real mail account for testing
+    let testAccount = nodemailer.createTestAccount();
+
+    // create reusable transporter object using the default SMTP transport
+    let transDefault = {
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        auth: {
+            user: 'from@email.com', // generated ethereal user
+            pass: 'password' // generated ethereal password
+        }
+    }
+    let transObj = (smtpTrans) ? smtpTrans : transDefault ;
+
+    let transporter = nodemailer.createTransport(smtpTransport(transObj));
+
+    var mailOptions = {
+        from: serviceBody.fromEmail || '',
+        to: serviceBody.toEmail || '',
+        subject: serviceBody.title || 'Sending Email from the Mobiledgex',
+        text: JSON.stringify(serviceBody.audit) || 'No Contents'
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+
+
+
+
+
+
+}

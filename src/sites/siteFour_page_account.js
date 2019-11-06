@@ -96,11 +96,11 @@ class SiteFourPageAccount extends React.Component {
         }
     }
     receiveResult = (result) => {
-        this.props.handleLoadingSpinner(false);
+        _self.props.handleLoadingSpinner(false);
         // @inki if data has expired token
         let scope = this;
-        if(result.error && result.error.indexOf('expired') > -1) {
-            this.props.handleAlertInfo('error', result.error);
+        if(result.error && result.error.indexOf('Expired') > -1) {
+            _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => scope.gotoUrl('/logout'), 2000);
             return;
         }
