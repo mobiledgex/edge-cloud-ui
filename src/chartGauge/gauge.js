@@ -8,14 +8,19 @@ const formatComma = d3.format(",");
 const formatFloat = d3.format(".2f");
 const formatPercent = d3.format(".1f",".1f");
 let divid = 4 / 6; //파이를 1조각에서 6조각으로 더 나눔
-let ratio = (360 - 60)/360; // 원에서 하단 좌,우 30도 씩 총60도를 빼준 비율
-let availPie = 360 - 60;
-let rotateOffset = 180 - 30;
+// let ratio = (360 - 60)/360; // 원에서 하단 좌,우 30도 씩 총60도를 빼준 비율
+// let availPie = 360 - 60;
+// let rotateOffset = 180 - 30;
+
+let ratio = (360 - 90)/360; // 원에서 하단 좌,우 90도 씩 총180도를 빼준 비율
+let availPie = 360 - 180;
+let rotateOffset = 180 - 90;
+
 class Gauge extends Component {
     constructor() {
         super();
         this.state = {
-            degree: 0,
+            degree: -90,
             boardSrc:'/assets/images/chart_gauge_out_circle.png',
             currentTemp:0,
             currentPercentTemp:0,
@@ -24,8 +29,8 @@ class Gauge extends Component {
             g: null
         }
         this.minTemper = 0;
-        this.maxTemper = 200;
-        this.roundBoards = ['/assets/images/chart_gauge_out_circle.png', '/assets/gauge_bk_yellow.png', '/assets/gauge_bk_orange.png', '/assets/gauge_bk_red.png']
+        this.maxTemper = 180;
+        this.roundBoards = ['/assets/gauge/chart_gauge_in_circle_rainbow.png', '/assets/gauge_bk_yellow.png', '/assets/gauge_bk_orange.png', '/assets/gauge_bk_red.png']
 
         this.fakeDatas = [0,    1.41,	1.42,	1.43,	1.44,	1.45,	1.46,	1.47,	1.52,	1.53]
     }
@@ -64,6 +69,7 @@ class Gauge extends Component {
 
         setTimeout(interval, 500)
 
+        this.renderGauge(0, {}, 'Cores', '');
 
     }
     componentWillReceiveProps (nextProps) {
@@ -82,6 +88,8 @@ class Gauge extends Component {
                 minor1: nextProps.data.minor1, minor2: nextProps.data.minor2
             }, nextProps.type, nextProps.title);
             this.setState({label:nextProps.label, unit:nextProps.unit, type:nextProps.type});
+        } else {
+
         }
     }
 
@@ -150,7 +158,7 @@ class Gauge extends Component {
         self.setState({currentTemp:currentTemper, degree: (currentValue)- 135, boardSrc: statusBoard})
 		*/
         let percentVal = 0;
-        if(value) percentVal = (value/self.maxTemper)*100;
+        if(value) percentVal = formatFloat((value/self.maxTemper)*100);
 
         self.setState({currentTemp:percentVal, degree: self.makeDegree(value, self), boardSrc: statusBoard, label:title})
 
@@ -194,25 +202,21 @@ class Gauge extends Component {
 
                             {style =>
                                 (
-                                    <div style={{top:0, left:-5, position:'absolute',
+                                    <div style={{top:0, left:10, position:'absolute',
                                         transform: `rotate( ${style.rotate}deg )`,
-                                    }}><img src='/assets/gauge_needle_red.png' /> </div>
+                                    }}><img src='/assets/gauge/gauge_needle_white.png' /> </div>
                                 )
                             }
 
                         </Motion>
                     </div>
 
-                    <div style={{position:'absolute', top:10, left:0}}>
-                        <img src='/assets/images/chart_gauge_in_circle.png' />
-                    </div>
-                    <div style={{position:'absolute', top:63, left:10, width:140, backgroundColor:'transparent'}}>
-                        <div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:20, color:'#bdbdbd'}}>{this.state.label}</div>
-                    </div>
-                    <div style={{position:'absolute', top:90, left:10, width:140, backgroundColor:'transparent'}}>
-                        <div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:30, fontWeight:'bold', color:'#fff'}}>{this.state.currentTemp+" %"}</div>
-                    </div>
-
+                    {/*<div style={{position:'absolute', top:63, left:0, width:140, backgroundColor:'transparent'}}>*/}
+                        {/*<div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:20, color:'#bdbdbd'}}>{this.state.label}</div>*/}
+                    {/*</div>*/}
+                    {/*<div style={{position:'absolute', top:90, left:0, width:140, backgroundColor:'transparent'}}>*/}
+                        {/*<div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:30, fontWeight:'bold', color:'#fff'}}>{this.state.currentTemp+" %"}</div>*/}
+                    {/*</div>*/}
                 </div>
 
             </div>

@@ -255,6 +255,42 @@ export default class MonitoringViewer extends React.Component {
         this.setState({props: this.state.mProp})
     }
 
+    makeChartContainer = (title, lastValue, maxValue, unit) => (
+        <Segment className="childPercentage" inverted style={{backgroundColor:'red', height:(this.props.data.page === 'cloudlet') ? 230 : null}}>
+            <Header>
+                {title?title:'No Title'}
+            </Header>
+            {
+                (this.props.data.page === 'cloudlet') ?
+                    <Container className="cpu" >
+                        <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', width:'100%', backgroundColor:'green'}}>
+                            <div className="content" style={{color: 'blue'}}>
+                                <EnvironmentStatus style={{width:'100%'}} data={[lastValue, maxValue]} type={unit} title='USED'/>
+                            </div>
+                            <div style={{display:'flex', flexDirection:'column', alignItem:'stretch', width:220}}>
+                                <div style={{display:'flex', flexDirection:'row', backgroundColor:'yellow'}}>
+                                    <div>USED</div>
+                                    <div>
+                                        {(this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')? lastValue : lastValue/1000}
+                                    </div>
+                                    <div>
+                                        {(this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?' %':unit}
+                                    </div>
+                                </div>
+                                <div style={{display:'flex', flexDirection:'row', backgroundColor:'brown'}}>
+                                    <div>MAX</div>
+                                    <div>{(this.props.data.page === 'cloudlet')?maxValue/1000 : null}</div>
+                                    <div>{(this.props.data.page === 'cloudlet')?unit:null}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </Container>
+                    :
+                    <Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?' Count' : '%')}</Container>
+            }
+        </Segment>
+    )
+
     componentDidMount() {
 
         if(this.props.data) {
@@ -278,59 +314,18 @@ export default class MonitoringViewer extends React.Component {
             <Grid.Row className="monitoring">
                 <Grid.Column>
                     <div className='wrapperPercentage'>
-                        <Segment className="childPercentage" inverted>
-                            <Header>
-                                {(this.props.data.page === 'cloudlet')?"vCPUs" : "CPU"}
-                            </Header>
-                            {
-                                (this.props.data.page === 'cloudlet') ?
-                                    <Container className="cpu">{'USED : ' + this.state.lastCPU + ((this.props.data.page === 'cloudlet')?'' : '%')}</Container>
-                                :
-                                <Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?' Count' : '%')}</Container>
-                            }
-                            {
-                                (this.props.data.page === 'cloudlet') ?
-                                    <Container className="cpu">{'MAX : ' + this.state.maxCPU + ((this.props.data.page === 'cloudlet')?'' : '%')}</Container>
-                                :
-                                null
-                            }
+                        {
+                            this.makeChartContainer((this.props.data.page === 'cloudlet')?"vCPUs" : "CPU", this.state.lastCPU,  this.state.maxCPU, ' Count')
+                        }
 
-                        </Segment>
-                        <Segment className="childPercentage" inverted>
-                            <Header>
-                                MEMORY
-                            </Header>
+                        {
+                            this.makeChartContainer('MEMORY', this.state.lastMEM, this.state.maxMEM, ' GBs')
+                        }
 
-                                {
-                                    (this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?
-                                        <Container className="memory">{this.state.lastMEM+'%'}</Container>
-                                        :
-                                        <Container className="memory">{'USED : '+this.state.lastMEM/1000 + ' GBs'}</Container>
-                                }
-                                {
-                                    (this.props.data.page === 'cloudlet')?
-                                        <Container className="memory">{'MAX : '+this.state.maxMEM/1000 + ' GBs'}</Container>
-                                        :
-                                        null
-                                }
-
-                        </Segment>
 
                         {
                             (this.props.data.page !== 'appInst')?
-                                <Segment className="childPercentage" inverted>
-                                    <Header>
-                                        DISK
-                                    </Header>
-                                    <Container className="disk">{(this.props.data.page === 'cloudlet')? 'USED : '+this.state.lastDISK + ' GBs' : this.state.lastDISK + '%'}</Container>
-                                    {
-                                        (this.props.data.page === 'cloudlet') ?
-                                            <Container className="disk">{(this.props.data.page === 'cloudlet')? 'MAX : '+this.state.maxDISK + ' GBs' :this.state.lastDISK + '%'}</Container>
-                                            :
-                                            null
-                                    }
-
-                                </Segment>
+                                this.makeChartContainer('DISK', this.state.lastDISK, this.state.maxDISK, ' GBs')
                                 :
                                 null
                         }
@@ -398,39 +393,7 @@ export default class MonitoringViewer extends React.Component {
 
                     </div>
                 </Grid.Column>
-                {
-                    (this.props.data.page === 'cloudlet') ?
-                        <Grid.Column style={{width:'100%', height:600}}>
-                            <div className='wrapperPercentage'>
-                                <Segment className="childPercentage" inverted  style={{height:230}}>
-                                    <div className="content">
-                                        <EnvironmentStatus style={{width:'100%'}} data={[this.state.lastCPU, this.state.maxCPU]} type={'Cores'} title='USED'/>
-                                    </div>
-                                    <div className="content" style={{marginTop:140, fontSize:30}}>
-                                        vCPUs
-                                    </div>
-                                </Segment>
-                                <Segment className="childPercentage" inverted style={{height:230}}>
-                                    <div className="content">
-                                        <EnvironmentStatus style={{width:'100%'}} data={[this.state.lastMEM, this.state.maxMEM]} type={'GB'} title='USED'/>
-                                    </div>
-                                    <div className="content" style={{marginTop:140, fontSize:30}}>
-                                        MEMORY
-                                    </div>
-                                </Segment>
-                                <Segment className="childPercentage" inverted style={{height:230}}>
-                                    <div className="content">
-                                        <EnvironmentStatus style={{width:'100%'}} data={[this.state.lastDISK, this.state.maxDISK]} type={'GB'} title='USED'/>
-                                    </div>
-                                    <div className="content" style={{marginTop:140, fontSize:30}}>
-                                        DISK
-                                    </div>
-                                </Segment>
-                            </div>
-                        </Grid.Column>
-                        :
-                        null
-                }
+
                 <Grid.Column style={{width:'100%', height:'100%'}}>
                     {
                         (this.props.data.page === 'cloudlet')?
