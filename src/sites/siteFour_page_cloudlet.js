@@ -104,7 +104,8 @@ class SiteFourPageCloudlet extends React.Component {
                 this.setState({viewMode:nextProps.viewMode})
             } else {
                 this.setState({viewMode:nextProps.viewMode})
-                setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
+                // setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
+                this.setState({detailData:nextProps.detailData})
             }
 
         }
