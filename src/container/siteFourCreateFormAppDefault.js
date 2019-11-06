@@ -164,16 +164,16 @@ class SiteFourCreateFormAppDefault extends React.Component {
             (_data.DeploymentType == 'docker')?_data.DeploymentType = 'Docker':
             (_data.DeploymentType == 'kubernetes')?_data.DeploymentType = 'Kubernetes':
             _data.DeploymentType = 'VM'
-
             this.onHandleChange('DeploymentType',_data.DeploymentType);
-
             if(_data.Ports && _data.Ports != '-'){
                 _portArr = _data.Ports.split(',')
-                console.log("sddffw",_portArr)
                 _portArr.map((item,i) => {
                     _data['Ports_'+i] = item.split(':')[1];
                     _data['Portsselect_'+i] = (item.split(':')[0].toLowerCase() =='tcp')?'TCP':'UDP';
-                    _statePort.push(i);
+                    _statePort.push({
+                        num:i,
+                        name:'single'
+                    });
                     portNum++;
                 })
                 this.setState({portArray:_statePort});
@@ -331,6 +331,12 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
     processFile = (file) => {
         let reader = new FileReader();
+        let fileSize = 50 * 1024; //50KB
+        if(file.size > fileSize){
+            alert("File too large(not more than 50KB)");
+            return;
+        }
+
         this.setState({tah:10});
         reader.onload = () => {
             this.props.dispatch(change('createAppFormDefault', 'DeploymentMF', reader.result));
@@ -480,13 +486,25 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                             <Grid>
                                                                 {
                                                                     this.state.portArray.map((item,i) => (
-                                                                        (item.name == 'single')?
+                                                                        (item.name == 'multi')?
                                                                             <Grid.Row key={i} columns={3} style={{paddingBottom:'0px'}}>
-                                                                                <Grid.Column width={11}>
+                                                                                <Grid.Column width={5}>
                                                                                     <Field
                                                                                         component={renderInput}
                                                                                         type="input"
-                                                                                        name={key+'_'+item.num}
+                                                                                        name={'multiF_'+item.num}
+                                                                                        value={data[key]}
+                                                                                        error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
+                                                                                        />
+                                                                                </Grid.Column>
+                                                                                <Grid.Column width={1}>
+                                                                                    <center style={{lineHeight:'35px',fontSize:'18px'}}>~</center>
+                                                                                </Grid.Column>
+                                                                                <Grid.Column width={5}>
+                                                                                    <Field
+                                                                                        component={renderInput}
+                                                                                        type="input"
+                                                                                        name={'multiS_'+item.num}
                                                                                         value={data[key]}
                                                                                         error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
                                                                                         />
@@ -507,23 +525,11 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                             </Grid.Row>
                                                                         :
                                                                             <Grid.Row key={i} columns={3} style={{paddingBottom:'0px'}}>
-                                                                                <Grid.Column width={5}>
+                                                                                <Grid.Column width={11}>
                                                                                     <Field
                                                                                         component={renderInput}
                                                                                         type="input"
-                                                                                        name={'multiF_'+item.num}
-                                                                                        value={data[key]}
-                                                                                        error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
-                                                                                        />
-                                                                                </Grid.Column>
-                                                                                <Grid.Column width={1}>
-                                                                                    <center style={{lineHeight:'35px',fontSize:'18px'}}>~</center>
-                                                                                </Grid.Column>
-                                                                                <Grid.Column width={5}>
-                                                                                    <Field
-                                                                                        component={renderInput}
-                                                                                        type="input"
-                                                                                        name={'multiS_'+item.num}
+                                                                                        name={key+'_'+item.num}
                                                                                         value={data[key]}
                                                                                         error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
                                                                                         />

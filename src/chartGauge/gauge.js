@@ -8,9 +8,14 @@ const formatComma = d3.format(",");
 const formatFloat = d3.format(".2f");
 const formatPercent = d3.format(".1f",".1f");
 let divid = 4 / 6; //파이를 1조각에서 6조각으로 더 나눔
-let ratio = (360 - 60)/360; // 원에서 하단 좌,우 30도 씩 총60도를 빼준 비율
-let availPie = 360 - 60;
-let rotateOffset = 180 - 30;
+// let ratio = (360 - 60)/360; // 원에서 하단 좌,우 30도 씩 총60도를 빼준 비율
+// let availPie = 360 - 60;
+// let rotateOffset = 180 - 30;
+
+let ratio = (360 - 90)/360; // 원에서 하단 좌,우 90도 씩 총180도를 빼준 비율
+let availPie = 360 - 180;
+let rotateOffset = 180 - 90;
+
 class Gauge extends Component {
     constructor() {
         super();
@@ -197,25 +202,21 @@ class Gauge extends Component {
 
                             {style =>
                                 (
-                                    <div style={{top:0, left:-5, position:'absolute',
+                                    <div style={{top:0, left:10, position:'absolute',
                                         transform: `rotate( ${style.rotate}deg )`,
-                                    }}><img src='/assets/gauge_needle_red.png' /> </div>
+                                    }}><img src='/assets/gauge/gauge_needle_white.png' /> </div>
                                 )
                             }
 
                         </Motion>
                     </div>
 
-                    <div style={{position:'absolute', top:10, left:0}}>
-                        <img src='/assets/images/chart_gauge_in_circle.png' />
-                    </div>
-                    <div style={{position:'absolute', top:63, left:10, width:140, backgroundColor:'transparent'}}>
-                        <div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:20, color:'#bdbdbd'}}>{this.state.label}</div>
-                    </div>
-                    <div style={{position:'absolute', top:90, left:10, width:140, backgroundColor:'transparent'}}>
-                        <div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:30, fontWeight:'bold', color:'#fff'}}>{this.state.currentTemp+" %"}</div>
-                    </div>
-
+                    {/*<div style={{position:'absolute', top:63, left:0, width:140, backgroundColor:'transparent'}}>*/}
+                        {/*<div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:20, color:'#bdbdbd'}}>{this.state.label}</div>*/}
+                    {/*</div>*/}
+                    {/*<div style={{position:'absolute', top:90, left:0, width:140, backgroundColor:'transparent'}}>*/}
+                        {/*<div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:30, fontWeight:'bold', color:'#fff'}}>{this.state.currentTemp+" %"}</div>*/}
+                    {/*</div>*/}
                 </div>
 
             </div>
