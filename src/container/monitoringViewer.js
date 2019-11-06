@@ -149,7 +149,7 @@ export default class MonitoringViewer extends React.Component {
         //console.log("20190812 bytes..",bytes, ":", inst)
         // One way to write it, not the prettiest way to write it.
 
-        var fmt = d3.format('.0f');
+        var fmt = d3.format('.2f');
         if (bytes < 1000) {
             return fmt(bytes) + ' B';
         } else if (bytes < 1000 * 1000) {
@@ -255,38 +255,46 @@ export default class MonitoringViewer extends React.Component {
         this.setState({props: this.state.mProp})
     }
 
-    makeChartContainer = (title, lastValue, maxValue, unit) => (
-        <Segment className="childPercentage" inverted style={{backgroundColor:'red', height:(this.props.data.page === 'cloudlet') ? 230 : null}}>
+    makeChartContainer = (title, lastValue, maxValue, unit, type) => (
+        <Segment className="childPercentage cloudlet_monitoring" inverted>
             <Header>
                 {title?title:'No Title'}
             </Header>
             {
                 (this.props.data.page === 'cloudlet') ?
-                    <Container className="cpu" >
-                        <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', width:'100%', backgroundColor:'green'}}>
-                            <div className="content" style={{color: 'blue'}}>
-                                <EnvironmentStatus style={{width:'100%'}} data={[lastValue, maxValue]} type={unit} title='USED'/>
-                            </div>
-                            <div style={{display:'flex', flexDirection:'column', alignItem:'stretch', width:220}}>
-                                <div style={{display:'flex', flexDirection:'row', backgroundColor:'yellow'}}>
-                                    <div>USED</div>
-                                    <div>
-                                        {(this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')? lastValue : lastValue/1000}
+                    <Container className="cloudlet_monitoring_charts">
+                        <div className="cloudlet_monitoring_charts_gauge">
+                            <EnvironmentStatus data={[lastValue, maxValue]} type={unit} title='USED'/>
+                        </div>
+                        <div className="cloudlet_monitoring_charts_counting">
+                            <div className="cloudlet_monitoring_charts_counting_max">
+                                <div className="cloudlet_monitoring_charts_counting_max_title">MAX</div>
+                                <div className="cloudlet_monitoring_charts_counting_max_value">
+                                    <div className="cloudlet_monitoring_charts_counting_max_value_number">
+                                        {(this.props.data.page === 'cloudlet')?maxValue/1000 : null}
                                     </div>
-                                    <div>
-                                        {(this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?' %':unit}
+                                    <div className="cloudlet_monitoring_charts_counting_max_value_unit">
+                                        {(this.props.data.page === 'cloudlet')?unit:null}
                                     </div>
                                 </div>
-                                <div style={{display:'flex', flexDirection:'row', backgroundColor:'brown'}}>
-                                    <div>MAX</div>
-                                    <div>{(this.props.data.page === 'cloudlet')?maxValue/1000 : null}</div>
-                                    <div>{(this.props.data.page === 'cloudlet')?unit:null}</div>
+                            </div>
+                            <div className="cloudlet_monitoring_charts_counting_used">
+                                <div className="cloudlet_monitoring_charts_counting_used_title">USED</div>
+                                <div className="cloudlet_monitoring_charts_counting_used_value">
+                                    <div className="cloudlet_monitoring_charts_counting_used_value_number">
+                                        {(this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')? lastValue : lastValue/1000}
+                                    </div>
+                                    <div className="cloudlet_monitoring_charts_counting_used_value_unit">
+                                        {(this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?'%':unit}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </Container>
                     :
-                    <Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?' Count' : '%')}</Container>
+                    (type === 'CPU')?<Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?'Count' : '%')}</Container>
+                        : (type === 'DISK') ? <Container className="disk">{this.bytesToString(this.state.lastDISK)}</Container>
+                        : <Container className="memory">{this.bytesToString(this.state.lastMEM)}</Container>
             }
         </Segment>
     )
@@ -315,17 +323,16 @@ export default class MonitoringViewer extends React.Component {
                 <Grid.Column>
                     <div className='wrapperPercentage'>
                         {
-                            this.makeChartContainer((this.props.data.page === 'cloudlet')?"vCPUs" : "CPU", this.state.lastCPU,  this.state.maxCPU, ' Count')
+                            this.makeChartContainer((this.props.data.page === 'cloudlet')?"vCPUs" : "CPU", this.state.lastCPU,  this.state.maxCPU, ' Count', 'CPU')
                         }
 
                         {
-                            this.makeChartContainer('MEMORY', this.state.lastMEM, this.state.maxMEM, ' GBs')
+                            this.makeChartContainer('MEMORY', this.state.lastMEM, this.state.maxMEM, ' GBs', 'MEM')
                         }
-
 
                         {
                             (this.props.data.page !== 'appInst')?
-                                this.makeChartContainer('DISK', this.state.lastDISK, this.state.maxDISK, ' GBs')
+                                this.makeChartContainer('DISK', this.state.lastDISK, this.state.maxDISK, ' GBs', 'DISK')
                                 :
                                 null
                         }

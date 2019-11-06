@@ -139,7 +139,7 @@ class SiteFourPageAppInst extends React.Component {
     receiveResult = (result) => {
         // @inki if data has expired token
         let scope = this;
-        if(result.error && result.error.indexOf('expired') > -1) {
+        if(result.error && result.error.indexOf('Expired') > -1) {
             scope.props.handleAlertInfo('error', result.error);
             setTimeout(() => scope.gotoUrl('/logout'), 2000);
             return;
@@ -188,7 +188,7 @@ class SiteFourPageAppInst extends React.Component {
             })
             this.forceUpdate();
         }
-        
+
     }
 
     getDataDeveloper = (region,regionArr) => {
@@ -203,7 +203,7 @@ class SiteFourPageAppInst extends React.Component {
         } else {
             rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
- 
+
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
                 // All show appInst

@@ -141,7 +141,7 @@ class SiteFourPageClusterInst extends React.Component {
         _self.props.handleLoadingSpinner();
         // @inki if data has expired token
         let scope = this;
-        if(result.error && result.error.indexOf('expired') > -1) {
+        if(result.error && result.error.indexOf('Expired') > -1) {
             scope.props.handleAlertInfo('error', result.error);
             setTimeout(() => scope.gotoUrl('/logout'), 2000);
             return;
@@ -164,7 +164,7 @@ class SiteFourPageClusterInst extends React.Component {
         _self.props.handleLoadingSpinner();
         // @inki if data has expired token
         let scope = this;
-        if(result.error && result.error.indexOf('expired') > -1) {
+        if(result.error && result.error.indexOf('Expired') > -1) {
             scope.props.handleAlertInfo('error', result.error);
             setTimeout(() => scope.gotoUrl('/logout'), 2000);
             return;
@@ -183,7 +183,7 @@ class SiteFourPageClusterInst extends React.Component {
         if(rgn.length*2 == this.loadCount){
             _self.countJoin()
         }
-        
+
 
     }
     countJoin() {
@@ -208,7 +208,7 @@ class SiteFourPageClusterInst extends React.Component {
 
 
     }
-    
+
     getDataDeveloper = (region,regionArr) => {
         _self.props.handleLoadingSpinner(true);
         _self.loadCount = 0;

@@ -80,7 +80,7 @@ class SiteFourPageAppReg extends React.Component {
         }
     }
     componentWillUnmount() {
-        
+
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -96,7 +96,7 @@ class SiteFourPageAppReg extends React.Component {
     receiveResult(result) {
         // @inki if data has expired token
         let scope = this;
-        if(result.error && result.error.indexOf('expired') > -1) {
+        if(result.error && result.error.indexOf('Expired') > -1) {
             scope.props.handleAlertInfo('error', result.error);
             setTimeout(() => scope.gotoUrl('/logout'), 2000);
             return;
