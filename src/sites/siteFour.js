@@ -227,6 +227,7 @@ class SiteFour extends React.Component {
         _self.setState({ page:subPath})
     }
     handleItemClick ( id, label, pg, role ) {
+        localStorage.setItem('selectMenu', label)
         _self.setState({menuClick:true})
         _self.props.handleDetail({data:null, viewMode:'listView'})
         _self.props.handleChangeViewBtn(false);
@@ -243,7 +244,7 @@ class SiteFour extends React.Component {
         _self.props.history.location.search = "pg="+pg;
         _self.props.handleChangeStep(pg)
         _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label })
-        localStorage.setItem('selectMenu', label)
+
     }
 
     onHandleRegistry() {

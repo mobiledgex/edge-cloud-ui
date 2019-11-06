@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Motion, spring } from 'react-motion';
 import * as d3 from "d3";
 
@@ -17,11 +17,16 @@ let availPie = 360 - 180;
 let rotateOffset = 180 - 90;
 
 class Gauge extends Component {
+    /*
+    out circle size : 245, 116
+    gauge_needle_white : 232, 232
+     */
     constructor() {
         super();
         this.state = {
             degree: -90,
             boardSrc:'/assets/images/chart_gauge_out_circle.png',
+            boardSrc:'/assets/gauge/chart_gauge_in_circle_rainbow.png',
             currentTemp:0,
             currentPercentTemp:0,
             label:'NO TITLE',
@@ -31,6 +36,7 @@ class Gauge extends Component {
         this.minTemper = 0;
         this.maxTemper = 180;
         this.roundBoards = ['/assets/images/chart_gauge_out_circle.png', '/assets/gauge_bk_yellow.png', '/assets/gauge_bk_orange.png', '/assets/gauge_bk_red.png']
+        this.roundBoards = ['/assets/gauge/chart_gauge_in_circle_rainbow.png', '/assets/gauge_bk_yellow.png', '/assets/gauge_bk_orange.png', '/assets/gauge_bk_red.png']
 
         this.fakeDatas = [0,    1.41,	1.42,	1.43,	1.44,	1.45,	1.46,	1.47,	1.52,	1.53]
     }
@@ -161,6 +167,9 @@ class Gauge extends Component {
         if(value) percentVal = formatFloat((value/self.maxTemper)*100);
 
         self.setState({currentTemp:percentVal, degree: self.makeDegree(value, self), boardSrc: statusBoard, label:title})
+        console.log('20191030 percent value == ', percentVal, " : degree == ", self.makeDegree(value, self))
+
+        if(value) self.setState({currentTemp:percentVal, degree: self.makeDegree(value, self), boardSrc: statusBoard, label:title})
 
 
     }
@@ -183,43 +192,42 @@ class Gauge extends Component {
     render() {
         let {degree} = this.state;
         return (
-            <div style={{display:'flex'}}>
-                <div style={{position:'relative'}}>
-                    <div style={{top:5, position:'absolute'}}><img src={this.state.boardSrc} /></div>
-                    {/*<RainbowCircle value={0.5}*/}
-                                   {/*size={30}*/}
-                                   {/*radius={100}*/}
-                                   {/*type={this.props.type}*/}
-                                   {/*sections={this.props.sections}*/}
-                                   {/*legend={this.props.legend}*/}
-                                   {/*label="15%" />*/}
-                    <div ref={ref => this.needleImg = ref} style={{position:'absolute', top:0, left:0}}>
-                        <Motion
-                            key={degree}
-                            defaultStyle={{ rotate: 0, scale: 1}}
-                            style={{ rotate: spring(degree), scale: spring(1)}}
-                        >
+            <Fragment>
+                <div className="cloudlet_monitoring_charts_gauge_wrapper_bg">
+                    <img src={this.state.boardSrc} />
+                </div>
+                {/*<RainbowCircle value={0.5}*/}
+                                {/*size={30}*/}
+                                {/*radius={100}*/}
+                                {/*type={this.props.type}*/}
+                                {/*sections={this.props.sections}*/}
+                                {/*legend={this.props.legend}*/}
+                                {/*label="15%" />*/}
+                <div className="cloudlet_monitoring_charts_gauge_wrapper_needle" ref={ref => this.needleImg = ref}>
+                    <Motion
+                        key={degree}
+                        defaultStyle={{ rotate: 0, scale: 1}}
+                        style={{ rotate: spring(degree), scale: spring(1)}}
+                    >
 
-                            {style =>
-                                (
-                                    <div style={{top:0, left:10, position:'absolute',
-                                        transform: `rotate( ${style.rotate}deg )`,
-                                    }}><img src='/assets/gauge/gauge_needle_white.png' /> </div>
-                                )
-                            }
+                        {style =>
+                            (
+                                <div className="cloudlet_monitoring_charts_gauge_wrapper_needle_img" style={{transform: `rotate( ${style.rotate}deg )`, height:185, width:185}}>
+                                    <img src='/assets/gauge/gauge_needle_white.png' />
+                                </div>
+                            )
+                        }
 
-                        </Motion>
-                    </div>
-
-                    {/*<div style={{position:'absolute', top:63, left:0, width:140, backgroundColor:'transparent'}}>*/}
-                        {/*<div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:20, color:'#bdbdbd'}}>{this.state.label}</div>*/}
-                    {/*</div>*/}
-                    {/*<div style={{position:'absolute', top:90, left:0, width:140, backgroundColor:'transparent'}}>*/}
-                        {/*<div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:30, fontWeight:'bold', color:'#fff'}}>{this.state.currentTemp+" %"}</div>*/}
-                    {/*</div>*/}
+                    </Motion>
                 </div>
 
-            </div>
+                {/*<div style={{position:'absolute', top:63, left:0, width:140, backgroundColor:'transparent'}}>*/}
+                    {/*<div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:20, color:'#bdbdbd'}}>{this.state.label}</div>*/}
+                {/*</div>*/}
+                {/*<div style={{position:'absolute', top:90, left:0, width:140, backgroundColor:'transparent'}}>*/}
+                    {/*<div className={'valueNum'} style={{width:'100%', textAlign:'center', fontSize:30, fontWeight:'bold', color:'#fff'}}>{this.state.currentTemp+" %"}</div>*/}
+                {/*</div>*/}
+            </Fragment>
         )
     }
 }

@@ -95,7 +95,7 @@ class SiteFourPageCreateorga extends React.Component {
                     phone:nextProps.stepOne.values.phone,
                     token:store ? store.userToken : 'null'
                 }, this.resultCreateOrg, this)
-            
+
         }
         /*
         org=bigorg username=worker1 role=DeveloperContributor
@@ -143,7 +143,7 @@ class SiteFourPageCreateorga extends React.Component {
         _self.props.handleLoadingSpinner(false);
         // @inki if data has expired token
         let scope = this;
-        if(result.error && result.error.indexOf('expired') > -1) {
+        if(result.error && result.error.indexOf('Expired') > -1) {
             scope.props.handleAlertInfo('error', result.error);
             setTimeout(() => scope.gotoUrl('/logout'), 2000);
             return;
@@ -201,5 +201,3 @@ const mapDispatchProps = (dispatch) => {
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCreateorga)));
-
-

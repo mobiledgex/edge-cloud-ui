@@ -88,12 +88,12 @@ class SiteFourPageFlavor extends React.Component {
             _self.setState({regionToggle:true})
             this.getDataDeveloper(nextProps.changeRegion,nextProps.regionInfo.region);
         }
-        
+
     }
     receiveResult = (result) => {
         // @inki if data has expired token
         let scope = this;
-        if(result.error && result.error.indexOf('expired') > -1) {
+        if(result.error && result.error.indexOf('Expired') > -1) {
             scope.props.handleAlertInfo('error', result.error);
             setTimeout(() => scope.gotoUrl('/logout'), 2000);
             return;
@@ -123,7 +123,7 @@ class SiteFourPageFlavor extends React.Component {
             rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
         rgn.map((item) => {
-            
+
             services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult)
         })
     }
