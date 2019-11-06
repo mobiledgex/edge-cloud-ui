@@ -104,9 +104,9 @@ class InsideListView extends React.Component {
             console.log('Error: There is no orgData')
         }
 
-        
+
     }
-    
+
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
         this.setState({ open: false, openDelete: false, selected:{} })
@@ -350,10 +350,10 @@ class InsideListView extends React.Component {
 
     }
     makeActionButton = (target) => (
-        <Button.Group vertical className="table_actions_popup_group">
+        <Button.Group vertical className={'listView-actionButton-group'}>
             {
                 appssEdit.map((option)=> (
-                    <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
+                    <Button onClick={this.onHandlePopMenu} className={'listView-actionButton'}>
                         {option.text}
                     </Button>
                 ))
@@ -363,7 +363,7 @@ class InsideListView extends React.Component {
     makeEditButtonGroup = (item, value, j, i) => (
         <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
             <div ref={acell => this['actionCell_'+i] = acell} style={{backgroundColor:'transparent', width:0, height:0, position:'relative'}}></div>
-            <Button className="table_actions_button" onClick={(self) => _self.onClickDropMenu(item, value, i, self)} onMouseOver={()=>_self.onOverDropMenu(item, value, i)} onMouseOut={() => _self.onOutDropMenu(item, value, i)}>
+            <Button onClick={(self) => _self.onClickDropMenu(item, value, i, self)} onMouseOver={()=>_self.onOverDropMenu(item, value, i)} onMouseOut={() => _self.onOutDropMenu(item, value, i)}>
                 <Button.Content visible>
                     <Icon name='bars' />
                 </Button.Content>
@@ -397,9 +397,7 @@ class InsideListView extends React.Component {
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
                                     String(item[value]) === 'null' ? <Table.Cell /> :
-                                        <Table.Cell className="table_actions" key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444', overflow:'visible'} :{whiteSpace:'nowrap', overflow:'visible'} }>
-                                            {this.makeEditButtonGroup(item, value, j, i)}
-                                        </Table.Cell>
+                                        this.makeEditButtonGroup(item, value, j, i)
                                 :
                                 (value === 'Type')?
                                     <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} >
@@ -418,7 +416,7 @@ class InsideListView extends React.Component {
                                         <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {item[value]}
                                         </div>
                                     </Table.Cell>
-                                :   
+                                :
                                 (value === 'Role Type')?
                                     <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
                                         <div className="markBox">{this.roleMark(item[value])}</div>
@@ -456,7 +454,7 @@ class InsideListView extends React.Component {
                     ))
                 }
             </Table.Body>
-            
+
         </Table>
     )
     componentDidMount() {
@@ -484,12 +482,12 @@ class InsideListView extends React.Component {
         return (
             <div style={{display:'flex', overflowY:'auto', overflowX:'hidden', width:'100%'}}>
                 <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
-                
+
                 <DeleteItem open={this.state.openDelete}
                             selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                             refresh={this.props.dataRefresh}
                 ></DeleteItem>
-                
+
                 <div
                     onLayoutChange={this.onLayoutChange}
                     {...this.props}
@@ -498,6 +496,7 @@ class InsideListView extends React.Component {
                     {this.generateDOM(open, dimmer,hiddenKeys)}
                 </div>
                 <Popup
+                    className='listView-popup-menu-group'
                     inverted
                     content={this.makeActionButton(this[this.state.actionContextRef])}
                     on='click'
@@ -506,13 +505,11 @@ class InsideListView extends React.Component {
                     onOpen={this.handleOpen}
                     position='left center'
                     context={this[this.state.actionContextRef]}
-                    className="table_actions_popup"
-                    basic
                 />
                 <Popup
-                    className="table_actions_tooltip"
+                    className='listView-popup-menu-tooltip'
                     open={this.state.isOpenTip}
-                    content='Click this button to perform "Launch", "Update" and "Delete".'
+                    content='Hello. This is a mini popup'
                     size='mini'
                     position='left center'
                     context={this[this.state.actionContextRef]}
@@ -552,7 +549,7 @@ const mapStateToProps = (state) => {
         userRole : state.showUserRole?state.showUserRole.role:null,
         roleInfo : state.roleInfo?state.roleInfo.role:null,
     }
-    
+
     // return (dimm) ? {
     //     dimmInfo : dimm
     // } : (account)? {
@@ -574,5 +571,3 @@ const mapDispatchProps = (dispatch) => {
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchProps)(InsideListView));
-
-
