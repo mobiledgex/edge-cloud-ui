@@ -412,3 +412,124 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
     color: #d4d5d8;
     font-size: 14px;
 }
+
+.childPercentage.cloudlet_monitoring {
+    min-width: 200px;
+    height: unset;
+}
+.childPercentage.cloudlet_monitoring:last-child {
+    margin: 0 20px 0 0 !important;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts {
+    display: flex;
+    width: 100%;
+    padding: 10px;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_gauge {
+    display: flex;
+    /* flex-grow: 1; */
+    margin: 0 20px 0 0;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_gauge_wrapper {
+    position: relative;
+    display: flex;
+    width: 100%;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_gauge_wrapper .cloudlet_monitoring_charts_gauge_wrapper_bg {
+    display: flex;
+    width: 100%;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_gauge_wrapper .cloudlet_monitoring_charts_gauge_wrapper_bg img {
+    width: 200px;
+    height: 95px;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_gauge_wrapper .cloudlet_monitoring_charts_gauge_wrapper_needle {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    /*add by inki*/
+    left: 2px;
+    top: -3px;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_gauge_wrapper .cloudlet_monitoring_charts_gauge_wrapper_needle_img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 9px;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_gauge_wrapper .cloudlet_monitoring_charts_gauge_wrapper_needle_img img {
+    width: 185px;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_counting {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_counting .cloudlet_monitoring_charts_counting_max {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    align-items: flex-end;
+    width: 100%;
+    margin: 0 0 5px 0;
+    padding: 0 0 5px 0;
+    border-bottom: 1px solid #4b4d52;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_counting .cloudlet_monitoring_charts_counting_max .cloudlet_monitoring_charts_counting_max_title {
+    display: flex;
+    flex-grow: 1;
+    font-size: 24px;
+    color: #009cff;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_counting .cloudlet_monitoring_charts_counting_max .cloudlet_monitoring_charts_counting_max_value {
+    display: flex;
+    flex-direction: row;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_counting .cloudlet_monitoring_charts_counting_max .cloudlet_monitoring_charts_counting_max_value .cloudlet_monitoring_charts_counting_max_value_number {
+    display: flex;
+    flex-grow: 1;
+    font-size: 24px;
+    font-weight: bold;
+    color: #009cff;
+    margin: 0 3px 0 0;
+    height: 100%;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_counting .cloudlet_monitoring_charts_counting_max .cloudlet_monitoring_charts_counting_max_value .cloudlet_monitoring_charts_counting_max_value_unit {
+    display: flex;
+    font-size: 16px;
+    color: #ffffff;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_counting .cloudlet_monitoring_charts_counting_used {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    align-items: flex-end;
+    width: 100%;
+    margin: 0 0 5px 0;
+    padding: 0 0 5px 0;
+    border-bottom: 1px solid #4b4d52;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_counting .cloudlet_monitoring_charts_counting_used .cloudlet_monitoring_charts_counting_used_title {
+    display: flex;
+    flex-grow: 1;
+    font-size: 24px;
+    color: #00ffcc;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_counting .cloudlet_monitoring_charts_counting_used .cloudlet_monitoring_charts_counting_used_value {
+    display: flex;
+    flex-direction: row;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_counting .cloudlet_monitoring_charts_counting_used .cloudlet_monitoring_charts_counting_used_value .cloudlet_monitoring_charts_counting_used_value_number {
+    display: flex;
+    flex-grow: 1;
+    font-size: 24px;
+    font-weight: bold;
+    color: #00ffcc;
+    margin: 0 3px 0 0;
+}
+.childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts .cloudlet_monitoring_charts_counting .cloudlet_monitoring_charts_counting_used .cloudlet_monitoring_charts_counting_used_value .cloudlet_monitoring_charts_counting_used_value_unit {
+    display: flex;
+    font-size: 16px;
+    color: #ffffff;
+}

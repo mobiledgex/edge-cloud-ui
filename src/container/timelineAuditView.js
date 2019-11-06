@@ -1,9 +1,12 @@
 import React from 'react';
 import HorizontalTimeline from 'react-horizontal-timeline';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
+import { Grid, Image, Header, Modal, Dropdown, Button } from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
-import * as d3 from 'd3';
+import { connect } from 'react-redux';
+
+
+import PopSendEmailView from '../container/popSendEmailView';
 
 // TODO : https://codepen.io/AdamKimmerer/pen/RraRbb
 
@@ -32,8 +35,8 @@ class TimelineAuditView extends React.Component {
         previous: 0,
         // timelineConfig
         minEventPadding: 20,
-        maxEventPadding: 120,
-        linePadding: 100,
+        maxEventPadding: 100,
+        linePadding: 50,
         labelWidth: 170,
         fillingMotionStiffness: 150,
         fillingMotionDamping: 25,
@@ -52,14 +55,17 @@ class TimelineAuditView extends React.Component {
         rawViewData: [],
         requestData: [],
         responseData: [],
+        currentTraceid:'traceId',
         selectedIndex:0,
         auditCount: 0,
-        mounted: false
+        mounted: false,
+        openSendEmail:false
     };
     constructor() {
         super();
         _self = this;
-
+        this.sameTime = '0';
+        this.addCount = 0;
     }
 
     jsonViewProps = {
@@ -76,13 +82,26 @@ class TimelineAuditView extends React.Component {
         displayDataTypes: false,
         iconStyle: "triangle"
     }
+    makeUnixUTC = (time) => {
+        let newTime = moment(time).unix()
+        return moment(newTime).utc().format('YYYY/MM/DD HH:mm:ss.SSS')
+    }
     makeUTC = (time) => {
         let newTime = moment(time).unix()
         return moment(newTime).utc().format('YYYY/MM/DD')
     }
     makeNotUTC = (time) => {
-        let newTime = moment(time)
-        return moment(newTime).format('HH:mm:ss.SSS')
+        let newTime = moment(time).unix();
+        let makeTime = moment(newTime).utc().format('HH:mm:ss');
+        if(makeTime === _self.sameTime) {
+            _self.addCount ++;
+            makeTime = moment(newTime+1000).utc().format('HH:mm:ss');
+            //makeTime = moment(newTime).utc().format('HH:mm:ss.SSS') + "00"+ (_self.addCount < 10)? '0'+_self.addCount : _self.addCount;
+        } else {
+            _self.addCount = 0;
+        }
+        _self.sameTime = makeTime;
+        return makeTime;
     }
     makeOper = (logName) => {
         let lastSub = logName.substring(logName.lastIndexOf('/')+1);
@@ -110,7 +129,7 @@ class TimelineAuditView extends React.Component {
         if(_self.state.rawAllData[selectedId]) _self.props.handleSelectedAudit(_self.state.rawAllData[selectedId]);
     }
     setAllView(dummyConts, sId) {
-        this.setState({rawViewData:dummyConts})
+        this.setState({rawViewData:dummyConts, currentTraceid:dummyConts['traceid']})
     }
     setRequestView(dummyConts, sId) {
 
@@ -191,10 +210,8 @@ class TimelineAuditView extends React.Component {
 
                 contentContainer.appendChild(contentNode);
 
-
-                //TODO 이미 체크된 오딧은 변경된 스타일을 적용해 주어야 한다.
                 let checkedCircle = localStorage.getItem('auditChecked');
-                if(checkedCircle && JSON.parse(checkedCircle).length) {
+                if(checkedCircle && JSON.parse(checkedCircle).length && liDom) {
                     JSON.parse(checkedCircle).map((check) => {
                         if(check === auditList[i]['traceid']){
                             let findCircle = liDom.childNodes;
@@ -202,10 +219,6 @@ class TimelineAuditView extends React.Component {
                         }
                     })
                 }
-
-
-
-
 
                 //
                 if(liDom) {
@@ -215,6 +228,19 @@ class TimelineAuditView extends React.Component {
             })
         }, 1000)
     }
+    resultReceive(result) {
+        alert(result)
+    }
+    onHandleClickTrace (tId, msg){
+
+        // open popup window
+        _self.setState({openSendEmail: true})
+
+    }
+    submitSendEmail = () => {
+        alert('submit')
+    }
+    close = () => this.setState({ openSendEmail: false })
     componentWillReceiveProps(nextProps, nextContext) {
 
         if(!nextProps.mounted && !this.state.mounted) return;
@@ -244,7 +270,7 @@ class TimelineAuditView extends React.Component {
                 })
                 console.log('20191018 will receive porps...', dummys,":", dummyConts)
 
-                this.setState({dates:dummys, rawAllData:dummyConts, auditCount:nextProps.data.data.length})
+                this.setState({dates:dummys, rawAllData:dummyConts, auditCount:nextProps.data.data.length, currentTraceid:dummyConts[this.state.selectedIndex]['traceid']})
                 if(dummyConts[this.state.selectedIndex]) this.setAllView(dummyConts[this.state.selectedIndex], this.state.selectedIndex);
                 if(dummyConts[this.state.selectedIndex]) this.setRequestView(dummyConts[this.state.selectedIndex], this.state.selectedIndex);
                 if(dummyConts[this.state.selectedIndex]) this.setResponseView(dummyConts[this.state.selectedIndex], this.state.selectedIndex);
@@ -261,6 +287,13 @@ class TimelineAuditView extends React.Component {
             }
 
 
+        }
+        //submit form
+        if(nextProps.onSubmit) {
+            console.log('20191030 send mail contents == ', nextProps.sendingContent)
+            // services.sendEmailAudit('SendMail',
+            //     {fromEmail:'support@mobiledgex.com', toEmail:'', traceId:tId, message:msg, title: title},
+            //     _self.resultReceive, _self)
         }
 
     }
@@ -322,9 +355,15 @@ class TimelineAuditView extends React.Component {
                             isOpenBeginning={state.isOpenBeginning}
                         />
                     </div>
-                    <div className="page_audit_history_grid">
-                        Grid
-                    </div>
+                    {/*<div className="page_audit_history_grid">*/}
+                        {/*<CalendarTimeline></CalendarTimeline>*/}
+                    {/*</div>*/}
+                    {/*<div style={{minWidth:200}}>*/}
+                        {/*<a className="ui label"  onClick={() => this.onHandleClickTrace(this.state.currentTraceid, this.state.rawViewData)}>*/}
+                            {/*<i aria-hidden="true" className="mail icon"></i>*/}
+                            {/*<span>{this.state.currentTraceid}</span>*/}
+                        {/*</a>*/}
+                    {/*</div>*/}
                 </div>
                 <div className="page_audit_code">
                     <div className="page_audit_code_left">
@@ -356,10 +395,70 @@ class TimelineAuditView extends React.Component {
                         </div>
                     </div>
                 </div>
+                <SendEmailView dimmer={true} open={this.state.openSendEmail} close={this.close} callback={this.submitSendEmail}> </SendEmailView>
             </div>
         )
     }
 }
+const mapStateToProps = (state) => {
+
+    let submitSuccess = false;
+    let submitContent = null;
+    if(state.form.fieldLevelValidation) {
+        console.log('20191030 redux props.. ', state.form.fieldLevelValidation)
+        if(state.form.fieldLevelValidation.submitSucceeded){
+            submitSuccess = true;
+            submitContent = state.form.fieldLevelValidation.registeredFields;
+        }
+    }
+
+    return {
+        onSubmit: submitSuccess,
+        sendingContent: submitContent
+    }
+
+};
+
+export default connect(mapStateToProps, null)(TimelineAuditView);
 
 
-export default TimelineAuditView;
+
+class SendEmailView extends React.Component {
+    onSubmit = () => {
+        this.setState({submitState:true})
+    }
+    onClear = () => {
+        this.setState({clearState:true})
+    }
+    state = {
+        submitState: false,
+        clearState:false
+    }
+
+    render() {
+        let {dimmer, open, close, callback} = this.props;
+        return(
+            <Modal dimmer={dimmer} open={open} onClose={close} closeIcon>
+                <Modal.Header>New Email</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description>
+                        <PopSendEmailView ref={form => this.formReference = form} submitState={this.state.submitState} clearState={this.state.clearState}></PopSendEmailView>
+                    </Modal.Description>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button color='black' onClick={this.onClear}>
+                        Clear
+                    </Button>
+                    <Button
+                        positive
+                        icon='checkmark'
+                        labelPosition='right'
+                        content="Submit"
+                        onClick={this.onSubmit}
+                    />
+                </Modal.Actions>
+            </Modal>
+        )
+    }
+}
+

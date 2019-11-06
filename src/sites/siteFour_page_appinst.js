@@ -41,7 +41,14 @@ class SiteFourPageAppInst extends React.Component {
         this._AppInstDummy = [];
         this._diffRev = []
     }
+    gotoUrl(site, subPath) {
+        _self.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
 
+    }
     //go to
     gotoPreview(site) {
         //브라우져 입력창에 주소 기록
@@ -130,6 +137,14 @@ class SiteFourPageAppInst extends React.Component {
 
     }
     receiveResult = (result) => {
+        // @inki if data has expired token
+        let scope = this;
+        if(result.error && result.error.indexOf('Expired') > -1) {
+            scope.props.handleAlertInfo('error', result.error);
+            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            return;
+        }
+
         let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
         if(Object.keys(regionGroup)[0]) {
             this._AppInstDummy = this._AppInstDummy.concat(result)
