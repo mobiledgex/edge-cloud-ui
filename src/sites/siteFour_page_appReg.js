@@ -80,7 +80,7 @@ class SiteFourPageAppReg extends React.Component {
         }
     }
     componentWillUnmount() {
-
+        
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null

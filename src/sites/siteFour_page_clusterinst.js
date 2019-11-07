@@ -183,7 +183,7 @@ class SiteFourPageClusterInst extends React.Component {
         if(rgn.length*2 == this.loadCount){
             _self.countJoin()
         }
-
+        
 
     }
     countJoin() {
@@ -208,7 +208,7 @@ class SiteFourPageClusterInst extends React.Component {
 
 
     }
-
+    
     getDataDeveloper = (region,regionArr) => {
         _self.props.handleLoadingSpinner(true);
         _self.loadCount = 0;

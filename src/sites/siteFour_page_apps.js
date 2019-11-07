@@ -169,9 +169,9 @@ class SiteFourPageApps extends React.Component {
                 services.getMCService('ShowApp',serviceBody, _self.receiveResult)
             })
         }
-
+        
     }
-
+    
     getDataDeveloperSub = () => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.getDataDeveloper(store ? store.userToken : 'null', this.props.region.value);

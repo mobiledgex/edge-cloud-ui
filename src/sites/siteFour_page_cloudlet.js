@@ -88,7 +88,7 @@ class SiteFourPageCloudlet extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-
+ 
         if(nextProps.computeRefresh.compute) {
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
@@ -111,7 +111,7 @@ class SiteFourPageCloudlet extends React.Component {
         }
 
         //{ key: 1, text: 'All', value: 'All' }
-
+        
         if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
             _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
             this.getDataDeveloper(nextProps.changeRegion,nextProps.regionInfo.region);
@@ -135,7 +135,7 @@ class SiteFourPageCloudlet extends React.Component {
         this.loadCount ++;
         console.log("EditEditEdit",rgn.length,":::",this.loadCount)
         if(rgn.length == this.loadCount){
-            _self.countJoin()
+            _self.countJoin()            
         }
 
 
