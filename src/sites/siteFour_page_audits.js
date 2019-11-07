@@ -165,7 +165,7 @@ class SiteFourPageAudits extends React.Component {
     receiveResult = (result, resource, self, body) => {
         // @inki if data has expired token
         let scope = this;
-        if(result.error && result.error.indexOf('expired') > -1) {
+        if(result.error && result.error.indexOf('Expired') > -1) {
             scope.props.handleAlertInfo('error', result.error);
             setTimeout(() => scope.gotoUrl('/logout'), 2000);
             return;

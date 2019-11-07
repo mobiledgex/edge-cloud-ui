@@ -230,13 +230,13 @@ class App extends Component {
     receiveCurrentUser(result) {
         if(result.data && result.data.message) {
 
-            if(result.data.message.indexOf('expired') > -1) {
+            if(result.data.message.indexOf('Expired') > -1) {
 
-                setTimeout(() => self.goToNext('/logout',''),2000);
+                setTimeout(() => self.goToNext('/logout',''),20000);
                 Alert.error('Login timeout expired. Please login again', {
                     position: 'top-right',
                     effect: 'slide',
-                    timeout: 5000
+                    timeout: 50000
                 });
             } else {
 

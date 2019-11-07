@@ -73,4 +73,33 @@ export function showAuditSelf(resource, body, callback, self) {
 
 
 }
+export function sendEmailAudit(resource, body, callback, self) {
+
+    axios.post(ServerUrl+'/'+resource, qs.stringify({
+        service: resource,
+        serviceBody:body
+    }))
+        .then(function (response) {
+            let parseData = null;
+            if(response) {
+                if(JSON.stringify(response)) parseData = JSON.parse(JSON.stringify(response));
+            } else {
+
+            }
+
+            if(parseData) {
+                if(parseData.message){
+
+                } else {
+                    callback(parseData, resource, self, body);
+                }
+            }
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+
+}
 
