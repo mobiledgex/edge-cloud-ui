@@ -188,7 +188,7 @@ class SiteFourPageAppInst extends React.Component {
             })
             this.forceUpdate();
         }
-
+        
     }
 
     getDataDeveloper = (region,regionArr) => {
@@ -203,7 +203,7 @@ class SiteFourPageAppInst extends React.Component {
         } else {
             rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
-
+ 
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
                 // All show appInst

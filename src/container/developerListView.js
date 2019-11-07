@@ -116,7 +116,7 @@ class DeveloperListView extends React.Component {
             console.log('Error: There is no orgData')
         }
     }
-
+    
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
         this.setState({ open: false, openDelete: false, selected:{} })
@@ -302,7 +302,7 @@ class DeveloperListView extends React.Component {
         this.props.roleInfo.map((item) => {
             if(item.role.indexOf('Manager') > -1 && item.org == data.Organization){
                 btn = false;
-            }
+            } 
         })
         if(localStorage.selectRole == 'AdminManager'){
             btn = false;
@@ -367,10 +367,10 @@ class DeveloperListView extends React.Component {
 
     }
     makeActionButton = (item, j, i) => (
-        <Button.Group vertical  className={'listView-actionButton-group'}>
+        <Button.Group vertical className="table_actions_popup_group">
             {
                 organizationEdit.map((option)=> (
-                    <Button ref={btn => this.actionButton = btn} onClick={this.onHandlePopMenu} className={'listView-actionButton'}>
+                    <Button ref={btn => this.actionButton = btn} onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
                         {option.text}
                     </Button>
                 ))
@@ -381,7 +381,7 @@ class DeveloperListView extends React.Component {
     makeEditButtonGroup = (item, value, j, i) => (
         <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
             <div ref={acell => this['actionCell_'+i] = acell} style={{backgroundColor:'transparent', width:0, height:0, position:'relative'}}></div>
-            <Button  onClick={(self) => _self.onClickDropMenu(item, value, i, self)} onMouseOver={()=>_self.onOverDropMenu(item, value, i)} onMouseOut={() => _self.onOutDropMenu(item, value, i)}>
+            <Button className="table_actions_button" onClick={(self) => _self.onClickDropMenu(item, value, i, self)} onMouseOver={()=>_self.onOverDropMenu(item, value, i)} onMouseOut={() => _self.onOutDropMenu(item, value, i)}>
                 <Button.Content visible>
                     <Icon name='bars' />
                 </Button.Content>
@@ -389,7 +389,7 @@ class DeveloperListView extends React.Component {
         </div>
     )
     makeEditMenu = (item, j, i) => (
-        <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
+        <div key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
             {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager')?
                 <Button className='stepOrgDeveloper1' color={(this.state.selectUse == i)?'teal' :null} onClick={(evt) => this.onUseOrg(item,i, evt)}>
                     {/* <Icon name='check' /> */}
@@ -417,7 +417,7 @@ class DeveloperListView extends React.Component {
 
                     onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
 
-        </Table.Cell>
+        </div>
     )
     TableExampleVeryBasic = (headL, hideHeader, datas) => (
         <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
@@ -434,7 +434,7 @@ class DeveloperListView extends React.Component {
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
                                     String(item[value]) === 'null' ? <Table.Cell /> :
-                                        <Table.Cell className={'listTable-button-group'} key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444', overflow:'visible'} :{whiteSpace:'nowrap', overflow:'visible'} }>
+                                        <Table.Cell className="table_actions" key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444', overflow:'visible'} :{whiteSpace:'nowrap', overflow:'visible'} }>
 
                                             {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager')?
                                                 <Button className='stepOrgDeveloper1' color={(this.state.selectUse == i)?'teal' :null} onClick={(evt) => this.onUseOrg(item,i, evt)}>
@@ -466,7 +466,7 @@ class DeveloperListView extends React.Component {
                                         <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {item[value]}
                                         </div>
                                     </Table.Cell>
-                                :
+                                :   
                                 (value === 'Role Type')?
                                     <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
                                         <div className="markBox">{this.roleMark(item[value])}</div>
@@ -504,7 +504,7 @@ class DeveloperListView extends React.Component {
                     )) : null
                 }
             </Table.Body>
-
+            
         </Table>
     )
     componentDidMount() {
@@ -533,12 +533,12 @@ class DeveloperListView extends React.Component {
         return (
             <div style={{display:'flex', overflowY:'auto', overflowX:'hidden', width:'100%'}}>
                 <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
-
+                
                 <DeleteItem open={this.state.openDelete}
                             selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                             refresh={this.props.dataRefresh}
                 ></DeleteItem>
-
+                
                 <div style={{width:'100%'}}>
                     {
                         (viewMode === 'listView')? this.generateDOM(open, dimmer, hiddenKeys)
@@ -555,10 +555,13 @@ class DeveloperListView extends React.Component {
                     onOpen={this.handleOpen}
                     position='left center'
                     context={this[this.state.actionContextRef]}
+                    className="table_actions_popup"
+                    basic
                 />
                 <Popup
+                    className="table_actions_tooltip"
                     open={this.state.isOpenTip}
-                    content='Hello. This is a mini popup'
+                    content='Click this button to perform "Audit", "Add user" and "Delete".'
                     size='mini'
                     position='left center'
                     context={this[this.state.actionContextRef]}
@@ -599,7 +602,7 @@ const mapStateToProps = (state) => {
         userRole : state.showUserRole?state.showUserRole.role:null,
         roleInfo : state.roleInfo?state.roleInfo.role:null,
     }
-
+    
     // return (dimm) ? {
     //     dimmInfo : dimm
     // } : (account)? {
@@ -619,3 +622,5 @@ const mapDispatchProps = (dispatch) => {
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchProps)(DeveloperListView));
+
+
