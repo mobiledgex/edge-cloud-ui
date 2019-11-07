@@ -98,13 +98,9 @@ class EnvironmentStatus extends Component {
     render() {
 
         return (
-            <Grid columns='equal' style={{paddingRight:15, width:160, justifyContent:'center'}}>
-                <Grid.Row style={{paddingTop:0}} stretched>
-                    <Grid.Column style={{padding:0}}>
-                        {this.chartComponent((this.state.data && this.state.data.length) ? this.state.data : null, this.props.type ,this.props.title)}
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+            <div className="cloudlet_monitoring_charts_gauge_wrapper">
+                {this.chartComponent((this.state.data && this.state.data.length) ? this.state.data : null, this.props.type ,this.props.title)}
+            </div>
         )
     }
 }
