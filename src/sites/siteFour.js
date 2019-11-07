@@ -280,6 +280,15 @@ class SiteFour extends React.Component {
         _self.props.handleUserInfo(result.data);
     }
     receiveResult(result) {
+        let scope = this;
+        if(result.error && result.error.indexOf('Expired') > -1) {
+            scope.props.handleAlertInfo('error', result.error);
+            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            return;
+        } else if(result.error) {
+            scope.props.handleAlertInfo('error', result.error);
+        }
+
         _self.controllerOptions(result.data);
     }
     receiveAdminInfo = (result) => {

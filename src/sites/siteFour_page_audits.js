@@ -129,52 +129,60 @@ class SiteFourPageAudits extends React.Component {
         let savedArray = localStorage.getItem('auditUnChecked');
         let checkedArray = localStorage.getItem('auditChecked');
         let checked = [];
-        console.log('20191022 item is -- ', all, "  :  ",  JSON.parse(savedArray), typeof  JSON.parse(savedArray))
-        all.map((item, i) => {
-            if(savedArray && JSON.parse(savedArray).length) {
-                console.log('20191022 item is -- ', JSON.parse(savedArray).findIndex(k => k==item.traceid) )
-                //이전에 없던 데이터 이면 추가하기
-                if(JSON.parse(savedArray).findIndex(k => k==item.traceid) === -1) addArray.push(item.traceid)
-            } else {
-                itemArray.push(item.traceid)
+        console.log('20191105 item is -- ', all, "  :  ",  JSON.parse(savedArray), typeof  JSON.parse(savedArray))
+        if(all.error) {
+            this.props.handleAlertInfo('error', all.error)
+        } else {
+            all.map((item, i) => {
+                if(savedArray && JSON.parse(savedArray).length) {
+                    console.log('20191022 item is -- ', JSON.parse(savedArray).findIndex(k => k==item.traceid) )
+                    //이전에 없던 데이터 이면 추가하기
+                    if(JSON.parse(savedArray).findIndex(k => k==item.traceid) === -1) addArray.push(item.traceid)
+                } else {
+                    itemArray.push(item.traceid)
+                }
+            })
+
+            if(addArray.length) {
+                console.log('20191022 if has new data ... ', addArray)
+                JSON.parse(savedArray).concat(addArray);
             }
-        })
 
-        if(addArray.length) {
-            console.log('20191022 if has new data ... ', addArray)
-            JSON.parse(savedArray).concat(addArray);
+
+            // 이제 새로운 데이터에서 체크된 오딧은 제거
+            let checkResult = null;
+
+            if(savedArray && JSON.parse(savedArray).length) {
+                checkResult = JSON.parse(savedArray);
+            } else if(itemArray.length) {
+                checkResult = itemArray;
+            }
+
+            checked = (checkedArray) ? JSON.parse(checkedArray) : [];
+            console.log('20191022  unchecked... is -- ',checkResult.length, ":", checked.length," - ", (checkResult.length - checked.length))
+            this.props.handleAuditCheckCount(checkResult.length - checked.length)
+            localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
         }
 
-
-        // 이제 새로운 데이터에서 체크된 오딧은 제거
-        let checkResult = null;
-
-        if(savedArray && JSON.parse(savedArray).length) {
-            checkResult = JSON.parse(savedArray);
-        } else if(itemArray.length) {
-            checkResult = itemArray;
-        }
-
-        checked = (checkedArray) ? JSON.parse(checkedArray) : [];
-        console.log('20191022  unchecked... is -- ',checkResult.length, ":", checked.length," - ", (checkResult.length - checked.length))
-        this.props.handleAuditCheckCount(checkResult.length - checked.length)
-        localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
 
     }
 
     receiveResult = (result, resource, self, body) => {
         // @inki if data has expired token
+        console.log('20191106 receive result...', result, ":",resource)
         let scope = this;
         if(result.error && result.error.indexOf('Expired') > -1) {
             scope.props.handleAlertInfo('error', result.error);
             setTimeout(() => scope.gotoUrl('/logout'), 2000);
             return;
+        } else if(result.error) {
+            scope.props.handleAlertInfo('error', result.error);
         }
 
         let unchecked = result.data.length;
         let checked = localStorage.getItem('auditChecked')
-        if(resource === 'ShowSelf') {
-            console.log('20191021 audit result..', result,":",resource, ": unchecked : ", unchecked)
+        if(resource === 'ShowSelf' || resource === 'ShowOrg') {
+            console.log('20191106 audit result..', result,":",resource, ": unchecked : ", unchecked)
             this.reduceAuditCount(result.data, checked)
 
         }
