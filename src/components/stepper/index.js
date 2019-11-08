@@ -57,7 +57,7 @@ class VerticalLinearStepper extends React.Component {
             prgDiv.scrollTop = prgDiv.scrollHeight;
         }
         if(this.props.item.State == 3 || this.props.item.State == 7) {
-            if(this.props.item.ClusterInst.indexOf('autocluster') > -1 && this.props.auto == 'auto'){
+            if(this.props.item.ClusterInst && this.props.item.ClusterInst.indexOf('autocluster') > -1 && this.props.auto == 'auto'){
                 computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusAuto)
             } else {
                 computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusData)
@@ -89,13 +89,13 @@ class VerticalLinearStepper extends React.Component {
         toJson = toArray.map((str)=>(JSON.parse(str)))
         toJson.map((item,i) => {
             if(item.data) {
-                stepData.push(item.data.message)
+                stepData.push(item.data.message) //Created ClusterInst successfully
                 //console.log("successfullyzxxx222",item.data.message,":::",item.data.message.toLowerCase().indexOf('created successfully'))
-                if(item.data.message.toLowerCase().indexOf('created successfully') > -1 && !deleteFlag){
+                if(item.data.message.toLowerCase().indexOf('created') > -1 && item.data.message.toLowerCase().indexOf('successfully') > -1 && !deleteFlag){
                     deleteFlag = true;
                     console.log("Created successfullyCreated successfully")
                     count++;
-                    if(_item.ClusterInst.indexOf('autocluster') > -1 && count < 2){
+                    if(_item.ClusterInst && _item.ClusterInst.indexOf('autocluster') > -1 && count < 2){
                         deleteFlag = false;
                         return;
                     };
@@ -144,7 +144,7 @@ class VerticalLinearStepper extends React.Component {
         toJson.map((item,i) => {
             stepData.push(item.data.message)
             if(item.data) {
-                if(item.data.message.toLowerCase().indexOf('created successfully') > -1){
+                if(item.data.message.toLowerCase().indexOf('created') > -1 && item.data.message.toLowerCase().indexOf('successfully') > -1){
                     console.log("Created successfullyCreated successfully")
                     count++;
                     setTimeout(() => {

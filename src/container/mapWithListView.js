@@ -111,7 +111,6 @@ class MapWithListView extends React.Component {
     }
 
     onHandleEdit(data) {
-        this.props.handleLoadingSpinner(true);
         //this.setState({ dimmer:dim, open: true, selected:data })
         //this.props.handleEditInstance(data);
         //this.gotoUrl('/site4', 'pg=editAppInst')
@@ -536,18 +535,19 @@ class MapWithListView extends React.Component {
         toJson.map((item,i) => {
             if(item.data) {
                 //console.log("successfullyzxxx111",item.data.message,":::",item.data.message.toLowerCase().indexOf('created successfully'))
-                if(item.data.message.toLowerCase().indexOf('created successfully') > -1){
+                if(item.data.message.toLowerCase().indexOf('created') > -1 && item.data.message.toLowerCase().indexOf('successfully') > -1){
                     count++;
                     console.log("Created successfullyCreated successfully")
                     //setTimeout(() => {
-                        if(_item.ClusterInst.indexOf('autocluster') > -1 && count == 2){
-                            this.setAlertRefresh();
-                            computeService.deleteTempFile(_item, this.props.siteId)
-                        } else if(_item.ClusterInst.indexOf('autocluster') == -1 && count == 1) {
-                            this.setAlertRefresh();
-                            computeService.deleteTempFile(_item, this.props.siteId)
-                        }
-                        
+                    //     if(_item.ClusterInst.indexOf('autocluster') > -1 && count == 2){
+                    //         this.setAlertRefresh();
+                    //         computeService.deleteTempFile(_item, this.props.siteId)
+                    //     } else if(_item.ClusterInst.indexOf('autocluster') == -1 && count == 1) {
+                    //         this.setAlertRefresh();
+                    //         computeService.deleteTempFile(_item, this.props.siteId)
+                    //     }
+                    this.setAlertRefresh();
+                    computeService.deleteTempFile(_item, this.props.siteId)
                     //}, 2000);
                     
                 } else if(item.data.message.toLowerCase().indexOf('deleted cloudlet successfully') > -1){
