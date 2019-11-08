@@ -123,7 +123,7 @@ class SiteFourPageOrganization extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, _self.receiveResult)
         services.getMCService('ShowRole',{token:store ? store.userToken : 'null'}, _self.receiveAdminInfo)
-        this.props.handleLoadingSpinner(true);
+        _self.props.handleLoadingSpinner(true);
     }
     receiveAdminInfo = (result) => {
         this.props.handleRoleInfo(result.data)
