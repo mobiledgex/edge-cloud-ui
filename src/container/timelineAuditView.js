@@ -129,7 +129,7 @@ class TimelineAuditView extends React.Component {
         if(_self.state.rawAllData[selectedId]) _self.props.handleSelectedAudit(_self.state.rawAllData[selectedId]);
     }
     setAllView(dummyConts, sId) {
-        this.setState({rawViewData:dummyConts, currentTraceid:dummyConts['traceid']})
+        if(dummyConts['traceid']) _self.setState({rawViewData:dummyConts, currentTraceid:dummyConts['traceid']})
     }
     setRequestView(dummyConts, sId) {
 
