@@ -27,7 +27,7 @@ class SiteFourPageAppInst extends React.Component {
             devData:[],
             viewMode:'listView',
             detailData:null,
-            hiddenKeys:['Error','URI', 'Mapped_ports', 'Runtime', 'Created', 'Liveness','Flavor','Status','Revision'],
+            hiddenKeys:['Error','URI', 'Mapped_port', 'Runtime', 'Created', 'Liveness','Flavor','Status','Revision'],
             AppRevision:[],
             regionToggle:false,
             dataSort:false
@@ -42,11 +42,13 @@ class SiteFourPageAppInst extends React.Component {
         this._diffRev = []
     }
     gotoUrl(site, subPath) {
+        let mainPath = site;
         _self.props.history.push({
             pathname: site,
             search: subPath
         });
         _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     //go to
@@ -138,22 +140,22 @@ class SiteFourPageAppInst extends React.Component {
     }
     receiveResult = (result) => {
         // @inki if data has expired token
-        let scope = this;
         if(result.error && result.error.indexOf('Expired') > -1) {
-            scope.props.handleAlertInfo('error', result.error);
-            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleLoadingSpinner(false);
             return;
         }
 
         let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
         if(Object.keys(regionGroup)[0]) {
-            this._AppInstDummy = this._AppInstDummy.concat(result)
+            _self._AppInstDummy = _self._AppInstDummy.concat(result)
         }
-        this.loadCount ++;
-        if(rgn.length == this.loadCount){
-            this.countJoin()            
+        _self.loadCount ++;
+        if(rgn.length == _self.loadCount){
+            _self.countJoin()
         }
-
+        _self.props.handleLoadingSpinner(false);
         // console.log("appinstresult",result)
         // let join = null;
         // if(!result.error && result[0]['Edit']) {
@@ -311,7 +313,8 @@ const mapDispatchProps = (dispatch) => {
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
     };
 };
 

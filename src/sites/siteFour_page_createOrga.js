@@ -40,11 +40,13 @@ class SiteFourPageCreateorga extends React.Component {
         //this.hideHeader = ['Address','Phone']
     }
     gotoUrl(site, subPath) {
+        let mainPath = site;
         _self.props.history.push({
             pathname: site,
             search: subPath
         });
         _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     //go to
@@ -140,12 +142,11 @@ class SiteFourPageCreateorga extends React.Component {
         }
     }
     receiveResult(result,resource, self) {
-        _self.props.handleLoadingSpinner(false);
         // @inki if data has expired token
-        let scope = this;
         if(result.error && result.error.indexOf('Expired') > -1) {
-            scope.props.handleAlertInfo('error', result.error);
-            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleLoadingSpinner(false);
             return;
         }
 
@@ -155,6 +156,7 @@ class SiteFourPageCreateorga extends React.Component {
             _self.setState({devData:result})
 
         }
+        _self.props.handleLoadingSpinner(false);
     }
     getDataDeveloper(token) {
         services.getMCService('showOrg',{token:token}, _self.receiveResult)

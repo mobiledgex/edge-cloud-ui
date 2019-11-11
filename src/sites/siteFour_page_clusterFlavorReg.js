@@ -41,11 +41,13 @@ class SiteFourPageClusterFlavorReg extends React.Component {
         this.userToken = null;
     }
     gotoUrl(site, subPath) {
+        let mainPath = site;
         _self.props.history.push({
             pathname: site,
             search: subPath
         });
         _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     //go to
@@ -99,12 +101,11 @@ class SiteFourPageClusterFlavorReg extends React.Component {
 
     }
     receiveResult(result) {
-        this.props.handleLoadingSpinner(false);
         // @inki if data has expired token
-        let scope = this;
         if(result.error && result.error.indexOf('Expired') > -1) {
-            scope.props.handleAlertInfo('error', result.error);
-            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleLoadingSpinner(false);
             return;
         }
         console.log("clusterFlavorReg receive == ", result)
@@ -117,6 +118,7 @@ class SiteFourPageClusterFlavorReg extends React.Component {
         } else {
             _self.props.handleInjectFlavor(result)
         }
+        _self.props.handleLoadingSpinner(false);
     }
 
     getDataDeveloper(token, region) {
@@ -155,7 +157,8 @@ const mapDispatchProps = (dispatch) => {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleInjectFlavor: (data) => { dispatch(actions.showFlavor(data))}
+        handleInjectFlavor: (data) => { dispatch(actions.showFlavor(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
     };
 };
 

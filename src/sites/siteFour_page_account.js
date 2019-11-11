@@ -49,11 +49,13 @@ class SiteFourPageAccount extends React.Component {
         this.hiddenKeys = ['Passhash', 'Salt', 'Iter','FamilyName','GivenName','Picture','Nickname','CreatedAt','UpdatedAt']
     }
     gotoUrl(site, subPath) {
+        let mainPath = site;
         _self.props.history.push({
             pathname: site,
             search: subPath
         });
         _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     //go to
@@ -96,16 +98,17 @@ class SiteFourPageAccount extends React.Component {
         }
     }
     receiveResult = (result) => {
-        _self.props.handleLoadingSpinner(false);
+
         // @inki if data has expired token
-        let scope = this;
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            setTimeout(() => _self.gotoUrl('/logout'), 2000);
+            _self.props.handleLoadingSpinner(false);
             return;
         }
         let reverseResult = result.reverse();
         _self.setState({devData:reverseResult})
+        _self.props.handleLoadingSpinner(false);
     }
     getDataDeveloper(token) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -136,7 +139,8 @@ const mapDispatchProps = (dispatch) => {
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
     };
 };
 

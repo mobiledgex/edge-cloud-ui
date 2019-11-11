@@ -37,12 +37,13 @@ class SiteFourPageOrganization extends React.Component {
         //this.hideHeader = ['Address','Phone']
     }
     gotoUrl(site, subPath) {
+        let mainPath = site;
         _self.props.history.push({
             pathname: site,
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.setState({ page:subPath})
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
     }
     //go to
     gotoPreview(site, page) {
@@ -93,24 +94,24 @@ class SiteFourPageOrganization extends React.Component {
     }
     receiveResult = (result,resource, self) => {
         console.log("resultresultresultresult",result)
-        this.props.handleLoadingSpinner(false);
+
         // @inki if data has expired token
-        let scope = this;
-        if(result.error && result.error.indexOf('Expired')> 0) {
-            this.props.handleAlertInfo('error', result.error);
-            setTimeout(() => scope.gotoUrl('/logout'), 20000);
+        if(result.error && result.error.indexOf('Expired')> -1) {
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleLoadingSpinner(false);
             return;
         }
 
         if(result.length == 0) {
             _self.setState({devData:[]})
-            this.props.handleDataExist(false)
-            this.props.handleAlertInfo('error','There is no data')
+            _self.props.handleDataExist(false)
+            _self.props.handleAlertInfo('error','There is no data')
             //setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
             // _self.gotoUrl('/site4', 'pg=newOrg')  /* CreatOrg 자동 연결... */
         } else {
             _self.setState({devData:result})
-            this.props.handleDataExist(true)
+            _self.props.handleDataExist(true)
             // if(result.length === 0) {
             //     _self.gotoUrl('/site4', 'pg=newOrg')
             // } else {
@@ -118,12 +119,13 @@ class SiteFourPageOrganization extends React.Component {
             // }
 
         }
+        _self.props.handleLoadingSpinner(false);
     }
     getDataDeveloper(token) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, _self.receiveResult)
         services.getMCService('ShowRole',{token:store ? store.userToken : 'null'}, _self.receiveAdminInfo)
-        this.props.handleLoadingSpinner(true);
+        _self.props.handleLoadingSpinner(true);
     }
     receiveAdminInfo = (result) => {
         this.props.handleRoleInfo(result.data)

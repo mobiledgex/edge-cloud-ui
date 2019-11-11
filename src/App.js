@@ -232,7 +232,7 @@ class App extends Component {
 
             if(result.data.message.indexOf('Expired') > -1) {
 
-                setTimeout(() => self.goToNext('/logout',''),20000);
+                setTimeout(() => self.goToNext('/logout',''),4000);
                 Alert.error('Login timeout expired. Please login again', {
                     position: 'top-right',
                     effect: 'slide',
@@ -360,6 +360,7 @@ const mapDispatchProps = (dispatch) => {
         handleRegionInfo: (data) => { dispatch(actions.regionInfo(data))},
         handleUserInfo: (data) => { dispatch(actions.userInfo(data))},
         handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
     };
 };
 

@@ -35,11 +35,13 @@ class SiteFourPageAppReg extends React.Component {
         this.userToken = null;
     }
     gotoUrl(site, subPath) {
+        let mainPath = site;
         _self.props.history.push({
             pathname: site,
             search: subPath
         });
         _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     gotoApp() {
@@ -95,15 +97,14 @@ class SiteFourPageAppReg extends React.Component {
     }
     receiveResult(result) {
         // @inki if data has expired token
-        let scope = this;
         if(result.error && result.error.indexOf('Expired') > -1) {
-            scope.props.handleAlertInfo('error', result.error);
-            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
             return;
         }
 
         if(result.error) {
-            this.props.handleAlertInfo('error',result.error.message)
+            _self.props.handleAlertInfo('error',result.error.message)
         } else {
             _self.setState({devData:result})
         }

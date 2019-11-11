@@ -170,27 +170,28 @@ class SiteFourPageAudits extends React.Component {
     receiveResult = (result, resource, self, body) => {
         // @inki if data has expired token
         console.log('20191106 receive result...', result, ":",resource)
-        let scope = this;
         if(result.error && result.error.indexOf('Expired') > -1) {
-            scope.props.handleAlertInfo('error', result.error);
-            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleLoadingSpinner(false);
             return;
         } else if(result.error) {
-            scope.props.handleAlertInfo('error', result.error);
+            _self.props.handleAlertInfo('error', result.error);
         }
 
         let unchecked = result.data.length;
         let checked = localStorage.getItem('auditChecked')
         if(resource === 'ShowSelf' || resource === 'ShowOrg') {
             console.log('20191106 audit result..', result,":",resource, ": unchecked : ", unchecked)
-            this.reduceAuditCount(result.data, checked)
+            _self.reduceAuditCount(result.data, checked)
 
         }
-        this.setState({devData:result, auditMounted:true})
-        this.props.handleLoadingSpinner(false);
+        _self.setState({devData:result, auditMounted:true})
+        _self.props.handleLoadingSpinner(false);
         if(rgn.length == this.loadCount-1){
             return
         }
+
 
     }
     countJoin() {
@@ -290,7 +291,7 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleDetail: (data) => { dispatch(actions.changeDetail(data))},
-        handleAuditCheckCount: (data) => { dispatch(actions.setCheckedAudit(data))},
+        handleAuditCheckCount: (data) => { dispatch(actions.setCheckedAudit(data))}
     };
 };
 
