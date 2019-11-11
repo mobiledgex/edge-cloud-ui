@@ -156,7 +156,7 @@ export function createNewApp(resource, body, callback) {
     })
         .then(function (response) {
             console.log('response  registry new obj result-',response);
-            callback(response, body)
+            callback(response, body, resource)
         })
         .catch(function (error) {
             console.log(error);

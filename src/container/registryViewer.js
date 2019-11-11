@@ -132,7 +132,12 @@ class RegistryViewer extends React.Component {
         this.setState({ dimmer:dim, openAdd: true, selected:data })
     }
 
-    receiveResult = (result, body) => {
+    receiveResult = (result, body, resuorce) => {
+        console.log("bodybodybodysresult",result,":::",body,":::",resuorce)
+        let resource = ''
+        if(resuorce == 'CreateApp') resource = 'created'
+        else if(resuorce == 'UpdateApp') resource = 'updated'
+
         _self.props.handleLoadingSpinner(false);
         this.setState({toggleSubmit:false})
         if(result.data.error) {
@@ -140,7 +145,7 @@ class RegistryViewer extends React.Component {
             this.props.handleAlertInfo('error',result.data.error)
         } else {
             //this.props.gotoApp();
-            this.props.handleAlertInfo('success','Your application '+body.params.app.key.name+' created successfully')
+            this.props.handleAlertInfo('success','Your application '+body.params.app.key.name+' '+resource+' successfully')
             setTimeout(() => {
                 this.gotoUrl();
             }, 1000)
