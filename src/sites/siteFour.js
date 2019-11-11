@@ -280,15 +280,15 @@ class SiteFour extends React.Component {
         _self.props.handleUserInfo(result.data);
     }
     receiveResult(result) {
-        let scope = this;
         if(result.error && result.error.indexOf('Expired') > -1) {
-            scope.props.handleAlertInfo('error', result.error);
-            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleLoadingSpinner();
             return;
         } else if(result.error) {
-            scope.props.handleAlertInfo('error', result.error);
+            _self.props.handleAlertInfo('error', result.error);
         }
-
+        _self.props.handleLoadingSpinner();
         _self.controllerOptions(result.data);
     }
     receiveAdminInfo = (result) => {
@@ -556,7 +556,7 @@ class SiteFour extends React.Component {
         // }
 
         //Redux Alert
-        if(nextProps.alertInfo.mode) {
+        if((nextProps.alertInfo !== this.props.alertInfo) && nextProps.alertInfo.mode) {
             Alert.closeAll();
             if(nextProps.alertInfo.mode === 'success') {
                 Alert.success(nextProps.alertInfo.msg, {

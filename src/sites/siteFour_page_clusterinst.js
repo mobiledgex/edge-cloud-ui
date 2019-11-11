@@ -43,12 +43,13 @@ class SiteFourPageClusterInst extends React.Component {
 
     }
     gotoUrl(site, subPath) {
+        let mainPath = site;
         _self.props.history.push({
             pathname: site,
             search: subPath
         });
         _self.props.history.location.search = subPath;
-
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
     }
     //go to
     gotoPreview(site) {
@@ -140,10 +141,10 @@ class SiteFourPageClusterInst extends React.Component {
     receiveResultClusterInst(result) {
         _self.props.handleLoadingSpinner();
         // @inki if data has expired token
-        let scope = this;
         if(result.error && result.error.indexOf('Expired') > -1) {
-            scope.props.handleAlertInfo('error', result.error);
-            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleLoadingSpinner(false);
             return;
         }
 
@@ -158,18 +159,20 @@ class SiteFourPageClusterInst extends React.Component {
         //     }
         //     _self.groupJoin(result,'clusterInst', result[0]['Region'])
         // }
+        _self.props.handleLoadingSpinner(false);
         _self.groupJoin(result,'clusterInst')
     }
     receiveResultCloudlet(result) {
-        _self.props.handleLoadingSpinner();
+
         // @inki if data has expired token
-        let scope = this;
         if(result.error && result.error.indexOf('Expired') > -1) {
-            scope.props.handleAlertInfo('error', result.error);
-            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleLoadingSpinner();
             return;
         }
         //_self.countObject[result[0]['Region']].push(result[0]['Region'])
+        _self.props.handleLoadingSpinner();
         _self.groupJoin(result,'cloudlet')
     }
 

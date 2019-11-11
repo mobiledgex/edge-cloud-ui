@@ -38,11 +38,13 @@ class SiteFourPageApps extends React.Component {
 
     }
     gotoUrl(site, subPath) {
+        let mainPath = site;
         _self.props.history.push({
             pathname: site,
             search: subPath
         });
         _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     //go to
@@ -114,24 +116,23 @@ class SiteFourPageApps extends React.Component {
     }
     receiveResult = (result, region) => {
         // @inki if data has expired token
-        let scope = this;
         if(result.error && result.error.indexOf('Expired') > -1) {
-            scope.props.handleAlertInfo('error', result.error);
-            setTimeout(() => scope.gotoUrl('/logout'), 2000);
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleLoadingSpinner(false);
             return;
         }
 
-
         let join = null;
         if(result[0]['Edit']) {
-            join = this.state.devData.concat(result);
+            join = _self.state.devData.concat(result);
         } else {
-            join = this.state.devData;
+            join = _self.state.devData;
         }
-        this.props.handleLoadingSpinner(false);
-        this.setState({devData:join})
-        this.loadCount ++;
-        if(rgn.length == this.loadCount){
+        _self.props.handleLoadingSpinner(false);
+        _self.setState({devData:join})
+        _self.loadCount ++;
+        if(rgn.length == _self.loadCount){
             return
         }
     }
@@ -225,7 +226,8 @@ const mapDispatchProps = (dispatch) => {
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
     };
 };
 
