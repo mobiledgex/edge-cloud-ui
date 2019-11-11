@@ -165,14 +165,12 @@ exports.showAccounts = (req, res) => {
             }
         })
         .catch(function (error) {
-
             console.log('user account error......',Object.keys(error), error.response.data);
             if(error.response.data.message && error.response.data.message.indexOf('expired') > -1) {
                 res.json({error:'Login Timeout Expired. Please login again.'})
             } else {
                 res.json({error:error.response.data})
             }
-
         });
 }
 exports.showController = (req, res) => {
