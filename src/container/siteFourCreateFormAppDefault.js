@@ -331,6 +331,12 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
     processFile = (file) => {
         let reader = new FileReader();
+        let fileSize = 50 * 1024; //50KB
+        if(file.size > fileSize){
+            alert("File too large(not more than 50KB)");
+            return;
+        }
+
         this.setState({tah:10});
         reader.onload = () => {
             this.props.dispatch(change('createAppFormDefault', 'DeploymentMF', reader.result));

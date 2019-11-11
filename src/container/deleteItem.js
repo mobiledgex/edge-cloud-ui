@@ -56,8 +56,8 @@ class DeleteItem extends React.Component {
                     }
                 }
             })
-            console.log("appinstdelete",this.props.siteId,":::",body)
-            if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
+
+            if(this.props.siteId !== 'appinst'){
                 setTimeout(() => {
                     _self.props.refresh(this.props.changeRegion);
                 }, 3000);

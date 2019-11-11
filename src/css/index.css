@@ -1278,14 +1278,6 @@ body, button, input, textarea, optgroup, select, textarea,
     display: flex;
     width: 100%;
 }
-.contents_body .ui.table tbody tr .table_actions {
-    display: flex;
-    justify-content: center;
-}
-.contents_body .ui.table tbody tr .table_actions .table_actions_button {
-    background: rgba(68,119,0,1) !important;
-    padding: 10px 15px !important;
-}
 
 .contents_body .ui.basic.striped.table tbody tr:nth-child(1n) {
     background: rgba(0,0,0,.15) !important;
@@ -1336,37 +1328,6 @@ body, button, input, textarea, optgroup, select, textarea,
 /*    color: rgba(255,255,255,.7);*/
 /*    cursor: default;*/
 /*}*/
-
-.table_actions_popup {
-    background: unset !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    /* left: 770px !important; */
-    /* top: 216px !important; */
-}
-.table_actions_popup .table_actions_popup_group {
-    border: 1px solid #96c8da;
-    border-radius: 5px;
-}
-.table_actions_popup .table_actions_popup_group .table_actions_popup_group_button {
-    background: #000000 !important;
-    color: rgba(255,255,255,.4) !important;
-}
-.table_actions_popup .table_actions_popup_group .table_actions_popup_group_button:hover {
-    background-color: rgba(71,82,102,1) !important;
-    color: rgba(255,255,255,0.9) !important;
-}
-.table_actions_tooltip {
-    background: #000000 !important;
-    border: 1px solid rgba(255,255,255,.4) !important;
-}
-.table_actions_tooltip:before {
-    background: #000000 !important;
-    /* border-top: 1px solid rgba(255,255,255,.4) !important; */
-}
-.table_actions_tooltip > div {
-    color: #ffffff !important;
-}
 
 /* grid table paging */
 .listPageContainer {

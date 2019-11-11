@@ -28,8 +28,8 @@ export function showAuditOrg(resource, body, callback, self) {
             }
             console.log('20191018 parse data audit org ===>>>>>>>>>> ', parseData, body)
             if(parseData) {
-                if(parseData.error){
-                    callback({parseData}, resource, self, body);
+                if(parseData.message){
+
                 } else {
                     callback(parseData, resource, self, body);
                 }
@@ -59,8 +59,8 @@ export function showAuditSelf(resource, body, callback, self) {
             }
 
             if(parseData) {
-                if(parseData.error){
-                    callback(parseData, resource, self, body);
+                if(parseData.message){
+
                 } else {
                     callback(parseData, resource, self, body);
                 }

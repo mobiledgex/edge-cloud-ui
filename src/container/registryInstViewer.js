@@ -234,7 +234,6 @@ class RegistryInstViewer extends React.Component {
 
     gotoUrl(msg) {
         let pg = 'pg=6'
-        let pgname = '';
         if(_self.props.location.goBack && msg !== 'submit') {
             pg = 'pg=5'
             localStorage.setItem('selectMenu', 'Apps')
@@ -243,20 +242,9 @@ class RegistryInstViewer extends React.Component {
         }
         _self.props.history.push({
             pathname: '/site4',
-            search: pg,
+            search: pg
         });
         _self.props.history.location.search = pg;
-        
-        if(this.props.submitData.createAppFormDefault.values.AutoClusterInst){
-            _self.props.history.location.pgname = 'appinst';
-            _self.props.history.location.pgnameData = {
-                AppName:this.props.submitData.createAppFormDefault.values.AppName,
-                Operator:this.props.submitData.createAppFormDefault.values.Operator,
-                Cloudlet:this.props.submitData.createAppFormDefault.values.Cloudlet[0],
-                ClusterInst:'autocluster'+this.props.submitData.createAppFormDefault.values.AppName.replace(/(\s*)/g, ""),
-                State:3
-            }
-        }
         _self.props.handleChangeSite({mainPath:'/site4', subPath: pg})
     }
 

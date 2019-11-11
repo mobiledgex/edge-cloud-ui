@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Grid, Header, Button, Table, Popup, Icon, Input, Dropdown, Container } from 'semantic-ui-react';
+import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Divider, Container } from 'semantic-ui-react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -18,11 +18,7 @@ import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
 const ReactGridLayout = WidthProvider(RGL);
 
-const appssEdit = [
-    {key: 'launch', text:'Launch', icon:null},
-    {key: 'update', text:'Update', icon:null},
-    {key: 'delete', text:'Delete', icon:'trash alternate'},
-]
+
 const headerStyle = {
     backgroundImage: 'url()'
 }
@@ -53,13 +49,7 @@ class InsideListView extends React.Component {
             resultData:null,
             openDelete:false,
             isDraggable: false,
-            noData:false,
-            viewMode:'listView',
-            selectedRole:null,
-            isOpen: false,
-            isOpenTip:false,
-            actionContextRef:'actionCell_0',
-            item:null
+            noData:false
         };
         this.sorting = false;
 
@@ -298,108 +288,40 @@ class InsideListView extends React.Component {
         // this.props.handleChangeComputeItem('App Instances')
         localStorage.setItem('selectMenu', 'App Instances')
     }
-    handleOpen = () => {
-        this.setState({ isOpen: true })
-
-        // this.timeout = setTimeout(() => {
-        //     this.setState({ isOpen: false })
-        // }, timeoutLength)
-    }
-
-    handleClose = () => {
-        this.setState({ isOpen: false, isOpenTip:false })
-        //clearTimeout(this.timeout)
-    }
-    onHandleScroll = () => {
-        this.setState({ isOpen: false, isOpenTip:false })
-    }
-    onClickDropMenu = (item, value, idx, self) => {
-        _self.setState({actionContextRef:'actionCell_'+idx})
-        setTimeout(() => _self.setState({isOpen:true, isOpenTip:false}), 100)
-
-        //set state for use audit
-        _self.setState({orgName:item.Organization, item:item})
-    }
-    onOverDropMenu = (item, value, idx) => {
-        _self.setState({actionContextRef:'actionCell_'+idx})
-        setTimeout(() => _self.setState({isOpenTip:true}), 100)
-
-        //set state for use audit
-        _self.setState({orgName:item.Organization, item:item})
-    }
-    onOutDropMenu = (item, value, idx) => {
-        _self.setState({actionContextRef:''})
-        setTimeout(() => _self.setState({isOpenTip:false}), 100)
-
-    }
-
-
-    /*******
-     * If you click the buttons that are grouped
-     ** *****/
-    onHandlePopMenu = (a, b) => {
-        this.setState({ isOpen: false })
-        console.log('20191104 ... on handle pop menu.. ', a, b.children, ': orgName=', this.state.orgName)
-        if(b.children === 'Launch') {
-            this.appLaunch(this.state.item)
-        } else if(b.children === 'Update') {
-            this.onHandleClick(true, this.state.item)
-        } else if(b.children === 'Delete') {
-            this.setState({openDelete: true, selected:this.state.item})
-        }
-
-    }
-    makeActionButton = (target) => (
-        <Button.Group vertical className="table_actions_popup_group">
-            {
-                appssEdit.map((option)=> (
-                    <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
-                        {option.text}
-                    </Button>
-                ))
-            }
-        </Button.Group>
-    )
-    makeEditButtonGroup = (item, value, j, i) => (
-        <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
-            <div ref={acell => this['actionCell_'+i] = acell} style={{backgroundColor:'transparent', width:0, height:0, position:'relative'}}></div>
-            <Button className="table_actions_button" onClick={(self) => _self.onClickDropMenu(item, value, i, self)} onMouseOver={()=>_self.onOverDropMenu(item, value, i)} onMouseOut={() => _self.onOutDropMenu(item, value, i)}>
-                <Button.Content visible>
-                    <Icon name='bars' />
-                </Button.Content>
-            </Button>
-        </div>
-    )
-    makeEditMenu = (item, value, i, j) => (
-        <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
-            <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button>
-            {(this.props.siteId == 'App')?
-                <Button className='launchButton' color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.appLaunch(item)}>
-                    Launch
-                </Button>:null}
-            {(this.props.siteId == 'App')?
-                (String(item[value]).indexOf('Editable') > -1) ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button> : null:null}
-            <Button disabled={(localStorage.selectMenu !== 'Organizations')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
-        </Table.Cell>
-    )
     TableExampleVeryBasic = (headL, hideHeader, datas) => (
-        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+        <Table className="viewListTable" basic='very' sortable striped celled>
             <Table.Header className="viewListTableHeader">
                 <Table.Row>
                     {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hideHeader):null}
                 </Table.Row>
             </Table.Header>
 
-            <Table.Body className="tbBodyList" onScroll={this.onHandleScroll}>
+            <Table.Body className="tbBodyList">
                 {
                     datas.map((item, i) => (
                         <Table.Row key={i} id={'tbRow_'+i} style={{position:'relative'}}>
                             {Object.keys(item).map((value, j) => (
                                 (value === 'Edit')?
                                     String(item[value]) === 'null' ? <Table.Cell /> :
-                                        <Table.Cell className="table_actions" key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444', overflow:'visible'} :{whiteSpace:'nowrap', overflow:'visible'} }>
-                                            {this.makeEditButtonGroup(item, value, j, i)}
-                                        </Table.Cell>
+                                    <Table.Cell key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'} }>
+                                        {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager')?
+                                            <Button color={(this.state.selectUse == i)?'teal' :null} onClick={(evt) => this.onUseOrg(item,i, evt)}>
+                                                <Icon name='check' />
+                                            </Button>:null}
+                                        <Button disabled style={{display:'none'}} key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button>
+                                        {(this.props.siteId == 'Organization')?
+                                            <Button color='teal' disabled={this.addUserDisable(item)} onClick={() => this.onHandleClickAdd(true, item, i)}>
+                                                Add User
+                                            </Button>:null}
+                                        {(this.props.siteId == 'App')?
+                                            <Button className='launchButton' color='teal' disabled={this.props.dimmInfo.onlyView} onClick={() => this.appLaunch(item)}>
+                                            Launch
+                                            </Button>:null}
+                                        {(this.props.siteId == 'App')?
+                                            (String(item[value]).indexOf('Editable') > -1) ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleClick(true, item)}><Icon name={'edit'}/></Button> : null:null}
+                                        <Button disabled={(localStorage.selectMenu !== 'Organizations')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
+
+                                    </Table.Cell>
                                 :
                                 (value === 'Type')?
                                     <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} >
@@ -491,32 +413,13 @@ class InsideListView extends React.Component {
                 ></DeleteItem>
                 
                 <div
+                    layout={this.state.layout}
                     onLayoutChange={this.onLayoutChange}
                     {...this.props}
                     style={{width:'100%'}}
                 >
                     {this.generateDOM(open, dimmer,hiddenKeys)}
                 </div>
-                <Popup
-                    inverted
-                    content={this.makeActionButton(this[this.state.actionContextRef])}
-                    on='click'
-                    open={this.state.isOpen}
-                    onClose={this.handleClose}
-                    onOpen={this.handleOpen}
-                    position='left center'
-                    context={this[this.state.actionContextRef]}
-                    className="table_actions_popup"
-                    basic
-                />
-                <Popup
-                    className="table_actions_tooltip"
-                    open={this.state.isOpenTip}
-                    content='Click this button to perform "Launch", "Update" and "Delete".'
-                    size='mini'
-                    position='left center'
-                    context={this[this.state.actionContextRef]}
-                />
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} siteId={this.props.siteId}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                 <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>

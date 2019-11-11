@@ -292,9 +292,8 @@ export default class MonitoringViewer extends React.Component {
                         </div>
                     </Container>
                     :
-                    (type === 'CPU')?<Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?'Count' : '%')}</Container>
-                        : (type === 'DISK') ? <Container className="disk">{this.bytesToString(this.state.lastDISK)}</Container>
-                        : <Container className="memory">{this.bytesToString(this.state.lastMEM)}</Container>
+                    (type === 'CPU')?<Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?'Count' : '%')}</Container>:
+                        <Container className="memory">{this.bytesToString(this.state.lastMEM)}</Container>
             }
         </Segment>
     )
@@ -330,9 +329,10 @@ export default class MonitoringViewer extends React.Component {
                             this.makeChartContainer('MEMORY', this.state.lastMEM, this.state.maxMEM, ' GBs', 'MEM')
                         }
 
+
                         {
                             (this.props.data.page !== 'appInst')?
-                                this.makeChartContainer('DISK', this.state.lastDISK, this.state.maxDISK, ' GBs', 'DISK')
+                                this.makeChartContainer('DISK', this.state.lastDISK, this.state.maxDISK, ' GBs')
                                 :
                                 null
                         }
