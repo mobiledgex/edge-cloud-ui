@@ -4,8 +4,9 @@ import { Grid, Image, Header, Modal, Dropdown, Button } from 'semantic-ui-react'
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
-
-
+import * as d3 from 'd3';
+import CalendarTimeline from '../components/timeline/calendarTimeline';
+import * as services from '../services/service_audit_api';
 import PopSendEmailView from '../container/popSendEmailView';
 
 // TODO : https://codepen.io/AdamKimmerer/pen/RraRbb
@@ -129,9 +130,7 @@ class TimelineAuditView extends React.Component {
         if(_self.state.rawAllData[selectedId]) _self.props.handleSelectedAudit(_self.state.rawAllData[selectedId]);
     }
     setAllView(dummyConts, sId) {
-        if(dummyConts && dummyConts['traceid']) {
-            this.setState({rawViewData: dummyConts, currentTraceid: dummyConts['traceid']})
-        }
+        this.setState({rawViewData:dummyConts, currentTraceid:dummyConts['traceid']})
     }
     setRequestView(dummyConts, sId) {
 
@@ -212,8 +211,9 @@ class TimelineAuditView extends React.Component {
 
                 contentContainer.appendChild(contentNode);
 
+                //TODO 이미 체크된 오딧은 변경된 스타일을 적용해 주어야 한다.
                 let checkedCircle = localStorage.getItem('auditChecked');
-                if(checkedCircle && JSON.parse(checkedCircle).length && liDom) {
+                if(checkedCircle && JSON.parse(checkedCircle).length) {
                     JSON.parse(checkedCircle).map((check) => {
                         if(check === auditList[i]['traceid']){
                             let findCircle = liDom.childNodes;
@@ -360,12 +360,12 @@ class TimelineAuditView extends React.Component {
                     {/*<div className="page_audit_history_grid">*/}
                         {/*<CalendarTimeline></CalendarTimeline>*/}
                     {/*</div>*/}
-                    {/*<div style={{minWidth:200}}>*/}
-                        {/*<a className="ui label"  onClick={() => this.onHandleClickTrace(this.state.currentTraceid, this.state.rawViewData)}>*/}
-                            {/*<i aria-hidden="true" className="mail icon"></i>*/}
-                            {/*<span>{this.state.currentTraceid}</span>*/}
-                        {/*</a>*/}
-                    {/*</div>*/}
+                    <div style={{minWidth:200}}>
+                        <a className="ui label"  onClick={() => this.onHandleClickTrace(this.state.currentTraceid, this.state.rawViewData)}>
+                            <i aria-hidden="true" className="mail icon"></i>
+                            <span>{this.state.currentTraceid}</span>
+                        </a>
+                    </div>
                 </div>
                 <div className="page_audit_code">
                     <div className="page_audit_code_left">
