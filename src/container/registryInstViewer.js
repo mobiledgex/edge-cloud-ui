@@ -247,13 +247,13 @@ class RegistryInstViewer extends React.Component {
         });
         _self.props.history.location.search = pg;
         
-        if(this.props.submitData.createAppFormDefault.values.AutoClusterInst){
+        if(_self.props.submitData.createAppFormDefault.values && _self.props.submitData.createAppFormDefault.values.AutoClusterInst){
             _self.props.history.location.pgname = 'appinst';
             _self.props.history.location.pgnameData = {
-                AppName:this.props.submitData.createAppFormDefault.values.AppName,
-                Operator:this.props.submitData.createAppFormDefault.values.Operator,
-                Cloudlet:this.props.submitData.createAppFormDefault.values.Cloudlet[0],
-                ClusterInst:'autocluster'+this.props.submitData.createAppFormDefault.values.AppName.replace(/(\s*)/g, ""),
+                AppName:_self.props.submitData.createAppFormDefault.values.AppName,
+                Operator:_self.props.submitData.createAppFormDefault.values.Operator,
+                Cloudlet:_self.props.submitData.createAppFormDefault.values.Cloudlet[0],
+                ClusterInst:'autocluster'+_self.props.submitData.createAppFormDefault.values.AppName.replace(/(\s*)/g, ""),
                 State:3
             }
         }
