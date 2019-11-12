@@ -69,6 +69,25 @@ const renderInput = ({ input, placeholder, label, type, error, disabled}) => (
     </div>
 
 );
+const renderInputNum = ({ input, placeholder, label, type, error, disabled}) => (
+    <div>
+        <Form.Input
+            {...input}
+            type={type}
+            label={label}
+            disabled={disabled}
+            onChange={(e, { value }) => {
+                let regexp = /[^0-9]/g
+                if(!regexp.test(value)){
+                    input.onChange(value)
+                }
+
+            }}
+        />
+        {error && <span className="text-danger">{error}</span>}
+    </div>
+
+);
 const renderInputDisabled = field => (
     <Form.Input
         {...field.input}
@@ -119,11 +138,11 @@ const renderInputApp = field => (
 
 const renderCheckbox = field => (
     <Form.Checkbox toggle
-        style={{height:'33px', paddingTop:'8px'}}
-        checked={!!field.input.value}
-        name={field.input.name}
-        label={field.label}
-        onChange={(e, { checked }) => field.input.onChange(checked)}
+                   style={{height:'33px', paddingTop:'8px'}}
+                   checked={!!field.input.value}
+                   name={field.input.name}
+                   label={field.label}
+                   onChange={(e, { checked }) => field.input.onChange(checked)}
     />
 );
 
@@ -162,8 +181,8 @@ class SiteFourCreateFormAppDefault extends React.Component {
         let _statePort = [];
         if(edit && _data){
             (_data.DeploymentType == 'docker')?_data.DeploymentType = 'Docker':
-            (_data.DeploymentType == 'kubernetes')?_data.DeploymentType = 'Kubernetes':
-            _data.DeploymentType = 'VM'
+                (_data.DeploymentType == 'kubernetes')?_data.DeploymentType = 'Kubernetes':
+                    _data.DeploymentType = 'VM'
             this.onHandleChange('DeploymentType',_data.DeploymentType);
             if(_data.Ports && _data.Ports != '-'){
                 _portArr = _data.Ports.split(',')
@@ -233,7 +252,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
             }
         }
         if(nextProps.data.editMode) this.setState({title:'Update Settings',submitButton:'Update'})
-        
+
     }
 
     getLabel (key, pId) {
@@ -315,7 +334,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
             } else {
                 this.setState({deploymentType:true})
             }
-        } 
+        }
     }
 
     textUpload = (e) => {
@@ -331,17 +350,11 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
     processFile = (file) => {
         let reader = new FileReader();
-        let fileSize = 50 * 1024; //50KB
-        if(file.size > fileSize){
-            alert("File too large(not more than 50KB)");
-            return;
-        }
-
         this.setState({tah:10});
         reader.onload = () => {
             this.props.dispatch(change('createAppFormDefault', 'DeploymentMF', reader.result));
         };
-     
+
         reader.readAsText(file, /* optional */ "euc-kr");
     }
 
@@ -349,7 +362,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
         e.preventDefault();
         this.props.dispatch(change('createAppFormDefault', 'DeploymentMF', ''));
     }
-    
+
     render (){
         const { handleSubmit, reset, dimmer, selected, open, close, option, value, change, org, type, pId, getUserRole } = this.props;
         const { data, regKeys, fieldKeys, title } = this.state;
@@ -368,224 +381,224 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
                                             (this.getLabel(key, pId))?
                                                 (!this.state.deploymentType || key !== 'ScaleWithCluster')?
-                                                <Grid.Row columns={3} key={i} className={'createApp'+i}>
+                                                    <Grid.Row columns={3} key={i} className={'createApp'+i}>
 
-                                                    <Grid.Column width={4} className='detail_item'>
-                                                        <div>{this.getLabel(key, pId)}{this.getNecessary(key, pId)}</div>
-                                                    </Grid.Column>
-                                                    <Grid.Column width={11}>
-                                                        {
+                                                        <Grid.Column width={4} className='detail_item'>
+                                                            <div>{this.getLabel(key, pId)}{this.getNecessary(key, pId)}</div>
+                                                        </Grid.Column>
+                                                        <Grid.Column width={11}>
+                                                            {
 
-                                                            (fieldKeys[pId][key]['type'] === 'RenderTextArea') ?
-                                                            <div>
-                                                                <Field
-                                                                component={renderTextArea}
-                                                                placeholder={data[key]}
-                                                                value={data[key]}
-                                                                name={key}
-                                                                row={(fieldKeys[pId][key]['label'] === 'Deployment Manifest') ?this.state.tah:4}
-                                                                />
-                                                                {
-                                                                    (fieldKeys[pId][key]['label'] === 'Deployment Manifest') ?
-                                                                    <div style={{marginTop:'1em'}}>
+                                                                (fieldKeys[pId][key]['type'] === 'RenderTextArea') ?
+                                                                    <div>
+                                                                        <Field
+                                                                            component={renderTextArea}
+                                                                            placeholder={data[key]}
+                                                                            value={data[key]}
+                                                                            name={key}
+                                                                            row={(fieldKeys[pId][key]['label'] === 'Deployment Manifest') ?this.state.tah:4}
+                                                                        />
+                                                                        {
+                                                                            (fieldKeys[pId][key]['label'] === 'Deployment Manifest') ?
+                                                                                <div style={{marginTop:'1em'}}>
                                                                         <span style={{marginRight:'1em'}}>
                                                                             <Button positive onClick={this.textUpload}>Select Manifest</Button>
                                                                         </span>
-                                                                        <Button onClick={this.textRemove}>Clear Manifest</Button>
+                                                                                    <Button onClick={this.textRemove}>Clear Manifest</Button>
+                                                                                </div>
+                                                                                :null
+                                                                        }
                                                                     </div>
-                                                                    :null
-                                                                }
-                                                            </div>
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'RenderSelect') ?
-                                                            <Field
-                                                                component={renderSelect}
-                                                                placeholder={'Select '+fieldKeys[pId][key]['label']}
-                                                                value={data[key]}
-                                                                options={fieldKeys[pId][key]['items']}
-                                                                name={key}
-                                                                onChange={(e)=>this.onHandleChange(key,e)}
-                                                                disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
-                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'IpSelect') ?
-                                                            <Field
-                                                                component={renderSelectNumber}
-                                                                placeholder={'Select IpAccess'}
-                                                                value={data[key]}
-                                                                options={fieldKeys[pId][key]['items']}
-                                                                name={key}
-                                                                />
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'FlavorSelect') ?
-                                                            <Field
-                                                                component={renderSelect}
-                                                                placeholder={'Select Flavor'}
-                                                                value={data[key]}
-                                                                options={this.props.flavorData}
-                                                                name={key}
-                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'RegionSelect') ?
-                                                            <Field
-                                                                component={renderSelect}
-                                                                placeholder={'Select Region'}
-                                                                value={data[key]}
-                                                                options={fieldKeys[pId][key]['items']}
-                                                                name={key}
-                                                                disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
-                                                                onChange={this.handleRegionChange}
-                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'RenderDT') ?
-                                                            <Field
-                                                                    component={renderInputDpType}
-                                                                    placeholder={fieldKeys[pId][key].items}
-                                                                    type="input"
-                                                                    name={key}
-                                                                    value={fieldKeys[pId][key].items}
-                                                                    error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
-                                                                    />
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'RenderPath') ?
-                                                            <Field
-                                                                    component={renderInputPathType}
-                                                                    placeholder={fieldKeys[pId][key].items}
-                                                                    type="input"
-                                                                    name={key}
-                                                                    value={(fieldKeys[pId][key].items)?fieldKeys[pId][key].items:data[key]}
-                                                                    error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
-                                                                    />
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'RenderCheckbox') ?
-                                                            <Field
-                                                                component={renderCheckbox}
-                                                                name={key}
-                                                                />
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'RenderInputDisabled') ?
-                                                                (getUserRole == 'AdminManager') ?
-                                                                    <Field
-                                                                        component={renderSelect}
-                                                                        placeholder={'Select Organization Name'}
-                                                                        options={this.state.orgArr}
-                                                                        name={key}
-                                                                        disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
-                                                                        error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
-                                                                :
-                                                                    <Field
-                                                                        disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
-                                                                        component={renderInputDisabled}
-                                                                        //placeholder={data[key]}
-                                                                        type="input"
-                                                                        name={key}
-                                                                        value={data[key]}
-                                                                        />
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'CustomPorts') ?
-                                                            <Grid>
-                                                                {
-                                                                    this.state.portArray.map((item,i) => (
-                                                                        (item.name == 'multi')?
-                                                                            <Grid.Row key={i} columns={3} style={{paddingBottom:'0px'}}>
-                                                                                <Grid.Column width={5}>
-                                                                                    <Field
-                                                                                        component={renderInput}
-                                                                                        type="input"
-                                                                                        name={'multiF_'+item.num}
-                                                                                        value={data[key]}
-                                                                                        error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
-                                                                                        />
-                                                                                </Grid.Column>
-                                                                                <Grid.Column width={1}>
-                                                                                    <center style={{lineHeight:'35px',fontSize:'18px'}}>~</center>
-                                                                                </Grid.Column>
-                                                                                <Grid.Column width={5}>
-                                                                                    <Field
-                                                                                        component={renderInput}
-                                                                                        type="input"
-                                                                                        name={'multiS_'+item.num}
-                                                                                        value={data[key]}
-                                                                                        error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
-                                                                                        />
-                                                                                </Grid.Column>
-                                                                                <Grid.Column width={4} style={{padding:0}}>
-                                                                                    <Field
-                                                                                        component={renderSelect}
-                                                                                        placeholder={'Select port'}
-                                                                                        value={data[key]}
-                                                                                        options={['TCP','UDP']}
-                                                                                        name={key+'select_'+item.num}
-                                                                                        error={(this.props.validError.indexOf(key+'select_'+i) !== -1)?'Required':''}
-                                                                                        />
-                                                                                </Grid.Column>
-                                                                                <Grid.Column width={1}>
-                                                                                    <div className='removePorts' onClick={() => this.RemovePorts(i,item.num)}><i className="material-icons">clear</i></div>
-                                                                                </Grid.Column>
-                                                                            </Grid.Row>
+                                                                    :
+                                                                    (fieldKeys[pId][key]['type'] === 'RenderSelect') ?
+                                                                        <Field
+                                                                            component={renderSelect}
+                                                                            placeholder={'Select '+fieldKeys[pId][key]['label']}
+                                                                            value={data[key]}
+                                                                            options={fieldKeys[pId][key]['items']}
+                                                                            name={key}
+                                                                            onChange={(e)=>this.onHandleChange(key,e)}
+                                                                            disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
+                                                                            error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                                         :
-                                                                            <Grid.Row key={i} columns={3} style={{paddingBottom:'0px'}}>
-                                                                                <Grid.Column width={11}>
-                                                                                    <Field
-                                                                                        component={renderInput}
-                                                                                        type="input"
-                                                                                        name={key+'_'+item.num}
-                                                                                        value={data[key]}
-                                                                                        error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
-                                                                                        />
-                                                                                </Grid.Column>
-                                                                                <Grid.Column width={4} style={{padding:0}}>
+                                                                        (fieldKeys[pId][key]['type'] === 'IpSelect') ?
+                                                                            <Field
+                                                                                component={renderSelectNumber}
+                                                                                placeholder={'Select IpAccess'}
+                                                                                value={data[key]}
+                                                                                options={fieldKeys[pId][key]['items']}
+                                                                                name={key}
+                                                                            />
+                                                                            :
+                                                                            (fieldKeys[pId][key]['type'] === 'FlavorSelect') ?
+                                                                                <Field
+                                                                                    component={renderSelect}
+                                                                                    placeholder={'Select Flavor'}
+                                                                                    value={data[key]}
+                                                                                    options={this.props.flavorData}
+                                                                                    name={key}
+                                                                                    error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
+                                                                                :
+                                                                                (fieldKeys[pId][key]['type'] === 'RegionSelect') ?
                                                                                     <Field
                                                                                         component={renderSelect}
-                                                                                        placeholder={'Select port'}
+                                                                                        placeholder={'Select Region'}
                                                                                         value={data[key]}
-                                                                                        options={['TCP','UDP']}
-                                                                                        name={key+'select_'+item.num}
-                                                                                        error={(this.props.validError.indexOf(key+'select_'+i) !== -1)?'Required':''}
+                                                                                        options={fieldKeys[pId][key]['items']}
+                                                                                        name={key}
+                                                                                        disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
+                                                                                        onChange={this.handleRegionChange}
+                                                                                        error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
+                                                                                    :
+                                                                                    (fieldKeys[pId][key]['type'] === 'RenderDT') ?
+                                                                                        <Field
+                                                                                            component={renderInputDpType}
+                                                                                            placeholder={fieldKeys[pId][key].items}
+                                                                                            type="input"
+                                                                                            name={key}
+                                                                                            value={fieldKeys[pId][key].items}
+                                                                                            error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
                                                                                         />
-                                                                                </Grid.Column>
-                                                                                <Grid.Column width={1}>
-                                                                                    <div className='removePorts' onClick={() => this.RemovePorts(i,item.num)}><i className="material-icons">clear</i></div>
-                                                                                </Grid.Column>
-                                                                            </Grid.Row>
-                                                                    ))
-                                                                }
-                                                                <Grid.Row>
-                                                                    <Grid.Column>
+                                                                                        :
+                                                                                        (fieldKeys[pId][key]['type'] === 'RenderPath') ?
+                                                                                            <Field
+                                                                                                component={renderInputPathType}
+                                                                                                placeholder={fieldKeys[pId][key].items}
+                                                                                                type="input"
+                                                                                                name={key}
+                                                                                                value={(fieldKeys[pId][key].items)?fieldKeys[pId][key].items:data[key]}
+                                                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
+                                                                                            />
+                                                                                            :
+                                                                                            (fieldKeys[pId][key]['type'] === 'RenderCheckbox') ?
+                                                                                                <Field
+                                                                                                    component={renderCheckbox}
+                                                                                                    name={key}
+                                                                                                />
+                                                                                                :
+                                                                                                (fieldKeys[pId][key]['type'] === 'RenderInputDisabled') ?
+                                                                                                    (getUserRole == 'AdminManager') ?
+                                                                                                        <Field
+                                                                                                            component={renderSelect}
+                                                                                                            placeholder={'Select Organization Name'}
+                                                                                                            options={this.state.orgArr}
+                                                                                                            name={key}
+                                                                                                            disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
+                                                                                                            error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
+                                                                                                        :
+                                                                                                        <Field
+                                                                                                            disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
+                                                                                                            component={renderInputDisabled}
+                                                                                                            //placeholder={data[key]}
+                                                                                                            type="input"
+                                                                                                            name={key}
+                                                                                                            value={data[key]}
+                                                                                                        />
+                                                                                                    :
+                                                                                                    (fieldKeys[pId][key]['type'] === 'CustomPorts') ?
+                                                                                                        <Grid>
+                                                                                                            {
+                                                                                                                this.state.portArray.map((item,i) => (
+                                                                                                                    (item.name == 'multi')?
+                                                                                                                        <Grid.Row key={i} columns={3} style={{paddingBottom:'0px'}}>
+                                                                                                                            <Grid.Column width={5}>
+                                                                                                                                <Field
+                                                                                                                                    component={renderInputNum}
+                                                                                                                                    type="input"
+                                                                                                                                    name={'multiF_'+item.num}
+                                                                                                                                    value={data[key]}
+                                                                                                                                    error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
+                                                                                                                                />
+                                                                                                                            </Grid.Column>
+                                                                                                                            <Grid.Column width={1}>
+                                                                                                                                <center style={{lineHeight:'35px',fontSize:'18px'}}>~</center>
+                                                                                                                            </Grid.Column>
+                                                                                                                            <Grid.Column width={5}>
+                                                                                                                                <Field
+                                                                                                                                    component={renderInputNum}
+                                                                                                                                    type="input"
+                                                                                                                                    name={'multiS_'+item.num}
+                                                                                                                                    value={data[key]}
+                                                                                                                                    error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
+                                                                                                                                />
+                                                                                                                            </Grid.Column>
+                                                                                                                            <Grid.Column width={4} style={{padding:0}}>
+                                                                                                                                <Field
+                                                                                                                                    component={renderSelect}
+                                                                                                                                    placeholder={'Select port'}
+                                                                                                                                    value={data[key]}
+                                                                                                                                    options={['TCP','UDP']}
+                                                                                                                                    name={key+'select_'+item.num}
+                                                                                                                                    error={(this.props.validError.indexOf(key+'select_'+i) !== -1)?'Required':''}
+                                                                                                                                />
+                                                                                                                            </Grid.Column>
+                                                                                                                            <Grid.Column width={1}>
+                                                                                                                                <div className='removePorts' onClick={() => this.RemovePorts(i,item.num)}><i className="material-icons">clear</i></div>
+                                                                                                                            </Grid.Column>
+                                                                                                                        </Grid.Row>
+                                                                                                                        :
+                                                                                                                        <Grid.Row key={i} columns={3} style={{paddingBottom:'0px'}}>
+                                                                                                                            <Grid.Column width={11}>
+                                                                                                                                <Field
+                                                                                                                                    component={renderInputNum}
+                                                                                                                                    type="input"
+                                                                                                                                    name={key+'_'+item.num}
+                                                                                                                                    value={data[key]}
+                                                                                                                                    error={(this.props.validError.indexOf(key+'_'+i) !== -1)?'Required':''}
+                                                                                                                                />
+                                                                                                                            </Grid.Column>
+                                                                                                                            <Grid.Column width={4} style={{padding:0}}>
+                                                                                                                                <Field
+                                                                                                                                    component={renderSelect}
+                                                                                                                                    placeholder={'Select port'}
+                                                                                                                                    value={data[key]}
+                                                                                                                                    options={['TCP','UDP']}
+                                                                                                                                    name={key+'select_'+item.num}
+                                                                                                                                    error={(this.props.validError.indexOf(key+'select_'+i) !== -1)?'Required':''}
+                                                                                                                                />
+                                                                                                                            </Grid.Column>
+                                                                                                                            <Grid.Column width={1}>
+                                                                                                                                <div className='removePorts' onClick={() => this.RemovePorts(i,item.num)}><i className="material-icons">clear</i></div>
+                                                                                                                            </Grid.Column>
+                                                                                                                        </Grid.Row>
+                                                                                                                ))
+                                                                                                            }
+                                                                                                            <Grid.Row>
+                                                                                                                <Grid.Column>
                                                                         <span style={{marginRight:'1em'}}>
                                                                             <Button positive onClick={this.AddPorts}>Add Port Mapping</Button>
                                                                         </span>
-                                                                        <Button positive onClick={this.AddMultiPorts}>Add MultiPort Mapping</Button>
-                                                                        {/*<div className="addPortMapping" onClick={this.AddPorts}>+ Add Port Mapping</div>*/}
-                                                                    </Grid.Column>
-                                                                </Grid.Row>
-                                                            </Grid>
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'RenderInputApp') ?
-                                                            <Field
-                                                                component={renderInputApp}
-                                                                type="input"
-                                                                name={key}
-                                                                value={data[key]}
-                                                                disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
-                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
-                                                            :
-                                                            <Field
-                                                                component={renderInput}
-                                                                type="input"
-                                                                name={key}
-                                                                value={data[key]}
-                                                                disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
-                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
-                                                                />
-                                                        }
-                                                    </Grid.Column>
-                                                    <Grid.Column width={1}>
-                                                        {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
-                                                    </Grid.Column>
-                                                </Grid.Row>
+                                                                                                                    <Button positive onClick={this.AddMultiPorts}>Add MultiPort Mapping</Button>
+                                                                                                                    {/*<div className="addPortMapping" onClick={this.AddPorts}>+ Add Port Mapping</div>*/}
+                                                                                                                </Grid.Column>
+                                                                                                            </Grid.Row>
+                                                                                                        </Grid>
+                                                                                                        :
+                                                                                                        (fieldKeys[pId][key]['type'] === 'RenderInputApp') ?
+                                                                                                            <Field
+                                                                                                                component={renderInputApp}
+                                                                                                                type="input"
+                                                                                                                name={key}
+                                                                                                                value={data[key]}
+                                                                                                                disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
+                                                                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
+                                                                                                            :
+                                                                                                            <Field
+                                                                                                                component={renderInput}
+                                                                                                                type="input"
+                                                                                                                name={key}
+                                                                                                                value={data[key]}
+                                                                                                                disabled={(this.state.editDsb)?fieldKeys[pId][key].editDisabled:false}
+                                                                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
+                                                                                                            />
+                                                            }
+                                                        </Grid.Column>
+                                                        <Grid.Column width={1}>
+                                                            {(fieldKeys[pId][key] && fieldKeys[pId][key]['tip']) ? this.getHelpPopup(fieldKeys[pId][key]['tip']):null}
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                    : null
                                                 : null
-                                            : null
                                         ))
                                         : ''
                                 }
@@ -613,7 +626,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                 </Fragment>
             </Item>
         )
-        
+
     }
 };
 
