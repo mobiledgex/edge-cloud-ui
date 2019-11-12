@@ -109,6 +109,7 @@ class TimelineAuditView extends React.Component {
     }
     onHandleIndexClick = (value) => {
         let selectedId = parseInt(value.value);
+        if(!selectedId) return;
         let selectedDom = document.getElementById(listId[selectedId])
         let selectChildNode = null
         if(selectedDom) {
@@ -226,7 +227,7 @@ class TimelineAuditView extends React.Component {
                     //liDom.appendChild(span);
                 }
             })
-        }, 1000)
+        }, 2000)
     }
     resultReceive(result) {
         alert(result)
