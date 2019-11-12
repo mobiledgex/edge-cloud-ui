@@ -94,7 +94,7 @@ class RegistryViewer extends React.Component {
                     'DeploymentMF':{label:'Deployment Manifest', type:'RenderTextArea', necessary:false, tip:'Deployment manifest is the deployment specific manifest file/config For docker deployment, this can be a docker-compose or docker run file For kubernetes deployment, this can be a kubernetes yaml or helm chart file', active:true},
                 },
                 {
-    
+
                 }
             ],
             fakeData:[
@@ -119,7 +119,7 @@ class RegistryViewer extends React.Component {
             ],
             editMode:false
         };
-        
+
         //this.hiddenKeys = ['CloudletLocation', 'URI', 'Mapped_ports']
 
 
@@ -153,7 +153,7 @@ class RegistryViewer extends React.Component {
             //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=6'})
         }
     }
-    
+
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
         this.setState({ open: false })
@@ -195,7 +195,7 @@ class RegistryViewer extends React.Component {
                 </div>
                 :
                 <div className="round_panel" key={i}>
-                    
+
                 </div>
 
 
@@ -259,11 +259,11 @@ class RegistryViewer extends React.Component {
     }
     roleMark = (role) => (
         (role.indexOf('Developer')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markD markM">M</div> :
-        (role.indexOf('Developer')!==-1 && role.indexOf('Contributor')!==-1) ? <div className="mark markD markC">C</div> :
-        (role.indexOf('Developer')!==-1 && role.indexOf('Viewer')!==-1) ? <div className="mark markD markV">V</div> :
-        (role.indexOf('Operator')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markO markM">M</div> :
-        (role.indexOf('Operator')!==-1 && role.indexOf('Contributor')!==-1) ? <div className="mark markO markC">C</div> :
-        (role.indexOf('Operator')!==-1 && role.indexOf('Viewer')!==-1) ? <div className="mark markO markV">V</div> : <div></div>
+            (role.indexOf('Developer')!==-1 && role.indexOf('Contributor')!==-1) ? <div className="mark markD markC">C</div> :
+                (role.indexOf('Developer')!==-1 && role.indexOf('Viewer')!==-1) ? <div className="mark markD markV">V</div> :
+                    (role.indexOf('Operator')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markO markM">M</div> :
+                        (role.indexOf('Operator')!==-1 && role.indexOf('Contributor')!==-1) ? <div className="mark markO markC">C</div> :
+                            (role.indexOf('Operator')!==-1 && role.indexOf('Viewer')!==-1) ? <div className="mark markO markV">V</div> : <div></div>
     )
 
     getOptionData = (region) => {
@@ -330,7 +330,7 @@ class RegistryViewer extends React.Component {
         assObj[0].OrganizationName = localStorage.selectOrg;
         //assObj[0].ImagePath.items = "docker.mobiledgex.net/OrganizationName/images/AppName:AppVersion";
         //this.setState({fakeData:assObj});
-        
+
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
@@ -373,12 +373,12 @@ class RegistryViewer extends React.Component {
                     "token":store ? store.userToken : 'null',
                     "params": nextProps.submitValues
                 }
-                
+
                 services.createNewApp(serviceResource, serviceBody, this.receiveResult)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }
-            
+
         }
 
         if(nextProps.formApps.values && nextProps.formApps.values.DeploymentType) {
@@ -394,10 +394,10 @@ class RegistryViewer extends React.Component {
             }
             console.log('nextProps.formApps.values.ImagePath',nextProps.formApps.values.ImagePath,"::::",this.props.formApps.values.ImagePath)
             let ImagePath = (nextProps.formApps.values.ImagePath)? nextProps.formApps.values.ImagePath : (nextProps.formApps.values.ImagePath != this.props.formApps.values.ImagePath)? '': defaultPath;
-            
+
             assObj[0].ImageType.items = selectType;
             itData = (selectType == 'Docker') ? 'ImageTypeDocker' :
-                    (selectType == 'Qcow') ? 'ImageTypeQcow' : 
+                (selectType == 'Qcow') ? 'ImageTypeQcow' :
                     selectType;
             if(nextProps.formApps.values.OrganizationName){
                 ImagePath = ImagePath.replace('OrganizationName',(nextProps.formApps.values.DeploymentType == "VM")?nextProps.formApps.values.OrganizationName:nextProps.formApps.values.OrganizationName.toLowerCase())
@@ -412,7 +412,7 @@ class RegistryViewer extends React.Component {
             assObj[0].ImagePath.items = ImagePath;
             console.log("ImagePathImagePath",ImagePath)
             submitImgPath = ImagePath;
-            
+
         }
 
         if(nextProps.editMode) this.setState({editMode:nextProps.editMode})
@@ -487,8 +487,8 @@ const accessport = (data) => {
 //"image_path":"registry.mobiledgex.net:5000/mobiledgex/simapp",
 //"image_type":1,"access_ports":"udp:12001,tcp:80,http:7777","default_flavor":{"name":"x1.medium"},"cluster":{"name":""},"ipaccess":"IpAccessShared","command":"test","deployment_manifest":"test1111"}}'
 const mapStateToProps = (state) => {
-    
-    
+
+
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;
     let accountInfo = account ? account + Math.random()*10000 : null;
@@ -503,7 +503,7 @@ const mapStateToProps = (state) => {
             }
         }
     }
-    
+
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
         if(state.form && state.form.createAppFormDefault){
             let objArr = Object.keys(state.form.createAppFormDefault.values)
@@ -525,9 +525,9 @@ const mapStateToProps = (state) => {
                 })
             }
         }
-        
+
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
-        
+
         if(enableValue.ImagePath == "") enableValue.ImagePath = submitImgPath;
         if(enableValue.DeploymentType === "Docker") enableValue.DeploymentType = "docker"
         if(enableValue.DeploymentType === "Kubernetes") enableValue.DeploymentType = "kubernetes"
@@ -536,7 +536,7 @@ const mapStateToProps = (state) => {
         submitVal = createFormat(enableValue)
         validateValue = state.form.createAppFormDefault.values;
     }
-    
+
     let region = state.changeRegion
         ? {
             value: state.changeRegion.region
@@ -566,7 +566,7 @@ const mapStateToProps = (state) => {
         editData : state.editInstance.data,
         regionInfo: regionInfo
     }
-    
+
     // return (dimm) ? {
     //     dimmInfo : dimm
     // } : (account)? {
