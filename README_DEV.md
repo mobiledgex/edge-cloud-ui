@@ -170,4 +170,12 @@
 
 
 ### 버블차트
-- https://d3indepth.com/layouts/ 
+- https://d3indepth.com/layouts/
+
+
+### Timeline horizontal
+- http://sherubthakur.github.io/react-horizontal-timeline/
+https://github.com/andyfaizan/react-horizontal-timeline
+
+### Tabulator
+- http://tabulator.info/
