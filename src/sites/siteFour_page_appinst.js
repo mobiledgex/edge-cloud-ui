@@ -40,6 +40,8 @@ class SiteFourPageAppInst extends React.Component {
         this._devData = [];
         this._AppInstDummy = [];
         this._diffRev = []
+        // table column min-width
+        this.mWidth = [100,200,200,100,150,250,200,200,150,120,250];
     }
     gotoUrl(site, subPath) {
         let mainPath = site;
@@ -48,7 +50,7 @@ class SiteFourPageAppInst extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        //_self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     //go to
@@ -272,10 +274,9 @@ class SiteFourPageAppInst extends React.Component {
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem, viewMode, devData, detailData } = this.state;
-        let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
-            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort}></MapWithListView>
+            <MapWithListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort} mWidth={this.mWidth}></MapWithListView>
             :
             <PageDetailViewer data={detailData} page='appInst'/>
         );

@@ -223,10 +223,11 @@ class SiteFour extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        //_self.props.handleChangeSite({mainPath:mainPath, subPath: subPath}) //problem to blink to refresh page
         _self.setState({ page:subPath})
     }
     handleItemClick ( id, label, pg, role ) {
+        console.log('20191114 click memnu...')
         localStorage.setItem('selectMenu', label)
         _self.setState({menuClick:true})
         _self.props.handleDetail({data:null, viewMode:'listView'})
@@ -242,7 +243,7 @@ class SiteFour extends React.Component {
         let mainPath = '/site4';
         let subPath = 'pg='+pg;
         _self.props.history.location.search = "pg="+pg;
-        _self.props.handleChangeStep(pg)
+
         _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label })
 
     }
@@ -302,6 +303,7 @@ class SiteFour extends React.Component {
                     this.setState({adminShow:true});
                     this.props.handleUserRole(item.role);
                     localStorage.setItem('selectRole', item.role)
+                    this.forceUpdate()
                 }
             })
         }
@@ -370,8 +372,13 @@ class SiteFour extends React.Component {
         />
     )
     getGuidePopup =(key)=> (
-        <button className="ui circular icon button" onClick={this.enalbeSteps}><i aria-hidden="true" className="info icon"></i></button>
+        <button className="ui circular icon button" onClick={this.onHandleClickStep}><i aria-hidden="true" className="info icon"></i></button>
     )
+
+    onHandleClickStep = () => {
+        this.props.handleChangeStep('has');
+        setTimeout(() => this.enalbeSteps(), 1000);
+    }
 
     enalbeSteps =()=> {
         let enable = false;
@@ -379,7 +386,7 @@ class SiteFour extends React.Component {
 
         if(this.props.viewMode === 'detailView') return;
 
-        console.log('20190821 siteName==', this.props, 'change org step..', this.props.changeStep, 'steps data=', orgaSteps, 'userRole=', this.props.userRole,this.props.userInfo.info, 'this.props.dataExist==',this.props.dataExist)
+        console.log('20191115 siteName==', this.props, 'change org step..', this.props.changeStep, 'steps data=', orgaSteps, 'userRole=', this.props.userRole,this.props.userInfo.info, 'this.props.dataExist==',this.props.dataExist)
         let site = this.props.siteName;
         let userName = (this.props.userInfo && this.props.userInfo.info)?this.props.userInfo.info.Name:'';
         if(this.props.params.mainPath === "/site4" && this.props.params.subPath === "pg=newOrg") {
@@ -389,6 +396,7 @@ class SiteFour extends React.Component {
                 currentStep = orgaSteps.stepsNewOrg3;
             } else {
                 currentStep = orgaSteps.stepsNewOrg;
+                console.log('20191115 curentStep=', currentStep)
             }
             
 
@@ -454,9 +462,12 @@ class SiteFour extends React.Component {
         let element = (elmentName)?document.getElementsByClassName(elmentName[0].element.replace('.', '')):[];
         console.log('20190821 step..', this.steps, element)
         if(enable) {
-            console.log("elementelement111",element)
+            let getStepEl = document.getElementsByClassName('introjs-tooltipReferenceLayer')
+            console.log("20191116 elementelement111",element, ":",getStepEl)
             this.setState({stepsEnabled:true, enable: true})
         }
+
+
 
     }
     getAdminInfo(token) {
@@ -475,6 +486,7 @@ class SiteFour extends React.Component {
 
     }
     componentDidMount() {
+        console.log('20191113 site four  did mount,,...')
         let store = JSON.parse(localStorage.PROJECT_INIT);
         this.setState({activeItem: (localStorage.selectMenu)?localStorage.selectMenu:'Organizations', headerTitle:(localStorage.selectMenu)?localStorage.selectMenu:'Organizations'})
         //get list of customer's info
@@ -489,6 +501,7 @@ class SiteFour extends React.Component {
         //this.gotoUrl('/site4', 'pg=0')
         //this.gotoPreview('/site4');
         //this.props.history.location.search = "pg=0";
+        this.props.handleLoadingSpinner(false)
         this.disableBtn();
 
         if(store){
@@ -512,6 +525,31 @@ class SiteFour extends React.Component {
         }
     }
 
+    /**
+     * force control the update component
+     */
+
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        let subPath = '';
+        let subParam = '';
+        let update = false;
+        if(nextProps.params.subPath.indexOf('&org=')) {
+            let paths = nextProps.params.subPath.split('&')
+            subPath = paths[0];
+            subParam = paths[1];
+        }
+
+        if(subPath !== this.state.page) {
+            console.log('20191114 update ............................')
+            update = true;
+        }
+
+        if(nextProps.loadingSpinner) update = true;
+        if(!nextProps.loadingSpinner) update = true;
+        //console.log('20191114 should comp update.. ', nextProps, ":", this.state.page)
+        return update;
+    }
+
     componentWillReceiveProps(nextProps, nextContext) {
 
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -530,7 +568,11 @@ class SiteFour extends React.Component {
                 subParam = paths[1];
             }
             this.setState({page:subPath, OrganizationName:subParam})
-            //console.log('20191018 nextProps.par....', subPath, "  :  ", subParam)
+
+            console.log('20191018 nextProps.par....', subPath, "  :  ", subParam)
+            //TODO 페이지는 어디서 ??? this.setState({page:
+            // 1150 번 라인에 this.state.page === 'pg=0'
+            //set state for page 가 갱신되어야 페이지 로딩이 이루어 짐.
 
         }
 
@@ -600,12 +642,13 @@ class SiteFour extends React.Component {
             console.log('submitSucceeded = ', nextProps.formInfo[formKey[0]], nextProps.formInfo[formKey[0]]['submitSucceeded'])
             if(nextProps.formInfo[formKey[0]]['submitSucceeded']) {
                 if(nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
-                    _self.setState({stepsEnabled:false})
+                    _self.onExit();
                 }
             }
         }
         if(tutorial === 'done') {
             //_self.setState({stepsEnabled:false})
+
         }
         //
         let enable = true;
@@ -660,7 +703,14 @@ class SiteFour extends React.Component {
         this.setState({learned:false})
     }
 
-    //compute page menu view
+    /**
+     * compute page menu view (side menu, side bar)
+     * @param item
+     * @param i
+     * @param activeItem
+     * @returns {*}
+     */
+
     menuItemView = (item, i, activeItem) => (
         <Menu.Item
             className={'leftMenu_'+item.label}
@@ -775,6 +825,7 @@ class SiteFour extends React.Component {
     ]
     onExit() {
         _self.setState({stepsEnabled: false})
+        _self.props.handleChangeStep(null)
     }
 
     orgTypeLegendShow=()=> {
@@ -846,8 +897,11 @@ class SiteFour extends React.Component {
         services.showAuditSelf('ShowSelf',{token:store.userToken, params:'{}'}, _self.receiveResult, _self)
     }
 
-    /** audit ********/
 
+    /** audit ********/
+    makeDevMenu = (params) => {
+        //console.log('20191114 make dev menu -- ', params)
+    }
 
     render() {
         const {shouldShowBox, shouldShowCircle, viewMode } = this.state;
@@ -1007,6 +1061,7 @@ class SiteFour extends React.Component {
                                 </div>
 
                                 <div className='menuPart'>
+                                    {this.makeDevMenu(localStorage.selectRole)}
                                 {
                                     (localStorage.selectRole == 'AdminManager')?
                                         this.menuItems.map((item, i)=>(

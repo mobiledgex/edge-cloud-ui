@@ -1,9 +1,6 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
-import sizeMe from 'react-sizeme';
-import InstanceListView from '../container/instanceListView';
+
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 import PageDetailViewer from '../container/pageDetailViewer';
 //redux
 import { connect } from 'react-redux';
@@ -11,7 +8,6 @@ import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
 import MapWithListView from "../container/mapWithListView";
-import Alert from "react-s-alert";
 import * as reducer from '../utils'
 
 
@@ -42,6 +38,8 @@ class SiteFourPageCloudlet extends React.Component {
         this._devData = [];
         this.loadCount = 0;
         this._cloudletDummy = [];
+        // table column min-width
+        this.mWidth = [100,300,150,200,100,120,150];
     }
     gotoUrl(site, subPath) {
         let mainPath = site;
@@ -50,7 +48,7 @@ class SiteFourPageCloudlet extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        //_self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
 
     }
@@ -79,7 +77,7 @@ class SiteFourPageCloudlet extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // this.getDataDeveloper(this.props.changeRegion);
+        this.getDataDeveloper(this.props.changeRegion);
         this.userToken = store.userToken;
     }
     componentWillUnmount() {
@@ -90,33 +88,44 @@ class SiteFourPageCloudlet extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
- 
+
         if(nextProps.computeRefresh.compute) {
+            console.log('20191114 get Data -1')
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
             this.setState({dataSort:true});
         }
         if(this.props.changeRegion !== nextProps.changeRegion){
+            console.log('20191114 get Data -2')
             this.getDataDeveloper(nextProps.changeRegion);
+        } else {
+
         }
+
+        console.log('20191114 recevie props in cloudlet ==>==>', this.state.devData,":", this._devData)
+
         if(nextProps.viewMode) {
             if(nextProps.viewMode === 'listView') {
                 //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
-                //this.getDataDeveloper(this.props.changeRegion)
                 this.setState({viewMode:nextProps.viewMode})
+                setTimeout(() => {
+                    console.log('20191114 good'+_self.maplist+":"+_self.maplist)
+                    _self.setState({viewMode:nextProps.viewMode})
+                    _self.setState({devData:_self.state.devData})
+                    _self.forceUpdate()
+                }, 100)
             } else {
                 this.setState({viewMode:nextProps.viewMode})
-                // setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
-                this.setState({detailData:nextProps.detailData})
+                setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
+                //this.setState({detailData:nextProps.detailData})
             }
-
         }
 
         //{ key: 1, text: 'All', value: 'All' }
-        
+
         if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
             _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
+            console.log('20191114 get Data -3')
             this.getDataDeveloper(nextProps.changeRegion,nextProps.regionInfo.region);
         }
     }
@@ -136,12 +145,12 @@ class SiteFourPageCloudlet extends React.Component {
         }
 
         this.loadCount ++;
-        console.log("EditEditEdit",rgn.length,":::",this.loadCount)
+        console.log("20191114 cloudlet receive result == ",result,":",rgn.length,":::",this.loadCount)
         if(rgn.length == this.loadCount){
-            _self.countJoin()            
+            _self.countJoin()
         }
         _self.props.handleLoadingSpinner(false);
-
+        // this.forceUpdate()
         // let join = null;
         // if(result[0]['Edit']) {
         //     join = this.state.devData.concat(result);
@@ -160,6 +169,7 @@ class SiteFourPageCloudlet extends React.Component {
     countJoin() {
         let cloudlet = this._cloudletDummy;
         _self.setState({devData:cloudlet,dataSort:false})
+        // _self.forceUpdate()
         this.props.handleLoadingSpinner(false);
     }
 
@@ -188,12 +198,11 @@ class SiteFourPageCloudlet extends React.Component {
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem, viewMode } = this.state;
-        let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
-            <MapWithListView devData={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
-            :
-            <PageDetailViewer data={this.state.detailData} page='cloudlet'/>
+                <MapWithListView devData={this.state.devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort} mWidth={this.mWidth} viewMode={viewMode} ref={mwlv => this.maplist = mwlv}></MapWithListView>
+                :
+                <PageDetailViewer data={this.state.detailData} page='cloudlet'/>
         );
     }
 
@@ -227,4 +236,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCloudlet)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageCloudlet));

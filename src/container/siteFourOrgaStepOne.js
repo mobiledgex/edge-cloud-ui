@@ -21,7 +21,7 @@ const validate = values => {
     }
     if (!values.phone) {
         errors.phone = 'Required'
-    }else if (!/^[\+]?[(]?[0-9]{3}[)]?[-]?[0-9]{3}[-]?[0-9]{4,6}$/im.test(values.phone)) {
+    }else if (!/^[\+]?[(]?[0-9]{3}[)]?[-]?[0-9]{3}[-]?[0-9]{4,7}$/im.test(values.phone)) {
         errors.phone = 'Invalid phone Number. (ex) (123)456-7890, 123-456-7890, 1234567890, +121234567890'
     }
     return errors

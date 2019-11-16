@@ -104,7 +104,7 @@ class SiteFourPageClusterInstReg extends React.Component {
             search: 'pg=4'
         });
         _self.props.history.location.search = 'pg=4';
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=4'})
+        //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=4'})
     }
 
     getDataDeveloper(token, region) {
