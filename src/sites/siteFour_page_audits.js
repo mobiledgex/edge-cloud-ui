@@ -47,7 +47,7 @@ class SiteFourPageAudits extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-
+        //_self.props.handleChangeSite({mainPath:site, subPath: subPath})
     }
     //go to
     gotoPreview(site) {
@@ -69,7 +69,7 @@ class SiteFourPageAudits extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     readyToData(subPaths) {
-        console.log('20191018 subPaths.subPaths...', subPaths,":",subPaths.indexOf('&org='))
+        console.log('20191113 subPaths.subPaths...', subPaths,":",subPaths.indexOf('&org='))
         let subPath = '';
         let subParam = null;
         if(subPaths.indexOf('&org=') > -1) {
@@ -90,7 +90,7 @@ class SiteFourPageAudits extends React.Component {
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
-
+        console.log('20191113 did mount --- ', this.props.location.search)
         if(this.props.location && this.props.location.search) {
             this.readyToData(this.props.location.search)
 
@@ -169,7 +169,7 @@ class SiteFourPageAudits extends React.Component {
 
     receiveResult = (result, resource, self, body) => {
         // @inki if data has expired token
-        console.log('20191106 receive result...', result, ":",resource)
+        console.log('20191113 receive result..audit audit.', result, ":",resource)
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
@@ -204,7 +204,7 @@ class SiteFourPageAudits extends React.Component {
         return lastSub
     }
     getDataAudit = (orgName) => {
-        // this.props.handleLoadingSpinner(true);
+
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         this._cloudletDummy = [];

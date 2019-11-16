@@ -360,6 +360,7 @@ class ClustersMap extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log('---20191114 in map---', nextProps.parentProps.devData)
         let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
         function reduceUp(value) {
             return Math.round(value)

@@ -16,8 +16,9 @@ export const organizationTutor = () => {
             ],
             stepsOrgDeveloper: [
                 {
-                    element: '.stepOrg1',
-                    intro: '<span>Organization page is used to create new organizations and to manage and view organizations that you are part of.</span>',
+                    element: '.stepOrg0',
+                    intro: 'Organization page is used to create new organizations and to manage and view organizations that you are part of. There are two types of organizations: \n' +
+                        '1) Developer 2) Operator',
                 },
                 {
                     element: '.stepOrg2',

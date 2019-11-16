@@ -11,6 +11,9 @@ import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import DeleteItem from './deleteItem';
 import './styles.css';
+import Tabulator from "tabulator-tables"; //import Tabulator library
+import "tabulator-tables/dist/css/tabulator.min.css"; //import Tabulator stylesheet
+import './tabulator.css'; // import Tabulator custom stylesheet
 import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
@@ -59,7 +62,9 @@ class InsideListView extends React.Component {
             isOpen: false,
             isOpenTip:false,
             actionContextRef:'actionCell_0',
-            item:null
+            item:null,
+            tableData : [],
+            tabulatorLayout:'fitDataFill'
         };
         this.sorting = false;
 
@@ -71,7 +76,7 @@ class InsideListView extends React.Component {
             goBack: pg
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:site, subPath: subPath})
+        //_self.props.handleChangeSite({mainPath:site, subPath: subPath})
     }
 
     onHandleClick(dim, data) {
@@ -148,32 +153,8 @@ class InsideListView extends React.Component {
 
             (i === 0)?
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
-                    <div className={'grid_table '+this.props.siteId} style={{overflowY:'auto'}}>
-                        {
-                            this.TableExampleVeryBasic(this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)
-
-                        }
-                    </div>
-
-                    {/*<Table.Footer className='listPageContainer'>*/}
-                    {/*    <Table.Row>*/}
-                    {/*        <Table.HeaderCell>*/}
-                    {/*            <Menu pagination>*/}
-                    {/*                <Menu.Item as='a' icon>*/}
-                    {/*                    <Icon name='chevron left' />*/}
-                    {/*                </Menu.Item>*/}
-                    {/*                <Menu.Item as='a' active={true}>1</Menu.Item>*/}
-                    {/*                <Menu.Item as='a'>2</Menu.Item>*/}
-                    {/*                <Menu.Item as='a'>3</Menu.Item>*/}
-                    {/*                <Menu.Item as='a'>4</Menu.Item>*/}
-                    {/*                <Menu.Item as='a' icon>*/}
-                    {/*                    <Icon name='chevron right' />*/}
-                    {/*                </Menu.Item>*/}
-                    {/*            </Menu>*/}
-                    {/*        </Table.HeaderCell>*/}
-                    {/*    </Table.Row>*/}
-                    {/*</Table.Footer>*/}
-
+                    {/* Tabulator */}
+                    <div ref={el => (this.el = el)} />
                 </div>
                 :
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
@@ -185,11 +166,6 @@ class InsideListView extends React.Component {
 
         ))
     }
-    /*
-    <div className="round_panel" key={i} style={{display:'flex'}}>
-                {this.TableExampleVeryBasic()}
-            </div>
-     */
 
     generateLayout() {
         const p = this.props;
@@ -382,87 +358,91 @@ class InsideListView extends React.Component {
             <Button disabled={(localStorage.selectMenu !== 'Organizations')?this.props.dimmInfo.onlyView:this.addUserDisable(item)} onClick={() => this.setState({openDelete: true, selected:item})}><Icon name={'trash alternate'}/></Button>
         </Table.Cell>
     )
-    TableExampleVeryBasic = (headL, hideHeader, datas) => (
-        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
-            <Table.Header className="viewListTableHeader">
-                <Table.Row>
-                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hideHeader):null}
-                </Table.Row>
-            </Table.Header>
 
-            <Table.Body className="tbBodyList" onScroll={this.onHandleScroll}>
-                {
-                    datas.map((item, i) => (
-                        <Table.Row key={i} id={'tbRow_'+i} style={{position:'relative'}}>
-                            {Object.keys(item).map((value, j) => (
-                                (value === 'Edit')?
-                                    String(item[value]) === 'null' ? <Table.Cell /> :
-                                        <Table.Cell className="table_actions" key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444', overflow:'visible'} :{whiteSpace:'nowrap', overflow:'visible'} }>
-                                            {this.makeEditButtonGroup(item, value, j, i)}
-                                        </Table.Cell>
-                                :
-                                (value === 'Type')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} >
-                                        {/*<div className="markBox">{this.typeMark(item[value])}</div>*/}
-                                        <span style={(item[value] == 'developer')?{color:'#9b9979'}:{color:'#7d969b'}}>{item[value]}</span>
-                                    </Table.Cell>
-                                :
-                                (value === 'Mapped_ports')?
-                                    <Table.Cell key={j} textAlign='left'>
-                                        <Icon name='server' size='big' onClick={() => this.onPortClick(true, item)} style={{cursor:'pointer'}}></Icon>
-                                    </Table.Cell>
-                                :
-                                (value === 'Username')?
-                                    <Table.Cell key={j} textAlign='left'>
-                                        <div className="left_menu_item" onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
-                                        <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {item[value]}
-                                        </div>
-                                    </Table.Cell>
-                                :   
-                                (value === 'Role Type')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
-                                        <div className="markBox">{this.roleMark(item[value])}</div>
-                                        {item[value]}
-                                    </Table.Cell>
-                                :
-                                (value === 'DeploymentType')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
-                                        {
-                                            (item[value] == 'docker')? 'Docker':
-                                            (item[value] == 'kubernetes')? 'Kubernetes':
-                                            (item[value] == 'vm')? 'VM':
-                                            (item[value] == 'helm')? 'Helm':
-                                            item[value]
-                                        }
-                                    </Table.Cell>
-                                :
-                                (value === 'Ports')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer',wordBreak:'break-all'}} >
-                                        {
-                                            String(item[value]).toUpperCase()
-                                        }
-                                    </Table.Cell>
-                                :
-                                (!( String(hideHeader).indexOf(value) > -1 )) ?
-                                    <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'center'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
-                                        <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace' style={{wordBreak:'break-all'}}>
-                                            {String(item[value])}
-                                        </div>
-                                    </Table.Cell>
-                                : null
+    makeTabulatorHeader(_keys, visibles) {
+        let keys = Object.keys(_keys);
+        //hide column filtered...
+        let filteredKeys = (visibles) ? reducer.filterDefine(keys, visibles) : keys;
+        return filteredKeys;
+    }
 
-                            ))}
-                        </Table.Row>
-                    ))
-                }
-            </Table.Body>
-            
-        </Table>
-    )
+    el = React.createRef();
+    tabulator = null; //variable to hold your table
+
     componentDidMount() {
 
     }
+    componentWillUnmount() {
+        this.tabulator = null;
+    }
+
     componentWillReceiveProps(nextProps, nextContext) {
+        // Tabluator
+        if(nextProps.devData.length){
+            let tbLayout = 'fitDataFill'
+            if(nextProps.changeStep) {
+                console.log('20191115 inside list view ', 'fitColumns')
+                this.setState({tabulatorLayout:'fitColumns'})
+                tbLayout = 'fitColumns'
+            } else {
+                console.log('20191115 inside list view ', 'fitDataFill')
+                this.setState({tabulatorLayout:null})
+                tbLayout = 'fitDataFill'
+            }
+
+            let makeHeader = this.makeTabulatorHeader(nextProps.devData[0],this.props.hiddenKeys)
+            let hData = [];
+            let count = 0;
+            let btnGroup = (cell, formatterParams, onRendered) => {
+                let tealClass = '';
+                count++;
+                if(this.state.manageKey == count) tealClass = 'teal'
+                return `<button class="ui teal button launch launchButton" id="btnLaunch${count}">Launch</i></button>
+                        <button class="ui teal button edit" id="btnEdit${count}"><i aria-hidden="true" class="edit alternate icon"></i></button>
+                        <button class="ui button trash" id="btnTrash${count}"><i aria-hidden="true" class="trash alternate icon"></i></button>`
+            };
+            let ports = (cell, formatterParams, onRendered) => {
+                return `${cell.getData().Ports.toUpperCase()}`
+            };
+            //this.onUseOrg(item,i, evt)
+            this.setState({tableData:nextProps.devData})
+            makeHeader.map((item) => {
+                hData.push(
+                    (item == 'Edit')?
+                    {title:'Actions', field:item, align:"center", width: 250, formatter:btnGroup, cellClick:function(e, cell){
+                        e.stopPropagation();
+                        if(e.target.className.indexOf('trash') > -1){ //trash
+                            _self.setState({openDelete: true, selected:cell.getData()});
+                        } else if(e.target.className.indexOf('launch') > -1){ //launch
+                            _self.appLaunch(cell.getData());
+                        } else if(e.target.className.indexOf('edit') > -1){ //edit
+                            _self.onHandleClick(true,cell.getData())
+                        } 
+                    }}
+                    :
+                    (item == 'Ports')?
+                    {title:item, field:item, align:"left", formatter:ports}
+                    :
+                    {title:item, field:item, align:"left"}
+                )
+            })
+            hData.map((item,i) => {
+                item['minWidth'] = nextProps.mWidth[i];
+            })
+            this.tabulator = new Tabulator(this.el, {
+                height:"100%",
+                data: nextProps.devData, //link data to table
+                columns: hData,
+                // columnMinWidth:200,
+                //layout:"fitDataFill",
+                layout:tbLayout,
+                rowClick:function(e, row){
+                    let data = row.getData();
+                    _self.detailView(data)
+                },
+            });
+        }
+
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -476,6 +456,8 @@ class InsideListView extends React.Component {
             let searchData  = reducer.filterSearch(nextProps.devData,nextProps.searchValue,nextProps.searchType);
             this.setState({dummyData:searchData})
         }
+
+
     }
 
     render() {
@@ -551,6 +533,7 @@ const mapStateToProps = (state) => {
         searchType : (state.searchValue.scType) ? state.searchValue.scType: null,
         userRole : state.showUserRole?state.showUserRole.role:null,
         roleInfo : state.roleInfo?state.roleInfo.role:null,
+        changeStep: (state.changeStep.step)?state.changeStep.step:null,
     }
     
     // return (dimm) ? {

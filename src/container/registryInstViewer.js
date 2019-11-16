@@ -257,7 +257,7 @@ class RegistryInstViewer extends React.Component {
                 State:3
             }
         }
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: pg})
+        //_self.props.handleChangeSite({mainPath:'/site4', subPath: pg})
     }
 
     generateDOM(open, dimmer, data, keysData, hideHeader) {
