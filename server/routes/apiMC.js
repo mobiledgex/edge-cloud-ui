@@ -582,7 +582,7 @@ exports.ShowAppInst = (req, res) => {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
                 console.log('empty')
-                res.json({error:'No records available'})
+                res.json({error:region+' : No records available'})
 
             } else {
                 res.json({error:'Request failed'})
@@ -619,7 +619,7 @@ exports.ShowAppInsts = (req, res) => {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
                 console.log('empty')
-                res.json({error:'No records available'})
+                res.json({error:region+' :No records available'})
 
             } else {
 
