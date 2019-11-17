@@ -141,12 +141,15 @@ class SiteFourPageAppInst extends React.Component {
 
     }
     receiveResult = (result) => {
+        console.log('20191117 appinsts ..receiveResult...', result)
         // @inki if data has expired token
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
             _self.props.handleLoadingSpinner(false);
             return;
+        } else {
+            if(result.error) _self.props.handleAlertInfo('error', result.error);
         }
 
         let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
@@ -154,6 +157,7 @@ class SiteFourPageAppInst extends React.Component {
             _self._AppInstDummy = _self._AppInstDummy.concat(result)
         }
         _self.loadCount ++;
+        console.log('20191117 receiveResult...',rgn.length, ":",_self.loadCount, ":", result)
         if(rgn.length == _self.loadCount){
             _self.countJoin()
         }
@@ -180,6 +184,7 @@ class SiteFourPageAppInst extends React.Component {
         this.getUpdateData(this.props.changeRegion);
     }
     receiveResultApp = (result) => {
+
         let diff = []
         this._diffRev = [];
         if(!result.error){
@@ -190,12 +195,12 @@ class SiteFourPageAppInst extends React.Component {
                     }
                 })
             })
-            this.forceUpdate();
         }
         
     }
 
     getDataDeveloper = (region,regionArr) => {
+        console.log('20191117 getDataDeveloper... ', region, regionArr,":",localStorage.selectOrg)
         this.props.handleLoadingSpinner(true);
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let serviceBody = {}
