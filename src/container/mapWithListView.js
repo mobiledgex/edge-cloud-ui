@@ -610,18 +610,19 @@ class MapWithListView extends React.Component {
         }
     }
     componentWillUnmount() {
-        window.addEventListener("resize", this.updateDimensions);
-        //alert('unmount map with list view')
-        this.props.handleSetHeader([])
+        //window.addEventListener("resize", this.updateDimensions);
+        clearTimeout(this.interval)
+        //this.props.handleSetHeader([])
+        clearInterval(prgInter);
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if(this.state.dummyData.length > 0){
-            this.state.dummyData.map((item) => {
+        if(nextProps.devData.length > 0){
+            nextProps.devData.map((item) => {
                 //console.log("dummyDatadummyData",item.State)
-                if(item.State == 3 && !this.state.stateCreate){
+                if( (item.State == 3 || item.State == 7) && !this.state.stateCreate){
                     this.setState({stateCreate:true})
                     console.log("dummyDatadummyData",item)
                     //this.setState({stateCreate:item})

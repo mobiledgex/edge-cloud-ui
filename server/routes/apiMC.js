@@ -1548,7 +1548,7 @@ exports.ShowController = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show controller-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show controller-- -- -- -- ', serviceBody, 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/controller/show', {},
         {
             headers: {

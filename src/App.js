@@ -94,7 +94,15 @@ const DashboardContainer = ( props, props2) => {
 
     }
 
+    /////////////////////////////////////////
+    // has region check
+    /////////////////////////////////////////
+    let allRegions = localStorage.getItem('regions')
+    if(!allRegions) {
+        self.getControllers();
+    }
 
+    console.log('20191118 region saved..', allRegions)
 
 
 
@@ -252,7 +260,6 @@ class App extends Component {
     }
     receiveController = (result) => {
         let regions = [];
-
         if(result) {
             if(result.data) {
                 result.data.map((data) => {
@@ -262,7 +269,7 @@ class App extends Component {
 
             }
 
-            //localStorage.setItem('regions', regions)
+            localStorage.setItem('regions', regions)
             self.props.handleRegionInfo(regions)
         }
     }
@@ -274,6 +281,14 @@ class App extends Component {
         let token = store ? store.userToken : 'null';
 
 
+    }
+    getControllers(){
+        let scope = this;
+        if(localStorage && localStorage.PROJECT_INIT) {
+            let store = JSON.parse(localStorage.PROJECT_INIT);
+            console.log('20191118 store...', JSON.parse(localStorage.PROJECT_INIT),":",store.userToken)
+            if(store.userToken) computeService.showController('showController', {token:store.userToken}, scope.receiveController);
+        }
     }
 
     componentDidMount() {
@@ -300,13 +315,7 @@ class App extends Component {
         // }
         if(nextProps.siteName !== this.props.siteName) {
             //this.setState({selectedCloudlet:nextProps.siteName.cloudlet})
-            let scope = this;
-            // Login check
-            this.loaded = false;
-            if(localStorage && localStorage.PROJECT_INIT) {
-                let store = JSON.parse(localStorage.PROJECT_INIT);
-                if(store.userToken) computeService.showController('ShowController', {token:store.userToken}, scope.receiveController);
-            }
+            this.getControllers()
         }
 
     }
