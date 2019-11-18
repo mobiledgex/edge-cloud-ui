@@ -40,6 +40,8 @@ class SiteFourPageAppInst extends React.Component {
         this._devData = [];
         this._AppInstDummy = [];
         this._diffRev = []
+        // table column min-width
+        this.mWidth = [100,200,200,100,150,250,200,200,150,120,250];
     }
     gotoUrl(site, subPath) {
         let mainPath = site;
@@ -48,7 +50,7 @@ class SiteFourPageAppInst extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        //_self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     //go to
@@ -139,12 +141,15 @@ class SiteFourPageAppInst extends React.Component {
 
     }
     receiveResult = (result) => {
+        console.log('20191117 appinsts ..receiveResult...', result)
         // @inki if data has expired token
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
             _self.props.handleLoadingSpinner(false);
             return;
+        } else {
+            if(result.error) _self.props.handleAlertInfo('error', result.error);
         }
 
         let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
@@ -152,6 +157,7 @@ class SiteFourPageAppInst extends React.Component {
             _self._AppInstDummy = _self._AppInstDummy.concat(result)
         }
         _self.loadCount ++;
+        console.log('20191117 receiveResult...',rgn.length, ":",_self.loadCount, ":", result)
         if(rgn.length == _self.loadCount){
             _self.countJoin()
         }
@@ -178,6 +184,7 @@ class SiteFourPageAppInst extends React.Component {
         this.getUpdateData(this.props.changeRegion);
     }
     receiveResultApp = (result) => {
+
         let diff = []
         this._diffRev = [];
         if(!result.error){
@@ -188,12 +195,12 @@ class SiteFourPageAppInst extends React.Component {
                     }
                 })
             })
-            this.forceUpdate();
         }
         
     }
 
     getDataDeveloper = (region,regionArr) => {
+        console.log('20191117 getDataDeveloper... ', region, regionArr,":",localStorage.selectOrg)
         this.props.handleLoadingSpinner(true);
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let serviceBody = {}
@@ -272,10 +279,9 @@ class SiteFourPageAppInst extends React.Component {
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem, viewMode, devData, detailData } = this.state;
-        let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
-            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort}></MapWithListView>
+            <MapWithListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort} mWidth={this.mWidth}></MapWithListView>
             :
             <PageDetailViewer data={detailData} page='appInst'/>
         );

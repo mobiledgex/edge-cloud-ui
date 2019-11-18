@@ -184,7 +184,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
         if(multiData.AutoClusterInst) {
             multiData.ClusterInst = ['autocluster' + multiData.AppName.replace(/(\s*)/g, "")];
         }
-
+        
         if(filterData[itemCloudlet] && filterData[itemCloudlet].length > 0){
             filterData[itemCloudlet].map((items) => {
                 multiData.ClusterInst.map((itemCluster) => {
@@ -233,9 +233,9 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
         }
 
 
+        
 
-
-    }))
+    }))    
 }
 export function deleteCompute(resource, body, callback) {
     axios.post(ServerUrl+'/deleteService',{
@@ -309,7 +309,7 @@ export function createNewClusterInst(resource, body, callback) {
 }
 //Multi Create
 export function createNewMultiClusterInst(resource, body, callback, multiData) {
-
+    
     axios.defaults.timeout = 100000000;
     axios.all(multiData.map((item) => {
         console.log("20190820 clusterCreate@111",item)
@@ -327,7 +327,7 @@ export function createNewMultiClusterInst(resource, body, callback, multiData) {
                 console.log("error1",error);
             });
     }))
-
+   
 }
 
 
@@ -344,22 +344,22 @@ export function creteTempFile(_item, _site, callback) {
         })
         .catch(function (error) {
             console.log("error2",error);
-        });
+        });  
 }
 
 export function deleteTempFile(_item, _site) {
-
+    
     axios.post(ServerUrl+'/DeleteTempFile',{
         item: _item,
         site: _site
     })
         .then(function (response) {
             console.log('20190820 result read status progress cluster inst...',response);
-
+            
         })
         .catch(function (error) {
             console.log("error2",error);
-        });
+        });  
 }
 
 export function errorTempFile(_item, callback) {
@@ -373,7 +373,7 @@ export function errorTempFile(_item, callback) {
         })
         .catch(function (error) {
             console.log("error2",error);
-        });
+        });  
 }
 
 

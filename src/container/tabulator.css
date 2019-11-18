@@ -1,0 +1,59 @@
+.tabulator {
+    background: #23252c;
+    border: unset;
+    border-radius: 5px;
+}
+.tabulator .tabulator-header {
+    border-bottom: 1px solid #45464d;
+    padding: 10px;
+    background: #292c33;
+    margin: 0 !important;
+}
+.tabulator .tabulator-header .tabulator-headers .tabulator-col {
+    background: #292c33;
+    color: rgba(255,255,255,.7);
+    border: unset;
+}
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title {
+    border-right: 1px solid #696b75;
+}
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-arrow {
+    margin: 0 10px 0 0;
+}
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable:hover {
+    background: #292c33;
+    color: rgba(136,221,0,.9);
+}
+.tabulator .tabulator-tableHolder .tabulator-table {
+    background: #23252c;
+    color: rgba(255,255,255,.5);
+}
+.tabulator-row {
+    background: #1e1f25;
+}
+.tabulator-row.tabulator-row-even {
+    background: #23252c;
+}
+.tabulator-row.tabulator-selectable:hover {
+    background: #444444;
+    color: rgba(255,255,255,.5);
+}
+.tabulator-row .tabulator-cell {
+    border: unset;
+    padding: 15px;
+}
+.tabulator-row .tabulator-cell .ui.button i {
+    margin: 0 !important;
+}
+.tabulator .lockedOn {
+    color:rgba(136,221,0,.9);
+}
+.tabulator .lockedOff {
+    color: #6a6a6a;
+}
+.tabulator .progressGreen {
+    color: rgba(136,221,0,.85);
+}
+.tabulator .progressRed {
+    color: #DD2831;
+}

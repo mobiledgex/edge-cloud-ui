@@ -11,6 +11,9 @@ import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import DeleteItem from './deleteItem';
 import './styles.css';
+import Tabulator from "tabulator-tables"; //import Tabulator library
+import "tabulator-tables/dist/css/tabulator.min.css"; //import Tabulator stylesheet
+import './tabulator.css'; // import Tabulator custom stylesheet
 import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
@@ -72,7 +75,9 @@ class DeveloperListView extends React.Component {
             isOpen: false,
             isOpenTip:false,
             actionContextRef:'actionCell_0',
-            item:null
+            item:null,
+            tableData : [],
+            manageKey : null
         };
         this.sorting = false;
 
@@ -84,7 +89,10 @@ class DeveloperListView extends React.Component {
             goBack: pg
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:site, subPath: subPath})
+
+        // 깜박거리는(problem refresh site all) 문제 발생
+        // 만약 주소 이동하단면 조건문으로 컨트롤 하여 아래코드 실행 가능
+        //_self.props.handleChangeSite({mainPath:site, subPath: subPath})
     }
     onHandleClick(dim, data) {
         this.setState({ dimmer:dim, open: true, selected:data })
@@ -95,10 +103,10 @@ class DeveloperListView extends React.Component {
         //this.props.handleChangeSite(data.children.props.to)
     }
     onHandleClickAudit(dim, data) {
-        this.setState({page:'pg=audits'})
+        //_self.setState({page:'pg=audits'})
         let orgName = data.Organization;
-        console.log('20191018 on handle click audit --- ', data)
-        this.gotoUrl('/site4', 'pg=audits&org='+orgName)
+        console.log('20191113 on handle click audit --- ', data)
+        _self.gotoUrl('/site4', 'pg=audits&org='+orgName)
     }
 
     onUseOrg(useData,key, evt) {
@@ -159,31 +167,8 @@ class DeveloperListView extends React.Component {
             (i === 0)?
 
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
-                    <div className={'grid_table '+this.props.siteId}>
-                        {
-                            this.TableExampleVeryBasic(this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)
-                        }
-                    </div>
-
-                    {/* <Table.Footer className='listPageContainer'>
-                       <Table.Row>
-                           <Table.HeaderCell>
-                               <Menu pagination>
-                                   <Menu.Item as='a' icon>
-                                       <Icon name='chevron left' />
-                                   </Menu.Item>
-                                   <Menu.Item as='a' active={true}>1</Menu.Item>
-                                   <Menu.Item as='a'>2</Menu.Item>
-                                   <Menu.Item as='a'>3</Menu.Item>
-                                   <Menu.Item as='a'>4</Menu.Item>
-                                   <Menu.Item as='a' icon>
-                                       <Icon name='chevron right' />
-                                   </Menu.Item>
-                               </Menu>
-                           </Table.HeaderCell>
-                       </Table.Row>
-                    </Table.Footer> */}
-
+                    {/* Tabulator */}
+                    <div ref={el => (this.el = el)} />
                 </div>
                 :
                 <div className="round_panel" key={i} style={{display:'flex', flexDirection:'column'}} >
@@ -195,11 +180,6 @@ class DeveloperListView extends React.Component {
 
         ))
     }
-    /*
-    <div className="round_panel" key={i} style={{display:'flex'}}>
-                {this.TableExampleVeryBasic()}
-            </div>
-     */
 
     generateLayout() {
         const p = this.props;
@@ -278,6 +258,15 @@ class DeveloperListView extends React.Component {
         (role.indexOf('Operator')!==-1 && role.indexOf('Manager')!==-1) ? <div className="mark markO markM">M</div> :
         (role.indexOf('Operator')!==-1 && role.indexOf('Contributor')!==-1) ? <div className="mark markO markC">C</div> :
         (role.indexOf('Operator')!==-1 && role.indexOf('Viewer')!==-1) ? <div className="mark markO markV">V</div> : <div></div>
+    )
+    roleMarkTabulator = (role) => (
+        (role.indexOf('Admin')!==-1 && role.indexOf('Manager')!==-1) ? '<div class="mark markA markS">S</div>' :
+        (role.indexOf('Developer')!==-1 && role.indexOf('Manager')!==-1) ? '<div class="mark markD markM">M</div>' :
+        (role.indexOf('Developer')!==-1 && role.indexOf('Contributor')!==-1) ? '<div class="mark markD markC">C</div>' :
+        (role.indexOf('Developer')!==-1 && role.indexOf('Viewer')!==-1) ? '<div class="mark markD markV">V</div>' :
+        (role.indexOf('Operator')!==-1 && role.indexOf('Manager')!==-1) ? '<div class="mark markO markM">M</div>' :
+        (role.indexOf('Operator')!==-1 && role.indexOf('Contributor')!==-1) ? '<div class="mark markO markC">C</div>' :
+        (role.indexOf('Operator')!==-1 && role.indexOf('Viewer')!==-1) ? '<div class="mark markO markV">V</div>' : '<div></div>'
     )
     typeMark = (type) => (
         (type.indexOf('developer')!==-1) ? <div className="mark type markD markM"></div> :
@@ -419,99 +408,90 @@ class DeveloperListView extends React.Component {
 
         </div>
     )
-    TableExampleVeryBasic = (headL, hideHeader, datas) => (
-        <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
-            <Table.Header className="viewListTableHeader">
-                <Table.Row>
-                    {(this.state.dummyData.length > 0)?this.makeHeader(this.state.dummyData[0], headL, hideHeader):null}
-                </Table.Row>
-            </Table.Header>
 
-            <Table.Body className="tbBodyList" onScroll={this.onHandleScroll}>
-                {
-                    (datas.length) ? datas.map((item, i) => (
-                        <Table.Row key={i} id={'tbRow_'+i} style={{position:'relative'}}>
-                            {Object.keys(item).map((value, j) => (
-                                (value === 'Edit')?
-                                    String(item[value]) === 'null' ? <Table.Cell /> :
-                                        <Table.Cell className="table_actions" key={j} textAlign='center' style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444', overflow:'visible'} :{whiteSpace:'nowrap', overflow:'visible'} }>
+    //el = React.createRef();
+    //tabulator = null; //variable to hold your table
 
-                                            {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager')?
-                                                <Button className='stepOrgDeveloper1' color={(this.state.selectUse == i)?'teal' :null} onClick={(evt) => this.onUseOrg(item,i, evt)}>
-                                                    {/* <Icon name='check' /> */}
-                                                    Manage
-                                                </Button>:null
-                                            }
-                                            {
-                                                (this.props.siteId == 'Organization') ? this.makeEditButtonGroup(item, value, j, i) : this.makeEditMenu(item, j, i)
-                                            }
-
-
-                                        </Table.Cell>
-                                :
-                                (value === 'Type')?
-                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{whiteSpace:'nowrap',background:'#444'} :{whiteSpace:'nowrap'}} >
-                                        {/*<div className="markBox">{this.typeMark(item[value])}</div>*/}
-                                        <span style={(item[value] == 'developer')?{color:'#9b9979'}:{color:'#7d969b'}}>{item[value]}</span>
-                                    </Table.Cell>
-                                :
-                                (value === 'Mapped_ports')?
-                                    <Table.Cell key={j} textAlign='left'>
-                                        <Icon name='server' size='big' onClick={() => this.onPortClick(true, item)} style={{cursor:'pointer'}}></Icon>
-                                    </Table.Cell>
-                                :
-                                (value === 'Username')?
-                                    <Table.Cell key={j} textAlign='left'>
-                                        <div className="left_menu_item" onClick={() => this.detailView(item)} style={{cursor:'pointer'}}>
-                                        <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {item[value]}
-                                        </div>
-                                    </Table.Cell>
-                                :   
-                                (value === 'Role Type')?
-                                    <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
-                                        <div className="markBox">{this.roleMark(item[value])}</div>
-                                        {item[value]}
-                                    </Table.Cell>
-                                :
-                                (value === 'DeploymentType')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
-                                        {
-                                            (item[value] == 'docker')? 'Docker':
-                                            (item[value] == 'kubernetes')? 'Kubernetes':
-                                            (item[value] == 'vm')? 'VM':
-                                            (item[value] == 'helm')? 'Helm':
-                                            item[value]
-                                        }
-                                    </Table.Cell>
-                                :
-                                (value === 'Ports')?
-                                    <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
-                                        {
-                                            String(item[value]).toUpperCase()
-                                        }
-                                    </Table.Cell>
-                                :
-                                (!( String(hideHeader).indexOf(value) > -1 )) ?
-                                    <Table.Cell key={j} textAlign={(value === 'Region')?'center':(j === 0 || value.indexOf('Name')!==-1)?'left':'left'} onClick={() => this.detailView(item)} style={(this.state.selectUse == i)?{cursor:'pointer',background:'#444'} :{cursor:'pointer'} }>
-                                        <div ref={ref => this.tooltipref = ref}  data-tip='tooltip' data-for='happyFace'>
-                                            {String(item[value])}
-                                        </div>
-                                    </Table.Cell>
-                                : null
-
-                            ))}
-                        </Table.Row>
-                    )) : null
-                }
-            </Table.Body>
-            
-        </Table>
-    )
     componentDidMount() {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log('20191104 nextprops devData.. ', nextProps.devData)
+        // Tabluator
+        setTimeout(() => {
+            if(nextProps.devData.length){
+                let hData = [];
+                let count = 0;
+                let cWidth = '';
+                let btnGroup = (cell, formatterParams, onRendered) => {
+                    let disBN = (this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager')?'inline-block':'none';
+                    let disOrg = (this.props.siteId == 'Organization')?'inline-block':'none';
+                    let tealClass = '';
+                    let orgDisabled = (localStorage.selectMenu !== 'Organizations') ? 
+                        ((cell.getData()['Role Type']=='AdminManager')?
+                            true:(localStorage.selectMenu == 'User Roles')?
+                                _self.userRoleActive(cell.getData()):_self.props.dimmInfo.onlyView):_self.addUserDisable(cell.getData())
+                    count++;
+                    if(this.state.manageKey == count) tealClass = 'teal'
+                    return `<button style="display:${disBN}" class="ui button manage ${tealClass} stepOrgDeveloper1" id="btnManage${count}">Manage</i></button>
+                            <button ${(orgDisabled)?"disabled":""} style="display:${disOrg}" class="ui teal button audit" id="btnAudit${count}">Audit</i></button>
+                            <button ${(orgDisabled)?"disabled":""} style="display:${disOrg}" class="ui teal button adduser stepOrgDeveloper3" id="btnAddUser${count}">Add User</i></button>
+                            <button ${(orgDisabled)?"disabled":""} class="ui button trash stepOrgDeveloper4" id="btnTrash${count}"><i aria-hidden="true" class="trash alternate icon"></i></button>`
+                };
+                let roleType = (cell, formatterParams, onRendered) => {
+                    return `<div class="markBox">${_self.roleMarkTabulator(cell.getData()['Role Type'])}</div>${cell.getData()['Role Type']}`
+                };
+                this.setState({tableData:nextProps.devData})
+                if(localStorage.selectMenu == 'Organizations') cWidth = 400
+                else cWidth = 150
+                Object.keys(nextProps.devData[0]).map((item) => {
+                    hData.push(
+                        (item == 'Edit')?
+                        {title:'Actions', field:item, align:"center", width: cWidth, formatter:btnGroup, cellClick:function(e, cell){
+                            e.stopPropagation();
+                            if(e.target.className.indexOf('trash') > -1){ //trash
+                                _self.setState({openDelete: true, selected:cell.getData()});
+                            } else if(e.target.className.indexOf('adduser') > -1){ //adduser
+                                _self.onHandleClickAdd(true, cell.getData());
+                            } else if(e.target.className.indexOf('audit') > -1){ //audit
+                                _self.onHandleClickAudit(true, cell.getData());
+                            } else if(e.target.className.indexOf('manage') > -1){ //manage
+                                let key = 0;
+                                nextProps.devData.map((item,i) => {
+                                    if(item.Organization === cell.getData().Organization){
+                                        key = i;
+                                        _self.setState({manageKey:i+1})
+                                    }
+                                })
+                                _self.onUseOrg(cell.getData(),key)
+                            } 
+                            
+                        }}
+                        :
+                        (item == 'Role Type')?
+                        {title:item, field:item, align:"left", formatter:roleType}
+                        :
+                        {title:item, field:item, align:"left"}
+                    )
+                })
+                hData.map((item,i) => {
+                    item['minWidth'] = nextProps.mWidth[i];
+                })
+                this.tabulator = new Tabulator(this.el, {
+                    height:"100%",
+                    data: _self.state.dummyData,//nextProps.devData, //link data to table
+                    layout:"fitColumns",
+                    columns: hData,
+                    // columnMinWidth:200,
+                    // layout:"fitDataFill",
+                    rowClick:function(e, row){
+                        let data = row.getData();
+                        _self.detailView(data)
+                    },
+                });
+            }
+        }, 100);
+        
+
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
