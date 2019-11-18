@@ -44,7 +44,7 @@ const colors = [
 ]
 
 const panes = [
-    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane style={{overflow:'auto'}} attached={false}><SiteFourCreateFormAppInstDefault data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} autoClusterDisable={props.autoClusterDisable} onSubmit={props.onSubmit}/></Tab.Pane> },
+    { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane style={{overflow:'auto'}} attached={false}><SiteFourCreateFormAppInstDefault data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} autoClusterDisable={props.autoClusterDisable} onSubmit={props.onSubmit} onRefreshChild={props.onRefreshChild}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
@@ -190,7 +190,7 @@ class RegistryInstViewer extends React.Component {
         }, 3000);
         
 
-        //_self.props.handleLoadingSpinner(false);
+        _self.props.handleLoadingSpinner(false);
         // if(result.data.error) {
         //     this.setState({regSuccess:false});
         //     this.props.handleAlertInfo('error',result.data.error)
@@ -231,7 +231,11 @@ class RegistryInstViewer extends React.Component {
     closeAddUser = () => {
         this.setState({ openAdd: false })
     }
-
+    onRefreshChild =() => {
+        // re rendering input fields
+        _self.onSubmit()
+        _self.forceUpdate();
+    }
     gotoUrl(msg) {
         let pg = 'pg=6'
         let pgname = '';
@@ -246,23 +250,26 @@ class RegistryInstViewer extends React.Component {
             search: pg,
         });
         _self.props.history.location.search = pg;
-        
-        if(_self.props.submitData.createAppFormDefault.values && _self.props.submitData.createAppFormDefault.values.AutoClusterInst){
-            _self.props.history.location.pgname = 'appinst';
-            _self.props.history.location.pgnameData = {
-                AppName:_self.props.submitData.createAppFormDefault.values.AppName,
-                Operator:_self.props.submitData.createAppFormDefault.values.Operator,
-                Cloudlet:_self.props.submitData.createAppFormDefault.values.Cloudlet[0],
-                ClusterInst:'autocluster'+_self.props.submitData.createAppFormDefault.values.AppName.replace(/(\s*)/g, ""),
-                State:3
+        try {
+            if (_self.props.submitData.createAppFormDefault.values && _self.props.submitData.createAppFormDefault.values.AutoClusterInst) {
+                _self.props.history.location.pgname = 'appinst';
+                _self.props.history.location.pgnameData = {
+                    AppName: _self.props.submitData.createAppFormDefault.values.AppName,
+                    Operator: _self.props.submitData.createAppFormDefault.values.Operator,
+                    Cloudlet: _self.props.submitData.createAppFormDefault.values.Cloudlet[0],
+                    ClusterInst: 'autocluster' + _self.props.submitData.createAppFormDefault.values.AppName.replace(/(\s*)/g, ""),
+                    State: 3
+                }
             }
+        } catch(e) {
+
         }
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: pg})
+        //_self.props.handleChangeSite({mainPath:'/site4', subPath: pg})
     }
 
     generateDOM(open, dimmer, data, keysData, hideHeader) {
 
-        let panelParams = {data:data, keys:keysData, userrole:localStorage.selectRole, editMode:this.state.editMode, editData:this.props.editData}
+        let panelParams = {data:data, keys:keysData, userrole:localStorage.selectRole, editMode:this.state.editMode, editData:this.props.editData, randomValue:Math.random()*100 }
 
         return layout.map((item, i) => (
 
@@ -270,7 +277,7 @@ class RegistryInstViewer extends React.Component {
                 <div className="round_panel" key={i}>
                     <div className="grid_table">
 
-                        <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} autoClusterDisable={this.state.autoClusterDisable} onSubmit={this.onSubmit} />
+                        <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false}} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} autoClusterDisable={this.state.autoClusterDisable} onSubmit={this.onSubmit} onRefreshChild={this.onRefreshChild} />
 
                     </div>
                 </div>
@@ -321,6 +328,7 @@ class RegistryInstViewer extends React.Component {
         }
         if(nextProps.devData.length > 1) {
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+            this.forceUpdate()
         } else {
             this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         }
@@ -419,27 +427,32 @@ class RegistryInstViewer extends React.Component {
 
         //set list of clusterInst filter
         if(Object.keys(nextProps.submitData).length > 0){
-            if(nextProps.submitData.createAppFormDefault && nextProps.submitData.createAppFormDefault.values.Operator && nextProps.submitData.createAppFormDefault.values.Cloudlet) {
-                let keys = Object.keys(this.state.clustinst);
-                let arr = []
-                let assObj = Object.assign([], this.state.keysData);
-                console.log("dfdfdfdgsgsdg",nextProps.submitData.createAppFormDefault.values.Cloudlet)
-                keys.map((item,i) => {
-                    this.state.clustinst[item].map((items,j) => {
-                        nextProps.submitData.createAppFormDefault.values.Cloudlet.map((cItem) => {
-                            if(cItem == items.Cloudlet && nextProps.submitData.createAppFormDefault.values.DeveloperName == items.OrganizationName) {
-                                arr.push(item);
-                            }
+            try {
+                if (nextProps.submitData.createAppFormDefault && nextProps.submitData.createAppFormDefault.values.Operator && nextProps.submitData.createAppFormDefault.values.Cloudlet) {
+                    let keys = Object.keys(this.state.clustinst);
+                    let arr = []
+                    let assObj = Object.assign([], this.state.keysData);
+                    console.log("dfdfdfdgsgsdg", nextProps.submitData.createAppFormDefault.values.Cloudlet)
+                    keys.map((item, i) => {
+                        this.state.clustinst[item].map((items, j) => {
+                            nextProps.submitData.createAppFormDefault.values.Cloudlet.map((cItem) => {
+                                if (cItem == items.Cloudlet && nextProps.submitData.createAppFormDefault.values.DeveloperName == items.OrganizationName) {
+                                    arr.push(item);
+                                }
+                            })
                         })
                     })
-                })
-                arr = reducer.removeDuplicate(arr)
-                assObj[0].ClusterInst.items = arr;
-                this.setState({keysData:assObj})
+                    arr = reducer.removeDuplicate(arr)
+                    assObj[0].ClusterInst.items = arr;
+                    this.setState({keysData: assObj})
+                }
+            } catch(e) {
+
             }
         }
 
         if(nextProps.editMode) this.setState({editMode:nextProps.editMode})
+
     }
 
     componentWillUnmount() {
@@ -480,7 +493,7 @@ class RegistryInstViewer extends React.Component {
                     {...this.props}
                     useCSSTransforms={false}
                 >
-                    {this.generateDOM(open, dimmer, dummyData, this.state.keysData, hiddenKeys)}
+                    {this.generateDOM(open, dimmer, dummyData, this.state.keysData, hiddenKeys, editMode)}
                 </div>
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
@@ -541,7 +554,7 @@ const mapStateToProps = (state) => {
     let selectedOrgName = null;
     let selectedRegion = null;
     // alert(JSON.stringify(state.form.createAppFormDefault))
-    if(state.form.createAppFormDefault) {
+    if(state.form.createAppFormDefault && state.form.createAppFormDefault.values) {
         if(state.form.createAppFormDefault.values.Cloudlet !== "") {
             selectedCloudlet = state.form.createAppFormDefault.values.Cloudlet;
         }

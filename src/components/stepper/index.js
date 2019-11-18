@@ -100,7 +100,7 @@ class VerticalLinearStepper extends React.Component {
                         return;
                     };
                     setTimeout(() => {
-                        this.props.alertRefresh();
+                        this.props.alertRefresh(_item);
                         computeService.deleteTempFile(this.props.item, this.props.site)
                     }, 2000);
                 } else if(item.data.message.toLowerCase().indexOf('deleted cloudlet successfully') > -1){
@@ -114,7 +114,7 @@ class VerticalLinearStepper extends React.Component {
                     deleteFlag = true;
                     console.log("Updated AppInst")
                     setTimeout(() => {
-                        this.props.alertRefresh();
+                        this.props.alertRefresh('updated');
                         computeService.deleteTempFile(this.props.item, this.props.site)
                     }, 2000);
                 }

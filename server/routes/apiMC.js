@@ -236,7 +236,7 @@ exports.showOrg = (req, res) => {
             if(response.data && response.data.length > 0) {
                 res.json(response.data)
             } else {
-                res.json({error:'There is no data'})
+                res.json({error:'No records available'})
             }
         })
         .catch(function (error) {
@@ -356,7 +356,7 @@ exports.ShowUsers = (req, res) => {
             if(response.data && response.data.length) {
                 res.json(response.data)
             } else {
-                res.json({error:'There is no data'})
+                res.json({error:'No records available'})
             }
         })
         .catch(function (error) {
@@ -404,8 +404,8 @@ exports.ShowCloudlet = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowCloudlet..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 //Cluster instances
@@ -440,8 +440,8 @@ exports.ShowClusterInst = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowClusterInst..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 //Organization AppInst
@@ -477,8 +477,8 @@ exports.ShowClusterInsts = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowClusterInsts..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 //Apps
@@ -514,8 +514,8 @@ exports.ShowApps = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowApps..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 //Organization App
@@ -551,8 +551,8 @@ exports.ShowApp = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowApp..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 //app instances
@@ -582,7 +582,7 @@ exports.ShowAppInst = (req, res) => {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
                 console.log('empty')
-                res.json(null)
+                res.json({error:region+' : No records available'})
 
             } else {
                 res.json({error:'Request failed'})
@@ -590,8 +590,8 @@ exports.ShowAppInst = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowAppInst..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 //Organization AppInst
@@ -619,7 +619,7 @@ exports.ShowAppInsts = (req, res) => {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
                 console.log('empty')
-                res.json(null)
+                res.json({error:region+' :No records available'})
 
             } else {
 
@@ -627,8 +627,8 @@ exports.ShowAppInsts = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowAppInsts..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 /*
