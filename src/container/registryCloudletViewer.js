@@ -128,7 +128,7 @@ class RegistryCloudletViewer extends React.Component {
             search: 'pg=2'
         });
         _self.props.history.location.search = 'pg=2';
-        //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=2'})
+        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=2'})
     }
 
 

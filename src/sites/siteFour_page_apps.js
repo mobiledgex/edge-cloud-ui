@@ -35,8 +35,6 @@ class SiteFourPageApps extends React.Component {
         this.headerLayout = [1,3,3,1,3,1,3,4];
         this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster','AuthPublicKey','DefaultFQDN','PackageName','ScaleWithCluster','Revision']
         this.userToken = null;
-        // table column min-width
-        this.mWidth = [100,150,200,100,250,150,150,250];
 
     }
     gotoUrl(site, subPath) {
@@ -46,7 +44,7 @@ class SiteFourPageApps extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        //_self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     //go to
@@ -184,7 +182,7 @@ class SiteFourPageApps extends React.Component {
         const { viewMode, detailData, devData, randomId } = this.state;
         return (
             (viewMode === 'listView')?
-            <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} randomId={randomId} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub} mWidth={this.mWidth}></InsideListView>
+            <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} randomId={randomId} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
                 :
                 <ListDetailViewer data={detailData} dimmer={false} open={this.state.openDetail} siteId={'App'} close={this.closeDetail} siteId={this.props.siteId}></ListDetailViewer>
         );

@@ -157,15 +157,13 @@ const DashboardContainer = ( props, props2) => {
         props.mainPath = '/site1'
 
     } else {
-        // history.push({
-        //     pathname: _params.mainPath,
-        //     search: _params.subPath,
-        //     state: { some: 'state' }
-        // });
-        // history.location.search = _params.subPath;
+        history.push({
+            pathname: _params.mainPath,
+            search: _params.subPath,
+            state: { some: 'state' }
+        });
+        history.location.search = _params.subPath;
     }
-
-    localStorage.setItem('siteMain', props.mainPath)
 
     return(
         (self.routeCnt === 1) ?

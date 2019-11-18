@@ -35,8 +35,6 @@ class SiteFourPageOrganization extends React.Component {
         this.hgap = 0;
         this.headerLayout = [2,2,3,3,6]
         //this.hideHeader = ['Address','Phone']
-        // table column min-width
-        this.mWidth = [150,100,200,300,400];
     }
     gotoUrl(site, subPath) {
         let mainPath = site;
@@ -45,8 +43,7 @@ class SiteFourPageOrganization extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.setState({ page:subPath})
-        //_self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
     }
     //go to
     gotoPreview(site, page) {
@@ -59,6 +56,7 @@ class SiteFourPageOrganization extends React.Component {
             state: { some: 'state' }
         });
         _self.props.history.location.search = subPath;
+
 
     }
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -75,7 +73,7 @@ class SiteFourPageOrganization extends React.Component {
         if(store && store.userToken) this.getDataDeveloper(store.userToken);
     }
     componentWillUnmount() {
-        this.props.handleLoadingSpinner(false)
+
         this.setState({liveComp:false})
     }
 
@@ -105,10 +103,10 @@ class SiteFourPageOrganization extends React.Component {
             return;
         }
 
-        if(result.error) {
+        if(result.length == 0) {
             _self.setState({devData:[]})
             _self.props.handleDataExist(false)
-            _self.props.handleAlertInfo('error','There are no data to support your conclusion')
+            _self.props.handleAlertInfo('error','There is no data')
             //setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
             // _self.gotoUrl('/site4', 'pg=newOrg')  /* CreatOrg 자동 연결... */
         } else {
@@ -147,7 +145,7 @@ class SiteFourPageOrganization extends React.Component {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader} siteId={"Organization"} dataRefresh={this.getDataDeveloper} mWidth={this.mWidth}></DeveloperListView>
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader} siteId={"Organization"} dataRefresh={this.getDataDeveloper}></DeveloperListView>
             // <DeveloperListView headerLayout={this.headerLayout}></DeveloperListView>
         );
     }

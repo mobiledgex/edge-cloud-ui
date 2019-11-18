@@ -35,8 +35,6 @@ class SiteFourPageFlavor extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
         this.headerLayout = [1,4,4,4,4,3]
-        // table column min-width
-        this.mWidth = [100,200,100,100,100,150];
     }
     gotoUrl(site, subPath) {
         let mainPath = site;
@@ -45,7 +43,7 @@ class SiteFourPageFlavor extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        //_self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     //go to
@@ -78,7 +76,6 @@ class SiteFourPageFlavor extends React.Component {
         // }
     }
     componentWillReceiveProps(nextProps) {
-        console.log('20191114 recevie props.. page flavor.. ')
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
@@ -96,7 +93,6 @@ class SiteFourPageFlavor extends React.Component {
         
     }
     receiveResult = (result) => {
-        console.log('20191114 result in flavoer...', result)
         // @inki if data has expired token
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
@@ -143,7 +139,7 @@ class SiteFourPageFlavor extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'Flavors'} dataRefresh={this.getDataDeveloper} mWidth={this.mWidth}></DeveloperListView>
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'Flavors'} dataRefresh={this.getDataDeveloper}></DeveloperListView>
 
         );
     }

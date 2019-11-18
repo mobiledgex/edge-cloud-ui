@@ -32,8 +32,6 @@ class SiteFourPageUser extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
         this.headerLayout = [4,4,4,3]
-        // table column min-width
-        this.mWidth = [150,200,250,150];
     }
 
     //go to
@@ -82,7 +80,7 @@ class SiteFourPageUser extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        //_self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
         _self.setState({ page:subPath})
     }
     receiveResult = (result) => {
@@ -107,7 +105,7 @@ class SiteFourPageUser extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'User'} dataRefresh={this.getDataDeveloper} mWidth={this.mWidth}></DeveloperListView>
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'User'} dataRefresh={this.getDataDeveloper}></DeveloperListView>
 
         );
     }

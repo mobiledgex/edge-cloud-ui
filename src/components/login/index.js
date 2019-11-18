@@ -444,7 +444,7 @@ class Login extends Component {
 
         if(result.data.token) {
             self.params['userToken'] = result.data.token
-            localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify({email:self.params.email, userToken:self.params.userToken}))
+            localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
             self.props.mapDispatchToLoginWithPassword(self.params)
 
             self.props.handleChangeLoginMode('login')

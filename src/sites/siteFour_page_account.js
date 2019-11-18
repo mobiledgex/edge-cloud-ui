@@ -47,8 +47,6 @@ class SiteFourPageAccount extends React.Component {
         this.hgap = 0;
         this.headerLayout = [4,4,4,3]
         this.hiddenKeys = ['Passhash', 'Salt', 'Iter','FamilyName','GivenName','Picture','Nickname','CreatedAt','UpdatedAt']
-        // table column min-width
-        this.mWidth = [150,200,220,120,150];
     }
     gotoUrl(site, subPath) {
         let mainPath = site;
@@ -57,7 +55,7 @@ class SiteFourPageAccount extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        //_self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     //go to
@@ -122,7 +120,7 @@ class SiteFourPageAccount extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <AccountListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'Account'} dataRefresh={this.getDataDeveloper} hiddenKeys={this.hiddenKeys} mWidth={this.mWidth}></AccountListView>
+            <AccountListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'Account'} dataRefresh={this.getDataDeveloper} hiddenKeys={this.hiddenKeys}></AccountListView>
 
         );
     }
