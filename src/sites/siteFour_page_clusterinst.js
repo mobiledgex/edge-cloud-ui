@@ -40,8 +40,6 @@ class SiteFourPageClusterInst extends React.Component {
         this.countObject = {};
         this.headerLayout = [1,2,2,2,2,1,2,2,1,2];
         this.hiddenKeys = ['Status','Deployment']
-        // table column min-width
-        this.mWidth = [100,200,200,150,200,150,150,200,150,120,150];
 
     }
     gotoUrl(site, subPath) {
@@ -51,7 +49,7 @@ class SiteFourPageClusterInst extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        //_self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
     }
     //go to
     gotoPreview(site) {
@@ -267,12 +265,13 @@ class SiteFourPageClusterInst extends React.Component {
     render() {
         const {shouldShowBox, shouldShowCircle, devData} = this.state;
         const { activeItem, viewMode } = this.state;
+        let randomValue = Math.round(Math.random() * 100);
         return (
 
             //<DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
             (viewMode === 'listView')?
 
-                <MapWithListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort} mWidth={this.mWidth}></MapWithListView>
+                <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
                 :
                 <PageDetailViewer className="ttt" data={this.state.detailData} page='clusterInst'/>
         );

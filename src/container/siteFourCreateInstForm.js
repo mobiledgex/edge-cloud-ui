@@ -400,7 +400,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
             search: 'pg='+num
         });
         _self.props.history.location.search = 'pg='+num;
-        //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg='+num})
+        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg='+num})
     }
 
     clusterHide = (value) => {

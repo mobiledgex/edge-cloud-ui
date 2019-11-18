@@ -109,6 +109,7 @@ class TimelineAuditView extends React.Component {
     }
     onHandleIndexClick = (value) => {
         let selectedId = parseInt(value.value);
+        if(!selectedId) return;
         let selectedDom = document.getElementById(listId[selectedId])
         let selectChildNode = null
         if(selectedDom) {
@@ -118,21 +119,18 @@ class TimelineAuditView extends React.Component {
             // if(oldSelected.length) oldSelected.map((element) => {
             //     element.className = null;
             // })
-            console.log('20191115 selet old..',oldSelected, ":", [...oldSelected])
+            console.log('20191018 selet old..',oldSelected, ":", [...oldSelected])
             selectChildNode[1].className = 'selectedCircle_timeline'
         }
 
         _self.setAllView(_self.state.rawAllData[selectedId], selectedId)
         _self.setRequestView(_self.state.rawAllData[selectedId], selectedId)
         _self.setResponseView(_self.state.rawAllData[selectedId], selectedId)
-        _self.forceUpdate();
 
         if(_self.state.rawAllData[selectedId]) _self.props.handleSelectedAudit(_self.state.rawAllData[selectedId]);
     }
     setAllView(dummyConts, sId) {
-        if(dummyConts && dummyConts['traceid']) {
-            this.setState({rawViewData: dummyConts, currentTraceid: dummyConts['traceid']})
-        }
+        if(dummyConts['traceid']) _self.setState({rawViewData:dummyConts, currentTraceid:dummyConts['traceid']})
     }
     setRequestView(dummyConts, sId) {
 
@@ -160,6 +158,7 @@ class TimelineAuditView extends React.Component {
             } else {
                 this.setState({responseData:JSON.parse((dummyConts['response'] !== "") ? dummyConts['response'] : {})})
             }
+
         }
 
     }
@@ -228,7 +227,7 @@ class TimelineAuditView extends React.Component {
                     //liDom.appendChild(span);
                 }
             })
-        }, 1000)
+        }, 2000)
     }
     resultReceive(result) {
         alert(result)
@@ -243,13 +242,6 @@ class TimelineAuditView extends React.Component {
         alert('submit')
     }
     close = () => this.setState({ openSendEmail: false })
-    componentWillUpdate() {
-        console.log('20191113 componentWillUpdate... ')
-    }
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return nextProps.data !== this.props.data;
-    }
-
     componentWillReceiveProps(nextProps, nextContext) {
 
         if(!nextProps.mounted && !this.state.mounted) return;
@@ -257,7 +249,7 @@ class TimelineAuditView extends React.Component {
         let dummys = [];
         let dummyConts = [];
 
-        console.log('20191113 timeline audit viewer... ', nextProps.data,":", this.props.data)
+
         if(nextProps.data !== this.props.data) {
             /**
              * 오류가 발생할 수 있는 코드
@@ -294,6 +286,8 @@ class TimelineAuditView extends React.Component {
                 getTimeline[0].childNodes[0].className = "page_audit_history_timeline_container";
                 getTimeline[0].childNodes[0].childNodes[0].className = "page_audit_history_timeline_container_wrapper"
             }
+
+
         }
         //submit form
         if(nextProps.onSubmit) {

@@ -176,7 +176,7 @@ class SiteFourOrgaThree extends React.Component {
                                             <Grid.Column>
                                                 <div className="newOrg3-2">
                                                     <div>
-                                                        If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker commands.
+                                                        If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker command.
                                                     </div>
                                                     <br></br>
                                                     <div>
@@ -195,7 +195,7 @@ class SiteFourOrgaThree extends React.Component {
                                                 <br></br>
                                                 <div className="newOrg3-3">
                                                     <div>
-                                                        If you image is VM, please upload your image with your MobiledgeX Account Credentials to our VM registry using the following curl command.
+                                                        If you image is VM, please upload to our VM registry with your MobiledgeX Account Credentials.
                                                     </div>
                                                     <div>
                                                         {`curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-` + org + `/<target_file_path>"`}

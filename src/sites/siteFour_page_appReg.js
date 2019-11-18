@@ -41,7 +41,7 @@ class SiteFourPageAppReg extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        //_self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     gotoApp() {
