@@ -286,3 +286,13 @@ export function setCheckedAudit (data) {
         data
     }
 }
+
+/**
+ *
+ **/
+export function stateStream (data) {
+    return {
+        type: types.STATE_STREAM,
+        data
+    }
+}
