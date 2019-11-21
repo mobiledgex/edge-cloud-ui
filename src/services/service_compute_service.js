@@ -2,6 +2,7 @@
 import axios from 'axios-jsonp-pro';
 import qs from 'qs';
 import request from 'request';
+import * as ServiceSocket from './service_webSocket';
 
 import FormatComputeFlavor from './formatter/formatComputeFlavor';
 import FormatComputeCluster from './formatter/formatComputeCluster';
@@ -22,6 +23,9 @@ let ServerUrl = 'https://'+hostname+':3030';
 if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
     ServerUrl = 'https://'+hostname+'/server';
 }
+
+
+
 export function setDomain(domain) {
     console.log('reset service domain ---- ', domain)
     serviceDomain = domain;
@@ -407,7 +411,21 @@ export function createNewClusterFlavor(resource, body, callback) {
             console.log(error);
         });
 }
-
+export function getStacksData(resource, body, callback) {
+    axios.defaults.timeout = 10000000;
+    axios.post(ServerUrl+'/GetStatStream',{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('20191119 response GetStatStream result-',response,body);
+            callback(response, body)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
 export function createNewCloudlet(resource, body, callback) {
     axios.defaults.timeout = 10000000;
     axios.post(ServerUrl+'/CreateCloudlet',{
@@ -416,12 +434,15 @@ export function createNewCloudlet(resource, body, callback) {
         serviceDomain:serviceDomain
     })
         .then(function (response) {
-            console.log('response cloudlet result-',response,body);
+            console.log('20191119 response cloudlet result-',response,body);
             callback(response, body)
         })
         .catch(function (error) {
             console.log(error);
         });
+
+    //1개 밖에 못받아서, socket 통신으로 푸시를 받음
+    //ServiceSocket.serviceStreaming('createCloudlet');
 }
 
 export function updateAppInst(resource, body, callback) {

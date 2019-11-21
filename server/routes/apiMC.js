@@ -6,12 +6,18 @@ import axios from "axios-https-proxy-fix";
 import qs from "qs";
 import fs from "fs";
 import shell from 'shelljs';
+import estream from 'event-stream';
 
 const API_KEY = '__apiMC_key__'
 let mcUrl = 'https://mc.mobiledgex.net:9900';
 let mcDevUrl = 'https://mc-stage.mobiledgex.net:9900';
 let _version = 'v0.0.0';
 console.log("how fast...", process.env.MC_URL)
+let _io = null;
+exports.setIo = (io) => {
+    console.log('set io -- ', io)
+    _io = io
+}
 // create user
 exports.getToken = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
@@ -391,7 +397,7 @@ exports.ShowCloudlet = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show cloudlet', response.data)
+            console.log('success show cloudlet', response.data, "- : -")
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -842,24 +848,33 @@ exports.CreateClusterFlavor = (req, res) => {
 }
 
 //Create Cloudlet
+let stackData = [];
+exports.GetStatStream = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    axios.defaults.timeout = 10000000;
+
+    console.log('get state steam... ', stackData)
+    res.json({'stacksData':stackData})
+    //if(_io) _io.emit('createCloudlet', {'stackData':stackData, 'clId':cloudletId})
+}
 exports.CreateCloudlet = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
     let region = 'local'
-    let clusterId = '';
+    let cloudletId = '';
     axios.defaults.timeout = 10000000;
     if(req.body.serviceBody){
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
-        clusterId = serviceBody.cloudlet.key.operator_key.name + serviceBody.cloudlet.key.name;
+        cloudletId = serviceBody.cloudlet.key.operator_key.name + serviceBody.cloudlet.key.name;
     }
 
-    //fs.createWriteStream('./temp/'+clusterId+'.txt')
+    //fs.createWriteStream('./temp/'+cloudletId+'.txt')
 
-    console.log('Create me cloudlet-- ', serviceBody, 'mcUrl=',mcUrl,":::",clusterId)
+    console.log('Create me cloudlet-- ', serviceBody, 'mcUrl=',mcUrl,":::",cloudletId)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudlet', serviceBody,
 
         {
@@ -873,9 +888,18 @@ exports.CreateCloudlet = (req, res) => {
 
             if(response.data) {
                 //res.json(response.data)
-                response.data.pipe(
-                    fs.createWriteStream('./temp/'+clusterId+'.txt')
-                )
+                // response.data.pipe(
+                //     fs.createWriteStream('./temp/'+cloudletId+'.txt')
+                // )
+                /////////////////////////
+                response.data.pipe(estream.split())
+                    .pipe(estream.map(function(data, cb){
+                        console.log('create Cloudlet.../////-------///////', data)
+                        stackData.push({'createCloudlet':data, 'clId':cloudletId});
+                        // 접속된 모든 클라이언트에게 메시지를 전송한다
+                        //if(_io) _io.emit('createCloudlet', {'stackData':stackData, 'clId':cloudletId})
+                    }))
+                ////////////////////////
             } else {
                 res.json({error:'Fail'})
             }

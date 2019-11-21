@@ -1,15 +1,16 @@
 // https://material-ui.com/components/steppers/
 
 import React from 'react';
+import * as computeService from '../../services/service_compute_service';
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-
-import * as computeService from '../../services/service_compute_service';
-import * as ServiceSocket from '../../services/service_webSocket';
-import store from '../../store';
-import * as actions from '../../actions';
+import StepContent from '@material-ui/core/StepContent';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import { Progress } from 'semantic-ui-react';
 
 let failFlag = false;
 let deleteFlag = false;
@@ -28,24 +29,20 @@ class VerticalLinearStepper extends React.Component {
             _item:{Status:{}}
         };
 
-        this.AlertInterval = null;
+        
 
     }
 
     componentDidMount() {
-
-
-            this.AlertInterval = setInterval(() => {
-                this.getStackInterval()
-            }, 20000)
-            this.getStackInterval()
-
-
+        this.AlertInterval = setInterval(
+            () => this.receiveInterval(this.props.site),
+            3000
+        );       
     }
 
     componentWillMount() {
         this.setState({_item:this.props.item})
-
+        this.receiveInterval(this.props.site)
     }
     
 
@@ -53,146 +50,17 @@ class VerticalLinearStepper extends React.Component {
         clearInterval(this.AlertInterval)
         deleteFlag = false;
     }
-    componentWillReceiveProps(nextProps, nextContext) {
-        //console.log('20191119 receive props in stepper ---- ',nextProps.item,"== : ==", nextProps.site, "== : stream ?? ==", nextProps.stateStream)
-        if(nextProps.item !== this.props.item) {
-            //console.log('20191119 receive props in stepper ---- ',nextProps.item,"== : ==", nextProps.site)
-            //this.setState({steps:nextProps.stateStream,activeStep:nextProps.stateStream.length - 1})
-        }
 
-    }
-
-    /*
-    props is ==========>
-    alertRefresh: ƒ ()
-    auto: ""
-    autoRefresh: ƒ ()
-    failRefresh: ƒ (msg)
-    item:
-        CloudletLocation: {latitude: 50.110924, longitude: 8.682127}
-        CloudletName: "frankfurt-eu"
-        Edit: (6) ["Region", "CloudletName", "OperatorName", "CloudletLocation", "Ip_support", "Num_dynamic_ips"]
-        Ip_support: 2
-        Num_dynamic_ips: 10
-        Operator: "TDG"
-        Physical_name: "frankfurt"
-        Platform_type: 2
-        Progress: ""
-        Region: "EU"
-        State: 5
-        Status: {}
-        __proto__: Object
-        site: "Cloudlet"
-        stateStream: null
-        ---------------------------
-        cloudletId = serviceBody.cloudlet.key.operator_key.name + serviceBody.cloudlet.key.name;
-    */
-    getStackInterval = () => {
-        console.log('20191119 get stack data...')
-        computeService.getStacksData('GetStatStream', this.props.item, this.receiveInterval)
-    }
-    storeData = (_data, stId, flag) => {
-        let stackStates = [];
-        if(_data && _data.length) {
-            _data.map((dtd, i) => {
-                let keys = Object.keys(JSON.parse(dtd[stId]));
-                let parseData = JSON.parse(dtd[stId])
-                console.log('20191119 key..', keys, ":",keys[0], ":", parseData,":clId ===>>>>>>>",dtd['clId'])
-
-                let clId = dtd['clId'];
-                let _dtd = null
-                if(dtd[stId] && keys[0] === 'data') {
-
-                    _dtd = parseData.data ? parseData.data : null;
-
-                    if(_dtd) {
-                        _dtd['clId'] = clId;
-                        if(stackStates.length == 0) stackStates.push(_dtd)
-                        let sameItem = false;
-                        stackStates.map((sItem) => {
-                            if(sItem === _dtd) sameItem = true;
-                        })
-                        if(!sameItem) {
-                            stackStates.push(_dtd)
-                        }
-                    }
-                    console.log('20191119 login -- ', _dtd,":", stackStates)
-                } else if(dtd[stId] && keys[0] === 'result' && flag === 'result') {
-                    _dtd = parseData.result ? parseData.result.message : null;
-                    console.log('20191119 login result -- ', _dtd)
-                    if(_dtd) {
-                        //return [_dtd];
-                    }
-                }
-            })
-            alert('test1'+stackStates)
-            //store.dispatch(actions.stateStream(stackStates))
-        } else {
-            // closed streaming
-            console.log('20191119 closed streaming....')
-        }
-        alert('test2'+stackStates)
-        console.log('20191119 stackStates -- ', stackStates)
-        return stackStates;
-    }
     receiveInterval = (data) => {
         const prgDiv = document.getElementById("prgBox");
         if(prgDiv){
             prgDiv.scrollTop = prgDiv.scrollHeight;
         }
-        let hashName = '';
-        let item = this.props.item;
-        let stateStream = [];
-        let resultStream = [];
-        hashName = item.Operator + item.CloudletName;
-        let _step = []
-        console.log('20191119 receiveInterval info === ', this.props,":", data, data?data.data.stacksData:null)
-        if(data && data.data) {
-
-            stateStream = this.storeData(data.data.stacksData,'createCloudlet', 'state')
-            //resultStream = this.storeData(data.data.stacksData,'createCloudlet', 'result')
-            console.log('20191119 stateStream .. ', stateStream, ":",resultStream)
-        }
-
-
-        if(this.props.site === 'Cloudlet' && stateStream.length > 0) {
-            console.log('20191119 receiveInterval hashName and clId.. ', hashName)
-            stateStream.map((stat) => {
-                console.log('20191119 receiveInterval hashName and clId...... ', hashName , ":", stat['clId'])
-                if(hashName === stat['clId']) {
-                    _step.push(stat['message'])
-
-                    //
-                    if(stat['message'].indexOf('successfully') > -1) {
-                        //store.dispatch(actions.alertInfo('info',stat['message']))
-                        // refresh
-                        //stackStates = [];
-                        //store.dispatch(actions.computeRefresh(false))
-
-                    }
-                }
-
-            })
-        } else if(this.props.site === 'Cloudlet' && resultStream.length > 0) {
-            resultStream.map((result) => {
-                if(result.indexOf('Failed') > -1 || result.indexOf('failed') > -1) {
-                    //store.dispatch(actions.alertInfo('error',result))
-                } else {
-                    //store.dispatch(actions.alertInfo('info',result))
-                }
-            })
-
-            //store.dispatch(actions.computeRefresh(false))
-        }
-
-        console.log('20191119 receiveInterval === ', this.props,":_step =", _step,":",)
         if(this.props.item.State == 3 || this.props.item.State == 7) {
             if(this.props.item.ClusterInst && this.props.item.ClusterInst.indexOf('autocluster') > -1 && this.props.auto == 'auto'){
                 //computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusAuto)
-                if(this.props.stateStream) this.setState({steps:_step,activeStep:1})
             } else {
                 //computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusData)
-                if(this.props.stateStream) this.setState({steps:_step,activeStep:1})
             }
         } else if(this.props.item.State == 5) {
             this.setState({steps:['Created successfully'],activeStep:1})
@@ -200,7 +68,6 @@ class VerticalLinearStepper extends React.Component {
         } else if(this.props.item.State == 10 || this.props.item.State == 12) {
             if(this.props.site == 'Cloudlet'){
                 //computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusData)
-                if(_step.length) this.setState({steps:_step,activeStep:_step.length - 1})
             } else{
                 this.setState({steps:['DeletePrepare', 'Deleting'],activeStep:1})
                 clearInterval(this.AlertInterval)

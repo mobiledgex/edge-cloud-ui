@@ -91,8 +91,8 @@ class SiteFourPageCloudlet extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
- 
         if(nextProps.computeRefresh.compute) {
+            this._cloudletDummy = [];
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
             this.setState({dataSort:true});

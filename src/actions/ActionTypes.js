@@ -43,4 +43,5 @@ export const EDIT_INSTANCE = 'EDIT_INSTANCE';
 export const DELETE_RESET = 'DELETE_RESET';
 export const REGION_INFO = 'REGION_INFO';
 export const CHECKED_AUDIT = 'CHECKED_AUDIT';
+export const STATE_STREAM = 'STATE_STREAM';
 

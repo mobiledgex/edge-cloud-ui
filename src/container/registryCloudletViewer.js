@@ -104,6 +104,8 @@ class RegistryCloudletViewer extends React.Component {
 
         };
 
+        this.pauseRender =false;
+
     }
 
     
@@ -173,6 +175,7 @@ class RegistryCloudletViewer extends React.Component {
     }
     receiveSubmit = (result, body) => {
         console.log("paseDatapaseDatapaseData",result)
+        this.pauseRender = false;
         let paseData = result.data;
         if(paseData.error && !this.state.errorClose) {
             //this.setState({clusterInstCreate:false})
@@ -259,9 +262,9 @@ class RegistryCloudletViewer extends React.Component {
             //close tutorial
             this.props.handleStateTutor('done');
 
-            if(nextProps.formClusterInst.submitSucceeded && error.length == 0){
+            if(!this.pauseRender && nextProps.formClusterInst.submitSucceeded && error.length == 0){
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
-                this.props.handleLoadingSpinner(true);                
+                this.props.handleLoadingSpinner(true);
                 //service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit, nextProps.validateValue.Cloudlet)
                 service.createNewCloudlet('CreateCloudlet', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
                 setTimeout(() => {
@@ -269,6 +272,7 @@ class RegistryCloudletViewer extends React.Component {
                     this.props.gotoUrl();
                     this.setState({errorClose:true})
                 }, 3000)
+                this.pauseRender = true;
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }

@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux';
 import RGL, { WidthProvider } from "react-grid-layout";
-import ContainerDimensions from 'react-container-dimensions';
 import Alert from "react-s-alert";
 import * as moment from 'moment';
 import * as actions from '../actions';
@@ -17,9 +16,8 @@ import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
 import VerticalLinearStepper from '../components/stepper';
 import PopDetailViewer from './popDetailViewer';
 import * as computeService from '../services/service_compute_service';
-import MaterialIcon from 'material-icons-react';
 import ReactJson from 'react-json-view'
-import * as aggregate from '../utils'
+import * as ServiceSocket from '../services/service_webSocket';
 
 const ReactGridLayout = WidthProvider(RGL);
 let prgInter = null;
@@ -76,7 +74,8 @@ class MapWithListView extends React.Component {
             closeMap:false,
             toggle:false,
             stateCreate:false,
-            stateViewToggle:false
+            stateViewToggle:false,
+            stateStream:null
             
         };
 
@@ -334,14 +333,17 @@ class MapWithListView extends React.Component {
     jsonView = (jsonObj) => (
         <ReactJson src={jsonObj} {...this.jsonViewProps} />
     )
+    makeStepper = (_item, _auto) => (
+        <div className='ProgressBox' id='prgBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
+            <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh} autoRefresh={this.setAlertAutoRefresh} auto={_auto} stateStream={this.state.stateStream} />
+        </div>
+    )
     stateView(_item,_siteId,_auto) {
-        console.log("stateViewstateView",_item,":::",_auto)
+        console.log("20191119 stateViewstateView",_item,":::",_siteId,"::::",_auto,":::")
         Alert.closeAll();
         this.setState({stateViewToggle:true})
         Alert.info(
-            <div className='ProgressBox' id='prgBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
-                <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh} autoRefresh={this.setAlertAutoRefresh} auto={_auto}  />
-            </div>, {
+            this.makeStepper(_item,_auto), {
             position: 'top-right', timeout: 'none', limit:1,
             //onShow: this.setState({stateViewToggle:true}),
             onClose: this.proClose
@@ -470,17 +472,17 @@ class MapWithListView extends React.Component {
                                         </Table.Cell>
                                     :
                                     (value === 'Progress'  && (item['State'] == 3 || item['State'] == 7))?
-                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId,'')}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='green' name='circle notch' />} />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && item['State'] == 5)?
-                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId, '')}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Icon className="progressIndicator" name='check' color='rgba(255,255,255,.5)' />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && (item['State'] == 10 || item['State'] == 12))?
-                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId, '')}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='red' name='circle notch' />} />
                                         </Table.Cell>
                                     :
@@ -608,6 +610,7 @@ class MapWithListView extends React.Component {
         if(this.props.location && this.props.location.pgname=='appinst'){
             this.autoClusterAlert(this.props.location.pgnameData)
         }
+        ServiceSocket.serviceStreaming('createCloudlet');
     }
     componentWillUnmount() {
         //window.addEventListener("resize", this.updateDimensions);
@@ -620,6 +623,8 @@ class MapWithListView extends React.Component {
 
     componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.devData.length > 0){
+
+
             nextProps.devData.map((item) => {
                 //console.log("dummyDatadummyData",item.State)
                 if( (item.State == 3 || item.State == 7) && !this.state.stateCreate){
@@ -627,11 +632,15 @@ class MapWithListView extends React.Component {
                     console.log("dummyDatadummyData",item)
                     //this.setState({stateCreate:item})
                     //this.props.dataRefresh();
+
+                    /*
+                    // code block by inki 20191120
                     prgInter = setInterval(() => {
                         if(!this.state.stateViewToggle){
                             computeService.creteTempFile(item, nextProps.siteId, this.receiveStatusData);
                         }
                     }, 3000);
+                    */
                 }
             })
         }
@@ -723,6 +732,10 @@ class MapWithListView extends React.Component {
             this.setState({dummyData:filterList})
         }
 
+        if(nextProps.stateStream) {
+            //console.log('20191119 receive props in mapwidthlistview == ', nextProps.stateStream)
+            this.setState({stateStream:nextProps.stateStream})
+        }
     }
 
     render() {
@@ -777,11 +790,13 @@ const mapStateToProps = (state) => {
     let dimmInfo = dimm ? dimm : null;
     let viewMode = null;
     let deleteReset = state.deleteReset.reset
+    let stateStream = state.stateStream ? state.stateStream.state : null;
     return {
         accountInfo,
         dimmInfo,
         clickCity: state.clickCityList.list,
-        deleteReset
+        deleteReset,
+        stateStream
     }
 
 
