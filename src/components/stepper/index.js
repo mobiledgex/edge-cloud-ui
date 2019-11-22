@@ -36,10 +36,10 @@ class VerticalLinearStepper extends React.Component {
 
 
             this.AlertInterval = setInterval(() => {
-                this.getStackInterval()
-            }, 20000)
-            this.getStackInterval()
+                this.receiveInterval()
+            }, 2000)
 
+        this.receiveInterval()
 
     }
 
@@ -54,7 +54,7 @@ class VerticalLinearStepper extends React.Component {
         deleteFlag = false;
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        //console.log('20191119 receive props in stepper ---- ',nextProps.item,"== : ==", nextProps.site, "== : stream ?? ==", nextProps.stateStream)
+        console.log('20191119 index receive props in stepper ---- ',nextProps.item,"== : ==", nextProps.site, "== : stream ?? ==", nextProps.stateStream)
         if(nextProps.item !== this.props.item) {
             //console.log('20191119 receive props in stepper ---- ',nextProps.item,"== : ==", nextProps.site)
             //this.setState({steps:nextProps.stateStream,activeStep:nextProps.stateStream.length - 1})
@@ -87,105 +87,63 @@ class VerticalLinearStepper extends React.Component {
         ---------------------------
         cloudletId = serviceBody.cloudlet.key.operator_key.name + serviceBody.cloudlet.key.name;
     */
-    getStackInterval = () => {
-        console.log('20191119 get stack data...')
-        computeService.getStacksData('GetStatStream', this.props.item, this.receiveInterval)
-    }
-    storeData = (_data, stId, flag) => {
-        let stackStates = [];
-        if(_data && _data.length) {
-            _data.map((dtd, i) => {
-                let keys = Object.keys(JSON.parse(dtd[stId]));
-                let parseData = JSON.parse(dtd[stId])
-                console.log('20191119 key..', keys, ":",keys[0], ":", parseData,":clId ===>>>>>>>",dtd['clId'])
 
-                let clId = dtd['clId'];
-                let _dtd = null
-                if(dtd[stId] && keys[0] === 'data') {
 
-                    _dtd = parseData.data ? parseData.data : null;
+    // receiveInterval = () => {
+    //
+    //     console.log('20191119 index receiveInterval info === ', this.props)
+    //
+    //
+    //
+    // }
 
-                    if(_dtd) {
-                        _dtd['clId'] = clId;
-                        if(stackStates.length == 0) stackStates.push(_dtd)
-                        let sameItem = false;
-                        stackStates.map((sItem) => {
-                            if(sItem === _dtd) sameItem = true;
-                        })
-                        if(!sameItem) {
-                            stackStates.push(_dtd)
-                        }
-                    }
-                    console.log('20191119 login -- ', _dtd,":", stackStates)
-                } else if(dtd[stId] && keys[0] === 'result' && flag === 'result') {
-                    _dtd = parseData.result ? parseData.result.message : null;
-                    console.log('20191119 login result -- ', _dtd)
-                    if(_dtd) {
-                        //return [_dtd];
-                    }
-                }
-            })
-            alert('test1'+stackStates)
-            //store.dispatch(actions.stateStream(stackStates))
-        } else {
-            // closed streaming
-            console.log('20191119 closed streaming....')
-        }
-        alert('test2'+stackStates)
-        console.log('20191119 stackStates -- ', stackStates)
-        return stackStates;
-    }
-    receiveInterval = (data) => {
+    receiveInterval = () => {
         const prgDiv = document.getElementById("prgBox");
         if(prgDiv){
             prgDiv.scrollTop = prgDiv.scrollHeight;
         }
         let hashName = '';
         let item = this.props.item;
-        let stateStream = [];
+        let stateStream = this.props.stateStream;
         let resultStream = [];
         hashName = item.Operator + item.CloudletName;
         let _step = []
-        console.log('20191119 receiveInterval info === ', this.props,":", data, data?data.data.stacksData:null)
-        if(data && data.data) {
-
-            stateStream = this.storeData(data.data.stacksData,'createCloudlet', 'state')
+        console.log('20191119 index receiveInterval info === ', this.props)
+        if(stateStream) {
             //resultStream = this.storeData(data.data.stacksData,'createCloudlet', 'result')
-            console.log('20191119 stateStream .. ', stateStream, ":",resultStream)
-        }
+            console.log('20191119 index stateStream .. ', stateStream, ":",resultStream)
+            if(this.props.site === 'Cloudlet' && stateStream.length > 0) {
+                console.log('20191119 index receiveInterval hashName and clId.. ', hashName)
+                stateStream.map((stat) => {
+                    console.log('20191119 index receiveInterval hashName and clId...... ', hashName , ":", stat)
 
-
-        if(this.props.site === 'Cloudlet' && stateStream.length > 0) {
-            console.log('20191119 receiveInterval hashName and clId.. ', hashName)
-            stateStream.map((stat) => {
-                console.log('20191119 receiveInterval hashName and clId...... ', hashName , ":", stat['clId'])
-                if(hashName === stat['clId']) {
                     _step.push(stat['message'])
 
                     //
                     if(stat['message'].indexOf('successfully') > -1) {
-                        //store.dispatch(actions.alertInfo('info',stat['message']))
                         // refresh
+                        clearInterval(this.AlertInterval)
+                        this.props.stopInterval('info',stat['message'])
+                        //store.dispatch(actions.alertInfo('info',stat['message']))
                         //stackStates = [];
-                        //store.dispatch(actions.computeRefresh(false))
 
                     }
-                }
 
-            })
-        } else if(this.props.site === 'Cloudlet' && resultStream.length > 0) {
-            resultStream.map((result) => {
-                if(result.indexOf('Failed') > -1 || result.indexOf('failed') > -1) {
-                    //store.dispatch(actions.alertInfo('error',result))
-                } else {
-                    //store.dispatch(actions.alertInfo('info',result))
-                }
-            })
 
-            //store.dispatch(actions.computeRefresh(false))
+                    if(stat['message'].indexOf('Failed') > -1 || stat['message'].indexOf('failed') > -1) {
+                        clearInterval(this.AlertInterval)
+                        this.props.stopInterval('error',stat['message'])
+
+                    }
+
+                })
+            }
         }
 
-        console.log('20191119 receiveInterval === ', this.props,":_step =", _step,":",)
+
+
+
+        console.log('20191119 receiveInterval === ', this.props,":_step =", _step,":")
         if(this.props.item.State == 3 || this.props.item.State == 7) {
             if(this.props.item.ClusterInst && this.props.item.ClusterInst.indexOf('autocluster') > -1 && this.props.auto == 'auto'){
                 //computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusAuto)
@@ -208,7 +166,7 @@ class VerticalLinearStepper extends React.Component {
         } else  {
             this.setState({steps:['Create error'],activeStep:1})
         }
-        
+
     }
 
     receiveStatusData = (result, _item) => {

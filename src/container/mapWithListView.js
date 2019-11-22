@@ -75,7 +75,8 @@ class MapWithListView extends React.Component {
             toggle:false,
             stateCreate:false,
             stateViewToggle:false,
-            stateStream:null
+            stateStream:null,
+            stackStates:[]
             
         };
 
@@ -98,6 +99,8 @@ class MapWithListView extends React.Component {
             {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', display:'flex', flexDirection:'column'},
             {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', display:'flex', flexDirection:'column', height:'28px'}
         ]
+        this.streamInterval = null;
+        this.oldTemp = {};
 
     }
     gotoUrl(site, subPath) {
@@ -233,7 +236,7 @@ class MapWithListView extends React.Component {
         setTimeout(() => this.generateStart(), 2000)
     }
 
-    generateDOM(open, dimmer, randomValue, dummyData, resize) {
+    generateDOM(open, dimmer, randomValue, dummyData, resize, stateStream) {
         return layout.map((item, i) => (
 
             (i === 1)?
@@ -335,23 +338,136 @@ class MapWithListView extends React.Component {
     )
     makeStepper = (_item, _auto) => (
         <div className='ProgressBox' id='prgBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
-            <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh} autoRefresh={this.setAlertAutoRefresh} auto={_auto} stateStream={this.state.stateStream} />
+            <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh} autoRefresh={this.setAlertAutoRefresh} auto={_auto} stateStream={this.state.stateStream} stopInterval={this.proClose} />
         </div>
     )
+    /*****************************
+     * view status of creating app
+     * ***************************/
     stateView(_item,_siteId,_auto) {
-        console.log("20191119 stateViewstateView",_item,":::",_siteId,"::::",_auto,":::")
         Alert.closeAll();
         this.setState({stateViewToggle:true})
         Alert.info(
             this.makeStepper(_item,_auto), {
-            position: 'top-right', timeout: 'none', limit:1,
-            //onShow: this.setState({stateViewToggle:true}),
-            onClose: this.proClose
-        })
+                position: 'top-right', timeout: 'none', limit:1,
+                //onShow: this.setState({stateViewToggle:true}),
+                onClose: this.proClose
+            })
+        this.streamInterval = setInterval(() => {
+            Alert.closeAll();
+            this.getStackInterval();
+            Alert.info(
+                this.makeStepper(_item,_auto), {
+                    position: 'top-right', timeout: 'none', limit:1,
+                    //onShow: this.setState({stateViewToggle:true}),
+                    onClose: this.proClose
+                })
+        }, 5000)
+        this.getStackInterval();
+
+    }
+    getStackInterval = () => {
+        computeService.getStacksData('GetStatStream', this.props.item, this.receiveInterval)
+    }
+    receiveInterval =(data) => {
+        this.storeData(data.data.stacksData,'createCloudlet', 'state')
+
+    }
+    storeData = (_data, stId) => {
+        let stackStates = [];
+        if(_data && _data.length) {
+            _data.map((dtd, i) => {
+                if(dtd[stId] !== "") {
+                    let parseData = JSON.parse(dtd[stId])
+                    let keys = Object.keys(parseData);
+
+                    let clId = dtd['clId'];
+                    let _dtd = null
+                    if(dtd[stId] && keys[0] === 'data') {
+                        _dtd = parseData.data ? parseData.data : null;
+                        stackStates.push(_dtd)
+                    } else if(dtd[stId] && keys[0] === 'result') {
+                        _dtd = parseData.result ? parseData.result : null;
+                    }
+                } else {
+
+                }
+
+            })
+            _self.setState({stateStream: stackStates})
+        } else {
+            // closed streaming
+            console.log('20191119 closed streaming....')
+        }
+
+        return stackStates;
+    }
+    storeData_old = (_data, stId, flag) => {
+        let stackStates = [];
+        if(_data && _data.length) {
+            _data.map((dtd, i) => {
+                let keys = Object.keys(JSON.parse(dtd[stId]));
+                let parseData = JSON.parse(dtd[stId])
+                console.log('20191119 key..', keys, ":",keys[0], ":", parseData,":clId ===>>>>>>>",dtd['clId'])
+
+                let clId = dtd['clId'];
+                let _dtd = null
+                if(dtd[stId] && keys[0] === 'data') {
+
+                    _dtd = parseData.data ? parseData.data : null;
+
+                    if(_dtd) {
+                        _dtd['clId'] = clId;
+                        if(stackStates.length == 0) stackStates.push(_dtd)
+                        let sameItem = false;
+                        stackStates.map((sItem) => {
+                            if(sItem === _dtd) sameItem = true;
+                        })
+                        if(!sameItem) {
+                            stackStates.push(_dtd)
+                        }
+                    }
+                    console.log('20191119 login -- ', _dtd,":", stackStates)
+                } else if(dtd[stId] && keys[0] === 'result' && flag === 'result') {
+                    _dtd = parseData.result ? parseData.result.message : null;
+                    console.log('20191119 login result -- ', _dtd)
+                    if(_dtd) {
+                        //return [_dtd];
+                    }
+                }
+            })
+            alert('test1'+stackStates)
+            //store.dispatch(actions.stateStream(stackStates))
+        } else {
+            // closed streaming
+            console.log('20191119 closed streaming....')
+        }
+        alert('test2'+stackStates)
+        console.log('20191119 stackStates -- ', stackStates)
+        return stackStates;
     }
 
-    proClose = () => {
+    proClose = (type, message) => {
+        if(type && message){
+            //call from VerticalLinearStepper
+            let theSame = false;
+            let newTemp = {[type]:message}
+
+            for(let tmp in this.oldTemp) {
+                console.log('20191119 proClose... ', type,":", this.oldTemp[tmp],"--== : ==--", message)
+                if(this.oldTemp[tmp] === message) theSame = true;
+            }
+
+            if(!theSame){
+                Alert.closeAll();
+                this.props.handleAlertInfo(type, message)
+                this.oldTemp[type] = message;
+                this.props.handleComputeRefresh(false)
+            }
+        }
+
         this.setState({stateViewToggle:false})
+        clearInterval(this.streamInterval)
     }
 
     setAlertRefresh = () => {
@@ -739,7 +855,7 @@ class MapWithListView extends React.Component {
     }
 
     render() {
-        const { open, dimmer, dummyData, resize } = this.state;
+        const { open, dimmer, dummyData, resize, stateStream } = this.state;
         const {randomValue} = this.props;
         return (
                     <div style={{display:'flex', overflowY:'hidden', overflowX:'hidden', width:'100%'}}>
@@ -761,7 +877,7 @@ class MapWithListView extends React.Component {
                             style={{justifyContent: 'space-between', width:'100%'}}
                         >
 
-                            {this.generateDOM(open, dimmer, randomValue, dummyData, resize)}
+                            {this.generateDOM(open, dimmer, randomValue, dummyData, resize, stateStream)}
                         </Container>
 
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} centered={false} style={{right:400}}></PopDetailViewer>
@@ -810,7 +926,8 @@ const mapDispatchProps = (dispatch) => {
         handleSetHeader: (data) => { dispatch(actions.tableHeaders(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleEditInstance: (data) => { dispatch(actions.editInstance(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))}
     };
 };
 
