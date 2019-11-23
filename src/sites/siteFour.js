@@ -140,7 +140,8 @@ class SiteFour extends React.Component {
             enable:false,
             hideNext: true,
             camBtnStat:'leave',
-            regionToggle:false
+            regionToggle:false,
+            intoCity:null
             // hintsEnabled: true,
             // hints: [
             //     {
@@ -467,6 +468,10 @@ class SiteFour extends React.Component {
         computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
         computeService.getMCService('Version',{token:token}, this.receiveVersion, this)
     }
+    onClickBackBtn =() => {
+        this.setState({intoCity:false})
+        _self.props.handleChangeRegion('All')
+    }
     componentWillMount() {
         //this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         //this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
@@ -513,12 +518,16 @@ class SiteFour extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
+        try{
+            this.setState({bodyHeight : (window.innerHeight - this.headerH)})
+            this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
+            this.setState({contWidth:(window.innerWidth-this.menuW)})
+            this.setState({userToken: nextProps.userToken})
+            this.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
+        } catch(e) {
 
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-        this.setState({contWidth:(window.innerWidth-this.menuW)})
-        this.setState({userToken: nextProps.userToken})
-        this.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
+        }
+
 
         if(nextProps.params && nextProps.params.subPath) {
             let subPaths = nextProps.params.subPath;
@@ -647,6 +656,9 @@ class SiteFour extends React.Component {
             _self.setState({regions:newRegions})
 
         }
+        if(nextProps.clickCity.length > 0){
+            this.setState({intoCity:true})
+        }
 
     }
 
@@ -724,8 +736,8 @@ class SiteFour extends React.Component {
         setTimeout(() => self.setState({setMotion:{left: spring(nextPosX, self.speed),top: spring(nextPosY, self.speed), position: 'absolute', opacity:spring(0, self.speedOpacity)}}), 500);
     }
     onChangeRegion = (e, {value}) => {
+        alert(value)
         _self.props.handleChangeRegion(value)
-
     }
 
     computeRefresh = () => {
@@ -1083,7 +1095,7 @@ class SiteFour extends React.Component {
                             </Grid.Row>
                             {
                                 (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log'  && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1 ) ?
-                                    <Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
+                                    (this.state.intoCity)?<Button onClick={this.onClickBackBtn}>Back</Button>:<Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
                                         <label style={{padding:'0 10px'}}>Region</label>
                                         <Dropdown className='selection'
                                                 options={this.state.regions}
@@ -1179,7 +1191,8 @@ const mapStateToProps = (state) => {
         formInfo:formInfo,
         submitInfo:submitInfo,
         regionInfo:regionInfo,
-        audit: checkedAudit
+        audit: checkedAudit,
+        clickCity: state.clickCityList.list,
     }
 };
 

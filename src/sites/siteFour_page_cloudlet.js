@@ -32,7 +32,8 @@ class SiteFourPageCloudlet extends React.Component {
             viewMode:'listView',
             regions:[],
             regionToggle:false,
-            dataSort:false
+            dataSort:false,
+            changeRegion:null
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -89,17 +90,10 @@ class SiteFourPageCloudlet extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
+        console.log("20191119 ..cloudlet 11 region info in page cloudlet",nextProps.changeRegion,"-- : --",this.state.changeRegion,": props region ==>",nextProps.regionInfo.region,": state region==>",this.state.regions)
+
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-        if(nextProps.computeRefresh.compute) {
-            this._cloudletDummy = [];
-            this.getDataDeveloper(nextProps.changeRegion);
-            this.props.handleComputeRefresh(false);
-            this.setState({dataSort:true});
-        }
-        if(this.props.changeRegion !== nextProps.changeRegion){
-            this.getDataDeveloper(nextProps.changeRegion);
-        }
         if(nextProps.viewMode) {
             if(nextProps.viewMode === 'listView') {
                 //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
@@ -112,13 +106,29 @@ class SiteFourPageCloudlet extends React.Component {
             }
 
         }
+        if(this.state.changeRegion !== nextProps.changeRegion){
+            console.log("20191119 ..cloudlet 22 nextProps.changeRegion = ",nextProps.changeRegion,"-- : --",this.props.changeRegion)
+            this.setState({changeRegion: nextProps.changeRegion})
+            this.getDataDeveloper(nextProps.changeRegion, this.state.regions);
+        } else {
 
-        //{ key: 1, text: 'All', value: 'All' }
-        
+        }
+        if(nextProps.computeRefresh.compute) {
+            console.log('20191119 computeRefresh..')
+            this._cloudletDummy = [];
+            this.getDataDeveloper(nextProps.changeRegion);
+            this.props.handleComputeRefresh(false);
+            this.setState({dataSort:true});
+        }
+
         if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
+            //{ key: 1, text: 'All', value: 'All' }
+            console.log("20191119 ..cloudlet 33 region info in page cloudlet", JSON.stringify(nextProps.regionInfo+":"+nextProps.changeRegion))
             _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
             this.getDataDeveloper(nextProps.changeRegion,nextProps.regionInfo.region);
         }
+
+
     }
     receiveResult = (result) => {
 
@@ -126,6 +136,7 @@ class SiteFourPageCloudlet extends React.Component {
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleComputeRefresh(false);
             _self.props.handleLoadingSpinner(false);
             return;
         }
@@ -136,7 +147,7 @@ class SiteFourPageCloudlet extends React.Component {
         }
 
         this.loadCount ++;
-        console.log("EditEditEdit",rgn.length,":::",this.loadCount)
+        console.log("20191119 ..cloudlet EditEditEdit",rgn.length,":::",this.loadCount)
         if(rgn.length == this.loadCount){
             _self.countJoin()            
         }
@@ -159,6 +170,7 @@ class SiteFourPageCloudlet extends React.Component {
 
     countJoin() {
         let cloudlet = this._cloudletDummy;
+        console.log('20191119 ..cloudlet---', cloudlet)
         _self.setState({devData:cloudlet,dataSort:false})
         this.props.handleLoadingSpinner(false);
     }
@@ -198,9 +210,13 @@ class SiteFourPageCloudlet extends React.Component {
     }
 
 };
+SiteFourPageCloudlet.defaultProps = {
+    changeRegion : ''
+}
+
 
 const mapStateToProps = (state) => {
-    console.log("regionssInfo",state.regionInfo)
+    console.log("20191119 regionssInfo",state.regionInfo,":", state.changeRegion)
     let viewMode = null;
     let detailData = null;
 
@@ -211,7 +227,7 @@ const mapStateToProps = (state) => {
     let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
-        changeRegion : state.changeRegion.region?state.changeRegion.region:null,
+        changeRegion : state.changeRegion?state.changeRegion.region:null,
         viewMode : viewMode, detailData:detailData,
         regionInfo: regionInfo
     }
