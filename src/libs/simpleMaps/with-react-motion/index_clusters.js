@@ -101,8 +101,13 @@ class ClustersMap extends Component {
             zoom: 3,
             detailMode:false
         })
-        this.props.handleChangeClickCity([]);
-        this.props.parentProps.resetMap(false)
+        try{
+            this.props.handleChangeClickCity([]);
+            this.props.parentProps.resetMap(false)
+        } catch(e) {
+
+        }
+
     }
     /* example:
     {

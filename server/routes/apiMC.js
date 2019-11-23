@@ -50,8 +50,8 @@ exports.getToken = (req, res) => {
         }
       })
       .catch(function (error) {
-        console.log('If you incorrect info give to ...',error.response.data);
-          res.json(error.response.data)
+        console.log('If you incorrect info give to ...',error);
+          res.json({error:'Execution Of Request Failed'})
       });
 }
 /*
@@ -96,8 +96,8 @@ exports.createUser = (req, res) => {
       })
       .catch(function (error) {
         let errMsg = qs.parse(error);
-          console.log('error create user **************** ***',errMsg.response.data);
-          res.json( errMsg.response.data )
+          console.log('error create user **************** ***',errMsg);
+          res.json({error:'Execution Of Request Failed'})
       });
 
 }
@@ -136,12 +136,8 @@ exports.currentUser = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('get user info error......', error.data);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('get user info error......', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 
 }
@@ -176,12 +172,8 @@ exports.showAccounts = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('user account error......',Object.keys(error), error.response.data);
-            if(error.response.data.message && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again.'})
-            } else {
-                res.json({error:error.response.data})
-            }
+            console.log('user account error......',Object.keys(error), error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 exports.showController = (req, res) => {
@@ -215,12 +207,8 @@ exports.showController = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error  showController...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error  showController...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 
@@ -253,12 +241,8 @@ exports.showOrg = (req, res) => {
         .catch(function (error) {
             // console.log('error show org..', String(error));
             // res.json({error:'There is no data'})
-            console.log('error show showOrg...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show showOrg...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 
@@ -302,7 +286,7 @@ exports.ShowFlavor = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowFlavor..', String(error));
-            res.json({error:'Request failed'})
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 //Cluster Flavor
@@ -340,7 +324,7 @@ exports.ShowClusterFlavor = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowClusterFlavor..', String(error));
-            res.json({error:'Request failed'})
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 //Users
@@ -371,12 +355,8 @@ exports.ShowUsers = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ShowUsers..', error.response.data);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show ShowUsers..', error);
+            res.json({error:'Execution Of Request Failed'})
 
         });
 }
@@ -415,7 +395,7 @@ exports.ShowCloudlet = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowCloudlet..', String(error));
-            res.json({error:'Request failed'})
+            res.json({error:'Execution Of Request Failed'})
             //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
@@ -637,9 +617,8 @@ exports.ShowAppInsts = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ShowAppInsts..', String(error));
-            res.json({error:'Request failed'})
-            //res.json({error:'Login Timeout Expired. Please login again'})
+            console.log('error show ShowAppInsts..', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 /*
@@ -685,7 +664,7 @@ exports.Create = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show Create..', String(error));
-            res.json({error:String(error)})
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 
@@ -720,12 +699,8 @@ exports.CreateOrg= (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show CreateOrg...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show CreateOrg...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 
@@ -763,12 +738,8 @@ exports.addUserRole= (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show addUserRole...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show addUserRole...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 
@@ -803,12 +774,8 @@ exports.CreateFlavor = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show CreateFlavor...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show CreateFlavor...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 
@@ -843,12 +810,8 @@ exports.CreateClusterFlavor = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show CreateClusterFlavor...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show CreateClusterFlavor...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 
@@ -948,11 +911,11 @@ exports.CreateCloudlet = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show CreateCloudlet...', error.response.statusText);
-            if(error.response.statusText.indexOf('Bad') > -1) {
+            console.log('error show CreateCloudlet...', error);
+            if(error.response && error.response.statusText.indexOf('Bad') > -1) {
 
             } else {
-                res.json({error:String(error.response.statusText)})
+                res.json({error:'Execution Of Request Failed'})
             }
         });
 }
@@ -1006,12 +969,8 @@ exports.CreateApp = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show CreateApp...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show CreateApp...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 exports.UpdateApp = (req, res) => {
@@ -1045,12 +1004,8 @@ exports.UpdateApp = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show UpdateApp...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show UpdateApp...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 exports.CreateAppInst = (req, res) => {
@@ -1100,12 +1055,8 @@ exports.CreateAppInst = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show CreateAppInst...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show CreateAppInst...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 exports.UpdateAppInst = (req, res) => {
@@ -1146,12 +1097,8 @@ exports.UpdateAppInst = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show UpdateApp...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show UpdateApp...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 exports.CreateClusterInst = (req, res) => {
@@ -1208,8 +1155,8 @@ exports.CreateClusterInst = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show CreateClusterInst...', error.response.data);
-            res.json(error)
+            console.log('error show CreateClusterInst...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 
 
@@ -1342,7 +1289,7 @@ exports.DeleteService = (req, res) => {
                             let parseData = JSON.parse(data)['data']
                             res.json(parseData)
                             //TODO : remove temp...
-                            removeStreamTemp(parseData, cloudletId);
+                            removeStreamTemp(cloudletId);
                         }
                     }))
                 ////////////////////////
@@ -1351,12 +1298,8 @@ exports.DeleteService = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show DeleteService...');
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error)})
-            }
+            console.log('error show DeleteService...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 exports.DeleteUser = (req, res) => {
@@ -1389,12 +1332,8 @@ exports.DeleteUser = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show DeleteUser...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show DeleteUser...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 exports.DeleteAccount = (req, res) => {
@@ -1427,12 +1366,8 @@ exports.DeleteAccount = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show DeleteAccount...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show DeleteAccount...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 exports.DeleteOrg = (req, res) => {
@@ -1465,12 +1400,8 @@ exports.DeleteOrg = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show DeleteOrg...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show DeleteOrg...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 
@@ -1504,8 +1435,8 @@ exports.ResetPassword = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ResetPassword...', error.response.data.message);
-            res.json({error:String(error.response.data.message)})
+            console.log('error show ResetPassword...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 exports.UpdatePassword = (req, res) => {
@@ -1531,8 +1462,7 @@ exports.UpdatePassword = (req, res) => {
         })
         .catch(function (error) {
 
-            res.json({error:'Login Timeout Expired. Please login again.'})
-            console.log('error show UpdatePassword..', String(error));
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 exports.ResendVerify = (req, res) => {
@@ -1559,7 +1489,7 @@ exports.ResendVerify = (req, res) => {
         .catch(function (error) {
 
             console.log('error show ResendVerify..', String(error));
-            res.json({error:String(error)})
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 exports.UpdateVerify = (req, res) => {
@@ -1588,7 +1518,7 @@ exports.UpdateVerify = (req, res) => {
         .catch(function (error) {
 
             console.log('error show UpdateVerify..', String(error));
-            res.json({error:String(error)})
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 
@@ -1627,11 +1557,7 @@ exports.ShowRole = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowRole...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data)})
-            }
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 
@@ -1664,12 +1590,8 @@ exports.ShowController = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show controller...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            console.log('error show controller...', error);
+            res.json({error:'Execution Of Request Failed'})
         });
 }
 
@@ -1731,10 +1653,6 @@ exports.SettingLock = (req, res) => {
         })
         .catch(function (error) {
             console.log('error set lock ...', error);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login againd'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            res.json({error:'Execution Of Request Failed'})
         });
 }
