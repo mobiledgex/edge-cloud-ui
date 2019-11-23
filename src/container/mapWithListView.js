@@ -76,7 +76,8 @@ class MapWithListView extends React.Component {
             stateCreate:false,
             stateViewToggle:false,
             stateStream:null,
-            stackStates:[]
+            stackStates:[],
+            changeRegion:null
             
         };
 
@@ -101,7 +102,7 @@ class MapWithListView extends React.Component {
         ]
         this.streamInterval = null;
         this.oldTemp = {};
-
+        this.live = true;
     }
     gotoUrl(site, subPath) {
         _self.props.history.push({
@@ -338,39 +339,63 @@ class MapWithListView extends React.Component {
     )
     makeStepper = (_item, _auto) => (
         <div className='ProgressBox' id='prgBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
-            <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh} autoRefresh={this.setAlertAutoRefresh} auto={_auto} stateStream={this.state.stateStream} stopInterval={this.proClose} />
+            <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh} autoRefresh={this.setAlertAutoRefresh} auto={_auto} stopInterval={this.closeInterval} getParentProps={this.getParentProps}/>
         </div>
     )
     /*****************************
      * view status of creating app
      * ***************************/
+    getParentProps = () => {
+        return this.state.stateStream;
+    }
+    onShowAlert = (obj) => {
+        console.log('20191119.. Alert..', Alert)
+    }
     stateView(_item,_siteId,_auto) {
-        Alert.closeAll();
+        Alert.closeAll('');
         this.setState({stateViewToggle:true})
         Alert.info(
-            this.makeStepper(_item,_auto), {
+            this.makeStepper(_item, _auto),
+            {
                 position: 'top-right', timeout: 'none', limit:1,
-                //onShow: this.setState({stateViewToggle:true}),
+                onShow: this.onShowAlert,
                 onClose: this.proClose
             })
-        this.streamInterval = setInterval(() => {
-            Alert.closeAll();
-            this.getStackInterval();
-            Alert.info(
-                this.makeStepper(_item,_auto), {
-                    position: 'top-right', timeout: 'none', limit:1,
-                    //onShow: this.setState({stateViewToggle:true}),
-                    onClose: this.proClose
-                })
-        }, 5000)
-        this.getStackInterval();
+        if(_item['State'] && _item['State'] != 5) {
+            this.streamInterval = setInterval(() => {
+                this.getStackInterval(_item);
+            }, 2000)
+            this.getStackInterval(_item);
+        }
+    }
+    getStackInterval = (_item) => {
+        console.log('20191119 get stack interval..', _item)
+        let clId = _item.Operator + _item.CloudletName;
+        computeService.getStacksData('GetStatStream', clId, this.receiveInterval)
+    }
+    closeInterval = (type, message) => {
+        if(type && message){
+            //call from VerticalLinearStepper
+            let theSame = false;
+
+            for(let tmp in this.oldTemp) {
+                console.log('20191119 proClose... ', type,":", this.oldTemp[tmp],"--== : ==--", message)
+                if(this.oldTemp[tmp] === message) theSame = true;
+            }
+
+            if(!theSame){
+                Alert.closeAll();
+                this.props.handleAlertInfo(type, message)
+                this.oldTemp[type] = message;
+                this.props.handleComputeRefresh(false)
+            }
+            clearInterval(this.streamInterval)
+        }
 
     }
-    getStackInterval = () => {
-        computeService.getStacksData('GetStatStream', this.props.item, this.receiveInterval)
-    }
     receiveInterval =(data) => {
-        this.storeData(data.data.stacksData,'createCloudlet', 'state')
+        console.log('20191119 index receive data from server....', data)
+        this.storeData(data.data.stacksData,'streamTemp', 'state')
 
     }
     storeData = (_data, stId) => {
@@ -395,6 +420,7 @@ class MapWithListView extends React.Component {
 
             })
             _self.setState({stateStream: stackStates})
+            _self.forceUpdate();
         } else {
             // closed streaming
             console.log('20191119 closed streaming....')
@@ -447,38 +473,25 @@ class MapWithListView extends React.Component {
         return stackStates;
     }
 
-    proClose = (type, message) => {
-        if(type && message){
-            //call from VerticalLinearStepper
-            let theSame = false;
-            let newTemp = {[type]:message}
 
-            for(let tmp in this.oldTemp) {
-                console.log('20191119 proClose... ', type,":", this.oldTemp[tmp],"--== : ==--", message)
-                if(this.oldTemp[tmp] === message) theSame = true;
-            }
+    proClose = (value) => {
 
-            if(!theSame){
-                Alert.closeAll();
-                this.props.handleAlertInfo(type, message)
-                this.oldTemp[type] = message;
-                this.props.handleComputeRefresh(false)
-            }
-        }
-
-        this.setState({stateViewToggle:false})
+        console.log('20191119 closed popup ....'+value)
+        // this.setState({stateViewToggle:false})
         clearInterval(this.streamInterval)
     }
 
-    setAlertRefresh = () => {
-        let msg = '';
+    setAlertRefresh = (msg) => {
+
         console.log("setAlertRefresh")
         clearInterval(prgInter);
         
         Alert.closeAll();
-        if(this.props.siteId == 'ClusterInst') msg = 'Your cluster instance created successfully'
-        else if(this.props.siteId == 'appinst') msg = 'Your app instance created successfully'
-        else if(this.props.siteId == 'Cloudlet') msg = 'Your cloudlet created successfully'
+        if(!msg) {
+            if(this.props.siteId == 'ClusterInst') msg = 'Your cluster instance created successfully'
+            else if(this.props.siteId == 'appinst') msg = 'Your app instance created successfully'
+            else if(this.props.siteId == 'Cloudlet') msg = 'Your cloudlet created successfully'
+        }
 
         this.props.handleAlertInfo('success',msg)
         
@@ -588,17 +601,17 @@ class MapWithListView extends React.Component {
                                         </Table.Cell>
                                     :
                                     (value === 'Progress'  && (item['State'] == 3 || item['State'] == 7))?
-                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId,'')}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId,'', item['State'])}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='green' name='circle notch' />} />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && item['State'] == 5)?
-                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId, '')}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId, '',item['State'])}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Icon className="progressIndicator" name='check' color='rgba(255,255,255,.5)' />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && (item['State'] == 10 || item['State'] == 12))?
-                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId, '')}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId, '',item['State'])}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='red' name='circle notch' />} />
                                         </Table.Cell>
                                     :
@@ -726,7 +739,7 @@ class MapWithListView extends React.Component {
         if(this.props.location && this.props.location.pgname=='appinst'){
             this.autoClusterAlert(this.props.location.pgnameData)
         }
-        ServiceSocket.serviceStreaming('createCloudlet');
+        ServiceSocket.serviceStreaming('streamTemp');
     }
     componentWillUnmount() {
         //window.addEventListener("resize", this.updateDimensions);
@@ -738,6 +751,8 @@ class MapWithListView extends React.Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
+        if(this.state.dummyData === nextProps.devData && this.state.changeRegion) return;
+
         if(nextProps.devData.length > 0){
 
 
@@ -841,12 +856,19 @@ class MapWithListView extends React.Component {
                     filterList.push(list)
                 }
             })
+            console.log('20191119 filterList..', filterList)
+            if(filterList && filterList[0]) {
+                this.setState({changeRegion:filterList[0]['Region']})
+            }
+        } else {
+            this.setState({changeRegion:null})
         }
         if(nextProps.clickCity.length == 0) {
             this.setState({dummyData:nextProps.devData})
         } else {
             this.setState({dummyData:filterList})
         }
+
 
         if(nextProps.stateStream) {
             //console.log('20191119 receive props in mapwidthlistview == ', nextProps.stateStream)

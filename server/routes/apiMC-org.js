@@ -44,7 +44,7 @@ exports.createUser = (req, res) => {
   } else {
       serviceBody = req.body.serviceBody;
   }
-  console.log('create user.. ', serviceBody)
+  console.log('create user.. ')
   axios.post(mcUrl + '/api/v1/usercreate', qs.stringify({
         name: serviceBody.name,
         passhash: serviceBody.password,

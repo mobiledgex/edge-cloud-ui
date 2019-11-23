@@ -12,6 +12,11 @@ const API_KEY = '__apiMC_key__'
 let mcUrl = 'https://mc.mobiledgex.net:9900';
 let mcDevUrl = 'https://mc-stage.mobiledgex.net:9900';
 let _version = 'v0.0.0';
+
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
+
+
 console.log("how fast...", process.env.MC_URL)
 let _io = null;
 exports.setIo = (io) => {
@@ -28,7 +33,7 @@ exports.getToken = (req, res) => {
     serviceName = req.body.service;
     serviceBody = req.body.serviceBody;
   }
-  console.log('Please waite loading token... ', serviceBody, mcUrl)
+  console.log('Please waite loading token... ', mcUrl)
   axios.post(mcUrl + '/api/v1/login', qs.stringify({
         username: serviceBody.username,
         password: serviceBody.password
@@ -67,7 +72,7 @@ exports.createUser = (req, res) => {
   if(req.body.serviceBody){
         serviceBody = req.body.serviceBody;
   }
-  console.log('create user.. ', serviceBody,emailEncode, mcUrl)
+  console.log('create user.. ',emailEncode, mcUrl)
   axios.post(mcUrl + '/api/v1/usercreate', qs.stringify({
         name: serviceBody.name,
         passhash: serviceBody.password,
@@ -107,7 +112,7 @@ exports.currentUser = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('current user.. ', serviceBody, mcUrl)
+    console.log('current user.. ', mcUrl)
     axios.post(mcUrl + '/api/v1/auth/user/current', qs.stringify({
 
         }),
@@ -149,7 +154,7 @@ exports.showAccounts = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show user accounts.. ', serviceBody, mcUrl)
+    console.log('show user accounts.. ', mcUrl)
     axios.post(mcUrl + '/api/v1/auth/user/show', qs.stringify({
 
         }),
@@ -159,7 +164,7 @@ exports.showAccounts = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show account user..', response.data)
+            console.log('success show account user..')
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -188,7 +193,7 @@ exports.showController = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('showController .. ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('showController .. ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/controller/show', qs.stringify({
 
         }),
@@ -198,7 +203,7 @@ exports.showController = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success showController..', response.data)
+            console.log('success showController..')
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -228,7 +233,7 @@ exports.showOrg = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show org-- ', serviceBody, 'mc_url = ', mcUrl,'process.env.MC_URL = ', process.env.MC_URL)
+    console.log('show org-- ', 'mc_url = ', mcUrl,'process.env.MC_URL = ', process.env.MC_URL)
     axios.post(mcUrl + '/api/v1/auth/org/show', qs.stringify({
 
         }),
@@ -238,7 +243,7 @@ exports.showOrg = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show org', response.data)
+            console.log('success show org')
             if(response.data && response.data.length > 0) {
                 res.json(response.data)
             } else {
@@ -274,7 +279,7 @@ exports.ShowFlavor = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me flavor-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me flavor-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowFlavor', qs.stringify({
             region:region
         }),
@@ -284,7 +289,7 @@ exports.ShowFlavor = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show flavor', response.data)
+            console.log('success show flavor')
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -312,7 +317,7 @@ exports.ShowClusterFlavor = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me cluster flavor-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me cluster flavor-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowClusterFlavor', qs.stringify({
             region:region
         }),
@@ -322,7 +327,7 @@ exports.ShowClusterFlavor = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show cluster flavor', response.data)
+            console.log('success show cluster flavor')
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -348,7 +353,7 @@ exports.ShowUsers = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show me users -- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me users -- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/role/showuser', qs.stringify({
 
         }),
@@ -358,7 +363,7 @@ exports.ShowUsers = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show users', response.data)
+            console.log('success show users')
             if(response.data && response.data.length) {
                 res.json(response.data)
             } else {
@@ -387,7 +392,7 @@ exports.ShowCloudlet = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me cloudlet-- ', serviceBody, 'domain url==',mcUrl)
+    console.log('show me cloudlet-- ', 'domain url==',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowCloudlet', qs.stringify({
             region:region
         }),
@@ -397,7 +402,7 @@ exports.ShowCloudlet = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show cloudlet', response.data, "- : -")
+            console.log('success show cloudlet', "- : -")
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -410,8 +415,8 @@ exports.ShowCloudlet = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowCloudlet..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 //Cluster instances
@@ -426,7 +431,7 @@ exports.ShowClusterInst = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me cluster instances-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me cluster instances-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowClusterInst', qs.stringify({
             region:region
         }),
@@ -436,7 +441,7 @@ exports.ShowClusterInst = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show cluster instances', response.data)
+            console.log('success show cluster instances')
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -446,8 +451,8 @@ exports.ShowClusterInst = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowClusterInst..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 //Organization AppInst
@@ -462,7 +467,7 @@ exports.ShowClusterInsts = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me clusterInst-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me clusterInst-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowClusterInst', serviceBody,
         {
             headers: {
@@ -470,7 +475,7 @@ exports.ShowClusterInsts = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show clusterInsts', response.data)
+            console.log('success show clusterInsts')
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -483,8 +488,8 @@ exports.ShowClusterInsts = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowClusterInsts..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 //Apps
@@ -499,7 +504,7 @@ exports.ShowApps = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me app-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me app-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowApp', qs.stringify({
             region:region
         }),
@@ -509,7 +514,7 @@ exports.ShowApps = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show apps', response.data, 'status=',response.statusText, 'has data = ', String(response.data).indexOf('data'))
+            console.log('success show apps', 'status=',response.statusText, 'has data = ', String(response.data).indexOf('data'))
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
 
@@ -520,8 +525,8 @@ exports.ShowApps = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowApps..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 //Organization App
@@ -536,7 +541,7 @@ exports.ShowApp = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me app-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me app-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowApp', serviceBody,
         {
             headers: {
@@ -544,7 +549,7 @@ exports.ShowApp = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show apps', response.data)
+            console.log('success show apps')
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -557,8 +562,8 @@ exports.ShowApp = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowApp..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 //app instances
@@ -573,7 +578,7 @@ exports.ShowAppInst = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me appinst-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me appinst-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowAppInst', qs.stringify({
             region:region
         }),
@@ -583,7 +588,7 @@ exports.ShowAppInst = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show appinst', response.data)
+            console.log('success show appinst')
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -596,8 +601,8 @@ exports.ShowAppInst = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowAppInst..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+
         });
 }
 //Organization AppInst
@@ -612,7 +617,7 @@ exports.ShowAppInsts = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me appInstsssssssss-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me appInstsssssssss-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowAppInst', serviceBody,
         {
             headers: {
@@ -620,7 +625,7 @@ exports.ShowAppInsts = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show appInstsssssss', response.data)
+            console.log('success show appInstsssssss')
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -633,8 +638,8 @@ exports.ShowAppInsts = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowAppInsts..', String(error));
-            //res.json({error:'Request failed'})
-            res.json({error:'Login Timeout Expired. Please login again'})
+            res.json({error:'Request failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
 /*
@@ -671,7 +676,7 @@ exports.Create = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success create service', response.data)
+            console.log('success create service')
             if(response.data) {
                 res.json(response.data)
             } else {
@@ -707,7 +712,7 @@ exports.CreateOrg= (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success create service', response.data)
+            console.log('success create service')
             if(response.data) {
                 res.json(response.data)
             } else {
@@ -750,7 +755,7 @@ exports.addUserRole= (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success create service', response.data)
+            console.log('success create service')
             if(response.data) {
                 res.json(response.data)
             } else {
@@ -779,7 +784,7 @@ exports.CreateFlavor = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('Create me flavor-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Create me flavor-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateFlavor', serviceBody,
 
         {
@@ -789,7 +794,7 @@ exports.CreateFlavor = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Create flavor', response.data)
+            console.log('success Create flavor')
 
             if(response.data) {
                 res.json(response.data)
@@ -819,7 +824,7 @@ exports.CreateClusterFlavor = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('Create me flavor-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Create me flavor-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterFlavor', serviceBody,
 
         {
@@ -829,7 +834,7 @@ exports.CreateClusterFlavor = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Create clusterFlavor', response.data)
+            console.log('success Create clusterFlavor')
 
             if(response.data) {
                 res.json(response.data)
@@ -849,13 +854,36 @@ exports.CreateClusterFlavor = (req, res) => {
 
 //Create Cloudlet
 let stackData = [];
+const removeStreamTemp = (cloudletId) => {
+    setTimeout(() => {
+        stackData.map((stack) => {
+            if(stack['clId'] === cloudletId) {
+                stackData.filter(function(item) {
+                    return item !== stack
+                })
+            }
+        })
+        console.log('remove stack data ...', stackData)
+    }, 3000)
+
+}
 exports.GetStatStream = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     axios.defaults.timeout = 10000000;
-
-    console.log('get state steam... ', stackData)
-    res.json({'stacksData':stackData})
-    //if(_io) _io.emit('createCloudlet', {'stackData':stackData, 'clId':cloudletId})
+    let clId = null;
+    if(req.body.serviceBody) {
+        clId = req.body.serviceBody;
+    }
+    console.log('get state steam... ', stackData, "--== : ==--",clId)
+    // filtering as clId
+    let filteredData = [];
+    stackData.map(stData => {
+        if(stData['clId'] === clId) {
+            filteredData.push(stData)
+        }
+    })
+    res.json({'stacksData':filteredData})
+    //if(_io) _io.emit('streamTemp', {'stackData':stackData, 'clId':cloudletId})
 }
 exports.CreateCloudlet = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
@@ -874,17 +902,18 @@ exports.CreateCloudlet = (req, res) => {
 
     //fs.createWriteStream('./temp/'+cloudletId+'.txt')
 
-    console.log('Create me cloudlet-- ', serviceBody, 'mcUrl=',mcUrl,":::",cloudletId)
+    console.log('Create me cloudlet-- ', 'mcUrl=',mcUrl,":::",cloudletId)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudlet', serviceBody,
 
         {
             headers: {'Authorization':`Bearer ${superpass}`},
-            responseType: 'stream'
+            responseType: 'stream',
+            cancelToken: source.token
         }
     )
         .then(function (response) {
 
-            console.log('success Create cloudlet', response.data)
+            console.log('success Create cloudlet')
 
             if(response.data) {
                 //res.json(response.data)
@@ -895,9 +924,23 @@ exports.CreateCloudlet = (req, res) => {
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
                         console.log('create Cloudlet.../////-------///////', data)
-                        stackData.push({'createCloudlet':data, 'clId':cloudletId});
+                        stackData.push({'streamTemp':data, 'clId':cloudletId});
+                        if(data.indexOf('result') > -1) {
+
+                            let parseData = JSON.parse(data)['data']
+                            res.json(parseData)
+                            source.cancel('Operation canceled')
+                        }
+                        if(data.indexOf('successfully') > -1) {
+
+                            let parseData = JSON.parse(data)['data']
+                            res.json(parseData)
+                            //TODO : remove temp...
+                            removeStreamTemp(cloudletId);
+                            source.cancel('Operation canceled')
+                        }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('createCloudlet', {'stackData':stackData, 'clId':cloudletId})
+                        //if(_io) _io.emit('streamTemp', {'stackData':stackData, 'clId':cloudletId})
                     }))
                 ////////////////////////
             } else {
@@ -906,7 +949,11 @@ exports.CreateCloudlet = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show CreateCloudlet...', error.response.statusText);
-            res.json({error:String(error.response.statusText)})
+            if(error.response.statusText.indexOf('Bad') > -1) {
+
+            } else {
+                res.json({error:String(error.response.statusText)})
+            }
         });
 }
 
@@ -940,7 +987,7 @@ exports.CreateApp = (req, res) => {
         region = req.body.serviceBody.region;
     }
     //params = JSON.stringify(params).replace('"1"', 1);
-    console.log('Create me app-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Create me app-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateApp', serviceBody,
 
         {
@@ -950,7 +997,7 @@ exports.CreateApp = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Create app', response.data)
+            console.log('success Create app')
 
             if(response.data) {
                 res.json(response.data)
@@ -979,7 +1026,7 @@ exports.UpdateApp = (req, res) => {
         region = req.body.serviceBody.region;
     }
     //params = JSON.stringify(params).replace('"1"', 1);
-    console.log('Update me app-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Update me app-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/UpdateApp', serviceBody,
 
         {
@@ -989,7 +1036,7 @@ exports.UpdateApp = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Update app', response.data)
+            console.log('success Update app')
 
             if(response.data) {
                 res.json(response.data)
@@ -1041,7 +1088,7 @@ exports.CreateAppInst = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Create app', response.data)
+            console.log('success Create app')
 
             if(response.data) {
                 //res.json(response.data)
@@ -1077,7 +1124,7 @@ exports.UpdateAppInst = (req, res) => {
     }
     res.send(updataId);
     //params = JSON.stringify(params).replace('"1"', 1);
-    console.log('Update me appinst-- ', serviceBody, 'mcUrl=',updataId)
+    console.log('Update me appinst-- ', 'mcUrl=',updataId)
     axios.post(mcUrl + '/api/v1/auth/ctrl/UpdateAppInst', serviceBody,
 
         {
@@ -1087,7 +1134,7 @@ exports.UpdateAppInst = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Update appinst', response.data)
+            console.log('success Update appinst')
 
             if(response.data) {
                 // res.json(response.data)
@@ -1147,7 +1194,7 @@ exports.CreateClusterInst = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Create ClusterInst ==>==>==>==>==>', response.data)
+            console.log('success Create ClusterInst ==>==>==>==>==>')
 
             if(response.data) {
                 //res.json(response.data)
@@ -1245,42 +1292,70 @@ exports.ErrorTempFile = (req, res) => {
     
 }
 
+/*
+ { region: 'EU',
+  cloudlet:
+   { key: { operator_key: [Object], name: 'inkikimTest1122-05' } } }
+ */
 
 exports.DeleteService = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceName = '';
     let serviceBody = {};
     let superpass = '';
-    let region = 'local'
+    let region = 'local';
+    let cloudletId = '';
     if(req.body.serviceBody){
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
+        cloudletId = serviceBody.cloudlet.key.operator_key.name + serviceBody.cloudlet.key.name;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/'+serviceName, serviceBody,
 
         {
-            headers: {
-                'Authorization':`Bearer ${superpass}`}
+            headers: {'Authorization':`Bearer ${superpass}`},
+            responseType: 'stream',
+            cancelToken: source.token
         }
     )
         .then(function (response) {
 
-            console.log('success Delete ', response.data)
+            console.log('success Delete ')
 
             if(response.data && Object.keys(response.data).length !== 0) {
-                res.json(response.data)
+                //res.json(response.data)
+                /////////////////////////
+                response.data.pipe(estream.split())
+                    .pipe(estream.map(function(data, cb){
+                        console.log('delete service.../////---'+serviceName+'----///////', data)
+                        stackData.push({'streamTemp':data, 'clId':cloudletId});
+                        if(data.indexOf('result')> -1) {
+                            source.cancel('Operation canceled')
+                            let parseData = JSON.parse(data)['data']
+                            res.json(parseData)
+                        }
+                        if(data.indexOf('successfully') > -1) {
+                            source.cancel('Operation canceled')
+
+                            let parseData = JSON.parse(data)['data']
+                            res.json(parseData)
+                            //TODO : remove temp...
+                            removeStreamTemp(parseData, cloudletId);
+                        }
+                    }))
+                ////////////////////////
             } else {
                 res.json({'message':'ok'})
             }
         })
         .catch(function (error) {
-            console.log('error show DeleteService...', error.response.data.message);
+            console.log('error show DeleteService...');
             if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
                 res.json({error:'Login Timeout Expired. Please login again'})
             } else {
-                res.json({error:String(error.response.data.message)})
+                res.json({error:String(error)})
             }
         });
 }
@@ -1295,7 +1370,7 @@ exports.DeleteUser = (req, res) => {
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/role/'+serviceName, serviceBody,
 
         {
@@ -1305,7 +1380,7 @@ exports.DeleteUser = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Delete ', response.data)
+            console.log('success Delete ')
 
             if(response.data) {
                 res.json(response.data)
@@ -1333,7 +1408,7 @@ exports.DeleteAccount = (req, res) => {
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/user/'+serviceName, serviceBody,
 
         {
@@ -1343,7 +1418,7 @@ exports.DeleteAccount = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Delete ', response.data)
+            console.log('success Delete ')
 
             if(response.data) {
                 res.json(response.data)
@@ -1371,7 +1446,7 @@ exports.DeleteOrg = (req, res) => {
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/org/'+serviceName, serviceBody,
 
         {
@@ -1381,7 +1456,7 @@ exports.DeleteOrg = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Delete ', response.data)
+            console.log('success Delete ')
 
             if(response.data) {
                 res.json(response.data)
@@ -1416,7 +1491,7 @@ exports.ResetPassword = (req, res) => {
         serviceBody = req.body.serviceBody;
         serviceName = req.body.service;
     }
-    console.log('reset password --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('reset password --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
@@ -1442,7 +1517,7 @@ exports.UpdatePassword = (req, res) => {
         serviceBody = req.body.serviceBody;
         serviceName = req.body.service;
     }
-    console.log('update password --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('update password --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
@@ -1469,7 +1544,7 @@ exports.ResendVerify = (req, res) => {
         serviceBody = req.body.serviceBody;
         serviceName = req.body.service;
     }
-    console.log('Resend verify --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Resend verify --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
@@ -1498,11 +1573,11 @@ exports.UpdateVerify = (req, res) => {
         serviceName = req.body.serviceBody.service;
         token = req.body.serviceBody.token;
     }
-    console.log('Update verify == ', serviceName, 'serviceBody == ', serviceBody, 'token=', token, 'mcUrl=',mcUrl)
+    console.log('Update verify == ', serviceName, 'serviceBody == ', 'token=', token, 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
-            console.log('success verify email ', response.data)
+            console.log('success verify email ')
 
             if(response.statusText === 'OK') {
                 res.json({message:response.data.message})
@@ -1534,7 +1609,7 @@ exports.ShowRole = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show role-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show role-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/role/assignment/show', {},
             {
                 headers: {
@@ -1543,7 +1618,7 @@ exports.ShowRole = (req, res) => {
         )
         .then(function (response) {
 
-            console.log('success show role', response.data)
+            console.log('success show role' )
             if(response.data) {
                 res.json(response.data)
             } else {
@@ -1572,7 +1647,7 @@ exports.ShowController = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show controller-- -- -- -- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show controller-- -- -- -- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/controller/show', {},
         {
             headers: {
@@ -1581,7 +1656,7 @@ exports.ShowController = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success show controller', response.data)
+            console.log('success show controller')
             if(response.data) {
                 res.json(response.data)
             } else {

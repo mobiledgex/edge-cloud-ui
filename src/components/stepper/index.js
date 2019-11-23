@@ -98,17 +98,22 @@ class VerticalLinearStepper extends React.Component {
     // }
 
     receiveInterval = () => {
-        const prgDiv = document.getElementById("prgBox");
-        if(prgDiv){
-            prgDiv.scrollTop = prgDiv.scrollHeight;
+        try{
+            const prgDiv = document.getElementById("prgBox");
+            if(prgDiv){
+                prgDiv.scrollTop = prgDiv.scrollHeight;
+            }
+        } catch(e) {
+
         }
+
         let hashName = '';
         let item = this.props.item;
-        let stateStream = this.props.stateStream;
         let resultStream = [];
         hashName = item.Operator + item.CloudletName;
         let _step = []
-        console.log('20191119 index receiveInterval info === ', this.props)
+        let stateStream = this.props.getParentProps();
+        console.log('20191119 index receiveInterval info === ', stateStream)
         if(stateStream) {
             //resultStream = this.storeData(data.data.stacksData,'createCloudlet', 'result')
             console.log('20191119 index stateStream .. ', stateStream, ":",resultStream)
@@ -124,6 +129,7 @@ class VerticalLinearStepper extends React.Component {
                         // refresh
                         clearInterval(this.AlertInterval)
                         this.props.stopInterval('info',stat['message'])
+                        this.props.alertRefresh(stat['message']);
                         //store.dispatch(actions.alertInfo('info',stat['message']))
                         //stackStates = [];
 
@@ -133,24 +139,22 @@ class VerticalLinearStepper extends React.Component {
                     if(stat['message'].indexOf('Failed') > -1 || stat['message'].indexOf('failed') > -1) {
                         clearInterval(this.AlertInterval)
                         this.props.stopInterval('error',stat['message'])
+                        this.props.failRefresh(stat['message']);
 
                     }
 
                 })
             }
         }
-
-
-
-
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         console.log('20191119 receiveInterval === ', this.props,":_step =", _step,":")
         if(this.props.item.State == 3 || this.props.item.State == 7) {
             if(this.props.item.ClusterInst && this.props.item.ClusterInst.indexOf('autocluster') > -1 && this.props.auto == 'auto'){
                 //computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusAuto)
-                if(this.props.stateStream) this.setState({steps:_step,activeStep:1})
+                if(stateStream) this.setState({steps:_step,activeStep:_step.length-1})
             } else {
                 //computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusData)
-                if(this.props.stateStream) this.setState({steps:_step,activeStep:1})
+                if(stateStream) this.setState({steps:_step,activeStep:_step.length-1})
             }
         } else if(this.props.item.State == 5) {
             this.setState({steps:['Created successfully'],activeStep:1})
