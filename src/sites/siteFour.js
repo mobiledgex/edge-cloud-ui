@@ -470,7 +470,9 @@ class SiteFour extends React.Component {
     }
     onClickBackBtn =() => {
         this.setState({intoCity:false})
-        _self.props.handleChangeRegion('All')
+        this.props.handleChangeClickCity([]);
+        this.props.handleResetMap('back')
+
     }
     componentWillMount() {
         //this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -736,7 +738,7 @@ class SiteFour extends React.Component {
         setTimeout(() => self.setState({setMotion:{left: spring(nextPosX, self.speed),top: spring(nextPosY, self.speed), position: 'absolute', opacity:spring(0, self.speedOpacity)}}), 500);
     }
     onChangeRegion = (e, {value}) => {
-        alert(value)
+
         _self.props.handleChangeRegion(value)
     }
 
@@ -1217,6 +1219,7 @@ const mapDispatchProps = (dispatch) => {
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleAuditCheckCount: (data) => { dispatch(actions.setCheckedAudit(data))},
+        handleResetMap: (data) => { dispatch(actions.resetMap(data))},
     };
 };
 

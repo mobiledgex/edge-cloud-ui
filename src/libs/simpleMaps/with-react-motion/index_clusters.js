@@ -95,6 +95,7 @@ class ClustersMap extends Component {
         this.props.parentProps.zoomOut(this.state.detailMode)
     }
     handleReset() {
+        alert('handle reset map')
         this.setState({
             center: this.state.center,
             zoom: 3,
@@ -453,6 +454,16 @@ class ClustersMap extends Component {
             this.setState({clickCities:this.state.saveMarker});
         }
 
+        if(nextProps.resetMap) {
+            if(nextProps.resetMap === 'back') {
+                this.setState({
+                    center: this.state.center,
+                    zoom: 3,
+                    detailMode:false
+                })
+            }
+        }
+
     }
     componentWillUnmount() {
         clearInterval(this.interval)
@@ -619,7 +630,8 @@ const mapStateToProps = (state, ownProps) => {
         itemLabel: state.computeItem.item,
         getRegion: state.getRegion,
         deleteReset,
-        changeRegion : state.changeRegion.region?state.changeRegion.region:null
+        changeRegion : state.changeRegion.region?state.changeRegion.region:null,
+        resetMap: state.resetMap.region,
     };
 };
 const mapDispatchProps = (dispatch) => {

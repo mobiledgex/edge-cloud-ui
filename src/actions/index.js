@@ -296,3 +296,9 @@ export function stateStream (data) {
         data
     }
 }
+export function resetMap (region) {
+    return {
+        type: types.RESET_MAP,
+        region
+    }
+}

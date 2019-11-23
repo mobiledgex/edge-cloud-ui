@@ -175,11 +175,10 @@ class MapWithListView extends React.Component {
         _self.setState({sideVisible:detailMode})
     }
     zoomOut(detailMode) {
+
         _self.setState({sideVisible:detailMode})
     }
-    resetMap(detailMode) {
-        _self.setState({sideVisible:detailMode})
-    }
+    //this.props.parentProps.resetMap(false, 'fromDetail')
     handleSort = clickedColumn => (a) => { 
         console.log('20190819 handle sort..', a)
         _self.setState({sorting : true});
@@ -874,6 +873,8 @@ class MapWithListView extends React.Component {
             //console.log('20191119 receive props in mapwidthlistview == ', nextProps.stateStream)
             this.setState({stateStream:nextProps.stateStream})
         }
+
+
     }
 
     render() {
@@ -934,7 +935,7 @@ const mapStateToProps = (state) => {
         dimmInfo,
         clickCity: state.clickCityList.list,
         deleteReset,
-        stateStream
+        stateStream,
     }
 
 
@@ -949,7 +950,8 @@ const mapDispatchProps = (dispatch) => {
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleEditInstance: (data) => { dispatch(actions.editInstance(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))}
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
+        handleChangeClickCity: (data) => { dispatch(actions.clickCityList(data))},
     };
 };
 
