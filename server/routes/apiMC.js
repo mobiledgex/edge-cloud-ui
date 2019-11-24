@@ -888,19 +888,19 @@ exports.CreateCloudlet = (req, res) => {
                     if(data.indexOf('result')> -1) {
                         //source.cancel('Operation canceled')
                         let parseData = JSON.parse(data)['data']
-                        //res.json(parseData)
+                        res.json(parseData)
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     }
                     if(data.indexOf('successfully') > -1) {
                         //source.cancel('Operation canceled')
                         console.log('delete successfully')
                         let parseData = JSON.parse(data)['data']
-                        //res.json(parseData)
+                        res.json(parseData)
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
-                        //TODO : remove temp...
-                        removeStreamTemp(cloudletId);
+                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        //TODO : remove temp...리스트 상태 보기 시에 제거 하기
+                        //removeStreamTemp(cloudletId);
                     }
                 }
                 response.data.pipe(estream.split())
@@ -1149,12 +1149,37 @@ exports.CreateClusterInst = (req, res) => {
             console.log('success Create ClusterInst ==>==>==>==>==>')
 
             if(response.data) {
-                //res.json(response.data)
-                //
+                // response.data.pipe(
+                //     fs.createWriteStream('./temp/'+clusterId+'.txt')
+                // )
+                /////////////////////////
+                let callback =(data) => {
+                    if(data.indexOf('result')> -1) {
+                        //source.cancel('Operation canceled')
+                        let parseData = JSON.parse(data)['data']
+                        res.json(parseData)
+                        // 접속된 모든 클라이언트에게 메시지를 전송한다
+                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':clusterId})
+                    }
+                    if(data.indexOf('successfully') > -1) {
+                        //source.cancel('Operation canceled')
+                        console.log('create cluster successfully')
+                        let parseData = JSON.parse(data)['data']
+                        res.json(parseData)
+                        // 접속된 모든 클라이언트에게 메시지를 전송한다
+                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':clusterId})
+                        //TODO : remove temp...리스트 상태 보기 시에 제거 하기
+                        //removeStreamTemp(cloudletId);
+                    }
+                }
+                response.data.pipe(estream.split())
+                    .pipe(estream.map(function(data, cb){
+                        console.log('create Cloudlet.../////-------///////', data)
+                        stackData.push({'streamTemp':data, 'clId':clusterId});
+                        cb(null, callback(data))
 
-                response.data.pipe(
-                    fs.createWriteStream('./temp/'+clusterId+'.txt')
-                )
+                    }))
+                ////////////////////////
             } else {
                 res.json({error:'Fail'})
             }
@@ -1261,9 +1286,9 @@ exports.DeleteService = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
-        cloudletId = serviceBody.cloudlet.key.operator_key.name + serviceBody.cloudlet.key.name;
+        cloudletId = req.body.serviceBody.instanceId;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ',serviceBody, 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/'+serviceName, serviceBody,
 
         {
@@ -1279,17 +1304,17 @@ exports.DeleteService = (req, res) => {
                 if(data.indexOf('result')> -1) {
                     //source.cancel('Operation canceled')
                     let parseData = JSON.parse(data)['data']
-                    //res.json(parseData)
+                    res.json(parseData)
                     // 접속된 모든 클라이언트에게 메시지를 전송한다
-                    if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                    //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                 }
                 if(data.indexOf('successfully') > -1) {
                     //source.cancel('Operation canceled')
                     console.log('delete successfully')
                     let parseData = JSON.parse(data)['data']
-                    //res.json(parseData)
+                    res.json(parseData)
                     // 접속된 모든 클라이언트에게 메시지를 전송한다
-                    if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                    //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     //TODO : remove temp...
                     removeStreamTemp(cloudletId);
                 }

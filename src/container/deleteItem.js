@@ -39,7 +39,7 @@ class DeleteItem extends React.Component {
             this.props.handleAlertInfo('error', result.data.error)
         } else {
             console.log('20191119 receive submit result is success..', result,":", result.data)
-            this.props.handleAlertInfo('success',result.clId+":"+result.data.message)
+            this.props.handleAlertInfo('success',result.data.message)
         }
         if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
             setTimeout(() => {
@@ -161,7 +161,8 @@ class DeleteItem extends React.Component {
                         },
                         "flavor":{"name":Flavor}
                     }
-                }
+                },
+                "instanceId":ClusterName+Cloudlet
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
             setTimeout(() => {
@@ -263,7 +264,8 @@ class DeleteItem extends React.Component {
                             "name":CloudletName
                         }
                     }
-                }
+                },
+                "instanceId":Operator+CloudletName
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
             setTimeout(() => {

@@ -553,10 +553,11 @@ httpsServer.listen(port, host, () => console.log(`<< https >> app listening on $
  * @type {string}
  */
 // http server를 socket.io server로 upgrade한다
-var io = require('socket.io')(httpsServer);
+//var io = require('socket.io')(httpsServer);
 
 // connection event handler
 // connection이 수립되면 event handler function의 인자로 socket이 들어온다
+/*
 io.on('connection', function(socket) {
     console.log('Message from Client: ');
 
@@ -617,3 +618,5 @@ io.on('connection', function(socket) {
         console.log('user disconnected: ' + socket.name);
     });
 });
+
+*/

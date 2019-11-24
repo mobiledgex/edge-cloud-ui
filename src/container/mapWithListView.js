@@ -351,6 +351,7 @@ class MapWithListView extends React.Component {
         console.log('20191119.. Alert..', Alert)
     }
     stateView(_item,_siteId,_auto) {
+        console.log('20191119 state view.--- ', _siteId, ":",_item.site)
         Alert.closeAll('');
         clearInterval(this.streamInterval);
         this.setState({stateViewToggle:true})
@@ -363,14 +364,19 @@ class MapWithListView extends React.Component {
             })
         if(_item['State'] && _item['State'] != 5) {
             this.streamInterval = setInterval(() => {
-                this.getStackInterval(_item);
+                this.getStackInterval(_item, _siteId);
             }, 2000)
-            this.getStackInterval(_item);
+            this.getStackInterval(_item, _siteId);
         }
     }
-    getStackInterval = (_item) => {
-        console.log('20191119 get stack interval..', _item)
-        let clId = _item.Operator + _item.CloudletName;
+    getStackInterval = (_item, _siteId) => {
+        let clId = '';
+        if(_siteId === 'Cloudlet') {
+            clId = _item.Operator + _item.CloudletName;
+        } else if(_siteId === 'ClusterInst') {
+            clId = _item.ClusterName+ _item.Cloudlet;
+        }
+        console.log('20191119 get stack interval..', _item, ":", clId)
         computeService.getStacksData('GetStatStream', clId, this.receiveInterval)
     }
     closeInterval = (type, message) => {
