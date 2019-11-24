@@ -571,15 +571,15 @@ io.on('connection', function(socket) {
         // 접속된 모든 클라이언트에게 메시지를 전송한다
         io.emit('login', data );
     });
-    socket.on('createCloudlet', function(data) {
-        console.log('Client createCloudlet-in: name:' + data);
+    socket.on('streamTemp', function(data) {
+        console.log('Client streamTemp-in: name:' + data);
         apiMC.setIo(io);
         // socket에 클라이언트 정보를 저장한다
         //socket.name = data.name;
         //socket.userid = data.userid;
 
         // 접속된 모든 클라이언트에게 메시지를 전송한다
-        io.emit('createCloudlet', data );
+        io.emit('streamTemp', data );
     });
 
     // 클라이언트로부터의 메시지가 수신되면
@@ -609,7 +609,8 @@ io.on('connection', function(socket) {
 
     // force client disconnect from server
     socket.on('forceDisconnect', function() {
-        socket.disconnect();
+        console.log(' forceDisconnect from server :  ' + socket.name);
+        //socket.disconnect();
     })
 
     socket.on('disconnect', function() {

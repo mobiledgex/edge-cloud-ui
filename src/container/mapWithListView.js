@@ -352,6 +352,7 @@ class MapWithListView extends React.Component {
     }
     stateView(_item,_siteId,_auto) {
         Alert.closeAll('');
+        clearInterval(this.streamInterval);
         this.setState({stateViewToggle:true})
         Alert.info(
             this.makeStepper(_item, _auto),
@@ -478,6 +479,7 @@ class MapWithListView extends React.Component {
         console.log('20191119 closed popup ....'+value)
         // this.setState({stateViewToggle:false})
         clearInterval(this.streamInterval)
+
     }
 
     setAlertRefresh = (msg) => {
@@ -738,7 +740,7 @@ class MapWithListView extends React.Component {
         if(this.props.location && this.props.location.pgname=='appinst'){
             this.autoClusterAlert(this.props.location.pgnameData)
         }
-        ServiceSocket.serviceStreaming('streamTemp');
+        //ServiceSocket.serviceStreaming('streamTemp');
     }
     componentWillUnmount() {
         //window.addEventListener("resize", this.updateDimensions);

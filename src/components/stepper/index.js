@@ -112,7 +112,7 @@ class VerticalLinearStepper extends React.Component {
         let resultStream = [];
         hashName = item.Operator + item.CloudletName;
         let _step = []
-        let stateStream = this.props.getParentProps();
+        let stateStream = (this.props.item.State == 5) ? null : this.props.getParentProps() ;
         console.log('20191119 index receiveInterval info === ', stateStream)
         if(stateStream) {
             //resultStream = this.storeData(data.data.stacksData,'createCloudlet', 'result')

@@ -95,7 +95,6 @@ class ClustersMap extends Component {
         this.props.parentProps.zoomOut(this.state.detailMode)
     }
     handleReset() {
-        alert('handle reset map')
         this.setState({
             center: this.state.center,
             zoom: 3,

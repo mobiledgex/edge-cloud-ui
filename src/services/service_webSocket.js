@@ -12,7 +12,7 @@ if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
 }
 
 let stackStates = [];
-export function serviceStreaming(stId) {
+export function serviceStreaming(stId, callback, body) {
 
     const socket = socketIOClient(_serverUrl);
     console.log('20191119 socket connection...',socket, ":", stId)
@@ -29,14 +29,30 @@ export function serviceStreaming(stId) {
             console.log('20191119 disconnected socket')
             //stackStates = [];
         }
-        let _data = data['stackData'] ? JSON.parse(data['stackData']) : null;
-        console.log('20191119 has data in stacked statues   ', data,":", _data)
+        //let _data = data['stackData'] ? JSON.parse(data['stackData']) : null;
+        console.log('20191119 has data in stacked statues   ', data)
+
+        if(data) {
+            if(data.name) console.log('connection stream')
+            else if(data.data.message !== 'startSteam' && data.clId) {
+                console.log('20191119 message success..', data.clId, ":",data.data.message,":",)
+                callback(data, body)
+                //store.dispatch(actions.alertInfo('info', data.clId +" : "+data.data.message))
+                // refresh
+                //store.dispatch(actions.computeRefresh(false))
+            }
+        }
+
+
+
+
+
+        /*
         if(_data && _data.length) {
             _data.map((dtd, i) => {
                 let keys = Object.keys(JSON.parse(dtd[stId]));
                 let parseData = JSON.parse(dtd[stId])
                 console.log('20191119 key..', keys, ":",keys[0], ":", parseData,":clId ===>>>>>>>",dtd['clId'])
-                //TODO: ㅅㅐ로운 목록 선택시에 stackStates 를 []로 초기화 필요, clId로 필터링해야 함.
 
                 let clId = dtd['clId'];
                 let _dtd = null
@@ -89,6 +105,7 @@ export function serviceStreaming(stId) {
             // closed streaming
             console.log('20191119 closed streaming....')
         }
+        */
 
 
 

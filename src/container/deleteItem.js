@@ -34,7 +34,25 @@ class DeleteItem extends React.Component {
      * delete selected item
      * @param result
      ***************************/
+    receiveSubmitResult = (result, body) => {
+        if (result.data.error) {
+            this.props.handleAlertInfo('error', result.data.error)
+        } else {
+            console.log('20191119 receive submit result is success..', result,":", result.data)
+            this.props.handleAlertInfo('success',result.clId+":"+result.data.message)
+        }
+        if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
+            setTimeout(() => {
+                _self.props.refresh(this.props.changeRegion);
+            }, 3000);
+        }
+    }
     receiveSubmit = (result, body) => {
+        console.log('20191119 .. ceceiveSubmit...', result, ":", body)
+        if(result.data && result.data.message) {
+            this.receiveSubmitResult(result)
+            return;
+        }
         if(result.data.error) {
             this.props.handleAlertInfo('error',result.data.error)
         } else {
@@ -56,7 +74,7 @@ class DeleteItem extends React.Component {
                     }
                 }
             })
-            console.log("appinstdelete",this.props.siteId,":::",body)
+            console.log("20191119 appinstdelete",this.props.siteId,":::",body)
             if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
                 setTimeout(() => {
                     _self.props.refresh(this.props.changeRegion);

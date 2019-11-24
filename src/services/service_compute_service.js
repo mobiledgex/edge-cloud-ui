@@ -254,6 +254,8 @@ export function deleteCompute(resource, body, callback) {
         .catch(function (error) {
             console.log(error);
         });
+    //1개 밖에 못받아서, socket 통신으로 푸시를 받음
+    ServiceSocket.serviceStreaming('streamTemp', callback, body);
 }
 export function deleteUser(resource, body, callback) {
     axios.post(ServerUrl+'/deleteUser',{
@@ -442,7 +444,7 @@ export function createNewCloudlet(resource, body, callback) {
         });
 
     //1개 밖에 못받아서, socket 통신으로 푸시를 받음
-    //ServiceSocket.serviceStreaming('createCloudlet');
+    ServiceSocket.serviceStreaming('streamTemp', callback, body);
 }
 
 export function updateAppInst(resource, body, callback) {

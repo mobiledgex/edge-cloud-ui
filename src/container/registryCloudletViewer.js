@@ -174,7 +174,7 @@ class RegistryCloudletViewer extends React.Component {
         }
     }
     receiveSubmit = (result, body) => {
-        console.log("paseDatapaseDatapaseData",result)
+        console.log("20191119 paseDatapaseDatapaseData",result)
         this.pauseRender = false;
         let paseData = result.data;
         if(paseData.error && !this.state.errorClose) {
@@ -184,6 +184,18 @@ class RegistryCloudletViewer extends React.Component {
                 
             } else {
                 this.props.handleAlertInfo('error',paseData.error)
+            }
+        } else {
+            if (result.data.error) {
+                this.props.handleAlertInfo('error', result.data.error)
+            } else {
+                console.log('20191119 receive submit result is success..', result,":", result.data)
+                this.props.handleAlertInfo('success',result.data.message)
+            }
+            if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
+                setTimeout(() => {
+                    _self.props.refresh(this.props.changeRegion);
+                }, 3000);
             }
         }
 

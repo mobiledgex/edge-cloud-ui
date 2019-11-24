@@ -123,7 +123,7 @@ class SiteFourPageCloudlet extends React.Component {
 
         if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
             //{ key: 1, text: 'All', value: 'All' }
-            console.log("20191119 ..cloudlet 33 region info in page cloudlet", JSON.stringify(nextProps.regionInfo+":"+nextProps.changeRegion))
+            console.log("20191119 ..cloudlet 33 region info in page cloudlet")
             _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
             this.getDataDeveloper(nextProps.changeRegion,nextProps.regionInfo.region);
         }

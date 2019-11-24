@@ -884,26 +884,31 @@ exports.CreateCloudlet = (req, res) => {
                 //     fs.createWriteStream('./temp/'+cloudletId+'.txt')
                 // )
                 /////////////////////////
+                let callback =(data) => {
+                    if(data.indexOf('result')> -1) {
+                        //source.cancel('Operation canceled')
+                        let parseData = JSON.parse(data)['data']
+                        //res.json(parseData)
+                        // 접속된 모든 클라이언트에게 메시지를 전송한다
+                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                    }
+                    if(data.indexOf('successfully') > -1) {
+                        //source.cancel('Operation canceled')
+                        console.log('delete successfully')
+                        let parseData = JSON.parse(data)['data']
+                        //res.json(parseData)
+                        // 접속된 모든 클라이언트에게 메시지를 전송한다
+                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        //TODO : remove temp...
+                        removeStreamTemp(cloudletId);
+                    }
+                }
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
                         console.log('create Cloudlet.../////-------///////', data)
                         stackData.push({'streamTemp':data, 'clId':cloudletId});
-                        if(data.indexOf('result') > -1) {
+                        cb(null, callback(data))
 
-                            let parseData = JSON.parse(data)['data']
-                            res.json(parseData)
-                            source.cancel('Operation canceled')
-                        }
-                        if(data.indexOf('successfully') > -1) {
-
-                            let parseData = JSON.parse(data)['data']
-                            res.json(parseData)
-                            //TODO : remove temp...
-                            removeStreamTemp(cloudletId);
-                            source.cancel('Operation canceled')
-                        }
-                        // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'stackData':stackData, 'clId':cloudletId})
                     }))
                 ////////////////////////
             } else {
@@ -913,7 +918,7 @@ exports.CreateCloudlet = (req, res) => {
         .catch(function (error) {
             console.log('error show CreateCloudlet...', error);
             if(error.response && error.response.statusText.indexOf('Bad') > -1) {
-
+                res.json({error:error.response.statusText})
             } else {
                 res.json({error:'Execution Of Request Failed'})
             }
@@ -1270,6 +1275,25 @@ exports.DeleteService = (req, res) => {
         .then(function (response) {
 
             console.log('success Delete ')
+            let callback =(data) => {
+                if(data.indexOf('result')> -1) {
+                    //source.cancel('Operation canceled')
+                    let parseData = JSON.parse(data)['data']
+                    //res.json(parseData)
+                    // 접속된 모든 클라이언트에게 메시지를 전송한다
+                    if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                }
+                if(data.indexOf('successfully') > -1) {
+                    //source.cancel('Operation canceled')
+                    console.log('delete successfully')
+                    let parseData = JSON.parse(data)['data']
+                    //res.json(parseData)
+                    // 접속된 모든 클라이언트에게 메시지를 전송한다
+                    if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                    //TODO : remove temp...
+                    removeStreamTemp(cloudletId);
+                }
+            }
 
             if(response.data && Object.keys(response.data).length !== 0) {
                 //res.json(response.data)
@@ -1278,23 +1302,11 @@ exports.DeleteService = (req, res) => {
                     .pipe(estream.map(function(data, cb){
                         console.log('delete service.../////---'+serviceName+'----///////', data)
                         stackData.push({'streamTemp':data, 'clId':cloudletId});
-                        if(data.indexOf('result')> -1) {
-                            source.cancel('Operation canceled')
-                            let parseData = JSON.parse(data)['data']
-                            res.json(parseData)
-                        }
-                        if(data.indexOf('successfully') > -1) {
-                            source.cancel('Operation canceled')
-
-                            let parseData = JSON.parse(data)['data']
-                            res.json(parseData)
-                            //TODO : remove temp...
-                            removeStreamTemp(cloudletId);
-                        }
+                        cb(null, callback(data))
                     }))
                 ////////////////////////
             } else {
-                res.json({'message':'ok'})
+                res.json({'message':'Request Failed'})
             }
         })
         .catch(function (error) {
