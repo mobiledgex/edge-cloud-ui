@@ -22,7 +22,7 @@ exports.getToken = (req, res) => {
     serviceName = req.body.service;
     serviceBody = req.body.serviceBody;
   }
-  console.log('Please waite loading token... ', serviceBody, mcUrl)
+  console.log('Please waite loading token... ', mcUrl)
   axios.post(mcUrl + '/api/v1/login', qs.stringify({
         username: serviceBody.username,
         password: serviceBody.password
@@ -61,7 +61,7 @@ exports.createUser = (req, res) => {
   if(req.body.serviceBody){
         serviceBody = req.body.serviceBody;
   }
-  console.log('create user.. ', serviceBody,emailEncode, mcUrl)
+  console.log('create user.. ',emailEncode, mcUrl)
   axios.post(mcUrl + '/api/v1/usercreate', qs.stringify({
         name: serviceBody.name,
         passhash: serviceBody.password,
@@ -101,7 +101,7 @@ exports.currentUser = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('current user.. ', serviceBody, mcUrl)
+    console.log('current user.. ', mcUrl)
     axios.post(mcUrl + '/api/v1/auth/user/current', qs.stringify({
 
         }),
@@ -143,7 +143,7 @@ exports.showAccounts = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show user accounts.. ', serviceBody, mcUrl)
+    console.log('show user accounts.. ', mcUrl)
     axios.post(mcUrl + '/api/v1/auth/user/show', qs.stringify({
 
         }),
@@ -182,7 +182,7 @@ exports.showController = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('showController .. ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('showController .. ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/controller/show', qs.stringify({
 
         }),
@@ -222,7 +222,7 @@ exports.showOrg = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show org-- ', serviceBody, 'mc_url = ', mcUrl,'process.env.MC_URL = ', process.env.MC_URL)
+    console.log('show org-- ', 'mc_url = ', mcUrl,'process.env.MC_URL = ', process.env.MC_URL)
     axios.post(mcUrl + '/api/v1/auth/org/show', qs.stringify({
 
         }),
@@ -268,7 +268,7 @@ exports.ShowFlavor = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me flavor-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me flavor-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowFlavor', qs.stringify({
             region:region
         }),
@@ -306,7 +306,7 @@ exports.ShowClusterFlavor = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me cluster flavor-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me cluster flavor-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowClusterFlavor', qs.stringify({
             region:region
         }),
@@ -342,7 +342,7 @@ exports.ShowUsers = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show me users -- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me users -- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/role/showuser', qs.stringify({
 
         }),
@@ -381,7 +381,7 @@ exports.ShowCloudlet = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me cloudlet-- ', serviceBody, 'domain url==',mcUrl)
+    console.log('show me cloudlet-- ', 'domain url==',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowCloudlet', qs.stringify({
             region:region
         }),
@@ -420,7 +420,7 @@ exports.ShowClusterInst = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me cluster instances-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me cluster instances-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowClusterInst', qs.stringify({
             region:region
         }),
@@ -456,7 +456,7 @@ exports.ShowClusterInsts = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me clusterInst-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me clusterInst-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowClusterInst', serviceBody,
         {
             headers: {
@@ -493,7 +493,7 @@ exports.ShowApps = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me app-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me app-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowApp', qs.stringify({
             region:region
         }),
@@ -530,7 +530,7 @@ exports.ShowApp = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me app-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me app-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowApp', serviceBody,
         {
             headers: {
@@ -567,7 +567,7 @@ exports.ShowAppInst = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me appinst-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me appinst-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowAppInst', qs.stringify({
             region:region
         }),
@@ -606,7 +606,7 @@ exports.ShowAppInsts = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me appInstsssssssss-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show me appInstsssssssss-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowAppInst', serviceBody,
         {
             headers: {
@@ -773,7 +773,7 @@ exports.CreateFlavor = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('Create me flavor-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Create me flavor-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateFlavor', serviceBody,
 
         {
@@ -813,7 +813,7 @@ exports.CreateClusterFlavor = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('Create me flavor-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Create me flavor-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterFlavor', serviceBody,
 
         {
@@ -859,7 +859,7 @@ exports.CreateCloudlet = (req, res) => {
 
     //fs.createWriteStream('./temp/'+clusterId+'.txt')
 
-    console.log('Create me cloudlet-- ', serviceBody, 'mcUrl=',mcUrl,":::",clusterId)
+    console.log('Create me cloudlet-- ', 'mcUrl=',mcUrl,":::",clusterId)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudlet', serviceBody,
 
         {
@@ -916,7 +916,7 @@ exports.CreateApp = (req, res) => {
         region = req.body.serviceBody.region;
     }
     //params = JSON.stringify(params).replace('"1"', 1);
-    console.log('Create me app-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Create me app-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateApp', serviceBody,
 
         {
@@ -955,7 +955,7 @@ exports.UpdateApp = (req, res) => {
         region = req.body.serviceBody.region;
     }
     //params = JSON.stringify(params).replace('"1"', 1);
-    console.log('Update me app-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Update me app-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/UpdateApp', serviceBody,
 
         {
@@ -1053,7 +1053,7 @@ exports.UpdateAppInst = (req, res) => {
     }
     res.send(updataId);
     //params = JSON.stringify(params).replace('"1"', 1);
-    console.log('Update me appinst-- ', serviceBody, 'mcUrl=',updataId)
+    console.log('Update me appinst-- ', 'mcUrl=',updataId)
     axios.post(mcUrl + '/api/v1/auth/ctrl/UpdateAppInst', serviceBody,
 
         {
@@ -1233,7 +1233,7 @@ exports.DeleteService = (req, res) => {
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/'+serviceName, serviceBody,
 
         {
@@ -1271,7 +1271,7 @@ exports.DeleteUser = (req, res) => {
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/role/'+serviceName, serviceBody,
 
         {
@@ -1309,7 +1309,7 @@ exports.DeleteAccount = (req, res) => {
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/user/'+serviceName, serviceBody,
 
         {
@@ -1347,7 +1347,7 @@ exports.DeleteOrg = (req, res) => {
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/org/'+serviceName, serviceBody,
 
         {
@@ -1392,7 +1392,7 @@ exports.ResetPassword = (req, res) => {
         serviceBody = req.body.serviceBody;
         serviceName = req.body.service;
     }
-    console.log('reset password --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('reset password --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
@@ -1418,7 +1418,7 @@ exports.UpdatePassword = (req, res) => {
         serviceBody = req.body.serviceBody;
         serviceName = req.body.service;
     }
-    console.log('update password --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('update password --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
@@ -1445,7 +1445,7 @@ exports.ResendVerify = (req, res) => {
         serviceBody = req.body.serviceBody;
         serviceName = req.body.service;
     }
-    console.log('Resend verify --- serviceName == ', serviceName, 'serviceBody == ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Resend verify --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
@@ -1474,7 +1474,7 @@ exports.UpdateVerify = (req, res) => {
         serviceName = req.body.serviceBody.service;
         token = req.body.serviceBody.token;
     }
-    console.log('Update verify == ', serviceName, 'serviceBody == ', serviceBody, 'token=', token, 'mcUrl=',mcUrl)
+    console.log('Update verify == ', serviceName, 'serviceBody == ', 'token=', token, 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
@@ -1510,7 +1510,7 @@ exports.ShowRole = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show role-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show role-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/role/assignment/show', {},
             {
                 headers: {
@@ -1548,7 +1548,7 @@ exports.ShowController = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show controller-- -- -- -- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('show controller-- -- -- -- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/controller/show', {},
         {
             headers: {

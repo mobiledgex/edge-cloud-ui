@@ -44,7 +44,7 @@ exports.createUser = (req, res) => {
   } else {
       serviceBody = req.body.serviceBody;
   }
-  console.log('create user.. ', serviceBody)
+  console.log('create user.. ')
   axios.post(mcUrl + '/api/v1/usercreate', qs.stringify({
         name: serviceBody.name,
         passhash: serviceBody.password,
@@ -76,7 +76,7 @@ exports.currentUser = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('current user.. ', serviceBody)
+    console.log('current user.. ')
     axios.post(mcUrl + '/api/v1/auth/user/current', qs.stringify({
 
         }),
@@ -107,7 +107,7 @@ exports.showController = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('showController .. ', serviceBody)
+    console.log('showController .. ')
     axios.post(mcUrl + '/api/v1/auth/controller/show', qs.stringify({
 
         }),
@@ -138,7 +138,7 @@ exports.showOrg = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show org-- ', serviceBody)
+    console.log('show org-- ')
     axios.post(mcUrl + '/api/v1/auth/org/show', qs.stringify({
 
         }),
@@ -177,7 +177,7 @@ exports.ShowFlavor = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me flavor-- ', serviceBody)
+    console.log('show me flavor-- ')
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowFlavor', qs.stringify({
             region:region
         }),
@@ -210,7 +210,7 @@ exports.ShowClusterFlavor = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me cluster flavor-- ', serviceBody)
+    console.log('show me cluster flavor-- ')
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowClusterFlavor', qs.stringify({
             region:region
         }),
@@ -241,7 +241,7 @@ exports.ShowUsers = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show me users -- ', serviceBody)
+    console.log('show me users -- ')
     axios.post(mcUrl + '/api/v1/auth/role/showuser', qs.stringify({
 
         }),
@@ -274,7 +274,7 @@ exports.ShowCloudlet = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me cloudlet-- ', serviceBody)
+    console.log('show me cloudlet-- ')
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowCloudlet', qs.stringify({
             region:region
         }),
@@ -307,7 +307,7 @@ exports.ShowClusterInst = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me cluster instances-- ', serviceBody)
+    console.log('show me cluster instances-- ')
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowClusterInst', qs.stringify({
             region:region
         }),
@@ -336,7 +336,7 @@ exports.ShowApps = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me app-- ', serviceBody)
+    console.log('show me app-- ')
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowApp', qs.stringify({
             region:region
         }),
@@ -369,7 +369,7 @@ exports.ShowAppInst = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me appinst-- ', serviceBody)
+    console.log('show me appinst-- ')
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowAppInst', qs.stringify({
             region:region
         }),
@@ -521,7 +521,7 @@ exports.CreateFlavor = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('Create me flavor-- ', serviceBody)
+    console.log('Create me flavor-- ')
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateFlavor', serviceBody,
 
         {
@@ -557,7 +557,7 @@ exports.CreateClusterFlavor = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('Create me flavor-- ', serviceBody)
+    console.log('Create me flavor-- ')
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterFlavor', serviceBody,
 
         {
@@ -593,7 +593,7 @@ exports.CreateCloudlet = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('Create me cloudlet-- ', serviceBody)
+    console.log('Create me cloudlet-- ')
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudlet', serviceBody,
 
         {
@@ -718,7 +718,7 @@ exports.CreateClusterInst = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('Create me cluster inst-- ', serviceBody)
+    console.log('Create me cluster inst-- ')
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterInst', serviceBody,
 
         {
@@ -752,7 +752,7 @@ exports.DeleteService = (req, res) => {
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ')
     axios.post(mcUrl + '/api/v1/auth/ctrl/'+serviceName, serviceBody,
 
         {
@@ -786,7 +786,7 @@ exports.DeleteUser = (req, res) => {
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ')
     axios.post(mcUrl + '/api/v1/auth/role/'+serviceName, serviceBody,
 
         {
@@ -820,7 +820,7 @@ exports.DeleteOrg = (req, res) => {
         superpass = req.body.serviceBody.token;
         serviceName = req.body.service;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', serviceBody)
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ')
     axios.post(mcUrl + '/api/v1/auth/org/'+serviceName, serviceBody,
 
         {
@@ -861,7 +861,7 @@ exports.ShowRole = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show role-- ', serviceBody)
+    console.log('show role-- ')
     axios.post(mcUrl + '/api/v1/auth/role/assignment/show', qs.stringify({}),
             {
                 headers: {

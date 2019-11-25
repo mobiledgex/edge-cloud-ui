@@ -196,7 +196,7 @@ exports.CreateCloudlet = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('Create me cloudlet-- ', serviceBody, 'mcUrl=',mcUrl)
+    console.log('Create me cloudlet-- ', 'mcUrl=',mcUrl)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudlet', serviceBody,
 
         {
