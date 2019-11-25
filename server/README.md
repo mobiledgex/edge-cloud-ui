@@ -16,13 +16,16 @@ This is a connect influxdb there mex.co as a client server middleware via expres
 Using [npm](https://www.npmjs.com/package/react-https-redirect):
 
 ```bash
+set Environment
+$ export MC_URL=https://mc-stage.mobiledgex.net:9900
 $ npm install
 $ node start.js 
 or $ npm run start_server
 
+
 You can request http get method like this : 
---> http://localhost:3030/
---> http://localhost:3030/operator
+--> https://localhost:3030/
+--> https://localhost:3030/operator
 ```
 You need MongoDB. Here's an example of installing MongoDB on mac os X
 ```
