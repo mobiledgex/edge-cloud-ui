@@ -117,7 +117,7 @@ class VerticalLinearStepper extends React.Component {
         if(stateStream) {
             //resultStream = this.storeData(data.data.stacksData,'createCloudlet', 'result')
             console.log('20191119 index stateStream .. ', stateStream, ":",resultStream)
-            if(this.props.site === 'Cloudlet' && stateStream.length > 0) {
+            if(stateStream.length > 0) {
                 console.log('20191119 index receiveInterval hashName and clId.. ', hashName)
                 stateStream.map((stat) => {
                     console.log('20191119 index receiveInterval hashName and clId...... ', hashName , ":", stat)

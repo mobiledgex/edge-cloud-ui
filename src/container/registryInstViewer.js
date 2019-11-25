@@ -419,11 +419,12 @@ class RegistryInstViewer extends React.Component {
 
         //set list of clusterInst filter
         if(Object.keys(nextProps.submitData).length > 0){
+
             if(nextProps.submitData.createAppFormDefault && nextProps.submitData.createAppFormDefault.values.Operator && nextProps.submitData.createAppFormDefault.values.Cloudlet) {
                 let keys = Object.keys(this.state.clustinst);
                 let arr = []
                 let assObj = Object.assign([], this.state.keysData);
-                console.log("dfdfdfdgsgsdg",nextProps.submitData.createAppFormDefault.values.Cloudlet)
+                console.log("20191119 dfdfdfdgsgsdg",nextProps.submitData.createAppFormDefault.values.Cloudlet)
                 keys.map((item,i) => {
                     this.state.clustinst[item].map((items,j) => {
                         nextProps.submitData.createAppFormDefault.values.Cloudlet.map((cItem) => {
@@ -447,7 +448,7 @@ class RegistryInstViewer extends React.Component {
     }
 
     receiveStatusData = (result) => {
-        console.log("resultresultss",result)
+        console.log("20191119 resultresultss",result)
         let toArray = null;
         let toJson = null;
         toArray = result.data.split('\n')
@@ -462,6 +463,7 @@ class RegistryInstViewer extends React.Component {
                 this.props.handleAlertInfo('error',item.result.message)
             }
         })
+        alert('submit in registinstviewer===',this.state.regSuccess)
         if(this.state.regSuccess) {
             this.gotoUrl('submit');
         }

@@ -1051,10 +1051,39 @@ exports.CreateAppInst = (req, res) => {
             console.log('success Create app')
 
             if(response.data) {
-                //res.json(response.data)
-                response.data.pipe(
-                    fs.createWriteStream('./temp/'+clusterId+'.txt')
-                )
+
+                // response.data.pipe(
+                //     fs.createWriteStream('./temp/'+clusterId+'.txt')
+                // )
+
+                /////////////////////////
+                let callback =(data) => {
+                    if(data.indexOf('result')> -1) {
+                        //source.cancel('Operation canceled')
+                        let parseData = JSON.parse(data)['data']
+                        res.json(parseData)
+                        // 접속된 모든 클라이언트에게 메시지를 전송한다
+                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                    }
+                    if(data.indexOf('successfully') > -1) {
+                        //source.cancel('Operation canceled')
+                        console.log('delete successfully')
+                        let parseData = JSON.parse(data)['data']
+                        res.json(parseData)
+                        // 접속된 모든 클라이언트에게 메시지를 전송한다
+                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        //TODO : remove temp...리스트 상태 보기 시에 제거 하기
+                        //removeStreamTemp(cloudletId);
+                    }
+                }
+                response.data.pipe(estream.split())
+                    .pipe(estream.map(function(data, cb){
+                        console.log('create appInst.../////-------///////', data)
+                        stackData.push({'streamTemp':data, 'clId':clusterId});
+                        cb(null, callback(data))
+
+                    }))
+                ////////////////////////
             } else {
                 res.json({error:'Fail'})
             }
@@ -1159,22 +1188,22 @@ exports.CreateClusterInst = (req, res) => {
                         let parseData = JSON.parse(data)['data']
                         res.json(parseData)
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':clusterId})
+                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     }
                     if(data.indexOf('successfully') > -1) {
                         //source.cancel('Operation canceled')
-                        console.log('create cluster successfully')
+                        console.log('create appinst successfully')
                         let parseData = JSON.parse(data)['data']
                         res.json(parseData)
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':clusterId})
+                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                         //TODO : remove temp...리스트 상태 보기 시에 제거 하기
                         //removeStreamTemp(cloudletId);
                     }
                 }
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
-                        console.log('create Cloudlet.../////-------///////', data)
+                        console.log('create appinst.../////-------///////', data)
                         stackData.push({'streamTemp':data, 'clId':clusterId});
                         cb(null, callback(data))
 

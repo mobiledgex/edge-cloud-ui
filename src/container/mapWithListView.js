@@ -418,6 +418,7 @@ class MapWithListView extends React.Component {
                         _dtd = parseData.data ? parseData.data : null;
                         stackStates.push(_dtd)
                     } else if(dtd[stId] && keys[0] === 'result') {
+                        //TODO 생성시 오류가 생길 경우가 있음..
                         _dtd = parseData.result ? parseData.result : null;
                     }
                 } else {
@@ -425,6 +426,7 @@ class MapWithListView extends React.Component {
                 }
 
             })
+            console.log('20191119 storeData stackStates.... ', stackStates)
             _self.setState({stateStream: stackStates})
             _self.forceUpdate();
         } else {
