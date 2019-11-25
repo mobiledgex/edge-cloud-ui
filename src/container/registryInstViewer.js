@@ -190,31 +190,31 @@ class RegistryInstViewer extends React.Component {
         }, 3000);
         
 
-        //_self.props.handleLoadingSpinner(false);
-        // if(result.data.error) {
-        //     this.setState({regSuccess:false});
-        //     this.props.handleAlertInfo('error',result.data.error)
-        //     return;
-        // } else {
+        _self.props.handleLoadingSpinner(false);
+        if(result.data.error) {
+            this.setState({regSuccess:false});
+            this.props.handleAlertInfo('error',result.data.error)
+            return;
+        } else {
             
 
-        //     let toArray = result.data.split('\n')
-        //     toArray.pop();
-        //     let toJson = toArray.map((str)=>(JSON.parse(str)))
+            let toArray = result.data.split('\n')
+            toArray.pop();
+            let toJson = toArray.map((str)=>(JSON.parse(str)))
 
-        //     toJson.map((item) => {
-        //         if(item.result && item.result.code == 400){
-        //             this.props.handleAlertInfo('error',item.result.message)
-        //             return
-        //         } else {
-        //             this.props.handleAlertInfo('success','Your application instance created successfully')
-        //         }
-        //     })
+            toJson.map((item) => {
+                if(item.result && item.result.code == 400){
+                    this.props.handleAlertInfo('error',item.result.message)
+                    return
+                } else {
+                    this.props.handleAlertInfo('success','Your application instance created successfully')
+                }
+            })
 
-        //     setTimeout(() => {
-        //         this.gotoUrl('submit');
-        //     }, 3000)
-        // }
+            setTimeout(() => {
+                this.gotoUrl('submit');
+            }, 3000)
+        }
     }
     
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
