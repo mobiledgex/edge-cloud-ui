@@ -1,6 +1,8 @@
 # World map dashboard
 
 ### Run 
+
+##### You should run the express.js server to goto directory '/server' and fallow the README.MD
 ```
 $ npm install
 $ HTTPS=true npm start
