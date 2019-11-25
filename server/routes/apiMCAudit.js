@@ -22,7 +22,7 @@ exports.ShowSelf = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show audit self.. ', serviceBody, mcUrl)
+    console.log('show audit self.. ', mcUrl)
     axios.post(mcUrl + '/api/v1/auth/audit/showself', serviceBody,
         {headers: {'Authorization':`Bearer ${superpass}`}}
     )
@@ -50,7 +50,7 @@ exports.ShowOrg = (req, res) => {
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
     }
-    console.log('show audit org..........>>>>> ', serviceBody, mcUrl)
+    console.log('show audit org..........>>>>> ', mcUrl)
     axios.post(mcUrl + '/api/v1/auth/audit/showorg', serviceBody,
         {headers: {'Authorization':`Bearer ${superpass}`}}
     )
