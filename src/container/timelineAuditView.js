@@ -4,15 +4,11 @@ import { Grid, Image, Header, Modal, Dropdown, Button } from 'semantic-ui-react'
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
-
-
 import PopSendEmailView from '../container/popSendEmailView';
 
 // TODO : https://codepen.io/AdamKimmerer/pen/RraRbb
 
-
 /* eslint-disable max-len*/
-
 
 const countryOptions = [
     { key: '24', value: '24', flag: '24', text: 'Last 24hours' },
@@ -25,7 +21,6 @@ const countryOptions = [
 let listId = [];
 let _self = null;
 const jsonView = (jsonObj,self) => {
-
     return <ReactJson src={jsonObj} {...self.jsonViewProps} style={{width:'100%'}}/>
 }
 
@@ -108,7 +103,7 @@ class TimelineAuditView extends React.Component {
         return lastSub
     }
     onHandleIndexClick = (value) => {
-        let selectedId = parseInt(value.value);
+        let selectedId = String(value.value);
         if(!selectedId) return;
         let selectedDom = document.getElementById(listId[selectedId])
         let selectChildNode = null
@@ -119,7 +114,7 @@ class TimelineAuditView extends React.Component {
             // if(oldSelected.length) oldSelected.map((element) => {
             //     element.className = null;
             // })
-            console.log('20191018 selet old..',oldSelected, ":", [...oldSelected])
+            console.log('2019119 selet old..',oldSelected, ":", [...oldSelected])
             selectChildNode[1].className = 'selectedCircle_timeline'
         }
 
@@ -130,7 +125,7 @@ class TimelineAuditView extends React.Component {
         if(_self.state.rawAllData[selectedId]) _self.props.handleSelectedAudit(_self.state.rawAllData[selectedId]);
     }
     setAllView(dummyConts, sId) {
-        if(dummyConts['traceid']) _self.setState({rawViewData:dummyConts, currentTraceid:dummyConts['traceid']})
+        if(dummyConts && dummyConts['traceid']) _self.setState({rawViewData:dummyConts, currentTraceid:dummyConts['traceid']})
     }
     setRequestView(dummyConts, sId) {
 
@@ -225,6 +220,7 @@ class TimelineAuditView extends React.Component {
                 if(liDom) {
                     liDom.appendChild(contentContainer)
                     //liDom.appendChild(span);
+                    _self.onHandleIndexClick('0')
                 }
             })
         }, 2000)
