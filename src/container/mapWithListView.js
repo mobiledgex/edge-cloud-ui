@@ -351,7 +351,7 @@ class MapWithListView extends React.Component {
         console.log('20191119.. Alert..', Alert)
     }
     stateView(_item,_siteId,_auto) {
-        console.log('20191119 state view.--- ', _siteId, ":",_item.site)
+        console.log('20191119 state view.--- ', _siteId)
         Alert.closeAll('');
         clearInterval(this.streamInterval);
         this.setState({stateViewToggle:true})
@@ -369,12 +369,26 @@ class MapWithListView extends React.Component {
             this.getStackInterval(_item, _siteId);
         }
     }
-    getStackInterval = (_item, _siteId) => {
+    getStackInterval = (_item, _siteId, _auto) => {
         let clId = '';
         if(_siteId === 'Cloudlet') {
             clId = _item.Operator + _item.CloudletName;
         } else if(_siteId === 'ClusterInst') {
             clId = _item.ClusterName+ _item.Cloudlet;
+        } else if(_siteId === 'appinst') {
+            //TODO : if auto
+            /*
+            if(req.body.multiCluster.indexOf('autocluster') > -1){
+                clusterId = req.body.multiCluster + req.body.multiCloudlet;
+            } else {
+                clusterId = params.appinst.key.app_key.name + req.body.multiCloudlet;
+                clusterId = clusterId.concat((req.body.multiCluster == '')?'DefaultVMCluster': req.body.multiCluster);
+            }
+            */
+            if(_auto){
+
+            }
+            clId = _item.AppName+ _item.Cloudlet;
         }
         console.log('20191119 get stack interval..', _item, ":", clId)
         computeService.getStacksData('GetStatStream', clId, this.receiveInterval)
@@ -761,15 +775,16 @@ class MapWithListView extends React.Component {
 
     componentWillReceiveProps(nextProps, nextContext) {
         if(this.state.dummyData === nextProps.devData && this.state.changeRegion) return;
-
+        console.log("20191119 ---- >>>> dummyDatadummyData",nextProps.devData,":", this.state.dummyData)
+        //if(this.state.dummyData === nextProps.devData && this.state.changeRegion) return;
         if(nextProps.devData.length > 0){
 
 
             nextProps.devData.map((item) => {
-                //console.log("dummyDatadummyData",item.State)
+                console.log("20191119 item item..",item.State)
                 if( (item.State == 3 || item.State == 7) && !this.state.stateCreate){
                     this.setState({stateCreate:true})
-                    console.log("dummyDatadummyData",item)
+                    console.log("20191119 >>>> dummyDatadummyData",item)
                     //this.setState({stateCreate:item})
                     //this.props.dataRefresh();
 

@@ -184,37 +184,37 @@ class RegistryInstViewer extends React.Component {
     }
 
     receiveResult = (result, body) => {
-        console.log("resultresultxxresult",result)
+        console.log("20191119 resultresultxxresult",result)
         setTimeout(() => {
             services.errorTempFile(result.data, this.receiveStatusData)
         }, 3000);
         
 
-        //_self.props.handleLoadingSpinner(false);
-        // if(result.data.error) {
-        //     this.setState({regSuccess:false});
-        //     this.props.handleAlertInfo('error',result.data.error)
-        //     return;
-        // } else {
+        _self.props.handleLoadingSpinner(false);
+        if(result.data.error) {
+            this.setState({regSuccess:false});
+            this.props.handleAlertInfo('error',result.data.error)
+            return;
+        } else {
             
 
-        //     let toArray = result.data.split('\n')
-        //     toArray.pop();
-        //     let toJson = toArray.map((str)=>(JSON.parse(str)))
+            // let toArray = result.data.split('\n')
+            // toArray.pop();
+            // let toJson = toArray.map((str)=>(JSON.parse(str)))
+            //
+            // toJson.map((item) => {
+            //     if(item.result && item.result.code == 400){
+            //         this.props.handleAlertInfo('error',item.result.message)
+            //         return
+            //     } else {
+            //         this.props.handleAlertInfo('success','Your application instance created successfully')
+            //     }
+            // })
 
-        //     toJson.map((item) => {
-        //         if(item.result && item.result.code == 400){
-        //             this.props.handleAlertInfo('error',item.result.message)
-        //             return
-        //         } else {
-        //             this.props.handleAlertInfo('success','Your application instance created successfully')
-        //         }
-        //     })
-
-        //     setTimeout(() => {
-        //         this.gotoUrl('submit');
-        //     }, 3000)
-        // }
+            setTimeout(() => {
+                this.gotoUrl('submit');
+            }, 3000)
+        }
     }
     
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
@@ -344,16 +344,12 @@ class RegistryInstViewer extends React.Component {
             })
 
             if(nextProps.formAppInst.submitSucceeded && error.length == 0){
+
                 let submitData = nextProps.submitValues
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
                 services.createNewMultiAppInst('CreateAppInst', {params:submitData, token:store ? store.userToken : 'null'}, _self.receiveResult, nextProps.validateValue, this.state.cloudlets, this.state.autoClusterDisable)
-                // setTimeout(() => {
-                //     if(this.state.regSuccess) {
-                //         this.props.handleLoadingSpinner(false);
-                //         this.gotoUrl('submit');
-                //     }
-                // }, 4000)
+
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }
@@ -419,7 +415,6 @@ class RegistryInstViewer extends React.Component {
 
         //set list of clusterInst filter
         if(Object.keys(nextProps.submitData).length > 0){
-
             if(nextProps.submitData.createAppFormDefault && nextProps.submitData.createAppFormDefault.values.Operator && nextProps.submitData.createAppFormDefault.values.Cloudlet) {
                 let keys = Object.keys(this.state.clustinst);
                 let arr = []
@@ -463,7 +458,6 @@ class RegistryInstViewer extends React.Component {
                 this.props.handleAlertInfo('error',item.result.message)
             }
         })
-        alert('submit in registinstviewer===',this.state.regSuccess)
         if(this.state.regSuccess) {
             this.gotoUrl('submit');
         }
