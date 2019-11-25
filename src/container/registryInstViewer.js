@@ -401,7 +401,7 @@ class RegistryInstViewer extends React.Component {
                 this.setState({keysData:assObj})
             }
         }
-        if(nextProps.selectedVersion) {
+        if(nextProps.selectedVersion  && this.state.versions[nextProps.selectedApp]) {
             if(Object.keys(this.state.versions).length !== 0 && this.state.versions[nextProps.selectedApp][0].DeploymentType === 'vm'){
                 this.setState({autoClusterDisable:true})
             } else if(Object.keys(this.state.versions).length !== 0){
