@@ -91,6 +91,10 @@
 .page_audit_history_timeline_container_wrapper .events-wrapper .events .timeline-eventline {
     /* top: -6px !important; */
 }
+.page_audit_history_timeline_container_wrapper .events-wrapper .events .events-bar .present.dot-label {
+    left: 0 !important;
+}
+
 .page_audit_history_timeline_container_wrapper .events-wrapper .events .events-bar .dot-label > span {
     /* width: 30px !important;
     height: 30px !important; */

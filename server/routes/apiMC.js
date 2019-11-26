@@ -865,7 +865,9 @@ exports.CreateCloudlet = (req, res) => {
 
     //fs.createWriteStream('./temp/'+cloudletId+'.txt')
 
+
     console.log('Create me cloudlet-- ', 'mcUrl=',mcUrl,":::",cloudletId)
+
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudlet', serviceBody,
 
         {
@@ -1317,7 +1319,9 @@ exports.DeleteService = (req, res) => {
         serviceName = req.body.service;
         cloudletId = req.body.serviceBody.instanceId;
     }
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ',serviceBody, 'mcUrl=',mcUrl)
+
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
+
     axios.post(mcUrl + '/api/v1/auth/ctrl/'+serviceName, serviceBody,
 
         {
