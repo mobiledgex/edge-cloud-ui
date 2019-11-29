@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import PopSendEmailView from '../container/popSendEmailView';
+import CalendarTimeline from '../components/timeline/calendarTimeline';
 
 // TODO : https://codepen.io/AdamKimmerer/pen/RraRbb
 
@@ -352,15 +353,15 @@ class TimelineAuditView extends React.Component {
                             isOpenBeginning={state.isOpenBeginning}
                         />
                     </div>
-                    {/*<div className="page_audit_history_grid">*/}
-                        {/*<CalendarTimeline></CalendarTimeline>*/}
-                    {/*</div>*/}
-                    {/*<div style={{minWidth:200}}>*/}
-                        {/*<a className="ui label"  onClick={() => this.onHandleClickTrace(this.state.currentTraceid, this.state.rawViewData)}>*/}
-                            {/*<i aria-hidden="true" className="mail icon"></i>*/}
-                            {/*<span>{this.state.currentTraceid}</span>*/}
-                        {/*</a>*/}
-                    {/*</div>*/}
+                    <div className="page_audit_history_grid">
+                        <CalendarTimeline></CalendarTimeline>
+                    </div>
+                    <div style={{minWidth:200}}>
+                        <a className="ui label"  onClick={() => this.onHandleClickTrace(this.state.currentTraceid, this.state.rawViewData)}>
+                            <i aria-hidden="true" className="mail icon"></i>
+                            <span>{this.state.currentTraceid}</span>
+                        </a>
+                    </div>
                 </div>
                 <div className="page_audit_code">
                     <div className="page_audit_code_left">

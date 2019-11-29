@@ -160,6 +160,13 @@ export default class MonitoringViewer extends React.Component {
             return fmt(bytes / 1000 / 1000 / 1000) + ' GB';
         }
     }
+    bytesToPercent=  (bytes, inst) => {
+        //console.log("20190812 bytes..",bytes, ":", inst)
+        // One way to write it, not the prettiest way to write it.
+
+        var fmt = d3.format('.2f');
+        return bytes + ' %'
+    }
     gigabytesToString =  (bytes, inst) => {
         console.log("20190812 bytes..",bytes, ":", inst)
         // One way to write it, not the prettiest way to write it.
@@ -293,8 +300,12 @@ export default class MonitoringViewer extends React.Component {
                     </Container>
                     :
                     (type === 'CPU')?<Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?'Count' : '%')}</Container>
-                        : (type === 'DISK') ? <Container className="disk">{this.bytesToString(this.state.lastDISK)}</Container>
-                        : <Container className="memory">{this.bytesToString(this.state.lastMEM)}</Container>
+                        : (type === 'DISK') ? <Container className="disk">{
+                            this.bytesToString(this.state.lastDISK)
+                        }</Container>
+                        : <Container className="memory">{
+                            (this.props.data.page === 'clusterInst') ? this.bytesToPercent(this.state.lastMEM) : this.bytesToString(this.state.lastMEM)
+                        }</Container>
             }
         </Segment>
     )
