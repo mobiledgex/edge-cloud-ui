@@ -194,7 +194,7 @@ class RegistryCloudletViewer extends React.Component {
             }
             if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
                 setTimeout(() => {
-                    _self.props.refresh(this.props.changeRegion);
+                    if(_self.props.refresh) _self.props.refresh(this.props.changeRegion);
                 }, 3000);
             }
         }

@@ -208,7 +208,7 @@ exports.showController = (req, res) => {
         })
         .catch(function (error) {
             console.log('error  showController...', error);
-            res.json({error:'Execution Of Request Failed'})
+            res.json(null)
         });
 }
 
@@ -889,7 +889,7 @@ exports.CreateCloudlet = (req, res) => {
                 let callback =(data) => {
                     if(data.indexOf('result')> -1) {
                         //source.cancel('Operation canceled')
-                        let parseData = JSON.parse(data)['data']
+                        let parseData = JSON.parse(data)['result']
                         res.json(parseData)
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
@@ -1036,11 +1036,13 @@ exports.CreateAppInst = (req, res) => {
             clusterId = clusterId.concat((req.body.multiCluster == '')?'DefaultVMCluster': req.body.multiCluster);
         }
     }
-    res.send(clusterId);
+    //res.send(clusterId);
     //
     //fs.createWriteStream('./temp/'+clusterId+'.txt')
 
-    console.log('Create me app inst--string...', JSON.stringify(params), 'mcUrl=',mcUrl,"vvv",req.body.multiCluster)
+    console.log('Create me app inst--string...', JSON.stringify(params), 'mcUrl=',mcUrl,"vvv",req.body.multiCluster,":clId=",clusterId)
+
+
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateAppInst', params,
 
         {
@@ -1062,15 +1064,16 @@ exports.CreateAppInst = (req, res) => {
                 let callback =(data) => {
                     if(data.indexOf('result')> -1) {
                         //source.cancel('Operation canceled')
-                        let parseData = JSON.parse(data)['data']
+                        let parseData = JSON.parse(data)['result']
+                        console.log('parse data.. ', parseData)
                         res.json(parseData)
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     }
                     if(data.indexOf('successfully') > -1) {
-                        //source.cancel('Operation canceled')
-                        console.log('delete successfully')
                         let parseData = JSON.parse(data)['data']
+                        //source.cancel('Operation canceled')
+                        console.log('create successfully =', parseData)
                         res.json(parseData)
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
@@ -1078,12 +1081,12 @@ exports.CreateAppInst = (req, res) => {
                         //removeStreamTemp(cloudletId);
                     }
                 }
+
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
-                        console.log('create appInst.../////-------///////', data)
+                        console.log('create appinst service.../////---'+serviceName+'----///////', data)
                         stackData.push({'streamTemp':data, 'clId':clusterId});
-                        cb(null, callback(data))
-
+                        if(data) cb(null, callback(data))
                     }))
                 ////////////////////////
             } else {
@@ -1094,6 +1097,7 @@ exports.CreateAppInst = (req, res) => {
             console.log('error show CreateAppInst...', error);
             res.json({error:'Execution Of Request Failed'})
         });
+
 }
 exports.UpdateAppInst = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
@@ -1187,7 +1191,7 @@ exports.CreateClusterInst = (req, res) => {
                 let callback =(data) => {
                     if(data.indexOf('result')> -1) {
                         //source.cancel('Operation canceled')
-                        let parseData = JSON.parse(data)['data']
+                        let parseData = JSON.parse(data)['result']
                         res.json(parseData)
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
@@ -1320,14 +1324,18 @@ exports.DeleteService = (req, res) => {
         cloudletId = req.body.serviceBody.instanceId;
     }
 
-    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
-
+    console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ',JSON.stringify(serviceBody), 'mcUrl=',mcUrl)
+//Connection: keep-alive
+// Content-Type: application/json
     axios.post(mcUrl + '/api/v1/auth/ctrl/'+serviceName, serviceBody,
 
         {
-            headers: {'Authorization':`Bearer ${superpass}`},
+            headers: {
+                'Authorization':`Bearer ${superpass}`,
+                'Connection': 'keep-alive',
+                'Content-Type': 'application/json'
+            },
             responseType: 'stream',
-            cancelToken: source.token
         }
     )
         .then(function (response) {
@@ -1336,7 +1344,7 @@ exports.DeleteService = (req, res) => {
             let callback =(data) => {
                 if(data.indexOf('result')> -1) {
                     //source.cancel('Operation canceled')
-                    let parseData = JSON.parse(data)['data']
+                    let parseData = JSON.parse(data)['result']
                     res.json(parseData)
                     // 접속된 모든 클라이언트에게 메시지를 전송한다
                     //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
@@ -1349,7 +1357,7 @@ exports.DeleteService = (req, res) => {
                     // 접속된 모든 클라이언트에게 메시지를 전송한다
                     //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     //TODO : remove temp...
-                    removeStreamTemp(cloudletId);
+                    //removeStreamTemp(cloudletId);
                 }
             }
 
@@ -1360,7 +1368,7 @@ exports.DeleteService = (req, res) => {
                     .pipe(estream.map(function(data, cb){
                         console.log('delete service.../////---'+serviceName+'----///////', data)
                         stackData.push({'streamTemp':data, 'clId':cloudletId});
-                        cb(null, callback(data))
+                        if(data) cb(null, callback(data))
                     }))
                 ////////////////////////
             } else {
@@ -1627,6 +1635,10 @@ exports.ShowRole = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show ShowRole...', error.response.data.message);
+            if(error.Error){
+
+            }
+
             res.json({error:'Execution Of Request Failed'})
         });
 }
@@ -1652,7 +1664,7 @@ exports.ShowController = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success show controller')
+            console.log('success show controller  ', response)
             if(response.data) {
                 res.json(response.data)
             } else {

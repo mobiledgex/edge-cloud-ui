@@ -369,7 +369,7 @@ class MapWithListView extends React.Component {
             this.getStackInterval(_item, _siteId);
         }
     }
-    getStackInterval = (_item, _siteId, _auto) => {
+    getStackInterval = (_item, _siteId) => {
         let clId = '';
         if(_siteId === 'Cloudlet') {
             clId = _item.Operator + _item.CloudletName;
@@ -385,10 +385,10 @@ class MapWithListView extends React.Component {
                 clusterId = clusterId.concat((req.body.multiCluster == '')?'DefaultVMCluster': req.body.multiCluster);
             }
             */
-            if(_auto){
-
+            if(_item.Cloudlet.indexOf('auto') > -1){
+                clId = 'autocluster';
             }
-            clId = _item.AppName+ _item.Cloudlet;
+            clId = clId+_item.AppName+ _item.Cloudlet;
         }
         console.log('20191119 get stack interval..', _item, ":", clId)
         computeService.getStacksData('GetStatStream', clId, this.receiveInterval)
@@ -783,8 +783,8 @@ class MapWithListView extends React.Component {
             nextProps.devData.map((item) => {
                 console.log("20191119 item item..",item.State)
                 if( (item.State == 3 || item.State == 7) && !this.state.stateCreate){
-                    this.setState({stateCreate:true})
-                    console.log("20191119 >>>> dummyDatadummyData",item)
+                    //this.setState({stateCreate:true})
+                    //console.log("20191119 >>>> dummyDatadummyData",item)
                     //this.setState({stateCreate:item})
                     //this.props.dataRefresh();
 

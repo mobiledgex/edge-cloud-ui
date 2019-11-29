@@ -185,9 +185,11 @@ class RegistryInstViewer extends React.Component {
 
     receiveResult = (result, body) => {
         console.log("20191119 resultresultxxresult",result)
+        /* code by inki : block this for not use tempfile.
         setTimeout(() => {
             services.errorTempFile(result.data, this.receiveStatusData)
         }, 3000);
+        */
         
 
         _self.props.handleLoadingSpinner(false);
@@ -199,18 +201,27 @@ class RegistryInstViewer extends React.Component {
             
 
 
-            let toArray = result.data.split('\n')
-            toArray.pop();
-            let toJson = toArray.map((str)=>(JSON.parse(str)))
+            // let toArray = result.data.split('\n')
+            // toArray.pop();
+            // let toJson = toArray.map((str)=>(JSON.parse(str)))
+            //
+            // toJson.map((item) => {
+            //     if(item.result && item.result.code == 400){
+            //         this.props.handleAlertInfo('error',item.result.message)
+            //         return
+            //     } else {
+            //         this.props.handleAlertInfo('success','Your application instance created successfully')
+            //     }
+            // })
 
-            toJson.map((item) => {
-                if(item.result && item.result.code == 400){
-                    this.props.handleAlertInfo('error',item.result.message)
-                    return
-                } else {
-                    this.props.handleAlertInfo('success','Your application instance created successfully')
-                }
-            })
+
+            if(result.result && result.result.code == 400){
+                this.props.handleAlertInfo('error',result.result.message)
+                return
+            } else {
+                this.props.handleAlertInfo('success','Your application instance created successfully')
+            }
+
 
 
             setTimeout(() => {
@@ -281,7 +292,6 @@ class RegistryInstViewer extends React.Component {
                     
                 </div>
 
-
         ))
     }
 
@@ -346,7 +356,7 @@ class RegistryInstViewer extends React.Component {
             })
 
             if(nextProps.formAppInst.submitSucceeded && error.length == 0){
-
+                alert(nextProps.submitValues)
                 let submitData = nextProps.submitValues
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
