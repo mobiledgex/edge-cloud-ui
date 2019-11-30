@@ -216,6 +216,8 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
                     multiData.ClusterInst = [];
                 }
             })
+
+            // hasn't any cluster in selected cloudlets then it should be make the new autocluster.
         } else if(!filterData[itemCloudlet]) {
             multiData.ClusterInst.map((itemCluster) => {
                 if (itemCluster == '' || itemCluster.indexOf('autocluster') > -1) {
@@ -224,7 +226,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
                         service: resource,
                         serviceBody: body,
                         serviceDomain: serviceDomain,
-                        multiCloudlet: '',
+                        multiCloudlet: itemCloudlet,
                         multiCluster: itemCluster
                     }))
                         .then(function (response) {

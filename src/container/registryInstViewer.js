@@ -166,6 +166,7 @@ class RegistryInstViewer extends React.Component {
         if(result.error) {
             this.props.handleAlertInfo('error',String(result.error))
         } else {
+            console.log('20191119 cluster result..', result)
             let clinstGroup = reducer.groupBy(result, 'ClusterName')
             let cloudletGroup = reducer.groupBy(result, 'Cloudlet')
             //let operatorGroup = reducer.groupBy(result, 'Operator')
@@ -190,6 +191,8 @@ class RegistryInstViewer extends React.Component {
             services.errorTempFile(result.data, this.receiveStatusData)
         }, 3000);
         */
+
+        //TODO: inki 20191129 : request call streamTemp data from server..
         
 
         _self.props.handleLoadingSpinner(false);
@@ -356,10 +359,15 @@ class RegistryInstViewer extends React.Component {
             })
 
             if(nextProps.formAppInst.submitSucceeded && error.length == 0){
-                alert(nextProps.submitValues)
+
                 let submitData = nextProps.submitValues
+                console.log('20191119 filtered cloudlet...', submitData, " state.cloudelts=", this.state.cloudlets)
+                /*
+
+                 */
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
+                //잠시 막음.
                 services.createNewMultiAppInst('CreateAppInst', {params:submitData, token:store ? store.userToken : 'null'}, _self.receiveResult, nextProps.validateValue, this.state.cloudlets, this.state.autoClusterDisable)
 
             } else {
@@ -571,6 +579,7 @@ const mapStateToProps = (state) => {
 
         if(state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
             let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
+            console.log('20191119 createformat ...', enableValue)
             submitVal = createFormat(enableValue);
             validateValue = state.form.createAppFormDefault.values;
         }

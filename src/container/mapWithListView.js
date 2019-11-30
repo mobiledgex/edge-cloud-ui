@@ -338,6 +338,7 @@ class MapWithListView extends React.Component {
     )
     makeStepper = (_item, _auto) => (
         <div className='ProgressBox' id='prgBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
+            <div><div>State Cluster</div><div>State AppInst</div></div>
             <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh} autoRefresh={this.setAlertAutoRefresh} auto={_auto} stopInterval={this.closeInterval} getParentProps={this.getParentProps}/>
         </div>
     )
@@ -369,12 +370,47 @@ class MapWithListView extends React.Component {
             this.getStackInterval(_item, _siteId);
         }
     }
+
+    /*
+    20191119 get stack interval..
+    {Region: "EU",
+    ClusterName: "autoclusterbicinkiapp117-1",
+    OrganizationName: "bicinkiOrg1117-1",
+    Operator: "TDG",
+    Cloudlet: "frankfurt-eu", …}Cloudlet: "frankfurt-eu"CloudletLocation: {latitude: 50.110924, longitude: 8.682127}ClusterName: "autoclusterbicinkiapp117-1"Deployment: "kubernetes"Edit: (10) ["Region", "ClusterName", "OrganizationName", "Operator", "Cloudlet", "Flavor", "IpAccess", "Number_of_Master", "Number_of_Node", "CloudletLocation"]Flavor: "x1.medium"IpAccess: 3Operator: "TDG"OrganizationName: "bicinkiOrg1117-1"Progress: ""Region: "EU"State: 3Status: {task_number: 2, task_name: "Waiting for Cluster to Initialize", step_name: "Checking Master for Available Nodes"}__proto__: Object : ClusterInst
+
+
+     Cloudlet: "frankfurt-eu"
+CloudletLocation: {latitude: 50.110924, longitude: 8.682127}
+ClusterName: "autoclusterbicapp"
+Deployment: "docker"
+Edit: (10) ["Region", "ClusterName", "OrganizationName", "Operator", "Cloudlet", "Flavor", "IpAccess", "Number_of_Master", "Number_of_Node", "CloudletLocation"]
+Flavor: "m4.medium"
+IpAccess: 1
+Operator: "TDG"
+OrganizationName: "WonhoOrg1"
+Progress: ""
+Region: "EU"
+State: 3
+Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autoclusterbicapp-wonhoorg1", step_name: "Heat Stack Status: CREATE_IN_PROGRESS"}
+//frankfurt-eu-autoclusterbicapp-wonhoorg1
+
+     */
+    //"autoclusterbicinkiapp117-1"
     getStackInterval = (_item, _siteId) => {
+        console.log('20191119 get stack interval..', _item, ":", _siteId)
         let clId = '';
         if(_siteId === 'Cloudlet') {
             clId = _item.Operator + _item.CloudletName;
         } else if(_siteId === 'ClusterInst') {
-            clId = _item.ClusterName+ _item.Cloudlet;
+            //TODO :
+            if(_item.ClusterName.indexOf('auto') > -1){
+                clId = _item.Cloudlet+'-'+_item.ClusterName+'-'+_item.OrganizationName;
+            } else {
+                clId = _item.ClusterName+ _item.OrganizationName;
+            }
+            console.log('20191119 get cluster state..', clId)
+
         } else if(_siteId === 'appinst') {
             //TODO : if auto
             /*
@@ -385,13 +421,13 @@ class MapWithListView extends React.Component {
                 clusterId = clusterId.concat((req.body.multiCluster == '')?'DefaultVMCluster': req.body.multiCluster);
             }
             */
-            if(_item.Cloudlet.indexOf('auto') > -1){
+            if(_item.ClusterInst.indexOf('auto') > -1){
                 clId = 'autocluster';
             }
             clId = clId+_item.AppName+ _item.Cloudlet;
         }
-        console.log('20191119 get stack interval..', _item, ":", clId)
-        computeService.getStacksData('GetStatStream', clId, this.receiveInterval)
+
+        computeService.getStacksData('GetStatStream', clId.toLowerCase(), this.receiveInterval)
     }
     closeInterval = (type, message) => {
         if(type && message){
@@ -431,10 +467,12 @@ class MapWithListView extends React.Component {
                     if(dtd[stId] && keys[0] === 'data') {
                         _dtd = parseData.data ? parseData.data : null;
                         stackStates.push(_dtd)
-                    } else if(dtd[stId] && keys[0] === 'result') {
-                        //TODO 생성시 오류가 생길 경우가 있음..
+                    }
+                    /*
+                    else if(dtd[stId] && keys[0] === 'result') {
                         _dtd = parseData.result ? parseData.result : null;
                     }
+                    */
                 } else {
 
                 }
