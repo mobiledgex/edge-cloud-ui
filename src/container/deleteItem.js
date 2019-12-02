@@ -162,7 +162,7 @@ class DeleteItem extends React.Component {
                         "flavor":{"name":Flavor}
                     }
                 },
-                "instanceId":ClusterName+Cloudlet
+                "instanceId":ClusterName+'-'+OrganizationName+'-'+Operator
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
             setTimeout(() => {
@@ -173,7 +173,12 @@ class DeleteItem extends React.Component {
             
         } else if(this.props.siteId === 'appinst') {
             const {OrganizationName, AppName, Version, Operator, Cloudlet, ClusterInst, Region} = this.props.selected
-            serviceNm = 'DeleteAppInst'
+            serviceNm = 'DeleteAppInst';
+            let clId = '';
+            if(ClusterInst.indexOf('autocluster') > -1) {
+                clId = 'autocluster';
+            }
+            clId = clId+AppName+'-'+OrganizationName+'-'+Operator
             serviceBody = {
                 "token":store ? store.userToken : 'null',
                 "params": {
@@ -189,8 +194,10 @@ class DeleteItem extends React.Component {
                         },
                         
                     }
-                }
+                },
+                "instanceId":clId.toLowerCase()
             }
+            //autoclusterbicapp   bictest1129-2
             service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
             setTimeout(() => {
                 this.props.handleDeleteReset(true);

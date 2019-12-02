@@ -262,7 +262,7 @@ class RegistryInstViewer extends React.Component {
             search: pg,
         });
         _self.props.history.location.search = pg;
-        
+        console.log('20191119 pgnameData --- ', _self.props.submitData, ":  submitValues=", _self.props.submitValues)
         if(_self.props.submitData.createAppFormDefault.values && _self.props.submitData.createAppFormDefault.values.AutoClusterInst){
             _self.props.history.location.pgname = 'appinst';
             _self.props.history.location.pgnameData = {
@@ -365,9 +365,10 @@ class RegistryInstViewer extends React.Component {
                 /*
 
                  */
+                this.props.handleSubmitObject(submitData)
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
-                //잠시 막음.
+                //잠시 막음 20191201.
                 services.createNewMultiAppInst('CreateAppInst', {params:submitData, token:store ? store.userToken : 'null'}, _self.receiveResult, nextProps.validateValue, this.state.cloudlets, this.state.autoClusterDisable)
 
             } else {
@@ -635,7 +636,8 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleAppLaunch: (data) => { dispatch(actions.appLaunch(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
-        handleSubmitInfo: (data) => {dispatch(actions.submitInfo(data))}
+        handleSubmitInfo: (data) => {dispatch(actions.submitInfo(data))},
+        handleSubmitObject: (data) => {dispatch(actions.submitObj(data))}
     };
 };
 

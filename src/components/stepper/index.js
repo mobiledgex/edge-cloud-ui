@@ -112,8 +112,8 @@ class VerticalLinearStepper extends React.Component {
         let resultStream = [];
         hashName = item.Operator + item.CloudletName;
         let _step = []
+        console.log('20191119 getState receiveInterval info === ', this.props.getParentProps())
         let stateStream = (this.props.item.State == 5) ? null : this.props.getParentProps() ;
-        console.log('20191119 index receiveInterval info === ', stateStream)
         if(stateStream) {
             //resultStream = this.storeData(data.data.stacksData,'createCloudlet', 'result')
             console.log('20191119 index stateStream .. ', stateStream, ":",resultStream)
@@ -128,6 +128,7 @@ class VerticalLinearStepper extends React.Component {
                     if(stat['message'].indexOf('successfully') > -1) {
                         // refresh
                         clearInterval(this.AlertInterval)
+                        // successfully 가 프로세스의 종료가 아닐 경우가 많음
                         this.props.stopInterval('info',stat['message'])
                         this.props.alertRefresh(stat['message']);
                         //store.dispatch(actions.alertInfo('info',stat['message']))
@@ -135,12 +136,20 @@ class VerticalLinearStepper extends React.Component {
 
                     }
 
+                    if(stat['message'].indexOf('result') > -1) {
+                        // refresh
+                        alert('result...'+stat['message'])
+                        this.props.stopInterval('info',stat['message'])
+                        this.props.alertRefresh(stat['message']);
+
+                        clearInterval(this.AlertInterval)
+                    }
 
                     if(stat['message'].indexOf('Failed') > -1 || stat['message'].indexOf('failed') > -1) {
-                        clearInterval(this.AlertInterval)
+
                         this.props.stopInterval('error',stat['message'])
                         this.props.failRefresh(stat['message']);
-
+                        clearInterval(this.AlertInterval)
                     }
 
                 })

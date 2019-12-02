@@ -77,7 +77,8 @@ class MapWithListView extends React.Component {
             stateViewToggle:false,
             stateStream:null,
             stackStates:[],
-            changeRegion:null
+            changeRegion:null,
+            viewMode: null
             
         };
 
@@ -103,6 +104,7 @@ class MapWithListView extends React.Component {
         this.streamInterval = null;
         this.oldTemp = {};
         this.live = true;
+        this.stateStreamData = null;
     }
     gotoUrl(site, subPath) {
         _self.props.history.push({
@@ -236,7 +238,7 @@ class MapWithListView extends React.Component {
         setTimeout(() => this.generateStart(), 2000)
     }
 
-    generateDOM(open, dimmer, randomValue, dummyData, resize, stateStream) {
+    generateDOM(open, dimmer, dummyData, resize) {
         return layout.map((item, i) => (
 
             (i === 1)?
@@ -331,6 +333,7 @@ class MapWithListView extends React.Component {
     }
     detailView(item) {
         //change popup to page view
+        _self.setState({viewMode:'detailView'})
         _self.props.handleDetail({data:item, viewMode:'detailView'})
     }
     jsonView = (jsonObj) => (
@@ -338,7 +341,6 @@ class MapWithListView extends React.Component {
     )
     makeStepper = (_item, _auto) => (
         <div className='ProgressBox' id='prgBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
-            <div><div>State Cluster</div><div>State AppInst</div></div>
             <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh} autoRefresh={this.setAlertAutoRefresh} auto={_auto} stopInterval={this.closeInterval} getParentProps={this.getParentProps}/>
         </div>
     )
@@ -346,7 +348,7 @@ class MapWithListView extends React.Component {
      * view status of creating app
      * ***************************/
     getParentProps = () => {
-        return this.state.stateStream;
+        return _self.stateStreamData ? _self.stateStreamData : null;
     }
     onShowAlert = (obj) => {
         console.log('20191119.. Alert..', Alert)
@@ -354,7 +356,7 @@ class MapWithListView extends React.Component {
     stateView(_item,_siteId,_auto) {
         console.log('20191119 state view.--- ', _siteId)
         Alert.closeAll('');
-        clearInterval(this.streamInterval);
+        clearInterval(_self.streamInterval);
         this.setState({stateViewToggle:true})
         Alert.info(
             this.makeStepper(_item, _auto),
@@ -364,11 +366,14 @@ class MapWithListView extends React.Component {
                 onClose: this.proClose
             })
         if(_item['State'] && _item['State'] != 5) {
-            this.streamInterval = setInterval(() => {
-                this.getStackInterval(_item, _siteId);
+            _self.streamInterval = setInterval(() => {
+                _self.getStackInterval(_item, _siteId);
             }, 2000)
-            this.getStackInterval(_item, _siteId);
+            _self.getStackInterval(_item, _siteId);
         }
+
+        //test
+        _self.getStackInterval(_item, _siteId);
     }
 
     /*
@@ -398,18 +403,14 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
      */
     //"autoclusterbicinkiapp117-1"
     getStackInterval = (_item, _siteId) => {
-        console.log('20191119 get stack interval..', _item, ":", _siteId)
+        console.log('20191119 get cluster state.. get stack interval..', _item, ":", _siteId)
         let clId = '';
         if(_siteId === 'Cloudlet') {
             clId = _item.Operator + _item.CloudletName;
         } else if(_siteId === 'ClusterInst') {
             //TODO :
-            if(_item.ClusterName.indexOf('auto') > -1){
-                clId = _item.Cloudlet+'-'+_item.ClusterName+'-'+_item.OrganizationName;
-            } else {
-                clId = _item.ClusterName+ _item.OrganizationName;
-            }
-            console.log('20191119 get cluster state..', clId)
+
+            clId = _item.ClusterName+'-'+_item.OrganizationName+'-'+_item.Operator
 
         } else if(_siteId === 'appinst') {
             //TODO : if auto
@@ -421,11 +422,14 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                 clusterId = clusterId.concat((req.body.multiCluster == '')?'DefaultVMCluster': req.body.multiCluster);
             }
             */
+
             if(_item.ClusterInst.indexOf('auto') > -1){
-                clId = 'autocluster';
+                clId =  'autocluster';
             }
-            clId = clId+_item.AppName+ _item.Cloudlet;
+            clId = clId+_item.AppName+'-'+_item.OrganizationName+'-'+_item.Operator
         }
+        console.log('20191119 get cluster state..', clId.toLowerCase())
+
 
         computeService.getStacksData('GetStatStream', clId.toLowerCase(), this.receiveInterval)
     }
@@ -478,8 +482,9 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                 }
 
             })
-            console.log('20191119 storeData stackStates.... ', stackStates)
+            console.log('20191119 getState storeData stackStates.... ', stackStates)
             _self.setState({stateStream: stackStates})
+            _self.stateStreamData = stackStates;
             _self.forceUpdate();
         } else {
             // closed streaming
@@ -535,10 +540,9 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
 
 
     proClose = (value) => {
-
         console.log('20191119 closed popup ....'+value)
         // this.setState({stateViewToggle:false})
-        clearInterval(this.streamInterval)
+        clearInterval(_self.streamInterval)
 
     }
 
@@ -573,7 +577,17 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
         this.props.dataRefresh();
     }
 
+    /*
+{"region":"EU",
+"appinst":{
+    "key":{"app_key":{"developer_key":{"name":"bicinkiOrg1117-1"},"name":"bicinkiApp117-1","version":"1.0"},
+        "cluster_inst_key":{"cluster_key":{"name":"autoclusterbicinkiApp117-1"},"cloudlet_key":{"operator_key":{"name":"bicinkiOper"},"name":"bictest1129"}}}}}
+ */
     autoClusterAlert = (_data) => {
+        console.log('20191119 auto cluster alert', _data, ":", this.props.submitObj)
+        if(this.props.submitObj) {
+            _data['OrganizationName'] = this.props.submitObj['appinst'].key.app_key.developer_key.name;
+        }
         this.stateView(_data,this.props.siteId,'auto');
     }
     
@@ -795,10 +809,16 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
     }
 
     componentDidMount() {
-        let self = this;
+
         window.addEventListener("resize", this.updateDimensions);
+        console.log('20191119 this.props.location---', this.props)
         if(this.props.location && this.props.location.pgname=='appinst'){
             this.autoClusterAlert(this.props.location.pgnameData)
+        }
+        if(this.props.viewMode !== this.state.viewMode) {
+            //alert('ddd'+this.props.viewMode)
+            this.setState({dummyData:_self.props.devData})
+            this.forceUpdate();
         }
         //ServiceSocket.serviceStreaming('streamTemp');
     }
@@ -807,13 +827,15 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
         clearTimeout(this.interval)
         //this.props.handleSetHeader([])
         clearInterval(prgInter);
+        clearInterval(_self.streamInterval);
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if(this.state.dummyData === nextProps.devData && this.state.changeRegion) return;
-        console.log("20191119 ---- >>>> dummyDatadummyData",nextProps.devData,":", this.state.dummyData)
+        console.log('20191119 viewmode-', nextProps.viewMode, ":", nextProps)
+        //if(this.state.dummyData === nextProps.devData && this.state.changeRegion) return;
+        console.log("20191119 ---- >>>> dummyDatadummyData",nextProps.devData,":", this.state.dummyData,": props submit obj == ", nextProps.submitObj)
         //if(this.state.dummyData === nextProps.devData && this.state.changeRegion) return;
         if(nextProps.devData.length > 0){
 
@@ -941,8 +963,8 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
     }
 
     render() {
-        const { open, dimmer, dummyData, resize, stateStream } = this.state;
-        const {randomValue} = this.props;
+        const { open, dimmer, dummyData, resize } = this.state;
+
         return (
                     <div style={{display:'flex', overflowY:'hidden', overflowX:'hidden', width:'100%'}}>
                         <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open}
@@ -963,7 +985,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                             style={{justifyContent: 'space-between', width:'100%'}}
                         >
 
-                            {this.generateDOM(open, dimmer, randomValue, dummyData, resize, stateStream)}
+                            {this.generateDOM(open, dimmer, dummyData, resize)}
                         </Container>
 
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} centered={false} style={{right:400}}></PopDetailViewer>
@@ -991,14 +1013,22 @@ const mapStateToProps = (state) => {
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let viewMode = null;
+    let detailData = null;
+    if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+        viewMode = state.changeViewMode.mode.viewMode;
+        detailData = state.changeViewMode.mode.data;
+    }
     let deleteReset = state.deleteReset.reset
     let stateStream = state.stateStream ? state.stateStream.state : null;
+    let submitObj = state.submitObj ? state.submitObj.submit : null;
     return {
         accountInfo,
         dimmInfo,
         clickCity: state.clickCityList.list,
         deleteReset,
         stateStream,
+        submitObj,
+        viewMode : viewMode, detailData:detailData
     }
 
 
