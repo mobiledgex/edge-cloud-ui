@@ -364,7 +364,8 @@ export function createNewMultiClusterInst(resource, body, callback, multiData) {
 
 }
 
-
+// 20191201 blocked : change saving the tempfile to stream
+/*
 export function creteTempFile(_item, _site, callback) {
     console.log("_item_item",_item)
     axios.post(ServerUrl+'/CreteTempFile',{
@@ -380,7 +381,7 @@ export function creteTempFile(_item, _site, callback) {
             console.log("error2",error);
         });
 }
-
+*/
 export function deleteTempFile(_item, _site) {
 
     axios.post(ServerUrl+'/DeleteTempFile',{
