@@ -300,6 +300,7 @@ export default class MonitoringViewer extends React.Component {
                         </div>
                     </Container>
                     :
+
                         (type === 'CPU')?<Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?'Count' : ' %')}</Container>
                         : (type === 'DISK') ? <Container className="disk">{
                             (this.props.data.page === 'clusterInst') ? this.bytesToPercent(this.state.lastDISK) : this.bytesToString(this.state.lastDISK)

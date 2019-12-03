@@ -166,6 +166,7 @@ class RegistryInstViewer extends React.Component {
         if(result.error) {
             this.props.handleAlertInfo('error',String(result.error))
         } else {
+            console.log('20191119 cluster result..', result)
             let clinstGroup = reducer.groupBy(result, 'ClusterName')
             let cloudletGroup = reducer.groupBy(result, 'Cloudlet')
             //let operatorGroup = reducer.groupBy(result, 'Operator')
@@ -184,10 +185,14 @@ class RegistryInstViewer extends React.Component {
     }
 
     receiveResult = (result, body) => {
-        console.log("resultresultxxresult",result)
+        console.log("20191119 resultresultxxresult",result)
+        /* code by inki : block this for not use tempfile.
         setTimeout(() => {
             services.errorTempFile(result.data, this.receiveStatusData)
         }, 3000);
+        */
+
+        //TODO: inki 20191129 : request call streamTemp data from server..
         
 
         _self.props.handleLoadingSpinner(false);
@@ -198,18 +203,29 @@ class RegistryInstViewer extends React.Component {
         } else {
             
 
-            let toArray = result.data.split('\n')
-            toArray.pop();
-            let toJson = toArray.map((str)=>(JSON.parse(str)))
 
-            toJson.map((item) => {
-                if(item.result && item.result.code == 400){
-                    this.props.handleAlertInfo('error',item.result.message)
-                    return
-                } else {
-                    this.props.handleAlertInfo('success','Your application instance created successfully')
-                }
-            })
+            // let toArray = result.data.split('\n')
+            // toArray.pop();
+            // let toJson = toArray.map((str)=>(JSON.parse(str)))
+            //
+            // toJson.map((item) => {
+            //     if(item.result && item.result.code == 400){
+            //         this.props.handleAlertInfo('error',item.result.message)
+            //         return
+            //     } else {
+            //         this.props.handleAlertInfo('success','Your application instance created successfully')
+            //     }
+            // })
+
+
+            if(result.result && result.result.code == 400){
+                this.props.handleAlertInfo('error',result.result.message)
+                return
+            } else {
+                this.props.handleAlertInfo('success','Your application instance created successfully')
+            }
+
+
 
             setTimeout(() => {
                 this.gotoUrl('submit');
@@ -246,7 +262,7 @@ class RegistryInstViewer extends React.Component {
             search: pg,
         });
         _self.props.history.location.search = pg;
-        
+        console.log('20191119 pgnameData --- ', _self.props.submitData, ":  submitValues=", _self.props.submitValues)
         if(_self.props.submitData.createAppFormDefault.values && _self.props.submitData.createAppFormDefault.values.AutoClusterInst){
             _self.props.history.location.pgname = 'appinst';
             _self.props.history.location.pgnameData = {
@@ -278,7 +294,6 @@ class RegistryInstViewer extends React.Component {
                 <div className="round_panel" key={i}>
                     
                 </div>
-
 
         ))
     }
@@ -344,16 +359,18 @@ class RegistryInstViewer extends React.Component {
             })
 
             if(nextProps.formAppInst.submitSucceeded && error.length == 0){
+
                 let submitData = nextProps.submitValues
+                console.log('20191119 filtered cloudlet...', submitData, " state.cloudelts=", this.state.cloudlets)
+                /*
+
+                 */
+                this.props.handleSubmitObject(submitData)
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
+                //잠시 막음 20191201.
                 services.createNewMultiAppInst('CreateAppInst', {params:submitData, token:store ? store.userToken : 'null'}, _self.receiveResult, nextProps.validateValue, this.state.cloudlets, this.state.autoClusterDisable)
-                // setTimeout(() => {
-                //     if(this.state.regSuccess) {
-                //         this.props.handleLoadingSpinner(false);
-                //         this.gotoUrl('submit');
-                //     }
-                // }, 4000)
+
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }
@@ -423,7 +440,7 @@ class RegistryInstViewer extends React.Component {
                 let keys = Object.keys(this.state.clustinst);
                 let arr = []
                 let assObj = Object.assign([], this.state.keysData);
-                console.log("dfdfdfdgsgsdg",nextProps.submitData.createAppFormDefault.values.Cloudlet)
+                console.log("20191119 dfdfdfdgsgsdg",nextProps.submitData.createAppFormDefault.values.Cloudlet)
                 keys.map((item,i) => {
                     this.state.clustinst[item].map((items,j) => {
                         nextProps.submitData.createAppFormDefault.values.Cloudlet.map((cItem) => {
@@ -447,7 +464,7 @@ class RegistryInstViewer extends React.Component {
     }
 
     receiveStatusData = (result) => {
-        console.log("resultresultss",result)
+        console.log("20191119 resultresultss",result)
         let toArray = null;
         let toJson = null;
         toArray = result.data.split('\n')
@@ -563,6 +580,7 @@ const mapStateToProps = (state) => {
 
         if(state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
             let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
+            console.log('20191119 createformat ...', enableValue)
             submitVal = createFormat(enableValue);
             validateValue = state.form.createAppFormDefault.values;
         }
@@ -618,7 +636,8 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleAppLaunch: (data) => { dispatch(actions.appLaunch(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
-        handleSubmitInfo: (data) => {dispatch(actions.submitInfo(data))}
+        handleSubmitInfo: (data) => {dispatch(actions.submitInfo(data))},
+        handleSubmitObject: (data) => {dispatch(actions.submitObj(data))}
     };
 };
 

@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux';
 import RGL, { WidthProvider } from "react-grid-layout";
-import ContainerDimensions from 'react-container-dimensions';
 import Alert from "react-s-alert";
 import * as moment from 'moment';
 import * as actions from '../actions';
@@ -17,9 +16,9 @@ import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
 import VerticalLinearStepper from '../components/stepper';
 import PopDetailViewer from './popDetailViewer';
 import * as computeService from '../services/service_compute_service';
-import MaterialIcon from 'material-icons-react';
 import ReactJson from 'react-json-view'
-import * as aggregate from '../utils'
+import * as ServiceSocket from '../services/service_webSocket';
+import * as utile from '../utils'
 
 const ReactGridLayout = WidthProvider(RGL);
 let prgInter = null;
@@ -76,7 +75,11 @@ class MapWithListView extends React.Component {
             closeMap:false,
             toggle:false,
             stateCreate:false,
-            stateViewToggle:false
+            stateViewToggle:false,
+            stateStream:null,
+            stackStates:[],
+            changeRegion:null,
+            viewMode: null
             
         };
 
@@ -99,7 +102,10 @@ class MapWithListView extends React.Component {
             {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', display:'flex', flexDirection:'column'},
             {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', display:'flex', flexDirection:'column', height:'28px'}
         ]
-
+        this.streamInterval = null;
+        this.oldTemp = {};
+        this.live = true;
+        this.stateStreamData = null;
     }
     gotoUrl(site, subPath) {
         _self.props.history.push({
@@ -172,11 +178,10 @@ class MapWithListView extends React.Component {
         _self.setState({sideVisible:detailMode})
     }
     zoomOut(detailMode) {
+
         _self.setState({sideVisible:detailMode})
     }
-    resetMap(detailMode) {
-        _self.setState({sideVisible:detailMode})
-    }
+    //this.props.parentProps.resetMap(false, 'fromDetail')
     handleSort = clickedColumn => (a) => { 
         console.log('20190819 handle sort..', a)
         _self.setState({sorting : true});
@@ -234,7 +239,7 @@ class MapWithListView extends React.Component {
         setTimeout(() => this.generateStart(), 2000)
     }
 
-    generateDOM(open, dimmer, randomValue, dummyData, resize) {
+    generateDOM(open, dimmer, dummyData, resize) {
         return layout.map((item, i) => (
 
             (i === 1)?
@@ -329,41 +334,241 @@ class MapWithListView extends React.Component {
     }
     detailView(item) {
         //change popup to page view
+        _self.setState({viewMode:'detailView'})
         _self.props.handleDetail({data:item, viewMode:'detailView'})
     }
     jsonView = (jsonObj) => (
         <ReactJson src={jsonObj} {...this.jsonViewProps} />
     )
+    makeStepper = (_item, _auto) => (
+        <div className='ProgressBox' id='prgBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
+            <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh} autoRefresh={this.setAlertAutoRefresh} auto={_auto} stopInterval={this.closeInterval} getParentProps={this.getParentProps}/>
+        </div>
+    )
+    /*****************************
+     * view status of creating app
+     * ***************************/
+    getParentProps = () => {
+        return _self.stateStreamData ? _self.stateStreamData : null;
+    }
+    resetParentProps = () => {
+
+    }
+    onShowAlert = (obj) => {
+        console.log('20191119.. Alert..', Alert)
+    }
     stateView(_item,_siteId,_auto) {
-        console.log("stateViewstateView",_item,":::",_auto)
-        Alert.closeAll();
+        console.log('20191119 state view.--- ', _siteId)
+        Alert.closeAll('');
+        clearInterval(_self.streamInterval);
         this.setState({stateViewToggle:true})
         Alert.info(
-            <div className='ProgressBox' id='prgBox' style={{minWidth:250,maxHeight:500,overflow:'auto'}}>
-                <VerticalLinearStepper item={_item} site={this.props.siteId} alertRefresh={this.setAlertRefresh}  failRefresh={this.setAlertFailRefresh} autoRefresh={this.setAlertAutoRefresh} auto={_auto}  />
-            </div>, {
-            position: 'top-right', timeout: 'none', limit:1,
-            //onShow: this.setState({stateViewToggle:true}),
-            onClose: this.proClose
-        })
+            this.makeStepper(_item, _auto),
+            {
+                position: 'top-right', timeout: 'none', limit:1,
+                onShow: this.onShowAlert,
+                onClose: this.proClose
+            })
+        if(_item['State'] && _item['State'] != 5) {
+            _self.streamInterval = setInterval(() => {
+                _self.getStackInterval(_item, _siteId);
+            }, 2000)
+            _self.getStackInterval(_item, _siteId);
+        }
+
+        //test
+        _self.getStackInterval(_item, _siteId);
     }
 
-    proClose = () => {
-        this.setState({stateViewToggle:false})
+    /*
+    20191119 get stack interval..
+    {Region: "EU",
+    ClusterName: "autoclusterbicinkiapp117-1",
+    OrganizationName: "bicinkiOrg1117-1",
+    Operator: "TDG",
+    Cloudlet: "frankfurt-eu", …}Cloudlet: "frankfurt-eu"CloudletLocation: {latitude: 50.110924, longitude: 8.682127}ClusterName: "autoclusterbicinkiapp117-1"Deployment: "kubernetes"Edit: (10) ["Region", "ClusterName", "OrganizationName", "Operator", "Cloudlet", "Flavor", "IpAccess", "Number_of_Master", "Number_of_Node", "CloudletLocation"]Flavor: "x1.medium"IpAccess: 3Operator: "TDG"OrganizationName: "bicinkiOrg1117-1"Progress: ""Region: "EU"State: 3Status: {task_number: 2, task_name: "Waiting for Cluster to Initialize", step_name: "Checking Master for Available Nodes"}__proto__: Object : ClusterInst
+
+
+     Cloudlet: "frankfurt-eu"
+CloudletLocation: {latitude: 50.110924, longitude: 8.682127}
+ClusterName: "autoclusterbicapp"
+Deployment: "docker"
+Edit: (10) ["Region", "ClusterName", "OrganizationName", "Operator", "Cloudlet", "Flavor", "IpAccess", "Number_of_Master", "Number_of_Node", "CloudletLocation"]
+Flavor: "m4.medium"
+IpAccess: 1
+Operator: "TDG"
+OrganizationName: "WonhoOrg1"
+Progress: ""
+Region: "EU"
+State: 3
+Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autoclusterbicapp-wonhoorg1", step_name: "Heat Stack Status: CREATE_IN_PROGRESS"}
+//frankfurt-eu-autoclusterbicapp-wonhoorg1
+
+     */
+    //"autoclusterbicinkiapp117-1"
+    getStackInterval = (_item, _siteId) => {
+        console.log('20191119 get cluster state.. get stack interval..', _item, ":", _siteId)
+        let clId = '';
+        if(_siteId === 'Cloudlet') {
+            clId = _item.Operator + _item.CloudletName;
+        } else if(_siteId === 'ClusterInst') {
+            //TODO :
+
+            clId = _item.ClusterName+'-'+_item.OrganizationName+'-'+_item.Operator
+
+        } else if(_siteId === 'appinst') {
+            //TODO : if auto
+            /*
+            if(req.body.multiCluster.indexOf('autocluster') > -1){
+                clusterId = req.body.multiCluster + req.body.multiCloudlet;
+            } else {
+                clusterId = params.appinst.key.app_key.name + req.body.multiCloudlet;
+                clusterId = clusterId.concat((req.body.multiCluster == '')?'DefaultVMCluster': req.body.multiCluster);
+            }
+            */
+
+            if(_item.ClusterInst.indexOf('auto') > -1){
+                clId =  'autocluster';
+            }
+            clId = clId+_item.AppName+'-'+_item.OrganizationName+'-'+_item.Operator
+        }
+        console.log('20191119 get cluster state..', clId.toLowerCase())
+
+
+        computeService.getStacksData('GetStatStream', clId.toLowerCase(), this.receiveInterval)
+    }
+    closeInterval = (type, message) => {
+        if(type && message){
+            //call from VerticalLinearStepper
+            let theSame = false;
+
+            for(let tmp in this.oldTemp) {
+                console.log('20191119 proClose... ', type,":", this.oldTemp[tmp],"--== : ==--", message)
+                if(this.oldTemp[tmp] === message) theSame = true;
+            }
+
+            if(!theSame){
+                Alert.closeAll();
+                this.props.handleAlertInfo(type, message)
+                this.oldTemp[type] = message;
+                this.props.handleComputeRefresh(false)
+            }
+            clearInterval(this.streamInterval)
+        }
+
+    }
+    receiveInterval =(data) => {
+        console.log('20191119 index receive data from server....', data)
+        this.storeData(data.data.stacksData,'streamTemp', 'state')
+
+    }
+    storeData = (_data, stId) => {
+        let stackStates = [];
+        let filteredData = [];
+        if(_data && _data.length) {
+            _data.map((dtd, i) => {
+                if(dtd[stId] !== "") {
+                    let parseData = JSON.parse(dtd[stId])
+                    let keys = Object.keys(parseData);
+
+                    let clId = dtd['clId'];
+                    let _dtd = null
+                    if(dtd[stId] && keys[0] === 'data') {
+
+                        _dtd = parseData.data ? parseData.data : null;
+                        stackStates.push(_dtd)
+                    }
+                    /*
+                    else if(dtd[stId] && keys[0] === 'result') {
+                        _dtd = parseData.result ? parseData.result : null;
+                    }
+                    */
+                } else {
+
+                }
+
+            })
+            //중복제거
+            stackStates.data = utile.removeDuplicate(stackStates)
+            console.log('20191119 getState storeData stackStates.... ', stackStates)
+            _self.setState({stateStream: stackStates})
+            _self.stateStreamData = stackStates;
+            _self.forceUpdate();
+        } else {
+            // closed streaming
+            console.log('20191119 closed streaming....')
+        }
+
+        return stackStates;
+    }
+    storeData_old = (_data, stId, flag) => {
+        let stackStates = [];
+        if(_data && _data.length) {
+            _data.map((dtd, i) => {
+                let keys = Object.keys(JSON.parse(dtd[stId]));
+                let parseData = JSON.parse(dtd[stId])
+                console.log('20191119 key..', keys, ":",keys[0], ":", parseData,":clId ===>>>>>>>",dtd['clId'])
+
+                let clId = dtd['clId'];
+                let _dtd = null
+                if(dtd[stId] && keys[0] === 'data') {
+
+                    _dtd = parseData.data ? parseData.data : null;
+
+                    if(_dtd) {
+                        _dtd['clId'] = clId;
+                        if(stackStates.length == 0) stackStates.push(_dtd)
+                        let sameItem = false;
+                        stackStates.map((sItem) => {
+                            if(sItem === _dtd) sameItem = true;
+                        })
+                        if(!sameItem) {
+                            stackStates.push(_dtd)
+                        }
+                    }
+                    console.log('20191119 login -- ', _dtd,":", stackStates)
+                } else if(dtd[stId] && keys[0] === 'result' && flag === 'result') {
+                    _dtd = parseData.result ? parseData.result.message : null;
+                    console.log('20191119 login result -- ', _dtd)
+                    if(_dtd) {
+                        //return [_dtd];
+                    }
+                }
+            })
+            alert('test1'+stackStates)
+            //store.dispatch(actions.stateStream(stackStates))
+        } else {
+            // closed streaming
+            console.log('20191119 closed streaming....')
+        }
+        alert('test2'+stackStates)
+        console.log('20191119 stackStates -- ', stackStates)
+        return stackStates;
     }
 
-    setAlertRefresh = () => {
-        let msg = '';
+
+    proClose = (value) => {
+        console.log('20191119 closed popup ....'+value)
+        // this.setState({stateViewToggle:false})
+        clearInterval(_self.streamInterval)
+
+    }
+
+    setAlertRefresh = (msg) => {
+
         console.log("setAlertRefresh")
         clearInterval(prgInter);
         
         Alert.closeAll();
-        if(this.props.siteId == 'ClusterInst') msg = 'Your cluster instance created successfully'
-        else if(this.props.siteId == 'appinst') msg = 'Your app instance created successfully'
-        else if(this.props.siteId == 'Cloudlet') msg = 'Your cloudlet created successfully'
+        if(!msg) {
+            if(this.props.siteId == 'ClusterInst') msg = 'Your cluster instance created successfully'
+            else if(this.props.siteId == 'appinst') msg = 'Your app instance created successfully'
+            else if(this.props.siteId == 'Cloudlet') msg = 'Your cloudlet created successfully'
+        }
 
         this.props.handleAlertInfo('success',msg)
-        
+        _self.setState({stateStream: []})
+        _self.stateStreamData = [];
         this.props.dataRefresh();
     }
 
@@ -381,7 +586,17 @@ class MapWithListView extends React.Component {
         this.props.dataRefresh();
     }
 
+    /*
+{"region":"EU",
+"appinst":{
+    "key":{"app_key":{"developer_key":{"name":"bicinkiOrg1117-1"},"name":"bicinkiApp117-1","version":"1.0"},
+        "cluster_inst_key":{"cluster_key":{"name":"autoclusterbicinkiApp117-1"},"cloudlet_key":{"operator_key":{"name":"bicinkiOper"},"name":"bictest1129"}}}}}
+ */
     autoClusterAlert = (_data) => {
+        console.log('20191119 auto cluster alert', _data, ":", this.props.submitObj)
+        if(this.props.submitObj) {
+            _data['OrganizationName'] = this.props.submitObj['appinst'].key.app_key.developer_key.name;
+        }
         this.stateView(_data,this.props.siteId,'auto');
     }
     
@@ -470,17 +685,17 @@ class MapWithListView extends React.Component {
                                         </Table.Cell>
                                     :
                                     (value === 'Progress'  && (item['State'] == 3 || item['State'] == 7))?
-                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId,'', item['State'])}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='green' name='circle notch' />} />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && item['State'] == 5)?
-                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId, '',item['State'])}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Icon className="progressIndicator" name='check' color='rgba(255,255,255,.5)' />
                                         </Table.Cell>
                                     :
                                     (value === 'Progress' && (item['State'] == 10 || item['State'] == 12))?
-                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
+                                        <Table.Cell key={j} textAlign='center' onClick={() => this.stateView(item,this.props.siteId, '',item['State'])}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
                                             <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='red' name='circle notch' />} />
                                         </Table.Cell>
                                     :
@@ -603,35 +818,53 @@ class MapWithListView extends React.Component {
     }
 
     componentDidMount() {
-        let self = this;
+
         window.addEventListener("resize", this.updateDimensions);
+        console.log('20191119 this.props.location---', this.props)
         if(this.props.location && this.props.location.pgname=='appinst'){
             this.autoClusterAlert(this.props.location.pgnameData)
         }
+        if(this.props.viewMode !== this.state.viewMode) {
+            //alert('ddd'+this.props.viewMode)
+            this.setState({dummyData:_self.props.devData})
+            this.forceUpdate();
+        }
+        //ServiceSocket.serviceStreaming('streamTemp');
     }
     componentWillUnmount() {
         //window.addEventListener("resize", this.updateDimensions);
         clearTimeout(this.interval)
         //this.props.handleSetHeader([])
         clearInterval(prgInter);
+        clearInterval(_self.streamInterval);
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
+        console.log('20191119 viewmode-', nextProps.viewMode, ":", nextProps)
+        //if(this.state.dummyData === nextProps.devData && this.state.changeRegion) return;
+        console.log("20191119 ---- >>>> dummyDatadummyData",nextProps.devData,":", this.state.dummyData,": props submit obj == ", nextProps.submitObj)
+        //if(this.state.dummyData === nextProps.devData && this.state.changeRegion) return;
         if(nextProps.devData.length > 0){
+
+
             nextProps.devData.map((item) => {
-                //console.log("dummyDatadummyData",item.State)
+                console.log("20191119 item item..",item.State)
                 if( (item.State == 3 || item.State == 7) && !this.state.stateCreate){
-                    this.setState({stateCreate:true})
-                    console.log("dummyDatadummyData",item)
+                    //this.setState({stateCreate:true})
+                    //console.log("20191119 >>>> dummyDatadummyData",item)
                     //this.setState({stateCreate:item})
                     //this.props.dataRefresh();
+
+                    /*
+                    // code block by inki 20191120
                     prgInter = setInterval(() => {
                         if(!this.state.stateViewToggle){
                             computeService.creteTempFile(item, nextProps.siteId, this.receiveStatusData);
                         }
                     }, 3000);
+                    */
                 }
             })
         }
@@ -716,6 +949,12 @@ class MapWithListView extends React.Component {
                     filterList.push(list)
                 }
             })
+            console.log('20191119 filterList..', filterList)
+            if(filterList && filterList[0]) {
+                this.setState({changeRegion:filterList[0]['Region']})
+            }
+        } else {
+            this.setState({changeRegion:null})
         }
         if(nextProps.clickCity.length == 0) {
             this.setState({dummyData:nextProps.devData})
@@ -723,11 +962,18 @@ class MapWithListView extends React.Component {
             this.setState({dummyData:filterList})
         }
 
+
+        if(nextProps.stateStream) {
+            //console.log('20191119 receive props in mapwidthlistview == ', nextProps.stateStream)
+            this.setState({stateStream:nextProps.stateStream})
+        }
+
+
     }
 
     render() {
         const { open, dimmer, dummyData, resize } = this.state;
-        const {randomValue} = this.props;
+
         return (
                     <div style={{display:'flex', overflowY:'hidden', overflowX:'hidden', width:'100%'}}>
                         <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open}
@@ -748,7 +994,7 @@ class MapWithListView extends React.Component {
                             style={{justifyContent: 'space-between', width:'100%'}}
                         >
 
-                            {this.generateDOM(open, dimmer, randomValue, dummyData, resize)}
+                            {this.generateDOM(open, dimmer, dummyData, resize)}
                         </Container>
 
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} centered={false} style={{right:400}}></PopDetailViewer>
@@ -776,12 +1022,22 @@ const mapStateToProps = (state) => {
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let viewMode = null;
+    let detailData = null;
+    if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+        viewMode = state.changeViewMode.mode.viewMode;
+        detailData = state.changeViewMode.mode.data;
+    }
     let deleteReset = state.deleteReset.reset
+    let stateStream = state.stateStream ? state.stateStream.state : null;
+    let submitObj = state.submitObj ? state.submitObj.submit : null;
     return {
         accountInfo,
         dimmInfo,
         clickCity: state.clickCityList.list,
-        deleteReset
+        deleteReset,
+        stateStream,
+        submitObj,
+        viewMode : viewMode, detailData:detailData
     }
 
 
@@ -795,7 +1051,9 @@ const mapDispatchProps = (dispatch) => {
         handleSetHeader: (data) => { dispatch(actions.tableHeaders(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleEditInstance: (data) => { dispatch(actions.editInstance(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
+        handleChangeClickCity: (data) => { dispatch(actions.clickCityList(data))},
     };
 };
 

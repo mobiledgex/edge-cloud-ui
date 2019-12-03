@@ -17,7 +17,7 @@ exports.ShowSelf = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     let serviceBody = {};
     let superpass = '';
-    console.log('service body is .. ', req.body.serviceBody)
+    console.log('service body is .. ')
     if(req.body.serviceBody){
         serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;

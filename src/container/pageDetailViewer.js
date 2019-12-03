@@ -198,6 +198,7 @@ class PageDetailViewer extends React.Component {
         //this.props.onLayoutChange(layout);
     }
     onChangeTab = (e, data) => {
+        alert(_self.state.page)
         console.log('20190923 on change tab ..data --- ',data)
         if(data.activeIndex === 1 && _self.state.page) {
             _self.getInstanceHealth(_self.state.page, _self.state.listData)

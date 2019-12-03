@@ -100,8 +100,13 @@ class ClustersMap extends Component {
             zoom: 3,
             detailMode:false
         })
-        this.props.handleChangeClickCity([]);
-        this.props.parentProps.resetMap(false)
+        try{
+            this.props.handleChangeClickCity([]);
+            this.props.parentProps.resetMap(false)
+        } catch(e) {
+
+        }
+
     }
     /* example:
     {
@@ -453,6 +458,16 @@ class ClustersMap extends Component {
             this.setState({clickCities:this.state.saveMarker});
         }
 
+        if(nextProps.resetMap) {
+            if(nextProps.resetMap === 'back') {
+                this.setState({
+                    center: this.state.center,
+                    zoom: 3,
+                    detailMode:false
+                })
+            }
+        }
+
     }
     componentWillUnmount() {
         clearInterval(this.interval)
@@ -619,7 +634,8 @@ const mapStateToProps = (state, ownProps) => {
         itemLabel: state.computeItem.item,
         getRegion: state.getRegion,
         deleteReset,
-        changeRegion : state.changeRegion.region?state.changeRegion.region:null
+        changeRegion : state.changeRegion.region?state.changeRegion.region:null,
+        resetMap: state.resetMap.region,
     };
 };
 const mapDispatchProps = (dispatch) => {

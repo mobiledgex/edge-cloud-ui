@@ -272,10 +272,9 @@ class SiteFourPageAppInst extends React.Component {
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem, viewMode, devData, detailData } = this.state;
-        let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
-            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort}></MapWithListView>
+            <MapWithListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort}></MapWithListView>
             :
             <PageDetailViewer data={detailData} page='appInst'/>
         );

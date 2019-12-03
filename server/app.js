@@ -494,7 +494,7 @@ app.post('/passwordreset', apiMC.UpdatePassword)
 app.post('/Version', apiMC.getVersion)
 app.post('/SettingLock', apiMC.SettingLock)
 
-
+app.post('/GetStatStream', apiMC.GetStatStream);
 /***************************
  * 2019 07 13
  * start mextrix
@@ -545,3 +545,78 @@ if(process.argv.length > 2) {
 }
 var httpsServer = https.createServer(credentials, app);
 httpsServer.listen(port, host, () => console.log(`<< https >> app listening on ${host} port ${port}! MC_URL = ${MC_URL}`));
+
+
+
+/******
+ * socket.io
+ * @type {string}
+ */
+// http server를 socket.io server로 upgrade한다
+//var io = require('socket.io')(httpsServer);
+
+// connection event handler
+// connection이 수립되면 event handler function의 인자로 socket이 들어온다
+/*
+io.on('connection', function(socket) {
+    console.log('Message from Client: ');
+
+    // 접속한 클라이언트의 정보가 수신되면
+    socket.on('login', function(data) {
+        console.log('Client logged-in: name:' + data);
+        apiMC.setIo(io);
+        // socket에 클라이언트 정보를 저장한다
+        //socket.name = data.name;
+        //socket.userid = data.userid;
+
+        // 접속된 모든 클라이언트에게 메시지를 전송한다
+        io.emit('login', data );
+    });
+    socket.on('streamTemp', function(data) {
+        console.log('Client streamTemp-in: name:' + data);
+        apiMC.setIo(io);
+        // socket에 클라이언트 정보를 저장한다
+        //socket.name = data.name;
+        //socket.userid = data.userid;
+
+        // 접속된 모든 클라이언트에게 메시지를 전송한다
+        io.emit('streamTemp', data );
+    });
+
+    // 클라이언트로부터의 메시지가 수신되면
+    socket.on('chat', function(data) {
+        console.log('Message from %s: %s', socket.name, data.msg);
+
+        var msg = {
+            from: {
+                name: socket.name,
+                userid: socket.userid
+            },
+            msg: data.msg
+        };
+
+        // 메시지를 전송한 클라이언트를 제외한 모든 클라이언트에게 메시지를 전송한다
+        // socket.broadcast.emit('chat', msg);
+
+        // 메시지를 전송한 클라이언트에게만 메시지를 전송한다
+        socket.emit('s2c chat', msg);
+
+        // 접속된 모든 클라이언트에게 메시지를 전송한다
+        // io.emit('s2c chat', msg);
+
+        // 특정 클라이언트에게만 메시지를 전송한다
+        // io.to(id).emit('s2c chat', data);
+    });
+
+    // force client disconnect from server
+    socket.on('forceDisconnect', function() {
+        console.log(' forceDisconnect from server :  ' + socket.name);
+        //socket.disconnect();
+    })
+
+    socket.on('disconnect', function() {
+        console.log('user disconnected: ' + socket.name);
+    });
+});
+
+*/

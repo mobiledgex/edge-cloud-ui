@@ -262,6 +262,12 @@ export function submitInfo (data) {
         data
     }
 }
+export function submitObj (data) {
+    return {
+        type: types.SUBMIT_OBJ,
+        data
+    }
+}
 export function editInstance (data) {
     return {
         type: types.EDIT_INSTANCE,
@@ -284,5 +290,21 @@ export function setCheckedAudit (data) {
     return {
         type: types.CHECKED_AUDIT,
         data
+    }
+}
+
+/**
+ *
+ **/
+export function stateStream (data) {
+    return {
+        type: types.STATE_STREAM,
+        data
+    }
+}
+export function resetMap (region) {
+    return {
+        type: types.RESET_MAP,
+        region
     }
 }
