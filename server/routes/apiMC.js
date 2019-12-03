@@ -828,14 +828,15 @@ exports.CreateClusterFlavor = (req, res) => {
 let stackData = [];
 let stackedData = [];
 const removeStreamTemp = (cloudletId) => {
+    let tempData = Object.assign([], stackData);
     stackData.map((stack) => {
         if(stack['clId'] === cloudletId) {
-            stackData.filter(function(item) {
+            tempData = tempData.filter(function(item) {
                 return item !== stack
             })
         }
     })
-    console.log('remove stack data ...', stackData)
+    console.log('remove stack data ...', tempData)
 }
 
 /*
@@ -921,21 +922,33 @@ exports.CreateCloudlet = (req, res) => {
                     if(data.indexOf('result')> -1) {
                         //source.cancel('Operation canceled')
                         let parseData = JSON.parse(data)['result']
-                        res.json(parseData)
+                        setTimeout(() => removeStreamTemp(cloudletId.toLowerCase()) , 8000)
+                        try{
+                            console.log('send data to client use to res --', parseData, ":", res)
+                            res.json(parseData)
+                        } catch(e) {
+                            console.log('send data to client use to inspect--',parseData, ":", inspect)
+                            inspect(JSON.stringify(parseData))
+                        }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     }
-                    /*
+
                     if(data.indexOf('successfully') > -1) {
                         //source.cancel('Operation canceled')
                         console.log('delete successfully')
                         let parseData = JSON.parse(data)['data']
-                        res.json(parseData)
+                        setTimeout(() => removeStreamTemp(cloudletId.toLowerCase()) , 8000)
+                        try{
+                            res.json(parseData)
+                        } catch(e) {
+                            inspect(JSON.stringify(parseData))
+                        }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                         //removeStreamTemp(cloudletId);
                     }
-                    */
+
                 }
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
@@ -950,11 +963,12 @@ exports.CreateCloudlet = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show CreateCloudlet...', error);
+
             if(error.response && error.response.statusText.indexOf('Bad') > -1) {
-                res.json({error:error.response.statusText})
+                console.log('error show CreateCloudlet...', error.response.statusText);
+                //res.json({error:error.response.statusText})
             } else {
-                res.json({error:'Execution Of Request Failed'})
+                //res.json({error:'Execution Of Request Failed'})
             }
         });
 }
@@ -1122,7 +1136,11 @@ exports.CreateAppInst = (req, res) => {
                         console.log('parse data.. ', parseData)
                         //res.json(parseData)
                         setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 8000)
-                        inspect(JSON.stringify(parseData))
+                        try{
+                            res.json(parseData)
+                        } catch(e) {
+                            inspect(JSON.stringify(parseData))
+                        }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
 
@@ -1132,7 +1150,11 @@ exports.CreateAppInst = (req, res) => {
                         let parseData = JSON.parse(data)['data']
                         //source.cancel('Operation canceled')
                         console.log('create successfully =', parseData, ":", typeof parseData)
-                        //res.json(parseData)
+                        try{
+                            res.json(parseData)
+                        } catch(e) {
+                            inspect(JSON.stringify(parseData))
+                        }
                         //setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 8000)
                         //inspect(JSON.stringify(parseData))
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
@@ -1283,18 +1305,27 @@ exports.CreateClusterInst = (req, res) => {
                     if(data.indexOf('result')> -1) {
                         //source.cancel('Operation canceled')
                         let parseData = JSON.parse(data)['result']
-                        res.json(parseData)
+                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 8000)
+                        try{
+                            res.json(parseData)
+                        } catch(e) {
+                            inspect(JSON.stringify(parseData))
+                        }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     }
                     if(data.indexOf('successfully') > -1) {
                         //source.cancel('Operation canceled')
-                        console.log('create appinst successfully')
+                        //console.log('create appinst successfully')
                         let parseData = JSON.parse(data)['data']
-                        res.json(parseData)
+                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 8000)
+                        try{
+                            res.json(parseData)
+                        } catch(e) {
+                            inspect(JSON.stringify(parseData))
+                        }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
-                        //TODO : remove temp...리스트 상태 보기 시에 제거 하기
                         //removeStreamTemp(cloudletId);
                     }
                 }
@@ -1312,7 +1343,7 @@ exports.CreateClusterInst = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show CreateClusterInst...', error);
-            res.json({error:'Execution Of Request Failed'})
+            //res.json({error:'Execution Of Request Failed'})
         });
 
 
@@ -1421,9 +1452,7 @@ exports.DeleteService = (req, res) => {
 
         {
             headers: {
-                'Authorization':`Bearer ${superpass}`,
-                'Connection': 'keep-alive',
-                'Content-Type': 'application/json'
+                'Authorization':`Bearer ${superpass}`
             },
             responseType: 'stream',
         }
@@ -1436,24 +1465,35 @@ exports.DeleteService = (req, res) => {
                     //source.cancel('Operation canceled')
                     let parseData = JSON.parse(data)['result']
                     console.log('result type..', typeof parseData, ":", parseData)
-                    //res.json(parseData)
+
                     setTimeout(() => removeStreamTemp(serviceId.toLowerCase()) , 8000)
-                    inspect(JSON.stringify(parseData))
+                    try{
+                        res.json(parseData)
+                    } catch(e) {
+                        inspect(JSON.stringify(parseData))
+                    }
                     //res.json(parseData)
                     // 접속된 모든 클라이언트에게 메시지를 전송한다
                     //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':serviceId})
                 }
-                /*
-                if(data.indexOf('successfully') > -1) {
+
+                if(data.indexOf('successfully') > -1 && data.indexOf('Deleted') > -1) {
                     //source.cancel('Operation canceled')
                     console.log('delete successfully')
                     let parseData = JSON.parse(data)['data']
-                    //res.json(parseData)
+                    setTimeout(() => removeStreamTemp(serviceId.toLowerCase()) , 8000)
+
+                    try{
+                        res.json(parseData)
+                    } catch(e) {
+                        inspect(JSON.stringify(parseData))
+                    }
+
                     // 접속된 모든 클라이언트에게 메시지를 전송한다
                     //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':serviceId})
                     //removeStreamTemp(serviceId);
                 }
-                */
+
             }
 
             if(response.data && Object.keys(response.data).length !== 0) {
@@ -1461,8 +1501,8 @@ exports.DeleteService = (req, res) => {
                 /////////////////////////
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
-                        console.log('delete service.../////---'+serviceName+'----///////', data, ":  serviceId == ", serviceId)
-                        stackData.push({'streamTemp':data, 'clId':serviceId});
+                        console.log('delete service.../////---'+serviceName+'----///////', data, ":  serviceId == ", serviceId.toLowerCase())
+                        stackData.push({'streamTemp':data, 'clId':serviceId.toLowerCase()});
                         if(data) cb(null, callback(data))
                     }))
                 ////////////////////////
@@ -1472,7 +1512,7 @@ exports.DeleteService = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show DeleteService...', error);
-            res.json({error:'Execution Of Request Failed'})
+            //res.json({error:'Execution Of Request Failed'})
         });
 }
 exports.DeleteUser = (req, res) => {

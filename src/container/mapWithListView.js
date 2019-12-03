@@ -18,6 +18,7 @@ import PopDetailViewer from './popDetailViewer';
 import * as computeService from '../services/service_compute_service';
 import ReactJson from 'react-json-view'
 import * as ServiceSocket from '../services/service_webSocket';
+import * as utile from '../utils'
 
 const ReactGridLayout = WidthProvider(RGL);
 let prgInter = null;
@@ -460,6 +461,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
     }
     storeData = (_data, stId) => {
         let stackStates = [];
+        let filteredData = [];
         if(_data && _data.length) {
             _data.map((dtd, i) => {
                 if(dtd[stId] !== "") {
@@ -469,6 +471,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                     let clId = dtd['clId'];
                     let _dtd = null
                     if(dtd[stId] && keys[0] === 'data') {
+
                         _dtd = parseData.data ? parseData.data : null;
                         stackStates.push(_dtd)
                     }
@@ -482,6 +485,8 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                 }
 
             })
+            //중복제거
+            stackStates.data = utile.removeDuplicate(stackStates)
             console.log('20191119 getState storeData stackStates.... ', stackStates)
             _self.setState({stateStream: stackStates})
             _self.stateStreamData = stackStates;

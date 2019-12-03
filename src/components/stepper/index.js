@@ -29,7 +29,7 @@ class VerticalLinearStepper extends React.Component {
         };
 
         this.AlertInterval = null;
-
+        this.deletePrepare = ['DeletePrepare', 'Deleting'];
     }
 
     componentDidMount() {
@@ -173,7 +173,7 @@ class VerticalLinearStepper extends React.Component {
                 //computeService.creteTempFile(this.props.item, this.props.site, this.receiveStatusData)
                 if(_step.length) this.setState({steps:_step,activeStep:_step.length - 1})
             } else{
-                this.setState({steps:['DeletePrepare', 'Deleting'],activeStep:1})
+                this.setState({steps:this.deletePrepare.concat(_step),activeStep:_step.length })
                 clearInterval(this.AlertInterval)
             }
         } else  {
