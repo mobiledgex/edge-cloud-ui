@@ -49,39 +49,31 @@ class DeleteItem extends React.Component {
     }
     receiveSubmit = (result, body) => {
         console.log('20191119 .. ceceiveSubmit...', result, ":", body)
-        if(result.data && result.data.message) {
-            this.receiveSubmitResult(result)
-            return;
-        }
-        if(result.data.error) {
-            this.props.handleAlertInfo('error',result.data.error)
-        } else {
-            let toArray = result.data.split('\n')
-            toArray.pop();
-            let toJson = toArray.map((str)=>(JSON.parse(str)))
-            
-            toJson.map((item) => {
-                if(item.result && item.result.code == 400){
-                    this.props.handleAlertInfo('error',item.result.message)
-                    return
-                } else {
-                    if(this.props.siteId == 'ClusterInst') {
-                        this.props.handleAlertInfo('success','Your cluster '+body.params.clusterinst.key.cluster_key.name+' deleted successfully')
-                    } else if(this.props.siteId == 'appinst') {
-                        this.props.handleAlertInfo('success','Application Instance '+body.params.appinst.key.app_key.name+' successfully deleted')
-                    } else if(this.props.siteId == 'Cloudlet') {
-                        this.props.handleAlertInfo('success','Cloudlet '+body.params.cloudlet.key.name+' successfully deleted')
-                    }
-                }
-            })
+        if(result.data && result.data.message && result.data.message.indexOf('failures') <= -1) {
+            //this.receiveSubmitResult(result)
+            if(this.props.siteId == 'ClusterInst') {
+                this.props.handleAlertInfo('success','Your cluster '+body.params.clusterinst.key.cluster_key.name+' deleted successfully')
+            } else if(this.props.siteId == 'appinst') {
+                this.props.handleAlertInfo('success','Application Instance '+body.params.appinst.key.app_key.name+' successfully deleted')
+            } else if(this.props.siteId == 'Cloudlet') {
+                this.props.handleAlertInfo('success','Cloudlet '+body.params.cloudlet.key.name+' successfully deleted')
+            }
             console.log("20191119 appinstdelete",this.props.siteId,":::",body)
-            if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
+            //if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
                 setTimeout(() => {
                     _self.props.refresh(this.props.changeRegion);
                 }, 3000);
-            }
-            
+            //}
+            return;
         }
+        if(result.data.message.indexOf('failures') > -1) {
+            this.props.handleAlertInfo('error',result.data.message)
+        }
+        if(result.data.error) {
+            this.props.handleAlertInfo('error',result.data.error)
+        }
+
+
         
     }
 

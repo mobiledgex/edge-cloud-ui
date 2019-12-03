@@ -125,7 +125,8 @@ class VerticalLinearStepper extends React.Component {
                     _step.push(stat['message'])
 
                     //
-                    if(stat['message'].indexOf('successfully') > -1) {
+                    if(stat['message'].indexOf('successfully') > -1 ) {
+
                         // refresh
                         clearInterval(this.AlertInterval)
                         // successfully 가 프로세스의 종료가 아닐 경우가 많음

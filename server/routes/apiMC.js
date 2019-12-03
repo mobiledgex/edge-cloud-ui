@@ -836,7 +836,8 @@ const removeStreamTemp = (cloudletId) => {
             })
         }
     })
-    console.log('remove stack data ...', tempData)
+    stackData = tempData;
+    console.log('remove stack data ...', cloudletId, ":", tempData)
 }
 
 /*
@@ -1135,7 +1136,7 @@ exports.CreateAppInst = (req, res) => {
                         let parseData = JSON.parse(data)['result']
                         console.log('parse data.. ', parseData)
                         //res.json(parseData)
-                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 8000)
+                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
                         try{
                             res.json(parseData)
                         } catch(e) {
@@ -1155,7 +1156,7 @@ exports.CreateAppInst = (req, res) => {
                         } catch(e) {
                             inspect(JSON.stringify(parseData))
                         }
-                        //setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 8000)
+                        //setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
                         //inspect(JSON.stringify(parseData))
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
@@ -1305,7 +1306,7 @@ exports.CreateClusterInst = (req, res) => {
                     if(data.indexOf('result')> -1) {
                         //source.cancel('Operation canceled')
                         let parseData = JSON.parse(data)['result']
-                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 8000)
+                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
                         try{
                             res.json(parseData)
                         } catch(e) {
@@ -1318,7 +1319,7 @@ exports.CreateClusterInst = (req, res) => {
                         //source.cancel('Operation canceled')
                         //console.log('create appinst successfully')
                         let parseData = JSON.parse(data)['data']
-                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 8000)
+                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
                         try{
                             res.json(parseData)
                         } catch(e) {
@@ -1466,7 +1467,7 @@ exports.DeleteService = (req, res) => {
                     let parseData = JSON.parse(data)['result']
                     console.log('result type..', typeof parseData, ":", parseData)
 
-                    setTimeout(() => removeStreamTemp(serviceId.toLowerCase()) , 8000)
+                    setTimeout(() => removeStreamTemp(serviceId.toLowerCase()) , 5000)
                     try{
                         res.json(parseData)
                     } catch(e) {
@@ -1481,7 +1482,7 @@ exports.DeleteService = (req, res) => {
                     //source.cancel('Operation canceled')
                     console.log('delete successfully')
                     let parseData = JSON.parse(data)['data']
-                    setTimeout(() => removeStreamTemp(serviceId.toLowerCase()) , 8000)
+                    setTimeout(() => removeStreamTemp(serviceId.toLowerCase()) , 5000)
 
                     try{
                         res.json(parseData)

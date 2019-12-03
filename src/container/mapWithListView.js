@@ -351,6 +351,9 @@ class MapWithListView extends React.Component {
     getParentProps = () => {
         return _self.stateStreamData ? _self.stateStreamData : null;
     }
+    resetParentProps = () => {
+
+    }
     onShowAlert = (obj) => {
         console.log('20191119.. Alert..', Alert)
     }
@@ -564,7 +567,8 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
         }
 
         this.props.handleAlertInfo('success',msg)
-        
+        _self.setState({stateStream: []})
+        _self.stateStreamData = [];
         this.props.dataRefresh();
     }
 
