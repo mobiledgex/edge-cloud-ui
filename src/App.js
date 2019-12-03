@@ -241,10 +241,11 @@ class App extends Component {
             if(result.data.message.indexOf('Expired') > -1) {
 
                 setTimeout(() => self.goToNext('/logout',''),4000);
-                Alert.error('Login timeout expired. Please login again', {
-                    position: 'top-right',
-                    effect: 'slide',
-                    timeout: 50000
+                Alert.error('Login timeout expired.<br/>Please login again', {
+                     position: 'top-right',
+                     effect: 'slide',
+                     timeout: 50000,
+                     html:true,
                 });
             } else {
 
