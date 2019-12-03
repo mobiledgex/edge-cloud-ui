@@ -300,9 +300,9 @@ export default class MonitoringViewer extends React.Component {
                         </div>
                     </Container>
                     :
-                    (type === 'CPU')?<Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?'Count' : '%')}</Container>
+                        (type === 'CPU')?<Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?'Count' : ' %')}</Container>
                         : (type === 'DISK') ? <Container className="disk">{
-                            this.bytesToString(this.state.lastDISK)
+                            (this.props.data.page === 'clusterInst') ? this.bytesToPercent(this.state.lastDISK) : this.bytesToString(this.state.lastDISK)
                         }</Container>
                         : <Container className="memory">{
                             (this.props.data.page === 'clusterInst') ? this.bytesToPercent(this.state.lastMEM) : this.bytesToString(this.state.lastMEM)
@@ -357,11 +357,11 @@ export default class MonitoringViewer extends React.Component {
                                     </Header>
                                     <div className="content">
                                         <Container className="network_rcv">
-                                            <div className="title">RCV</div>
+                                            <div className="title">{(this.props.data.page === 'clusterInst') ? 'Received' : 'RCV'}</div>
                                             {this.bytesToString(this.state.lastNET[0]/1000)}
                                         </Container>
                                         <Container className="network_snd">
-                                            <div className="title">SND</div>
+                                            <div className="title">{(this.props.data.page === 'clusterInst') ? 'Sent' : 'SND'}</div>
                                             {this.bytesToString(this.state.lastNET[1]/1000)}
                                         </Container>
                                     </div>
@@ -378,12 +378,17 @@ export default class MonitoringViewer extends React.Component {
                                     </Header>
                                     <div className="content">
                                         <Container className="tcp_tcpretrans">
-                                            <div className="title">TcpRetrans</div>
-                                            {d3.format('.2s')(this.state.lastTCP[0])}
+                                            <div className="title">Retransmissions</div>
+                                            {
+                                                d3.format('.0s')(this.state.lastTCP[0])
+                                            }
                                         </Container>
                                         <Container className="tcp_connsest">
-                                            <div className="title">ConnsEst</div>
-                                            {d3.format('.2s')(this.state.lastTCP[1])}
+                                            <div className="title">Established Connections</div>
+                                            {
+                                                d3.format('.0s')(this.state.lastTCP[1])
+                                            }
+
                                         </Container>
                                     </div>
                                 </Segment>
@@ -398,12 +403,12 @@ export default class MonitoringViewer extends React.Component {
                                     </Header>
                                     <div className="content">
                                         <Container className="udp_tcpretrans">
-                                            <div className="title">RCV</div>
-                                            {d3.format('.2s')(this.state.lastUDP[0])}
+                                            <div className="title">Received</div>
+                                            {d3.format('.0s')(this.state.lastUDP[0]) + " Datagrams"}
                                         </Container>
                                         <Container className="est_connsest">
                                             <div className="title">SND</div>
-                                            {d3.format('.2s')(this.state.lastUDP[1])}
+                                            {d3.format('.0s')(this.state.lastUDP[1]) + " Datagrams"}
                                         </Container>
                                     </div>
                                 </Segment>
