@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
 import PopSendEmailView from '../container/popSendEmailView';
+import CalendarTimeline from '../components/timeline/calendarTimeline';
 
 // TODO : https://codepen.io/AdamKimmerer/pen/RraRbb
 
