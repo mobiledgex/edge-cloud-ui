@@ -1357,13 +1357,14 @@ exports.CreateClusterInst = (req, res) => {
                         let parseData = JSON.parse(data)['data']
                         setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
                         try{
+                            console.log('sucessfulloy created...res === ', res)
                             res.json(parseData)
                         } catch(e) {
+                            console.log('sucessfulloy created...inspect === ', inspect)
                             inspect(JSON.stringify(parseData))
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
-                        //removeStreamTemp(cloudletId);
                     }
                 }
                 response.data.pipe(estream.split())
