@@ -1,6 +1,6 @@
 import React from 'react';
 import HorizontalTimeline from 'react-horizontal-timeline';
-import {Grid, Image, Header, Modal, Dropdown, Button, Loader} from 'semantic-ui-react';
+import {Grid, Image, Header, Modal, Dropdown, Button} from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import {connect} from 'react-redux';
@@ -57,7 +57,6 @@ class TimelineAuditView extends React.Component {
         mounted: false,
         openSendEmail: false,
         orgName: '',
-        isLoading: false,
     };
 
     constructor() {
@@ -324,15 +323,14 @@ class TimelineAuditView extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.location.state !== undefined) {
-            let orgName = this.props.location.state.orgName;
-            this.setState({
-                orgName
-            })
-        }
+
+        let orgName = this.props.location.state.orgName;
+
 
         this.setState({
             mounted: true,
+            orgName: orgName,
+
         })
 
     }
@@ -350,8 +348,7 @@ class TimelineAuditView extends React.Component {
                         {/*@desc: ###############################.*/}
                         {/*@desc: Display the Organizations title.*/}
                         {/*@desc: ###############################.*/}
-                        <div style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>{this.state.orgName}</div>
-
+                        <div style={{fontSize: 20, fontWeight: 'bold', color:'orange'}}>{this.state.orgName}</div>
                         <div className="page_audit_history_option_period">
                             <Dropdown
                                 placeholder='Custom Time Range'

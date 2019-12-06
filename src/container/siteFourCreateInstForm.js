@@ -77,7 +77,7 @@ const cloudletMap = (props, type) => (
     <Fragment>
         {(type === 'cloudlets')?
         <div className='panel_worldmap' style={{width:'100%'}}>
-            <ClustersMap parentProps={{locData:props.locData, reg:'cloudletAndClusterMap', zoomIn:()=>console.log('zoomin'), zoomOut:()=>console.log('zoomout'), resetMap:()=>console.log('resetmap') }} icon={'cloudlet'} zoomControl={{center:[0, 0], zoom:1.5} }></ClustersMap>
+            <ClustersMap parentProps={{locData:props.locData, reg:'cloudletAndClusterMap', zoomIn:()=>console.log('zoomin'), zoomOut:()=>console.log('zoomout'), resetMap:()=>console.log('resetmap') }} zoomControl={{center:[0, 0], zoom:1.5} }></ClustersMap>
         </div>
 
         :
@@ -297,7 +297,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
             setTimeout(() => {
                 //create node as inserted number
                 _self.setFlavorNode([_self.props.masterNumber,_self.props.nodeNumber]);
-                if(_self.state.activeIndex !== 1) _self.setState({activeIndex:1})
+                _self.setState({activeIndex:1})
             }, 500)
         } else if(state === 'DeploymentType') {
             _self.setState({activeIndex:0})
@@ -341,11 +341,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
             ]
         }
-
         _self.setState({flavorConfig:flconfig, clusterName:_self.props.clusterName})
-        _self.forceUpdate();
-
-
     }
 
     getDataDeveloper = (region,regionArr) => {
@@ -366,10 +362,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
         services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, _self.receiveResultOrg, _self)
     }
-    handleTabChange = (e, { activeIndex }) => {
-        this.setState({ activeIndex })
-        if(this.state.locData.length) this.props.handleGetRegion(this.state.locData)
-    }
+    handleTabChange = (e, { activeIndex }) => this.setState({ activeIndex })
     componentDidMount() {
         // if(localStorage.selectMenu == 'Cluster Instances') this.getDataDeveloper(this.props.data.region)
     }
@@ -379,10 +372,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
     componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
             _self.setState({regionToggle:true})
-            if(localStorage.selectMenu == 'Cluster Instances'){
-                _self.setState({clusterShow: false});
-                this.getDataDeveloper(nextProps.data.region,nextProps.regionInfo.region)
-            }
+            if(localStorage.selectMenu == 'Cluster Instances') this.getDataDeveloper(nextProps.data.region,nextProps.regionInfo.region)
         }
         
         if(nextProps.data) this.setState({devData: nextProps.data, keys:nextProps.keys})
@@ -423,7 +413,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
             this.setState({clusterShow:false})
         }
         if(value === 'Kubernetes' && panes.length == 1){
-            panes.push({ menuItem: 'Show Cluster', render: (props) => <Tab.Pane>{clusterNode(props)}</Tab.Pane> });
+            panes.push({ menuItem: 'Show Cluster', render: (props) => <Tab.Pane>{clusterNode(props)}</Tab.Pane> })
             this.setState({clusterShow:true})
         } 
     }
@@ -487,14 +477,12 @@ class SiteFourCreateInstForm extends React.PureComponent {
     render() {
         const { activeIndex, clusterName } = this.state;
         let {data, dimmer, selected} = this.props;
-        let randomState = Math.random()*100;
         return (
             <Grid>
                 <Grid.Row columns={2} className="grid_map_container">
                     <Grid.Column width={8} className="left">
                         <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole}
                                                    gotoUrl={this.gotoUrl} clusterHide={this.clusterHide}
-                                                   randomState = {randomState}
                                                    toggleSubmit={this.props.toggleSubmit}
                                                    validError={this.props.validError}
                                                    onSubmit={() => console.log('submit form')}

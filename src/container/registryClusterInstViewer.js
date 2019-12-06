@@ -182,37 +182,35 @@ class RegistryClusterInstViewer extends React.Component {
             }
         }
 
-        if(paseData.message) {
+        // if(paseData.message) {
+        //     Alert.error(paseData.message, {
+        //         position: 'top-right',
+        //         effect: 'slide',
+        //         onShow: function () {
+        //             console.log('aye!')
+        //         },
+        //         beep: true,
+        //         timeout: 5000,
+        //         offset: 100
+        //     });
+        // } else {
+        //     let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
 
-        }
-
-        if(paseData.message) {
-            Alert.error(paseData.message, {
-                position: 'top-right',
-                effect: 'slide',
-                onShow: function () {
-                    console.log('aye!')
-                },
-                beep: true,
-                timeout: 5000,
-                offset: 100
-            });
-        } else {
-            if(result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
-                Alert.success(result.data, {
-                    position: 'top-right',
-                    effect: 'slide',
-                    onShow: function () {
-                        console.log('aye!')
-                    },
-                    beep: true,
-                    timeout: 5000,
-                    offset: 100
-                });
-                _self.props.success();
-                _self.reqCount = 0;
-            }
-        }
+        //     if(result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
+        //         Alert.success("Success!", {
+        //             position: 'top-right',
+        //             effect: 'slide',
+        //             onShow: function () {
+        //                 console.log('aye!')
+        //             },
+        //             beep: true,
+        //             timeout: 5000,
+        //             offset: 100
+        //         });
+        //         _self.props.success();
+        //         _self.reqCount = 0;
+        //     }
+        // }
 
     }
 
@@ -257,6 +255,9 @@ class RegistryClusterInstViewer extends React.Component {
             this.props.handleStateTutor('done');
 
             if(nextProps.formClusterInst.submitSucceeded && error.length == 0){
+
+
+
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);                
                 service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store ? store.userToken : 'null'}, this.receiveSubmit, nextProps.validateValue.Cloudlet)

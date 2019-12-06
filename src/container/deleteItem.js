@@ -51,8 +51,6 @@ class DeleteItem extends React.Component {
         console.log('20191119 .. ceceiveSubmit...', result, ":", body)
         if(result.data && result.data.message && result.data.message.indexOf('failures') <= -1) {
             //this.receiveSubmitResult(result)
-
-            /** have to show progress for deleting, so that block this.**/
             if(this.props.siteId == 'ClusterInst') {
                 this.props.handleAlertInfo('success','Your cluster '+body.params.clusterinst.key.cluster_key.name+' deleted successfully')
             } else if(this.props.siteId == 'appinst') {

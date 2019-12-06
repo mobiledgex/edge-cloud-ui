@@ -81,8 +81,6 @@ class ClustersMap extends Component {
         this.handleLeave = this.handleLeave.bind(this)
         this.dir = 1;
         this.interval = null;
-        this.tempData = null;
-        this.tempLocation = null;
     }
     handleZoomIn() {
         this.setState({
@@ -340,7 +338,8 @@ class ClustersMap extends Component {
     componentDidMount() {
         //this.fetchCities();
         //this.fetchCountry();
-        console.log('20191204 temploacation...', this.tempLocation)
+
+
         //zoom
         if(this.props.zoomControl) {
             this.setState({center:this.props.zoomControl.center, zoom:this.props.zoomControl.zoom})
@@ -371,11 +370,6 @@ class ClustersMap extends Component {
         let initialData = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
         let data = initialData.filter((item)=>item.State == 5);
         //let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
-
-        if(this.tempData == data) return;
-        this.tempData = data;
-        this.tempLocation = data;
-        console.log('20191204 daaaata...', data, ":", nextProps.getRegion)
 
         function reduceUp(value) {
             return Math.round(value)
@@ -558,9 +552,7 @@ class ClustersMap extends Component {
                                                 ))
                                                 : (localStorage.selectMenu == "Cluster Instances" && !this.state.detailMode) ?
                                                 this.state.cities.map((city, i) => (
-                                                    (this.props.icon === 'cloudlet')?
-                                                        MarkerComponent(this, city, i, {transform:"translate(-24,-18)", gColor:6, cName:'st1', path:0})
-                                                        :MarkerComponent(this, city, i, {transform:"translate(-25,-27)", gColor:8, cName:'st2', path:1})
+                                                    MarkerComponent(this, city, i, {transform:"translate(-25,-27)", gColor:8, cName:'st2', path:1})
                                                 ))
                                                 :
                                                 (localStorage.selectMenu == "App Instances" && !this.state.detailMode) ?
