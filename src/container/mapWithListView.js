@@ -80,7 +80,7 @@ class MapWithListView extends React.Component {
             stackStates:[],
             changeRegion:null,
             viewMode: null,
-            resetMap:null
+            _resetMap:null
             
         };
 
@@ -972,15 +972,18 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
         }
 
         if(nextProps.resetMap) {
-            this.setState({resetMap: nextProps.resetMap})
+            this.setState({_resetMap: nextProps.resetMap})
             this.forceUpdate()
         }
 
 
     }
+    resetMap() {
+        this.props.handleChangeClickCity([])
+    }
 
     render() {
-        const { open, dimmer, dummyData, resize, resetMap } = this.state;
+        const { open, dimmer, dummyData, resize, _resetMap } = this.state;
 
         return (
                     <div style={{display:'flex', overflowY:'hidden', overflowX:'hidden', width:'100%'}}>
@@ -1002,7 +1005,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                             style={{justifyContent: 'space-between', width:'100%'}}
                         >
 
-                            {this.generateDOM(open, dimmer, dummyData, resize, resetMap)}
+                            {this.generateDOM(open, dimmer, dummyData, resize, _resetMap, this.resetMap)}
                         </Container>
 
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} centered={false} style={{right:400}}></PopDetailViewer>
