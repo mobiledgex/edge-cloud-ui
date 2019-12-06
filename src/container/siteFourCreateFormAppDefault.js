@@ -9,11 +9,26 @@ import './styles.css';
 
 let portNum = 0;
 
-const makeOption =(options)=> (
-    options.map((value) =>(
-        {key:value, text:(value == 'tcp' || value == 'udp')? value.toUpperCase() : value, value:value}
-    ))
-)
+const makeOption =(options)=> {
+
+    let newOptions = options.sort(
+
+        function(a, b) {
+            if (a.toLowerCase() < b.toLowerCase()) return -1;
+            if (a.toLowerCase() > b.toLowerCase()) return 1;
+            return 0;
+        }
+    );
+
+    return (
+
+        newOptions.map((value) => (
+            {key:value, text:(value == 'tcp' || value == 'udp')? value.toUpperCase() : value, value:value}
+        ))
+
+    )
+
+};
 
 const makeOptionNumber =(options)=> (
     options.map((value,i) =>(
