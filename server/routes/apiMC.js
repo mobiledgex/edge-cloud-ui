@@ -959,7 +959,7 @@ exports.CreateCloudlet = (req, res) => {
                     if(data.indexOf('result')> -1) {
                         //source.cancel('Operation canceled')
                         let parseData = JSON.parse(data)['result']
-                        setTimeout(() => removeStreamTemp(cloudletId.toLowerCase()) , 8000)
+                        setTimeout(() => removeStreamTemp(cloudletId.toLowerCase()) , 3000)
                         try{
                             console.log('send data to client use to res --', parseData, ":", res)
                             res.json(parseData)
@@ -975,7 +975,7 @@ exports.CreateCloudlet = (req, res) => {
                         //source.cancel('Operation canceled')
                         console.log('delete successfully')
                         let parseData = JSON.parse(data)['data']
-                        setTimeout(() => removeStreamTemp(cloudletId.toLowerCase()) , 8000)
+                        setTimeout(() => removeStreamTemp(cloudletId.toLowerCase()) , 3000)
                         try{
                             res.json(parseData)
                         } catch(e) {
@@ -1168,22 +1168,27 @@ exports.CreateAppInst = (req, res) => {
                 /////////////////////////
                 let callback =(data) => {
                     if(data.indexOf('result')> -1) {
+                        let inspectData = data.replace(/\"/g, "")
+                        inspectData = data.replace(/\\"/g, "")
                         //source.cancel('Operation canceled')
-                        let parseData = JSON.parse(data)['result']
-                        console.log('parse data.. ', parseData)
+                        let parseData = JSON.parse(inspectData)['result']
+                        console.log('parse data..1205-- ', typeof parseData, ":", parseData)
                         //res.json(parseData)
-                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
                         try{
+                            console.log('res', parseData);
                             res.json(parseData)
                         } catch(e) {
-                            inspect(JSON.stringify(parseData))
+                            //let inst = inspect(JSON.stringify(parseData))
+                            //console.log('inspect', inst, ":", typeof parseData, ":", parseData)
+                            inspect('{"error":"state is CLOUDLET_STATE_NOT_PRESENT"}')
                         }
+                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 3000)
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
 
                     }
 
-                    if(data.indexOf('successfully') > -1) {
+                    if(data.indexOf('Create') > -1 && data.indexOf('successfully') > -1) {
                         let parseData = JSON.parse(data)['data']
                         //source.cancel('Operation canceled')
                         console.log('create successfully =', parseData, ":", typeof parseData)
@@ -1192,11 +1197,14 @@ exports.CreateAppInst = (req, res) => {
                         } catch(e) {
                             inspect(JSON.stringify(parseData))
                         }
+                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 3000)
                         //setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
                         //inspect(JSON.stringify(parseData))
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     }
+
+
 
                 }
 
@@ -1312,7 +1320,7 @@ exports.CreateClusterInst = (req, res) => {
 
     /**
      * steam
-     * http --stream --timeout 100000 --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateClusterInst <<< '{"region":"US","clusterinst":{"key":{"cluster_key":{"name":"dockertest20190802-9"},"cloudlet_key":{"operator_key":{"name":"TDG"},"name":"mexplat-stage-bonn-cloudlet"},"developer":"MobiledgeX"},"deployment":"docker","flavor":{"name":"c1.small"},"ip_access":1,"num_masters":0,"num_nodes":0}}'
+     * http --stream --timeout 100000 --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateClusterInst <<< '{"region":"EU","clusterinst":{"key":{"cluster_key":{"name":"bicinkiCluster1206-03"},"cloudlet_key":{"operator_key":{"name":"MEX"},"name":"jlm-dind"},"developer":"MobiledgeX"},"deployment":"docker","flavor":{"name":"x1.medium"},"ip_access":1,"num_masters":0,"num_nodes":0}}'
      */
     // var url = `http --stream --timeout 100000 --auth-type=jwt --auth=${superpass} POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateClusterInst <<< '{"region":"KR","clusterinst":{"key":{"cluster_key":{"name":"dockertest20190805-15"},"cloudlet_key":{"operator_key":{"name":"TDG"},"name":"mexplat-stage-bonn-cloudlet"},"developer":"MobiledgeX"},"deployment":"docker","flavor":{"name":"c1.small"},"ip_access":1,"num_masters":0,"num_nodes":0}}'`
     // var child = shell.exec(url, {async:true});
@@ -1331,7 +1339,7 @@ exports.CreateClusterInst = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Create ClusterInst ==>==>==>==>==>')
+            console.log('success Create ClusterInst ==>==>==>==>==>', response)
 
             if(response.data) {
                 // response.data.pipe(
@@ -1342,26 +1350,28 @@ exports.CreateClusterInst = (req, res) => {
                     if(data.indexOf('result')> -1) {
                         //source.cancel('Operation canceled')
                         let parseData = JSON.parse(data)['result']
-                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
+                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 3000)
                         try{
                             res.json(parseData)
                         } catch(e) {
-                            inspect(JSON.stringify(parseData))
+                            //inspect(JSON.stringify(parseData))
+                            res.json({"message": "Execution Of Request Failed"})
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     }
-                    if(data.indexOf('successfully') > -1) {
+                    if(data.indexOf('Create') > -1 && data.indexOf('successfully') > -1) {
                         //source.cancel('Operation canceled')
                         //console.log('create appinst successfully')
                         let parseData = JSON.parse(data)['data']
-                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
+                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 3000)
                         try{
                             console.log('sucessfulloy created...res === ', res)
                             res.json(parseData)
                         } catch(e) {
-                            console.log('sucessfulloy created...inspect === ', inspect)
+                            console.log('sucessfulloy created...inspect === ', inspect, ': res???', res)
                             inspect(JSON.stringify(parseData))
+
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
@@ -1381,7 +1391,7 @@ exports.CreateClusterInst = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show CreateClusterInst...', error);
-            //res.json({error:'Execution Of Request Failed'})
+            res.json({error:'Execution Of Request Failed, Audit may help you '})
         });
 
 
@@ -1504,7 +1514,7 @@ exports.DeleteService = (req, res) => {
                     let parseData = JSON.parse(data)['result']
                     console.log('result type..', typeof parseData, ":", parseData)
 
-                    setTimeout(() => removeStreamTemp(serviceId.toLowerCase()) , 5000)
+                    setTimeout(() => removeStreamTemp(serviceId.toLowerCase()) , 3000)
                     try{
                         res.json(parseData)
                     } catch(e) {
@@ -1519,7 +1529,7 @@ exports.DeleteService = (req, res) => {
                     //source.cancel('Operation canceled')
                     console.log('delete successfully')
                     let parseData = JSON.parse(data)['data']
-                    setTimeout(() => removeStreamTemp(serviceId.toLowerCase()) , 5000)
+                    setTimeout(() => removeStreamTemp(serviceId.toLowerCase()) , 3000)
 
                     try{
                         res.json(parseData)
@@ -1561,7 +1571,10 @@ exports.DeleteService = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show DeleteService...', error);
-            //res.json({error:'Execution Of Request Failed'})
+
+                res.json({error:'Execution Of Request Failed'})
+
+
         });
 }
 exports.DeleteUser = (req, res) => {
