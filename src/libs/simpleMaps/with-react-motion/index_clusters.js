@@ -365,7 +365,12 @@ class ClustersMap extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
+
+
+        let initialData = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
+        let data = initialData.filter((item)=>item.State == 5);
+        //let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
+
         function reduceUp(value) {
             return Math.round(value)
         }
