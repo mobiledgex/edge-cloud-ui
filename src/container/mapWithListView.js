@@ -226,6 +226,7 @@ class MapWithListView extends React.Component {
             (item.State == 10)?item['StateData'] = 'Deleting':
             (item.State == 11)?item['StateData'] = 'DeleteError':
             (item.State == 12)?item['StateData'] = 'DeletePrepare':
+            (item.State == 13)?item['StateData'] = 'CRMInit':
             item['StateData'] = item.State
         })
         return _sortData
@@ -680,7 +681,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                                     :
                                     (value === 'State' && item[value])?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            {(item[value] == 0)? "Tracked State Unknown" : (item[value] == 1)? "Not Present" : (item[value] == 2)? "Create Requested" : (item[value] == 3)? "Creating" : (item[value] == 4)? "Create Error" : (item[value] == 5)? "Ready" : (item[value] == 6)? "Update Requested" : (item[value] == 7)? "Updating" : (item[value] == 8)? "Update Error" : (item[value] == 9)? "Delete Requested" : (item[value] == 10)? "Deleting" : (item[value] == 11)? "Delete Error" : (item[value] == 12)? "Delete Prepare" : item[value]}
+                                            {(item[value] == 0)? "Tracked State Unknown" : (item[value] == 1)? "Not Present" : (item[value] == 2)? "Create Requested" : (item[value] == 3)? "Creating" : (item[value] == 4)? "Create Error" : (item[value] == 5)? "Ready" : (item[value] == 6)? "Update Requested" : (item[value] == 7)? "Updating" : (item[value] == 8)? "Update Error" : (item[value] == 9)? "Delete Requested" : (item[value] == 10)? "Deleting" : (item[value] == 11)? "Delete Error" : (item[value] == 12)? "Delete Prepare" : (item[value] == 13)? "CRM Init" : item[value]}
                                             {/*{item[value]}*/}
                                         </Table.Cell>
                                     :
