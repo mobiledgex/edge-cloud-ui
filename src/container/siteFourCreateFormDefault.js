@@ -228,6 +228,7 @@ class SiteFourCreateFormDefault extends React.Component {
             this.props.clusterHide(value);
             this.props.onChangeState(key,value)
         } else {
+            if(key === 'NumberOfNode') this.props.clusterHide('Kubernetes');
             this.props.onChangeState(key,value)
         }
     }
@@ -308,6 +309,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 component={renderInputNum}
                                                                 value={data[key]}
                                                                 name={key}
+                                                                onChange={(e)=>this.onHandleChange(key,e,data[key])}
                                                             />
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'RenderDropDown') ?
@@ -367,7 +369,6 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 component={renderInput}
                                                                 type="input"
                                                                 name={key}
-                                                                value={data[key]}
                                                                 onChange={(e)=>this.onHandleChange(key,e.target.value)}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                         }

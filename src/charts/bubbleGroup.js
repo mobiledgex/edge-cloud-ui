@@ -1,5 +1,8 @@
 import React from 'react';
 import * as d3 from 'd3';
+//redux
+import { connect } from 'react-redux';
+
 import './styles.css';
 
 var data = {
@@ -32,7 +35,8 @@ var data = {
         }
     ]
 };
-export default class BubbleGroup extends React.Component {
+
+class BubbleGroup extends React.Component {
 
 
     componentDidMount() {
@@ -43,8 +47,29 @@ export default class BubbleGroup extends React.Component {
         this.makeNode();
     }
     makeNode() {
-        if(this.props.data) {
-            data = this.props.data;
+        const getChild = (value, idx) => (
+            {
+                "name": value,
+                "value": idx === 0 ? 200 : 200,
+                "color": idx === 0 ? "#ff7d77" : "#a2cbff"
+            }
+        )
+        let formValues = this.props.formValues;
+        if(formValues && formValues.NumberOfNode) {
+            let tempArray = []
+            console.log('20191204.. vparseInt(formValues.NumberOfNode)  ', parseInt(formValues.NumberOfNode))
+            for(let i = 0; i < parseInt(formValues.NumberOfNode)+1; i++){
+                tempArray.push(i)
+            }
+            data = {
+                "name": 'NO Name',
+                "children": [
+                    {
+                        "name": "Master",
+                        "children": tempArray.length ? tempArray.map((node, i) => getChild(formValues.ClusterName,i)) : ''
+                    }
+                ]
+            };
         }
         var packLayout = d3.pack()
             .size([300, 300]);
@@ -93,3 +118,16 @@ export default class BubbleGroup extends React.Component {
         )
     }
 }
+
+const mapStateToProps = (state, ownProps) => {
+    let formValues = null;
+    if(state.form.createAppFormDefault) {
+        formValues = state.form.createAppFormDefault.values;
+        if(formValues) console.log('20191204 formValues---', formValues)
+    }
+    return {
+        formValues: formValues
+    };
+};
+
+export default connect(mapStateToProps, null)(BubbleGroup);
