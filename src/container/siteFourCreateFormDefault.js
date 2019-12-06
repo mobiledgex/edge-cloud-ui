@@ -8,11 +8,26 @@ import * as services from '../services/service_compute_service';
 import './styles.css';
 
 
-const makeOption =(options)=> (
-    options.map((value) =>(
-        {key:value, text:value, value:value}
-    ))
-)
+const makeOption =(options)=> {
+
+    let newOptions = options.sort(
+
+        function(a, b) {
+            if (a.toLowerCase() < b.toLowerCase()) return -1;
+            if (a.toLowerCase() > b.toLowerCase()) return 1;
+            return 0;
+        }
+    );
+
+    return (
+
+        newOptions.map((value) => (
+            {key: value, text: value, value: value}
+        ))
+
+    )
+
+};
 
 const renderSelect = field => (
     <div>

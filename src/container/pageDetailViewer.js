@@ -122,7 +122,8 @@ const _status = {
     "9" : "Delete Requested",
     "10" : "Deleting",
     "11" : "Delete Error",
-    "12" : "Delete Prepare"
+    "12" : "Delete Prepare",
+    "13" : "CRM Init"
 }
 const _liveness = {
     "1" : "Static",

@@ -366,11 +366,16 @@ class ClustersMap extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
-        //if(this.tempData == data) return;
+
+        let initialData = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
+        let data = initialData.filter((item)=>item.State == 5);
+        //let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
+
+        if(this.tempData == data) return;
         this.tempData = data;
         this.tempLocation = data;
         console.log('20191204 daaaata...', data, ":", nextProps.getRegion)
+
         function reduceUp(value) {
             return Math.round(value)
         }
