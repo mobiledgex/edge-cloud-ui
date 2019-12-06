@@ -115,7 +115,12 @@ export const filterSearch = (data, searchValue, searchType) => {
     let searchArr = []
     
     data.filter((item) => {
-        if(item[searchType].indexOf(searchValue)!==-1){
+
+        let itemCheck = item[searchType].toLowerCase();
+        let searchValueCheck = searchValue.toLowerCase();
+
+        if(itemCheck.indexOf(searchValueCheck)!==-1){
+
             searchArr.push(item);
         }
     })
