@@ -367,7 +367,7 @@ class ClustersMap extends Component {
 
     componentWillReceiveProps(nextProps) {
         let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
-        if(this.tempData == data) return;
+        //if(this.tempData == data) return;
         this.tempData = data;
         this.tempLocation = data;
         console.log('20191204 daaaata...', data, ":", nextProps.getRegion)
@@ -463,13 +463,14 @@ class ClustersMap extends Component {
             this.setState({clickCities:this.state.saveMarker});
         }
 
-        if(nextProps.resetMap) {
-            if(nextProps.resetMap === 'back') {
+        if(nextProps.parentProps) {
+            if(nextProps.parentProps.resetMap === 'back') {
                 this.setState({
                     center: this.state.center,
                     zoom: 3,
                     detailMode:false
                 })
+                this.props.handleResetMap('deep')
             }
         }
 
@@ -642,7 +643,6 @@ const mapStateToProps = (state, ownProps) => {
         getRegion: state.getRegion,
         deleteReset,
         changeRegion : state.changeRegion.region?state.changeRegion.region:null,
-        resetMap: state.resetMap.region,
     };
 };
 const mapDispatchProps = (dispatch) => {
@@ -652,7 +652,8 @@ const mapDispatchProps = (dispatch) => {
         handleChangeCity: (data) => { dispatch(actions.changeCity(data)) },
         handleGetRegion: (data) => { dispatch(actions.getRegion(data)) },
         handleChangeClickCity: (data) => { dispatch(actions.clickCityList(data))},
-        handleDeleteReset: (data) => { dispatch(actions.deleteReset(data))}
+        handleDeleteReset: (data) => { dispatch(actions.deleteReset(data))},
+        handleResetMap: (data) => { dispatch(actions.resetMap(data))}
     };
 };
 

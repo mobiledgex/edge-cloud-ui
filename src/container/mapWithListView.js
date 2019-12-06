@@ -79,7 +79,8 @@ class MapWithListView extends React.Component {
             stateStream:null,
             stackStates:[],
             changeRegion:null,
-            viewMode: null
+            viewMode: null,
+            resetMap:null
             
         };
 
@@ -239,7 +240,7 @@ class MapWithListView extends React.Component {
         setTimeout(() => this.generateStart(), 2000)
     }
 
-    generateDOM(open, dimmer, dummyData, resize) {
+    generateDOM(open, dimmer, dummyData, resize, resetMap) {
         return layout.map((item, i) => (
 
             (i === 1)?
@@ -279,7 +280,7 @@ class MapWithListView extends React.Component {
                         <Icon name={(this.state.closeMap)?'angle down':'angle up'}/>
                     </div>
                     <div className='panel_worldmap'>
-                        <ContainerOne ref={ref => this.container = ref} {...this.props} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
+                        <ContainerOne ref={ref => this.container = ref} {...this.props} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={resetMap}></ContainerOne>
                     </div>
                 </div>
         ))
@@ -969,18 +970,23 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
             this.setState({stateStream:nextProps.stateStream})
         }
 
+        if(nextProps.resetMap) {
+            this.setState({resetMap: nextProps.resetMap})
+            this.forceUpdate()
+        }
+
 
     }
 
     render() {
-        const { open, dimmer, dummyData, resize } = this.state;
+        const { open, dimmer, dummyData, resize, resetMap } = this.state;
 
         return (
                     <div style={{display:'flex', overflowY:'hidden', overflowX:'hidden', width:'100%'}}>
                         <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open}
                                        selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                                        userToken={this.props.userToken}
-                                       success={this.successfully} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap} refresh={this.props.dataRefresh}
+                                       success={this.successfully} zoomIn={this.zoomIn} zoomOut={this.zoomOut} refresh={this.props.dataRefresh}
                         />
 
                         <DeleteItem open={this.state.openDelete}
@@ -995,7 +1001,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                             style={{justifyContent: 'space-between', width:'100%'}}
                         >
 
-                            {this.generateDOM(open, dimmer, dummyData, resize)}
+                            {this.generateDOM(open, dimmer, dummyData, resize, resetMap)}
                         </Container>
 
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} centered={false} style={{right:400}}></PopDetailViewer>
@@ -1031,6 +1037,7 @@ const mapStateToProps = (state) => {
     let deleteReset = state.deleteReset.reset
     let stateStream = state.stateStream ? state.stateStream.state : null;
     let submitObj = state.submitObj ? state.submitObj.submit : null;
+    let resetMap = state.resetMap ? state.resetMap.region : null;
     return {
         accountInfo,
         dimmInfo,
@@ -1038,7 +1045,8 @@ const mapStateToProps = (state) => {
         deleteReset,
         stateStream,
         submitObj,
-        viewMode : viewMode, detailData:detailData
+        viewMode : viewMode, detailData:detailData,
+        resetMap
     }
 
 
