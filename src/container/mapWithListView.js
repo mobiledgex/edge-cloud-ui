@@ -826,8 +826,9 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
             this.autoClusterAlert(this.props.location.pgnameData)
         }
         if(this.props.viewMode !== this.state.viewMode) {
+            console.log('20191119 this.props.viewMode', this.props.viewMode,"  :  " , this.props.submitObj)
             //alert('ddd'+this.props.viewMode)
-            this.setState({dummyData:_self.props.devData})
+            this.setState({dummyData:this.props.devData})
             this.forceUpdate();
         }
         //ServiceSocket.serviceStreaming('streamTemp');

@@ -203,7 +203,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
                             multiCluster: itemCluster
                         }))
                             .then(function (response) {
-                                console.log('20191119 response  registry new obj result AppInst-', response.data);
+                                console.log('20191119 response  registry new obj result AppInst-', response, ":", body);
                                 callback(response, body)
                             })
                             .catch(function (error) {
@@ -230,7 +230,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
                         multiCluster: itemCluster
                     }))
                         .then(function (response) {
-                            console.log('20191119 response  registry new obj result AppInst-', response.data);
+                            console.log('20191119 response  registry new obj result autocluster AppInst-', response.data);
                             callback(response, body)
                         })
                         .catch(function (error) {

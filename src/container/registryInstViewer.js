@@ -218,11 +218,18 @@ class RegistryInstViewer extends React.Component {
             // })
 
 
-            if(result.result && result.result.code == 400){
-                this.props.handleAlertInfo('error',result.result.message)
+            if(result && result.code == 400){
+                this.props.handleAlertInfo('error',result.message)
                 return
             } else {
-                this.props.handleAlertInfo('success','Your application instance created successfully')
+                //this.props.handleAlertInfo('success','Your application instance created successfully')
+            }
+            if(result && result.data) {
+                if(result.data.indexOf('autocluster')> -1) {
+
+                } else {
+                   // stateView()
+                }
             }
 
 
@@ -368,7 +375,7 @@ class RegistryInstViewer extends React.Component {
                 this.props.handleSubmitObject(submitData)
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
-                //잠시 막음 20191201.
+
                 services.createNewMultiAppInst('CreateAppInst', {params:submitData, token:store ? store.userToken : 'null'}, _self.receiveResult, nextProps.validateValue, this.state.cloudlets, this.state.autoClusterDisable)
 
             } else {
