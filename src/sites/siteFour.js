@@ -583,7 +583,8 @@ class SiteFour extends React.Component {
                     effect: 'slide',
                     beep: true,
                     timeout: 'none',
-                    offset: 100
+                    offset: 100,
+                    html:true
                 });
 
             }
