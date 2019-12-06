@@ -177,7 +177,11 @@ class SiteFourCreateInstForm extends React.PureComponent {
             this.setState({organizeData : this.state.organizeData.concat(result)});
         }
         else if(cmpt == 'cloudlet') {
-            this.setState({cloudletData : this.state.cloudletData.concat(result)});
+
+            let cloudletDataReady = this.state.cloudletData.filter((item) => {return item.State === 5});
+            this.setState({cloudletData : cloudletDataReady.concat(result)});
+            
+            // this.setState({cloudletData : this.state.cloudletData.concat(result)});
         }
         else if(cmpt == 'flavor') {
             this.setState({flavorData : this.state.flavorData.concat(result)});
