@@ -244,7 +244,7 @@ class SiteFour extends React.Component {
         let subPath = 'pg='+pg;
         _self.props.history.location.search = "pg="+pg;
         _self.props.handleChangeStep(pg)
-        _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label })
+        _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label, intoCity:false })
 
     }
 
