@@ -8,7 +8,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "start_server": "babel-node $NODE_DEBUG_OPTION start",
+    "start_server": "babel-node start",
     "proxy": "https://127.0.0.1:3030"
   },
   "author": "bic",

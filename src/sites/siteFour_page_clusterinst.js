@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
+import sizeMe from 'react-sizeme';
 import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
@@ -77,10 +78,10 @@ class SiteFourPageClusterInst extends React.Component {
         })
     }
     componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store && store.userToken) {
-            this.getDataDeveloper(this.props.changeRegion);
-        }
+        // let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        // if(store && store.userToken) {
+        //     this.getDataDeveloper(this.props.changeRegion);
+        // }
     }
     componentWillUnmount() {
         this.clusterInstDummy = [];
@@ -91,6 +92,7 @@ class SiteFourPageClusterInst extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
+        this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
         if(nextProps.computeRefresh.compute) {
             this.getDataDeveloper(nextProps.changeRegion);
@@ -305,4 +307,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageClusterInst));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInst)));
