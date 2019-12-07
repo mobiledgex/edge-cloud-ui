@@ -945,13 +945,13 @@ exports.CreateCloudlet = (req, res) => {
                         let parseData = JSON.parse(data)['result']
                         try{
                             console.log('send data to client use to res --', parseData, ":", res)
-                            res.json(parseData)
+                            //res.json(parseData)
                         } catch(e) {
                             console.log('send data to client use to inspect--',parseData, ":", inspect)
-                            inspect(JSON.stringify(parseData))
+                            //inspect(JSON.stringify(parseData))
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     }
 
                     if(data.indexOf('successfully') > -1) {
@@ -959,9 +959,9 @@ exports.CreateCloudlet = (req, res) => {
                         console.log('delete successfully')
                         let parseData = JSON.parse(data)['data']
                         try{
-                            res.json(parseData)
+                            //res.json(parseData)
                         } catch(e) {
-                            inspect(JSON.stringify(parseData))
+                            //inspect(JSON.stringify(parseData))
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
@@ -972,6 +972,10 @@ exports.CreateCloudlet = (req, res) => {
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
                         console.log('create Cloudlet.../////-------///////', data, ":  clId=",cloudletId.toLowerCase())
+                        if(data === ""){
+                            console.log('data...', data, ": -- end" )
+                            data = '{"data":{"message":"End"}}'
+                        }
                         stackStreamTemp({'streamTemp':data, 'clId':cloudletId.toLowerCase()});
                         if(data !== ''){
                             cb(null, callback(data, cloudletId.toLowerCase()))
@@ -1588,6 +1592,8 @@ exports.DeleteService = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show DeleteService...', error);
+            //Application Instance '+body.params.appinst.key.app_key.name+' successfully deleted
+            if(_io) _io.emit('streamTemp', {'data':{"message":"Request failed with status code 400"}, 'clId':serviceId.toLowerCase()})
         });
 }
 exports.DeleteUser = (req, res) => {

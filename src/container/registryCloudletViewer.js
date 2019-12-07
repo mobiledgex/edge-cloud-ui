@@ -174,7 +174,7 @@ class RegistryCloudletViewer extends React.Component {
         }
     }
     receiveSubmit = (result, body) => {
-        console.log("20191119 paseDatapaseDatapaseData",result)
+        console.log("20191119 cloudlet paseDatapaseDatapaseData",result)
         this.pauseRender = false;
         let paseData = result.data;
         if(paseData.error && !this.state.errorClose) {
@@ -193,11 +193,13 @@ class RegistryCloudletViewer extends React.Component {
                 this.props.handleAlertInfo('success',result.data.message)
             }
             if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
-                setTimeout(() => {
-                    if(_self.props.refresh) _self.props.refresh(this.props.changeRegion);
-                }, 3000);
+
             }
         }
+        setTimeout(() => {
+            _self.props.handleComputeRefresh(false)
+            _self.gotoUrl();
+        }, 3000);
 
         // if(paseData.message) {
         //     Alert.error(paseData.message, {
@@ -454,7 +456,8 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleStateTutor: (data) => { dispatch(actions.tutorStatus(data))},
-        handleGetRegion: (data) => { dispatch(actions.getRegion(data)) }
+        handleGetRegion: (data) => { dispatch(actions.getRegion(data)) },
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
     };
 };
 
