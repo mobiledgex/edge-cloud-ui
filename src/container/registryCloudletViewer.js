@@ -3,7 +3,7 @@ import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
-
+import {withRouter} from "react-router-dom";
 import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
@@ -461,6 +461,5 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(RegistryCloudletViewer);
-
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(RegistryCloudletViewer));
 
