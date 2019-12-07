@@ -112,51 +112,9 @@ class VerticalLinearStepper extends React.Component {
         let resultStream = [];
         hashName = item.Operator + item.CloudletName;
         let _step = []
-        console.log('20191119 getState receiveInterval info === ', this.props.getParentProps())
+        console.log('20191119 getState receiveInterval info === ', this.props.item.State)
         let stateStream = (this.props.item.State == 5) ? null : this.props.getParentProps() ;
-        if(stateStream) {
-            //resultStream = this.storeData(data.data.stacksData,'createCloudlet', 'result')
-            console.log('20191119 index stateStream .. ', stateStream, ":",resultStream)
-            if(stateStream.length > 0) {
-                console.log('20191119 index receiveInterval hashName and clId.. ', hashName)
-                stateStream.map((stat) => {
-                    console.log('20191119 index receiveInterval hashName and clId...... ', hashName , ":", stat)
 
-                    _step.push(stat['message'])
-
-                    //
-                    if(stat['message'].indexOf('successfully') > -1 ) {
-
-                        // refresh
-                        clearInterval(this.AlertInterval)
-                        // successfully 가 프로세스의 종료가 아닐 경우가 많음
-                        this.props.stopInterval('info',stat['message'])
-                        this.props.alertRefresh(stat['message']);
-                        //store.dispatch(actions.alertInfo('info',stat['message']))
-                        //stackStates = [];
-
-                    }
-
-                    if(stat['message'].indexOf('result') > -1) {
-                        // refresh
-                        alert('result...'+stat['message'])
-                        this.props.stopInterval('info',stat['message'])
-                        this.props.alertRefresh(stat['message']);
-
-                        clearInterval(this.AlertInterval)
-                    }
-
-                    if(stat['message'].indexOf('Failed') > -1 || stat['message'].indexOf('failed') > -1) {
-
-                        this.props.stopInterval('error',stat['message'])
-                        this.props.failRefresh(stat['message']);
-                        clearInterval(this.AlertInterval)
-                    }
-
-                })
-            }
-        }
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         console.log('20191119 receiveInterval === ', this.props,":_step =", _step,":")
         if(this.props.item.State == 3 || this.props.item.State == 7) {
             if(this.props.item.ClusterInst && this.props.item.ClusterInst.indexOf('autocluster') > -1 && this.props.auto == 'auto'){
@@ -180,6 +138,51 @@ class VerticalLinearStepper extends React.Component {
         } else  {
             this.setState({steps:['Create error'],activeStep:1})
         }
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        console.log('20191119 getState stateStream .. ', stateStream, ":",resultStream)
+        if(stateStream) {
+            //resultStream = this.storeData(data.data.stacksData,'createCloudlet', 'result')
+            console.log('20191119 index stateStream .. ', stateStream, ":",resultStream)
+            if(stateStream.length > 0) {
+                console.log('20191119 index receiveInterval hashName and clId.. ', hashName)
+                stateStream.map((stat) => {
+                    console.log('20191119 index receiveInterval hashName and clId...... ', hashName , ":", stat)
+
+                    if(stat['message']){
+                        _step.push(stat['message'])
+                    }
+
+                    //
+                    // if(!stat['message']) {
+                    //
+                    //     // refresh
+                    //     clearInterval(this.AlertInterval)
+                    //     // successfully 가 프로세스의 종료가 아닐 경우가 많음
+                    //     this.props.stopInterval('info',stat['message'])
+                    //     this.props.alertRefresh(stat['message']);
+                    //
+                    //
+                    // }
+                    //
+                    // if(stat['message'] && stat['message'].indexOf('result') > -1) {
+                    //     // refresh
+                    //     this.props.stopInterval('info',stat['message'])
+                    //     this.props.alertRefresh(stat['message']);
+                    //
+                    //     clearInterval(this.AlertInterval)
+                    // }
+                    //
+                    // if(stat['message'] && (stat['message'].indexOf('Failed') > -1 || stat['message'].indexOf('failed') > -1)) {
+                    //
+                    //     this.props.stopInterval('error',stat['message'])
+                    //     this.props.failRefresh(stat['message']);
+                    //     clearInterval(this.AlertInterval)
+                    // }
+
+                })
+            }
+        }
+
 
     }
 

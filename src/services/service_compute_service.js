@@ -2,7 +2,7 @@
 import axios from 'axios-jsonp-pro';
 import qs from 'qs';
 import request from 'request';
-//import * as ServiceSocket from './service_webSocket';
+import * as ServiceSocket from './service_webSocket';
 
 import FormatComputeFlavor from './formatter/formatComputeFlavor';
 import FormatComputeCluster from './formatter/formatComputeCluster';
@@ -268,6 +268,8 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
 
 
     }))
+    //1개 밖에 못받아서, socket 통신으로 푸시를 받음
+    ServiceSocket.serviceStreaming('streamTemp', callback, body);
 }
 export function deleteCompute(resource, body, callback) {
     axios.post(ServerUrl+'/deleteService',{
@@ -283,7 +285,7 @@ export function deleteCompute(resource, body, callback) {
             console.log(error);
         });
     //1개 밖에 못받아서, socket 통신으로 푸시를 받음
-    //ServiceSocket.serviceStreaming('streamTemp', callback, body);
+    ServiceSocket.serviceStreaming('streamTemp', callback, body);
 }
 export function deleteUser(resource, body, callback) {
     axios.post(ServerUrl+'/deleteUser',{

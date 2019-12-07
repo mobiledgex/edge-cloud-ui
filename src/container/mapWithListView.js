@@ -460,7 +460,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
 
     }
     receiveInterval =(data) => {
-        console.log('20191119 index receive data from server....', data)
+        console.log('20191119 getState receive data from server....', data)
         this.storeData(data.data.stacksData,'streamTemp', 'state')
 
     }
@@ -479,14 +479,31 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
 
                         _dtd = parseData.data ? parseData.data : null;
                         stackStates.push(_dtd)
+
+                        //TODO 20191207 by inki
+                        //Created successfull 일 경우 이중 팝업
+                        if((_dtd['message'].indexOf('Created') > -1 ||  _dtd['message'].indexOf('Deleted') > -1 ) && _dtd['message'].indexOf('successfully') > -1) {
+                            Alert.info(_dtd['message'], {
+                                position: 'top-right',
+                                effect: 'scale',
+                                onShow: function () {
+                                    console.log('aye!')
+                                },
+                                beep: true,
+                                timeout: 'none',
+                                offset: 100
+                            });
+                        }
+
                     }
                     /*
                     else if(dtd[stId] && keys[0] === 'result') {
                         _dtd = parseData.result ? parseData.result : null;
                     }
                     */
-                } else {
-
+                } else if(dtd[stId] === ""){
+                    stackStates.push({"data":{"message":"End"}})
+                    this.closeInterval("success","Created successfully!")
                 }
 
             })

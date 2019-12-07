@@ -224,13 +224,7 @@ class RegistryInstViewer extends React.Component {
             } else {
                 //this.props.handleAlertInfo('success','Your application instance created successfully')
             }
-            if(result && result.data) {
-                if(result.data.indexOf('autocluster')> -1) {
 
-                } else {
-                   // stateView()
-                }
-            }
 
 
 
