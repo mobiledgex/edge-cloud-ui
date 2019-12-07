@@ -183,6 +183,7 @@ class VerticalLinearStepper extends React.Component {
                         this.props.stopInterval('info','Terminate Process')
                         this.props.alertRefresh(stat['message']);
                         clearInterval(this.AlertInterval)
+                        return;
                     }
 
                 })
