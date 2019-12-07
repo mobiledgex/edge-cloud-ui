@@ -128,6 +128,6 @@ export function serviceStreaming(stId, callback, body) {
     // test.. send msg to pushing server
     setTimeout(() => {
         // 서버로 메시지를 전송한다.
-        //socket.emit("login", { name: 'Hi. I am client' });
+        socket.emit("login", { name: 'Hi. I am client' });
     }, 3000)
 }
