@@ -152,34 +152,35 @@ class VerticalLinearStepper extends React.Component {
                         _step.push(stat['message'])
                     }
 
-                    //
-                    // if(!stat['message']) {
-                    //
-                    //     // refresh
-                    //     clearInterval(this.AlertInterval)
-                    //     // successfully 가 프로세스의 종료가 아닐 경우가 많음
-                    //     this.props.stopInterval('info',stat['message'])
-                    //     this.props.alertRefresh(stat['message']);
-                    //
-                    //
-                    // }
-                    //
-                    // if(stat['message'] && stat['message'].indexOf('result') > -1) {
-                    //     // refresh
-                    //     this.props.stopInterval('info',stat['message'])
-                    //     this.props.alertRefresh(stat['message']);
-                    //
-                    //     clearInterval(this.AlertInterval)
-                    // }
-                    //
-                    // if(stat['message'] && (stat['message'].indexOf('Failed') > -1 || stat['message'].indexOf('failed') > -1)) {
-                    //
-                    //     this.props.stopInterval('error',stat['message'])
-                    //     this.props.failRefresh(stat['message']);
-                    //     clearInterval(this.AlertInterval)
-                    // }
+
+                    if(!stat['message']) {
+
+                        // refresh
+                        clearInterval(this.AlertInterval)
+                        // successfully 가 프로세스의 종료가 아닐 경우가 많음
+                        this.props.stopInterval('info',stat['message'])
+                        this.props.alertRefresh(stat['message']);
+
+
+                    }
+
+                    if(stat['message'] && stat['message'].indexOf('result') > -1) {
+                        // refresh
+                        this.props.stopInterval('info',stat['message'])
+                        this.props.alertRefresh(stat['message']);
+
+                        clearInterval(this.AlertInterval)
+                    }
+
+                    if(stat['message'] && (stat['message'].indexOf('Failed') > -1 || stat['message'].indexOf('failed') > -1)) {
+
+                        this.props.stopInterval('error',stat['message'])
+                        this.props.failRefresh(stat['message']);
+                        clearInterval(this.AlertInterval)
+                    }
 
                 })
+                this.setState({steps:_step,activeStep:_step.length -1})
             }
         }
 
