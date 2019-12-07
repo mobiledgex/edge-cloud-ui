@@ -885,7 +885,7 @@ exports.GetStatStream = (req, res) => {
             filteredData.push(stData)
         }
     })
-    console.log('get state clId === ', clId,": stackData --->>>--->>>")
+    //console.log('get state clId === ', clId,": stackData --->>>--->>>")
 
     res.json({'stacksData':filteredData})
 
@@ -1209,7 +1209,11 @@ exports.CreateAppInst = (req, res) => {
 
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
-                        console.log('create appinst service.../////---'+serviceName+'----///////', data, ":    cluserId ==", clusterId.toLowerCase())
+                        console.log('create appinst service.../////---'+serviceName+'----///////', data,":",typeof data , ": data -- ", JSON.stringify(data), ":    cluserId ==", clusterId.toLowerCase())
+                        if(data === ""){
+                            console.log('data...', data, ": -- end" )
+                            data = '{"data":{"message":"End"}}'
+                        }
                         stackStreamTemp({'streamTemp':data, 'clId':clusterId.toLowerCase()});
                         if(data !== ''){
                             cb(null, callback(data, clusterId.toLowerCase()))
@@ -1562,7 +1566,11 @@ exports.DeleteService = (req, res) => {
                 if(serviceId) {
                     response.data.pipe(estream.split())
                         .pipe(estream.map(function(data, cb){
-                            console.log('delete service.../////---'+serviceName+'----///////', data, ":  serviceId == ", serviceId.toLowerCase())
+                            console.log('delete service.../////---'+serviceName+'----///////',typeof data,": data - ", JSON.stringify(data), ":  serviceId == ", serviceId.toLowerCase())
+                            if(data === ""){
+                                console.log('data...', data, ": -- end" )
+                                data = '{"data":{"message":"End"}}'
+                            }
                             stackStreamTemp({'streamTemp':data, 'clId':serviceId.toLowerCase()});
                             if(data !== ''){
                                 cb(null, callback(data, serviceId.toLowerCase()))

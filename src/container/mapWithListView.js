@@ -486,7 +486,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                         _dtd = parseData.result ? parseData.result : null;
                     }
                     */
-                } else if(dtd[stId] === ""){
+                } else {
 
                     this.closeInterval("success","Created successfully!")
                 }
