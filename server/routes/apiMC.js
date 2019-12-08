@@ -1382,7 +1382,7 @@ exports.CreateClusterInst = (req, res) => {
 
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':clusterId})
                     }
                 }
                 response.data.pipe(estream.split())

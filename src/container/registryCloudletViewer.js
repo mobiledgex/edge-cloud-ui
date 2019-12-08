@@ -197,8 +197,9 @@ class RegistryCloudletViewer extends React.Component {
             }
         }
         setTimeout(() => {
-            _self.props.handleComputeRefresh(false)
-            _self.gotoUrl();
+            console.log('20191119 props refresh...', this.props.refresh, ":", this.props.changeRegion)
+            if(_self.props.refresh) _self.props.refresh(this.props.changeRegion);
+            _self.props.handleComputeRefresh(true)
         }, 3000);
 
         // if(paseData.message) {

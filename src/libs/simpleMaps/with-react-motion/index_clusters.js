@@ -322,7 +322,7 @@ class ClustersMap extends Component {
         let countries = CountryCode.ref_country_codes;
         let _lat = '';
         let _long = '';
-        console.log('20190830 selected region = ', a.properties, 'location data all =', countries)
+        console.log('20191119 selected region = ', a.properties, 'location data all =', countries, ":", localStorage.selectMenu)
         countries.map((country) => {
             if(country.alpha2 === a.properties["ISO_A2"]){
                 console.log('20190830 country code = ', country)
@@ -332,8 +332,19 @@ class ClustersMap extends Component {
         })
 
         if(localStorage.selectMenu == 'Cloudlets'){
-            let location = {region:a.properties["REGION_UN"],name:a.properties["NAME"], lat:_lat, long:_long}
+            let location = {region:a.properties["REGION_UN"],name:a.properties["NAME"], lat:_lat, long:_long, State:5}
             _self.props.handleGetRegion(location)
+
+            let locationData = [
+                {
+                    "name": a.properties["NAME"],
+                    "coordinates": [_long, _lat],
+                    "population": 17843000,
+                    "cost":3
+                }]
+            console.log('20191119 location data --- ', locationData)
+            _self.setState({cities:locationData, detailMode:false})
+            _self.forceUpdate();
         }
     }
 
@@ -367,14 +378,14 @@ class ClustersMap extends Component {
 
     componentWillReceiveProps(nextProps) {
 
-        let initialData = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
-        let data = initialData.filter((item)=>item.State == 5);
+        let initialData = (nextProps.parentProps.devData)? nextProps.parentProps.devData : nextProps.parentProps.locData;
+        let data = nextProps.parentProps.locData ? initialData : initialData.filter((item)=>item.State == 5);
         //let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
-
+        console.log('20191204 daaaata...', data, ":", nextProps.getRegion, ":parentProps.locData=", nextProps.parentProps.locData)
         if(this.tempData == data) return;
         this.tempData = data;
         this.tempLocation = data;
-        console.log('20191204 daaaata...', data, ":", nextProps.getRegion)
+
 
         function reduceUp(value) {
             return Math.round(value)
@@ -645,7 +656,7 @@ const mapStateToProps = (state, ownProps) => {
         data: state.receiveDataReduce.data,
         tabIdx: state.siteChanger.site.subPath,
         itemLabel: state.computeItem.item,
-        getRegion: state.getRegion,
+        getRegion: getRegion,
         deleteReset,
         changeRegion : state.changeRegion.region?state.changeRegion.region:null,
     };
