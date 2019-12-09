@@ -152,7 +152,7 @@ class VerticalLinearStepper extends React.Component {
                         _step.push(stat['message'])
                     }
 
-                    //
+
                     // if(!stat['message']) {
                     //
                     //     // refresh
@@ -179,7 +179,15 @@ class VerticalLinearStepper extends React.Component {
                     //     clearInterval(this.AlertInterval)
                     // }
 
+                    if(stat['message'] === 'End') {
+                        this.props.stopInterval('info','Terminate Process')
+                        this.props.alertRefresh(stat['message']);
+                        clearInterval(this.AlertInterval)
+                        return;
+                    }
+
                 })
+                this.setState({steps:_step,activeStep:_step.length -1})
             }
         }
 

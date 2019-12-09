@@ -3,7 +3,7 @@ import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
-
+import {withRouter} from "react-router-dom";
 import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
@@ -174,7 +174,7 @@ class RegistryCloudletViewer extends React.Component {
         }
     }
     receiveSubmit = (result, body) => {
-        console.log("20191119 paseDatapaseDatapaseData",result)
+        console.log("20191119 cloudlet paseDatapaseDatapaseData",result)
         this.pauseRender = false;
         let paseData = result.data;
         if(paseData.error && !this.state.errorClose) {
@@ -193,11 +193,14 @@ class RegistryCloudletViewer extends React.Component {
                 this.props.handleAlertInfo('success',result.data.message)
             }
             if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
-                setTimeout(() => {
-                    if(_self.props.refresh) _self.props.refresh(this.props.changeRegion);
-                }, 3000);
+
             }
         }
+        setTimeout(() => {
+            console.log('20191119 props refresh...', this.props.refresh, ":", this.props.changeRegion)
+            if(_self.props.refresh) _self.props.refresh(this.props.changeRegion);
+            _self.props.handleComputeRefresh(true)
+        }, 3000);
 
         // if(paseData.message) {
         //     Alert.error(paseData.message, {
@@ -454,10 +457,10 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleStateTutor: (data) => { dispatch(actions.tutorStatus(data))},
-        handleGetRegion: (data) => { dispatch(actions.getRegion(data)) }
+        handleGetRegion: (data) => { dispatch(actions.getRegion(data)) },
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(RegistryCloudletViewer);
-
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(RegistryCloudletViewer));
 
