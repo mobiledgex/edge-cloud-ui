@@ -5,10 +5,10 @@ import store from '../store';
 import * as utile from '../utils'
 
 const hostname = window.location.hostname;
-let _serverUrl = 'wss://'+hostname+':3030';
+let _serverUrl = 'ws://'+hostname+':3030';
 
 if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
-    _serverUrl = 'wss://'+hostname+'/server';
+    _serverUrl = 'ws://'+hostname+'/server';
 }
 
 let stackStates = [];
