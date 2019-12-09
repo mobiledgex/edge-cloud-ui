@@ -183,6 +183,9 @@ export function createNewAppInst(resource, body, callback) {
 //Multi Create
 export function createNewMultiAppInst(resource, body, callback, multiData, filterData, vmCheck) {
     console.log("20191119 bodybodybodydd",multiData,":::",filterData, ": vmCheck=",vmCheck)
+    //1개 밖에 못받아서, socket 통신으로 푸시를 받음
+    ServiceSocket.serviceStreaming('streamTemp', callback, body);
+
     axios.all(multiData.Cloudlet.map((itemCloudlet) => {
         if(vmCheck) multiData.ClusterInst = ['']
         if(multiData.AutoClusterInst) {
@@ -268,8 +271,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
 
 
     }))
-    //1개 밖에 못받아서, socket 통신으로 푸시를 받음
-    ServiceSocket.serviceStreaming('streamTemp', callback, body);
+
 }
 export function deleteCompute(resource, body, callback) {
     axios.post(ServerUrl+'/deleteService',{
@@ -468,14 +470,14 @@ export function createNewCloudlet(resource, body, callback) {
     })
         .then(function (response) {
             console.log('20191119 response cloudlet result-',response,body);
-            callback(response, body)
+            //callback(response, body)
         })
         .catch(function (error) {
             console.log(error);
         });
 
     //1개 밖에 못받아서, socket 통신으로 푸시를 받음
-    //ServiceSocket.serviceStreaming('streamTemp', callback, body);
+    ServiceSocket.serviceStreaming('streamTemp', callback, body);
 }
 
 export function updateAppInst(resource, body, callback) {
