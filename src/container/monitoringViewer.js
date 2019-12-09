@@ -67,6 +67,12 @@ export default class MonitoringViewer extends React.Component {
             timeseriesDataCONNECT:[
                 []
             ],
+            timeseriesDataIpv4:[
+                [], []
+            ],
+            timeseriesIpv4:[
+                [], []
+            ],
             timeseriesACCEPTS:[[]],
             dataLabel:['CPU', 'MEM'],
             dataLabelNET:['RCV', 'SND'],
@@ -76,6 +82,7 @@ export default class MonitoringViewer extends React.Component {
             dataLabelUDP:['RCV', 'SND', 'ERROR'],
         },
         lastCPU:0, lastMEM: 0, lastDISK:0, lastNET:[0,0], lastUDP:[0,0], lastTCP:[0,0],maxCPU:0,maxMEM:0, maxDISK:0,
+        lastIPv4: 0, lastFloatingIPs: 0, maxIPv4: 0, maxFloatingIPs: 0,
         data:[]
     }
 
@@ -86,8 +93,10 @@ export default class MonitoringViewer extends React.Component {
     tcpCnt = 0;
     udpCnt = 0;
     conCnt = 0;
+    ipv4Cnt = 0;
+    floipCnt = 0;
 
-    setTimeseriesDataCPUMEM (label, values) {
+    setTimeseriesDataCPUMEM (label, values, page) {
         if(label === 'cpu') {
             this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt] = formatFloat(values['cmsn']);
             this.state.mProp['timeseriesCPUMEM'][0][this.cpuCnt] = values['time'];
@@ -134,15 +143,20 @@ export default class MonitoringViewer extends React.Component {
             this.connCnt ++;
         }
 
-
         this.setState({props: this.state.mProp})
-        this.setState({lastCPU: this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt-1]})
-        this.setState({lastMEM: this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt-1]})
-        this.setState({lastDISK: this.state.mProp['timeseriesDataDISK'][0][this.diskCnt-1]})
+        this.setState({lastDISK: this.state.mProp['timeseriesDataDISK'][0][0]})
+        this.setState({lastTCP: [this.state.mProp['timeseriesDataTCP'][0][0], this.state.mProp['timeseriesDataTCP'][1][0] ]})
+        this.setState({lastUDP: [this.state.mProp['timeseriesDataUDP'][0][0], this.state.mProp['timeseriesDataUDP'][1][0] ]})
+        if(page === 'clusterInst'){
+            this.setState({lastCPU: this.state.mProp['timeseriesDataCPUMEM'][0][0]})
+            this.setState({lastMEM: this.state.mProp['timeseriesDataCPUMEM'][1][0]})
+            this.setState({lastNET: [this.state.mProp['timeseriesDataNET'][0][0], this.state.mProp['timeseriesDataNET'][1][0] ]})
+        } else {
+            this.setState({lastCPU: this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt-1]})
+            this.setState({lastMEM: this.state.mProp['timeseriesDataCPUMEM'][1][this.memCnt-1]})
+            this.setState({lastNET: [this.state.mProp['timeseriesDataNET'][0][this.netCnt-1], this.state.mProp['timeseriesDataNET'][1][this.netCnt-1] ]})
+        }
 
-        this.setState({lastNET: [this.state.mProp['timeseriesDataNET'][0][this.netCnt-1], this.state.mProp['timeseriesDataNET'][1][this.netCnt-1] ]})
-        this.setState({lastTCP: [this.state.mProp['timeseriesDataTCP'][0][this.tcpCnt-1], this.state.mProp['timeseriesDataTCP'][1][this.tcpCnt-1] ]})
-        this.setState({lastUDP: [this.state.mProp['timeseriesDataUDP'][0][this.udpCnt-1], this.state.mProp['timeseriesDataUDP'][1][this.udpCnt-1] ]})
 
     }
     bytesToString =  (bytes, inst) => {
@@ -160,6 +174,21 @@ export default class MonitoringViewer extends React.Component {
             return fmt(bytes / 1000 / 1000 / 1000) + ' GB';
         }
     }
+    datasToString =  (datas, inst) => {
+        //console.log("20190812 bytes..",bytes, ":", inst)
+        // One way to write it, not the prettiest way to write it.
+
+        var fmt = d3.format('.2f');
+        if (datas < 1000) {
+            return fmt(datas) + '';
+        } else if (datas < 1000 * 1000) {
+            return fmt(datas / 1000) + 'K';
+        } else if (datas < 1000 * 1000 * 1000) {
+            return fmt(datas / 1000 / 1000) + 'M';
+        } else {
+            return fmt(datas / 1000 / 1000 / 1000) + 'G';
+        }
+    }
     bytesToPercent=  (bytes, inst) => {
         //console.log("20190812 bytes..",bytes, ":", inst)
         // One way to write it, not the prettiest way to write it.
@@ -167,7 +196,6 @@ export default class MonitoringViewer extends React.Component {
         var fmt = d3.format('.2f');
         return bytes + ' %'
     }
-
     gigabytesToString =  (bytes, inst) => {
         console.log("20190812 bytes..",bytes, ":", inst)
         // One way to write it, not the prettiest way to write it.
@@ -184,7 +212,7 @@ export default class MonitoringViewer extends React.Component {
             return fmt(bytes / 1000 / 1000 / 1000) + ' GB';
         }
     }
-    feedData(data) {
+    feedData(data, page) {
         this.cpuCnt = 0;
         this.memCnt = 0;
         this.diskCnt = 0;
@@ -193,24 +221,25 @@ export default class MonitoringViewer extends React.Component {
         this.udpCnt = 0;
         this.connCnt = 0;
 
+        console.log('20191206 feedData-- ', data)
         if(data && data.mData.length) {
             data.mData.map(item => {
                 if(item.name.indexOf('cpu') > -1) {
-                    this.setTimeseriesDataCPUMEM('cpu',item['values'])
+                    this.setTimeseriesDataCPUMEM('cpu',item['values'], page)
                 } else if(item.name.indexOf('mem') > -1) {
-                    this.setTimeseriesDataCPUMEM('mem',item['values'])
+                    this.setTimeseriesDataCPUMEM('mem',item['values'], page)
                 } else if(item.name.indexOf('disk') > -1) {
-                    this.setTimeseriesDataCPUMEM('disk',item['values'])
+                    this.setTimeseriesDataCPUMEM('disk',item['values'], page)
                 } else if(item.name.indexOf('network') > -1) {
-                    this.setTimeseriesDataCPUMEM('network',item['values'])
+                    this.setTimeseriesDataCPUMEM('network',item['values'], page)
                 } else if(item.name.indexOf('tcp') > -1) {
-                    this.setTimeseriesDataCPUMEM('tcp',item['values'])
+                    this.setTimeseriesDataCPUMEM('tcp',item['values'], page)
                 } else if(item.name.indexOf('udp') > -1) {
-                    this.setTimeseriesDataCPUMEM('udp',item['values'])
+                    this.setTimeseriesDataCPUMEM('udp',item['values'], page)
                 } else if(item.name.indexOf('accepts') > -1) {
-                    this.setTimeseriesDataCPUMEM('accepts',item['values'])
+                    this.setTimeseriesDataCPUMEM('accepts',item['values'], page)
                 } else if(item.name.indexOf('connections') > -1) {
-                    this.setTimeseriesDataCPUMEM('connections',item['values'])
+                    this.setTimeseriesDataCPUMEM('connections',item['values'], page)
                 }
             })
         }
@@ -223,16 +252,25 @@ export default class MonitoringViewer extends React.Component {
         this.netCnt = 0;
         this.tcpCnt = 0;
         this.udpCnt = 0;
+        this.ipv4Cnt = 0;
+        this.floipCnt = 0;
 
-        //console.log('20191007 feedData-- ', data)
+        console.log('20191007 feedData-- ', data)
         if(data && data.length) {
-            this.setState({lastCPU: data[0].values['cmsn']['vCpuUsed']})
-            this.setState({lastMEM: data[0].values['cmsn']['memUsed']})
-            this.setState({lastDISK: data[0].values['cmsn']['diskUsed']})
+            var datas = Object.assign(data[0].values['cmsn'], data[1].values['cmsn']);
 
-            this.setState({maxCPU: data[0].values['cmsn']['vCpuMax']})
-            this.setState({maxMEM: data[0].values['cmsn']['memMax']})
-            this.setState({maxDISK: data[0].values['cmsn']['diskMax']})
+            this.setState({lastCPU: datas['vCpuUsed']})
+            this.setState({lastMEM: datas['memUsed']})
+            this.setState({lastDISK: datas['diskUsed']})
+            this.setState({lastIPv4: datas['ipv4Used']})
+            this.setState({lastFloatingIPs: datas['floatingIpsUsed']})
+
+            this.setState({maxCPU: datas['vCpuMax']})
+            this.setState({maxMEM: datas['memMax']})
+            this.setState({maxDISK: datas['diskMax']})
+            this.setState({maxIPv4: datas['ipv4Max']})
+            this.setState({maxFloatingIPs: datas['floatingIpsMax']})
+
         }
         if(data.length){
             data.map((val) => {
@@ -255,6 +293,11 @@ export default class MonitoringViewer extends React.Component {
                     this.state.mProp['timeseriesDataDISK'][0][this.diskCnt] = this.gigabytesToString(val.values['cmsn']['diskUsed']);
                     this.state.mProp['timeseriesDISK'][0][this.diskCnt] = val.values['time'];
                     this.diskCnt ++;
+                }
+                if(val.values['cmsn']['ipv4Used']){
+                    this.state.mProp['timeseriesDataIpv4'][0][this.ipv4Cnt] = this.gigabytesToString(val.values['cmsn']['ipv4Used']);
+                    this.state.mProp['timeseriesIpv4'][0][this.ipv4Cnt] = val.values['time'];
+                    this.ipv4Cnt ++;
                 }
 
             });
@@ -279,7 +322,9 @@ export default class MonitoringViewer extends React.Component {
                                 <div className="cloudlet_monitoring_charts_counting_max_title">MAX</div>
                                 <div className="cloudlet_monitoring_charts_counting_max_value">
                                     <div className="cloudlet_monitoring_charts_counting_max_value_number">
-                                        {(this.props.data.page === 'cloudlet')?maxValue/1000 : null}
+                                        {
+                                            (this.props.data.page === 'cloudlet')? ((type === 'CPU' || type === 'IPv4' || type === 'floatingIPs')? maxValue : maxValue/1000) : null
+                                        }
                                     </div>
                                     <div className="cloudlet_monitoring_charts_counting_max_value_unit">
                                         {(this.props.data.page === 'cloudlet')?unit:null}
@@ -290,7 +335,7 @@ export default class MonitoringViewer extends React.Component {
                                 <div className="cloudlet_monitoring_charts_counting_used_title">USED</div>
                                 <div className="cloudlet_monitoring_charts_counting_used_value">
                                     <div className="cloudlet_monitoring_charts_counting_used_value_number">
-                                        {(this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')? lastValue : lastValue/1000}
+                                        {(this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')? lastValue : ((type === 'CPU' || type === 'IPv4' || type === 'floatingIPs')? lastValue : lastValue/1000)}
                                     </div>
                                     <div className="cloudlet_monitoring_charts_counting_used_value_unit">
                                         {(this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?'%':unit}
@@ -300,15 +345,13 @@ export default class MonitoringViewer extends React.Component {
                         </div>
                     </Container>
                     :
-
-                        (type === 'CPU')?<Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?'Count' : ' %')}</Container>
+                    (type === 'CPU')?<Container className="cpu">{this.state.lastCPU + ((this.props.data.page === 'cloudlet')?'Count' : ' %')}</Container>
                         : (type === 'DISK') ? <Container className="disk">{
                             (this.props.data.page === 'clusterInst') ? this.bytesToPercent(this.state.lastDISK) : this.bytesToString(this.state.lastDISK)
                         }</Container>
                         : <Container className="memory">{
                             (this.props.data.page === 'clusterInst') ? this.bytesToPercent(this.state.lastMEM) : this.bytesToString(this.state.lastMEM)
                         }</Container>
-
             }
         </Segment>
     )
@@ -325,7 +368,7 @@ export default class MonitoringViewer extends React.Component {
         if(nextProps.data.page === 'cloudlet' && nextProps.data.mData.length) {
             this.feedDataCloudlet(nextProps.data.mData);
         } else {
-            this.feedData(nextProps.data);
+            this.feedData(nextProps.data, nextProps.data.page);
         }
 
 
@@ -346,7 +389,19 @@ export default class MonitoringViewer extends React.Component {
 
                         {
                             (this.props.data.page !== 'appInst')?
-                                this.makeChartContainer('DISK', this.state.lastDISK, this.state.maxDISK, ' GBs', 'DISK')
+                                this.makeChartContainer('DISK', this.state.lastDISK, this.state.maxDISK, (this.props.data.page === 'cloudlet')?'TBs':' GBs', 'DISK')
+                                :
+                                null
+                        }
+                        {
+                            (this.props.data.page === 'cloudlet')?
+                                this.makeChartContainer('Extrnal IPs', this.state.lastIPv4, this.state.maxIPv4, ' IPs', 'IPv4')
+                                :
+                                null
+                        }
+                        {
+                            (this.props.data.page === 'cloudlet')?
+                                this.makeChartContainer('Floating IPs', this.state.lastFloatingIPs, this.state.maxFloatingIPs, ' IPS', 'floatingIPs')
                                 :
                                 null
                         }
@@ -381,15 +436,14 @@ export default class MonitoringViewer extends React.Component {
                                         <Container className="tcp_tcpretrans">
                                             <div className="title">Retransmissions</div>
                                             {
-                                                d3.format('.0s')(this.state.lastTCP[0])
+                                                ((this.state.lastTCP[0] !== null)? this.state.lastTCP[0] : 0)
                                             }
                                         </Container>
                                         <Container className="tcp_connsest">
                                             <div className="title">Established Connections</div>
                                             {
-                                                d3.format('.0s')(this.state.lastTCP[1])
+                                                ((this.state.lastTCP[1] !== null)? this.state.lastTCP[1] : 0)
                                             }
-
                                         </Container>
                                     </div>
                                 </Segment>
@@ -405,11 +459,11 @@ export default class MonitoringViewer extends React.Component {
                                     <div className="content">
                                         <Container className="udp_tcpretrans">
                                             <div className="title">Received</div>
-                                            {d3.format('.0s')(this.state.lastUDP[0]) + " Datagrams"}
+                                            {((this.state.lastUDP[0] != null)? this.datasToString(this.state.lastUDP[0]) : 0) + " Datagrams"}
                                         </Container>
                                         <Container className="est_connsest">
-                                            <div className="title">SND</div>
-                                            {d3.format('.0s')(this.state.lastUDP[1]) + " Datagrams"}
+                                            <div className="title">Sent</div>
+                                            {((this.state.lastUDP[1] != null)? this.datasToString(this.state.lastUDP[1]) : 0) + " Datagrams"}
                                         </Container>
                                     </div>
                                 </Segment>
@@ -422,9 +476,9 @@ export default class MonitoringViewer extends React.Component {
 
                 <Grid.Column style={{width:'100%', height:'100%'}}>
                     {
-                        (this.props.data.page === 'cloudlet')?
-                            null
-                            :
+                        // (this.props.data.page === 'cloudlet')?
+                        //     null
+                        //     :
                             <div style={{width:'100%', height:400}}>
                                 <Header>{(this.props.data.page === 'cloudlet')?"vCPUs" : "CPU"}</Header>
                                 <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} showLegend={true} single='0'
@@ -433,9 +487,9 @@ export default class MonitoringViewer extends React.Component {
                     }
 
                     {
-                        (this.props.data.page === 'cloudlet')?
-                            null
-                            :
+                        // (this.props.data.page === 'cloudlet')?
+                        //     null
+                        //     :
                             <div style={{width:'100%', height:400}}>
                                 <Header>MEM</Header>
                                 <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} showLegend={true} single='1'
