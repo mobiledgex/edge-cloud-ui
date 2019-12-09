@@ -331,6 +331,7 @@ class RegistNewItem extends React.Component {
     }
 
     receiveSubmitCloudlet = (result, body) => {
+        console.log('20191119 cloudlet receive submit cloudlet...', result.data)
         this.props.refresh('All')
         if(result.data.error) {
             this.props.handleAlertInfo('error',result.data.error)

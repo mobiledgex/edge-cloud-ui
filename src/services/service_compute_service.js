@@ -2,7 +2,7 @@
 import axios from 'axios-jsonp-pro';
 import qs from 'qs';
 import request from 'request';
-//import * as ServiceSocket from './service_webSocket';
+import * as ServiceSocket from './service_webSocket';
 
 import FormatComputeFlavor from './formatter/formatComputeFlavor';
 import FormatComputeCluster from './formatter/formatComputeCluster';
@@ -183,6 +183,8 @@ export function createNewAppInst(resource, body, callback) {
 //Multi Create
 export function createNewMultiAppInst(resource, body, callback, multiData, filterData, vmCheck) {
     console.log("20191119 bodybodybodydd",multiData,":::",filterData, ": vmCheck=",vmCheck)
+
+
     axios.all(multiData.Cloudlet.map((itemCloudlet) => {
         if(vmCheck) multiData.ClusterInst = ['']
         if(multiData.AutoClusterInst) {
@@ -203,7 +205,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
                             multiCluster: itemCluster
                         }))
                             .then(function (response) {
-                                console.log('20191119 response  registry new obj result AppInst-', response.data);
+                                console.log('20191119 response  registry new obj result AppInst-', response, ":", body);
                                 callback(response, body)
                             })
                             .catch(function (error) {
@@ -230,7 +232,7 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
                         multiCluster: itemCluster
                     }))
                         .then(function (response) {
-                            console.log('20191119 response  registry new obj result AppInst-', response.data);
+                            console.log('20191119 response  registry new obj result autocluster AppInst-', response.data);
                             callback(response, body)
                         })
                         .catch(function (error) {
@@ -268,6 +270,9 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
 
 
     }))
+    //1개 밖에 못받아서, socket 통신으로 푸시를 받음
+    ServiceSocket.serviceStreaming('streamTemp', callback, body);
+
 }
 export function deleteCompute(resource, body, callback) {
     axios.post(ServerUrl+'/deleteService',{
@@ -283,7 +288,7 @@ export function deleteCompute(resource, body, callback) {
             console.log(error);
         });
     //1개 밖에 못받아서, socket 통신으로 푸시를 받음
-    //ServiceSocket.serviceStreaming('streamTemp', callback, body);
+    ServiceSocket.serviceStreaming('streamTemp', callback, body);
 }
 export function deleteUser(resource, body, callback) {
     axios.post(ServerUrl+'/deleteUser',{
@@ -466,14 +471,14 @@ export function createNewCloudlet(resource, body, callback) {
     })
         .then(function (response) {
             console.log('20191119 response cloudlet result-',response,body);
-            callback(response, body)
+            //callback(response, body)
         })
         .catch(function (error) {
             console.log(error);
         });
 
     //1개 밖에 못받아서, socket 통신으로 푸시를 받음
-    //ServiceSocket.serviceStreaming('streamTemp', callback, body);
+    ServiceSocket.serviceStreaming('streamTemp', callback, body);
 }
 
 export function updateAppInst(resource, body, callback) {
@@ -512,7 +517,7 @@ export function getMCService(resource, body, callback, self) {
                     if(response.data.error.indexOf('Expired') > -1) {
                         localStorage.setItem('userInfo', null)
                         localStorage.setItem('sessionData', null)
-                        callback({error:'Login Timeout Expired. Please login again'}, resource, self);
+                        callback({error:'Login Timeout Expired.<br/>Please login again'}, resource, self);
                         return;
                     } else {
                         callback({error:response.data.error}, resource, self);

@@ -141,7 +141,7 @@ class SiteFour extends React.Component {
             hideNext: true,
             camBtnStat:'leave',
             regionToggle:false,
-            intoCity:null
+            intoCity:false
             // hintsEnabled: true,
             // hints: [
             //     {
@@ -244,7 +244,7 @@ class SiteFour extends React.Component {
         let subPath = 'pg='+pg;
         _self.props.history.location.search = "pg="+pg;
         _self.props.handleChangeStep(pg)
-        _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label })
+        _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label, intoCity:false })
 
     }
 
@@ -273,6 +273,8 @@ class SiteFour extends React.Component {
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
+        this.props.handleChangeClickCity([])
+        this.setState({intoCity:false})
     }
     receiveCurrentUser(result) {
         if(result && result.data) {
@@ -512,7 +514,7 @@ class SiteFour extends React.Component {
             }
         }, 4000)
 
-        this.setState({steps: orgaSteps.stepsZero});
+        this.setState({steps: orgaSteps.stepsZero, intoCity:false});
         //
         if(this.props.params.subPath !== 'pg=audits'){
             this.getDataAudit();
@@ -583,7 +585,8 @@ class SiteFour extends React.Component {
                     effect: 'slide',
                     beep: true,
                     timeout: 'none',
-                    offset: 100
+                    offset: 100,
+                    html:true
                 });
 
             }
@@ -660,6 +663,8 @@ class SiteFour extends React.Component {
         }
         if(nextProps.clickCity.length > 0){
             this.setState({intoCity:true})
+        } else {
+            this.setState({intoCity:false})
         }
 
     }
