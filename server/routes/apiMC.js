@@ -259,7 +259,6 @@ exports.showOrg = (req, res) => {
         })
         .catch(function (error) {
             // console.log('error show org..', String(error));
-            // res.json({error:'There is no data'})
             console.log('error show showOrg...', error.response.data.message);
             responseLoginError(res, error)
         });
@@ -370,7 +369,7 @@ exports.ShowUsers = (req, res) => {
             if(response.data && response.data.length) {
                 res.json(response.data)
             } else {
-                res.json({error:'There is no data'})
+                res.json(null)
             }
         })
         .catch(function (error) {
@@ -1051,7 +1050,7 @@ exports.CreateApp = (req, res) => {
         .catch(function (error) {
             console.log('error show CreateApp...', error);
             if(error.response && error.response.statusText.indexOf('Bad') > -1) {
-                res.json({error:error.response.statusText})
+                res.json({error:error.response.data.message})
             } else {
                 res.json({error:'Execution Of Request Failed'})
             }
