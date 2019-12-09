@@ -1,0 +1,30 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/kyungjoon/.nvm/v0.10.32/bin/node',
+1 verbose cli   '/Users/kyungjoon/.nvm/v0.10.32/lib/node_modules/npm/bin/npm-cli.js',
+1 verbose cli   'run',
+1 verbose cli   'start',
+1 verbose cli   '--scripts-prepend-node-path=auto' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.32
+4 verbose run-script [ 'prestart', 'start', 'poststart' ]
+5 info prestart 02.mexexpress@0.8.26
+6 info start 02.mexexpress@0.8.26
+7 verbose unsafe-perm in lifecycle true
+8 info 02.mexexpress@0.8.26 Failed to exec start script
+9 error 02.mexexpress@0.8.26 start: `node -r esm start.js`
+9 error Exit status 8
+10 error Failed at the 02.mexexpress@0.8.26 start script.
+10 error This is most likely a problem with the 02.mexexpress package,
+10 error not with npm itself.
+10 error Tell the author that this fails on your system:
+10 error     node -r esm start.js
+10 error You can get their info via:
+10 error     npm owner ls 02.mexexpress
+10 error There is likely additional logging output above.
+11 error System Darwin 19.0.0
+12 error command "/Users/kyungjoon/.nvm/v0.10.32/bin/node" "/Users/kyungjoon/.nvm/v0.10.32/lib/node_modules/npm/bin/npm-cli.js" "run" "start" "--scripts-prepend-node-path=auto"
+13 error cwd /Users/kyungjoon/react_pjt/edge-cloud-ui/server
+14 error node -v v0.10.32
+15 error npm -v 1.4.28
+16 error code ELIFECYCLE
+17 verbose exit [ 1, true ]
