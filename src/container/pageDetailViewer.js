@@ -187,7 +187,9 @@ class PageDetailViewer extends React.Component {
         this.resources = {
             clusterInst:['cpu', 'mem', 'disk', 'network', 'tcp', 'udp'],
             appInst:['cpu', 'mem', 'network','connections'],
-            cloudlet:['utilization']
+            //cloudlet:['utilization']
+            cloudlet:['ipusage', 'utilization']
+
         }
 
     }
@@ -343,6 +345,7 @@ class PageDetailViewer extends React.Component {
                     "name":inst.CloudletName
                 },
                 "selector":valid,
+                //"last":200
                 "last":200
             }
         }

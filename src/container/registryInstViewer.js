@@ -185,7 +185,7 @@ class RegistryInstViewer extends React.Component {
     }
 
     receiveResult = (result, body) => {
-        console.log("20191119 resultresultxxresult",result)
+        console.log("20191119 getState resultresultxxresult",result)
         /* code by inki : block this for not use tempfile.
         setTimeout(() => {
             services.errorTempFile(result.data, this.receiveStatusData)
@@ -217,6 +217,17 @@ class RegistryInstViewer extends React.Component {
             //     }
             // })
 
+            if(result.data.message && parseInt(result.data.code) == 400) {
+                this.props.handleAlertInfo('error',result.data.message)
+                setTimeout(() => {
+                    this.gotoUrl('submit', 'error');
+                }, 3000)
+                return;
+            } else {
+                setTimeout(() => {
+                    this.gotoUrl('submit');
+                }, 3000)
+            }
 
             if(result && result.code == 400){
                 this.props.handleAlertInfo('error',result.message)
@@ -225,12 +236,6 @@ class RegistryInstViewer extends React.Component {
                 //this.props.handleAlertInfo('success','Your application instance created successfully')
             }
 
-
-
-
-            setTimeout(() => {
-                this.gotoUrl('submit');
-            }, 3000)
         }
     }
     
@@ -249,7 +254,7 @@ class RegistryInstViewer extends React.Component {
         this.setState({ openAdd: false })
     }
 
-    gotoUrl(msg) {
+    gotoUrl(msg, state) {
         let pg = 'pg=6'
         let pgname = '';
         if(_self.props.location.goBack && msg !== 'submit') {
@@ -263,8 +268,8 @@ class RegistryInstViewer extends React.Component {
             search: pg,
         });
         _self.props.history.location.search = pg;
-        console.log('20191119 pgnameData --- ', _self.props.submitData, ":  submitValues=", _self.props.submitValues)
-        if(_self.props.submitData.createAppFormDefault.values && _self.props.submitData.createAppFormDefault.values.AutoClusterInst){
+        console.log('20191119 getState pgnameData --- ', _self.props.submitData, ":  submitValues=", _self.props.submitValues)
+        if(state !== 'error' && _self.props.submitData.createAppFormDefault.values && _self.props.submitData.createAppFormDefault.values.AutoClusterInst){
             _self.props.history.location.pgname = 'appinst';
             _self.props.history.location.pgnameData = {
                 AppName:_self.props.submitData.createAppFormDefault.values.AppName,

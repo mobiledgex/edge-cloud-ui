@@ -21,7 +21,7 @@ const source = CancelToken.source();
 console.log("how fast...", process.env.MC_URL)
 let _io = null;
 exports.setIo = (io) => {
-    console.log('set io -- ', io)
+    console.log('set io -- ')
     _io = io
 }
 
@@ -259,7 +259,6 @@ exports.showOrg = (req, res) => {
         })
         .catch(function (error) {
             // console.log('error show org..', String(error));
-            // res.json({error:'There is no data'})
             console.log('error show showOrg...', error.response.data.message);
             responseLoginError(res, error)
         });
@@ -370,7 +369,7 @@ exports.ShowUsers = (req, res) => {
             if(response.data && response.data.length) {
                 res.json(response.data)
             } else {
-                res.json({error:'There is no data'})
+                res.json(null)
             }
         })
         .catch(function (error) {
@@ -885,7 +884,7 @@ exports.GetStatStream = (req, res) => {
             filteredData.push(stData)
         }
     })
-    console.log('get state clId === ', clId,": stackData --->>>--->>>",stackData, ": stackData ======",filteredData)
+    //console.log('get state clId === ', clId,": stackData --->>>--->>>")
 
     res.json({'stacksData':filteredData})
 
@@ -918,7 +917,7 @@ exports.CreateCloudlet = (req, res) => {
 
     //fs.createWriteStream('./temp/'+cloudletId+'.txt')
 
-    removeStreamTempNow(cloudletId);
+    //removeStreamTempNow(cloudletId);
     console.log('Create me cloudlet-- ', 'mcUrl=',mcUrl,":::",cloudletId.toLowerCase())
 
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudlet', serviceBody,
@@ -945,13 +944,13 @@ exports.CreateCloudlet = (req, res) => {
                         let parseData = JSON.parse(data)['result']
                         try{
                             console.log('send data to client use to res --', parseData, ":", res)
-                            res.json(parseData)
+                            //res.json(parseData)
                         } catch(e) {
                             console.log('send data to client use to inspect--',parseData, ":", inspect)
-                            inspect(JSON.stringify(parseData))
+                            //inspect(JSON.stringify(parseData))
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     }
 
                     if(data.indexOf('successfully') > -1) {
@@ -959,12 +958,12 @@ exports.CreateCloudlet = (req, res) => {
                         console.log('delete successfully')
                         let parseData = JSON.parse(data)['data']
                         try{
-                            res.json(parseData)
+                            //res.json(parseData)
                         } catch(e) {
-                            inspect(JSON.stringify(parseData))
+                            //inspect(JSON.stringify(parseData))
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                         //
                     }
 
@@ -972,8 +971,16 @@ exports.CreateCloudlet = (req, res) => {
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
                         console.log('create Cloudlet.../////-------///////', data, ":  clId=",cloudletId.toLowerCase())
+                        if(data === ""){
+                            console.log('data...', data, ": -- end" )
+                            data = '{"data":{"message":"End"}}'
+                        }
                         stackStreamTemp({'streamTemp':data, 'clId':cloudletId.toLowerCase()});
-                        cb(null, callback(data))
+                        if(data !== ''){
+                            cb(null, callback(data, cloudletId.toLowerCase()))
+                        } else {
+                            removeStreamTempNow(cloudletId.toLowerCase())
+                        }
 
                     }))
                 ////////////////////////
@@ -1043,7 +1050,7 @@ exports.CreateApp = (req, res) => {
         .catch(function (error) {
             console.log('error show CreateApp...', error);
             if(error.response && error.response.statusText.indexOf('Bad') > -1) {
-                res.json({error:error.response.statusText})
+                res.json({error:error.response.data.message})
             } else {
                 res.json({error:'Execution Of Request Failed'})
             }
@@ -1125,8 +1132,7 @@ exports.CreateAppInst = (req, res) => {
             //clusterId = clusterId.concat((req.body.multiCluster == '')?'DefaultVMCluster': req.body.multiCluster);
         }
     }
-    removeStreamTempNow(clusterId.toLowerCase())
-    res.send(clusterId); //start show progress to list view of instances
+
     //
     //fs.createWriteStream('./temp/'+clusterId+'.txt')
 
@@ -1144,10 +1150,12 @@ exports.CreateAppInst = (req, res) => {
             console.log('success Create app')
             let _res = res;
 
+
             if(response.data) {
                 // response.data.pipe(
                 //     fs.createWriteStream('./temp/'+clusterId+'.txt')
                 // )
+                res.send(clusterId); //start show progress to list view of instances
                 /////////////////////////
                 let callback =(data) => {
                     if(data.indexOf('result')> -1) {
@@ -1159,14 +1167,14 @@ exports.CreateAppInst = (req, res) => {
                         //res.json(parseData)
                         try{
                             console.log('res', parseData);
-                            res.json(parseData)
+                            //res.json(parseData)
                         } catch(e) {
                             //let inst = inspect(JSON.stringify(parseData))
                             //console.log('inspect', inst, ":", typeof parseData, ":", parseData)
-                            inspect('{"error":"state is CLOUDLET_STATE_NOT_PRESENT"}')
+                            //inspect('{"error":"state is CLOUDLET_STATE_NOT_PRESENT"}')
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        if(_io) _io.emit('streamTemp', {'data':{'message':parseData.message, 'code':parseData.code}, 'clId':clusterId.toLowerCase()})
 
                     }
 
@@ -1174,18 +1182,28 @@ exports.CreateAppInst = (req, res) => {
                         let parseData = JSON.parse(data)
                         let instName = "";
                         //if(data.indexOf('ClusterInst') > -1) {
-                            instName = parseData['clId']
+                            instName = clusterId.toLowerCase()
                         //}
                         //source.cancel('Operation canceled')
+                        let messageData = JSON.parse(data)['data']
+                        let instance = '';
+                        let lastMessage = ' successfully';
+                        if(messageData['message'].indexOf('AppInst') > -1) {
+                            instance = 'Application Instance';
+                        } else if(messageData['message'].indexOf('ClusterInst') > -1) {
+                            instance = 'Your cluster';
+                        }
+
                         console.log('create successfully =', parseData['data'], ":", typeof parseData['data'])
+
                         try{
-                            res.json({"message":"Created "+instName+" successfully"})
+                            //res.json({"message":"Created "+instName+" successfully"})
                         } catch(e) {
-                            inspect(JSON.stringify(parseData['data']))
+                            //inspect(JSON.stringify(parseData['data']))
                         }
                         //inspect(JSON.stringify(parseData))
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        if(_io) _io.emit('streamTemp', {'data':{"message":"Created "+instName+" successfully"}, 'clId':clusterId.toLowerCase()})
+                        if(_io) _io.emit('streamTemp', {'data':{"message":instance +":"+ instName + lastMessage}, 'clId':clusterId.toLowerCase()})
                     }
 
 
@@ -1194,9 +1212,17 @@ exports.CreateAppInst = (req, res) => {
 
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
-                        console.log('create appinst service.../////---'+serviceName+'----///////', data, ":    cluserId ==", clusterId.toLowerCase())
+                        console.log('create appinst service.../////---'+serviceName+'----///////', data,":",typeof data , ": data -- ", JSON.stringify(data), ":    cluserId ==", clusterId.toLowerCase())
+                        if(data === ""){
+                            console.log('data...', data, ": -- end" )
+                            data = '{"data":{"message":"Created successfully"}}'
+                        }
                         stackStreamTemp({'streamTemp':data, 'clId':clusterId.toLowerCase()});
-                        if(data) cb(null, callback(data))
+                        if(data !== ''){
+                            cb(null, callback(data, clusterId.toLowerCase()))
+                        } else {
+                            removeStreamTempNow(clusterId.toLowerCase())
+                        }
                     }))
                 ////////////////////////
             } else {
@@ -1312,7 +1338,6 @@ exports.CreateClusterInst = (req, res) => {
     //     console.log(data)
     // });
 
-    removeStreamTempNow(clusterId);
     console.log('Create me cluster inst-- ', JSON.stringify(serviceBody), 'mcUrl=',mcUrl,'mdata=',req.body.multiData, 'clusterId=', clusterId.toLowerCase())
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterInst', serviceBody,
 
@@ -1349,21 +1374,25 @@ exports.CreateClusterInst = (req, res) => {
                         let parseData = JSON.parse(data)['data']
                         try{
                             console.log('sucessfulloy created...res === ', res)
-                            res.json(parseData)
+                            //res.json(parseData)
                         } catch(e) {
                             console.log('sucessfulloy created...inspect === ', inspect, ': res???', res)
-                            inspect(JSON.stringify(parseData))
+                            //inspect(JSON.stringify(parseData))
 
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':clusterId})
                     }
                 }
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
                         console.log('create appinst.../////-------///////', data)
                         stackStreamTemp({'streamTemp':data, 'clId':clusterId.toLowerCase()});
-                        cb(null, callback(data))
+                        if(data !== ''){
+                            cb(null, callback(data, clusterId.toLowerCase()))
+                        } else {
+                            removeStreamTempNow(clusterId.toLowerCase())
+                        }
 
                     }))
                 ////////////////////////
@@ -1475,7 +1504,6 @@ exports.DeleteService = (req, res) => {
         serviceName = req.body.service;
         serviceId = req.body.serviceBody.instanceId;
     }
-    removeStreamTempNow(serviceId.toLowerCase())
     console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ',JSON.stringify(serviceBody), 'mcUrl=',mcUrl)
 
     axios.post(mcUrl + '/api/v1/auth/ctrl/'+serviceName, serviceBody,
@@ -1489,7 +1517,8 @@ exports.DeleteService = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Delete ')
+            console.log('start Delete---   service name ==  ', serviceName)
+
             let callback =(data, serviceId) => {
                 if(data.indexOf('result')> -1) {
                     //source.cancel('Operation canceled')
@@ -1497,13 +1526,13 @@ exports.DeleteService = (req, res) => {
                     console.log('result type..', typeof parseData, ":", parseData)
 
                     try{
-                        res.json(parseData)
+                        //res.json(parseData)
                     } catch(e) {
-                        inspect(JSON.stringify(parseData))
+                        //inspect(JSON.stringify(parseData))
                     }
                     //res.json(parseData)
                     // 접속된 모든 클라이언트에게 메시지를 전송한다
-                    //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':serviceId})
+                    if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':serviceId})
                 }
 
                 if(data.indexOf('successfully') > -1 && data.indexOf('Deleted') > -1) {
@@ -1520,16 +1549,17 @@ exports.DeleteService = (req, res) => {
                         lastMessage = ' deleted successfully'
                     }
 
+
+                    // socket 전달 방식을 원치 않는다면,
                     try{
                         //res.json({"message":"Deleted "+instance+" : "+serviceId+" successfully"})
                     } catch(e) {
                         //inspect(JSON.stringify({"message":"Deleted "+instance+" : "+serviceId+" successfully"}))
                     }
 
-                    // 접속된 모든 클라이언트에게 메시지를 전송한다
+                    // socket 전달 방식 : 접속된 모든 클라이언트에게 메시지를 전송한다
                     //Application Instance '+body.params.appinst.key.app_key.name+' successfully deleted
-                    if(_io) _io.emit('streamTemp', {'data':{"message":instance+" : "+serviceId+lastMessage}, 'clId':serviceId.toLowerCase()})
-                    //removeStreamTemp(serviceId);
+                    if(_io) _io.emit('streamTemp', {'data':{"message":instance+" : "+serviceId+lastMessage}, 'clId':serviceId ? serviceId.toLowerCase() : ''})
                 }
 
             }
@@ -1537,22 +1567,29 @@ exports.DeleteService = (req, res) => {
             if(response.data && Object.keys(response.data).length !== 0) {
                 //res.json(response.data)
                 /////////////////////////
+                if(serviceName == 'DeleteApp') {
+                    res.json({'message':response.data.message || 'Deleted successfully'})
+                    return;
+                }
                 if(serviceId) {
                     response.data.pipe(estream.split())
                         .pipe(estream.map(function(data, cb){
-                            console.log('delete service.../////---'+serviceName+'----///////', data, ":  serviceId == ", serviceId.toLowerCase())
+                            console.log('delete service.../////---'+serviceName+'----///////',typeof data,": data - ", JSON.stringify(data), ":  serviceId == ", serviceId.toLowerCase())
+                            if(data === ""){
+                                console.log('data...', data, ": -- end" )
+                                data = '{"data":{"message":"Deleted successfully"}}'
+                            }
                             stackStreamTemp({'streamTemp':data, 'clId':serviceId.toLowerCase()});
-                            if(data) cb(null, callback(data, serviceId.toLowerCase()))
+                            if(data !== ''){
+                                cb(null, callback(data, serviceId.toLowerCase()))
+                            } else {
+                                removeStreamTempNow(serviceId.toLowerCase())
+                            }
+
                         }))
                 } else {
-                    console.log('delete none serviceId..', response)
-                    try{
-                        res.json({'message':'Deleted successfully'})
-                    } catch(e) {
-                        //inspect(JSON.stringify(response.data))
-                    }
-                }
 
+                }
 
                 ////////////////////////
             } else {
@@ -1561,6 +1598,8 @@ exports.DeleteService = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show DeleteService...', error);
+            //Application Instance '+body.params.appinst.key.app_key.name+' successfully deleted
+            //if(_io) _io.emit('streamTemp', {'data':{"message":"Request failed with status code 400"}, 'clId':serviceId ? serviceId.toLowerCase() : ''})
         });
 }
 exports.DeleteUser = (req, res) => {

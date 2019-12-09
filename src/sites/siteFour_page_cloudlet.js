@@ -196,6 +196,7 @@ class SiteFourPageCloudlet extends React.Component {
     getDataDeveloperSub = (region) => {
         let _region = (region)?region:'All';
         this.getDataDeveloper(_region);
+        _self.props.handleComputeRefresh(false);
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;

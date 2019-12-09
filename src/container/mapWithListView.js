@@ -480,35 +480,20 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                         _dtd = parseData.data ? parseData.data : null;
                         stackStates.push(_dtd)
 
-                        //TODO 20191207 by inki
-                        //Created successfull 일 경우 이중 팝업
-                        if((_dtd['message'].indexOf('Created') > -1 ||  _dtd['message'].indexOf('Deleted') > -1 ) && _dtd['message'].indexOf('successfully') > -1) {
-                            Alert.info(_dtd['message'], {
-                                position: 'top-right',
-                                effect: 'scale',
-                                onShow: function () {
-                                    console.log('aye!')
-                                },
-                                beep: true,
-                                timeout: 'none',
-                                offset: 100
-                            });
-                        }
-
                     }
                     /*
                     else if(dtd[stId] && keys[0] === 'result') {
                         _dtd = parseData.result ? parseData.result : null;
                     }
                     */
-                } else if(dtd[stId] === ""){
-                    stackStates.push({"data":{"message":"End"}})
+                } else {
+
                     this.closeInterval("success","Created successfully!")
                 }
 
             })
             //중복제거
-            stackStates.data = utile.removeDuplicate(stackStates)
+            stackStates = utile.removeDuplicate(stackStates)
             console.log('20191119 getState storeData stackStates.... ', stackStates)
             _self.setState({stateStream: stackStates})
             _self.stateStreamData = stackStates;
