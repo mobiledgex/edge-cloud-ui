@@ -259,7 +259,6 @@ exports.showOrg = (req, res) => {
         })
         .catch(function (error) {
             // console.log('error show org..', String(error));
-            // res.json({error:'There is no data'})
             console.log('error show showOrg...', error.response.data.message);
             responseLoginError(res, error)
         });
@@ -370,7 +369,7 @@ exports.ShowUsers = (req, res) => {
             if(response.data && response.data.length) {
                 res.json(response.data)
             } else {
-                res.json({error:'There is no data'})
+                res.json(null)
             }
         })
         .catch(function (error) {
@@ -1051,7 +1050,7 @@ exports.CreateApp = (req, res) => {
         .catch(function (error) {
             console.log('error show CreateApp...', error);
             if(error.response && error.response.statusText.indexOf('Bad') > -1) {
-                res.json({error:error.response.statusText})
+                res.json({error:error.response.data.message})
             } else {
                 res.json({error:'Execution Of Request Failed'})
             }
@@ -1216,7 +1215,7 @@ exports.CreateAppInst = (req, res) => {
                         console.log('create appinst service.../////---'+serviceName+'----///////', data,":",typeof data , ": data -- ", JSON.stringify(data), ":    cluserId ==", clusterId.toLowerCase())
                         if(data === ""){
                             console.log('data...', data, ": -- end" )
-                            data = '{"data":{"message":"End"}}'
+                            data = '{"data":{"message":"Created successfully"}}'
                         }
                         stackStreamTemp({'streamTemp':data, 'clId':clusterId.toLowerCase()});
                         if(data !== ''){
@@ -1518,7 +1517,8 @@ exports.DeleteService = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Delete ')
+            console.log('start Delete---   service name ==  ', serviceName)
+
             let callback =(data, serviceId) => {
                 if(data.indexOf('result')> -1) {
                     //source.cancel('Operation canceled')
@@ -1559,7 +1559,7 @@ exports.DeleteService = (req, res) => {
 
                     // socket 전달 방식 : 접속된 모든 클라이언트에게 메시지를 전송한다
                     //Application Instance '+body.params.appinst.key.app_key.name+' successfully deleted
-                    if(_io) _io.emit('streamTemp', {'data':{"message":instance+" : "+serviceId+lastMessage}, 'clId':serviceId.toLowerCase()})
+                    if(_io) _io.emit('streamTemp', {'data':{"message":instance+" : "+serviceId+lastMessage}, 'clId':serviceId ? serviceId.toLowerCase() : ''})
                 }
 
             }
@@ -1567,13 +1567,17 @@ exports.DeleteService = (req, res) => {
             if(response.data && Object.keys(response.data).length !== 0) {
                 //res.json(response.data)
                 /////////////////////////
+                if(serviceName == 'DeleteApp') {
+                    res.json({'message':response.data.message || 'Deleted successfully'})
+                    return;
+                }
                 if(serviceId) {
                     response.data.pipe(estream.split())
                         .pipe(estream.map(function(data, cb){
                             console.log('delete service.../////---'+serviceName+'----///////',typeof data,": data - ", JSON.stringify(data), ":  serviceId == ", serviceId.toLowerCase())
                             if(data === ""){
                                 console.log('data...', data, ": -- end" )
-                                data = '{"data":{"message":"End"}}'
+                                data = '{"data":{"message":"Deleted successfully"}}'
                             }
                             stackStreamTemp({'streamTemp':data, 'clId':serviceId.toLowerCase()});
                             if(data !== ''){
@@ -1583,6 +1587,8 @@ exports.DeleteService = (req, res) => {
                             }
 
                         }))
+                } else {
+
                 }
 
                 ////////////////////////
@@ -1593,7 +1599,7 @@ exports.DeleteService = (req, res) => {
         .catch(function (error) {
             console.log('error show DeleteService...', error);
             //Application Instance '+body.params.appinst.key.app_key.name+' successfully deleted
-            if(_io) _io.emit('streamTemp', {'data':{"message":"Request failed with status code 400"}, 'clId':serviceId.toLowerCase()})
+            //if(_io) _io.emit('streamTemp', {'data':{"message":"Request failed with status code 400"}, 'clId':serviceId ? serviceId.toLowerCase() : ''})
         });
 }
 exports.DeleteUser = (req, res) => {
