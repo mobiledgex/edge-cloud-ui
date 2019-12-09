@@ -84,7 +84,9 @@ class DeveloperListView extends React.Component {
             isOpen: false,
             isOpenTip: false,
             actionContextRef: 'actionCell_0',
-            item: null
+            item: null,
+            isHovered: false,
+            itemIndex: 0
         };
         this.sorting = false;
 
@@ -420,15 +422,27 @@ class DeveloperListView extends React.Component {
         }
 
     }
+
+
     makeActionButton = (item, j, i) => (
         <Button.Group vertical className="table_actions_popup_group">
             {
-                organizationEdit.map((option) => (
+                organizationEdit.map((option, index) => {
+
+                    const btnClass =
+                        !this.state.isHovered && index === 0 ? "table_actions_popup_group_button_hover" :
+                        this.state.isHovered && this.state.itemIndex === index ? "table_actions_popup_group_button_hover" : "table_actions_popup_group_button";
+
+                    return (
                     <Button ref={btn => this.actionButton = btn} onClick={this.onHandlePopMenu}
-                            className="table_actions_popup_group_button">
+                            className={btnClass}
+                            onMouseEnter={()=> this.setState({isHovered: true, itemIndex:index})}
+                            onMouseLeave={()=> this.setState({isHovered: false})}
+                    >
                         {option.text}
                     </Button>
-                ))
+                    )
+                })
             }
         </Button.Group>
     )
