@@ -47,10 +47,13 @@ class DeleteItem extends React.Component {
             }, 3000);
         }
     }
-    receiveSubmit = (result, body) => {
+    // 서버로 부터 결과를 1번 밖에 못받는 문제가 발생함.
+    receiveResult = (result, body) => {
         console.log('20191119 .. ceceiveSubmit...', result, ":", body)
-        if(result.data && result.data.message && result.data.message.indexOf('failures') <= -1) {
+        if(result.data && result.data.message && result.data.message.indexOf('failures') <= -1 && !result.clId) {
             //this.receiveSubmitResult(result)
+
+            /** have to show progress for deleting, so that block this.**/
             if(this.props.siteId == 'ClusterInst') {
                 this.props.handleAlertInfo('success','Your cluster '+body.params.clusterinst.key.cluster_key.name+' deleted successfully')
             } else if(this.props.siteId == 'appinst') {
@@ -60,12 +63,23 @@ class DeleteItem extends React.Component {
             }
             console.log("20191119 appinstdelete",this.props.siteId,":::",body)
             //if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
-                setTimeout(() => {
-                    _self.props.refresh(this.props.changeRegion);
-                }, 3000);
+            setTimeout(() => {
+                _self.props.refresh(this.props.changeRegion);
+            }, 3000);
+            //}
+            return;
+        } else {
+
+            console.log("20191119 appinstdelete",result.clId,":::",body)
+            this.props.handleAlertInfo('success',result.data.message)
+            setTimeout(() => {
+                _self.props.refresh(this.props.changeRegion);
+            }, 3000);
             //}
             return;
         }
+
+
         if(result.data.message.indexOf('failures') > -1) {
             this.props.handleAlertInfo('error',result.data.message)
         }
@@ -156,7 +170,7 @@ class DeleteItem extends React.Component {
                 },
                 "instanceId":ClusterName+'-'+OrganizationName+'-'+Operator
             }
-            service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
+            service.deleteCompute(serviceNm, serviceBody, this.receiveResult)
             setTimeout(() => {
                 this.props.handleDeleteReset(true);
                 this.props.refresh(this.props.changeRegion);
@@ -190,7 +204,7 @@ class DeleteItem extends React.Component {
                 "instanceId":clId.toLowerCase()
             }
             //autoclusterbicapp   bictest1129-2
-            service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
+            service.deleteCompute(serviceNm, serviceBody, this.receiveResult)
             setTimeout(() => {
                 this.props.handleDeleteReset(true);
                 this.props.refresh(this.props.changeRegion);
@@ -266,7 +280,7 @@ class DeleteItem extends React.Component {
                 },
                 "instanceId":Operator+CloudletName
             }
-            service.deleteCompute(serviceNm, serviceBody, this.receiveSubmit)
+            service.deleteCompute(serviceNm, serviceBody, this.receiveResult)
             setTimeout(() => {
                 this.props.handleDeleteReset(true);
                 this.props.refresh(this.props.changeRegion);

@@ -79,7 +79,8 @@ class MapWithListView extends React.Component {
             stateStream:null,
             stackStates:[],
             changeRegion:null,
-            viewMode: null
+            viewMode: null,
+            _resetMap:null
             
         };
 
@@ -226,6 +227,7 @@ class MapWithListView extends React.Component {
             (item.State == 10)?item['StateData'] = 'Deleting':
             (item.State == 11)?item['StateData'] = 'DeleteError':
             (item.State == 12)?item['StateData'] = 'DeletePrepare':
+            (item.State == 13)?item['StateData'] = 'CRMInit':
             item['StateData'] = item.State
         })
         return _sortData
@@ -239,7 +241,7 @@ class MapWithListView extends React.Component {
         setTimeout(() => this.generateStart(), 2000)
     }
 
-    generateDOM(open, dimmer, dummyData, resize) {
+    generateDOM(open, dimmer, dummyData, resize, resetMap) {
         return layout.map((item, i) => (
 
             (i === 1)?
@@ -279,7 +281,7 @@ class MapWithListView extends React.Component {
                         <Icon name={(this.state.closeMap)?'angle down':'angle up'}/>
                     </div>
                     <div className='panel_worldmap'>
-                        <ContainerOne ref={ref => this.container = ref} {...this.props} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap}></ContainerOne>
+                        <ContainerOne ref={ref => this.container = ref} {...this.props} gotoNext={this.gotoNext} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={resetMap}></ContainerOne>
                     </div>
                 </div>
         ))
@@ -458,7 +460,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
 
     }
     receiveInterval =(data) => {
-        console.log('20191119 index receive data from server....', data)
+        console.log('20191119 getState receive data from server....', data)
         this.storeData(data.data.stacksData,'streamTemp', 'state')
 
     }
@@ -477,6 +479,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
 
                         _dtd = parseData.data ? parseData.data : null;
                         stackStates.push(_dtd)
+
                     }
                     /*
                     else if(dtd[stId] && keys[0] === 'result') {
@@ -485,11 +488,12 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                     */
                 } else {
 
+                    this.closeInterval("success","Created successfully!")
                 }
 
             })
             //중복제거
-            stackStates.data = utile.removeDuplicate(stackStates)
+            stackStates = utile.removeDuplicate(stackStates)
             console.log('20191119 getState storeData stackStates.... ', stackStates)
             _self.setState({stateStream: stackStates})
             _self.stateStreamData = stackStates;
@@ -680,7 +684,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                                     :
                                     (value === 'State' && item[value])?
                                         <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)}  style={(this.state.selectedItem == i)?{background:'#444',cursor:'pointer'} :{cursor:'pointer'}} onMouseOver={(evt) => this.onItemOver(item,i, evt)}>
-                                            {(item[value] == 0)? "Tracked State Unknown" : (item[value] == 1)? "Not Present" : (item[value] == 2)? "Create Requested" : (item[value] == 3)? "Creating" : (item[value] == 4)? "Create Error" : (item[value] == 5)? "Ready" : (item[value] == 6)? "Update Requested" : (item[value] == 7)? "Updating" : (item[value] == 8)? "Update Error" : (item[value] == 9)? "Delete Requested" : (item[value] == 10)? "Deleting" : (item[value] == 11)? "Delete Error" : (item[value] == 12)? "Delete Prepare" : item[value]}
+                                            {(item[value] == 0)? "Tracked State Unknown" : (item[value] == 1)? "Not Present" : (item[value] == 2)? "Create Requested" : (item[value] == 3)? "Creating" : (item[value] == 4)? "Create Error" : (item[value] == 5)? "Ready" : (item[value] == 6)? "Update Requested" : (item[value] == 7)? "Updating" : (item[value] == 8)? "Update Error" : (item[value] == 9)? "Delete Requested" : (item[value] == 10)? "Deleting" : (item[value] == 11)? "Delete Error" : (item[value] == 12)? "Delete Prepare" : (item[value] == 13)? "CRM Init" : item[value]}
                                             {/*{item[value]}*/}
                                         </Table.Cell>
                                     :
@@ -825,8 +829,9 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
             this.autoClusterAlert(this.props.location.pgnameData)
         }
         if(this.props.viewMode !== this.state.viewMode) {
+            console.log('20191119 this.props.viewMode', this.props.viewMode,"  :  " , this.props.submitObj)
             //alert('ddd'+this.props.viewMode)
-            this.setState({dummyData:_self.props.devData})
+            this.setState({dummyData:this.props.devData})
             this.forceUpdate();
         }
         //ServiceSocket.serviceStreaming('streamTemp');
@@ -968,18 +973,26 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
             this.setState({stateStream:nextProps.stateStream})
         }
 
+        if(nextProps.resetMap) {
+            this.setState({_resetMap: nextProps.resetMap})
+            this.forceUpdate()
+        }
 
+
+    }
+    resetMap() {
+        this.props.handleChangeClickCity([])
     }
 
     render() {
-        const { open, dimmer, dummyData, resize } = this.state;
+        const { open, dimmer, dummyData, resize, _resetMap } = this.state;
 
         return (
                     <div style={{display:'flex', overflowY:'hidden', overflowX:'hidden', width:'100%'}}>
                         <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open}
                                        selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                                        userToken={this.props.userToken}
-                                       success={this.successfully} zoomIn={this.zoomIn} zoomOut={this.zoomOut} resetMap={this.resetMap} refresh={this.props.dataRefresh}
+                                       success={this.successfully} zoomIn={this.zoomIn} zoomOut={this.zoomOut} refresh={this.props.dataRefresh}
                         />
 
                         <DeleteItem open={this.state.openDelete}
@@ -994,7 +1007,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                             style={{justifyContent: 'space-between', width:'100%'}}
                         >
 
-                            {this.generateDOM(open, dimmer, dummyData, resize)}
+                            {this.generateDOM(open, dimmer, dummyData, resize, _resetMap, this.resetMap)}
                         </Container>
 
                         <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail} centered={false} style={{right:400}}></PopDetailViewer>
@@ -1030,6 +1043,7 @@ const mapStateToProps = (state) => {
     let deleteReset = state.deleteReset.reset
     let stateStream = state.stateStream ? state.stateStream.state : null;
     let submitObj = state.submitObj ? state.submitObj.submit : null;
+    let resetMap = state.resetMap ? state.resetMap.region : null;
     return {
         accountInfo,
         dimmInfo,
@@ -1037,7 +1051,8 @@ const mapStateToProps = (state) => {
         deleteReset,
         stateStream,
         submitObj,
-        viewMode : viewMode, detailData:detailData
+        viewMode : viewMode, detailData:detailData,
+        resetMap
     }
 
 

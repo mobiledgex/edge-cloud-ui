@@ -81,6 +81,8 @@ class ClustersMap extends Component {
         this.handleLeave = this.handleLeave.bind(this)
         this.dir = 1;
         this.interval = null;
+        this.tempData = null;
+        this.tempLocation = null;
     }
     handleZoomIn() {
         this.setState({
@@ -320,7 +322,7 @@ class ClustersMap extends Component {
         let countries = CountryCode.ref_country_codes;
         let _lat = '';
         let _long = '';
-        console.log('20190830 selected region = ', a.properties, 'location data all =', countries)
+        console.log('20191119 selected region = ', a.properties, 'location data all =', countries, ":", localStorage.selectMenu)
         countries.map((country) => {
             if(country.alpha2 === a.properties["ISO_A2"]){
                 console.log('20190830 country code = ', country)
@@ -330,16 +332,26 @@ class ClustersMap extends Component {
         })
 
         if(localStorage.selectMenu == 'Cloudlets'){
-            let location = {region:a.properties["REGION_UN"],name:a.properties["NAME"], lat:_lat, long:_long}
+            let location = {region:a.properties["REGION_UN"],name:a.properties["NAME"], lat:_lat, long:_long, State:5}
             _self.props.handleGetRegion(location)
+
+            let locationData = [
+                {
+                    "name": a.properties["NAME"],
+                    "coordinates": [_long, _lat],
+                    "population": 17843000,
+                    "cost":3
+                }]
+            console.log('20191119 location data --- ', locationData)
+            _self.setState({cities:locationData, detailMode:false})
+            _self.forceUpdate();
         }
     }
 
     componentDidMount() {
         //this.fetchCities();
         //this.fetchCountry();
-
-
+        console.log('20191204 temploacation...', this.tempLocation)
         //zoom
         if(this.props.zoomControl) {
             this.setState({center:this.props.zoomControl.center, zoom:this.props.zoomControl.zoom})
@@ -365,7 +377,16 @@ class ClustersMap extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
+
+        let initialData = (nextProps.parentProps.devData)? nextProps.parentProps.devData : nextProps.parentProps.locData;
+        let data = nextProps.parentProps.locData ? initialData : initialData.filter((item)=>item.State == 5);
+        //let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
+        console.log('20191204 daaaata...', data, ":", nextProps.getRegion, ":parentProps.locData=", nextProps.parentProps.locData)
+        if(this.tempData == data) return;
+        this.tempData = data;
+        this.tempLocation = data;
+
+
         function reduceUp(value) {
             return Math.round(value)
         }
@@ -458,13 +479,14 @@ class ClustersMap extends Component {
             this.setState({clickCities:this.state.saveMarker});
         }
 
-        if(nextProps.resetMap) {
-            if(nextProps.resetMap === 'back') {
+        if(nextProps.parentProps) {
+            if(nextProps.parentProps.resetMap === 'back') {
                 this.setState({
                     center: this.state.center,
                     zoom: 3,
                     detailMode:false
                 })
+                this.props.handleResetMap('deep')
             }
         }
 
@@ -547,7 +569,9 @@ class ClustersMap extends Component {
                                                 ))
                                                 : (localStorage.selectMenu == "Cluster Instances" && !this.state.detailMode) ?
                                                 this.state.cities.map((city, i) => (
-                                                    MarkerComponent(this, city, i, {transform:"translate(-25,-27)", gColor:8, cName:'st2', path:1})
+                                                    (this.props.icon === 'cloudlet')?
+                                                        MarkerComponent(this, city, i, {transform:"translate(-24,-18)", gColor:6, cName:'st1', path:0})
+                                                        :MarkerComponent(this, city, i, {transform:"translate(-25,-27)", gColor:8, cName:'st2', path:1})
                                                 ))
                                                 :
                                                 (localStorage.selectMenu == "App Instances" && !this.state.detailMode) ?
@@ -632,10 +656,9 @@ const mapStateToProps = (state, ownProps) => {
         data: state.receiveDataReduce.data,
         tabIdx: state.siteChanger.site.subPath,
         itemLabel: state.computeItem.item,
-        getRegion: state.getRegion,
+        getRegion: getRegion,
         deleteReset,
         changeRegion : state.changeRegion.region?state.changeRegion.region:null,
-        resetMap: state.resetMap.region,
     };
 };
 const mapDispatchProps = (dispatch) => {
@@ -645,7 +668,8 @@ const mapDispatchProps = (dispatch) => {
         handleChangeCity: (data) => { dispatch(actions.changeCity(data)) },
         handleGetRegion: (data) => { dispatch(actions.getRegion(data)) },
         handleChangeClickCity: (data) => { dispatch(actions.clickCityList(data))},
-        handleDeleteReset: (data) => { dispatch(actions.deleteReset(data))}
+        handleDeleteReset: (data) => { dispatch(actions.deleteReset(data))},
+        handleResetMap: (data) => { dispatch(actions.resetMap(data))}
     };
 };
 

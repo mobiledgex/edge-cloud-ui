@@ -122,7 +122,8 @@ const _status = {
     "9" : "Delete Requested",
     "10" : "Deleting",
     "11" : "Delete Error",
-    "12" : "Delete Prepare"
+    "12" : "Delete Prepare",
+    "13" : "CRM Init"
 }
 const _liveness = {
     "1" : "Static",
@@ -186,7 +187,9 @@ class PageDetailViewer extends React.Component {
         this.resources = {
             clusterInst:['cpu', 'mem', 'disk', 'network', 'tcp', 'udp'],
             appInst:['cpu', 'mem', 'network','connections'],
-            cloudlet:['utilization']
+            //cloudlet:['utilization']
+            cloudlet:['ipusage', 'utilization']
+
         }
 
     }
@@ -342,6 +345,7 @@ class PageDetailViewer extends React.Component {
                     "name":inst.CloudletName
                 },
                 "selector":valid,
+                //"last":200
                 "last":200
             }
         }

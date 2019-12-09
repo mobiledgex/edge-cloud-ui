@@ -21,7 +21,7 @@ const source = CancelToken.source();
 console.log("how fast...", process.env.MC_URL)
 let _io = null;
 exports.setIo = (io) => {
-    console.log('set io -- ', io)
+    console.log('set io -- ')
     _io = io
 }
 
@@ -32,6 +32,15 @@ function responseError(res, error) {
         res.json({error:'Execution Of Request Failed'})
     }
 }
+
+function responseLoginError(res, error) {
+    if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
+        res.json({error:'Login Timeout Expired.<br/>Please login again'})
+    } else {
+        res.json({error:String(error.response.data.message)})
+    }
+}
+
 // create user
 exports.getToken = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
@@ -146,11 +155,8 @@ exports.currentUser = (req, res) => {
         })
         .catch(function (error) {
             console.log('get user info error......', error.data);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+
+            responseLoginError(res, error)
         });
 
 }
@@ -186,11 +192,7 @@ exports.showAccounts = (req, res) => {
         })
         .catch(function (error) {
             console.log('user account error......',Object.keys(error), error.response.data);
-            if(error.response.data.message && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again.'})
-            } else {
-                res.json({error:error.response.data})
-            }
+            responseLoginError(res, error)
         });
 }
 exports.showController = (req, res) => {
@@ -225,11 +227,7 @@ exports.showController = (req, res) => {
         })
         .catch(function (error) {
             console.log('error  showController...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 
@@ -261,13 +259,8 @@ exports.showOrg = (req, res) => {
         })
         .catch(function (error) {
             // console.log('error show org..', String(error));
-            // res.json({error:'There is no data'})
             console.log('error show showOrg...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 
@@ -376,16 +369,12 @@ exports.ShowUsers = (req, res) => {
             if(response.data && response.data.length) {
                 res.json(response.data)
             } else {
-                res.json({error:'There is no data'})
+                res.json(null)
             }
         })
         .catch(function (error) {
             console.log('error show ShowUsers..', error.response.data);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
 
         });
 }
@@ -729,11 +718,7 @@ exports.CreateOrg= (req, res) => {
         })
         .catch(function (error) {
             console.log('error show CreateOrg...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 
@@ -772,11 +757,7 @@ exports.addUserRole= (req, res) => {
         })
         .catch(function (error) {
             console.log('error show addUserRole...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 
@@ -812,11 +793,7 @@ exports.CreateFlavor = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show CreateFlavor...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 
@@ -852,18 +829,14 @@ exports.CreateClusterFlavor = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show CreateClusterFlavor...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 
 //Create Cloudlet
 let stackData = [];
-let stackedData = [];
-const removeStreamTemp = (cloudletId) => {
+
+const removeStreamTempNow = (cloudletId) => {
     let tempData = Object.assign([], stackData);
     stackData.map((stack) => {
         if(stack['clId'] === cloudletId) {
@@ -874,6 +847,16 @@ const removeStreamTemp = (cloudletId) => {
     })
     stackData = tempData;
     console.log('remove stack data ...', cloudletId, ":", tempData)
+}
+const stackLengthLimit = 10000;
+const stackStreamTemp = (temp) => {
+
+    if(stackData.length > stackLengthLimit) {
+        // splice temp number is 0 to 5000
+        stackData = stackData.splice(0, 5000);
+    }
+
+    stackData.push(temp)
 }
 
 /*
@@ -901,13 +884,13 @@ exports.GetStatStream = (req, res) => {
             filteredData.push(stData)
         }
     })
-    console.log('get state clId === ', clId,": stackData --->>>--->>>",stackData, ": stackData ======",filteredData)
+    //console.log('get state clId === ', clId,": stackData --->>>--->>>")
 
     res.json({'stacksData':filteredData})
 
     //if(_io) _io.emit('streamTemp', {'stackData':stackData, 'clId':cloudletId})
 }
-exports.RemoveStatStream = (req, res) => {
+const RemoveStatStream = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
     axios.defaults.timeout = 10000000;
     let clId = null;
@@ -915,7 +898,7 @@ exports.RemoveStatStream = (req, res) => {
         clId = req.body.serviceBody;
     }
     console.log('remove state steam...', clId)
-    removeStreamTemp(clId)
+    removeStreamTempNow(clId)
 }
 exports.CreateCloudlet = (req, res) => {
     if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
@@ -934,7 +917,7 @@ exports.CreateCloudlet = (req, res) => {
 
     //fs.createWriteStream('./temp/'+cloudletId+'.txt')
 
-
+    //removeStreamTempNow(cloudletId);
     console.log('Create me cloudlet-- ', 'mcUrl=',mcUrl,":::",cloudletId.toLowerCase())
 
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudlet', serviceBody,
@@ -959,39 +942,45 @@ exports.CreateCloudlet = (req, res) => {
                     if(data.indexOf('result')> -1) {
                         //source.cancel('Operation canceled')
                         let parseData = JSON.parse(data)['result']
-                        setTimeout(() => removeStreamTemp(cloudletId.toLowerCase()) , 8000)
                         try{
                             console.log('send data to client use to res --', parseData, ":", res)
-                            res.json(parseData)
+                            //res.json(parseData)
                         } catch(e) {
                             console.log('send data to client use to inspect--',parseData, ":", inspect)
-                            inspect(JSON.stringify(parseData))
+                            //inspect(JSON.stringify(parseData))
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     }
 
                     if(data.indexOf('successfully') > -1) {
                         //source.cancel('Operation canceled')
                         console.log('delete successfully')
                         let parseData = JSON.parse(data)['data']
-                        setTimeout(() => removeStreamTemp(cloudletId.toLowerCase()) , 8000)
                         try{
-                            res.json(parseData)
+                            //res.json(parseData)
                         } catch(e) {
-                            inspect(JSON.stringify(parseData))
+                            //inspect(JSON.stringify(parseData))
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
-                        //removeStreamTemp(cloudletId);
+                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        //
                     }
 
                 }
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
                         console.log('create Cloudlet.../////-------///////', data, ":  clId=",cloudletId.toLowerCase())
-                        stackData.push({'streamTemp':data, 'clId':cloudletId.toLowerCase()});
-                        cb(null, callback(data))
+                        if(data === ""){
+                            console.log('data...', data, ": -- end" )
+                            data = '{"data":{"message":"End"}}'
+                        }
+                        stackStreamTemp({'streamTemp':data, 'clId':cloudletId.toLowerCase()});
+                        if(data !== ''){
+                            cb(null, callback(data, cloudletId.toLowerCase()))
+                        } else {
+                            removeStreamTempNow(cloudletId.toLowerCase())
+                        }
 
                     }))
                 ////////////////////////
@@ -1061,7 +1050,7 @@ exports.CreateApp = (req, res) => {
         .catch(function (error) {
             console.log('error show CreateApp...', error);
             if(error.response && error.response.statusText.indexOf('Bad') > -1) {
-                res.json({error:error.response.statusText})
+                res.json({error:error.response.data.message})
             } else {
                 res.json({error:'Execution Of Request Failed'})
             }
@@ -1143,7 +1132,7 @@ exports.CreateAppInst = (req, res) => {
             //clusterId = clusterId.concat((req.body.multiCluster == '')?'DefaultVMCluster': req.body.multiCluster);
         }
     }
-    res.send(clusterId); //start show progress to list view of instances
+
     //
     //fs.createWriteStream('./temp/'+clusterId+'.txt')
 
@@ -1161,50 +1150,79 @@ exports.CreateAppInst = (req, res) => {
             console.log('success Create app')
             let _res = res;
 
+
             if(response.data) {
                 // response.data.pipe(
                 //     fs.createWriteStream('./temp/'+clusterId+'.txt')
                 // )
+                res.send(clusterId); //start show progress to list view of instances
                 /////////////////////////
                 let callback =(data) => {
                     if(data.indexOf('result')> -1) {
+                        let inspectData = data.replace(/\"/g, "")
+                        inspectData = data.replace(/\\"/g, "")
                         //source.cancel('Operation canceled')
-                        let parseData = JSON.parse(data)['result']
-                        console.log('parse data.. ', parseData)
+                        let parseData = JSON.parse(inspectData)['result']
+                        console.log('parse data..1205-- ', typeof parseData, ":", parseData)
                         //res.json(parseData)
-                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
                         try{
-                            res.json(parseData)
+                            console.log('res', parseData);
+                            //res.json(parseData)
                         } catch(e) {
-                            inspect(JSON.stringify(parseData))
+                            //let inst = inspect(JSON.stringify(parseData))
+                            //console.log('inspect', inst, ":", typeof parseData, ":", parseData)
+                            //inspect('{"error":"state is CLOUDLET_STATE_NOT_PRESENT"}')
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        if(_io) _io.emit('streamTemp', {'data':{'message':parseData.message, 'code':parseData.code}, 'clId':clusterId.toLowerCase()})
 
                     }
 
-                    if(data.indexOf('successfully') > -1) {
-                        let parseData = JSON.parse(data)['data']
+                    if(data.indexOf('Create') > -1 && data.indexOf('successfully') > -1) {
+                        let parseData = JSON.parse(data)
+                        let instName = "";
+                        //if(data.indexOf('ClusterInst') > -1) {
+                            instName = clusterId.toLowerCase()
+                        //}
                         //source.cancel('Operation canceled')
-                        console.log('create successfully =', parseData, ":", typeof parseData)
-                        try{
-                            res.json(parseData)
-                        } catch(e) {
-                            inspect(JSON.stringify(parseData))
+                        let messageData = JSON.parse(data)['data']
+                        let instance = '';
+                        let lastMessage = ' successfully';
+                        if(messageData['message'].indexOf('AppInst') > -1) {
+                            instance = 'Application Instance';
+                        } else if(messageData['message'].indexOf('ClusterInst') > -1) {
+                            instance = 'Your cluster';
                         }
-                        //setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
+
+                        console.log('create successfully =', parseData['data'], ":", typeof parseData['data'])
+
+                        try{
+                            //res.json({"message":"Created "+instName+" successfully"})
+                        } catch(e) {
+                            //inspect(JSON.stringify(parseData['data']))
+                        }
                         //inspect(JSON.stringify(parseData))
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
+                        if(_io) _io.emit('streamTemp', {'data':{"message":instance +":"+ instName + lastMessage}, 'clId':clusterId.toLowerCase()})
                     }
+
+
 
                 }
 
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
-                        console.log('create appinst service.../////---'+serviceName+'----///////', data, ":    cluserId ==", clusterId.toLowerCase())
-                        stackData.push({'streamTemp':data, 'clId':clusterId.toLowerCase()});
-                        if(data) cb(null, callback(data))
+                        console.log('create appinst service.../////---'+serviceName+'----///////', data,":",typeof data , ": data -- ", JSON.stringify(data), ":    cluserId ==", clusterId.toLowerCase())
+                        if(data === ""){
+                            console.log('data...', data, ": -- end" )
+                            data = '{"data":{"message":"Created successfully"}}'
+                        }
+                        stackStreamTemp({'streamTemp':data, 'clId':clusterId.toLowerCase()});
+                        if(data !== ''){
+                            cb(null, callback(data, clusterId.toLowerCase()))
+                        } else {
+                            removeStreamTempNow(clusterId.toLowerCase())
+                        }
                     }))
                 ////////////////////////
             } else {
@@ -1312,14 +1330,13 @@ exports.CreateClusterInst = (req, res) => {
 
     /**
      * steam
-     * http --stream --timeout 100000 --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateClusterInst <<< '{"region":"US","clusterinst":{"key":{"cluster_key":{"name":"dockertest20190802-9"},"cloudlet_key":{"operator_key":{"name":"TDG"},"name":"mexplat-stage-bonn-cloudlet"},"developer":"MobiledgeX"},"deployment":"docker","flavor":{"name":"c1.small"},"ip_access":1,"num_masters":0,"num_nodes":0}}'
+     * http --stream --timeout 100000 --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateClusterInst <<< '{"region":"EU","clusterinst":{"key":{"cluster_key":{"name":"bicinkiCluster1206-03"},"cloudlet_key":{"operator_key":{"name":"MEX"},"name":"jlm-dind"},"developer":"MobiledgeX"},"deployment":"docker","flavor":{"name":"x1.medium"},"ip_access":1,"num_masters":0,"num_nodes":0}}'
      */
     // var url = `http --stream --timeout 100000 --auth-type=jwt --auth=${superpass} POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateClusterInst <<< '{"region":"KR","clusterinst":{"key":{"cluster_key":{"name":"dockertest20190805-15"},"cloudlet_key":{"operator_key":{"name":"TDG"},"name":"mexplat-stage-bonn-cloudlet"},"developer":"MobiledgeX"},"deployment":"docker","flavor":{"name":"c1.small"},"ip_access":1,"num_masters":0,"num_nodes":0}}'`
     // var child = shell.exec(url, {async:true});
     // child.stdout.on('data', function(data) {
     //     console.log(data)
     // });
-
 
     console.log('Create me cluster inst-- ', JSON.stringify(serviceBody), 'mcUrl=',mcUrl,'mdata=',req.body.multiData, 'clusterId=', clusterId.toLowerCase())
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateClusterInst', serviceBody,
@@ -1331,7 +1348,7 @@ exports.CreateClusterInst = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Create ClusterInst ==>==>==>==>==>')
+            console.log('success Create ClusterInst ==>==>==>==>==>', response)
 
             if(response.data) {
                 // response.data.pipe(
@@ -1342,35 +1359,40 @@ exports.CreateClusterInst = (req, res) => {
                     if(data.indexOf('result')> -1) {
                         //source.cancel('Operation canceled')
                         let parseData = JSON.parse(data)['result']
-                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
                         try{
                             res.json(parseData)
                         } catch(e) {
-                            inspect(JSON.stringify(parseData))
+                            //inspect(JSON.stringify(parseData))
+                            res.json({"message": "Execution Of Request Failed"})
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
                         //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
                     }
-                    if(data.indexOf('successfully') > -1) {
+                    if(data.indexOf('Create') > -1 && data.indexOf('successfully') > -1) {
                         //source.cancel('Operation canceled')
                         //console.log('create appinst successfully')
                         let parseData = JSON.parse(data)['data']
-                        setTimeout(() => removeStreamTemp(clusterId.toLowerCase()) , 5000)
                         try{
-                            res.json(parseData)
+                            console.log('sucessfulloy created...res === ', res)
+                            //res.json(parseData)
                         } catch(e) {
-                            inspect(JSON.stringify(parseData))
+                            console.log('sucessfulloy created...inspect === ', inspect, ': res???', res)
+                            //inspect(JSON.stringify(parseData))
+
                         }
                         // 접속된 모든 클라이언트에게 메시지를 전송한다
-                        //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':cloudletId})
-                        //removeStreamTemp(cloudletId);
+                        if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':clusterId})
                     }
                 }
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
                         console.log('create appinst.../////-------///////', data)
-                        stackData.push({'streamTemp':data, 'clId':clusterId.toLowerCase()});
-                        cb(null, callback(data))
+                        stackStreamTemp({'streamTemp':data, 'clId':clusterId.toLowerCase()});
+                        if(data !== ''){
+                            cb(null, callback(data, clusterId.toLowerCase()))
+                        } else {
+                            removeStreamTempNow(clusterId.toLowerCase())
+                        }
 
                     }))
                 ////////////////////////
@@ -1380,7 +1402,7 @@ exports.CreateClusterInst = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show CreateClusterInst...', error);
-            //res.json({error:'Execution Of Request Failed'})
+            res.json({error:'Execution Of Request Failed, Audit may help you '})
         });
 
 
@@ -1482,7 +1504,6 @@ exports.DeleteService = (req, res) => {
         serviceName = req.body.service;
         serviceId = req.body.serviceBody.instanceId;
     }
-
     console.log('Delete me --- serviceName == ', serviceName, 'serviceBody == ',JSON.stringify(serviceBody), 'mcUrl=',mcUrl)
 
     axios.post(mcUrl + '/api/v1/auth/ctrl/'+serviceName, serviceBody,
@@ -1496,39 +1517,49 @@ exports.DeleteService = (req, res) => {
     )
         .then(function (response) {
 
-            console.log('success Delete ')
-            let callback =(data) => {
+            console.log('start Delete---   service name ==  ', serviceName)
+
+            let callback =(data, serviceId) => {
                 if(data.indexOf('result')> -1) {
                     //source.cancel('Operation canceled')
                     let parseData = JSON.parse(data)['result']
                     console.log('result type..', typeof parseData, ":", parseData)
 
-                    setTimeout(() => removeStreamTemp(serviceId.toLowerCase()) , 5000)
                     try{
-                        res.json(parseData)
+                        //res.json(parseData)
                     } catch(e) {
-                        inspect(JSON.stringify(parseData))
+                        //inspect(JSON.stringify(parseData))
                     }
                     //res.json(parseData)
                     // 접속된 모든 클라이언트에게 메시지를 전송한다
-                    //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':serviceId})
+                    if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':serviceId})
                 }
 
                 if(data.indexOf('successfully') > -1 && data.indexOf('Deleted') > -1) {
                     //source.cancel('Operation canceled')
                     console.log('delete successfully')
-                    let parseData = JSON.parse(data)['data']
-                    setTimeout(() => removeStreamTemp(serviceId.toLowerCase()) , 5000)
 
-                    try{
-                        res.json(parseData)
-                    } catch(e) {
-                        inspect(JSON.stringify(parseData))
+                    let messageData = JSON.parse(data)['data']
+                    let instance = '';
+                    let lastMessage = ' successfully deleted';
+                    if(messageData['message'].indexOf('AppInst') > -1) {
+                        instance = 'Application Instance';
+                    } else if(messageData['message'].indexOf('ClusterInst') > -1) {
+                        instance = 'Your cluster';
+                        lastMessage = ' deleted successfully'
                     }
 
-                    // 접속된 모든 클라이언트에게 메시지를 전송한다
-                    //if(_io) _io.emit('streamTemp', {'data':parseData, 'clId':serviceId})
-                    //removeStreamTemp(serviceId);
+
+                    // socket 전달 방식을 원치 않는다면,
+                    try{
+                        //res.json({"message":"Deleted "+instance+" : "+serviceId+" successfully"})
+                    } catch(e) {
+                        //inspect(JSON.stringify({"message":"Deleted "+instance+" : "+serviceId+" successfully"}))
+                    }
+
+                    // socket 전달 방식 : 접속된 모든 클라이언트에게 메시지를 전송한다
+                    //Application Instance '+body.params.appinst.key.app_key.name+' successfully deleted
+                    if(_io) _io.emit('streamTemp', {'data':{"message":instance+" : "+serviceId+lastMessage}, 'clId':serviceId ? serviceId.toLowerCase() : ''})
                 }
 
             }
@@ -1536,22 +1567,29 @@ exports.DeleteService = (req, res) => {
             if(response.data && Object.keys(response.data).length !== 0) {
                 //res.json(response.data)
                 /////////////////////////
+                if(serviceName == 'DeleteApp') {
+                    res.json({'message':response.data.message || 'Deleted successfully'})
+                    return;
+                }
                 if(serviceId) {
                     response.data.pipe(estream.split())
                         .pipe(estream.map(function(data, cb){
-                            console.log('delete service.../////---'+serviceName+'----///////', data, ":  serviceId == ", serviceId.toLowerCase())
-                            stackData.push({'streamTemp':data, 'clId':serviceId.toLowerCase()});
-                            if(data) cb(null, callback(data))
+                            console.log('delete service.../////---'+serviceName+'----///////',typeof data,": data - ", JSON.stringify(data), ":  serviceId == ", serviceId.toLowerCase())
+                            if(data === ""){
+                                console.log('data...', data, ": -- end" )
+                                data = '{"data":{"message":"Deleted successfully"}}'
+                            }
+                            stackStreamTemp({'streamTemp':data, 'clId':serviceId.toLowerCase()});
+                            if(data !== ''){
+                                cb(null, callback(data, serviceId.toLowerCase()))
+                            } else {
+                                removeStreamTempNow(serviceId.toLowerCase())
+                            }
+
                         }))
                 } else {
-                    console.log('delete none serviceId..', response)
-                    try{
-                        res.json({'message':'Deleted successfully'})
-                    } catch(e) {
-                        //inspect(JSON.stringify(response.data))
-                    }
-                }
 
+                }
 
                 ////////////////////////
             } else {
@@ -1560,7 +1598,8 @@ exports.DeleteService = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show DeleteService...', error);
-            //res.json({error:'Execution Of Request Failed'})
+            //Application Instance '+body.params.appinst.key.app_key.name+' successfully deleted
+            //if(_io) _io.emit('streamTemp', {'data':{"message":"Request failed with status code 400"}, 'clId':serviceId ? serviceId.toLowerCase() : ''})
         });
 }
 exports.DeleteUser = (req, res) => {
@@ -1594,11 +1633,7 @@ exports.DeleteUser = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show DeleteUser...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 exports.DeleteAccount = (req, res) => {
@@ -1632,11 +1667,7 @@ exports.DeleteAccount = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show DeleteAccount...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 exports.DeleteOrg = (req, res) => {
@@ -1670,11 +1701,7 @@ exports.DeleteOrg = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show DeleteOrg...', error.response.data.message);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 
@@ -1708,11 +1735,7 @@ exports.ResetPassword = (req, res) => {
             }
         })
         .catch(function (error) {
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 exports.UpdatePassword = (req, res) => {
@@ -1738,11 +1761,7 @@ exports.UpdatePassword = (req, res) => {
         })
         .catch(function (error) {
 
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 exports.ResendVerify = (req, res) => {
@@ -1768,11 +1787,7 @@ exports.ResendVerify = (req, res) => {
         })
         .catch(function (error) {
 
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 exports.UpdateVerify = (req, res) => {
@@ -1800,11 +1815,7 @@ exports.UpdateVerify = (req, res) => {
         })
         .catch(function (error) {
 
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 
@@ -1847,11 +1858,7 @@ exports.ShowRole = (req, res) => {
 
             }
 
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 
@@ -1885,11 +1892,7 @@ exports.ShowController = (req, res) => {
         })
         .catch(function (error) {
             console.log('error show controller...', error);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login again'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }
 
@@ -1951,10 +1954,6 @@ exports.SettingLock = (req, res) => {
         })
         .catch(function (error) {
             console.log('error set lock ...', error);
-            if(error.response.data && error.response.data.message.indexOf('expired') > -1) {
-                res.json({error:'Login Timeout Expired. Please login againd'})
-            } else {
-                res.json({error:String(error.response.data.message)})
-            }
+            responseLoginError(res, error)
         });
 }

@@ -5,10 +5,10 @@ import store from '../store';
 import * as utile from '../utils'
 
 const hostname = window.location.hostname;
-let _serverUrl = 'https://'+hostname+':3030';
+let _serverUrl = 'ws://'+hostname+':3030';
 
 if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
-    _serverUrl = 'https://'+hostname+'/server';
+    _serverUrl = 'ws://'+hostname+'/server';
 }
 
 let stackStates = [];
@@ -128,6 +128,6 @@ export function serviceStreaming(stId, callback, body) {
     // test.. send msg to pushing server
     setTimeout(() => {
         // 서버로 메시지를 전송한다.
-        //socket.emit("login", { name: 'Hi. I am client' });
+        socket.emit("login", { name: 'Hi. I am client' });
     }, 3000)
 }
