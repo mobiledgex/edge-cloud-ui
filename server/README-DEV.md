@@ -106,3 +106,6 @@
    https://codesandbox.io/s/jn0w4mxm5 
    
  
+### websocket
+ -  corss 이슈 : 
+ - https://github.com/facebook/create-react-app/issues/8075
