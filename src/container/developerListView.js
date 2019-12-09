@@ -440,13 +440,15 @@ class DeveloperListView extends React.Component {
         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <div ref={acell => this['actionCell_' + index] = acell}
                  style={{backgroundColor: 'transparent', width: 0, height: 0, position: 'relative'}}></div>
-            <Button className="table_actions_button"
-
+            <Button
+                    className="table_actions_button"
+                    disabled={(localStorage.selectRole === 'AdminManager' || (this.state.selectUse == index)) ? false : true}
+                    // color={localStorage.selectRole === 'AdminManager' ? 'teal' : (this.state.selectUse == index) ? 'teal' : null}
                     onClick={() => {
-
                         this.setState({actionContextRef: 'actionCell_' + index})
                         setTimeout(() => this.setState({isOpen: true, isOpenTip: false}), 100)
                         this.setState({orgName: item.Organization, item: item})
+
 
                     }}
                     onMouseOver={() => _self.onOverDropMenu(item, value, index)}
