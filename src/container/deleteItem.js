@@ -49,7 +49,7 @@ class DeleteItem extends React.Component {
     }
     // 서버로 부터 결과를 1번 밖에 못받는 문제가 발생함.
     receiveResult = (result, body) => {
-        console.log('20191119 .. ceceiveSubmit...', result, ":", body)
+        console.log('20191119 .. ceceiveSubmit...', result, ":", body, ": this.props.changeRegion ==>> ", this.props.changeRegion)
         if(result.data && result.data.message && result.data.message.indexOf('failures') <= -1 && !result.clId) {
             //this.receiveSubmitResult(result)
 
@@ -64,7 +64,7 @@ class DeleteItem extends React.Component {
             console.log("20191119 appinstdelete",this.props.siteId,":::",body)
             //if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
             setTimeout(() => {
-                _self.props.refresh(this.props.changeRegion);
+                _self.props.refresh(this.props.changeRegion || 'All');
             }, 3000);
             //}
             return;

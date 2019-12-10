@@ -174,7 +174,7 @@ class RegistryCloudletViewer extends React.Component {
         }
     }
     receiveSubmit = (result, body) => {
-        console.log("20191119 cloudlet paseDatapaseDatapaseData",result)
+        console.log("20191119 cloudlet paseDatapaseDatapaseData",result, ": this.props.changeRegion=", this.props.changeRegion,": region = ", this.props.region, ":", this.props.regionInfo, ":", this.props.getRegion)
         this.pauseRender = false;
         let paseData = result.data;
         if(paseData.error && !this.state.errorClose) {
@@ -197,9 +197,15 @@ class RegistryCloudletViewer extends React.Component {
             }
         }
         setTimeout(() => {
-            console.log('20191119 props refresh...', this.props.refresh, ":", this.props.changeRegion)
-            if(_self.props.refresh) _self.props.refresh(this.props.changeRegion);
-            _self.props.handleComputeRefresh(true)
+            console.log('20191119 props refresh...', this.props.refresh, ": this.props.changeRegion=", this.props.changeRegion,": region = ", this.props.region, ":", this.props.regionInfo, ":", this.props.getRegion)
+            if(_self.props.refresh){
+                _self.props.refresh(this.props.changeRegion ? this.props.changeRegion : 'All');
+            } else {
+                //_self.props.handleChangeRegion(this.props.changeRegion ? this.props.changeRegion : 'All');
+                //_self.props.handleComputeRefresh(true);
+                _self.gotoUrl();
+            }
+
         }, 3000);
 
         // if(paseData.message) {
@@ -294,6 +300,7 @@ class RegistryCloudletViewer extends React.Component {
             }
             
         }
+
 
     }
 
