@@ -411,13 +411,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 }*/}
 
                                 {/*#######################################*/}
-                                {/*desc: Timeline display part            */}
+                                {/*todo: Timeline display part            */}
                                 {/*#######################################*/}
                                 {!this.state.isLoading && this.state.timesList.length !== 0 &&
                                 <HorizontalTimelineKJ
                                     labelWidth={200}
-                                    //todo: 타임라인 Dot 위쪽의 라벨을 그리는 부분.
-                                    //todo: The part that draws the label above the Timeline Dot.
                                     getLabel={(date, task, index) => {
                                         return (
                                             <View column={true}>
