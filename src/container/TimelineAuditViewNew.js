@@ -285,6 +285,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             }, 251)
         }
 
+
+
+
+
         setAllView(dummyConts, sId) {
             if (dummyConts && dummyConts['traceid']) _self.setState({
                 rawViewData: dummyConts,
