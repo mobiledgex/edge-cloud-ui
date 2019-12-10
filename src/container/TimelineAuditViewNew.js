@@ -411,6 +411,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 }*/}
 
                                 {/*#######################################*/}
+                                {/*#######################################*/}
+                                {/*#######################################*/}
                                 {/*todo: Timeline display part            */}
                                 {/*#######################################*/}
                                 {!this.state.isLoading && this.state.timesList.length !== 0 &&
