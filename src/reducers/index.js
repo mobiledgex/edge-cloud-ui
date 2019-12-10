@@ -45,6 +45,10 @@ import resetMap from './resetMap';
 import submitObj from './submitObj';
 import LoadingReducer from "./LoadingReducer";
 
+
+
+
+
 const reducers = combineReducers({
     videoControl,
     siteChanger,
