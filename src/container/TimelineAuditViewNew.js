@@ -378,10 +378,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}} size={20}/>
                                 </FlexBox>
                                 }
-
-
-
-
                                {/* <Button onClick={() => {
                                     this.props.toggleLoading(false)
                                 }}>
