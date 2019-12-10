@@ -1,7 +1,7 @@
 
 /server
 # dependencies
-node_modules
+**/node_modules
 .idea/workspace.xml
 server/npm-debug.log
 server/yarn-error.log
