@@ -287,10 +287,6 @@ class SiteFourPageAudits extends React.Component {
                 :
                 <div></div>
 
-
-
-
-
         );
     }
 
