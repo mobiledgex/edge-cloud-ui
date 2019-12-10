@@ -373,12 +373,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 }}
                             >
 
-                                {/*@todo:sdflksdlkflsdkflksdlfksdlkf*/}
-                                {/*@todo:sdflksdlkflsdkflksdlfksdlkf*/}
-                                {/*@todo:sdflksdlkflsdkflksdlfksdlkf*/}
-                                {/*@todo:sdflksdlkflsdkflksdlfksdlkf*/}
-                                {/*@todo:sdflksdlkflsdkflksdlfksdlkf*/}
-                                {/*@todo:sdflksdlkflsdkflksdlfksdlkf*/}
+                                {/*@todo:jkjkjkjkjkhjkhjkhjkhjkhjkhjk*/}
+                                {/*@todo:11111*/}
 
                                 {this.props.isLoading &&
                                 <FlexBox style={{position: 'absolute', top: '10%', zIndex: 9999999}}>
