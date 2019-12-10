@@ -268,26 +268,48 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
 
         onHandleIndexClick = (value) => {
-            let selectedId = String(value.value);
-            if (!selectedId) return;
-            let selectedDom = document.getElementById(timesList[selectedId])
-            let selectChildNode = null
-            if (selectedDom) {
-                selectChildNode = selectedDom.childNodes
-                // reset style of circle
-                let oldSelected = document.getElementsByClassName('selectedCircle_timeline')
-                // if(oldSelected.length) oldSelected.map((element) => {
-                //     element.className = null;
-                // })
-                console.log('2019119 selet old..', oldSelected, ":", [...oldSelected])
-                selectChildNode[1].className = 'selectedCircle_timeline'
-            }
+            this.setState({
+                rawViewData: {},
+                isLoading2: true,
+            })
+            let selectedIndex = value.value;
 
-            _self.setAllView(_self.state.rawAllData[selectedId], selectedId)
-            _self.setRequestView(_self.state.rawAllData[selectedId], selectedId)
-            _self.setResponseView(_self.state.rawAllData[selectedId], selectedId)
+            let timelineDataOne = this.state.rawAllData[selectedIndex]
 
-            if (_self.state.rawAllData[selectedId]) _self.props.handleSelectedAudit(_self.state.rawAllData[selectedId]);
+            console.log('timelineDataOne===>', timelineDataOne);
+            setTimeout(() => {
+                this.setState({
+                    rawViewData: timelineDataOne,
+                    isLoading2: false,
+                })
+            }, 500)
+        }
+
+
+
+
+
+        onHandleIndexClick_old = (value) => {
+               /* let selectedId = String(value.value);
+                if (!selectedId) return;
+                let selectedDom = document.getElementById(timesList[selectedId])
+                let selectChildNode = null
+                if (selectedDom) {
+                    selectChildNode = selectedDom.childNodes
+                    // reset style of circle
+                    let oldSelected = document.getElementsByClassName('selectedCircle_timeline')
+                    // if(oldSelected.length) oldSelected.map((element) => {
+                    //     element.className = null;
+                    // })
+                    console.log('2019119 selet old..', oldSelected, ":", [...oldSelected])
+                    selectChildNode[1].className = 'selectedCircle_timeline'
+                }
+
+                _self.setAllView(_self.state.rawAllData[selectedId], selectedId)
+                _self.setRequestView(_self.state.rawAllData[selectedId], selectedId)
+                _self.setResponseView(_self.state.rawAllData[selectedId], selectedId)
+                if (_self.state.rawAllData[selectedId])
+                    _self.props.handleSelectedAudit(_self.state.rawAllData[selectedId]);*/
         }
 
 
@@ -377,11 +399,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 {/*@todo:11111*/}
 
                                 {this.props.isLoading &&
-                                <FlexBox style={{position: 'absolute', top: '10%', zIndex: 9999999}}>
-                                    <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}} size={20}/>
+                                <FlexBox style={{position: 'absolute', top: '5%', zIndex: 9999999}}>
+                                    <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}
+                                                      size={20}/>
                                 </FlexBox>
                                 }
-                               {/* <Button onClick={() => {
+                                {/* <Button onClick={() => {
                                     this.props.toggleLoading(false)
                                 }}>
                                     false
@@ -485,6 +508,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 <div className="page_audit_code_rawviewer_title">
                                     Raw Viewer
                                 </div>
+                                {this.state.isLoading2 &&
+                                <FlexBox style={{position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999}}>
+                                    <CircularProgress style={{color: '#1cecff', zIndex: 9999999, fontSize: 10}}
+                                                      size={20}/>
+                                </FlexBox>
+                                }
                                 <div className="page_audit_code_rawviewer_codebox">
                                     {(this.state.rawViewData) ? jsonView(this.state.rawViewData, this) : null}
                                 </div>
