@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_audit_api';
 import './siteThree.css';
-import TimelineAuditView from "../container/TimelineAuditView";
+import TimelineAuditView from "../container/timelineAuditView";
 import Alert from "react-s-alert";
 import * as reducer from '../utils'
 
