@@ -12,10 +12,12 @@ Here is a [demo](http://sherubthakur.github.io/react-horizontal-timeline) I hope
 
 It will just render a timeline with the dates that you provided and it is up to you what to do when a date is selected. i.e. it will give you the index of the date that was clicked and you can do anything with it.
 
+### !! Values are not sorted like the original library !! ###
+
 Property	                  |	Type   	     |	Default	                      |	Description
 :--------------------------|:--------------|:-------------------------------|:--------------------------------
- values (**required**)     | array         | undefined                      | **sorted** array of dates (format:**yyyy-mm-dd**)
- tasks  (**required**)     | array         | undefined                      | **sorted** task on timeline (String)
+ values (**required**)     | array         | undefined                      | array of dates (format:**yyyy-mm-dd**) 
+ tasks  (**required**)     | array         | undefined                      | task on timeline (String)
  indexClick (**required**) | function      | undefined                      | function that takes the index of the array as argument
  index (**required**)      | number        | undefined                      | the index of the selected date
  getLabel                  | function      | date.toDateString().substring(4) |  A function to calculate the label of the event based on the date of the event
