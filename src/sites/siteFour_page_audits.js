@@ -13,6 +13,7 @@ import './siteThree.css';
 import TimelineAuditView from "../container/TimelineAuditView";
 import Alert from "react-s-alert";
 import * as reducer from '../utils'
+import TimelineAuditViewNew from "../container/TimelineAuditViewNew";
 
 
 let _self = null;
@@ -260,7 +261,7 @@ class SiteFourPageAudits extends React.Component {
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView')?
-            <TimelineAuditView data={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Audit'} userToken={this.userToken} mounted={this.state.auditMounted} handleSelectedAudit={this.selectedAudit}></TimelineAuditView>
+            <TimelineAuditViewNew data={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Audit'} userToken={this.userToken} mounted={this.state.auditMounted} handleSelectedAudit={this.selectedAudit}></TimelineAuditViewNew>
             :
             <div></div>
         );
