@@ -11,6 +11,8 @@ if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
     _serverUrl = 'https://'+hostname+'/server';
 }
 
+
+
 let stackStates = [];
 export function serviceStreaming(stId, callback, body) {
 
