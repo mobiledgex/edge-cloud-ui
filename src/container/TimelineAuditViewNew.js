@@ -69,9 +69,6 @@ type Props = {
     isLoading: boolean,
 }
 
-//@desc;etsetestsetestse11
-//@desc;etsetestsetestse2222
-//@desc;etsetestsetestse333333
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
     class TimelineAuditViewNew extends React.Component<Props, any> {
         state = {
@@ -375,20 +372,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                                 }}
                             >
-                                {this.props.isLoading &&
-                                <FlexBox style={{position: 'absolute', top: '5%', zIndex: 9999999}}>
-                                    <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}/>
-                                </FlexBox>
-                                }
-                                {/*   <Button onClick={()=>this.props.toggleLoading(false)}>
-                                    toggleLoading__false
-                                </Button>*/}
 
                                 {this.props.isLoading &&
-                                <FlexBox style={{position: 'absolute', top: '5%', zIndex: 9999999}}>
-                                    <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}/>
+                                <FlexBox style={{position: 'absolute', top: '10%', zIndex: 9999999}}>
+                                    <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}} size={20}/>
                                 </FlexBox>
                                 }
+                               {/* <Button onClick={() => {
+                                    this.props.toggleLoading(false)
+                                }}>
+                                    false
+                                </Button>
+
+                                <Button onClick={() => {
+                                    this.props.toggleLoading(true)
+                                }}>
+                                    true
+                                </Button>*/}
                                 {/*#######################################*/}
                                 {/*desc: Timeline Status (topLeft)        */}
                                 {/*#######################################*/}
@@ -414,6 +414,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 <HorizontalTimelineKJ
                                     labelWidth={200}
                                     //todo: 타임라인 Dot 위쪽의 라벨을 그리는 부분.
+                                    //todo: The part that draws the label above the Timeline Dot.
                                     getLabel={(date, task, index) => {
                                         return (
                                             <View column={true}>
