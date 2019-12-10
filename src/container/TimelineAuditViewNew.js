@@ -282,7 +282,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     rawViewData: timelineDataOne,
                     isLoading2: false,
                 })
-            }, 500)
+            }, 250)
         }
 
         setAllView(dummyConts, sId) {
