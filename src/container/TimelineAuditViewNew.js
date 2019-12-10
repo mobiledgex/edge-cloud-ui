@@ -69,9 +69,6 @@ type Props = {
     isLoading: boolean,
 }
 
-//@desc;etsetestsetestse11
-//@desc;etsetestsetestse2222
-//@desc;etsetestsetestse333333
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
     class TimelineAuditViewNew extends React.Component<Props, any> {
         state = {
