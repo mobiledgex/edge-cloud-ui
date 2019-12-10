@@ -1,5 +1,5 @@
-import { combineReducers } from 'redux';
-import { reducer as formReducer } from 'redux-form';
+import {combineReducers} from 'redux';
+import {reducer as formReducer} from 'redux-form';
 import videoControl from './videoControl';
 import siteChanger from './siteChanger';
 import tabChanger from './tabChanger';
@@ -43,10 +43,54 @@ import checkedAudit from './checkedAudit';
 import stateStream from './stateStream';
 import resetMap from './resetMap';
 import submitObj from './submitObj';
+import LoadingReducer from "./LoadingReducer";
 
 const reducers = combineReducers({
-    videoControl, siteChanger, tabChanger, tabClick, receiveDataReduce, changeRegion, showFlavor, loginMode,injectData,changeViewMode,createAccount, tableHeader, changeStep, tutorState,submitInfo,getRegion,deleteReset,editInstance, regionInfo,checkedAudit, stateStream,resetMap,submitObj,
-    registryAccount, cityChanger, user, btnMnmt, computeItem, clickCityList, userInfo, mapCoordinatesLong, mapCoordinatesLat, showUserRole, selectOrg, searchValue, computeRefresh, loadingSpinner, creatingSpinner, alertMsg, roleInfo, appLaunch, alertInfo, dataExist, form: formReducer
+    videoControl,
+    siteChanger,
+    tabChanger,
+    tabClick,
+    receiveDataReduce,
+    changeRegion,
+    showFlavor,
+    loginMode,
+    injectData,
+    changeViewMode,
+    createAccount,
+    tableHeader,
+    changeStep,
+    tutorState,
+    submitInfo,
+    getRegion,
+    deleteReset,
+    editInstance,
+    regionInfo,
+    checkedAudit,
+    stateStream,
+    resetMap,
+    submitObj,
+    registryAccount,
+    cityChanger,
+    user,
+    btnMnmt,
+    computeItem,
+    clickCityList,
+    userInfo,
+    mapCoordinatesLong,
+    mapCoordinatesLat,
+    showUserRole,
+    selectOrg,
+    searchValue,
+    computeRefresh,
+    loadingSpinner,
+    creatingSpinner,
+    alertMsg,
+    roleInfo,
+    appLaunch,
+    alertInfo,
+    dataExist,
+    LoadingReducer,
+    form: formReducer
 });
 
 export default reducers;
