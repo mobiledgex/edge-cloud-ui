@@ -341,12 +341,6 @@ class App extends Component {
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
 
-
-
-
-
-
-
                 </div>
             </Router>
         );
