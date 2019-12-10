@@ -285,34 +285,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             }, 500)
         }
 
-
-
-
-
-        onHandleIndexClick_old = (value) => {
-               /* let selectedId = String(value.value);
-                if (!selectedId) return;
-                let selectedDom = document.getElementById(timesList[selectedId])
-                let selectChildNode = null
-                if (selectedDom) {
-                    selectChildNode = selectedDom.childNodes
-                    // reset style of circle
-                    let oldSelected = document.getElementsByClassName('selectedCircle_timeline')
-                    // if(oldSelected.length) oldSelected.map((element) => {
-                    //     element.className = null;
-                    // })
-                    console.log('2019119 selet old..', oldSelected, ":", [...oldSelected])
-                    selectChildNode[1].className = 'selectedCircle_timeline'
-                }
-
-                _self.setAllView(_self.state.rawAllData[selectedId], selectedId)
-                _self.setRequestView(_self.state.rawAllData[selectedId], selectedId)
-                _self.setResponseView(_self.state.rawAllData[selectedId], selectedId)
-                if (_self.state.rawAllData[selectedId])
-                    _self.props.handleSelectedAudit(_self.state.rawAllData[selectedId]);*/
-        }
-
-
         setAllView(dummyConts, sId) {
             if (dummyConts && dummyConts['traceid']) _self.setState({
                 rawViewData: dummyConts,
