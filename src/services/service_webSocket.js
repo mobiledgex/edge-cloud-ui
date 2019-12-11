@@ -14,7 +14,7 @@ if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
 let stackStates = [];
 export function serviceStreaming(stId, callback, body) {
 
-    const socket = socketIOClient(_serverUrl);
+    const socket = socketIOClient(_serverUrl, { secure:true, reconnect:true, rejectUnauthorized:false });
     console.log('20191119 socket connection...',socket, ":", stId)
 
     // 서버로 자신의 정보를 전송한다.
