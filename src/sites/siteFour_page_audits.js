@@ -220,7 +220,7 @@ class SiteFourPageAudits extends React.Component {
             try {
                 let response = await services.showAuditOrg2('ShowOrg', {
                     token: store.userToken,
-                    params: {"org": _self.makeOga(orgName)}
+                    params: {"org": this.makeOga(orgName)}
                 })
                 this.receiveResult(response, 'ShowOrg')
             } catch (e) {
