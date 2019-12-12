@@ -2,7 +2,7 @@
 1 verbose cli [ '/Users/kyungjoon/.nvm/v0.10.32/bin/node',
 1 verbose cli   '/Users/kyungjoon/.nvm/v0.10.32/bin/npm',
 1 verbose cli   'install',
-1 verbose cli   'babel' ]
+1 verbose cli   'react-flexbox' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.32
 4 warn package.json babel-plugin-named-asset-import@0.3.5 No README data
@@ -30,16 +30,16 @@
 26 warn package.json jest-matcher-utils@24.9.0 No README data
 27 warn package.json jest-message-util@24.9.0 No description
 28 warn package.json jest-message-util@24.9.0 No README data
-29 warn package.json jest-regex-util@24.9.0 No description
-30 warn package.json jest-regex-util@24.9.0 No README data
-31 warn package.json jest-resolve@24.9.0 No description
-32 warn package.json jest-resolve@24.9.0 No README data
-33 warn package.json jest-resolve-dependencies@24.9.0 No description
-34 warn package.json jest-resolve-dependencies@24.9.0 No README data
-35 warn package.json jest-runner@24.9.0 No description
-36 warn package.json jest-runner@24.9.0 No README data
-37 warn package.json jest-runtime@24.9.0 No description
-38 warn package.json jest-runtime@24.9.0 No README data
+29 warn package.json jest-resolve-dependencies@24.9.0 No description
+30 warn package.json jest-resolve-dependencies@24.9.0 No README data
+31 warn package.json jest-runner@24.9.0 No description
+32 warn package.json jest-runner@24.9.0 No README data
+33 warn package.json jest-resolve@24.9.0 No description
+34 warn package.json jest-resolve@24.9.0 No README data
+35 warn package.json jest-runtime@24.9.0 No description
+36 warn package.json jest-runtime@24.9.0 No README data
+37 warn package.json jest-regex-util@24.9.0 No description
+38 warn package.json jest-regex-util@24.9.0 No README data
 39 warn package.json jest-snapshot@24.9.0 No description
 40 warn package.json jest-snapshot@24.9.0 No README data
 41 warn package.json jest-util@24.9.0 No description
@@ -81,8 +81,8 @@
 77 warn package.json url@0.11.0 url is also the name of a node core module.
 78 warn package.json util@0.10.3 util is also the name of a node core module.
 79 verbose readDependencies using package.json deps
-80 verbose cache add [ 'babel', null ]
-81 verbose cache add name=undefined spec="babel" args=["babel",null]
+80 verbose cache add [ 'react-flexbox', null ]
+81 verbose cache add name=undefined spec="react-flexbox" args=["react-flexbox",null]
 82 verbose parsed url { protocol: null,
 82 verbose parsed url   slashes: null,
 82 verbose parsed url   auth: null,
@@ -92,306 +92,191 @@
 82 verbose parsed url   hash: null,
 82 verbose parsed url   search: null,
 82 verbose parsed url   query: null,
-82 verbose parsed url   pathname: 'babel',
-82 verbose parsed url   path: 'babel',
-82 verbose parsed url   href: 'babel' }
-83 silly lockFile cad160f3-babel babel
-84 verbose lock babel /Users/kyungjoon/.npm/cad160f3-babel.lock
-85 silly lockFile cad160f3-babel babel
-86 silly lockFile cad160f3-babel babel
-87 verbose addNamed [ 'babel', '' ]
+82 verbose parsed url   pathname: 'react-flexbox',
+82 verbose parsed url   path: 'react-flexbox',
+82 verbose parsed url   href: 'react-flexbox' }
+83 silly lockFile 15f15f4c-react-flexbox react-flexbox
+84 verbose lock react-flexbox /Users/kyungjoon/.npm/15f15f4c-react-flexbox.lock
+85 silly lockFile 15f15f4c-react-flexbox react-flexbox
+86 silly lockFile 15f15f4c-react-flexbox react-flexbox
+87 verbose addNamed [ 'react-flexbox', '' ]
 88 verbose addNamed [ null, '*' ]
-89 silly lockFile 8d1f9cea-babel babel@
-90 verbose lock babel@ /Users/kyungjoon/.npm/8d1f9cea-babel.lock
-91 silly addNameRange { name: 'babel', range: '*', hasData: false }
-92 verbose request where is /babel
+89 silly lockFile 4ecb70f6-react-flexbox react-flexbox@
+90 verbose lock react-flexbox@ /Users/kyungjoon/.npm/4ecb70f6-react-flexbox.lock
+91 silly addNameRange { name: 'react-flexbox', range: '*', hasData: false }
+92 verbose request where is /react-flexbox
 93 verbose request registry https://registry.npmjs.org/
-94 verbose request id 0787483396922877
-95 verbose url raw /babel
-96 verbose url resolving [ 'https://registry.npmjs.org/', './babel' ]
-97 verbose url resolved https://registry.npmjs.org/babel
-98 verbose request where is https://registry.npmjs.org/babel
-99 info trying registry request attempt 1 at 14:18:53
-100 http GET https://registry.npmjs.org/babel
-101 http 200 https://registry.npmjs.org/babel
+94 verbose request id e1f592971421d239
+95 verbose url raw /react-flexbox
+96 verbose url resolving [ 'https://registry.npmjs.org/', './react-flexbox' ]
+97 verbose url resolved https://registry.npmjs.org/react-flexbox
+98 verbose request where is https://registry.npmjs.org/react-flexbox
+99 info trying registry request attempt 1 at 17:16:22
+100 http GET https://registry.npmjs.org/react-flexbox
+101 http 200 https://registry.npmjs.org/react-flexbox
 102 silly registry.get cb [ 200,
-102 silly registry.get   { date: 'Mon, 09 Dec 2019 05:18:54 GMT',
-102 silly registry.get     'content-type': 'application/json',
+102 silly registry.get   { date: 'Tue, 10 Dec 2019 08:16:23 GMT',
+102 silly registry.get     'content-type': 'application/json; charset=UTF-8',
 102 silly registry.get     'transfer-encoding': 'chunked',
 102 silly registry.get     connection: 'keep-alive',
-102 silly registry.get     'set-cookie': [ '__cfduid=d0b9d6d61bdbb862f02b9ab9fa2c558ac1575868733; expires=Wed, 08-Jan-20 05:18:53 GMT; path=/; domain=.npmjs.org; HttpOnly' ],
-102 silly registry.get     'cf-ray': '5424856288be39fe-ICN',
+102 silly registry.get     'set-cookie': [ '__cfduid=d7122fc5db9814478c965bf342190e6781575965782; expires=Thu, 09-Jan-20 08:16:22 GMT; path=/; domain=.npmjs.org; HttpOnly' ],
+102 silly registry.get     'cf-ray': '542dc6be9b3da1dd-ICN',
 102 silly registry.get     'cache-control': 'public, max-age=300',
-102 silly registry.get     etag: 'W/"307fc9a3e371ad707be6728a811c4bed"',
-102 silly registry.get     'last-modified': 'Thu, 21 Feb 2019 07:55:13 GMT',
+102 silly registry.get     etag: 'W/"4fb86e8eebb584a855d14b87f7e9cf99"',
+102 silly registry.get     'last-modified': 'Sun, 27 May 2018 13:59:22 GMT',
 102 silly registry.get     vary: 'accept-encoding, accept',
-102 silly registry.get     'cf-cache-status': 'EXPIRED',
+102 silly registry.get     'cf-cache-status': 'REVALIDATED',
 102 silly registry.get     'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
 102 silly registry.get     server: 'cloudflare',
 102 silly registry.get     'content-encoding': 'gzip' } ]
-103 silly addNameRange number 2 { name: 'babel', range: '*', hasData: true }
-104 silly addNameRange versions [ 'babel',
-104 silly addNameRange   [ '0.0.1',
-104 silly addNameRange     '4.0.1',
-104 silly addNameRange     '4.0.2',
-104 silly addNameRange     '4.1.1',
-104 silly addNameRange     '4.2.0',
-104 silly addNameRange     '4.2.1',
-104 silly addNameRange     '4.3.0',
-104 silly addNameRange     '4.4.1',
-104 silly addNameRange     '4.4.2',
-104 silly addNameRange     '4.4.3',
-104 silly addNameRange     '4.4.4',
-104 silly addNameRange     '4.4.5',
-104 silly addNameRange     '4.4.6',
-104 silly addNameRange     '4.5.0',
-104 silly addNameRange     '4.5.1',
-104 silly addNameRange     '4.5.2',
-104 silly addNameRange     '4.5.3',
-104 silly addNameRange     '4.5.4',
-104 silly addNameRange     '4.5.5',
-104 silly addNameRange     '4.6.0',
-104 silly addNameRange     '4.6.1',
-104 silly addNameRange     '4.6.3',
-104 silly addNameRange     '4.6.4',
-104 silly addNameRange     '4.6.5',
-104 silly addNameRange     '4.6.6',
-104 silly addNameRange     '4.7.0',
-104 silly addNameRange     '4.7.1',
-104 silly addNameRange     '4.7.2',
-104 silly addNameRange     '4.7.3',
-104 silly addNameRange     '4.7.4',
-104 silly addNameRange     '4.7.5',
-104 silly addNameRange     '4.7.6',
-104 silly addNameRange     '4.7.7',
-104 silly addNameRange     '4.7.8',
-104 silly addNameRange     '4.7.9',
-104 silly addNameRange     '4.7.10',
-104 silly addNameRange     '4.7.11',
-104 silly addNameRange     '4.7.12',
-104 silly addNameRange     '4.7.13',
-104 silly addNameRange     '4.7.14',
-104 silly addNameRange     '4.7.15',
-104 silly addNameRange     '4.7.16',
-104 silly addNameRange     '5.0.0-beta2',
-104 silly addNameRange     '5.0.0-beta3',
-104 silly addNameRange     '5.0.0-beta4',
-104 silly addNameRange     '5.0.0',
-104 silly addNameRange     '5.0.1',
-104 silly addNameRange     '5.0.2',
-104 silly addNameRange     '5.0.3',
-104 silly addNameRange     '5.0.4',
-104 silly addNameRange     '5.0.5',
-104 silly addNameRange     '5.0.6',
-104 silly addNameRange     '5.0.7',
-104 silly addNameRange     '5.0.8',
-104 silly addNameRange     '5.0.9',
-104 silly addNameRange     '5.0.10',
-104 silly addNameRange     '5.0.11',
-104 silly addNameRange     '5.0.12',
-104 silly addNameRange     '5.0.13',
-104 silly addNameRange     '5.1.0',
-104 silly addNameRange     '5.1.1',
-104 silly addNameRange     '5.1.2',
-104 silly addNameRange     '5.1.3',
-104 silly addNameRange     '5.1.4',
-104 silly addNameRange     '5.1.5',
-104 silly addNameRange     '5.1.6',
-104 silly addNameRange     '5.1.7',
-104 silly addNameRange     '5.1.8',
-104 silly addNameRange     '5.1.9',
-104 silly addNameRange     '5.1.10',
-104 silly addNameRange     '5.1.11',
-104 silly addNameRange     '5.1.12',
-104 silly addNameRange     '5.1.13',
-104 silly addNameRange     '5.2.0',
-104 silly addNameRange     '5.2.1',
-104 silly addNameRange     '5.2.2',
-104 silly addNameRange     '5.2.3',
-104 silly addNameRange     '5.2.4',
-104 silly addNameRange     '5.2.5',
-104 silly addNameRange     '5.2.6',
-104 silly addNameRange     '5.2.7',
-104 silly addNameRange     '5.2.9',
-104 silly addNameRange     '5.2.10',
-104 silly addNameRange     '5.2.11',
-104 silly addNameRange     '5.2.12',
-104 silly addNameRange     '5.2.13',
-104 silly addNameRange     '5.2.14',
-104 silly addNameRange     '5.2.15',
-104 silly addNameRange     '5.2.16',
-104 silly addNameRange     '5.2.17',
-104 silly addNameRange     '5.3.0',
-104 silly addNameRange     '5.3.1',
-104 silly addNameRange     '5.3.2',
-104 silly addNameRange     '5.3.3',
-104 silly addNameRange     '5.4.0',
-104 silly addNameRange     '5.4.1',
-104 silly addNameRange     '5.4.2',
-104 silly addNameRange     '5.4.3',
-104 silly addNameRange     '5.4.4',
-104 silly addNameRange     '5.4.5',
-104 silly addNameRange     '5.4.6',
-104 silly addNameRange     '5.4.7',
-104 silly addNameRange     '5.5.0',
-104 silly addNameRange     '5.5.1',
-104 silly addNameRange     '5.5.2',
-104 silly addNameRange     '5.5.3',
-104 silly addNameRange     '5.5.4',
-104 silly addNameRange     '5.5.5',
-104 silly addNameRange     '5.5.6',
-104 silly addNameRange     '5.5.7',
-104 silly addNameRange     '5.5.8',
-104 silly addNameRange     '5.6.1',
-104 silly addNameRange     '5.6.2',
-104 silly addNameRange     '5.6.3',
-104 silly addNameRange     '5.6.4',
-104 silly addNameRange     '5.6.5',
-104 silly addNameRange     '5.6.6',
-104 silly addNameRange     '5.6.7',
-104 silly addNameRange     '5.6.10',
-104 silly addNameRange     '5.6.11',
-104 silly addNameRange     '5.6.12',
-104 silly addNameRange     '5.6.14',
-104 silly addNameRange     '5.6.23',
-104 silly addNameRange     '5.8.2',
-104 silly addNameRange     '5.8.3',
-104 silly addNameRange     '5.8.5',
-104 silly addNameRange     '5.8.6',
-104 silly addNameRange     '5.8.8',
-104 silly addNameRange     '5.8.9',
-104 silly addNameRange     '5.8.12',
-104 silly addNameRange     '5.8.19',
-104 silly addNameRange     '5.8.20',
-104 silly addNameRange     '5.8.21',
-104 silly addNameRange     '5.8.23',
-104 silly addNameRange     '5.8.29',
-104 silly addNameRange     '6.0.0',
-104 silly addNameRange     '6.0.2',
-104 silly addNameRange     '6.0.12',
-104 silly addNameRange     '6.0.14',
-104 silly addNameRange     '6.0.15',
-104 silly addNameRange     '5.8.34',
-104 silly addNameRange     '6.1.5',
-104 silly addNameRange     '6.1.6',
-104 silly addNameRange     '6.1.7',
-104 silly addNameRange     '6.1.8',
-104 silly addNameRange     '6.1.9',
-104 silly addNameRange     '6.1.10',
-104 silly addNameRange     '6.1.11',
-104 silly addNameRange     '6.1.12',
-104 silly addNameRange     '6.1.13',
-104 silly addNameRange     '6.1.14',
-104 silly addNameRange     '6.1.15',
-104 silly addNameRange     '6.1.16',
-104 silly addNameRange     '6.1.17',
-104 silly addNameRange     '6.1.18',
-104 silly addNameRange     '6.2.4',
-104 silly addNameRange     '6.3.13',
-104 silly addNameRange     '6.3.26',
-104 silly addNameRange     '5.8.35',
-104 silly addNameRange     '6.5.0',
-104 silly addNameRange     '6.5.0-1',
-104 silly addNameRange     '6.5.1',
-104 silly addNameRange     '6.5.2',
-104 silly addNameRange     '5.8.38',
-104 silly addNameRange     '6.23.0' ] ]
-105 verbose addNamed [ 'babel', '6.23.0' ]
-106 verbose addNamed [ '6.23.0', '6.23.0' ]
-107 silly lockFile 2542423e-babel-6-23-0 babel@6.23.0
-108 verbose lock babel@6.23.0 /Users/kyungjoon/.npm/2542423e-babel-6-23-0.lock
-109 warn deprecated babel@6.23.0: In 6.x, the babel package has been deprecated in favor of babel-cli. Check https://opencollective.com/babel to support the Babel maintainers
-110 silly lockFile 51219741-npmjs-org-babel-babel-6-23-0-tgz https://registry.npmjs.org/babel/-/babel-6.23.0.tgz
-111 verbose lock https://registry.npmjs.org/babel/-/babel-6.23.0.tgz /Users/kyungjoon/.npm/51219741-npmjs-org-babel-babel-6-23-0-tgz.lock
-112 verbose addRemoteTarball [ 'https://registry.npmjs.org/babel/-/babel-6.23.0.tgz',
-112 verbose addRemoteTarball   'd0d1e7d803e974765beea3232d4e153c0efb90f4' ]
-113 info retry fetch attempt 1 at 14:18:55
-114 verbose fetch to= /var/folders/tn/9fwmnh3s24q8ylqmxb98q0lc0000gn/T/npm-5462-Dl2c-2JA/registry.npmjs.org/babel/-/babel-6.23.0.tgz
-115 http GET https://registry.npmjs.org/babel/-/babel-6.23.0.tgz
-116 http 200 https://registry.npmjs.org/babel/-/babel-6.23.0.tgz
-117 silly lockFile 51219741-npmjs-org-babel-babel-6-23-0-tgz https://registry.npmjs.org/babel/-/babel-6.23.0.tgz
-118 silly lockFile 51219741-npmjs-org-babel-babel-6-23-0-tgz https://registry.npmjs.org/babel/-/babel-6.23.0.tgz
-119 silly lockFile 2542423e-babel-6-23-0 babel@6.23.0
-120 silly lockFile 2542423e-babel-6-23-0 babel@6.23.0
-121 silly lockFile 8d1f9cea-babel babel@
-122 silly lockFile 8d1f9cea-babel babel@
-123 silly resolved [ { name: 'babel',
-123 silly resolved     version: '6.23.0',
-123 silly resolved     description: 'Turn ES6 code into readable vanilla ES5 with source maps',
-123 silly resolved     author: { name: 'Sebastian McKenzie', email: 'sebmck@gmail.com' },
-123 silly resolved     homepage: 'https://babeljs.io/',
-123 silly resolved     license: 'MIT',
-123 silly resolved     repository:
-123 silly resolved      { type: 'git',
-123 silly resolved        url: 'https://github.com/babel/babel/tree/master/packages/babel' },
-123 silly resolved     bin:
-123 silly resolved      { babel: './lib/cli.js',
-123 silly resolved        'babel-node': './lib/cli.js',
-123 silly resolved        'babel-external-helpers': './lib/cli.js' },
-123 silly resolved     _id: 'babel@6.23.0',
-123 silly resolved     scripts: {},
-123 silly resolved     _shasum: 'd0d1e7d803e974765beea3232d4e153c0efb90f4',
-123 silly resolved     _from: 'babel@',
-123 silly resolved     _npmVersion: '3.10.8',
-123 silly resolved     _nodeVersion: '6.9.1',
-123 silly resolved     _npmUser: { name: 'loganfsmyth', email: 'loganfsmyth@gmail.com' },
-123 silly resolved     dist:
-123 silly resolved      { shasum: 'd0d1e7d803e974765beea3232d4e153c0efb90f4',
-123 silly resolved        tarball: 'https://registry.npmjs.org/babel/-/babel-6.23.0.tgz' },
-123 silly resolved     maintainers: [ [Object], [Object], [Object], [Object], [Object], [Object] ],
-123 silly resolved     _npmOperationalInternal:
-123 silly resolved      { host: 'packages-18-east.internal.npmjs.com',
-123 silly resolved        tmp: 'tmp/babel-6.23.0.tgz_1487027070006_0.409561536507681' },
-123 silly resolved     directories: {},
-123 silly resolved     deprecated: 'In 6.x, the babel package has been deprecated in favor of babel-cli. Check https://opencollective.com/babel to support the Babel maintainers',
-123 silly resolved     _resolved: 'https://registry.npmjs.org/babel/-/babel-6.23.0.tgz' } ]
-124 info install babel@6.23.0 into /Users/kyungjoon/react_pjt/edge-cloud-ui
-125 info installOne babel@6.23.0
-126 verbose node_modules/babel unbuild
-127 verbose tar unpack /Users/kyungjoon/.npm/babel/6.23.0/package.tgz
-128 silly lockFile 4c6b8340-edge-cloud-ui-node-modules-babel tar:///Users/kyungjoon/react_pjt/edge-cloud-ui/node_modules/babel
-129 verbose lock tar:///Users/kyungjoon/react_pjt/edge-cloud-ui/node_modules/babel /Users/kyungjoon/.npm/4c6b8340-edge-cloud-ui-node-modules-babel.lock
-130 silly lockFile bed4828f-oon-npm-babel-6-23-0-package-tgz tar:///Users/kyungjoon/.npm/babel/6.23.0/package.tgz
-131 verbose lock tar:///Users/kyungjoon/.npm/babel/6.23.0/package.tgz /Users/kyungjoon/.npm/bed4828f-oon-npm-babel-6-23-0-package-tgz.lock
+103 silly addNameRange number 2 { name: 'react-flexbox', range: '*', hasData: true }
+104 silly addNameRange versions [ 'react-flexbox',
+104 silly addNameRange   [ '1.0.0',
+104 silly addNameRange     '1.0.1',
+104 silly addNameRange     '1.0.2',
+104 silly addNameRange     '1.0.3',
+104 silly addNameRange     '1.0.4',
+104 silly addNameRange     '1.1.1',
+104 silly addNameRange     '1.2.0',
+104 silly addNameRange     '1.3.0',
+104 silly addNameRange     '2.0.0',
+104 silly addNameRange     '2.0.1',
+104 silly addNameRange     '2.0.2',
+104 silly addNameRange     '3.0.0',
+104 silly addNameRange     '3.1.0',
+104 silly addNameRange     '3.1.1',
+104 silly addNameRange     '3.1.3',
+104 silly addNameRange     '3.1.4' ] ]
+105 verbose addNamed [ 'react-flexbox', '3.1.4' ]
+106 verbose addNamed [ '3.1.4', '3.1.4' ]
+107 silly lockFile b3e76cf6-react-flexbox-3-1-4 react-flexbox@3.1.4
+108 verbose lock react-flexbox@3.1.4 /Users/kyungjoon/.npm/b3e76cf6-react-flexbox-3-1-4.lock
+109 silly lockFile 37f3fbae--flexbox-react-flexbox-3-1-4-tgz https://registry.npmjs.org/react-flexbox/-/react-flexbox-3.1.4.tgz
+110 verbose lock https://registry.npmjs.org/react-flexbox/-/react-flexbox-3.1.4.tgz /Users/kyungjoon/.npm/37f3fbae--flexbox-react-flexbox-3-1-4-tgz.lock
+111 verbose addRemoteTarball [ 'https://registry.npmjs.org/react-flexbox/-/react-flexbox-3.1.4.tgz',
+111 verbose addRemoteTarball   '224ca79be13a89689c0c7fc1b7f451a0f2ba7b95' ]
+112 info retry fetch attempt 1 at 17:16:23
+113 verbose fetch to= /var/folders/tn/9fwmnh3s24q8ylqmxb98q0lc0000gn/T/npm-11476-aJVuj7rA/registry.npmjs.org/react-flexbox/-/react-flexbox-3.1.4.tgz
+114 http GET https://registry.npmjs.org/react-flexbox/-/react-flexbox-3.1.4.tgz
+115 http 200 https://registry.npmjs.org/react-flexbox/-/react-flexbox-3.1.4.tgz
+116 silly lockFile 37f3fbae--flexbox-react-flexbox-3-1-4-tgz https://registry.npmjs.org/react-flexbox/-/react-flexbox-3.1.4.tgz
+117 silly lockFile 37f3fbae--flexbox-react-flexbox-3-1-4-tgz https://registry.npmjs.org/react-flexbox/-/react-flexbox-3.1.4.tgz
+118 silly lockFile b3e76cf6-react-flexbox-3-1-4 react-flexbox@3.1.4
+119 silly lockFile b3e76cf6-react-flexbox-3-1-4 react-flexbox@3.1.4
+120 silly lockFile 4ecb70f6-react-flexbox react-flexbox@
+121 silly lockFile 4ecb70f6-react-flexbox react-flexbox@
+122 silly resolved [ { name: 'react-flexbox',
+122 silly resolved     version: '3.1.4',
+122 silly resolved     description: 'React flexbox implementation',
+122 silly resolved     author: { name: 'Thomas Coopman @tcoopman' },
+122 silly resolved     main: 'lib/index.js',
+122 silly resolved     scripts:
+122 silly resolved      { build: 'npm run build:lib && npm run build:umd && npm run build:umd:min',
+122 silly resolved        'build:lib': 'NODE_ENV=production babel src --out-dir lib',
+122 silly resolved        'build:umd': 'NODE_ENV=production webpack src/index.jsx dist/react-flexbox.js',
+122 silly resolved        'build:umd:min': 'NODE_ENV=production webpack -p src/index.jsx dist/react-flexbox.min.js',
+122 silly resolved        prepublish: 'npm run build',
+122 silly resolved        examples: 'NODE_ENV=development webpack-dev-server examples' },
+122 silly resolved     licenses: [ [Object] ],
+122 silly resolved     repository:
+122 silly resolved      { type: 'git',
+122 silly resolved        url: 'git+ssh://git@github.com/tcoopman/react-flexbox.git' },
+122 silly resolved     keywords: [ 'react', 'react-component', 'flexbox' ],
+122 silly resolved     engines: { node: '>= 0.12', iojs: '>= 3.0', npm: '>= 2.1' },
+122 silly resolved     devDependencies:
+122 silly resolved      { 'babel-cli': '^6.24.1',
+122 silly resolved        'babel-core': '^6.24.1',
+122 silly resolved        'babel-eslint': '^7.2.2',
+122 silly resolved        'babel-loader': '^6.4.1',
+122 silly resolved        'babel-plugin-transform-react-remove-prop-types': '^0.4.0',
+122 silly resolved        'babel-preset-es2015': '^6.24.0',
+122 silly resolved        'babel-preset-react': '^6.23.0',
+122 silly resolved        'babel-preset-react-hmre': '^1.1.1',
+122 silly resolved        'babel-preset-stage-0': '^6.22.0',
+122 silly resolved        debug: '^2.2.0',
+122 silly resolved        eslint: '^3.19.0',
+122 silly resolved        'eslint-plugin-react': '^6.10.3',
+122 silly resolved        react: '^15.5.4',
+122 silly resolved        'react-dom': '^15.5.4',
+122 silly resolved        'react-hot-loader': '^3.0.0-beta.6',
+122 silly resolved        webpack: '^2.3.3',
+122 silly resolved        'webpack-dev-server': '^2.4.2' },
+122 silly resolved     peerDependencies:
+122 silly resolved      { react: '^0.14.0 || ^15.0.0 || ^16.0.0',
+122 silly resolved        'react-dom': '^0.14.0 || ^15.0.0 || ^16.0.0' },
+122 silly resolved     gitHead: '096c9f55897c4d99e059f8c9daf4c3289768ec8e',
+122 silly resolved     bugs: { url: 'https://github.com/tcoopman/react-flexbox/issues' },
+122 silly resolved     homepage: 'https://github.com/tcoopman/react-flexbox#readme',
+122 silly resolved     _id: 'react-flexbox@3.1.4',
+122 silly resolved     _npmVersion: '5.4.2',
+122 silly resolved     _nodeVersion: '8.5.0',
+122 silly resolved     _npmUser: { name: 'tcoopman', email: 'thomas.coopman@gmail.com' },
+122 silly resolved     dist:
+122 silly resolved      { integrity: 'sha512-agifZZ7p0RqPckjk7hOpqyd1wcAzAjSfkmDyJ3x53hOUGqZaLpYGPPC46OfOv4v6LBMjiP+clL7KOcK55sZckw==',
+122 silly resolved        shasum: '224ca79be13a89689c0c7fc1b7f451a0f2ba7b95',
+122 silly resolved        tarball: 'https://registry.npmjs.org/react-flexbox/-/react-flexbox-3.1.4.tgz' },
+122 silly resolved     maintainers: [ [Object] ],
+122 silly resolved     _npmOperationalInternal:
+122 silly resolved      { host: 's3://npm-registry-packages',
+122 silly resolved        tmp: 'tmp/react-flexbox-3.1.4.tgz_1512927405737_0.5560248240362853' },
+122 silly resolved     directories: {},
+122 silly resolved     _shasum: '224ca79be13a89689c0c7fc1b7f451a0f2ba7b95',
+122 silly resolved     _from: 'react-flexbox@',
+122 silly resolved     _resolved: 'https://registry.npmjs.org/react-flexbox/-/react-flexbox-3.1.4.tgz' } ]
+123 info install react-flexbox@3.1.4 into /Users/kyungjoon/temp_dir/temp_edge
+124 info installOne react-flexbox@3.1.4
+125 warn engine react-flexbox@3.1.4: wanted: {"node":">= 0.12","iojs":">= 3.0","npm":">= 2.1"} (current: {"node":"0.10.32","npm":"1.4.28"})
+126 verbose node_modules/react-flexbox unbuild
+127 verbose tar unpack /Users/kyungjoon/.npm/react-flexbox/3.1.4/package.tgz
+128 silly lockFile beb8edce--edge-node-modules-react-flexbox tar:///Users/kyungjoon/temp_dir/temp_edge/node_modules/react-flexbox
+129 verbose lock tar:///Users/kyungjoon/temp_dir/temp_edge/node_modules/react-flexbox /Users/kyungjoon/.npm/beb8edce--edge-node-modules-react-flexbox.lock
+130 silly lockFile e6088210--react-flexbox-3-1-4-package-tgz tar:///Users/kyungjoon/.npm/react-flexbox/3.1.4/package.tgz
+131 verbose lock tar:///Users/kyungjoon/.npm/react-flexbox/3.1.4/package.tgz /Users/kyungjoon/.npm/e6088210--react-flexbox-3-1-4-package-tgz.lock
 132 silly gunzTarPerm modes [ '755', '644' ]
 133 silly gunzTarPerm extractEntry package.json
-134 silly gunzTarPerm extractEntry .npmignore
-135 silly gunzTarPerm extractEntry README.md
-136 silly gunzTarPerm extractEntry index.js
-137 silly gunzTarPerm extractEntry lib/cli.js
-138 silly lockFile 4c6b8340-edge-cloud-ui-node-modules-babel tar:///Users/kyungjoon/react_pjt/edge-cloud-ui/node_modules/babel
-139 silly lockFile 4c6b8340-edge-cloud-ui-node-modules-babel tar:///Users/kyungjoon/react_pjt/edge-cloud-ui/node_modules/babel
-140 silly lockFile bed4828f-oon-npm-babel-6-23-0-package-tgz tar:///Users/kyungjoon/.npm/babel/6.23.0/package.tgz
-141 silly lockFile bed4828f-oon-npm-babel-6-23-0-package-tgz tar:///Users/kyungjoon/.npm/babel/6.23.0/package.tgz
-142 info preinstall babel@6.23.0
-143 verbose readDependencies using package.json deps
-144 verbose readDependencies using package.json deps
-145 silly resolved []
-146 verbose about to build /Users/kyungjoon/react_pjt/edge-cloud-ui/node_modules/babel
-147 info build /Users/kyungjoon/react_pjt/edge-cloud-ui/node_modules/babel
-148 verbose linkStuff [ false,
-148 verbose linkStuff   false,
-148 verbose linkStuff   false,
-148 verbose linkStuff   '/Users/kyungjoon/react_pjt/edge-cloud-ui/node_modules' ]
-149 info linkStuff babel@6.23.0
-150 verbose linkBins babel@6.23.0
-151 verbose link bins [ { babel: './lib/cli.js',
-151 verbose link bins     'babel-node': './lib/cli.js',
-151 verbose link bins     'babel-external-helpers': './lib/cli.js' },
-151 verbose link bins   '/Users/kyungjoon/react_pjt/edge-cloud-ui/node_modules/.bin',
-151 verbose link bins   false ]
-152 verbose linkMans babel@6.23.0
-153 verbose rebuildBundles babel@6.23.0
-154 info install babel@6.23.0
-155 info postinstall babel@6.23.0
-156 warn unmet dependency /Users/kyungjoon/react_pjt/edge-cloud-ui/node_modules/babel-preset-react-app/node_modules/babel-plugin-macros requires @babel/runtime@'^7.7.2' but will load
-156 warn unmet dependency undefined,
-156 warn unmet dependency which is version undefined
-157 error peerinvalid The package babel-runtime does not satisfy its siblings' peerDependencies requirements!
-158 error System Darwin 19.0.0
-159 error command "/Users/kyungjoon/.nvm/v0.10.32/bin/node" "/Users/kyungjoon/.nvm/v0.10.32/bin/npm" "install" "babel"
-160 error cwd /Users/kyungjoon/react_pjt/edge-cloud-ui
-161 error node -v v0.10.32
-162 error npm -v 1.4.28
-163 error code EPEERINVALID
-164 verbose exit [ 1, true ]
+134 silly gunzTarPerm extractEntry .babelrc
+135 silly gunzTarPerm extractEntry .eslintrc
+136 silly gunzTarPerm modified mode [ '.eslintrc', 384, 420 ]
+137 silly gunzTarPerm extractEntry README.md
+138 silly gunzTarPerm extractEntry webpack.config.js
+139 silly gunzTarPerm extractEntry examples/HelloWorld.jsx
+140 silly gunzTarPerm extractEntry examples/index.css
+141 silly gunzTarPerm modified mode [ 'examples/index.css', 384, 420 ]
+142 silly gunzTarPerm extractEntry examples/index.html
+143 silly gunzTarPerm extractEntry examples/index.jsx
+144 silly gunzTarPerm extractEntry examples/react-flexbox.js
+145 silly gunzTarPerm extractEntry lib/index.js
+146 silly gunzTarPerm modified mode [ 'lib/index.js', 384, 420 ]
+147 silly gunzTarPerm extractEntry src/index.jsx
+148 silly gunzTarPerm modified mode [ 'src/index.jsx', 384, 420 ]
+149 silly lockFile beb8edce--edge-node-modules-react-flexbox tar:///Users/kyungjoon/temp_dir/temp_edge/node_modules/react-flexbox
+150 silly lockFile beb8edce--edge-node-modules-react-flexbox tar:///Users/kyungjoon/temp_dir/temp_edge/node_modules/react-flexbox
+151 silly lockFile e6088210--react-flexbox-3-1-4-package-tgz tar:///Users/kyungjoon/.npm/react-flexbox/3.1.4/package.tgz
+152 silly lockFile e6088210--react-flexbox-3-1-4-package-tgz tar:///Users/kyungjoon/.npm/react-flexbox/3.1.4/package.tgz
+153 info preinstall react-flexbox@3.1.4
+154 verbose readDependencies using package.json deps
+155 verbose readDependencies using package.json deps
+156 silly resolved []
+157 verbose about to build /Users/kyungjoon/temp_dir/temp_edge/node_modules/react-flexbox
+158 info build /Users/kyungjoon/temp_dir/temp_edge/node_modules/react-flexbox
+159 verbose linkStuff [ false,
+159 verbose linkStuff   false,
+159 verbose linkStuff   false,
+159 verbose linkStuff   '/Users/kyungjoon/temp_dir/temp_edge/node_modules' ]
+160 info linkStuff react-flexbox@3.1.4
+161 verbose linkBins react-flexbox@3.1.4
+162 verbose linkMans react-flexbox@3.1.4
+163 verbose rebuildBundles react-flexbox@3.1.4
+164 info install react-flexbox@3.1.4
+165 info postinstall react-flexbox@3.1.4
+166 warn unmet dependency /Users/kyungjoon/temp_dir/temp_edge/node_modules/babel-preset-react-app/node_modules/babel-plugin-macros requires @babel/runtime@'^7.7.2' but will load
+166 warn unmet dependency undefined,
+166 warn unmet dependency which is version undefined
+167 error peerinvalid The package acorn does not satisfy its siblings' peerDependencies requirements!
+168 error System Darwin 19.0.0
+169 error command "/Users/kyungjoon/.nvm/v0.10.32/bin/node" "/Users/kyungjoon/.nvm/v0.10.32/bin/npm" "install" "react-flexbox"
+170 error cwd /Users/kyungjoon/temp_dir/temp_edge
+171 error node -v v0.10.32
+172 error npm -v 1.4.28
+173 error code EPEERINVALID
+174 verbose exit [ 1, true ]
