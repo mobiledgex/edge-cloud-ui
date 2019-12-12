@@ -1,0 +1,10 @@
+
+/server
+# dependencies
+**/node_modules
+.idea/workspace.xml
+server/npm-debug.log
+server/yarn-error.log
+server/yarn.lock
+
+
