@@ -59,9 +59,7 @@ class InsideListView extends React.Component {
             isOpen: false,
             isOpenTip:false,
             actionContextRef:'actionCell_0',
-            item:null,
-            isHovered: false,
-            itemIndex: 0
+            item:null
         };
         this.sorting = false;
 
@@ -354,22 +352,11 @@ class InsideListView extends React.Component {
     makeActionButton = (target) => (
         <Button.Group vertical className="table_actions_popup_group">
             {
-                appssEdit.map((option, index)=> {
-
-                    const btnClass =
-                        !this.state.isHovered && index === 0 ? "table_actions_popup_group_button_hover" :
-                        this.state.isHovered && this.state.itemIndex === index ? "table_actions_popup_group_button_hover" : "table_actions_popup_group_button";
-
-                    return (
-                    <Button onClick={this.onHandlePopMenu}
-                            className={btnClass}
-                            onMouseEnter={()=> this.setState({isHovered: true, itemIndex:index})}
-                            onMouseLeave={()=> this.setState({isHovered: false})}
-                    >
+                appssEdit.map((option)=> (
+                    <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
                         {option.text}
                     </Button>
-                    )
-                })
+                ))
             }
         </Button.Group>
     )
