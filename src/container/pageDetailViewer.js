@@ -212,6 +212,7 @@ class PageDetailViewer extends React.Component {
     }
     generateDOM(open, dimmer, data, mData, keysData, hideHeader, region, page) {
 
+        let isOperator = (this.state.userRole === 'OperatorManager' || this.state.userRole === 'OperatorContributor' || this.state.userRole === 'OperatorViewer') ? true : false;
         let panelParams = {data:data, mData:mData, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
         return layout.map((item, i) => (
 
