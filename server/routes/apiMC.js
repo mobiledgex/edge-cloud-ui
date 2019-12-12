@@ -971,11 +971,13 @@ exports.CreateCloudlet = (req, res) => {
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
                         console.log('create Cloudlet.../////-------///////', data, ":  clId=",cloudletId.toLowerCase())
+                        let finish = false;
                         if(data === ""){
                             console.log('data...', data, ": -- end" )
-                            data = '{"data":{"message":"End"}}'
+                            //data = '{"data":{"message":"Created successfully"}}'
+                            finish = true;
                         }
-                        stackStreamTemp({'streamTemp':data, 'clId':cloudletId.toLowerCase()});
+                        if(!finish) stackStreamTemp({'streamTemp':data, 'clId':cloudletId.toLowerCase()});
                         if(data !== ''){
                             cb(null, callback(data, cloudletId.toLowerCase()))
                         } else {
@@ -1213,11 +1215,14 @@ exports.CreateAppInst = (req, res) => {
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
                         console.log('create appinst service.../////---'+serviceName+'----///////', data,":",typeof data , ": data -- ", JSON.stringify(data), ":    cluserId ==", clusterId.toLowerCase())
+
+                        let finish = false;
                         if(data === ""){
                             console.log('data...', data, ": -- end" )
-                            data = '{"data":{"message":"Created successfully"}}'
+                            //data = '{"data":{"message":"Created successfully"}}'
+                            finish = true;
                         }
-                        stackStreamTemp({'streamTemp':data, 'clId':clusterId.toLowerCase()});
+                        if(!finish) stackStreamTemp({'streamTemp':data, 'clId':clusterId.toLowerCase()});
                         if(data !== ''){
                             cb(null, callback(data, clusterId.toLowerCase()))
                         } else {
@@ -1387,7 +1392,13 @@ exports.CreateClusterInst = (req, res) => {
                 response.data.pipe(estream.split())
                     .pipe(estream.map(function(data, cb){
                         console.log('create appinst.../////-------///////', data)
-                        stackStreamTemp({'streamTemp':data, 'clId':clusterId.toLowerCase()});
+                        let finish = false;
+                        if(data === ""){
+                            console.log('data...', data, ": -- end" )
+                            //data = '{"data":{"message":"Created successfully"}}'
+                            finish = true;
+                        }
+                        if(!finish) stackStreamTemp({'streamTemp':data, 'clId':clusterId.toLowerCase()});
                         if(data !== ''){
                             cb(null, callback(data, clusterId.toLowerCase()))
                         } else {
@@ -1575,11 +1586,14 @@ exports.DeleteService = (req, res) => {
                     response.data.pipe(estream.split())
                         .pipe(estream.map(function(data, cb){
                             console.log('delete service.../////---'+serviceName+'----///////',typeof data,": data - ", JSON.stringify(data), ":  serviceId == ", serviceId.toLowerCase())
+
+                            let finish = false;
                             if(data === ""){
                                 console.log('data...', data, ": -- end" )
-                                data = '{"data":{"message":"Deleted successfully"}}'
+                                //data = '{"data":{"message":"Created successfully"}}'
+                                finish = true;
                             }
-                            stackStreamTemp({'streamTemp':data, 'clId':serviceId.toLowerCase()});
+                            if(!finish) stackStreamTemp({'streamTemp':data, 'clId':serviceId.toLowerCase()});
                             if(data !== ''){
                                 cb(null, callback(data, serviceId.toLowerCase()))
                             } else {

@@ -501,6 +501,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
         } else {
             // closed streaming
             console.log('20191119 closed streaming....')
+            this.closeInterval("success","Created successfully!")
         }
 
         return stackStates;
