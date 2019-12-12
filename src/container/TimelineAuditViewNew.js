@@ -225,8 +225,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         rawViewData: timelineDataOne,
                     })
 
-
-
                     this.props.handleLoadingSpinner(false);
                     this.props.toggleLoading(false);
 
