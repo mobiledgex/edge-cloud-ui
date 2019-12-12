@@ -201,7 +201,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     //todo: Extract only the TaskName to display at the top of the timeline.
                     for (let i in auditList) {
                         let operName = auditList[i].operationname;
-                        tasksList.push(this.makeOper(operName));
+                        tasksList.push(this.makeOper2(operName));
                     }
 
                     let newTimesList = []
@@ -261,9 +261,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             _self.sameTime = makeTime;
             return makeTime;
         }
+
         makeOper = (logName) => {
+            /*let arrayLogName= logName.toString().split("/");
+             if ( arrayLogName.length ===4){
+                 return arrayLogName[3]
+
+             }else{
+                 return arrayLogName[4].toUpperCase() + "/" + arrayLogName[5]
+             }*/
             let lastSub = logName.substring(logName.lastIndexOf('/') + 1);
             return lastSub
+        }
+
+
+        makeOper2 = (logName) => {
+            logName = logName.toString().replace('/api/v1/', '')
+            return logName
+
         }
 
 
@@ -284,9 +299,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 })
             }, 251)
         }
-
-
-
 
 
         setAllView(dummyConts, sId) {
@@ -416,7 +428,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 {/*#######################################*/}
                                 {!this.state.isLoading && this.state.timesList.length !== 0 &&
                                 <HorizontalTimelineKJ
-                                    labelWidth={200}
+                                    labelWidth={300}
                                     getLabel={(date, task, index) => {
                                         return (
                                             <View column={true}>
