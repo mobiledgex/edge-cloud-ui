@@ -212,15 +212,19 @@ class PageDetailViewer extends React.Component {
     }
     generateDOM(open, dimmer, data, mData, keysData, hideHeader, region, page) {
 
+        let isOperator = (this.state.userRole === 'OperatorManager' || this.state.userRole === 'OperatorContributor' || this.state.userRole === 'OperatorViewer') ? true : false;
         let panelParams = {data:data, mData:mData, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
         return layout.map((item, i) => (
 
             (i === 0)?
                 <div className="round_panel" key={i} >
-
                     <div className="grid_table tabs">
                         <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }}
-                             panes={(this.state.userRole === 'AdminManager' && page === 'appInst')?panesCommand:((this.state.userRole === 'DeveloperManager' || this.state.userRole === 'DeveloperContributor' || this.state.userRole === 'DeveloperViewer') && page === 'cloudlet')?pane:(page === 'appInst')?panesCommand:panes}{...panelParams}
+                             panes={
+                                 (this.state.userRole === 'AdminManager' && page === 'appInst')?panesCommand
+                                      :(this.state.userRole !== 'AdminManager' && (this.state.userRole === 'DeveloperManager' || this.state.userRole === 'DeveloperContributor' || this.state.userRole === 'DeveloperViewer' || data.Operator !== localStorage.selectOrg) && page === 'cloudlet')?pane
+                                         :(page === 'appInst')?panesCommand
+                                             :panes}{...panelParams}
                              gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab}/>
                     </div>
                 </div>
