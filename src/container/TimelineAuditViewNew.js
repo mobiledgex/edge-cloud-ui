@@ -211,13 +211,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             newTimesList.push(timesList[i].toString().replace('timeline-dot-', ''))
                         }
                     }
+
+                    //@fixme:하단 로우 뷰 0번째 data를 셋팅하는 부분......
+                    let timelineDataOne = this.state.rawAllData[0]
+
+
                     await this.setState({
                         timesList: newTimesList,//@:todo: TimesList to display above the timeline Dot
                         tasksList: tasksList,//@:todo: 타임라인 Dot 위쪽에 표시해줄 tasksList
                         currentTask: tasksList[0],
                         currentTaskTime: timesList[0],
                         isLoading: false,
+                        rawViewData: timelineDataOne,
                     })
+
+
+
                     this.props.handleLoadingSpinner(false);
                     this.props.toggleLoading(false);
 
@@ -277,7 +286,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
 
         makeOper2 = (logName) => {
-            
+
             logName = logName.toString().replace(API_ENDPOINT_PREFIX, '')
             return logName
 
