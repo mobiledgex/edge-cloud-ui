@@ -13,6 +13,7 @@ import View from "react-flexbox";
 import FlexBox from "flexbox-react";
 import HorizontalTimelineKJ from "../components/horizontal_timeline_kj/Components/HorizontalTimeline";
 import {hot} from "react-hot-loader/root";
+import {API_ENDPOINT_PREFIX} from "../shared/Constants";
 
 const countryOptions = [
     {key: '24', value: '24', flag: '24', text: 'Last 24hours'},
@@ -276,7 +277,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
 
         makeOper2 = (logName) => {
-            logName = logName.toString().replace('/api/v1/', '')
+            
+            logName = logName.toString().replace(API_ENDPOINT_PREFIX, '')
             return logName
 
         }
