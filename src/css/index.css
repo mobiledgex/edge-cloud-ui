@@ -1352,14 +1352,10 @@ body, button, input, textarea, optgroup, select, textarea,
     background: #000000 !important;
     color: rgba(255,255,255,.4) !important;
 }
-.table_actions_popup .table_actions_popup_group .table_actions_popup_group_button_hover {
+.table_actions_popup .table_actions_popup_group .table_actions_popup_group_button:hover {
     background-color: rgba(71,82,102,1) !important;
     color: rgba(255,255,255,0.9) !important;
 }
-/*.table_actions_popup .table_actions_popup_group .table_actions_popup_group_button:hover {*/
-/*    background-color: rgba(71,82,102,1) !important;*/
-/*    color: rgba(255,255,255,0.9) !important;*/
-/*}*/
 .table_actions_tooltip {
     background: #000000 !important;
     border: 1px solid rgba(255,255,255,.4) !important;

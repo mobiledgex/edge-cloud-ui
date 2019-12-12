@@ -94,11 +94,6 @@ const renderInputNum = ({ input, placeholder, label, type, error, disabled}) => 
             onChange={(e, { value }) => {
                 let regexp = /[^0-9]/g
                 if(!regexp.test(value)){
-                    if(value > 65535){
-                        value = 65535;
-                    } else if(e.target.value <= 0){
-                        value = ''
-                    }
                     input.onChange(value)
                 }
 
@@ -585,9 +580,9 @@ class SiteFourCreateFormAppDefault extends React.Component {
                                                                                                             }
                                                                                                             <Grid.Row>
                                                                                                                 <Grid.Column>
-                                                                                                                    <span style={{marginRight:'1em'}}>
-                                                                                                                        <Button positive onClick={this.AddPorts}>Add Port Mapping</Button>
-                                                                                                                    </span>
+                                                                        <span style={{marginRight:'1em'}}>
+                                                                            <Button positive onClick={this.AddPorts}>Add Port Mapping</Button>
+                                                                        </span>
                                                                                                                     <Button positive onClick={this.AddMultiPorts}>Add MultiPort Mapping</Button>
                                                                                                                     {/*<div className="addPortMapping" onClick={this.AddPorts}>+ Add Port Mapping</div>*/}
                                                                                                                 </Grid.Column>
