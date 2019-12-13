@@ -1,5 +1,6 @@
 TAG ?= $(shell git describe --tags)
-IMAGE = registry.mobiledgex.net:5000/mobiledgex/console:$(TAG)
+REPO ?= 5000
+IMAGE = registry.mobiledgex.net:$(REPO)/mobiledgex/console:$(TAG)
 
 build:
 	docker build --build-arg TAG=$(TAG) -t $(IMAGE) .
