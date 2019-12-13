@@ -39,7 +39,9 @@ import SiteFourPageApps from './siteFour_page_apps';
 import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
+import SiteFourPageCloudletPool from './siteFour_page_cloudletPool';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
+import SiteFourPageCloudletPoolReg from './siteFour_page_cloudletPoolReg';
 import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
@@ -162,6 +164,7 @@ class SiteFour extends React.Component {
         ]
         this.menuItems = [
             {label:'Cloudlets', icon:'cloud_queue', pg:2},
+            {label:'Cloudlet Pool', icon:'pool', pg:7},
             {label:'Flavors', icon:'free_breakfast', pg:3},
             {label:'Cluster Instances', icon:'storage', pg:4},
             {label:'Apps', icon:'apps', pg:5},
@@ -249,27 +252,30 @@ class SiteFour extends React.Component {
     }
 
     onHandleRegistry() {
-        if(localStorage.selectMenu === 'Organizations') {
-            this.setState({page:'pg=newOrg'})
+        if (localStorage.selectMenu === 'Organizations') {
+            this.setState({page: 'pg=newOrg'})
             this.gotoUrl('/site4', 'pg=newOrg')
-        } else if(localStorage.selectMenu === 'Cloudlets') {
+        } else if (localStorage.selectMenu === 'Cloudlets') {
             this.setState({page: 'pg=createCloudlet'})
             this.gotoUrl('/site4', 'pg=createCloudlet')
-        } else if(localStorage.selectMenu === 'Apps') {
+        } else if (localStorage.selectMenu === 'Apps') {
             this.setState({page: 'pg=createApp'})
             this.gotoUrl('/site4', 'pg=createApp')
-        } else if(localStorage.selectMenu === 'App Instances') {
-            this.setState({page:'pg=createAppInst'})
+        } else if (localStorage.selectMenu === 'App Instances') {
+            this.setState({page: 'pg=createAppInst'})
             this.gotoUrl('/site4', 'pg=createAppInst')
-        } else if(localStorage.selectMenu === '') {
-            this.setState({page:'pg=createAppInst'})
+        } else if (localStorage.selectMenu === '') {
+            this.setState({page: 'pg=createAppInst'})
             this.gotoUrl('/site4', 'pg=createAppInst')
-        } else if(localStorage.selectMenu === 'Flavors') {
-            this.setState({page:'pg=createFlavor'})
+        } else if (localStorage.selectMenu === 'Flavors') {
+            this.setState({page: 'pg=createFlavor'})
             this.gotoUrl('/site4', 'pg=createFlavor')
-        } else if(localStorage.selectMenu === 'Cluster Instances') {
-            this.setState({page:'pg=createClusterInst'})
+        } else if (localStorage.selectMenu === 'Cluster Instances') {
+            this.setState({page: 'pg=createClusterInst'})
             this.gotoUrl('/site4', 'pg=createClusterInst')
+        } else if(localStorage.selectMenu === 'Cloudlet Pool') {
+            this.setState({page:'pg=createCloudletPool'})
+            this.gotoUrl('/site4', 'pg=createCloudletPool')
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
@@ -1134,6 +1140,7 @@ class SiteFour extends React.Component {
                                                                         (this.state.page === 'pg=4')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
                                                                             (this.state.page === 'pg=5')?<SiteFourPageApps></SiteFourPageApps>:
                                                                                 (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
+                                                                                (this.state.page === 'pg=7')? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
                                                                                     (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                                         (this.state.page === 'pg=createApp')? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
                                                                                         (this.state.page === 'pg=editApp')? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
@@ -1141,6 +1148,7 @@ class SiteFour extends React.Component {
                                                                                             (this.state.page === 'pg=editAppInst')? <SiteFourPageAppInstReg editable={true}></SiteFourPageAppInstReg> :
                                                                                                 (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
                                                                                                     (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
+                                                                                                    (this.state.page === 'pg=createCloudletPool')? <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
                                                                                                         (this.state.page === 'pg=createFlavor')? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
                                                                                                         (this.state.page === 'pg=audits')? <SiteFourPageAudits></SiteFourPageAudits> :
                                                                                                         <div> </div>
