@@ -276,7 +276,7 @@ class SiteFourCreateFormDefault extends React.Component {
         return (
 
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
-                <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Cloudlet into the Pool</Header>
+                <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>
                 <Fragment >
                     <Form onSubmit={this.onHandleSubmit} getFormState={this.onFormState} className={"fieldForm"} >
                         <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
@@ -362,13 +362,6 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                                                             initialValue={this.props.regionInfo.long}
                                                                         />
                                                                         </Grid.Column>
-                                                                </Grid.Row>
-                                                            </Grid>
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'selectionBox') ?
-                                                            <Grid>
-                                                                <Grid.Row>
-                                                                    Here position component
                                                                 </Grid.Row>
                                                             </Grid>
                                                             :
