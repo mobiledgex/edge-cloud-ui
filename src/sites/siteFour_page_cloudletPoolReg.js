@@ -10,7 +10,7 @@ import * as services from '../services/service_compute_service';
 import './siteThree.css';
 
 import Alert from "react-s-alert";
-import RegistryCloudletViewer from "../container/registryCloudletViewer";
+import RegistryCloudletPoolViewer from "../container/registryCloudletPoolViewer";
 import * as reducer from "../utils";
 
 
@@ -71,10 +71,10 @@ class SiteFourPageClusterInstPoolReg extends React.Component {
     gotoUrl() {
         _self.props.history.push({
             pathname: '/site4',
-            search: 'pg=2'
+            search: 'pg=7'
         });
-        _self.props.history.location.search = 'pg=2';
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=2'})
+        _self.props.history.location.search = 'pg=7';
+        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
     }
 
 
@@ -85,7 +85,7 @@ class SiteFourPageClusterInstPoolReg extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <RegistryCloudletViewer devData={this.state.devData} gotoUrl={this.gotoUrl}/>
+            <RegistryCloudletPoolViewer devData={this.state.devData} gotoUrl={this.gotoUrl}/>
         );
     }
 
