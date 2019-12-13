@@ -13,6 +13,7 @@ import View from "react-flexbox";
 import FlexBox from "flexbox-react";
 import HorizontalTimelineKJ from "../components/horizontal_timeline_kj/Components/HorizontalTimeline";
 import {hot} from "react-hot-loader/root";
+import {API_ENDPOINT_PREFIX} from "../shared/Constants";
 
 const countryOptions = [
     {key: '24', value: '24', flag: '24', text: 'Last 24hours'},
@@ -69,7 +70,8 @@ type Props = {
     isLoading: boolean,
 }
 
-export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(    class TimelineAuditViewNew extends React.Component<Props, any> {
+export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
+    class TimelineAuditViewNew extends React.Component<Props, any> {
         state = {
             value: 0,
             previous: 0,
@@ -200,7 +202,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(    cla
                     //todo: Extract only the TaskName to display at the top of the timeline.
                     for (let i in auditList) {
                         let operName = auditList[i].operationname;
-                        tasksList.push(this.makeOper(operName));
+                        tasksList.push(this.makeOper2(operName));
                     }
 
                     let newTimesList = []
@@ -209,13 +211,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(    cla
                             newTimesList.push(timesList[i].toString().replace('timeline-dot-', ''))
                         }
                     }
+
+                    //@fixme:하단 로우 뷰 0번째 data를 셋팅하는 부분......
+                    let timelineDataOne = this.state.rawAllData[0]
+
+
                     await this.setState({
                         timesList: newTimesList,//@:todo: TimesList to display above the timeline Dot
                         tasksList: tasksList,//@:todo: 타임라인 Dot 위쪽에 표시해줄 tasksList
                         currentTask: tasksList[0],
                         currentTaskTime: timesList[0],
                         isLoading: false,
+                        rawViewData: timelineDataOne,
                     })
+
                     this.props.handleLoadingSpinner(false);
                     this.props.toggleLoading(false);
 
@@ -260,13 +269,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(    cla
             _self.sameTime = makeTime;
             return makeTime;
         }
+
         makeOper = (logName) => {
+            /*let arrayLogName= logName.toString().split("/");
+             if ( arrayLogName.length ===4){
+                 return arrayLogName[3]
+
+             }else{
+                 return arrayLogName[4].toUpperCase() + "/" + arrayLogName[5]
+             }*/
             let lastSub = logName.substring(logName.lastIndexOf('/') + 1);
             return lastSub
         }
 
 
-        onHandleIndexClicked = (value) => {
+        makeOper2 = (logName) => {
+
+            logName = logName.toString().replace(API_ENDPOINT_PREFIX, '')
+            return logName
+
+        }
+
+
+        onHandleIndexClick = (value) => {
             this.setState({
                 rawViewData: {},
                 isLoading2: true,
@@ -281,7 +306,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(    cla
                     rawViewData: timelineDataOne,
                     isLoading2: false,
                 })
-            }, 350)
+            }, 251)
         }
 
 
@@ -406,11 +431,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(    cla
                                 }*/}
 
                                 {/*#######################################*/}
+                                {/*#######################################*/}
+                                {/*#######################################*/}
                                 {/*todo: Timeline display part            */}
                                 {/*#######################################*/}
                                 {!this.state.isLoading && this.state.timesList.length !== 0 &&
                                 <HorizontalTimelineKJ
-                                    labelWidth={200}
+                                    labelWidth={300}
                                     getLabel={(date, task, index) => {
                                         return (
                                             <View column={true}>
@@ -446,7 +473,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(    cla
                                             currentTaskTime: this.state.timesList[timeLineIndex],
                                         });
 
-                                        this.onHandleIndexClicked({value: timeLineIndex, previous: this.state.value});
+                                        this.onHandleIndexClick({value: timeLineIndex, previous: this.state.value});
                                     }}
                                     values={this.state.timesList}
                                     tasks={this.state.tasksList}
