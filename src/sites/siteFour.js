@@ -1,35 +1,31 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {
-    Grid,
-    Image,
-    Header,
-    Menu,
-    Dropdown,
     Button,
-    Popup,
-    Label,
-    Modal,
-    Item,
+    Container,
+    Dropdown,
+    Grid,
+    Header,
+    Icon,
+    Image,
     Input,
-    Segment,
-    Table, Icon,
-    Container
+    Item,
+    Label,
+    Menu,
+    Modal,
+    Popup,
+    Segment
 } from 'semantic-ui-react';
-import sizeMe from 'react-sizeme';
 
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
-import ContainerDimensions from 'react-container-dimensions'
 import {Motion, spring} from "react-motion";
-import { Steps, Hints } from 'intro.js-react';
-
+import {Hints, Steps} from 'intro.js-react';
 //redux
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from '../actions';
 
-import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
+import {ClipLoader, GridLoader} from "react-spinners";
 import HeaderGlobalMini from '../container/headerGlobalMini';
-
 //pages
 import SiteFourPageFlavor from './siteFour_page_flavor';
 import SiteFourPageUser from './siteFour_page_user';
@@ -49,12 +45,10 @@ import SiteFourPageCreateorga from './siteFour_page_createOrga';
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import PopLegendViewer from '../container/popLegendViewer';
 import * as services from '../services/service_audit_api';
-import * as Service from '../services/service_login_api';
 import * as computeService from '../services/service_compute_service';
 
-import { organizationTutor, CloudletTutor } from '../tutorial';
+import {CloudletTutor, organizationTutor} from '../tutorial';
 import SiteFourPageAudits from './siteFour_page_audits';
-import * as utile from '../utils'
 
 import Alert from 'react-s-alert';
 
@@ -1132,6 +1126,10 @@ class SiteFour extends React.Component {
                                                                 (this.state.page === 'pg=2')?<SiteFourPageCloudlet></SiteFourPageCloudlet> :
                                                                     (this.state.page === 'pg=3')?<SiteFourPageFlavor></SiteFourPageFlavor> :
                                                                         (this.state.page === 'pg=4')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
+                                                                            /*@todo:apps detail page*/
+                                                                            /*@todo:apps detail page*/
+                                                                            /*@todo:apps detail page*/
+                                                                            /*@todo:apps detail page*/
                                                                             (this.state.page === 'pg=5')?<SiteFourPageApps></SiteFourPageApps>:
                                                                                 (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
                                                                                     (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
@@ -1228,4 +1226,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFour)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)((SiteFour)));

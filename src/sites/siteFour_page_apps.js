@@ -1,16 +1,17 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 //redux
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
 import InsideListView from '../container/insideListView';
-import ListDetailViewer from '../container/listDetailViewer';
+import ListDetailViewer from '../container/ListDetailViewer';
 
 let _self = null;
 let rgn = [];
+
 class SiteFourPageApps extends React.Component {
     constructor(props) {
         super(props);
@@ -18,25 +19,26 @@ class SiteFourPageApps extends React.Component {
         this.state = {
             shouldShowBox: true,
             shouldShowCircle: false,
-            contHeight:0,
-            contWidth:0,
-            bodyHeight:0,
+            contHeight: 0,
+            contWidth: 0,
+            bodyHeight: 0,
             activeItem: 'Developers',
-            devData:[],
-            detailData:[],
-            viewMode:'listView',
-            randomId:0,
-            regionToggle:false
+            devData: [],
+            detailData: [],
+            viewMode: 'listView',
+            randomId: 0,
+            regionToggle: false
         };
         this.headerH = 70;
         this.hgap = 0;
         this.loadCount = 0;
 
-        this.headerLayout = [1,3,3,1,3,1,3,4];
-        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster','AuthPublicKey','DefaultFQDN','PackageName','ScaleWithCluster','Revision']
+        this.headerLayout = [1, 3, 3, 1, 3, 1, 3, 4];
+        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster', 'AuthPublicKey', 'DefaultFQDN', 'PackageName', 'ScaleWithCluster', 'Revision']
         this.userToken = null;
 
     }
+
     gotoUrl(site, subPath) {
         let mainPath = site;
         _self.props.history.push({
@@ -44,9 +46,10 @@ class SiteFourPageApps extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({mainPath: mainPath, subPath: subPath})
 
     }
+
     //go to
     gotoPreview(site) {
         //브라우져 입력창에 주소 기록
@@ -55,21 +58,24 @@ class SiteFourPageApps extends React.Component {
         _self.props.history.push({
             pathname: mainPath,
             search: subPath,
-            state: { some: 'state' }
+            state: {some: 'state'}
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({mainPath: mainPath, subPath: subPath})
 
     }
-    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+
+    handleItemClick = (e, {name}) => this.setState({activeItem: name})
 
     onHandleRegistry() {
         this.props.handleInjectDeveloper('userInfo');
     }
+
     componentWillMount() {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+        this.setState({bodyHeight: (window.innerHeight - this.headerH)})
+        this.setState({contHeight: (window.innerHeight - this.headerH) / 2 - this.hgap})
     }
+
     componentDidMount() {
         // let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         // if(store && store.userToken) {
@@ -77,46 +83,48 @@ class SiteFourPageApps extends React.Component {
         //     this.userToken = store.userToken;
         // }
     }
+
     componentWillUnmount() {
-        this.setState({devData:[]})
+        this.setState({devData: []})
     }
 
 
     componentWillReceiveProps(nextProps) {
-        console.log("nextPropsnextProps",nextProps.regionInfo)
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
+        console.log("nextPropsnextProps", nextProps.regionInfo)
+        this.setState({bodyHeight: (window.innerHeight - this.headerH)})
+        this.setState({contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap})
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(nextProps.receiveNewReg && nextProps.receiveNewReg.values) {
+        if (nextProps.receiveNewReg && nextProps.receiveNewReg.values) {
             //services.createNewApp('CreateApp', {params:nextProps.receiveNewReg.values, token:store.userToken, region:'US'}, _self.receiveResult)
         }
-        if(this.props.region.value !== nextProps.region.value){
+        if (this.props.region.value !== nextProps.region.value) {
             this.getDataDeveloper(store ? store.userToken : 'null', nextProps.region.value);
         }
 
-        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
-            _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
-            this.getDataDeveloper(store ? store.userToken : 'null',nextProps.region.value,nextProps.regionInfo.region);
+        if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
+            _self.setState({regionToggle: true, regions: nextProps.regionInfo.region})
+            this.getDataDeveloper(store ? store.userToken : 'null', nextProps.region.value, nextProps.regionInfo.region);
         }
-        if(nextProps.computeRefresh.compute) {
-            this.getDataDeveloper(store ? store.userToken : 'null',nextProps.region.value);
+        if (nextProps.computeRefresh.compute) {
+            this.getDataDeveloper(store ? store.userToken : 'null', nextProps.region.value);
             this.props.handleComputeRefresh(false);
         }
-        if(nextProps.viewMode) {
-            if(nextProps.viewMode === 'listView') {
-                this.setState({viewMode:nextProps.viewMode});
-                setTimeout(() => this.setState({devData:this.state.devData, randomId:Math.random()*1000}), 300)
+        if (nextProps.viewMode) {
+            if (nextProps.viewMode === 'listView') {
+                this.setState({viewMode: nextProps.viewMode});
+                setTimeout(() => this.setState({devData: this.state.devData, randomId: Math.random() * 1000}), 300)
             } else {
-                this.setState({detailData:nextProps.detailData})
+                this.setState({detailData: nextProps.detailData})
                 this.forceUpdate()
-                setTimeout(() => this.setState({viewMode:nextProps.viewMode}), 600)
+                setTimeout(() => this.setState({viewMode: nextProps.viewMode}), 600)
             }
 
         }
     }
+
     receiveResult = (result, region) => {
         // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
+        if (result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
             _self.props.handleLoadingSpinner(false);
@@ -124,15 +132,15 @@ class SiteFourPageApps extends React.Component {
         }
 
         let join = null;
-        if(result[0]['Edit']) {
+        if (result[0]['Edit']) {
             join = _self.state.devData.concat(result);
         } else {
             join = _self.state.devData;
         }
         _self.props.handleLoadingSpinner(false);
-        _self.setState({devData:join})
-        _self.loadCount ++;
-        if(rgn.length == _self.loadCount){
+        _self.setState({devData: join})
+        _self.loadCount++;
+        if (rgn.length == _self.loadCount) {
             return
         }
     }
@@ -141,57 +149,63 @@ class SiteFourPageApps extends React.Component {
         this.props.handleLoadingSpinner(true);
         let serviceBody = {}
         _self.loadCount = 0;
-        this.setState({devData:[]})
-        if(region !== 'All'){
+        this.setState({devData: []})
+        if (region !== 'All') {
             rgn = [region]
         } else {
-            rgn = (regionArr)?regionArr:this.props.regionInfo.region;
+            rgn = (regionArr) ? regionArr : this.props.regionInfo.region;
         }
-        if(localStorage.selectRole == 'AdminManager') {
+        if (localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
                 // All show app
-                services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)
+                services.getMCService('ShowApps', {token: token, region: item}, _self.receiveResult)
                 // setTimeout(() => {services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)}, 0)
             })
         } else {
             rgn.map((item) => {
                 serviceBody = {
-                    "token":token,
+                    "token": token,
                     "params": {
-                        "region":item,
-                        "app":{
-                            "key":{
-                                "developer_key":{"name":localStorage.selectOrg},
+                        "region": item,
+                        "app": {
+                            "key": {
+                                "developer_key": {"name": localStorage.selectOrg},
                             }
                         }
                     }
                 }
                 // org별 show app
-                services.getMCService('ShowApp',serviceBody, _self.receiveResult)
+                services.getMCService('ShowApp', serviceBody, _self.receiveResult)
             })
         }
-        
+
     }
-    
+
     getDataDeveloperSub = () => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.getDataDeveloper(store ? store.userToken : 'null', this.props.region.value);
     }
 
     render() {
-        const { viewMode, detailData, devData, randomId } = this.state;
+        const {viewMode, detailData, devData, randomId} = this.state;
         return (
-            (viewMode === 'listView')?
-            <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} randomId={randomId} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
+            (viewMode === 'listView') ?
+                <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys}
+                                siteId={'App'} randomId={randomId} userToken={this.userToken}
+                                dataRefresh={this.getDataDeveloperSub}></InsideListView>
                 :
-                <ListDetailViewer data={detailData} dimmer={false} open={this.state.openDetail} siteId={'App'} close={this.closeDetail} siteId={this.props.siteId}></ListDetailViewer>
+                <div>
+                    <ListDetailViewer data={detailData} dimmer={false} open={this.state.openDetail} siteId={'App'}
+                                      close={this.closeDetail} siteId={this.props.siteId}></ListDetailViewer>
+                </div>
+
         );
     }
 
 };
 
 const mapStateToProps = (state) => {
-    let registNew= state.form.registNewListInput
+    let registNew = state.form.registNewListInput
         ? {
             values: state.form.registNewListInput.values,
             submitSucceeded: state.form.registNewListInput.submitSucceeded
@@ -204,31 +218,43 @@ const mapStateToProps = (state) => {
         : {};
     let viewMode = null;
     let detailData = null;
-    if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+    if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
         viewMode = state.changeViewMode.mode.viewMode;
         detailData = state.changeViewMode.mode.data;
     }
-    let regionInfo = (state.regionInfo)?state.regionInfo:null;
+    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     return {
-        receiveNewReg:registNew,
-        region:region,
-        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
-        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
-        userRole : state.showUserRole?state.showUserRole.role:null,
-        viewMode : viewMode, detailData:detailData,
+        receiveNewReg: registNew,
+        region: region,
+        computeRefresh: (state.computeRefresh) ? state.computeRefresh : null,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
+        userRole: state.showUserRole ? state.showUserRole.role : null,
+        viewMode: viewMode, detailData: detailData,
         regionInfo: regionInfo
     }
 };
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleChangeSite: (data) => {
+            dispatch(actions.changeSite(data))
+        },
+        handleInjectData: (data) => {
+            dispatch(actions.injectData(data))
+        },
+        handleInjectDeveloper: (data) => {
+            dispatch(actions.registDeveloper(data))
+        },
+        handleComputeRefresh: (data) => {
+            dispatch(actions.computeRefresh(data))
+        },
+        handleLoadingSpinner: (data) => {
+            dispatch(actions.loadingSpinner(data))
+        },
+        handleAlertInfo: (mode, msg) => {
+            dispatch(actions.alertInfo(mode, msg))
+        },
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageApps)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(SiteFourPageApps)));

@@ -69,8 +69,7 @@ type Props = {
     isLoading: boolean,
 }
 
-export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
-    class TimelineAuditViewNew extends React.Component<Props, any> {
+export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(    class TimelineAuditViewNew extends React.Component<Props, any> {
         state = {
             value: 0,
             previous: 0,
@@ -267,7 +266,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
 
-        onHandleIndexClick = (value) => {
+        onHandleIndexClicked = (value) => {
             this.setState({
                 rawViewData: {},
                 isLoading2: true,
@@ -282,11 +281,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     rawViewData: timelineDataOne,
                     isLoading2: false,
                 })
-            }, 251)
+            }, 350)
         }
-
-
-
 
 
         setAllView(dummyConts, sId) {
@@ -410,8 +406,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 }*/}
 
                                 {/*#######################################*/}
-                                {/*#######################################*/}
-                                {/*#######################################*/}
                                 {/*todo: Timeline display part            */}
                                 {/*#######################################*/}
                                 {!this.state.isLoading && this.state.timesList.length !== 0 &&
@@ -452,7 +446,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                             currentTaskTime: this.state.timesList[timeLineIndex],
                                         });
 
-                                        this.onHandleIndexClick({value: timeLineIndex, previous: this.state.value});
+                                        this.onHandleIndexClicked({value: timeLineIndex, previous: this.state.value});
                                     }}
                                     values={this.state.timesList}
                                     tasks={this.state.tasksList}
