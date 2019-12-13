@@ -6,7 +6,6 @@ import EditMap from '../libs/simpleMaps/with-react-motion/editMap';
 import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
 import * as services from "../services/service_compute_service";
 import * as aggregate from "../utils";
-import Alert from "react-s-alert";
 import * as actions from "../actions";
 import {connect} from "react-redux";
 import {scaleLinear} from "d3-scale";

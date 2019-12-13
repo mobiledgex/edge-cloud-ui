@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
 import {withRouter} from "react-router-dom";
-import PopDetailViewer from './popDetailViewer';
+import PopPoolDetailViewer from './popPoolDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import './styles.css';
@@ -75,14 +75,8 @@ class RegistryCloudletPoolViewer extends React.Component {
             errorClose:false,
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
-                    'CloudletName':{label:'Cloudlet Name', type:'RenderInputCluster', necessary:true, tip:'Name of the cloudlet.', active:true},
-                    'OperatorName':{label:'Operator Name', type:'RenderInputDisabled', necessary:true, tip:'Name of the organization you are currently managing.', active:true, items:['','']},
-                    'CloudletLocation':{label:'Cloudlet Location', type:'CloudletLocation', necessary:true, tip:'Cloudlet Location', active:true, items:['','']},
-                    'IPSupport':{label:'IP Support', type:'RenderSelect', necessary:true, tip:'Ip Support indicates the type of public IP support provided by the Cloudlet. Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.', active:true, items:['Dynamic']},
-                    'NumberOfDynamicIPs':{label:'Number of Dynamic IPs', type:'RenderInput', necessary:true, tip:'Number of dynamic IPs available for dynamic IP support.'},
-                    'PhysicalName':{label:'Physical Name', type:'RenderInput', necessary:true, tip:'Physical infrastructure cloudlet name.', active:true},
-                    'PlatformType':{label:'Platform Type', type:'RenderSelect', necessary:true, tip:'Supported list of cloudlet types.', active:true, items:['Openstack']},
+                    'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
+                    'selectCloudlet':{label:'Into the pool', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
                 },
                 {
 
@@ -90,14 +84,8 @@ class RegistryCloudletPoolViewer extends React.Component {
             ],
             fakeData:[
                 {
-                    'Region':'',
-                    'CloudletName':'',
-                    'OperatorName':'',
-                    'CloudletLocation':'',
-                    'IPSupport':'',
-                    'NumberOfDynamicIPs':'',
-                    'PhysicalName':'',
-                    'PlatformType':''
+                    'poolName':'',
+                    'selectCloudlet':''
                 }
             ]
 
@@ -257,8 +245,8 @@ class RegistryCloudletPoolViewer extends React.Component {
     }
     componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.regionInfo.region.length){
-            let assObj = Object.assign([], this.state.keysData);
-            assObj[0].Region.items = nextProps.regionInfo.region;
+            // let assObj = Object.assign([], this.state.keysData);
+            // assObj[0].Region.items = nextProps.regionInfo.region;
         }
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
@@ -320,7 +308,7 @@ class RegistryCloudletPoolViewer extends React.Component {
                 >
                     {this.generateDOM(open, dimmer, dummyData, this.state.keysData, hiddenKeys, this.props.region)}
                 </div>
-                <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
+                <PopPoolDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopPoolDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                 <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
             </div>

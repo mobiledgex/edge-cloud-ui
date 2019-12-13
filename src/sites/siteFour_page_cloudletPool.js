@@ -4,7 +4,7 @@ import sizeMe from 'react-sizeme';
 import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
-import PageDetailViewer from '../container/pageDetailViewer';
+import PagePoolDetailViewer from '../container/pagePoolDetailViewer';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -206,7 +206,7 @@ class SiteFourPageCloudletPool extends React.Component {
             (viewMode === 'listView')?
                 <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet Pool'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
             :
-            <PageDetailViewer data={this.state.detailData} page='cloudletPool'/>
+            <PagePoolDetailViewer data={this.state.detailData} page='cloudletPool'/>
         );
     }
 
