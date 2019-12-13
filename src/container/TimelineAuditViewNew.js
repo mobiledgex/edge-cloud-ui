@@ -16,11 +16,11 @@ import {hot} from "react-hot-loader/root";
 import {API_ENDPOINT_PREFIX} from "../shared/Constants";
 
 const countryOptions = [
-    {key: '24', value: '24', flag: '24', text: 'Last 24hours'},
-    {key: '18', value: '18', flag: '18', text: 'Last 18hours'},
-    {key: '12', value: '12', flag: '12', text: 'Last 12hours'},
-    {key: '6', value: '6', flag: '6', text: 'Last 6hours'},
-    {key: '1', value: '1', flag: '1', text: 'Last an hour'},
+    {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+    {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+    {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+    {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+    {key: '1', value: '1', flag: '1', text: 'Last hour'},
 
 ]
 let timesList = [];
@@ -270,24 +270,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             return makeTime;
         }
 
-        makeOper = (logName) => {
-            /*let arrayLogName= logName.toString().split("/");
-             if ( arrayLogName.length ===4){
-                 return arrayLogName[3]
 
-             }else{
-                 return arrayLogName[4].toUpperCase() + "/" + arrayLogName[5]
-             }*/
-            let lastSub = logName.substring(logName.lastIndexOf('/') + 1);
-            return lastSub
-        }
-
-
-        makeOper2 = (logName) => {
-
-            logName = logName.toString().replace(API_ENDPOINT_PREFIX, '')
-            return logName
-
+        makeOper2 = (fullOpertationName: string) => {
+            fullOpertationName = fullOpertationName.toString().replace(API_ENDPOINT_PREFIX, '')
+            return fullOpertationName
         }
 
 
@@ -440,7 +426,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     labelWidth={300}
                                     getLabel={(date, task, index) => {
                                         return (
-                                            <View column={true}>
+                                            <View key={index} column={true}>
                                                 <div
                                                     style={{
                                                         height: 15,
