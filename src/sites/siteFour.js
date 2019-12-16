@@ -42,6 +42,7 @@ import SiteFourPageCloudlet from './siteFour_page_cloudlet';
 import SiteFourPageCloudletPool from './siteFour_page_cloudletPool';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
 import SiteFourPageCloudletPoolReg from './siteFour_page_cloudletPoolReg';
+import SiteFourPageLinkOrgaizeReg from './siteFour_page_linkOrganizeReg';
 import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
@@ -1149,6 +1150,7 @@ class SiteFour extends React.Component {
                                                                                                 (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
                                                                                                     (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
                                                                                                     (this.state.page === 'pg=createCloudletPool')? <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                                    (this.state.page === 'pg=linkOrganize')? <SiteFourPageLinkOrgaizeReg></SiteFourPageLinkOrgaizeReg> :
                                                                                                         (this.state.page === 'pg=createFlavor')? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
                                                                                                         (this.state.page === 'pg=audits')? <SiteFourPageAudits></SiteFourPageAudits> :
                                                                                                         <div> </div>

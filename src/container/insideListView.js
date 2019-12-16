@@ -310,6 +310,12 @@ class InsideListView extends React.Component {
         // this.props.handleChangeComputeItem('App Instances')
         localStorage.setItem('selectMenu', 'Cloudlet Pool')
     }
+    linkOrganize = (data) => {
+        this.gotoUrl('/site4', 'pg=linkOrganize','pg=7')
+        this.props.handleAppLaunch(data)
+        // this.props.handleChangeComputeItem('App Instances')
+        localStorage.setItem('selectMenu', 'Cloudlet Pool')
+    }
     handleOpen = () => {
         this.setState({ isOpen: true })
 
@@ -362,6 +368,8 @@ class InsideListView extends React.Component {
         //cloudlet pool
         if(b.children === 'Add') {
             this.addCloudlet(this.state.item)
+        } else if(b.children === 'Link') {
+            this.linkOrganize(this.state.item)
         }
 
     }
