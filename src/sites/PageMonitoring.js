@@ -5,22 +5,18 @@ import {withRouter} from 'react-router-dom';
 //redux
 import {connect} from 'react-redux';
 import * as actions from '../actions';
-import * as services from '../services/service_audit_api';
 import './siteThree.css';
 import FlexBox from "flexbox-react";
 import {hot} from "react-hot-loader/root";
-import {Button} from "semantic-ui-react";
 import Plot from 'react-plotly.js';
-import TimeSeries from "../charts/plotly/timeseries";
+import {Button, Dropdown, Grid, Item,} from "semantic-ui-react";
 
-let _self = null;
-let rgn = ['US', 'KR', 'EU'];
 
 class PageMonitoring extends React.Component {
     constructor(props) {
         super(props);
-        this._cloudletDummy = [];
     }
+
     componentDidMount() {
 
 
@@ -28,9 +24,7 @@ class PageMonitoring extends React.Component {
 
     componentWillUnmount() {
 
-
     }
-
 
     componentWillReceiveProps(nextProps, nextContext) {
 
@@ -206,6 +200,7 @@ class PageMonitoring extends React.Component {
 
     renderPieGraph() {
         return (
+
             <div style={{backgroundColor: 'transparent',}}>
                 <Plot
                     style={{
@@ -255,12 +250,12 @@ class PageMonitoring extends React.Component {
                         <FlexBox style={{
                             fontSize: 15,
                             color: '#fff',
-                            marginTop:10,
+                            marginTop: 10,
                         }}>
-                            sldkflsdkf
+                            고경준App1
                         </FlexBox>
                         <FlexBox style={{
-                            marginTop:20,
+                            marginTop: 20,
                             fontSize: 50,
                             color: '#29a1ff',
                         }}>
@@ -281,12 +276,12 @@ class PageMonitoring extends React.Component {
                         <FlexBox style={{
                             fontSize: 15,
                             color: '#fff',
-                            marginTop:10,
+                            marginTop: 10,
                         }}>
-                            sldkflsdkf
+                            고경준App2
                         </FlexBox>
                         <FlexBox style={{
-                            marginTop:20,
+                            marginTop: 20,
                             fontSize: 50,
                             color: '#29a1ff',
                         }}>
@@ -307,12 +302,12 @@ class PageMonitoring extends React.Component {
                         <FlexBox style={{
                             fontSize: 15,
                             color: '#fff',
-                            marginTop:10,
+                            marginTop: 10,
                         }}>
-                            sldkflsdkf
+                            고경준App23
                         </FlexBox>
                         <FlexBox style={{
-                            marginTop:20,
+                            marginTop: 20,
                             fontSize: 50,
                             color: '#29a1ff',
                         }}>
@@ -334,16 +329,16 @@ class PageMonitoring extends React.Component {
                         <FlexBox style={{
                             fontSize: 15,
                             color: '#fff',
-                            marginTop:10,
+                            marginTop: 10,
                         }}>
-                            sldkflsdkf
+                            고경준App4
                         </FlexBox>
                         <FlexBox style={{
-                            marginTop:20,
+                            marginTop: 20,
                             fontSize: 50,
                             color: '#29a1ff',
                         }}>
-                            14
+                            5
                         </FlexBox>
 
                     </FlexBox>
@@ -360,12 +355,12 @@ class PageMonitoring extends React.Component {
                         <FlexBox style={{
                             fontSize: 15,
                             color: '#fff',
-                            marginTop:10,
+                            marginTop: 10,
                         }}>
-                            sldkflsdkf
+                            고경준App5
                         </FlexBox>
                         <FlexBox style={{
-                            marginTop:20,
+                            marginTop: 20,
                             fontSize: 50,
                             color: '#fff',
                         }}>
@@ -386,12 +381,12 @@ class PageMonitoring extends React.Component {
                         <FlexBox style={{
                             fontSize: 15,
                             color: '#fff',
-                            marginTop:10,
+                            marginTop: 10,
                         }}>
-                            sldkflsdkf
+                            고경준App6
                         </FlexBox>
                         <FlexBox style={{
-                            marginTop:20,
+                            marginTop: 20,
                             fontSize: 50,
                             color: '#fff',
                         }}>
@@ -406,79 +401,238 @@ class PageMonitoring extends React.Component {
 
     render() {
 
+        let options1 = [
+            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+            {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+        ]
 
         return (
-            <div style={{marginTop: 30}}>
-                <FlexBox style={{width: '100%'}}>
-                    <FlexBox style={{
-                        flexDirection: 'column',
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginLeft: 25,
-                    }}>
-                        <FlexBox style={{
-                            fontSize: 22,
-                            justifyContent: 'flex-start',
-                            marginLeft: -210,
-                            marginTop: -10,
-                            color: 'white'
-                        }}>
-                            State of Launch
+
+            <Grid.Row className='view_contents'>
+
+
+                {/*FIXME: contents_body 스타일 영역이 좀 이상하게 잡혀있는듯*/}
+                {/*FIXME: contents_body 스타일 영역이 좀 이상하게 잡혀있는듯*/}
+                {/*FIXME: contents_body 스타일 영역이 좀 이상하게 잡혀있는듯*/}
+                <Grid.Column className='contents_body'>
+                    {/*#######################*/}
+                    {/*컨텐츠 해더 부분...*/}
+                    {/*#######################*/}
+                    <FlexBox className='' style={{}}>
+                        <Grid.Column className='content_title2'
+                                     style={{lineHeight: '36px', fontSize: 30,}}>Monitoring
+                        </Grid.Column>
+                        <Grid.Column className='content_title2' style={{marginLeft:-10}}>
+                            <button className="ui circular icon button"><i aria-hidden="true" className="info icon"></i>
+                            </button>
+                        </Grid.Column>
+                        <FlexBox style={{width: 150,}}/>
+                        <FlexBox style={{justifyContent: 'flex-end', alignItems: 'flex-end', width: '100%'}}>
+                            <FlexBox style={{backgroundColor:'red'}}
+                                style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer'}}
+                                onClick={() => {
+                                    alert('Reset All')
+                                }}
+                            >
+                                Reset All
+                            </FlexBox>
+                            {/*###########*/}
+                            {/* COLUMN ONe*/}
+                            {/*###########*/}
+                            <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 30,}}>
+                                <div style={{marginTop: 10}}>
+                                    <Dropdown
+                                        placeholder='REGION'
+                                        selection
+                                        options={options1
+
+                                        }
+                                        defaultValue={options1[0].value}
+                                        style={{width: 200}}
+                                    />
+                                </div>
+                            </Grid.Column>
+                            {/*###########*/}
+                            {/* COLUMN TWO*/}
+                            {/*###########*/}
+                            <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 10,}}>
+                                <div style={{marginTop: 10}}>
+                                    <Dropdown
+                                        placeholder='CloudLet'
+                                        selection
+                                        options={
+                                            [
+                                                {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                                {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                                {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                                {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                                {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+                                            ]
+
+                                        }
+                                        style={{width: 200}}
+                                    />
+                                </div>
+                            </Grid.Column>
+                            {/*###########*/}
+                            {/* COLUMN 333*/}
+                            {/*###########*/}
+                            <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 10,}}>
+                                <div style={{marginTop: 10}}>
+                                    <Dropdown
+                                        placeholder='Cluster'
+                                        selection
+                                        options={
+                                            [
+                                                {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                                {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                                {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                                {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                                {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+                                            ]
+
+                                        }
+                                        style={{width: 200}}
+                                    />
+                                </div>
+                            </Grid.Column>
+                            {/*###########*/}
+                            {/* COLUMN 4444*/}
+                            {/*###########*/}
+                            <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 10,}}>
+                                <div style={{marginTop: 10}}>
+                                    <Dropdown
+                                        placeholder='2018/11/01'
+                                        selection
+                                        options={
+                                            [
+                                                {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                                {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                                {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                                {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                                {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+                                            ]
+
+                                        }
+                                        style={{width: 200}}
+                                    />
+                                </div>
+                            </Grid.Column>
                         </FlexBox>
-                        <div style={{marginTop: 15}}>
-                            {this.renderGrid()}
+
+                    </FlexBox>
+                    {/*#######################*/}
+                    {/*@fixme 컨텐츠 BODY 부분...*/}
+                    {/*#######################*/}
+                    <Grid.Row className='site_content_body'>
+                        <div className="page_audit">
+                            <div style={{marginTop: 0, marginLeft: -40}}>
+                                <FlexBox style={{width: '100%'}}>
+                                    <FlexBox style={{
+                                        flexDirection: 'column',
+                                        alignSelf: 'center',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        marginLeft: 25,
+                                    }}>
+                                        <FlexBox style={{
+                                            fontSize: 22,
+                                            justifyContent: 'flex-start',
+                                            marginLeft: -210,
+                                            marginTop: -10,
+                                            color: 'white'
+                                        }}>
+                                            State of Launch
+                                        </FlexBox>
+                                        <div style={{marginTop: 15}}>
+                                            {this.renderGrid()}
+                                        </div>
+
+                                    </FlexBox>
+                                    <FlexBox style={{flexDirection: 'column', marginLeft: 20,}}>
+                                        <FlexBox style={{
+                                            fontSize: 22,
+                                            justifyContent: 'flex-start',
+                                            marginLeft: 60,
+                                            color: 'white'
+                                        }}>
+                                            Top 5 of CPU Usage
+                                        </FlexBox>
+                                        {this.renderBarGraph()}
+                                    </FlexBox>
+                                    <FlexBox style={{flexDirection: 'column', marginLeft: -100}}>
+                                        <FlexBox style={{
+                                            fontSize: 22,
+                                            justifyContent: 'flex-start',
+                                            marginLeft: 60,
+                                            color: 'white'
+                                        }}>
+                                            Transition OF CPU
+                                        </FlexBox>
+                                        {this.renderLineGraph()}
+                                    </FlexBox>
+                                </FlexBox>
+
+                                {/*2nd row*/}
+                                {/*2nd row*/}
+                                {/*2nd row*/}
+                                <FlexBox style={{marginTop: 15,}}>
+                                    <FlexBox style={{
+                                        flexDirection: 'column',
+                                        alignSelf: 'center',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        marginLeft: 25,
+                                        marginTop: 10,
+                                    }}>
+                                        <FlexBox style={{
+                                            fontSize: 22,
+                                            justifyContent: 'flex-start',
+                                            marginLeft: -160,
+                                            marginTop: -10,
+                                            color: 'white'
+                                        }}>
+                                            Performance of App
+                                        </FlexBox>
+                                        {this.renderPieGraph()}
+                                    </FlexBox>
+                                    <FlexBox style={{flexDirection: 'column', marginLeft: 20,}}>
+                                        <FlexBox style={{
+                                            fontSize: 22,
+                                            justifyContent: 'flex-start',
+                                            marginLeft: 60,
+                                            color: 'white'
+                                        }}>
+                                            Top 5 of MEM Usage
+                                        </FlexBox>
+                                        {this.renderBarGraph()}
+                                    </FlexBox>
+                                    <FlexBox style={{flexDirection: 'column', marginLeft: -100}}>
+                                        <FlexBox style={{
+                                            fontSize: 22,
+                                            justifyContent: 'flex-start',
+                                            marginLeft: 60,
+                                            color: 'white'
+                                        }}>
+                                            Transition OF MEM
+                                        </FlexBox>
+                                        {this.renderLineGraph()}
+                                    </FlexBox>
+                                </FlexBox>
+
+                            </div>
                         </div>
+                    </Grid.Row>
+                </Grid.Column>
+            </Grid.Row>
 
-                    </FlexBox>
-                    <FlexBox style={{flexDirection: 'column', marginLeft: 50,}}>
-                        <FlexBox style={{fontSize: 22, justifyContent: 'flex-start', marginLeft: 60, color: 'white'}}>
-                            Top 5 of CPU Usage
-                        </FlexBox>
-                        {this.renderBarGraph()}
-                    </FlexBox>
-                    <FlexBox style={{flexDirection: 'column', marginLeft: -50}}>
-                        <FlexBox style={{fontSize: 22, justifyContent: 'flex-start', marginLeft: 60, color: 'white'}}>
-                            Transition OF CPU
-                        </FlexBox>
-                        {this.renderLineGraph()}
-                    </FlexBox>
-                </FlexBox>
-                <FlexBox style={{marginTop: 15,}}>
-                    <FlexBox style={{
-                        flexDirection: 'column',
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginLeft: 25,
-                        marginTop: 10,
-                    }}>
-                        <FlexBox style={{
-                            fontSize: 22,
-                            justifyContent: 'flex-start',
-                            marginLeft: -160,
-                            marginTop: -10,
-                            color: 'white'
-                        }}>
-                            Performance of App
-                        </FlexBox>
-                        {this.renderPieGraph()}
-                    </FlexBox>
-                    <FlexBox style={{flexDirection: 'column', marginLeft: 50,}}>
-                        <FlexBox style={{fontSize: 22, justifyContent: 'flex-start', marginLeft: 60, color: 'white'}}>
-                            Top 5 of MEM Usage
-                        </FlexBox>
-                        {this.renderBarGraph()}
-                    </FlexBox>
-                    <FlexBox style={{flexDirection: 'column', marginLeft: -50}}>
-                        <FlexBox style={{fontSize: 22, justifyContent: 'flex-start', marginLeft: 60, color: 'white'}}>
-                            Transition OF MEM
-                        </FlexBox>
-                        {this.renderLineGraph()}
-                    </FlexBox>
-                </FlexBox>
-
-            </div>
 
         );
     }
