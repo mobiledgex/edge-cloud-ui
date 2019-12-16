@@ -48,6 +48,7 @@ import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
 import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
 import SiteFourPageCreateorga from './siteFour_page_createOrga';
+import SiteFourPageMonitoring from './siteFour_page_monitoring';
 
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import PopLegendViewer from '../container/popLegendViewer';
@@ -170,9 +171,11 @@ class SiteFour extends React.Component {
             {label:'Cluster Instances', icon:'storage', pg:4},
             {label:'Apps', icon:'apps', pg:5},
             {label:'App Instances', icon:'storage', pg:6},
-            {label:'Audit Log', icon:'check', pg:'audits'}
+            {label:'Audit Log', icon:'check', pg:'audits'},
+            {label:'Monitoring', icon:'check', pg:'monitor'}
+
         ]
-        this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
+        this.auth_three = [this.menuItems[0], this.menuItems[5]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
             {role:'AdminManager', view:[]},
             {role:'DeveloperManager', view:[2,3]},
@@ -1068,7 +1071,7 @@ class SiteFour extends React.Component {
                             <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
                                 <Grid.Column className='title_align' style={{lineHeight:'36px'}}>{this.state.headerTitle}</Grid.Column>
                                 {
-                                    (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1) ?
+                                    (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1 && this.props.location.search.indexOf('monitor') === -1) ?
                                         <Grid.Column className='title_align'>
                                             <Item className={'stepOrg2'} style={{marginLeft:20, marginRight:10}}>
                                                 <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
@@ -1153,7 +1156,8 @@ class SiteFour extends React.Component {
                                                                                                     (this.state.page === 'pg=linkOrganize')? <SiteFourPageLinkOrgaizeReg></SiteFourPageLinkOrgaizeReg> :
                                                                                                         (this.state.page === 'pg=createFlavor')? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
                                                                                                         (this.state.page === 'pg=audits')? <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                        <div> </div>
+                                                                                                            (this.state.page === 'pg=monitor')? <SiteFourPageMonitoring></SiteFourPageMonitoring> :
+                                                                                                                <div> </div>
                                                 }
                                             </div>
                                 </Grid.Column>
