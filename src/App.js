@@ -1,19 +1,16 @@
 import React, {Component} from 'react';
-import {Grid, Button, Container} from 'semantic-ui-react';
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import Alert from 'react-s-alert';
 
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'semantic-ui-css/semantic.min.css';
-import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
+import {GridLoader} from "react-spinners";
 //redux
 import {connect} from 'react-redux';
 import * as actions from './actions';
 import * as Service from './services/service_login_api';
 import * as computeService from './services/service_compute_service';
-// API
-
 import {LOCAL_STRAGE_KEY} from './components/utils/Settings'
 //insert pages
 import EntranceGlob from './sites/entranceGlob';
@@ -27,9 +24,7 @@ import './css/index.css';
 
 import './css/pages/audit.css';
 import './css/components/timelineH.css';
-import Test001 from "./container/Test/Test001";
-import Test002 from "./container/Test/Test002";
-import Test003 from "./container/Test/Test003";
+// API
 
 let self = null;
 
@@ -370,9 +365,9 @@ class App extends Component {
                     {/*##########################################*/}
                     {/*     테스트를 위한 라우터 입니다 (router for Test)*/}
                     {/*##########################################*/}
-                    <Route exact path='/Test001' component={Test001}/>
+                    {/*<Route exact path='/Test001' component={Test001}/>
                     <Route exact path='/Test002' component={Test002}/>
-                    <Route exact path='/Test003' component={Test003}/>
+                    <Route exact path='/Test003' component={Test003}/>*/}
 
 
                 </div>

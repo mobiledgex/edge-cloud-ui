@@ -21,8 +21,6 @@ class PageMonitoring extends React.Component {
         super(props);
         this._cloudletDummy = [];
     }
-
-
     componentDidMount() {
 
 
