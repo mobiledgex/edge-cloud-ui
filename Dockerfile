@@ -20,6 +20,7 @@ RUN npm install
 
 WORKDIR /edge-cloud-ui
 COPY . .
+RUN sed -i "s/protocol: 'ws'/protocol: 'wss'/" /edge-cloud-ui/node_modules/react-dev-utils/webpackHotDevClient.js
 
 ARG TAG
 ENV BUILD_VERSION=$TAG
