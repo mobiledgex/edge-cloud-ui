@@ -16,7 +16,7 @@ import TimeSeries from "../charts/plotly/timeseries";
 let _self = null;
 let rgn = ['US', 'KR', 'EU'];
 
-class Audits2 extends React.Component {
+class PageMonitoring extends React.Component {
     constructor(props) {
         super(props);
         this._cloudletDummy = [];
@@ -534,4 +534,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(Audits2))));
+export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(PageMonitoring))));

@@ -54,7 +54,7 @@ import Alert from 'react-s-alert';
 
 import '../css/introjs.css';
 import '../css/introjs-dark.css';
-import Audits2 from "./Audits2";
+import PageMonitoring from "./PageMonitoring";
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 const locationOptions = [
@@ -162,7 +162,7 @@ class SiteFour extends React.Component {
             {label:'Apps', icon:'apps', pg:5},
             {label:'App Instances', icon:'storage', pg:6},
             {label:'Audit Log', icon:'check', pg:'audits'},
-            {label:'Monitoring', icon:'money', pg:'Audits2'},
+            {label:'Monitoring', icon:'money', pg:'Monitoring'},
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
@@ -1143,7 +1143,7 @@ class SiteFour extends React.Component {
                                                                                                     (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
                                                                                                         (this.state.page === 'pg=createFlavor')? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
                                                                                                         (this.state.page === 'pg=audits')? <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                            (this.state.page === 'pg=Audits2')? <Audits2/> :
+                                                                                                            (this.state.page === 'pg=Monitoring')? <PageMonitoring/> :
                                                                                                         <div> </div>
                                                 }
                                             </div>
