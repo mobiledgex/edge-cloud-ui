@@ -99,7 +99,7 @@ const renderTextArea = field => (
         rows={field.row}
         // placeholder={field.placeholder}
     />
-    {field.error && <span className="text-danger">{field.error}</span>}
+    {/* {field.error && <span className="text-danger">{field.error}</span>} */}
     </div>
 );
 
@@ -384,7 +384,6 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 row = {4}
                                                                 value={data[key]}
                                                                 name={key}
-                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
                                                             />
                                                             :
                                                             <Field

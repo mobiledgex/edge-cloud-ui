@@ -276,12 +276,8 @@ class RegistryCloudletViewer extends React.Component {
         if(nextProps.submitValues && !this.state.toggleSubmit) {
             const cluster = ['Region','CloudletName','OperatorName','IPSupport','NumberOfDynamicIPs','PhysicalName','PlatformType','Latitude','Longitude'];
              //add if platform_type is openstack  (placement should be better)
-            if(nextProps.submitValues.cloudlet.platform_type === 2)
+            if(nextProps.submitValues.cloudlet.platform_type !== 2)
             {
-                cluster.push('OpenRCData')
-                cluster.push('CACertData')
-            }
-            else{
                 nextProps.submitValues.cloudlet.accessvars = undefined
             }
             let error = [];
@@ -292,7 +288,6 @@ class RegistryCloudletViewer extends React.Component {
             })
             //close tutorial
             this.props.handleStateTutor('done');
-
             if(!this.pauseRender && nextProps.formClusterInst.submitSucceeded && error.length == 0){
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);

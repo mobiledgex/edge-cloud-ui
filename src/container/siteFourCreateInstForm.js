@@ -317,8 +317,8 @@ class SiteFourCreateInstForm extends React.PureComponent {
         {
             if(value === 'Openstack')
             {
-                this.props.data.keys[0].OpenRCData = {label:'OpenRC Data', type:'RenderTextArea', necessary:true, tip:'AccessVars', active:true};
-                this.props.data.keys[0].CACertData = {label:'CACert Data', type:'RenderTextArea', necessary:true, tip:'AccessVars', active:true};
+                this.props.data.keys[0].OpenRCData = {label:'OpenRC Data', type:'RenderTextArea', necessary:false, tip:'Key-Value pair of access variables delimitted by newline', active:true};
+                this.props.data.keys[0].CACertData = {label:'CACert Data', type:'RenderTextArea', necessary:false, tip:'CAcert data for HTTPS based verification of auth URL', active:true};
             }
             else
             {
