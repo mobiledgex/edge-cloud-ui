@@ -136,7 +136,7 @@ export default class PopDetailViewer extends React.Component {
                                         <div>
                                             If your image is docker, please upload your image with your MobiledgeX
                                             Account Credentials to our docker registry using the following docker
-                                            command.
+                                            commands.
                                         </div>
                                         <br></br>
                                         <div>
