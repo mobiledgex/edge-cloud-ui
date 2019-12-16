@@ -397,7 +397,7 @@ export default class MonitoringViewer extends React.Component {
         return (
             <Grid.Row className="monitoring">
                 <Grid.Column>
-                    <div className='wrapperPercentage'>
+                    <div className={(this.props.data.page === 'cloudlet')? 'cloudlet wrapperPercentage' : 'wrapperPercentage'}>
                         {
                             this.makeChartContainer((this.props.data.page === 'cloudlet')?"vCPUs" : "CPU", this.state.lastCPU,  this.state.maxCPU, ' Count', 'CPU')
                         }
