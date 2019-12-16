@@ -25,10 +25,15 @@ const panesCommand = [
     { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props}/></Tab.Pane> },
     { menuItem: 'Command', render: (props) => <Tab.Pane><CommandViewer data={props}/></Tab.Pane> }
 ]
+
 const detailViewer = (props, type) => (
     <Fragment>
         {(type === 'detailViewer')?
             <Grid>
+                <Grid.Row columns={2}>
+                    <Grid.Column>Subject</Grid.Column>
+                    <Grid.Column>Update</Grid.Column>
+                </Grid.Row>
                 <Grid.Row>
                     <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
                         <Table.Header>
@@ -39,7 +44,7 @@ const detailViewer = (props, type) => (
                         </Table.Header>
                         <Table.Body>
                             {
-                                props.data ? Object.keys(props.data).map((item, i) => makeTable(props.data, item, i)) : null
+                                props.data ? Object.keys(props.data).map((item, i) => makeCloudletTable(props.data, item, i)) : null
                             }
                         </Table.Body>
                     </Table>
@@ -54,7 +59,7 @@ const detailViewer = (props, type) => (
                         </Table.Header>
                         <Table.Body>
                             {
-                                props.data ? Object.keys(props.data).map((item, i) => makeTable(props.data, item, i)) : null
+                                props.data ? Object.keys(props.data).map((item, i) => makeLinkTable(props.data, item, i)) : null
                             }
                         </Table.Body>
                     </Table>
@@ -68,7 +73,7 @@ const detailViewer = (props, type) => (
     </Fragment>
 )
 
-const makeTable = (values, label, i) => (
+const makeCloudletTable = (values, label, i) => (
     (label !== 'Edit')?
         <Table.Row key={i}>
             <Table.Cell>
@@ -104,6 +109,15 @@ const makeTable = (values, label, i) => (
                                                     :String(values[label])}
             </Table.Cell>
         </Table.Row> : null
+)
+const makeLinkTable = (values, label, i) => (
+    (label !== 'Edit')?
+        <Table.Row key={i}>
+            <Table.Cell>
+                <Header as='h4' image>Link</Header>
+            </Table.Cell>
+        </Table.Row>
+        : null
 )
 const jsonView = (jsonObj,_label) => {
     if(_label === 'Mapped_port'){
@@ -340,20 +354,6 @@ class PagePoolDetailViewer extends React.Component {
         }
     )
 
-
-
-    /*
-    http --verify=false --auth-type=jwt --auth=$SUPERPASS POST
-    https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cloudlet <<<
-    '{"region":"EU",
-        "cloudlet":{
-            "operator_key":{"name":"TDG"},
-            "name":"frankfurt-eu"
-        },
-        "selector":"utilization",
-        "last":2
-    }'
-    */
     makeFormCloudlet =(inst, valid, store) => (
         {
             'token':store,
@@ -407,7 +407,6 @@ class PagePoolDetailViewer extends React.Component {
         </Grid.Row>
     )
 
-
     setCloudletList = (operNm) => {
         let cl = [];
         _self.state.cloudletResult[operNm].map((oper, i) => {
@@ -418,16 +417,11 @@ class PagePoolDetailViewer extends React.Component {
         _self.setState({devOptionsThree: cl})
     }
 
-
-
     close() {
         this.setState({ open: false })
         this.clearInterval();
         this.props.close()
     }
-
-
-
 
     render() {
         let { listData, monitorData, clusterName, open, dimmer, hiddenKeys, userRole } = this.state;
