@@ -186,7 +186,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         timesList.push('timeline-dot-' + composit);
                     })
 
-                    this.setState({
+                    await this.setState({
                         dates: dummys,
                         rawAllData: dummyConts,
                         auditCount: nextProps.data.data.length,
