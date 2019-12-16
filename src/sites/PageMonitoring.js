@@ -64,12 +64,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount() {
-
-
-            console.log('itemeLength===>');
-            console.log('itemeLength===>');
-            console.log('itemeLength===>');
-            console.log('itemeLength===>');
             console.log('itemeLength===>');
             console.log('itemeLength===>');
         }
