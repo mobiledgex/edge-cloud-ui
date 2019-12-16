@@ -1,5 +1,6 @@
 import 'react-hot-loader'
 import React from 'react';
+import Loader from 'react-loader-spinner'
 import {Button, Dropdown, Modal} from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
@@ -383,8 +384,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                                 {this.props.isLoading &&
                                 <FlexBox style={{position: 'absolute', top: '5%', zIndex: 9999999}}>
-                                    <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}
-                                                      size={20}/>
+                                    {/*<CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}
+                                                      size={20}/>*/}
+                                    <Loader
+                                        type="Audio"
+                                        color="#77BD25"
+                                        height={50}
+                                        width={50}
+                                    />
+
                                 </FlexBox>
                                 }
                                 {/* <Button onClick={() => {
@@ -492,7 +500,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     Raw Viewer
                                 </div>
                                 {this.state.isLoading2 &&
-                                <FlexBox style={{position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999}}>
+                                <FlexBox style={{position: 'absolute', bottom: '50%', left: '5%', zIndex: 9999999}}>
                                     <CircularProgress style={{color: '#1cecff', zIndex: 9999999, fontSize: 10}}
                                                       size={20}/>
                                 </FlexBox>
