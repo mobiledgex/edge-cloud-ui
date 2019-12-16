@@ -90,6 +90,20 @@ const renderInputDisabled = field => (
         disabled
     />
 );
+
+const renderTextArea = field => (
+    <div>
+    <Form.TextArea
+        {...field.input}
+        label={field.label}
+        rows={field.row}
+        // placeholder={field.placeholder}
+    />
+    {field.error && <span className="text-danger">{field.error}</span>}
+    </div>
+);
+
+
 const renderDropDown = field => (
     <div>
         <Form.Dropdown
@@ -274,7 +288,6 @@ class SiteFourCreateFormDefault extends React.Component {
         const { data, regKeys, fieldKeys } = this.state;
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         return (
-
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
                 <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>
                 <Fragment >
@@ -364,6 +377,15 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                         </Grid.Column>
                                                                 </Grid.Row>
                                                             </Grid>
+                                                            :
+                                                            (fieldKeys[pId][key]['type'] === 'RenderTextArea') ?
+                                                            <Field
+                                                                component={renderTextArea}
+                                                                row = {4}
+                                                                value={data[key]}
+                                                                name={key}
+                                                                error={(this.props.validError.indexOf(key) !== -1)?'Required':''}
+                                                            />
                                                             :
                                                             <Field
                                                                 component={renderInput}

@@ -313,6 +313,18 @@ class SiteFourCreateInstForm extends React.PureComponent {
                     if(value.length == 0) this.setState({locData:[]})
                 }
             })
+        } else if(state === 'PlatformType')
+        {
+            if(value === 'Openstack')
+            {
+                this.props.data.keys[0].OpenRCData = {label:'OpenRC Data', type:'RenderTextArea', necessary:true, tip:'AccessVars', active:true};
+                this.props.data.keys[0].CACertData = {label:'CACert Data', type:'RenderTextArea', necessary:true, tip:'AccessVars', active:true};
+            }
+            else
+            {
+                this.props.data.keys[0].OpenRCData = undefined
+                this.props.data.keys[0].CACertData = undefined
+            }
         }
     }
     setFlavorNode(keys, flavor) {
