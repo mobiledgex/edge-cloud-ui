@@ -12,6 +12,7 @@ import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker} from 'antd';
 import {formatDate, getTodayDate} from "../utils";
 
+const {Column, Row} = Grid;
 
 const mapStateToProps = (state) => {
     let viewMode = null;
@@ -77,6 +78,9 @@ type State = {
     datesRange: string
 
 }
+
+let boxWidth = window.innerWidth / 10 * 3;
+
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageMonitoring extends React.Component<Props, State> {
 
@@ -115,14 +119,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <Plot
                     style={{
-                        backgroundColor: 'transparent',
+                        backgroundColor: 'grey',
+                        //backgroundColor: 'transparent',
                         overflow: 'hidden',
                         color: 'white',
-                        height: 350,
                         alignItems: 'center',
                         justifyContent: 'center',
                         alignSelf: 'center',
-                        marginTop: -80
+                        marginTop: -40
                     }}
                     data={
                         [
@@ -140,7 +144,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         width: 1
                                     }
                                 },
-                                name: 'Household savings, percentage of household disposable income',
+                                //name: 'Household savings, percentage of household disposable income',
                                 orientation: 'h'
                             }
 
@@ -148,8 +152,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                     }
                     layout={{
-                        height: 400,
-                        width: 500,
+                        height: 350,
+                        width: boxWidth,
+                        alignItems: 'center',
+                        marginTop: -40,
                         paper_bgcolor: 'transparent',
                         plot_bgcolor: 'transparent',
                         color: 'white',
@@ -192,14 +198,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <Plot
                     style={{
-                        backgroundColor: 'transparent',
+                        //backgroundColor: 'transparent',
+                        backgroundColor: 'blue',
                         overflow: 'hidden',
                         color: 'white',
-                        height: 350,
                         alignItems: 'center',
                         justifyContent: 'center',
                         alignSelf: 'center',
-                        marginTop: -80
+                        marginTop: -40
+
                     }}
                     data={
                         [
@@ -233,8 +240,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                     }
                     layout={{
-                        height: 400,
-                        width: 500,
+                        height: 350,
+                        width:boxWidth,
                         paper_bgcolor: 'transparent',
                         plot_bgcolor: 'transparent',
                         color: 'white',
@@ -280,14 +287,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <div style={{backgroundColor: 'transparent',}}>
                     <Plot
                         style={{
-                            backgroundColor: 'transparent',
+                            backgroundColor: 'blue',
                             overflow: 'hidden',
                             color: 'white',
-                            height: 350,
                             alignItems: 'center',
                             justifyContent: 'center',
                             alignSelf: 'center',
-                            marginTop: -80
+                            marginTop: 0
                         }}
                         data={[{
                             values: [30, 40, 30],
@@ -295,8 +301,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             type: 'pie'
                         }]}
                         layout={{
-                            height: 400,
-                            width: 380,
+                            height: 350,
+                            width: boxWidth-90,
                             paper_bgcolor: 'transparent',
                             plot_bgcolor: 'transparent',
                             color: 'white',
@@ -311,15 +317,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderGrid() {
 
             return (
-                <FlexBox style={{flexDirection: 'column', width: 380, height: 240, backgroundColor: 'transparent'}}>
-                    <FlexBox style={{flex: 50}}>
+                <FlexBox style={{
+                    flexDirection: 'column',
+                    height: 350,
+                    width: window.innerWidth / 10 * 2.7,
+                    backgroundColor: 'blue'
+                }}>
+                    <FlexBox style={{flex: 50, height: 120}}>
                         <FlexBox style={{
                             flex: 33,
                             alignItems: 'center',
                             justifyContent: 'flex-start',
                             margin: 5,
                             backgroundColor: '#292929',
-
                             flexDirection: 'column',
 
                         }}>
@@ -489,34 +499,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <Grid.Row className='view_contents'>
-
-
-                    {/*FIXME: contents_body 스타일 영역이 좀 이상하게 잡혀있는듯*/}
-                    {/*FIXME: contents_body 스타일 영역이 좀 이상하게 잡혀있는듯*/}
-                    {/*FIXME: contents_body 스타일 영역이 좀 이상하게 잡혀있는듯*/}
                     <Grid.Column className='contents_body'>
                         {/*#######################*/}
-                        {/*컨텐츠 해더 부분...*/}
+                        {/*컨텐츠 해더 부분        ..*/}
                         {/*#######################*/}
                         <FlexBox className='' style={{}}>
-                            <Grid.Column className='content_title2'
-                                         style={{lineHeight: '36px', fontSize: 30,}}>Monitoring
+                            <Grid.Column className='content_title'
+                                         style={{lineHeight: '36px', fontSize: 30, marginTop: 5,}}>Monitoring
                             </Grid.Column>
                             <Grid.Column className='content_title2' style={{marginLeft: -10}}>
                                 <button className="ui circular icon button"><i aria-hidden="true"
                                                                                className="info icon"></i>
                                 </button>
                             </Grid.Column>
-                            <FlexBox style={{width: 150,}}/>
                             <FlexBox style={{justifyContent: 'flex-end', alignItems: 'flex-end', width: '100%'}}>
-                                <FlexBox style={{backgroundColor: 'red'}}
-                                         style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer'}}
-                                         onClick={() => {
-                                             alert('Reset All')
-                                         }}
+                                <Grid.Column
+                                    style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer',}}
+                                    onClick={() => {
+                                        alert('Reset All')
+                                    }}
                                 >
                                     Reset All
-                                </FlexBox>
+                                </Grid.Column>
                                 {/*###########*/}
                                 {/* COLUMN ONe*/}
                                 {/*###########*/}
@@ -620,108 +624,97 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                         </FlexBox>
                         {/*#######################*/}
-                        {/*@fixme 컨텐츠 BODY 부분...*/}
+                        {/*@todo 컨텐츠 BODY 부분...*/}
                         {/*#######################*/}
-                        <Grid.Row className='site_content_body'>
-                            <div className="page_audit">
-                                <div style={{marginTop: 0, marginLeft: -40}}>
-                                    <FlexBox style={{width: '100%'}}>
-                                        <FlexBox style={{
-                                            flexDirection: 'column',
-                                            alignSelf: 'center',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            marginLeft: 25,
-                                        }}>
-                                            <FlexBox style={{
-                                                fontSize: 22,
-                                                justifyContent: 'flex-start',
-                                                marginLeft: -210,
-                                                marginTop: -10,
-                                                color: 'white'
-                                            }}>
-                                                State of Launch
-                                            </FlexBox>
-                                            <div style={{marginTop: 15}}>
-                                                {this.renderGrid()}
-                                            </div>
+                        <div className="page_monitoring">
 
-                                        </FlexBox>
-                                        <FlexBox style={{flexDirection: 'column', marginLeft: 20,}}>
-                                            <FlexBox style={{
-                                                fontSize: 22,
-                                                justifyContent: 'flex-start',
-                                                marginLeft: 60,
-                                                color: 'white'
-                                            }}>
-                                                Top 5 of CPU Usage
-                                            </FlexBox>
-                                            {this.renderBarGraph()}
-                                        </FlexBox>
-                                        <FlexBox style={{flexDirection: 'column', marginLeft: -100}}>
-                                            <FlexBox style={{
-                                                fontSize: 22,
-                                                justifyContent: 'flex-start',
-                                                marginLeft: 60,
-                                                color: 'white'
-                                            }}>
-                                                Transition OF CPU
-                                            </FlexBox>
-                                            {this.renderLineGraph()}
-                                        </FlexBox>
-                                    </FlexBox>
+                            <FlexBox style={{flexDirection: 'column'}}>
 
-                                    {/*2nd row*/}
-                                    {/*2nd row*/}
-                                    {/*2nd row*/}
-                                    <FlexBox style={{marginTop: 15,}}>
-                                        <FlexBox style={{
-                                            flexDirection: 'column',
-                                            alignSelf: 'center',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            marginLeft: 25,
-                                            marginTop: 10,
-                                        }}>
-                                            <FlexBox style={{
-                                                fontSize: 22,
-                                                justifyContent: 'flex-start',
-                                                marginLeft: -160,
-                                                marginTop: -10,
-                                                color: 'white'
-                                            }}>
-                                                Performance of App
-                                            </FlexBox>
+                                {/*_____row____1111*/}
+                                <FlexBox style={{marginTop: 25,}}>
+
+                                    {/* ___col___1*/}
+                                    {/* ___col___1*/}
+                                    {/* ___col___1*/}
+                                    <FlexBox style={Styles.box001}>
+                                        <FlexBox style={Styles.box002}>
+                                            State of Launch
+                                        </FlexBox>
+                                        <div style={{marginTop: 10}}>
                                             {this.renderPieGraph()}
+                                        </div>
+
+                                    </FlexBox>
+                                    {/* ___col___1*/}
+                                    {/* ___col___1*/}
+                                    {/* ___col___1*/}
+                                    <FlexBox style={Styles.box001}>
+                                        <FlexBox style={Styles.box002}>
+                                            State of Launch
                                         </FlexBox>
-                                        <FlexBox style={{flexDirection: 'column', marginLeft: 20,}}>
-                                            <FlexBox style={{
-                                                fontSize: 22,
-                                                justifyContent: 'flex-start',
-                                                marginLeft: 60,
-                                                color: 'white'
-                                            }}>
-                                                Top 5 of MEM Usage
-                                            </FlexBox>
+                                        <FlexBox style={{marginTop: 50}}>
                                             {this.renderBarGraph()}
                                         </FlexBox>
-                                        <FlexBox style={{flexDirection: 'column', marginLeft: -100}}>
-                                            <FlexBox style={{
-                                                fontSize: 22,
-                                                justifyContent: 'flex-start',
-                                                marginLeft: 60,
-                                                color: 'white'
-                                            }}>
-                                                Transition OF MEM
-                                            </FlexBox>
+
+                                    </FlexBox>
+                                    {/* ___col___3*/}
+                                    {/* ___col___3*/}
+                                    {/* ___col___3*/}
+                                    <FlexBox style={Styles.box001}>
+                                        <FlexBox style={Styles.box002}>
+                                            State of Launch
+                                        </FlexBox>
+                                        <FlexBox style={{marginTop: 50}}>
                                             {this.renderLineGraph()}
                                         </FlexBox>
-                                    </FlexBox>
 
-                                </div>
-                            </div>
-                        </Grid.Row>
+                                    </FlexBox>
+                                </FlexBox>
+
+                                {/*alskflsdkflksadlfkl___row1111*/}
+                                <FlexBox style={{marginTop: 25,}}>
+
+                                    {/* ___col___1*/}
+                                    {/* ___col___1*/}
+                                    {/* ___col___1*/}
+                                    <FlexBox style={Styles.box001}>
+                                        <FlexBox style={Styles.box002}>
+                                            State of Launch
+                                        </FlexBox>
+                                        <div style={{marginTop: 15}}>
+                                            {this.renderGrid()}
+                                        </div>
+
+                                    </FlexBox>
+                                    {/* ___col___1*/}
+                                    {/* ___col___1*/}
+                                    {/* ___col___1*/}
+                                    <FlexBox style={Styles.box001}>
+                                        <FlexBox style={Styles.box002}>
+                                            State of Launch
+                                        </FlexBox>
+                                        <FlexBox style={{marginTop: 50}}>
+                                            {this.renderBarGraph()}
+                                        </FlexBox>
+
+                                    </FlexBox>
+                                    {/* ___col___3*/}
+                                    {/* ___col___3*/}
+                                    {/* ___col___3*/}
+                                    <FlexBox style={Styles.box001}>
+                                        <FlexBox style={Styles.box002}>
+                                            State of Launch
+                                        </FlexBox>
+                                        <FlexBox style={{marginTop: 50}}>
+                                            {this.renderLineGraph()}
+                                        </FlexBox>
+
+                                    </FlexBox>
+                                </FlexBox>
+                            </FlexBox>
+                        </div>
                     </Grid.Column>
+
                 </Grid.Row>
 
 
@@ -731,3 +724,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
     }
 ))));
 
+
+const Styles = {
+    box001: {
+        flexDirection: 'column',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 25,
+    },
+    box002: {
+        fontSize: 22,
+        justifyContent: 'flex-start',
+        marginLeft: -210,
+        color: 'white'
+    }
+}
