@@ -10,8 +10,12 @@ import Plot from 'react-plotly.js';
 import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker} from 'antd';
 import {formatDate, getTodayDate} from "../utils";
+import {Chart} from "react-google-charts";
 import './PageMonitoring.css';
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 const {Column, Row} = Grid;
+
 
 const mapStateToProps = (state) => {
     let viewMode = null;
@@ -107,6 +111,95 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentWillReceiveProps(nextProps, nextContext) {
+
+        }
+
+        renderBarGraph2() {
+
+            const chartEvents = [
+                {
+                    eventName: "select",
+                    callback({chartWrapper}) {
+                        console.log("Selected ", chartWrapper.getChart().getSelection());
+                    }
+                }
+            ];
+            const data = [
+                ["age", "weight"],
+                [8, 12],
+                [4, 5.5],
+                [11, 14],
+                [4, 5],
+                [3, 3.5],
+                [6.5, 7]
+            ];
+
+            const options = {
+                title: "Age vs. Weight comparison",
+                hAxis: {title: "Age", viewWindow: {min: 0, max: 15}},
+                vAxis: {title: "Weight", viewWindow: {min: 0, max: 15}},
+                legend: "none"
+            };
+            return (
+                <Chart
+                    width={'430px'}
+                    height={'220px'}
+                    chartType="BarChart"
+                    loader={<div><CircularProgress style={{color: 'red'}}/></div>}
+                    data={[
+                        ["Element", "CPU USAGE", {role: "style"}, {role: 'annotation'}],
+                        ["cpu 10", 10, "color: gray", 10],
+                        ["cpu 20", 14, "color: #76A7FA", 14],
+                        ["cpu 30", 56, "color: blue", 56],
+                        ["cpu 412", 99, "color: green", 99],
+                        ["cpu 2030", 55, "color: yellow", 55],
+                    ]}
+                    options={{
+                        is3D: true,
+                        title: 'cpu usage of top 5',
+                        titlePosition: 'out',
+                        chartArea: {width: '50%', height: 150},
+                        legend: { position: 'none' },//우측 Data[0]번째 텍스트를 hide..
+                        hAxis: {
+                            title: '',
+                            titleTextStyle: {
+                                fontName: "Times",
+                                fontSize: 25,
+                                fontStyle: "normal",
+                                color: 'white'
+                            },
+                            minValue: 0,
+                            textStyle: {
+                                color: "white"
+                            },
+                            gridlines: {
+                                color: "grey"
+                            },
+                            baselineColor: 'grey'
+                        },
+                        vAxis: {
+                            title: '',
+                            titleTextStyle: {
+                                fontSize: 25,
+                                fontStyle: "normal",
+                                color: 'white'
+                            },
+                            textStyle: {
+                                color: "white",
+                                //fontSize: 18,
+                            },
+
+                        },
+                        //colors: ['#FB7A21'],
+                        fontColor: 'white',
+                        backgroundColor: 'black',
+                        //colors: ['green']
+                    }}
+
+                    // For tests
+                    rootProps={{'data-testid': '1'}}
+                />
+            );
 
         }
 
@@ -514,7 +607,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <FlexBox style={{justifyContent: 'flex-end', alignItems: 'flex-end', width: '100%'}}>
                                 <Grid.Column
 
-                                    style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer',color:'white'}}
+                                    style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer', color: 'white'}}
                                     onClick={() => {
                                         alert('Reset All')
                                     }}
@@ -676,7 +769,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 50}}>
-                                            {this.renderBarGraph()}
+                                            {this.renderBarGraph2()}
                                         </FlexBox>
 
                                     </FlexBox>
