@@ -79,7 +79,7 @@ type State = {
 
 }
 
-let boxWidth = window.innerWidth / 10 * 3;
+let boxWidth = window.innerWidth / 10 * 2.77;
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageMonitoring extends React.Component<Props, State> {
@@ -241,7 +241,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     }
                     layout={{
                         height: 350,
-                        width:boxWidth,
+                        width: boxWidth,
                         paper_bgcolor: 'transparent',
                         plot_bgcolor: 'transparent',
                         color: 'white',
@@ -302,7 +302,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         }]}
                         layout={{
                             height: 350,
-                            width: boxWidth-90,
+                            width: boxWidth,
                             paper_bgcolor: 'transparent',
                             plot_bgcolor: 'transparent',
                             color: 'white',
@@ -320,7 +320,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <FlexBox style={{
                     flexDirection: 'column',
                     height: 350,
-                    width: window.innerWidth / 10 * 2.7,
+                    width: boxWidth,
                     backgroundColor: 'blue'
                 }}>
                     <FlexBox style={{flex: 50, height: 120}}>
@@ -503,7 +503,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*#######################*/}
                         {/*컨텐츠 해더 부분        ..*/}
                         {/*#######################*/}
-                        <FlexBox className='' style={{}}>
+                        <FlexBox className='' style={{marginRight: 23}}>
                             <Grid.Column className='content_title'
                                          style={{lineHeight: '36px', fontSize: 30, marginTop: 5,}}>Monitoring
                             </Grid.Column>
