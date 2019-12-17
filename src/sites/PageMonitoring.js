@@ -156,10 +156,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     ]}
                     options={{
                         is3D: true,
-                        title: 'cpu usage of top 5',
+                        title: '',
+                        titleTextStyle: {
+                            color: 'red'
+                            /*fontName: <string>, // i.e. 'Times New Roman'
+                            fontSize: <number>, // 12, 18 whatever you want (don't specify px)
+                             bold: <boolean>,    // true or false
+                            italic: <boolean>   // true of false*/
+                        },
                         titlePosition: 'out',
                         chartArea: {width: '50%', height: 150},
-                        legend: { position: 'none' },//우측 Data[0]번째 텍스트를 hide..
+                        legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
                         hAxis: {
                             title: '',
                             titleTextStyle: {
@@ -192,9 +199,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         },
                         //colors: ['#FB7A21'],
                         fontColor: 'white',
-                        backgroundColor: 'black',
+                        backgroundColor: '#404040',
                         //colors: ['green']
                     }}
+                    style={{color: 'white'}}
 
                     // For tests
                     rootProps={{'data-testid': '1'}}
