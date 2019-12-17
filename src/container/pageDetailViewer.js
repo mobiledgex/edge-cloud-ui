@@ -222,7 +222,7 @@ class PageDetailViewer extends React.Component {
                         <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }}
                              panes={
                                  (this.state.userRole === 'AdminManager' && page === 'appInst')?panesCommand
-                                     :(this.state.userRole !== 'AdminManager' && (this.state.userRole === 'DeveloperManager' || this.state.userRole === 'DeveloperContributor' || this.state.userRole === 'DeveloperViewer' || data.Operator !== localStorage.selectOrg) && page === 'cloudlet')?pane
+                                     :((this.state.userRole === 'DeveloperManager' || this.state.userRole === 'DeveloperContributor' || this.state.userRole === 'DeveloperViewer') && page === 'cloudlet')?pane
                                      :(page === 'appInst')?panesCommand
                                          :panes}{...panelParams}
                              gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab}/>
