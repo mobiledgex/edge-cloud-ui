@@ -82,7 +82,7 @@ class RegistryCloudletViewer extends React.Component {
                     'IPSupport':{label:'IP Support', type:'RenderSelect', necessary:true, tip:'Ip Support indicates the type of public IP support provided by the Cloudlet. Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.', active:true, items:['Dynamic']},
                     'NumberOfDynamicIPs':{label:'Number of Dynamic IPs', type:'RenderInput', necessary:true, tip:'Number of dynamic IPs available for dynamic IP support.'},
                     'PhysicalName':{label:'Physical Name', type:'RenderInput', necessary:true, tip:'Physical infrastructure cloudlet name.', active:true},
-                    'PlatformType':{label:'Platform Type', type:'RenderSelect', necessary:true, tip:'Supported list of cloudlet types.', active:true, items:['Openstack']},
+                    'PlatformType':{label:'Platform Type', type:'RenderSelect', necessary:true, tip:'Supported list of cloudlet types.', active:true, items:['Openstack']}
                 },
                 {
 
@@ -97,7 +97,9 @@ class RegistryCloudletViewer extends React.Component {
                     'IPSupport':'',
                     'NumberOfDynamicIPs':'',
                     'PhysicalName':'',
-                    'PlatformType':''
+                    'PlatformType':'',
+                    'OpenRCData':'',
+                    'CACertData':''
                 }
             ]
 
@@ -273,16 +275,19 @@ class RegistryCloudletViewer extends React.Component {
         this.setState({toggleSubmit:false});
         if(nextProps.submitValues && !this.state.toggleSubmit) {
             const cluster = ['Region','CloudletName','OperatorName','IPSupport','NumberOfDynamicIPs','PhysicalName','PlatformType','Latitude','Longitude'];
+             //add if platform_type is openstack  (placement should be better)
+            if(nextProps.submitValues.cloudlet.platform_type !== 2)
+            {
+                nextProps.submitValues.cloudlet.accessvars = undefined
+            }
             let error = [];
             cluster.map((item) => {
                 if(!nextProps.validateValue[item]) {
                     error.push(item)
                 }
             })
-
             //close tutorial
             this.props.handleStateTutor('done');
-
             if(!this.pauseRender && nextProps.formClusterInst.submitSucceeded && error.length == 0){
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
@@ -375,7 +380,11 @@ const createFormat = (data,loc) => (
             "ip_support":getInteger_ip(data['IPSupport']),
             "num_dynamic_ips":Number(data['NumberOfDynamicIPs']),
             "physical_name":data['PhysicalName'],
-            "platform_type":getInteger(data['PlatformType'])
+            "platform_type":getInteger(data['PlatformType']),
+            "accessvars":{
+            "OPENRC_DATA":data['OpenRCData'],
+            "CACERT_DATA":data['CACertData']
+            }
         }
     }
 )
