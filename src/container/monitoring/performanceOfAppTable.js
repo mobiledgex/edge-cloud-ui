@@ -22,4 +22,4 @@ class PerformanceOfAppTable extends React.Component {
         )
     }
 }
-export default MonitoringComponent({width:'100%', height:400})(PerformanceOfAppTable)
+export default MonitoringComponent({width:'100%', height:'100%'})(PerformanceOfAppTable)

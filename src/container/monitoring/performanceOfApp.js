@@ -23,4 +23,4 @@ class PerformanceOfApp extends React.Component {
         )
     }
 }
-export default MonitoringComponent({width:600, height:400})(PerformanceOfApp)
+export default MonitoringComponent({width:null, height:220})(PerformanceOfApp)
