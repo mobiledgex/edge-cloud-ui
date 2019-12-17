@@ -4,11 +4,14 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
-import './siteThree.css';
+import './PageMonitoring.css';
 import FlexBox from "flexbox-react";
 import {hot} from "react-hot-loader/root";
 import Plot from 'react-plotly.js';
-import {Button, Dropdown, Grid, Item,} from "semantic-ui-react";
+import {Dropdown, Grid,} from "semantic-ui-react";
+import {DatePicker} from 'antd';
+import {formatDate, getTodayDate} from "../utils";
+
 
 const mapStateToProps = (state) => {
     let viewMode = null;
@@ -57,15 +60,43 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
+type Props = {
+    handleLoadingSpinner: Function,
+    toggleLoading: Function,
+    history: any,
+    onSubmit: any,
+    sendingContent: any,
+    loading: boolean,
+    isLoading: boolean,
+}
+
+type State = {
+    date: string,
+    time: string,
+    dateTime: string,
+    datesRange: string
+
+}
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
-    class PageMonitoring extends React.Component {
+    class PageMonitoring extends React.Component<Props, State> {
+
+
         constructor(props) {
             super(props);
+            this.state = {
+                date: '',
+                time: '',
+                dateTime: '',
+                datesRange: ''
+            };
         }
 
         componentDidMount() {
-            console.log('itemeLength===>');
-            console.log('itemeLength===>');
+
+            let todayDate = getTodayDate()
+            /*  this.setState({
+                  date: todayDate,
+              })*/
         }
 
         componentWillUnmount() {
@@ -428,7 +459,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 color: '#fff',
                                 marginTop: 10,
                             }}>
-                                고경준App6
+                                asdas213123
                             </FlexBox>
                             <FlexBox style={{
                                 marginTop: 20,
@@ -548,28 +579,42 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         />
                                     </div>
                                 </Grid.Column>
-                                {/*###########*/}
-                                {/* COLUMN 4444*/}
-                                {/*###########*/}
-                                <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 10,}}>
-                                    <div style={{marginTop: 10}}>
-                                        <Dropdown
-                                            placeholder='2018/11/01'
-                                            selection
-                                            options={
-                                                [
-                                                    {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                                    {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                                    {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                                    {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                                    {key: '1', value: '1', flag: '1', text: 'Last hour'},
+                                {/*######################*/}
+                                {/* DATE CALENDAR 4444*/}
+                                {/*###########*###########*/}
+                                <Grid.Column className=''
+                                             style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer'}}>
+                                    <FlexBox style={{marginBottom: -2,}}>
 
-                                                ]
 
-                                            }
-                                            style={{width: 200}}
+                                        <DatePicker
+                                            onChange={(date) => {
+                                                let __date = formatDate(date);
+                                                this.setState({
+                                                    date: __date,
+                                                })
+                                            }}
+                                            placeholder="Start Date"
+                                            style={{cursor: 'pointer'}}
+
                                         />
-                                    </div>
+                                        <div style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
+                                            -
+                                        </div>
+                                        <DatePicker
+                                            onChange={(date) => {
+                                                let __date = formatDate(date);
+                                                this.setState({
+                                                    date: __date,
+                                                })
+                                            }}
+                                            placeholder="End Date"
+                                            style={{cursor: 'pointer'}}
+
+                                        />
+
+
+                                    </FlexBox>
                                 </Grid.Column>
                             </FlexBox>
 
