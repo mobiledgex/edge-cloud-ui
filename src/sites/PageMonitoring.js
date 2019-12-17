@@ -114,12 +114,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderBarGraph() {
 
             let xSavings = [16, 15, 20, 30, 100]
-            let ySavings = ['cpu1', 'cpu1 3498598', 'cpu13', 'cpu14', 'zzzzz'];
+            let ySavings = ['cpu1', 'cpu1 ', 'cpu13', 'cpu14', 'cpu77'];
 
             return (
                 <Plot
                     style={{
-                        backgroundColor: 'grey',
+                        backgroundColor: '#373737',
                         //backgroundColor: 'transparent',
                         overflow: 'hidden',
                         color: 'white',
@@ -199,7 +199,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <Plot
                     style={{
                         //backgroundColor: 'transparent',
-                        backgroundColor: 'blue',
+                        backgroundColor: '#373737',
                         overflow: 'hidden',
                         color: 'white',
                         alignItems: 'center',
@@ -287,7 +287,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <div style={{backgroundColor: 'transparent',}}>
                     <Plot
                         style={{
-                            backgroundColor: 'blue',
+                            backgroundColor: '#373737',
                             overflow: 'hidden',
                             color: 'white',
                             alignItems: 'center',
@@ -602,9 +602,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             style={{cursor: 'pointer'}}
 
                                         />
-                                        <div style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
+                                        <FlexBox style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
                                             -
-                                        </div>
+                                        </FlexBox>
                                         <DatePicker
                                             onChange={(date) => {
                                                 let __date = formatDate(date);
@@ -616,7 +616,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             style={{cursor: 'pointer'}}
 
                                         />
-
 
                                     </FlexBox>
                                 </Grid.Column>
@@ -637,20 +636,45 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     {/* ___col___1*/}
                                     {/* ___col___1*/}
                                     <FlexBox style={Styles.box001}>
-                                        <FlexBox style={Styles.box002}>
-                                            State of Launch
+                                        <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
+                                            <FlexBox style={Styles.box002}>
+                                                State of Cpu Usage
+                                            </FlexBox>
+                                            <FlexBox style={{flex: 30}}>
+                                                {/*sdklfsdklfksdlkflsdklkflksdf*/}
+                                            </FlexBox>
                                         </FlexBox>
-                                        <div style={{marginTop: 10}}>
-                                            {this.renderPieGraph()}
-                                        </div>
+                                        <FlexBox style={{marginTop: 15}}>
+                                            {this.renderGrid()}
+                                        </FlexBox>
 
                                     </FlexBox>
-                                    {/* ___col___1*/}
-                                    {/* ___col___1*/}
-                                    {/* ___col___1*/}
+                                    {/* ___col___2*/}
+                                    {/* ___col___2*/}
+                                    {/* ___col___2*/}
                                     <FlexBox style={Styles.box001}>
-                                        <FlexBox style={Styles.box002}>
-                                            State of Launch
+                                        <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
+                                            <FlexBox style={Styles.box002}>
+                                                State of Cpu Usage
+                                            </FlexBox>
+                                            <FlexBox style={{flex: 30}}>
+                                                <Dropdown
+                                                    placeholder='Cluster'
+                                                    selection
+                                                    options={
+                                                        [
+                                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+                                                        ]
+
+                                                    }
+                                                    style={{width: 200}}
+                                                />
+                                            </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 50}}>
                                             {this.renderBarGraph()}
@@ -661,8 +685,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     {/* ___col___3*/}
                                     {/* ___col___3*/}
                                     <FlexBox style={Styles.box001}>
-                                        <FlexBox style={Styles.box002}>
-                                            State of Launch
+                                        <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
+                                            <FlexBox style={Styles.box002}>
+                                                State of Cpu Usage #2
+                                            </FlexBox>
+                                            <FlexBox style={{flex: 30}}>
+                                                {/*sdklfsdklfksdlkflsdklkflksdf*/}
+                                            </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 50}}>
                                             {this.renderLineGraph()}
@@ -678,20 +707,47 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     {/* ___col___1*/}
                                     {/* ___col___1*/}
                                     <FlexBox style={Styles.box001}>
-                                        <FlexBox style={Styles.box002}>
-                                            State of Launch
+                                        <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
+                                            <FlexBox style={Styles.box002}>
+                                                State of Launuch #2
+                                            </FlexBox>
+                                            <FlexBox style={{flex: 30}}>
+                                                {/*sdklfsdklfksdlkflsdklkflksdf*/}
+                                            </FlexBox>
                                         </FlexBox>
-                                        <div style={{marginTop: 15}}>
-                                            {this.renderGrid()}
-                                        </div>
+
+                                        <FlexBox style={{marginTop: 10}}>
+                                            {this.renderPieGraph()}
+                                        </FlexBox>
+
 
                                     </FlexBox>
                                     {/* ___col___1*/}
                                     {/* ___col___1*/}
                                     {/* ___col___1*/}
                                     <FlexBox style={Styles.box001}>
-                                        <FlexBox style={Styles.box002}>
-                                            State of Launch
+                                        <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
+                                            <FlexBox style={Styles.box002}>
+                                                State of MEM Usage
+                                            </FlexBox>
+                                            <FlexBox style={{flex: 30}}>
+                                                <Dropdown
+                                                    placeholder='Cluster'
+                                                    selection
+                                                    options={
+                                                        [
+                                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+                                                        ]
+
+                                                    }
+                                                    style={{width: 200}}
+                                                />
+                                            </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 50}}>
                                             {this.renderBarGraph()}
@@ -702,8 +758,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     {/* ___col___3*/}
                                     {/* ___col___3*/}
                                     <FlexBox style={Styles.box001}>
-                                        <FlexBox style={Styles.box002}>
-                                            State of Launch
+                                        <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
+                                            <FlexBox style={Styles.box002}>
+                                                State of MEM Usage #2
+                                            </FlexBox>
+                                            <FlexBox style={{flex: 30}}>
+                                                {/*sdklfsdklfksdlkflsdklkflksdf*/}
+                                            </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 50}}>
                                             {this.renderLineGraph()}
@@ -735,8 +796,9 @@ const Styles = {
     },
     box002: {
         fontSize: 22,
+        marginLeft: 10,
+        flex: 70,
         justifyContent: 'flex-start',
-        marginLeft: -210,
         color: 'white'
     }
 }
