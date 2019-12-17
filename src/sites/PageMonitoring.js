@@ -513,7 +513,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </Grid.Column>
                             <FlexBox style={{justifyContent: 'flex-end', alignItems: 'flex-end', width: '100%'}}>
                                 <Grid.Column
-                                    style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer',}}
+
+                                    style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer',color:'white'}}
                                     onClick={() => {
                                         alert('Reset All')
                                     }}
