@@ -145,7 +145,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     width={'430px'}
                     height={'220px'}
                     chartType="BarChart"
-                    loader={<div><CircularProgress style={{color: 'red'}}/></div>}
+                    loader={<div><CircularProgress style={{color: 'red', zIndex:999999}}/></div>}
                     data={[
                         ["Element", "CPU USAGE", {role: "style"}, {role: 'annotation'}],
                         ["cpu 10", 10, "color: gray", 10],
