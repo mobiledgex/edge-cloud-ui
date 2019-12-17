@@ -588,7 +588,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 {/*###########*###########*/}
                                 <Grid.Column className=''
                                              style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer'}}>
-                                    <FlexBox style={{marginBottom: -2,}}>
+                                    <FlexBox style={{marginBottom: -0.5,}}>
 
 
                                         <DatePicker
@@ -700,12 +700,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     </FlexBox>
                                 </FlexBox>
 
-                                {/*alskflsdkflksadlfkl___row1111*/}
+                                {/*row_____22222222*/}
+                                {/*row_____22222222*/}
+                                {/*row_____22222222*/}
                                 <FlexBox style={{marginTop: 25,}}>
 
-                                    {/* ___col___1*/}
-                                    {/* ___col___1*/}
-                                    {/* ___col___1*/}
+                                    {/* ___col___4*/}
+                                    {/* ___col___4*/}
+                                    {/* ___col___4*/}
                                     <FlexBox style={Styles.box001}>
                                         <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
                                             <FlexBox style={Styles.box002}>
@@ -722,9 +724,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
                                     </FlexBox>
-                                    {/* ___col___1*/}
-                                    {/* ___col___1*/}
-                                    {/* ___col___1*/}
+                                    {/* ___col___5*/}
+                                    {/* ___col___5*/}
+                                    {/* ___col___5*/}
                                     <FlexBox style={Styles.box001}>
                                         <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
                                             <FlexBox style={Styles.box002}>
@@ -754,9 +756,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </FlexBox>
 
                                     </FlexBox>
-                                    {/* ___col___3*/}
-                                    {/* ___col___3*/}
-                                    {/* ___col___3*/}
+                                    {/* ___col___6*/}
+                                    {/* ___col___6*/}
+                                    {/* ___col___6*/}
                                     <FlexBox style={Styles.box001}>
                                         <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
                                             <FlexBox style={Styles.box002}>

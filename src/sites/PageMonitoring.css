@@ -1,10 +1,10 @@
 /*!
- * 
+ *
  * antd v3.26.3
- * 
+ *
  * Copyright 2015-present, Alipay, Inc.
  * All rights reserved.
- *       
+ *
  */
 /* stylelint-disable at-rule-empty-line-before,at-rule-name-space-after,at-rule-no-unknown */
 /* stylelint-disable no-duplicate-selectors */
@@ -15474,6 +15474,7 @@ span.ant-radio + * {
     background-color: black;
     color: white;
     cursor: pointer;
+    height: 39px;
 }
 
 .ant-calendar-picker-input.ant-input {
@@ -15488,6 +15489,10 @@ span.ant-radio + * {
 
 .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled) {
     border-color: #7AC113;
+}
+
+.ant-calendar-picker .ant-calendar-picker-input:not(.ant-input-disabled) {
+    border-color: #4b4b4b;
 }
 
 .ant-calendar-picker:focus .ant-calendar-picker-input:not(.ant-input-disabled) {
