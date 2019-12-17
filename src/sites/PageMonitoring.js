@@ -4,14 +4,13 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
-import './PageMonitoring.css';
 import FlexBox from "flexbox-react";
 import {hot} from "react-hot-loader/root";
 import Plot from 'react-plotly.js';
 import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker} from 'antd';
 import {formatDate, getTodayDate} from "../utils";
-
+import './PageMonitoring.css';
 const {Column, Row} = Grid;
 
 const mapStateToProps = (state) => {
@@ -631,17 +630,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                 {/*_____row____1111*/}
                                 <FlexBox style={{marginTop: 25,}}>
-
                                     {/* ___col___1*/}
                                     {/* ___col___1*/}
                                     {/* ___col___1*/}
                                     <FlexBox style={Styles.box001}>
                                         <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
                                             <FlexBox style={Styles.box002}>
-                                                State of Cpu Usage
+                                                State of Launuch #2
                                             </FlexBox>
                                             <FlexBox style={{flex: 30}}>
-                                                {/*sdklfsdklfksdlkflsdklkflksdf*/}
+                                                {/*dummy____dummy*/}
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 15}}>
@@ -690,7 +688,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 State of Cpu Usage #2
                                             </FlexBox>
                                             <FlexBox style={{flex: 30}}>
-                                                {/*sdklfsdklfksdlkflsdklkflksdf*/}
+                                                {/*dummy____dummy*/}
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 50}}>
@@ -714,7 +712,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 State of Launuch #2
                                             </FlexBox>
                                             <FlexBox style={{flex: 30}}>
-                                                {/*sdklfsdklfksdlkflsdklkflksdf*/}
+                                                {/*dummy____dummy*/}
                                             </FlexBox>
                                         </FlexBox>
 
@@ -765,7 +763,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 State of MEM Usage #2
                                             </FlexBox>
                                             <FlexBox style={{flex: 30}}>
-                                                {/*sdklfsdklfksdlkflsdklkflksdf*/}
+                                                {/*dummy____dummy*/}
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 50}}>
