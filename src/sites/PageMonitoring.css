@@ -1,39 +1,16 @@
-/*!
- *
- * antd v3.26.3
- *
- * Copyright 2015-present, Alipay, Inc.
- * All rights reserved.
- *
- */
-/* stylelint-disable at-rule-empty-line-before,at-rule-name-space-after,at-rule-no-unknown */
-/* stylelint-disable no-duplicate-selectors */
-/* stylelint-disable */
-/* stylelint-disable declaration-bang-space-before,no-duplicate-selectors,string-no-newline */
-/* stylelint-disable at-rule-no-unknown */
 #reactgooglegraph-4 text {
     color: #fff
 }
 
-
 .barChart rect {
     fill: black
-
-
 }
-
-
 .pieChart text {
     fill: white
-
-
 }
-
 
 .barChart text {
     fill: white
-
-
 }
 
 

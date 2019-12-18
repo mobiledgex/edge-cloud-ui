@@ -55,6 +55,7 @@ import Alert from 'react-s-alert';
 import '../css/introjs.css';
 import '../css/introjs-dark.css';
 import PageMonitoring from "./PageMonitoring";
+import SiteFourPageMonitoring from "./siteFour_page_monitoring";
 
 let devOptions = [{key: 'af', value: 'af', text: 'SK Telecom'}]
 const locationOptions = [
@@ -896,8 +897,6 @@ class SiteFour extends React.Component {
     }
 
 
-
-
     renderSiteBody(viewMode) {
         return (
             <Grid.Row className='view_contents'>
@@ -1023,6 +1022,8 @@ class SiteFour extends React.Component {
                                                                                                     <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
                                                                                                     (this.state.page === 'pg=audits') ?
                                                                                                         <SiteFourPageAudits></SiteFourPageAudits> :
+                                                                                                        (this.state.page === 'pg=Monitoring2') ?
+                                                                                                            <SiteFourPageMonitoring></SiteFourPageMonitoring> :
 
                                                                                                         <div></div>
                                 }
@@ -1235,8 +1236,7 @@ class SiteFour extends React.Component {
                 <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
                     {/*모니터링 페이지인 경우...*/}
                     {this.state.page === 'pg=Monitoring' ?
-                        <PageMonitoring/>
-                        :
+                        <PageMonitoring/> :
                         this.renderSiteBody(viewMode)
 
                     }

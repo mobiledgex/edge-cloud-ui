@@ -3,7 +3,19 @@ import {Dropdown, Grid, Menu} from 'semantic-ui-react';
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FlexBox from "flexbox-react";
-import Plot from "react-plotly.js";
+import Plot from "../../node_modules/react-plotly.js/react-plotly";
+import * as services from "./service_compute_service";
+import axios from "axios-jsonp-pro";
+import qs from "qs";
+import FormatComputeOrganization from "./formatter/formatComputeOrganization";
+import FormatComputeFlavor from "./formatter/formatComputeFlavor";
+import FormatComputeCluster from "./formatter/formatComputeCluster";
+import formatComputeUsers from "./formatter/formatComputeUsers";
+import formatComputeAccounts from "./formatter/formatComputeAccounts";
+import FormatComputeCloudlet from "./formatter/formatComputeCloudlet";
+import FormatComputeClstInst from "./formatter/formatComputeClstInstance";
+import FormatComputeApp from "./formatter/formatComputeApp";
+import FormatComputeInst from "./formatter/formatComputeInstance";
 
 export const renderLineChart2 = () => {
 
@@ -463,6 +475,48 @@ export const renderLineGraph_Plot = () => {
 }
 
 
+//param1 -->ALl
+//param2 --> [EU,US]
+
+
+export const getDataOfAppInstance = async (paramRegionArrayList: any = ['EU', 'US']) => {
+
+
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+
+   /* for (let index = 0; index < paramRegionArrayList.length; index++) {
+    }*/
+
+    let serviceBody = {
+        "token": store.userToken,
+        "params": {
+            "region": 'US',
+            "appinst": {
+                "key": {
+                    "app_key": {
+                        "developer_key": {"name": localStorage.selectOrg},
+                    }
+                }
+            }
+        }
+    }
+
+    console.log('parse data get mc service ===>>>>>>>>>> ', resource)
+    let resource = 'ShowAppInsts2';
+    const hostname = window.location.hostname;
+    let ServerUrl = 'https://' + hostname + ':3030';
+
+    let responseResult = await axios.post(ServerUrl + '/' + 'ShowAppInsts2', qs.stringify({
+        service: resource,
+        serviceBody: serviceBody,
+        serviceId: Math.round(Math.random() * 10000)
+    })).then((response) => {
+
+
+        console.log('ShowAppInsts2====>', response);
+
+    })
 
 
 
+}

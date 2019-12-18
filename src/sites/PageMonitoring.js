@@ -10,18 +10,15 @@ import Plot from 'react-plotly.js';
 import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker} from 'antd';
 import {formatDate, getTodayDate} from "../utils";
-import {Chart} from "react-google-charts";
 import './PageMonitoring.css';
-import CircularProgress from "@material-ui/core/CircularProgress";
 import {
+    getDataOfAppInstance,
     renderBarGraph2_Google,
     renderGrid,
-    renderLineChart2,
     renderLineGraph_Plot,
     renderPieChart2_Google
-} from "../shared/MonitoringService";
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+} from "../services/PageMonitoringService";
+import axios from "axios-jsonp-pro";
 
 
 const {Column, Row} = Grid;
@@ -97,7 +94,6 @@ let boxWidth = window.innerWidth / 10 * 2.77;
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageMonitoring extends React.Component<Props, State> {
 
-
         constructor(props) {
             super(props);
             this.state = {
@@ -108,12 +104,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             };
         }
 
-        componentDidMount() {
+        async componentDidMount() {
 
             let todayDate = getTodayDate()
-            /*  this.setState({
+            /*
+            this.setState({
                   date: todayDate,
-              })*/
+            })
+            */
+
+            await getDataOfAppInstance();
+
+
+
         }
 
         componentWillUnmount() {
@@ -155,7 +158,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 </div>
             )
         }
-        renderHeader(){
+
+        renderHeader() {
 
             let options1 = [
                 {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
