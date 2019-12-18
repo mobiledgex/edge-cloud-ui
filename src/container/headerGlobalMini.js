@@ -120,7 +120,7 @@ class headerGlobalMini extends React.Component {
         <Button.Group vertical>
             <Button onClick={() => this.profileView()} >Your profile</Button>
             {/*<Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>*/}
-            <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{(this.props.location.pathname === "/site4")? this.props.email :this.state.email}</div><div>Logout</div></Button>
+            <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{(this.props.location.pathname === "/site4")? this.props.email : this.state.userInfo['Name']}</div><div>Logout</div></Button>
         </Button.Group>
 
     )
@@ -139,7 +139,7 @@ class headerGlobalMini extends React.Component {
                         <div style={{cursor:'pointer'}}>
                             <Image src='/assets/avatar/avatar_default.svg' avatar />
                             <span>
-                                {(this.props.location.pathname === "/site4")? this.props.email :this.state.email}
+                                {(this.props.location.pathname === "/site4")? this.props.email :this.state.userInfo['Name']}
                             </span>
                         </div>}
                     content={
@@ -150,7 +150,7 @@ class headerGlobalMini extends React.Component {
                     className='gnb_logout'
                 />
                 {/*<PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')} usrUrl={this.props.userURL}></PopSettingViewer>*/}
-                <PopProfileViewer data={this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile} ></PopProfileViewer>
+                <PopProfileViewer data={this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>
             </Fragment>
         )
     }
