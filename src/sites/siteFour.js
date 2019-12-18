@@ -165,6 +165,7 @@ class SiteFour extends React.Component {
             {label: 'App Instances', icon: 'storage', pg: 6},
             {label: 'Audit Log', icon: 'check', pg: 'audits'},
             {label: 'Monitoring', icon: 'tv', pg: 'Monitoring'},
+            {label: 'MonitoringTest', icon: 'tv', pg: 'monitor'},
         ]
         this.auth_three = [this.menuItems[0], this.menuItems[5]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
@@ -1024,6 +1025,8 @@ class SiteFour extends React.Component {
                                                                                                     <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
                                                                                                     (this.state.page === 'pg=audits') ?
                                                                                                         <SiteFourPageAudits></SiteFourPageAudits> :
+                                                                                                        (this.state.page === 'pg=monitor') ?
+                                                                                                            <SiteFourPageMonitoring></SiteFourPageMonitoring> :
 
                                                                                                         <div></div>
                                 }
