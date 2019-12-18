@@ -23,6 +23,12 @@ const appssEdit = [
     {key: 'update', text:'Update', icon:null},
     {key: 'delete', text:'Delete', icon:'trash alternate'},
 ]
+const cloudletPoolEdit = [
+    {key: 'add', text:'Add', icon:null},
+    {key: 'link', text:'Link', icon:null},
+    {key: 'update', text:'Update', icon:null},
+    {key: 'delete', text:'Delete', icon:'trash alternate'},
+]
 const headerStyle = {
     backgroundImage: 'url()'
 }
@@ -298,6 +304,18 @@ class InsideListView extends React.Component {
         // this.props.handleChangeComputeItem('App Instances')
         localStorage.setItem('selectMenu', 'App Instances')
     }
+    addCloudlet = (data) => {
+        this.gotoUrl('/site4', 'pg=createCloudletPool','pg=7')
+        this.props.handleAppLaunch(data)
+        // this.props.handleChangeComputeItem('App Instances')
+        localStorage.setItem('selectMenu', 'Cloudlet Pool')
+    }
+    linkOrganize = (data) => {
+        this.gotoUrl('/site4', 'pg=linkOrganize','pg=7')
+        this.props.handleAppLaunch(data)
+        // this.props.handleChangeComputeItem('App Instances')
+        localStorage.setItem('selectMenu', 'Cloudlet Pool')
+    }
     handleOpen = () => {
         this.setState({ isOpen: true })
 
@@ -347,11 +365,24 @@ class InsideListView extends React.Component {
         } else if(b.children === 'Delete') {
             this.setState({openDelete: true, selected:this.state.item})
         }
+        //cloudlet pool
+        if(b.children === 'Add') {
+            this.addCloudlet(this.state.item)
+        } else if(b.children === 'Link') {
+            this.linkOrganize(this.state.item)
+        }
 
     }
     makeActionButton = (target) => (
         <Button.Group vertical className="table_actions_popup_group">
             {
+                (this.props.siteId === "Cloudlet Pool")?
+                cloudletPoolEdit.map((option)=> (
+                    <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
+                        {option.text}
+                    </Button>
+                ))
+                    :
                 appssEdit.map((option)=> (
                     <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
                         {option.text}

@@ -95,6 +95,7 @@ class SiteFourPageAppInst extends React.Component {
         //     // this.getUpdateData(this.props.changeRegion);
         // }
         this._devData = [];
+
     }
     componentWillUnmount() {
         this._AppInstDummy = []
@@ -139,11 +140,12 @@ class SiteFourPageAppInst extends React.Component {
 
     }
     receiveResult = (result) => {
+        _self.props.handleLoadingSpinner(false);
         // @inki if data has expired token
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
+
             return;
         }
 
@@ -155,7 +157,7 @@ class SiteFourPageAppInst extends React.Component {
         if(rgn.length == _self.loadCount){
             _self.countJoin()
         }
-        _self.props.handleLoadingSpinner(false);
+ 
         // console.log("appinstresult",result)
         // let join = null;
         // if(!result.error && result[0]['Edit']) {
@@ -190,6 +192,7 @@ class SiteFourPageAppInst extends React.Component {
             })
             this.forceUpdate();
         }
+        _self.props.handleLoadingSpinner(false);
         
     }
 

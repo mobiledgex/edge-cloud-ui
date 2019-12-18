@@ -6,7 +6,6 @@ import EditMap from '../libs/simpleMaps/with-react-motion/editMap';
 import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
 import * as services from "../services/service_compute_service";
 import * as aggregate from "../utils";
-import Alert from "react-s-alert";
 import * as actions from "../actions";
 import {connect} from "react-redux";
 import {scaleLinear} from "d3-scale";
@@ -86,7 +85,7 @@ const cloudletMap = (props, type) => (
     </Fragment>
 )
 let _self = null;
-class SiteFourCreateInstForm extends React.PureComponent {
+class SiteFourLinkOrganizeForm extends React.PureComponent {
     constructor() {
         super();
         this.state = {
@@ -313,19 +312,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
                     if(value.length == 0) this.setState({locData:[]})
                 }
             })
-        } else if(state === 'PlatformType')
-        {
-            if(value === 'Openstack')
-            {
-
-                this.props.data.keys[0].OpenRCData = {label:'OpenRC Data', type:'RenderTextArea', necessary:false, tip:'Key-Value pair of access variables delimitted by newline.\nSample Input:\nOS_AUTH_URL=...\nOS_PROJECT_ID=...\nOS_PROJECT_NAME=...', active:true};
-                this.props.data.keys[0].CACertData = {label:'CACert Data', type:'RenderTextArea', necessary:false, tip:'CAcert data for HTTPS based verification of auth URL', active:true};
-            }
-            else
-            {
-                this.props.data.keys[0].OpenRCData = undefined
-                this.props.data.keys[0].CACertData = undefined
-            }
         }
     }
     setFlavorNode(keys, flavor) {
@@ -503,8 +489,8 @@ class SiteFourCreateInstForm extends React.PureComponent {
         let randomState = Math.random()*100;
         return (
             <Grid>
-                <Grid.Row columns={2} className="grid_map_container">
-                    <Grid.Column width={8} className="left">
+                <Grid.Row className="grid_map_container">
+                    <Grid.Column className="left">
                         <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole}
                                                    gotoUrl={this.gotoUrl} clusterHide={this.clusterHide}
                                                    randomState = {randomState}
@@ -521,9 +507,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
                                                    longError={this.state.longerror}>
 
                         </SiteFourCreateFormDefault>
-                    </Grid.Column>
-                    <Grid.Column width={8} className="right">
-                        <Tab className="globe_map" activeIndex={activeIndex} clusterName={clusterName} onTabChange={this.handleTabChange} panes={panes}{...this.state}></Tab>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -587,4 +570,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourCreateInstForm));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourLinkOrganizeForm));

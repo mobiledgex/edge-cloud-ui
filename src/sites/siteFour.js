@@ -39,12 +39,16 @@ import SiteFourPageApps from './siteFour_page_apps';
 import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
+import SiteFourPageCloudletPool from './siteFour_page_cloudletPool';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
+import SiteFourPageCloudletPoolReg from './siteFour_page_cloudletPoolReg';
+import SiteFourPageLinkOrgaizeReg from './siteFour_page_linkOrganizeReg';
 import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
 import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
 import SiteFourPageCreateorga from './siteFour_page_createOrga';
+import SiteFourPageMonitoring from './siteFour_page_monitoring';
 
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import PopLegendViewer from '../container/popLegendViewer';
@@ -162,13 +166,16 @@ class SiteFour extends React.Component {
         ]
         this.menuItems = [
             {label:'Cloudlets', icon:'cloud_queue', pg:2},
+            {label:'Cloudlet Pool', icon:'pool', pg:7},
             {label:'Flavors', icon:'free_breakfast', pg:3},
             {label:'Cluster Instances', icon:'storage', pg:4},
             {label:'Apps', icon:'apps', pg:5},
             {label:'App Instances', icon:'storage', pg:6},
-            {label:'Audit Log', icon:'check', pg:'audits'}
+            {label:'Audit Log', icon:'check', pg:'audits'},
+            {label:'Monitoring', icon:'check', pg:'monitor'}
+
         ]
-        this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
+        this.auth_three = [this.menuItems[0], this.menuItems[5]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
             {role:'AdminManager', view:[]},
             {role:'DeveloperManager', view:[2,3]},
@@ -270,6 +277,9 @@ class SiteFour extends React.Component {
         } else if(localStorage.selectMenu === 'Cluster Instances') {
             this.setState({page:'pg=createClusterInst'})
             this.gotoUrl('/site4', 'pg=createClusterInst')
+        } else if(localStorage.selectMenu === 'Cloudlet Pool') {
+            this.setState({page:'pg=createCloudletPool'})
+            this.gotoUrl('/site4', 'pg=createCloudletPool')
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
@@ -1061,7 +1071,7 @@ class SiteFour extends React.Component {
                             <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
                                 <Grid.Column className='title_align' style={{lineHeight:'36px'}}>{this.state.headerTitle}</Grid.Column>
                                 {
-                                    (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1) ?
+                                    (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1 && this.props.location.search.indexOf('monitor') === -1) ?
                                         <Grid.Column className='title_align'>
                                             <Item className={'stepOrg2'} style={{marginLeft:20, marginRight:10}}>
                                                 <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
@@ -1134,6 +1144,7 @@ class SiteFour extends React.Component {
                                                                         (this.state.page === 'pg=4')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
                                                                             (this.state.page === 'pg=5')?<SiteFourPageApps></SiteFourPageApps>:
                                                                                 (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
+                                                                                (this.state.page === 'pg=7')? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
                                                                                     (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                                         (this.state.page === 'pg=createApp')? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
                                                                                         (this.state.page === 'pg=editApp')? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
@@ -1141,9 +1152,12 @@ class SiteFour extends React.Component {
                                                                                             (this.state.page === 'pg=editAppInst')? <SiteFourPageAppInstReg editable={true}></SiteFourPageAppInstReg> :
                                                                                                 (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
                                                                                                     (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
+                                                                                                    (this.state.page === 'pg=createCloudletPool')? <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                                    (this.state.page === 'pg=linkOrganize')? <SiteFourPageLinkOrgaizeReg></SiteFourPageLinkOrgaizeReg> :
                                                                                                         (this.state.page === 'pg=createFlavor')? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
                                                                                                         (this.state.page === 'pg=audits')? <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                        <div> </div>
+                                                                                                            (this.state.page === 'pg=monitor')? <SiteFourPageMonitoring></SiteFourPageMonitoring> :
+                                                                                                                <div> </div>
                                                 }
                                             </div>
                                 </Grid.Column>

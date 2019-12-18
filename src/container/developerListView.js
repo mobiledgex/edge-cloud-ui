@@ -433,6 +433,16 @@ class DeveloperListView extends React.Component {
         </Button.Group>
     )
 
+
+    makeActionButtonView = (item, j, i) => (
+        <Button.Group vertical className="table_actions_popup_group">
+                    <Button ref={btn => this.actionButton = btn} onClick={this.onHandlePopMenu}
+                            className="table_actions_popup_group_button">
+                        Audit
+                    </Button>
+        </Button.Group>
+    )
+
     //@desc: #############################################################
     //@desc: Organizations ---> actions contextButton
     //@desc: #############################################################
@@ -662,7 +672,9 @@ class DeveloperListView extends React.Component {
                 </div>
                 <Popup
                     inverted
-                    content={this.makeActionButton(this[this.state.actionContextRef])}
+                    content={
+                        (localStorage.selectRole == 'OperatorContributor' || localStorage.selectRole == 'OperatorViewer' || localStorage.selectRole == 'DeveloperContributor' || localStorage.selectRole == 'DeveloperViewer') ? this.makeActionButtonView(this[this.state.actionContextRef])
+                            : this.makeActionButton(this[this.state.actionContextRef])}
                     on='click'
                     open={this.state.isOpen}
                     onClose={this.handleClose}

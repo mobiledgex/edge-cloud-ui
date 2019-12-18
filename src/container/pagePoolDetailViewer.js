@@ -25,22 +25,46 @@ const panesCommand = [
     { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props}/></Tab.Pane> },
     { menuItem: 'Command', render: (props) => <Tab.Pane><CommandViewer data={props}/></Tab.Pane> }
 ]
+
 const detailViewer = (props, type) => (
     <Fragment>
         {(type === 'detailViewer')?
-            <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
-                        <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                    {
-                        props.data ? Object.keys(props.data).map((item, i) => makeTable(props.data, item, i)) : null
-                    }
-                </Table.Body>
-            </Table>
+            <Grid>
+                <Grid.Row columns={2}>
+                    <Grid.Column>Subject</Grid.Column>
+                    <Grid.Column>Update</Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
+                                <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                            {
+                                props.data ? Object.keys(props.data).map((item, i) => makeCloudletTable(props.data, item, i)) : null
+                            }
+                        </Table.Body>
+                    </Table>
+                </Grid.Row>
+                <Grid.Row>
+                    <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
+                                <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                            {
+                                props.data ? Object.keys(props.data).map((item, i) => makeLinkTable(props.data, item, i)) : null
+                            }
+                        </Table.Body>
+                    </Table>
+                </Grid.Row>
+            </Grid>
 
             :
             <div></div>
@@ -49,7 +73,7 @@ const detailViewer = (props, type) => (
     </Fragment>
 )
 
-const makeTable = (values, label, i) => (
+const makeCloudletTable = (values, label, i) => (
     (label !== 'Edit')?
         <Table.Row key={i}>
             <Table.Cell>
@@ -85,6 +109,15 @@ const makeTable = (values, label, i) => (
                                                     :String(values[label])}
             </Table.Cell>
         </Table.Row> : null
+)
+const makeLinkTable = (values, label, i) => (
+    (label !== 'Edit')?
+        <Table.Row key={i}>
+            <Table.Cell>
+                <Header as='h4' image>Link</Header>
+            </Table.Cell>
+        </Table.Row>
+        : null
 )
 const jsonView = (jsonObj,_label) => {
     if(_label === 'Mapped_port'){
@@ -133,7 +166,7 @@ var layout = [
     {"w":19,"x":0,"y":0,"i":"0", "minW":8, "moved":false,"static":false, "title":"Developer"}
 ]
 let _self = null;
-class PageDetailViewer extends React.Component {
+class PagePoolDetailViewer extends React.Component {
     constructor() {
         super();
         const layout = this.generateLayout();
@@ -220,11 +253,7 @@ class PageDetailViewer extends React.Component {
 
                     <div className="grid_table tabs">
                         <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }}
-                             panes={
-                                 (this.state.userRole === 'AdminManager' && page === 'appInst')?panesCommand
-                                     :(this.state.userRole !== 'AdminManager' && (this.state.userRole === 'DeveloperManager' || this.state.userRole === 'DeveloperContributor' || this.state.userRole === 'DeveloperViewer' || data.Operator !== localStorage.selectOrg) && page === 'cloudlet')?pane
-                                     :(page === 'appInst')?panesCommand
-                                         :panes}{...panelParams}
+                             panes={(this.state.userRole === 'AdminManager' && page === 'appInst')?panesCommand:((this.state.userRole === 'DeveloperManager' || this.state.userRole === 'DeveloperContributor' || this.state.userRole === 'DeveloperViewer') && page === 'cloudlet')?pane:(page === 'appInst')?panesCommand:pane}{...panelParams}
                              gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab}/>
                     </div>
                 </div>
@@ -325,20 +354,6 @@ class PageDetailViewer extends React.Component {
         }
     )
 
-
-
-    /*
-    http --verify=false --auth-type=jwt --auth=$SUPERPASS POST
-    https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cloudlet <<<
-    '{"region":"EU",
-        "cloudlet":{
-            "operator_key":{"name":"TDG"},
-            "name":"frankfurt-eu"
-        },
-        "selector":"utilization",
-        "last":2
-    }'
-    */
     makeFormCloudlet =(inst, valid, store) => (
         {
             'token':store,
@@ -392,7 +407,6 @@ class PageDetailViewer extends React.Component {
         </Grid.Row>
     )
 
-
     setCloudletList = (operNm) => {
         let cl = [];
         _self.state.cloudletResult[operNm].map((oper, i) => {
@@ -403,16 +417,11 @@ class PageDetailViewer extends React.Component {
         _self.setState({devOptionsThree: cl})
     }
 
-
-
     close() {
         this.setState({ open: false })
         this.clearInterval();
         this.props.close()
     }
-
-
-
 
     render() {
         let { listData, monitorData, clusterName, open, dimmer, hiddenKeys, userRole } = this.state;
@@ -442,4 +451,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(PageDetailViewer);
+export default connect(mapStateToProps, mapDispatchProps)(PagePoolDetailViewer);
