@@ -30,7 +30,6 @@ export default class MonitoringViewer extends React.Component {
             timeseriesCPUMEM:[
                 []
             ],
-
             timeseriesDataNET:[
                 [],[]
             ],
@@ -71,6 +70,12 @@ export default class MonitoringViewer extends React.Component {
                 [], []
             ],
             timeseriesIpv4:[
+                [], []
+            ],
+            timeseriesDataFloatingIps:[
+                [], []
+            ],
+            timeseriesFloationgIps:[
                 [], []
             ],
             timeseriesACCEPTS:[[]],
@@ -256,20 +261,34 @@ export default class MonitoringViewer extends React.Component {
         this.floipCnt = 0;
 
         console.log('20191007 feedData-- ', data)
+        var ipData = null;
+        var cmdData = null;
         if(data && data.length) {
-            var datas = Object.assign(data[0].values['cmsn'], data[1].values['cmsn']);
+            data.map((val, index) => {
+                if(ipData === null){
+                    if(val.values['cmsn']['ipv4Max']){
+                        ipData = index
+                    }
+                }
+                if(cmdData === null){
+                    if(val.values['cmsn']['vCpuMax']){
+                        cmdData = index
+                    }
+                }
+            })
+            var datas = Object.assign(data[0].values['cmsn'], data[(ipData > 0) ? ipData : cmdData].values['cmsn']);
 
             this.setState({lastCPU: datas['vCpuUsed']})
             this.setState({lastMEM: datas['memUsed']})
             this.setState({lastDISK: datas['diskUsed']})
-            this.setState({lastIPv4: datas['ipv4Used']})
-            this.setState({lastFloatingIPs: datas['floatingIpsUsed']})
+            this.setState({lastIPv4: (datas['ipv4Used'] > 0)? datas['ipv4Used'] : 0})
+            this.setState({lastFloatingIPs: (datas['floatingIpsUsed'] > 0)? datas['floatingIpsUsed'] : 0})
 
             this.setState({maxCPU: datas['vCpuMax']})
             this.setState({maxMEM: datas['memMax']})
             this.setState({maxDISK: datas['diskMax']})
-            this.setState({maxIPv4: datas['ipv4Max']})
-            this.setState({maxFloatingIPs: datas['floatingIpsMax']})
+            this.setState({maxIPv4: (datas['ipv4Max'] > 0)? datas['ipv4Max'] : 0})
+            this.setState({maxFloatingIPs: (datas['floatingIpsMax'] > 0)? datas['floatingIpsMax'] : 0})
 
         }
         if(data.length){
@@ -290,7 +309,7 @@ export default class MonitoringViewer extends React.Component {
                     this.memCnt ++;
                 }
                 if(val.values['cmsn']['diskUsed']) {
-                    this.state.mProp['timeseriesDataDISK'][0][this.diskCnt] = this.gigabytesToString(val.values['cmsn']['diskUsed']);
+                    this.state.mProp['timeseriesDataDISK'][0][this.diskCnt] = val.values['cmsn']['diskUsed'] / 1000;
                     this.state.mProp['timeseriesDISK'][0][this.diskCnt] = val.values['time'];
                     this.diskCnt ++;
                 }
@@ -505,7 +524,8 @@ export default class MonitoringViewer extends React.Component {
 
 
                     {
-                        (this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?
+                        (this.props.data.page !== 'appInst')?
+                        // (this.props.data.page !== 'appInst' && this.props.data.page !== 'cloudlet')?
                             <div style={{width:'100%', height:400}}>
                                 <Header>DISK</Header>
                                 <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataDISK} series={this.state.mProp.timeseriesDISK} showLegend={true}

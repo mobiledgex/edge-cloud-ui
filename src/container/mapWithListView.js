@@ -78,9 +78,11 @@ class MapWithListView extends React.Component {
             stateViewToggle:false,
             stateStream:null,
             stackStates:[],
+            stackSuccess:[],
             changeRegion:null,
             viewMode: null,
-            _resetMap:null
+            _resetMap:null,
+
             
         };
 
@@ -359,8 +361,32 @@ class MapWithListView extends React.Component {
     onShowAlert = (obj) => {
         console.log('20191119.. Alert..', Alert)
     }
+
+    filterState(item) {
+        let has = false;
+        if(item && item.length) {
+            item.map((itm) => {
+                console.log('20191215 - item ==', itm)
+                if(itm.message.indexOf('successfully') > -1) {
+                    this.stackSuccess.map(iN => {
+                        if(iN === item.iN) {
+                            has = true;
+                        }
+                    });
+
+                    if(!has) {
+                        Alert.closeAll('');
+                        this.props.handleAlertInfo('info', itm.message)
+                        //this.props.handleAlertInfo('info', itm.message)
+                        this.stackSuccess.push(item.iN)
+                    }
+
+                }
+            })
+        }
+    }
     stateView(_item,_siteId,_auto) {
-        console.log('20191119 state view.--- ', _siteId)
+
         Alert.closeAll('');
         clearInterval(_self.streamInterval);
         this.setState({stateViewToggle:true})
@@ -374,11 +400,11 @@ class MapWithListView extends React.Component {
         if(_item['State'] && _item['State'] != 5) {
             _self.streamInterval = setInterval(() => {
                 _self.getStackInterval(_item, _siteId);
-            }, 2000)
+            }, 3000)
             _self.getStackInterval(_item, _siteId);
         }
-
-        //test
+        this.stackSuccess = [];
+        //
         _self.getStackInterval(_item, _siteId);
     }
 
@@ -478,6 +504,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
                     if(dtd[stId] && keys[0] === 'data') {
 
                         _dtd = parseData.data ? parseData.data : null;
+                        _dtd.iN = i;
                         stackStates.push(_dtd)
 
                     }
@@ -501,6 +528,7 @@ Status: {task_number: 2, task_name: "Creating Heat Stack for frankfurt-eu-autocl
         } else {
             // closed streaming
             console.log('20191119 closed streaming....')
+            this.closeInterval("success","Created successfully!")
         }
 
         return stackStates;

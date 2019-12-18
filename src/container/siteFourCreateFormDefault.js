@@ -4,14 +4,15 @@ import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup
 
 import { Field, reduxForm, initialize, reset, change, stopSubmit } from "redux-form";
 import MaterialIcon from "material-icons-react";
+
 import * as services from '../services/service_compute_service';
 import './styles.css';
-
+import Duallist from 'react-duallist';
+import './react_dualist.css'
 
 const makeOption =(options)=> {
 
     let newOptions = options.sort(
-
         function(a, b) {
             if (a.toLowerCase() < b.toLowerCase()) return -1;
             if (a.toLowerCase() > b.toLowerCase()) return 1;
@@ -20,11 +21,9 @@ const makeOption =(options)=> {
     );
 
     return (
-
         newOptions.map((value) => (
             {key: value, text: value, value: value}
         ))
-
     )
 
 };
@@ -90,6 +89,20 @@ const renderInputDisabled = field => (
         disabled
     />
 );
+
+const renderTextArea = field => (
+    <div>
+    <Form.TextArea
+        {...field.input}
+        label={field.label}
+        rows={field.row}
+        // placeholder={field.placeholder}
+    />
+    {/* {field.error && <span className="text-danger">{field.error}</span>} */}
+    </div>
+);
+
+
 const renderDropDown = field => (
     <div>
         <Form.Dropdown
@@ -119,6 +132,26 @@ const renderLocationInput = ({ input, placeholder, change, type, error, initialV
     </div>
 
 );
+const options = [
+    {label:'One', value: 1},
+    {label:'Two', value: 2},
+    {label:'Three', value: 3}
+]
+
+
+const renderDualListInput = ({ input, placeholder, change, type, error, initialValue }) => (
+    <div>
+        <Form.Field
+            {...input}
+            type={type}
+        >
+
+        </Form.Field>
+    </div>
+
+);
+
+
 
 const style = {
     borderRadius: 0,
@@ -138,11 +171,30 @@ class SiteFourCreateFormDefault extends React.Component {
             portArray:['item'],
             orgArr:[],
             ipAccessValue:[],
-            deployTypeDocker:false
+            deployTypeDocker:false,
+            available: [
+                {label: 'Alabama', value: 'AL'},
+                {label: 'Alaska', value: 'AK'},
+                {label: 'Arizona', value: 'AZ'},
+                {label: 'Arkansas', value: 'AR'},
+                {label: 'California', value: 'CA'},
+                {label: 'Colorado', value: 'CO'},
+                {label: 'Connecticut', value: 'CT'},
+                {label: 'Delaware', value: 'DE'},
+                {label: 'Florida', value: 'FL'},
+                {label: 'Georgia', value: 'GA'},
+            ],
+            selected: ['AL', 'CA'],
         };
 
     }
+    onMove = (selected) => {
+        this.setState({selected});
+    }
 
+    onSelectTab = (activeTab) => {
+        this.setState({activeTab});
+    }
     // data.map((dt) => {
     handleInitialize(data) {
         const initData = [];
@@ -156,7 +208,9 @@ class SiteFourCreateFormDefault extends React.Component {
         }
 
     }
-
+    onChange = (selectedValues) => {
+        alert(selectedValues)
+    }
 
     componentDidMount() {
         if(this.props.data && this.props.data.data.length){
@@ -174,6 +228,7 @@ class SiteFourCreateFormDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log('20191213 nextProps in form default..', nextProps)
         if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
@@ -266,15 +321,15 @@ class SiteFourCreateFormDefault extends React.Component {
         console.log("cancelClickddd",e,":::",this.props)
         if(localStorage.selectMenu == 'Cloudlets') siteNum = 2
         else if(localStorage.selectMenu == 'Cluster Instances') siteNum = 4
+        else if(localStorage.selectMenu == 'Cloudlet Pool') siteNum = 7
         this.props.gotoUrl(siteNum)
     }
     
     render (){
-        const {  dimmer, selected, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat } = this.props;
-        const { data, regKeys, fieldKeys } = this.state;
+        const {  dimmer, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat } = this.props;
+        const { data, regKeys, fieldKeys, available, selected } = this.state;
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         return (
-
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
                 <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>
                 <Fragment >
@@ -364,6 +419,32 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                         </Grid.Column>
                                                                 </Grid.Row>
                                                             </Grid>
+                                                            :
+
+                                                            (fieldKeys[pId][key]['type'] === 'RenderDualListBox') ?
+                                                            <Grid>
+                                                                <Grid.Row className={'renderDualListBox'} style={{height:500}}>
+                                                                    <Duallist
+                                                                        available={available}
+                                                                        selected={selected}
+                                                                        sortable={false}
+                                                                        onMove={this.onMove}
+                                                                        moveLeftIcon={<Icon name='angle left'/>}
+                                                                        moveAllLeftIcon={<Icon name='angle double left'/>}
+                                                                        moveRightIcon={<Icon name='angle right'/>}
+                                                                        moveAllRightIcon={<Icon name='angle double right'/>}
+                                                                    />
+                                                                </Grid.Row>
+                                                            </Grid>
+                                                            :
+                                                            (fieldKeys[pId][key]['type'] === 'RenderTextArea') ?
+                                                            <Field
+                                                                component={renderTextArea}
+                                                                row = {4}
+                                                                value={data[key]}
+                                                                name={key}
+                                                            />
+
                                                             :
                                                             <Field
                                                                 component={renderInput}

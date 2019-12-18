@@ -179,3 +179,6 @@ https://github.com/andyfaizan/react-horizontal-timeline
 
 ### Tabulator
 - http://tabulator.info/
+
+### Dual list box
+ - https://github.com/jakezatecky/react-dual-listbox

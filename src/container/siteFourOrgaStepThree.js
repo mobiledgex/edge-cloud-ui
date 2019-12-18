@@ -176,7 +176,7 @@ class SiteFourOrgaThree extends React.Component {
                                             <Grid.Column>
                                                 <div className="newOrg3-2">
                                                     <div>
-                                                        If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker command.
+                                                        If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker commands.
                                                     </div>
                                                     <br></br>
                                                     <div>
