@@ -14,12 +14,14 @@ import './PageMonitoring.css';
 import {
     getDataOfAppInstance,
     renderBarGraph2_Google,
-    renderGrid,
     renderLineGraph_Plot,
-    renderPieChart2_Google
+    renderPieChart2_Google, renderPlaceHolder
 } from "../services/PageMonitoringService";
-import axios from "axios-jsonp-pro";
+import axios from "axios";
 
+import * as reducer from '../utils'
+import {CircularProgress} from "@material-ui/core";
+import {GridLoader} from "react-spinners";
 
 const {Column, Row} = Grid;
 
@@ -85,7 +87,8 @@ type State = {
     date: string,
     time: string,
     dateTime: string,
-    datesRange: string
+    datesRange: string,
+    appInstanceListSortByCloudlet: any,
 
 }
 
@@ -93,31 +96,35 @@ let boxWidth = window.innerWidth / 10 * 2.77;
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageMonitoring extends React.Component<Props, State> {
+        state = {
+            date: '',
+            time: '',
+            dateTime: '',
+            datesRange: '',
+            appInstanceListSortByCloudlet: [],
+            loading: false,
+        };
 
         constructor(props) {
             super(props);
-            this.state = {
-                date: '',
-                time: '',
-                dateTime: '',
-                datesRange: ''
-            };
         }
 
-        async componentDidMount() {
+        componentDidMount = async () => {
+            this.setState({loading: true,})
+            let appInstanceList = await getDataOfAppInstance();
+            let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
 
-            let todayDate = getTodayDate()
-            /*
             this.setState({
-                  date: todayDate,
+                appInstanceListSortByCloudlet,
             })
-            */
 
-            await getDataOfAppInstance();
+            setTimeout(() => {
+                this.setState({
+                    loading: false,
+                })
+            }, 350)
 
-
-
-        }
+        };
 
         componentWillUnmount() {
 
@@ -171,10 +178,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             ]
 
             return (
+
                 <FlexBox className='' style={{marginRight: 23}}>
+                    {this.state.loading &&
+                    <FlexBox style={{position: 'absolute', top: '2%', left: '15%'}}>
+                        <CircularProgress style={{color: '#79BF14'}}/>
+                    </FlexBox>
+                    }
                     <Grid.Column className='content_title'
                                  style={{lineHeight: '36px', fontSize: 30, marginTop: 5,}}>Monitoring
                     </Grid.Column>
+
                     <Grid.Column className='content_title2' style={{marginLeft: -10}}>
                         <button className="ui circular icon button"><i aria-hidden="true"
                                                                        className="info icon"></i>
@@ -294,6 +308,69 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        renderGrid = (appInstanceListSortByCloudlet: any) => {
+            let boxWidth = window.innerWidth / 10 * 2.55;
+
+            let cloudletCountList = []
+            for (let i in appInstanceListSortByCloudlet) {
+
+                console.log('renderGrid===title>', appInstanceListSortByCloudlet[i][0].Cloudlet);
+                console.log('renderGrid===length>', appInstanceListSortByCloudlet[i].length);
+                cloudletCountList.push({
+                    name: appInstanceListSortByCloudlet[i][0].Cloudlet,
+                    length: appInstanceListSortByCloudlet[i].length,
+                })
+            }
+
+            function toChunkArray(myArray: any, chunkSize: any): any {
+                let results = [];
+                while (myArray.length) {
+                    results.push(myArray.splice(0, chunkSize));
+                }
+                return results;
+            }
+
+            let chunkedArraysOfColSize = toChunkArray(cloudletCountList, 3);
+
+            return (
+                <div style={{}}>
+                    {chunkedArraysOfColSize.map((colSizeArray, index) =>
+                        <FlexBox style={{backgroundColor: 'black', width: boxWidth}} key={index.toString()}>
+                            {colSizeArray.map((item) =>
+                                <FlexBox style={{
+                                    alignItems: 'center',
+                                    justifyContent: 'flex-start',
+                                    margin: 5,
+                                    backgroundColor: '#292929',
+                                    flexDirection: 'column',
+                                    width: (boxWidth) * 0.32,
+                                    height: 115,
+
+                                }}>
+                                    <FlexBox style={{
+                                        fontSize: 13,
+                                        color: '#fff',
+                                        marginTop: 10,
+                                    }}>
+                                        {item.name.toString().substring(0, 13) + "..."}
+                                    </FlexBox>
+                                    <FlexBox style={{
+                                        marginTop: 0,
+                                        fontSize: 50,
+                                        color: '#29a1ff',
+                                    }}>
+                                        {item.length}
+                                    </FlexBox>
+
+                                </FlexBox>
+                            )}
+                        </FlexBox>
+                    )}
+
+                </div>
+            );
+        }
+
         render() {
 
 
@@ -319,14 +396,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <FlexBox style={Styles.box001}>
                                         <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
                                             <FlexBox style={Styles.box002}>
-                                                State of Launuch #2
+                                                Cloudlet List
                                             </FlexBox>
                                             <FlexBox style={{flex: 30}}>
-                                                {/*dummy____dummy*/}
+                                                {/*alksdaskdlaksdlka*/}
                                             </FlexBox>
                                         </FlexBox>
-                                        <FlexBox style={{marginTop: 0}}>
-                                            {renderGrid()}
+                                        <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
+                                            {this.state.loading ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListSortByCloudlet)}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -358,7 +435,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
-                                            {renderBarGraph2_Google()}
+                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -375,7 +452,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0}}>
-                                            {renderLineGraph_Plot()}
+                                            {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -400,7 +477,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </FlexBox>
 
                                         <FlexBox style={{marginTop: 10}}>
-                                            {renderPieChart2_Google()}
+                                            {this.state.loading ? renderPlaceHolder() : renderPieChart2_Google()}
                                         </FlexBox>
 
 
@@ -433,7 +510,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0}}>
-                                            {renderBarGraph2_Google()}
+                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -450,7 +527,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0}}>
-                                            {renderLineGraph_Plot()}
+                                            {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
                                         </FlexBox>
 
                                     </FlexBox>
