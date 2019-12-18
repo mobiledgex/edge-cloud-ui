@@ -89,6 +89,7 @@ type State = {
     dateTime: string,
     datesRange: string,
     appInstanceListSortByCloudlet: any,
+    loading: boolean,
 
 }
 
@@ -112,19 +113,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         componentDidMount = async () => {
             this.setState({loading: true,})
             let appInstanceList = await getDataOfAppInstance();
+
+            //@todo:Group by Cloudlet
             let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
 
-            this.setState({
+            await this.setState({
                 appInstanceListSortByCloudlet,
             })
-
             setTimeout(() => {
                 this.setState({
                     loading: false,
                 })
             }, 350)
 
-        };
+        }
 
         componentWillUnmount() {
 
@@ -313,7 +315,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             let cloudletCountList = []
             for (let i in appInstanceListSortByCloudlet) {
-
                 console.log('renderGrid===title>', appInstanceListSortByCloudlet[i][0].Cloudlet);
                 console.log('renderGrid===length>', appInstanceListSortByCloudlet[i].length);
                 cloudletCountList.push({

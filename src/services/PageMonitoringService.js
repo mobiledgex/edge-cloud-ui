@@ -327,9 +327,7 @@ export const renderLineGraph_Plot = () => {
 //param1 -->ALl
 //param2 --> [EU,US]
 
-
 export const getDataOfAppInstance = async (paramRegionArrayList: any = ['EU', 'US']) => {
-
 
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
