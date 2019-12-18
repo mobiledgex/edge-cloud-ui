@@ -16,7 +16,9 @@ import MemoryChart from '../container/monitoring/memoryChart';
 import PerformanceOfAppTable from '../container/monitoring/performanceOfAppTable';
 //
 import * as services from '../services/service_compute_service';
-import * as util from '../utils'
+import * as reducer from '../utils'
+//
+import * as AppinstCloudletService from './methods/appinstCloudletService'
 
 let _self = null;
 let rgn = ['US', 'KR', 'EU'];
@@ -27,6 +29,7 @@ class SiteFourPageMonitoring extends React.Component {
         _self = this;
         this.state = {
             devData:[],
+            stateLaunchData:[]
         };
         this._AppInstDummy = [];
         this._diffRev = []
@@ -55,69 +58,7 @@ class SiteFourPageMonitoring extends React.Component {
         _self.props.handleChangeSite({mainPath: mainPath, subPath: subPath})
 
     }
-    receiveResultApp = (result) => {
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
 
-        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-        if(Object.keys(regionGroup)[0]) {
-            _self._AppInstDummy = _self._AppInstDummy.concat(result)
-        }
-        _self.loadCount ++;
-        if(rgn.length == _self.loadCount){
-            _self.countJoin()
-        }
-        _self.props.handleLoadingSpinner(false);
-
-    }
-    countJoin() {
-        let AppInst = this._AppInstDummy;
-        _self.setState({devData:AppInst,dataSort:false})
-        this.props.handleLoadingSpinner(false);
-
-    }
-    getDataofAppinst (region,regionArr) {
-        this.props.handleLoadingSpinner(true);
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let serviceBody = {}
-        this.loadCount = 0;
-        this.setState({devData:[]})
-        this._AppInstDummy = []
-        if(region !== 'All'){
-            rgn = [region]
-        } else {
-            rgn = (regionArr)?regionArr:this.props.regionInfo.region;
-        }
-
-        if(localStorage.selectRole == 'AdminManager') {
-            rgn.map((item) => {
-                // All show appInst
-                services.getMCService('ShowAppInst',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultApp)
-            })
-        } else {
-            rgn.map((item) => {
-                serviceBody = {
-                    "token":store.userToken,
-                    "params": {
-                        "region":item,
-                        "appinst":{
-                            "key":{
-                                "app_key": {
-                                    "developer_key":{"name":localStorage.selectOrg},
-                                }
-                            }
-                        }
-                    }
-                }
-                // org별 show appInst
-                services.getMCService('ShowAppInsts',serviceBody, _self.receiveResultApp)
-            })
-        }
-    }
 
     componentWillMount() {
         //this.setState({bodyHeight: (window.innerHeight - this.headerH)})
@@ -130,16 +71,20 @@ class SiteFourPageMonitoring extends React.Component {
 
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
-        console.log('20191216 nextprops,. ', nextProps)
+    receiveCloudletData (result) {
+        console.log('20191220 receive cloudlet data -- ', result)
+        _self.setState({stateLaunchData:result})
+    }
 
+    componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.regionInfo.region.length) {
-            this.getDataofAppinst(nextProps.changeRegion,nextProps.regionInfo.region);
+            AppinstCloudletService.setProps(nextProps.regionInfo.region, nextProps, this.receiveCloudletData);
+            AppinstCloudletService.getDataofAppinst(nextProps.changeRegion,nextProps.regionInfo.region);
         }
     }
 
     render() {
-
+        let {stateLaunchData} = this.state;
         return (
 
 
@@ -154,7 +99,7 @@ class SiteFourPageMonitoring extends React.Component {
 
                 <Grid.Row>
                     <Grid.Column>
-                        <StatusOfLaunch title={'StatusOfLaunch'}></StatusOfLaunch>
+                        <StatusOfLaunch title={'StatusOfLaunch'} data={stateLaunchData} rgn={this.props.regionInfo.region}></StatusOfLaunch>
                     </Grid.Column>
                     <Grid.Column>
                         <CPUGraph title={'Top5 of CPU'}></CPUGraph>
