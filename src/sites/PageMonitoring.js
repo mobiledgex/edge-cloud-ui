@@ -14,7 +14,7 @@ import {Chart} from "react-google-charts";
 import './PageMonitoring.css';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import {
-    renderBarGraph2,
+    renderBarGraph2_Google,
     renderGrid,
     renderLineChart2,
     renderLineGraph_Plot,
@@ -332,7 +332,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <FlexBox style={Styles.box001}>
                                         <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
                                             <FlexBox style={Styles.box002}>
-                                                State of Cpu Usage
+                                                Top 5 of CPU Usage
                                             </FlexBox>
                                             <FlexBox style={{flex: 30}}>
                                                 <Dropdown
@@ -354,7 +354,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
-                                            {renderBarGraph2()}
+                                            {renderBarGraph2_Google()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -364,7 +364,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <FlexBox style={Styles.box001}>
                                         <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
                                             <FlexBox style={Styles.box002}>
-                                                State of Cpu Usage #2
+                                                Transition Of CPU
                                             </FlexBox>
                                             <FlexBox style={{flex: 30}}>
                                                 {/*dummy____dummy*/}
@@ -388,7 +388,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <FlexBox style={Styles.box001}>
                                         <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
                                             <FlexBox style={Styles.box002}>
-                                                State of Launuch #2
+                                                Perfomance Of Apps
                                             </FlexBox>
                                             <FlexBox style={{flex: 30}}>
                                                 {/*dummy____dummy*/}
@@ -429,7 +429,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0}}>
-                                            {renderBarGraph2()}
+                                            {renderBarGraph2_Google()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -439,7 +439,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <FlexBox style={Styles.box001}>
                                         <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
                                             <FlexBox style={Styles.box002}>
-                                                State of Cpu Usage #2
+                                                Transition Of Mem
                                             </FlexBox>
                                             <FlexBox style={{flex: 30}}>
                                                 {/*dummy____dummy*/}
@@ -472,7 +472,8 @@ const Styles = {
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 25,
-        backgroundColor: 'blue',
+        //backgroundColor: 'blue',
+        backgroundColor: 'transparent',
         marginTop: -50
     },
     box002: {

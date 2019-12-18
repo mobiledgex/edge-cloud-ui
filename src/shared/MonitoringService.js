@@ -67,7 +67,7 @@ export const renderLineChart2 = () => {
     )
 }
 
-export const renderBarGraph2 = () => {
+export const renderBarGraph2_Google = () => {
 
     return (
         <Chart
@@ -76,12 +76,12 @@ export const renderBarGraph2 = () => {
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={[
-                ["Element", "CPU USAGE", {role: "style"}],
-                ["cpu 10", 10, "color: red",],
-                ["cpu 20", 14, "color: #76A7FA",],
-                ["cpu 30", 56, "color: blue",],
-                ["cpu 412", 99, "color: green",],
-                ["cpu 2030", 55, "color: yellow",],
+                ["Element", "CPU USAGE", {role: "style"}, {role: 'annotation'}],
+                ["cpu 1", 10, "color: red", '10'],
+                ["cpu 2", 14, "color: #76A7FA", '14'],
+                ["cpu 3", 56, "color: blue", '56'],
+                ["cpu 4", 99, "color: green", '99'],
+                ["cpu 5", 55, "color: yellow", '55'],
             ]}
             options={{
                 is3D: true,
@@ -111,7 +111,8 @@ export const renderBarGraph2 = () => {
                     gridlines: {
                         color: "grey"
                     },
-                    baselineColor: 'grey'
+                    baselineColor: 'grey',
+                    //out', 'in', 'none'.
                 },
                 //Y축
                 vAxis: {
@@ -206,7 +207,7 @@ export const renderGrid = () => {
             flexDirection: 'column',
             height: 260,
             width: boxWidth,
-            backgroundColor: 'blue'
+            backgroundColor: 'transparent'
         }}>
             <FlexBox style={{flex: 50, height: 120}}>
                 <FlexBox style={{
@@ -226,7 +227,7 @@ export const renderGrid = () => {
                         고경준App1
                     </FlexBox>
                     <FlexBox style={{
-                        marginTop: 20,
+                        marginTop: 0,
                         fontSize: 50,
                         color: '#29a1ff',
                     }}>
@@ -240,7 +241,6 @@ export const renderGrid = () => {
                     justifyContent: 'flex-start',
                     margin: 5,
                     backgroundColor: '#292929',
-
                     flexDirection: 'column',
 
                 }}>
@@ -249,14 +249,14 @@ export const renderGrid = () => {
                         color: '#fff',
                         marginTop: 10,
                     }}>
-                        고경준App2
+                        고경준App1
                     </FlexBox>
                     <FlexBox style={{
-                        marginTop: 20,
+                        marginTop: 0,
                         fontSize: 50,
                         color: '#29a1ff',
                     }}>
-                        2
+                        1
                     </FlexBox>
 
                 </FlexBox>
@@ -266,7 +266,6 @@ export const renderGrid = () => {
                     justifyContent: 'flex-start',
                     margin: 5,
                     backgroundColor: '#292929',
-
                     flexDirection: 'column',
 
                 }}>
@@ -275,15 +274,16 @@ export const renderGrid = () => {
                         color: '#fff',
                         marginTop: 10,
                     }}>
-                        고경준App23
+                        고경준App1
                     </FlexBox>
                     <FlexBox style={{
-                        marginTop: 20,
+                        marginTop: 0,
                         fontSize: 50,
                         color: '#29a1ff',
                     }}>
-                        3
+                        1
                     </FlexBox>
+
                 </FlexBox>
             </FlexBox>
             <FlexBox style={{flex: 50}}>
@@ -293,7 +293,6 @@ export const renderGrid = () => {
                     justifyContent: 'flex-start',
                     margin: 5,
                     backgroundColor: '#292929',
-
                     flexDirection: 'column',
 
                 }}>
@@ -302,14 +301,14 @@ export const renderGrid = () => {
                         color: '#fff',
                         marginTop: 10,
                     }}>
-                        고경준App4
+                        고경준App1
                     </FlexBox>
                     <FlexBox style={{
-                        marginTop: 20,
+                        marginTop: 0,
                         fontSize: 50,
                         color: '#29a1ff',
                     }}>
-                        5
+                        1
                     </FlexBox>
 
                 </FlexBox>
@@ -319,7 +318,6 @@ export const renderGrid = () => {
                     justifyContent: 'flex-start',
                     margin: 5,
                     backgroundColor: '#292929',
-
                     flexDirection: 'column',
 
                 }}>
@@ -328,14 +326,14 @@ export const renderGrid = () => {
                         color: '#fff',
                         marginTop: 10,
                     }}>
-                        고경준App5
+                        고경준App1
                     </FlexBox>
                     <FlexBox style={{
-                        marginTop: 20,
+                        marginTop: 0,
                         fontSize: 50,
-                        color: '#fff',
+                        color: '#29a1ff',
                     }}>
-                        0
+                        1
                     </FlexBox>
 
                 </FlexBox>
@@ -345,7 +343,6 @@ export const renderGrid = () => {
                     justifyContent: 'flex-start',
                     margin: 5,
                     backgroundColor: '#292929',
-
                     flexDirection: 'column',
 
                 }}>
@@ -354,15 +351,16 @@ export const renderGrid = () => {
                         color: '#fff',
                         marginTop: 10,
                     }}>
-                        asdas213123
+                        고경준App1
                     </FlexBox>
                     <FlexBox style={{
-                        marginTop: 20,
+                        marginTop: 0,
                         fontSize: 50,
-                        color: '#fff',
+                        color: '#29a1ff',
                     }}>
-                        0
+                        1
                     </FlexBox>
+
                 </FlexBox>
             </FlexBox>
         </FlexBox>
