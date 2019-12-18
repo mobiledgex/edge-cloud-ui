@@ -90,6 +90,7 @@ type State = {
     datesRange: string,
     appInstanceListSortByCloudlet: any,
     loading: boolean,
+    loading0: boolean,
 
 }
 
@@ -104,6 +105,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             datesRange: '',
             appInstanceListSortByCloudlet: [],
             loading: false,
+            loading0: false,
         };
 
         constructor(props) {
@@ -111,19 +113,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-            this.setState({loading: true,})
+            this.setState({
+                loading: true,
+                loading0: true,
+            })
 
             let appInstanceList = await fetchAppInstanceList();
-
-            //@todo:Group by Cloudlet
             let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
-
             await this.setState({
                 appInstanceListSortByCloudlet,
             })
             setTimeout(() => {
                 this.setState({
                     loading: false,
+                    loading0: false,
                 })
             }, 350)
 
@@ -169,12 +172,33 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        async handleRegionChanges(value){
+            let arrayRegions = [];
+            if (value === 'ALL') {
+                arrayRegions.push('EU')
+                arrayRegions.push('US')
+            } else {
+                arrayRegions.push(value);
+            }
+
+            this.setState({
+                loading0: true,
+                appInstanceListSortByCloudlet: [],
+            })
+            let appInstanceList = await fetchAppInstanceList(arrayRegions);
+            let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+            await this.setState({
+                appInstanceListSortByCloudlet,
+                loading0: false,
+            })
+        }
+
         renderHeader() {
 
             let options1 = [
                 {value: 'ALL', text: 'ALL'},
                 {value: 'EU', text: 'EU'},
-                {value: 'UK', text: 'UK'},
+                {value: 'US', text: 'US'},
 
             ]
 
@@ -216,8 +240,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     options={options1}
                                     defaultValue={options1[0].value}
                                     style={{width: 200}}
-                                    onChange={(e, {value}) => {
-                                        alert(value)
+                                    onChange={async (e, {value}) => {
+                                        this.handleRegionChanges(value)
                                     }}
                                 />
                             </div>
@@ -403,7 +427,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
-                                            {this.state.loading ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListSortByCloudlet)}
+                                            {this.state.loading0 ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListSortByCloudlet)}
                                         </FlexBox>
 
                                     </FlexBox>
