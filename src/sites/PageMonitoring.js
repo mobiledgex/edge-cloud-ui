@@ -373,11 +373,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                 }}>
                                     <FlexBox style={{
-                                        fontSize: 13,
+                                        fontSize: 11,
                                         color: '#fff',
                                         marginTop: 10,
                                     }}>
-                                        {item.name.toString().substring(0, 13) + "..."}
+                                        {item.name.toString().substring(0, 23) + "..."}
                                     </FlexBox>
                                     <FlexBox style={{
                                         marginTop: 0,
