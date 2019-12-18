@@ -145,9 +145,9 @@ export const renderBarGraph2 = () => {
 export const renderPieChart2_Google = () => {
 
     return (
-        <div className="App">
+        <div className="pieChart">
             <Chart
-                width={'455px'}
+                width={'490px'}
                 height={'250px'}
                 chartType="PieChart"
                 data={[
@@ -161,7 +161,7 @@ export const renderPieChart2_Google = () => {
                             color: "#2BB673"
                         },
                         {
-                            color: "#d91e48"
+                            color: "red"
                         },
                         {
                             color: "#007fad"
@@ -183,13 +183,13 @@ export const renderPieChart2_Google = () => {
                     },
                     chartArea: {
                         left: 0,
-                        top: 0,
+                        top: 25,
                         width: "100%",
-                        height: "80%"
+                        height: "65%"
                     },
                     fontName: "Roboto",
                     fontColor: 'white',
-                    backgroundColor: '#404040',
+                    backgroundColor: 'black',
                 }}
                 graph_id="PieChart"
                 legend_toggle

@@ -308,7 +308,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <FlexBox style={{flexDirection: 'column'}}>
 
                                 {/*_____row____1111*/}
-                                <FlexBox style={{marginTop: 25,}}>
+                                <FlexBox style={{marginTop: 35,}}>
                                     {/* ___col___1*/}
                                     {/* ___col___1*/}
                                     {/* ___col___1*/}
@@ -380,7 +380,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 {/*row_____22222222*/}
                                 {/*row_____22222222*/}
                                 {/*row_____22222222*/}
-                                <FlexBox style={{marginTop: 80,}}>
+                                <FlexBox style={{marginTop: 70,}}>
 
                                     {/* ___col___4*/}
                                     {/* ___col___4*/}
