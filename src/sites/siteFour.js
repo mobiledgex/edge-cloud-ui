@@ -39,6 +39,7 @@ import SiteFourPageApps from './siteFour_page_apps';
 import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
+import SiteFourPageCloudletPool from './siteFour_page_cloudletPool';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
 import SiteFourPageCloudletPoolReg from './siteFour_page_cloudletPoolReg';
 import SiteFourPageLinkOrgaizeReg from './siteFour_page_linkOrganizeReg';
@@ -165,6 +166,7 @@ class SiteFour extends React.Component {
         ]
         this.menuItems = [
             {label:'Cloudlets', icon:'cloud_queue', pg:2},
+            {label:'Cloudlet Pool', icon:'pool', pg:7},
             {label:'Flavors', icon:'free_breakfast', pg:3},
             {label:'Cluster Instances', icon:'storage', pg:4},
             {label:'Apps', icon:'apps', pg:5},
@@ -275,6 +277,9 @@ class SiteFour extends React.Component {
         } else if(localStorage.selectMenu === 'Cluster Instances') {
             this.setState({page:'pg=createClusterInst'})
             this.gotoUrl('/site4', 'pg=createClusterInst')
+        } else if(localStorage.selectMenu === 'Cloudlet Pool') {
+            this.setState({page:'pg=createCloudletPool'})
+            this.gotoUrl('/site4', 'pg=createCloudletPool')
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
@@ -1139,6 +1144,7 @@ class SiteFour extends React.Component {
                                                                         (this.state.page === 'pg=4')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
                                                                             (this.state.page === 'pg=5')?<SiteFourPageApps></SiteFourPageApps>:
                                                                                 (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
+                                                                                (this.state.page === 'pg=7')? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
                                                                                     (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                                         (this.state.page === 'pg=createApp')? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
                                                                                         (this.state.page === 'pg=editApp')? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
