@@ -13,7 +13,13 @@ import {formatDate, getTodayDate} from "../utils";
 import {Chart} from "react-google-charts";
 import './PageMonitoring.css';
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {renderBarGraph2, renderGrid, renderLineChart2, renderPieChart2} from "../shared/MonitoringService";
+import {
+    renderBarGraph2,
+    renderGrid,
+    renderLineChart2,
+    renderLineGraph_Plot,
+    renderPieChart2_Google
+} from "../shared/MonitoringService";
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 
@@ -118,94 +124,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-
-        renderLineGraph() {
-            return (
-                <Plot
-                    style={{
-                        //backgroundColor: 'transparent',
-                        backgroundColor: '#373737',
-                        overflow: 'hidden',
-                        color: 'white',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        alignSelf: 'center',
-                        marginTop: 0
-
-                    }}
-                    data={
-                        [
-                            {
-                                x: [1, 2, 3, 4],
-                                y: [10, 15, 13, 17],
-                                type: 'scatter'
-                            },
-                            {
-                                x: [1, 2, 3, 4],
-                                y: [16, 5, 11, 9],
-                                type: 'scatter'
-                            },
-                            {
-                                x: [1, 2, 3, 4],
-                                y: [4, 3, 13, 19],
-                                type: 'scatter'
-                            },
-                            {
-                                x: [1, 2, 3, 4],
-                                y: [5, 4, 7, 29],
-                                type: 'scatter'
-                            },
-                            {
-                                x: [1, 2, 3, 4],
-                                y: [5, 5, 6, 9],
-                                type: 'scatter'
-                            },
-
-                        ]
-
-                    }
-                    layout={{
-                        height: 300,
-                        width: boxWidth,
-                        paper_bgcolor: 'transparent',
-                        plot_bgcolor: 'red',
-                        color: 'white',
-                        xaxis: {
-                            showgrid: false,
-                            zeroline: true,
-                            showline: true,
-                            mirror: 'ticks',
-                            gridcolor: 'rgba(255,255,255,.05)',
-                            gridwidth: 1,
-                            zerolinecolor: 'rgba(255,255,255,0)',
-                            zerolinewidth: 1,
-                            linecolor: 'rgba(255,255,255,.2)',
-                            linewidth: 1,
-                            color: 'rgba(255,255,255,.4)',
-                            domain: [0, 0.94]
-                        },
-                        yaxis: {
-                            showgrid: true,
-                            zeroline: false,
-                            showline: true,
-                            mirror: 'ticks',
-                            ticklen: 5,
-                            tickcolor: 'rgba(0,0,0,0)',
-                            gridcolor: 'rgba(255,255,255,.05)',
-                            gridwidth: 1,
-                            zerolinecolor: 'rgba(255,255,255,0)',
-                            zerolinewidth: 1,
-                            linecolor: 'rgba(255,255,255,.2)',
-                            linewidth: 1,
-                            color: 'rgba(255,255,255,.4)',
-                            //rangemode: 'tozero'
-                        },
-                    }}
-                />
-            )
-        }
-
-
         renderPieGraph() {
             return (
 
@@ -237,29 +155,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 </div>
             )
         }
-
-
-
-        renderHightCharts(){
-            const options = {
-                title: {
-                    text: 'My chart'
-                },
-                series: [{
-                    data: [1, 2, 3]
-                }]
-            }
-
-            return (
-                <div>
-                    <HighchartsReact
-                        highcharts={Highcharts}
-                        options={options}
-                    />
-                </div>
-            )
-        }
-
         renderHeader(){
 
             let options1 = [
@@ -410,7 +305,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*@todo 컨텐츠 BODY 부분...*/}
                         {/*#######################*/}
                         <div className="page_monitoring">
-
                             <FlexBox style={{flexDirection: 'column'}}>
 
                                 {/*_____row____1111*/}
@@ -477,7 +371,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0}}>
-                                            {this.renderLineGraph()}
+                                            {renderLineGraph_Plot()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -502,7 +396,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </FlexBox>
 
                                         <FlexBox style={{marginTop: 10}}>
-                                            {renderPieChart2()}
+                                            {renderPieChart2_Google()}
                                         </FlexBox>
 
 
@@ -545,14 +439,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <FlexBox style={Styles.box001}>
                                         <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
                                             <FlexBox style={Styles.box002}>
-                                                State of MEM Usage #2
+                                                State of Cpu Usage #2
                                             </FlexBox>
                                             <FlexBox style={{flex: 30}}>
                                                 {/*dummy____dummy*/}
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0}}>
-                                            {renderLineChart2()}
+                                            {renderLineGraph_Plot()}
                                         </FlexBox>
 
                                     </FlexBox>

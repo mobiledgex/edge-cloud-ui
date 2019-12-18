@@ -3,6 +3,7 @@ import {Dropdown, Grid, Menu} from 'semantic-ui-react';
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FlexBox from "flexbox-react";
+import Plot from "react-plotly.js";
 
 export const renderLineChart2 = () => {
 
@@ -141,13 +142,12 @@ export const renderBarGraph2 = () => {
 
 }
 
-export const renderPieChart2 = () => {
-
+export const renderPieChart2_Google = () => {
 
     return (
         <div className="App">
             <Chart
-                width={'490px'}
+                width={'455px'}
                 height={'250px'}
                 chartType="PieChart"
                 data={[
@@ -368,6 +368,103 @@ export const renderGrid = () => {
         </FlexBox>
     )
 }
+
+export const renderLineGraph_Plot = () => {
+    let boxWidth = window.innerWidth / 10 * 2.55;
+
+    return (
+        <Plot
+            style={{
+                //backgroundColor: 'transparent',
+                backgroundColor: 'black',
+                overflow: 'hidden',
+                color: 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+                alignSelf: 'center',
+                marginTop: 0
+
+            }}
+            data={
+                [
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [10, 15, 13, 17],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [16, 5, 11, 9],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [4, 3, 13, 19],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [5, 4, 7, 29],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [5, 5, 6, 9],
+                        type: 'scatter'
+                    },
+
+                ]
+
+            }
+            layout={{
+                margin: {
+                    l: 50,
+                    r: 15,
+                    b: 35,
+                    t: 5,
+                    pad: 0
+                },
+                height: 250,
+                width: boxWidth,
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                color: 'white',
+                xaxis: {
+                    showgrid: false,
+                    zeroline: true,
+                    showline: true,
+                    mirror: 'ticks',
+                    gridcolor: 'rgba(255,255,255,.05)',
+                    gridwidth: 1,
+                    zerolinecolor: 'rgba(255,255,255,0)',
+                    zerolinewidth: 1,
+                    linecolor: 'rgba(255,255,255,.2)',
+                    linewidth: 1,
+                    color: 'rgba(255,255,255,.4)',
+                    domain: [0, 0.94]
+                },
+                yaxis: {
+                    showgrid: true,
+                    zeroline: false,
+                    showline: true,
+                    mirror: 'ticks',
+                    ticklen: 5,
+                    tickcolor: 'rgba(0,0,0,0)',
+                    gridcolor: 'rgba(255,255,255,.05)',
+                    gridwidth: 1,
+                    zerolinecolor: 'rgba(255,255,255,0)',
+                    zerolinewidth: 1,
+                    linecolor: 'rgba(255,255,255,.2)',
+                    linewidth: 1,
+                    color: 'rgba(255,255,255,.4)',
+                    //rangemode: 'tozero'
+                },
+            }}
+        />
+    )
+}
+
+
 
 
 
