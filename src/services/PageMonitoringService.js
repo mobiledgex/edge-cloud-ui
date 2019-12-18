@@ -347,7 +347,6 @@ export const getDataOfAppInstance = async (paramRegionArrayList: any = ['EU', 'U
             }
         }
 
-        console.log('parse data get mc service ===>>>>>>>>>> ', resource)
         let resource = 'ShowAppInsts';
         const hostname = window.location.hostname;
         let ServerUrl = 'https://' + hostname + ':3030';
