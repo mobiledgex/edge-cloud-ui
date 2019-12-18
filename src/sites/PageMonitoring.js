@@ -388,7 +388,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*#######################*/}
                         <div className="page_monitoring">
                             <FlexBox style={{flexDirection: 'column'}}>
-
                                 {/*_____row____1111*/}
                                 <FlexBox style={{marginTop: 35,}}>
                                     {/* ___col___1*/}
@@ -397,7 +396,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <FlexBox style={Styles.box001}>
                                         <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
                                             <FlexBox style={Styles.box002}>
-                                                Cloudlet List
+                                                Status Of Launch
                                             </FlexBox>
                                             <FlexBox style={{flex: 30}}>
                                                 {/*alksdaskdlaksdlka*/}
