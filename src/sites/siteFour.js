@@ -60,6 +60,7 @@ import Alert from 'react-s-alert';
 
 import '../css/introjs.css';
 import '../css/introjs-dark.css';
+import {changeDetail} from "../actions";
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 const locationOptions = [
@@ -666,7 +667,11 @@ class SiteFour extends React.Component {
         } else {
             this.setState({intoCity:false})
         }
-
+        //set category
+        if(nextProps.detailData !== this.props.detailData) {
+            // alert(JSON.stringify(nextProps.detailData))
+            this.setState({detailData:nextProps.detailData})
+        }
     }
 
     componentDidUpdate() {
@@ -1073,6 +1078,13 @@ class SiteFour extends React.Component {
                                     (viewMode === 'detailView') ?
                                         <Grid.Column className='title_align' style={{marginLeft:20}}>
                                             <Button onClick={()=>this.props.handleDetail({data:null, viewMode:'listView'})}>Close Details</Button>
+                                            <div>
+                                                {this.state.detailData.Region + " > "}
+                                                {(this.state.headerTitle === "Cloudlets") ? this.state.detailData.CloudletName : null}
+                                                {(this.state.headerTitle === 'Cluster Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterName : null}
+                                                {(this.state.headerTitle === 'App Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterInst + " > " + this.state.detailData.AppName : null}
+
+                                            </div>
                                         </Grid.Column>
                                         : null
                                 }
@@ -1172,7 +1184,7 @@ const mapStateToProps = (state) => {
     let submitInfo = (state.submitInfo)?state.submitInfo:null;
     let regionInfo = (state.regionInfo)?state.regionInfo:null;
     let checkedAudit = (state.checkedAudit)?state.checkedAudit.audit:null;
-
+    let detailData = (state.changeViewMode && state.changeViewMode.mode)?state.changeViewMode.mode.data : null;
     return {
         viewBtn : state.btnMnmt?state.btnMnmt:null,
         userToken : (state.userToken) ? state.userToken: null,
@@ -1200,6 +1212,7 @@ const mapStateToProps = (state) => {
         regionInfo:regionInfo,
         audit: checkedAudit,
         clickCity: state.clickCityList.list,
+        detailData:detailData,
     }
 };
 
