@@ -12,7 +12,7 @@ import {DatePicker} from 'antd';
 import {formatDate, getTodayDate} from "../utils";
 import './PageMonitoring.css';
 import {
-    getDataOfAppInstance,
+    fetchAppInstanceList,
     renderBarGraph2_Google,
     renderLineGraph_Plot,
     renderPieChart2_Google, renderPlaceHolder
@@ -112,7 +112,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         componentDidMount = async () => {
             this.setState({loading: true,})
-            let appInstanceList = await getDataOfAppInstance();
+
+            let appInstanceList = await fetchAppInstanceList();
 
             //@todo:Group by Cloudlet
             let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
