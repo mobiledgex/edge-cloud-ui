@@ -11,9 +11,23 @@
 /* stylelint-disable */
 /* stylelint-disable declaration-bang-space-before,no-duplicate-selectors,string-no-newline */
 /* stylelint-disable at-rule-no-unknown */
-#reactgooglegraph-4 text{
+#reactgooglegraph-4 text {
     color: #fff
 }
+
+
+.barChart rect {
+    fill: black
+
+
+}
+
+.barChart text {
+    fill: white
+
+
+}
+
 
 html,
 body {

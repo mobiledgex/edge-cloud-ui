@@ -13,6 +13,10 @@ import {formatDate, getTodayDate} from "../utils";
 import {Chart} from "react-google-charts";
 import './PageMonitoring.css';
 import CircularProgress from "@material-ui/core/CircularProgress";
+import {renderBarGraph2, renderGrid, renderLineChart2, renderPieChart2} from "../shared/MonitoringService";
+import Highcharts from 'highcharts'
+import HighchartsReact from 'highcharts-react-official'
+
 
 const {Column, Row} = Grid;
 
@@ -114,185 +118,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        renderBarGraph2() {
-
-            const chartEvents = [
-                {
-                    eventName: "select",
-                    callback({chartWrapper}) {
-                        console.log("Selected ", chartWrapper.getChart().getSelection());
-                    }
-                }
-            ];
-            const data = [
-                ["age", "weight"],
-                [8, 12],
-                [4, 5.5],
-                [11, 14],
-                [4, 5],
-                [3, 3.5],
-                [6.5, 7]
-            ];
-
-            const options = {
-                title: "Age vs. Weight comparison",
-                hAxis: {title: "Age", viewWindow: {min: 0, max: 15}},
-                vAxis: {title: "Weight", viewWindow: {min: 0, max: 15}},
-                legend: "none"
-            };
-            return (
-                <Chart
-                    width={'430px'}
-                    height={'220px'}
-                    chartType="BarChart"
-                    loader={<div><CircularProgress style={{color: 'red', zIndex:999999}}/></div>}
-                    data={[
-                        ["Element", "CPU USAGE", {role: "style"}, {role: 'annotation'}],
-                        ["cpu 10", 10, "color: gray", 10],
-                        ["cpu 20", 14, "color: #76A7FA", 14],
-                        ["cpu 30", 56, "color: blue", 56],
-                        ["cpu 412", 99, "color: green", 99],
-                        ["cpu 2030", 55, "color: yellow", 55],
-                    ]}
-                    options={{
-                        is3D: true,
-                        title: '',
-                        titleTextStyle: {
-                            color: 'red'
-                            /*fontName: <string>, // i.e. 'Times New Roman'
-                            fontSize: <number>, // 12, 18 whatever you want (don't specify px)
-                             bold: <boolean>,    // true or false
-                            italic: <boolean>   // true of false*/
-                        },
-                        titlePosition: 'out',
-                        chartArea: {width: '50%', height: 150},
-                        legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
-                        hAxis: {
-                            title: '',
-                            titleTextStyle: {
-                                fontName: "Times",
-                                fontSize: 25,
-                                fontStyle: "normal",
-                                color: 'white'
-                            },
-                            minValue: 0,
-                            textStyle: {
-                                color: "white"
-                            },
-                            gridlines: {
-                                color: "grey"
-                            },
-                            baselineColor: 'grey'
-                        },
-                        vAxis: {
-                            title: '',
-                            titleTextStyle: {
-                                fontSize: 25,
-                                fontStyle: "normal",
-                                color: 'white'
-                            },
-                            textStyle: {
-                                color: "white",
-                                //fontSize: 18,
-                            },
-
-                        },
-                        //colors: ['#FB7A21'],
-                        fontColor: 'white',
-                        backgroundColor: '#404040',
-                        //colors: ['green']
-                    }}
-                    style={{color: 'white'}}
-
-                    // For tests
-                    rootProps={{'data-testid': '1'}}
-                />
-            );
-
-        }
-
-        renderBarGraph() {
-
-            let xSavings = [16, 15, 20, 30, 100]
-            let ySavings = ['cpu1', 'cpu1 ', 'cpu13', 'cpu14', 'cpu77'];
-
-            return (
-                <Plot
-                    style={{
-                        backgroundColor: '#373737',
-                        //backgroundColor: 'transparent',
-                        overflow: 'hidden',
-                        color: 'white',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        alignSelf: 'center',
-                        marginTop: -40
-                    }}
-                    data={
-                        [
-
-                            {
-                                x: xSavings,
-                                y: ySavings,
-                                xaxis: 'x1',
-                                yaxis: 'y1',
-                                type: 'bar',
-                                marker: {
-                                    color: 'rgba(50,171,96,0.6)',
-                                    line: {
-                                        color: 'rgba(50,171,96,1.0)',
-                                        width: 1
-                                    }
-                                },
-                                //name: 'Household savings, percentage of household disposable income',
-                                orientation: 'h'
-                            }
-
-                        ]
-
-                    }
-                    layout={{
-                        height: 350,
-                        width: boxWidth,
-                        alignItems: 'center',
-                        marginTop: -40,
-                        paper_bgcolor: 'transparent',
-                        plot_bgcolor: 'transparent',
-                        color: 'white',
-                        xaxis: {
-                            showgrid: false,
-                            zeroline: true,
-                            showline: true,
-                            mirror: 'ticks',
-                            gridcolor: 'rgba(255,255,255,.05)',
-                            gridwidth: 1,
-                            zerolinecolor: 'rgba(255,255,255,0)',
-                            zerolinewidth: 1,
-                            linecolor: 'rgba(255,255,255,.2)',
-                            linewidth: 1,
-                            color: 'rgba(255,255,255,.4)',
-                            domain: [0, 0.94]
-                        },
-                        yaxis: {
-                            showgrid: true,
-                            zeroline: false,
-                            showline: true,
-                            mirror: 'ticks',
-                            ticklen: 5,
-                            tickcolor: 'rgba(0,0,0,0)',
-                            gridcolor: 'rgba(255,255,255,.05)',
-                            gridwidth: 1,
-                            zerolinecolor: 'rgba(255,255,255,0)',
-                            zerolinewidth: 1,
-                            linecolor: 'rgba(255,255,255,.2)',
-                            linewidth: 1,
-                            color: 'rgba(255,255,255,.4)',
-                            //rangemode: 'tozero'
-                        },
-                    }}
-                />
-            )
-        }
 
         renderLineGraph() {
             return (
@@ -305,7 +130,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         alignItems: 'center',
                         justifyContent: 'center',
                         alignSelf: 'center',
-                        marginTop: -40
+                        marginTop: 0
 
                     }}
                     data={
@@ -340,10 +165,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                     }
                     layout={{
-                        height: 350,
+                        height: 300,
                         width: boxWidth,
                         paper_bgcolor: 'transparent',
-                        plot_bgcolor: 'transparent',
+                        plot_bgcolor: 'red',
                         color: 'white',
                         xaxis: {
                             showgrid: false,
@@ -414,178 +239,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderGrid() {
+
+        renderHightCharts(){
+            const options = {
+                title: {
+                    text: 'My chart'
+                },
+                series: [{
+                    data: [1, 2, 3]
+                }]
+            }
 
             return (
-                <FlexBox style={{
-                    flexDirection: 'column',
-                    height: 350,
-                    width: boxWidth,
-                    backgroundColor: 'blue'
-                }}>
-                    <FlexBox style={{flex: 50, height: 120}}>
-                        <FlexBox style={{
-                            flex: 33,
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            margin: 5,
-                            backgroundColor: '#292929',
-                            flexDirection: 'column',
-
-                        }}>
-                            <FlexBox style={{
-                                fontSize: 15,
-                                color: '#fff',
-                                marginTop: 10,
-                            }}>
-                                고경준App1
-                            </FlexBox>
-                            <FlexBox style={{
-                                marginTop: 20,
-                                fontSize: 50,
-                                color: '#29a1ff',
-                            }}>
-                                1
-                            </FlexBox>
-
-                        </FlexBox>
-                        <FlexBox style={{
-                            flex: 33,
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            margin: 5,
-                            backgroundColor: '#292929',
-
-                            flexDirection: 'column',
-
-                        }}>
-                            <FlexBox style={{
-                                fontSize: 15,
-                                color: '#fff',
-                                marginTop: 10,
-                            }}>
-                                고경준App2
-                            </FlexBox>
-                            <FlexBox style={{
-                                marginTop: 20,
-                                fontSize: 50,
-                                color: '#29a1ff',
-                            }}>
-                                2
-                            </FlexBox>
-
-                        </FlexBox>
-                        <FlexBox style={{
-                            flex: 33,
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            margin: 5,
-                            backgroundColor: '#292929',
-
-                            flexDirection: 'column',
-
-                        }}>
-                            <FlexBox style={{
-                                fontSize: 15,
-                                color: '#fff',
-                                marginTop: 10,
-                            }}>
-                                고경준App23
-                            </FlexBox>
-                            <FlexBox style={{
-                                marginTop: 20,
-                                fontSize: 50,
-                                color: '#29a1ff',
-                            }}>
-                                3
-                            </FlexBox>
-                        </FlexBox>
-                    </FlexBox>
-                    <FlexBox style={{flex: 50}}>
-                        <FlexBox style={{
-                            flex: 33,
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            margin: 5,
-                            backgroundColor: '#292929',
-
-                            flexDirection: 'column',
-
-                        }}>
-                            <FlexBox style={{
-                                fontSize: 15,
-                                color: '#fff',
-                                marginTop: 10,
-                            }}>
-                                고경준App4
-                            </FlexBox>
-                            <FlexBox style={{
-                                marginTop: 20,
-                                fontSize: 50,
-                                color: '#29a1ff',
-                            }}>
-                                5
-                            </FlexBox>
-
-                        </FlexBox>
-                        <FlexBox style={{
-                            flex: 33,
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            margin: 5,
-                            backgroundColor: '#292929',
-
-                            flexDirection: 'column',
-
-                        }}>
-                            <FlexBox style={{
-                                fontSize: 15,
-                                color: '#fff',
-                                marginTop: 10,
-                            }}>
-                                고경준App5
-                            </FlexBox>
-                            <FlexBox style={{
-                                marginTop: 20,
-                                fontSize: 50,
-                                color: '#fff',
-                            }}>
-                                0
-                            </FlexBox>
-
-                        </FlexBox>
-                        <FlexBox style={{
-                            flex: 33,
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            margin: 5,
-                            backgroundColor: '#292929',
-
-                            flexDirection: 'column',
-
-                        }}>
-                            <FlexBox style={{
-                                fontSize: 15,
-                                color: '#fff',
-                                marginTop: 10,
-                            }}>
-                                asdas213123
-                            </FlexBox>
-                            <FlexBox style={{
-                                marginTop: 20,
-                                fontSize: 50,
-                                color: '#fff',
-                            }}>
-                                0
-                            </FlexBox>
-                        </FlexBox>
-                    </FlexBox>
-                </FlexBox>
+                <div>
+                    <HighchartsReact
+                        highcharts={Highcharts}
+                        options={options}
+                    />
+                </div>
             )
         }
 
-
-        render() {
+        renderHeader(){
 
             let options1 = [
                 {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
@@ -597,132 +272,140 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             ]
 
             return (
+                <FlexBox className='' style={{marginRight: 23}}>
+                    <Grid.Column className='content_title'
+                                 style={{lineHeight: '36px', fontSize: 30, marginTop: 5,}}>Monitoring
+                    </Grid.Column>
+                    <Grid.Column className='content_title2' style={{marginLeft: -10}}>
+                        <button className="ui circular icon button"><i aria-hidden="true"
+                                                                       className="info icon"></i>
+                        </button>
+                    </Grid.Column>
+                    <FlexBox style={{justifyContent: 'flex-end', alignItems: 'flex-end', width: '100%'}}>
+                        <Grid.Column
+
+                            style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer', color: 'white'}}
+                            onClick={() => {
+                                alert('Reset All')
+                            }}
+                        >
+                            Reset All
+                        </Grid.Column>
+                        {/*###########*/}
+                        {/* COLUMN ONe*/}
+                        {/*###########*/}
+                        <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 30,}}>
+                            <div style={{marginTop: 10}}>
+                                <Dropdown
+                                    placeholder='REGION'
+                                    selection
+                                    options={options1
+
+                                    }
+                                    defaultValue={options1[0].value}
+                                    style={{width: 200}}
+                                />
+                            </div>
+                        </Grid.Column>
+                        {/*###########*/}
+                        {/* COLUMN TWO*/}
+                        {/*###########*/}
+                        <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 10,}}>
+                            <div style={{marginTop: 10}}>
+                                <Dropdown
+                                    placeholder='CloudLet'
+                                    selection
+                                    options={
+                                        [
+                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+                                        ]
+
+                                    }
+                                    style={{width: 200}}
+                                />
+                            </div>
+                        </Grid.Column>
+                        {/*###########*/}
+                        {/* COLUMN 333*/}
+                        {/*###########*/}
+                        <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 10,}}>
+                            <div style={{marginTop: 10}}>
+                                <Dropdown
+                                    placeholder='Cluster'
+                                    selection
+                                    options={
+                                        [
+                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+                                        ]
+
+                                    }
+                                    style={{width: 200}}
+                                />
+                            </div>
+                        </Grid.Column>
+                        {/*######################*/}
+                        {/* DATE CALENDAR 4444*/}
+                        {/*###########*###########*/}
+                        <Grid.Column className=''
+                                     style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer'}}>
+                            <FlexBox style={{marginBottom: -0.5,}}>
+
+
+                                <DatePicker
+                                    onChange={(date) => {
+                                        let __date = formatDate(date);
+                                        this.setState({
+                                            date: __date,
+                                        })
+                                    }}
+                                    placeholder="Start Date"
+                                    style={{cursor: 'pointer'}}
+
+                                />
+                                <FlexBox style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
+                                    -
+                                </FlexBox>
+                                <DatePicker
+                                    onChange={(date) => {
+                                        let __date = formatDate(date);
+                                        this.setState({
+                                            date: __date,
+                                        })
+                                    }}
+                                    placeholder="End Date"
+                                    style={{cursor: 'pointer'}}
+
+                                />
+
+                            </FlexBox>
+                        </Grid.Column>
+                    </FlexBox>
+
+                </FlexBox>
+            )
+        }
+
+        render() {
+
+
+            return (
 
                 <Grid.Row className='view_contents'>
                     <Grid.Column className='contents_body'>
                         {/*#######################*/}
                         {/*컨텐츠 해더 부분        ..*/}
                         {/*#######################*/}
-                        <FlexBox className='' style={{marginRight: 23}}>
-                            <Grid.Column className='content_title'
-                                         style={{lineHeight: '36px', fontSize: 30, marginTop: 5,}}>Monitoring
-                            </Grid.Column>
-                            <Grid.Column className='content_title2' style={{marginLeft: -10}}>
-                                <button className="ui circular icon button"><i aria-hidden="true"
-                                                                               className="info icon"></i>
-                                </button>
-                            </Grid.Column>
-                            <FlexBox style={{justifyContent: 'flex-end', alignItems: 'flex-end', width: '100%'}}>
-                                <Grid.Column
-
-                                    style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer', color: 'white'}}
-                                    onClick={() => {
-                                        alert('Reset All')
-                                    }}
-                                >
-                                    Reset All
-                                </Grid.Column>
-                                {/*###########*/}
-                                {/* COLUMN ONe*/}
-                                {/*###########*/}
-                                <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 30,}}>
-                                    <div style={{marginTop: 10}}>
-                                        <Dropdown
-                                            placeholder='REGION'
-                                            selection
-                                            options={options1
-
-                                            }
-                                            defaultValue={options1[0].value}
-                                            style={{width: 200}}
-                                        />
-                                    </div>
-                                </Grid.Column>
-                                {/*###########*/}
-                                {/* COLUMN TWO*/}
-                                {/*###########*/}
-                                <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 10,}}>
-                                    <div style={{marginTop: 10}}>
-                                        <Dropdown
-                                            placeholder='CloudLet'
-                                            selection
-                                            options={
-                                                [
-                                                    {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                                    {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                                    {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                                    {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                                    {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                                ]
-
-                                            }
-                                            style={{width: 200}}
-                                        />
-                                    </div>
-                                </Grid.Column>
-                                {/*###########*/}
-                                {/* COLUMN 333*/}
-                                {/*###########*/}
-                                <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 10,}}>
-                                    <div style={{marginTop: 10}}>
-                                        <Dropdown
-                                            placeholder='Cluster'
-                                            selection
-                                            options={
-                                                [
-                                                    {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                                    {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                                    {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                                    {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                                    {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                                ]
-
-                                            }
-                                            style={{width: 200}}
-                                        />
-                                    </div>
-                                </Grid.Column>
-                                {/*######################*/}
-                                {/* DATE CALENDAR 4444*/}
-                                {/*###########*###########*/}
-                                <Grid.Column className=''
-                                             style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer'}}>
-                                    <FlexBox style={{marginBottom: -0.5,}}>
-
-
-                                        <DatePicker
-                                            onChange={(date) => {
-                                                let __date = formatDate(date);
-                                                this.setState({
-                                                    date: __date,
-                                                })
-                                            }}
-                                            placeholder="Start Date"
-                                            style={{cursor: 'pointer'}}
-
-                                        />
-                                        <FlexBox style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
-                                            -
-                                        </FlexBox>
-                                        <DatePicker
-                                            onChange={(date) => {
-                                                let __date = formatDate(date);
-                                                this.setState({
-                                                    date: __date,
-                                                })
-                                            }}
-                                            placeholder="End Date"
-                                            style={{cursor: 'pointer'}}
-
-                                        />
-
-                                    </FlexBox>
-                                </Grid.Column>
-                            </FlexBox>
-
-                        </FlexBox>
+                        {this.renderHeader()}
                         {/*#######################*/}
                         {/*@todo 컨텐츠 BODY 부분...*/}
                         {/*#######################*/}
@@ -744,8 +427,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/*dummy____dummy*/}
                                             </FlexBox>
                                         </FlexBox>
-                                        <FlexBox style={{marginTop: 15}}>
-                                            {this.renderGrid()}
+                                        <FlexBox style={{marginTop: 0}}>
+                                            {renderGrid()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -776,8 +459,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 />
                                             </FlexBox>
                                         </FlexBox>
-                                        <FlexBox style={{marginTop: 50}}>
-                                            {this.renderBarGraph2()}
+                                        <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
+                                            {renderBarGraph2()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -793,7 +476,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/*dummy____dummy*/}
                                             </FlexBox>
                                         </FlexBox>
-                                        <FlexBox style={{marginTop: 50}}>
+                                        <FlexBox style={{marginTop: 0}}>
                                             {this.renderLineGraph()}
                                         </FlexBox>
 
@@ -803,7 +486,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 {/*row_____22222222*/}
                                 {/*row_____22222222*/}
                                 {/*row_____22222222*/}
-                                <FlexBox style={{marginTop: 25,}}>
+                                <FlexBox style={{marginTop: 80,}}>
 
                                     {/* ___col___4*/}
                                     {/* ___col___4*/}
@@ -819,7 +502,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </FlexBox>
 
                                         <FlexBox style={{marginTop: 10}}>
-                                            {this.renderPieGraph()}
+                                            {renderPieChart2()}
                                         </FlexBox>
 
 
@@ -851,8 +534,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 />
                                             </FlexBox>
                                         </FlexBox>
-                                        <FlexBox style={{marginTop: 50}}>
-                                            {this.renderBarGraph()}
+                                        <FlexBox style={{marginTop: 0}}>
+                                            {renderBarGraph2()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -868,8 +551,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/*dummy____dummy*/}
                                             </FlexBox>
                                         </FlexBox>
-                                        <FlexBox style={{marginTop: 50}}>
-                                            {this.renderLineGraph()}
+                                        <FlexBox style={{marginTop: 0}}>
+                                            {renderLineChart2()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -895,6 +578,8 @@ const Styles = {
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 25,
+        backgroundColor: 'blue',
+        marginTop: -50
     },
     box002: {
         fontSize: 22,
