@@ -58,12 +58,15 @@ export const getDataofAppinst = (region,regionArr) => {
         rgn = [region]
     } else {
         rgn = (regionArr)?regionArr:props.regionInfo.region;
+
     }
 
     if(localStorage.selectRole == 'AdminManager') {
         rgn.map((item) => {
             // All show appInst
+
             services.getMCService('ShowAppInst',{token:store ? store.userToken : 'null', region:item}, receiveResultApp)
+
         })
     } else {
         rgn.map((item) => {
@@ -81,7 +84,9 @@ export const getDataofAppinst = (region,regionArr) => {
                 }
             }
             // org별 show appInst
+
             services.getMCService('ShowAppInsts',serviceBody, receiveResultApp)
+
         })
     }
 }

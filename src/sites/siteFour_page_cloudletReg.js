@@ -17,7 +17,7 @@ import * as reducer from "../utils";
 
 let _self = null;
 
-class SiteFourPageClusterInstPoolReg extends React.Component {
+class SiteFourPageClusterInstReg extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -113,4 +113,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInstPoolReg)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInstReg)));
