@@ -24,6 +24,7 @@ import './css/index.css';
 
 import './css/pages/audit.css';
 import './css/components/timelineH.css';
+import {Test001} from "./sites/Test001";
 // API
 
 let self = null;
@@ -338,7 +339,7 @@ class App extends Component {
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
-                    {/*<Route exact path='/Test001' component={Test001} />*/}
+                    <Route exact path='/Test001' component={Test001} />
 
                 </div>
             </Router>

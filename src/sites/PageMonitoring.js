@@ -172,7 +172,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        async handleRegionChanges(value){
+        async handleRegionChanges(value) {
             let arrayRegions = [];
             if (value === 'ALL') {
                 arrayRegions.push('EU')
@@ -222,7 +222,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <FlexBox style={{justifyContent: 'flex-end', alignItems: 'flex-end', width: '100%'}}>
                         <Grid.Column
 
-                            style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer', color: 'white'}}
+                            style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer',marginBottom:1}}
                             onClick={() => {
                                 alert('Reset All')
                             }}
@@ -233,18 +233,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/* COLUMN ONe*/}
                         {/*###########*/}
                         <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 30,}}>
-                            <div style={{marginTop: 10}}>
-                                <Dropdown
-                                    placeholder='REGION'
-                                    selection
-                                    options={options1}
-                                    defaultValue={options1[0].value}
-                                    style={{width: 200}}
-                                    onChange={async (e, {value}) => {
-                                        this.handleRegionChanges(value)
-                                    }}
-                                />
-                            </div>
+                            <FlexBox style={{marginTop: 10}}>
+                                <div style={{}}>
+                                    Region
+                                </div>
+                                <div style={{marginLeft: 10,}}>
+                                    <Dropdown
+                                        placeholder='REGION'
+                                        selection
+                                        options={options1}
+                                        defaultValue={options1[0].value}
+                                        style={{width: 200}}
+                                        onChange={async (e, {value}) => {
+                                            this.handleRegionChanges(value)
+                                        }}
+                                    />
+                                </div>
+                            </FlexBox>
                         </Grid.Column>
                         {/*###########*/}
                         {/* COLUMN TWO*/}
@@ -398,9 +403,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
                     {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
                     {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
-                    {chunkedArraysOfColSize.length ===1 &&
-                    <FlexBox style={{backgroundColor: 'black', width: boxWidth}} >
-                        {[1,2,3].map((item) =>
+                    {chunkedArraysOfColSize.length === 1 &&
+                    <FlexBox style={{backgroundColor: 'black', width: boxWidth}}>
+                        {[1, 2, 3].map((item) =>
                             <FlexBox style={{
                                 alignItems: 'center',
                                 justifyContent: 'flex-start',
@@ -416,7 +421,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     color: '#fff',
                                     marginTop: 10,
                                 }}>
-                                  {/*blank*/}
+                                    {/*blank*/}
                                 </FlexBox>
                                 <FlexBox style={{
                                     marginTop: 0,

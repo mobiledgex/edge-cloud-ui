@@ -16,6 +16,7 @@
     "billboard.js": "^1.7.1",
     "bootstrap": "^4.4.1",
     "britecharts": "^2.9.8",
+    "can-ndjson-stream": "^1.0.2",
     "circle-progress-bar": "^1.0.0",
     "d3": "^5.7.0",
     "d3-scale": "^2.1.2",
