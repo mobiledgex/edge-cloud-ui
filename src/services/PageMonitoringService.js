@@ -220,7 +220,7 @@ export const renderPlaceHolder = () => {
         <Placeholder style={{width: boxWidth, height: 250, backgroundColor: 'black'}}>
             <Placeholder.Image/>
             <FlexBox style={{justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}>
-                <CircularProgress style={{zIndex: 999999999}}/>
+                <CircularProgress style={{zIndex: 999999999, color:'#79BF14'}}/>
             </FlexBox>
         </Placeholder>
     )
