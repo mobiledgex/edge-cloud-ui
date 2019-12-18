@@ -357,6 +357,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             let chunkedArraysOfColSize = toChunkArray(cloudletCountList, 3);
 
+            console.log('chunkedArraysOfColSize_length===>', chunkedArraysOfColSize.length);
+            //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
+
             return (
                 <div style={{}}>
                     {chunkedArraysOfColSize.map((colSizeArray, index) =>
@@ -373,11 +376,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                 }}>
                                     <FlexBox style={{
-                                        fontSize: 11,
+                                        fontSize: 15,
                                         color: '#fff',
                                         marginTop: 10,
                                     }}>
-                                        {item.name.toString().substring(0, 23) + "..."}
+                                        {item.name.toString().substring(0, 17) + "..."}
                                     </FlexBox>
                                     <FlexBox style={{
                                         marginTop: 0,
@@ -391,6 +394,43 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             )}
                         </FlexBox>
                     )}
+
+                    {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
+                    {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
+                    {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
+                    {chunkedArraysOfColSize.length ===1 &&
+                    <FlexBox style={{backgroundColor: 'black', width: boxWidth}} >
+                        {[1,2,3].map((item) =>
+                            <FlexBox style={{
+                                alignItems: 'center',
+                                justifyContent: 'flex-start',
+                                margin: 5,
+                                backgroundColor: 'transprent',
+                                flexDirection: 'column',
+                                width: (boxWidth) * 0.32,
+                                height: 115,
+
+                            }}>
+                                <FlexBox style={{
+                                    fontSize: 15,
+                                    color: '#fff',
+                                    marginTop: 10,
+                                }}>
+                                  {/*blank*/}
+                                </FlexBox>
+                                <FlexBox style={{
+                                    marginTop: 0,
+                                    fontSize: 50,
+                                    color: 'transprent',
+                                }}>
+                                    {/*blank*/}
+                                </FlexBox>
+
+                            </FlexBox>
+                        )}
+                    </FlexBox>
+
+                    }
 
                 </div>
             );
