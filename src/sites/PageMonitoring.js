@@ -91,6 +91,11 @@ type State = {
     appInstanceListSortByCloudlet: any,
     loading: boolean,
     loading0: boolean,
+    cloudletList: any,
+    clusterInstanceGroupList: any,
+    startDate: string,
+    endDate: string,
+    clusterList: any,
 
 }
 
@@ -106,29 +111,65 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             appInstanceListSortByCloudlet: [],
             loading: false,
             loading0: false,
+            cloudletList: [],
+            clusterInstanceGroupList: [],
+            startDate: '',
+            endDate: '',
+            clusterList: [],
         };
 
         constructor(props) {
             super(props);
         }
 
+        makeSelectBoxList(arrList, keyName) {
+            let newArrList = [];
+            for (let i in arrList) {
+                newArrList.push({
+                    value: arrList[i][0][keyName],
+                    text: arrList[i][0][keyName],//.toString()//.substring(0,25)+ "...",
+                })
+            }
+            return newArrList;
+        }
+
+
         componentDidMount = async () => {
             this.setState({
                 loading: true,
                 loading0: true,
+                startDate: getTodayDate(),
+                endDate: getTodayDate(),
             })
 
             let appInstanceList = await fetchAppInstanceList();
             let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+            let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
+            let cloudletList = this.makeSelectBoxList(appInstanceListSortByCloudlet, "Cloudlet")
+            let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
+
+            console.log('clusterList====>' , clusterList);
+
+
             await this.setState({
                 appInstanceListSortByCloudlet,
+                cloudletList: cloudletList,
+                clusterList: clusterList,
             })
-            setTimeout(() => {
-                this.setState({
-                    loading: false,
-                    loading0: false,
-                })
-            }, 350)
+
+            console.log('clusterList====>', clusterList);
+
+            this.setState({
+
+            }, () => {
+                setTimeout(() => {
+                    this.setState({
+                        loading: false,
+                        loading0: false,
+                    })
+                }, 350)
+            })
+
 
         }
 
@@ -202,6 +243,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             ]
 
+            let dropDownWidth=250;
+
             return (
 
                 <FlexBox className='' style={{marginRight: 23}}>
@@ -222,7 +265,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <FlexBox style={{justifyContent: 'flex-end', alignItems: 'flex-end', width: '100%'}}>
                         <Grid.Column
 
-                            style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer',marginBottom:1}}
+                            style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer', marginBottom: 1}}
                             onClick={() => {
                                 alert('Reset All')
                             }}
@@ -234,16 +277,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*###########*/}
                         <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 30,}}>
                             <FlexBox style={{marginTop: 10}}>
-                                <div style={{}}>
-                                    Region
-                                </div>
                                 <div style={{marginLeft: 10,}}>
                                     <Dropdown
                                         placeholder='REGION'
                                         selection
                                         options={options1}
                                         defaultValue={options1[0].value}
-                                        style={{width: 200}}
+                                        style={{width: dropDownWidth-50}}
                                         onChange={async (e, {value}) => {
                                             this.handleRegionChanges(value)
                                         }}
@@ -259,18 +299,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 <Dropdown
                                     placeholder='CloudLet'
                                     selection
-                                    options={
-                                        [
-                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                        ]
-
-                                    }
-                                    style={{width: 200}}
+                                    options={this.state.cloudletList}
+                                    style={{width: dropDownWidth}}
                                 />
                             </div>
                         </Grid.Column>
@@ -282,18 +312,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 <Dropdown
                                     placeholder='Cluster'
                                     selection
-                                    options={
-                                        [
-                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                        ]
-
-                                    }
-                                    style={{width: 200}}
+                                    options={this.state.clusterList}
+                                    style={{width: dropDownWidth}}
                                 />
                             </div>
                         </Grid.Column>
@@ -330,6 +350,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     style={{cursor: 'pointer'}}
 
                                 />
+                             {/*   <FlexBox>
+                                    {this.state.startDate}
+                                </FlexBox>*/}
 
                             </FlexBox>
                         </Grid.Column>
@@ -488,17 +511,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <Dropdown
                                                     placeholder='Cluster'
                                                     selection
-                                                    options={
-                                                        [
-                                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                                        ]
-
-                                                    }
+                                                    options={this.state.clusterList}
                                                     style={{width: 200}}
                                                 />
                                             </FlexBox>

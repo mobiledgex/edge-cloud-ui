@@ -357,7 +357,7 @@ export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'U
         let ServerUrl = 'https://' + hostname + ':3030';
 
         //https://mc.mobiledgex.net:9900/api/v1/auth/ctrl/ShowAppInst
-        let responseResult = await axios.post(ServerUrl + '/' + 'ShowAppInsts', qs.stringify({
+        let responseResult = await axios.post(ServerUrl + '/' +resource, qs.stringify({
             service: resource,
             serviceBody: serviceBody,
             serviceId: Math.round(Math.random() * 10000)
