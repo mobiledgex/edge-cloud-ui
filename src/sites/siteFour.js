@@ -685,11 +685,14 @@ class SiteFour extends React.Component {
         } else {
             this.setState({intoCity: false})
         }
+
         //set category
         if(nextProps.detailData !== this.props.detailData) {
             // alert(JSON.stringify(nextProps.detailData))
             this.setState({detailData:nextProps.detailData})
         }
+
+
     }
 
     componentDidUpdate() {
@@ -1290,33 +1293,33 @@ const mapStateToProps = (state) => {
     let detailData = (state.changeViewMode && state.changeViewMode.mode)?state.changeViewMode.mode.data : null;
 
     return {
-    viewBtn: state.btnMnmt ? state.btnMnmt : null,
-    userToken: (state.userToken) ? state.userToken : null,
-    userInfo: state.userInfo ? state.userInfo : null,
-    userRole: state.showUserRole ? state.showUserRole.role : null,
-    selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
-    loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
-    creatingSpinner: state.creatingSpinner.creating ? state.creatingSpinner.creating : null,
-    injectData: state.injectData ? state.injectData : null,
-    viewMode: viewMode,
-    alertInfo: {
-    mode: state.alertInfo.mode,
-    msg: state.alertInfo.msg
-    },
-    searchValue: (state.searchValue.search) ? state.searchValue.search : null,
-    changeRegion: (state.changeRegion.region) ? state.changeRegion.region : null,
-    tableHeaders: (state.tableHeader) ? state.tableHeader.headers : null,
-    filters: (state.tableHeader) ? state.tableHeader.filters : null,
-    siteName: (state.siteChanger) ? state.siteChanger.site : null,
-    changeStep: (state.changeStep.step) ? state.changeStep.step : null,
-    dataExist: state.dataExist.data,
-    tutorState: tutorState,
-    formInfo: formInfo,
-    submitInfo: submitInfo,
-    regionInfo: regionInfo,
-    audit: checkedAudit,
-    clickCity: state.clickCityList.list,
-    detailData:detailData,
+        viewBtn: state.btnMnmt ? state.btnMnmt : null,
+        userToken: (state.userToken) ? state.userToken : null,
+        userInfo: state.userInfo ? state.userInfo : null,
+        userRole: state.showUserRole ? state.showUserRole.role : null,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
+        loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
+        creatingSpinner: state.creatingSpinner.creating ? state.creatingSpinner.creating : null,
+        injectData: state.injectData ? state.injectData : null,
+        viewMode: viewMode,
+        alertInfo: {
+            mode: state.alertInfo.mode,
+            msg: state.alertInfo.msg
+        },
+        searchValue: (state.searchValue.search) ? state.searchValue.search : null,
+        changeRegion: (state.changeRegion.region) ? state.changeRegion.region : null,
+        tableHeaders: (state.tableHeader) ? state.tableHeader.headers : null,
+        filters: (state.tableHeader) ? state.tableHeader.filters : null,
+        siteName: (state.siteChanger) ? state.siteChanger.site : null,
+        changeStep: (state.changeStep.step) ? state.changeStep.step : null,
+        dataExist: state.dataExist.data,
+        tutorState: tutorState,
+        formInfo: formInfo,
+        submitInfo: submitInfo,
+        regionInfo: regionInfo,
+        audit: checkedAudit,
+        clickCity: state.clickCityList.list,
+        detailData:detailData,
     }
 };
 
