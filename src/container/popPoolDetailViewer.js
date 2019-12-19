@@ -4,7 +4,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import * as moment from 'moment';
 
 let _self = null;
-export default class ListDetailViewer extends React.Component {
+export default class PopPoolDetailViewer extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -25,7 +25,8 @@ export default class ListDetailViewer extends React.Component {
             cloudletResult:null,
             appResult:null,
             listOfDetail:null,
-            propsData:''
+            propsData:'',
+            orgType:''
         }
         _self = this;
     }
@@ -42,10 +43,12 @@ export default class ListDetailViewer extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
-
+        if(nextProps.open) {
+            this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
             let regKeys = [];
             let component = null;
             if(nextProps.data){
+                this.setState({orgType:nextProps.data.Type})
                 regKeys = Object.keys(nextProps.data)
                 component = regKeys.map((key, i)=>(
                     (key !== 'Edit')?
@@ -64,9 +67,6 @@ export default class ListDetailViewer extends React.Component {
                                  :(key == 'DefaultFlavor')?'Default Flavor'
                                  :(key == 'DeploymentMF')?'Deployment Manifest' /* 여기까지 Apps*/
                                  :(key == 'AuthPublicKey')?'Auth Public Key'
-                                 : (key === 'DefaultFQDN')? 'Official FQDN'
-                                 : (key === 'PackageName')? 'Package Name'
-                                 : (key === 'ScaleWithCluster')? 'Scale With Cluster'
                                  :key}
                             </div>
                         </Grid.Column>
@@ -81,8 +81,8 @@ export default class ListDetailViewer extends React.Component {
                                 :(key == 'ImageType' && String(nextProps.data[key]) === '1')?"Docker"
                                 :(key == 'ImageType' && String(nextProps.data[key]) === '2')?"Qcow" /* 여기까지 Apps*/
                                 :(key == 'Created')? String("time is ==  "+nextProps.data[key])
-                                :(key == 'ScaleWithCluster' && String(nextProps.data[key]) === 'false')?"False"
-                                :(key == 'ScaleWithCluster' && String(nextProps.data[key]) === 'true')?"True"
+                                :(key == 'RAM')? String(nextProps.data[key]+' MB')
+                                :(key == 'Disk')? String(nextProps.data[key]+' GB')
                                 :(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key])
                                 :String(nextProps.data[key])}
                             </div>
@@ -93,7 +93,7 @@ export default class ListDetailViewer extends React.Component {
                         :null
 
                 ))
-
+            }
             this.setState({listOfDetail:component,propsData:nextProps.data})
         }
 
@@ -118,16 +118,18 @@ export default class ListDetailViewer extends React.Component {
 
 
     render() {
-
+        let { orgType } = this.state;
         return (
-
-                    <div className="apps_detail">
-                        <Grid divided>
+            <Modal size={'small'} open={this.state.open} dimmer={false}>
+                <Modal.Header >View Detail</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description>
+                        <Grid divided style={{overflowY:'auto'}}>
                             {
                                 this.state.listOfDetail
                             }
                         </Grid>
-                        {(this.props.siteId === 'Organization') ?
+                        {(this.props.siteId === 'Organization' && orgType === 'developer') ?
                             <Grid>
                                 <Grid.Row>
                                     <Grid.Column>
@@ -141,7 +143,7 @@ export default class ListDetailViewer extends React.Component {
                                             {`$ docker login -u <username> docker.mobiledgex.net`}
                                         </div>
                                         <div>
-                                            {`$ docker tag <your application> docker.mobiledgex.net/` + String(this.state.propsData.Organization).toLowerCase() + `/images/<application name>:<version>`}
+                                            {`$ docker tag <your application> docker.mobiledgex.net/` + String(this.state.propsData.Organization).toLowerCase()  + `/images/<application name>:<version>`}
                                         </div>
                                         <div>
                                             {`$ docker push docker.mobiledgex.net/` + String(this.state.propsData.Organization).toLowerCase() + `/images/<application name>:<version>`}
@@ -163,8 +165,14 @@ export default class ListDetailViewer extends React.Component {
                             </Grid>
                             :null
                         }
-                    </div>
-
+                    </Modal.Description>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button onClick={() => this.close()}>
+                        Close
+                    </Button>
+                </Modal.Actions>
+            </Modal>
         )
     }
 }

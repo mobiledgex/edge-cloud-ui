@@ -1175,6 +1175,14 @@ body, button, input, textarea, optgroup, select, textarea,
     padding: 10px 10px 0 10px;
     height: 46px;
 }
+
+
+.content_title2 {
+    color: rgba(255,255,255,.5);
+    font-size: 2em;
+    font-weight: 300;
+    padding: 10px 10px 0 10px;
+}
 .content_title div {
     display: inline-block !important;
     vertical-align: middle;
