@@ -3,7 +3,13 @@ import {Dropdown, Grid, Menu} from 'semantic-ui-react';
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FlexBox from "flexbox-react";
-import Plot from "react-plotly.js";
+import Plot from "../../node_modules/react-plotly.js/react-plotly";
+import * as services from "./service_compute_service";
+import axios from "axios";
+import qs from "qs";
+import FormatComputeInst from "./formatter/formatComputeInstance";
+import '../sites/PageMonitoring.css';
+import {Placeholder} from 'semantic-ui-react'
 
 export const renderLineChart2 = () => {
 
@@ -199,173 +205,28 @@ export const renderPieChart2_Google = () => {
     );
 }
 
+function toChunkArray(myArray: any, chunkSize: any): any {
+    let results = [];
+    while (myArray.length) {
+        results.push(myArray.splice(0, chunkSize));
+    }
+    return results;
+}
 
-export const renderGrid = () => {
-    let boxWidth = window.innerWidth / 10 * 2.55;
+export const renderPlaceHolder = () => {
+
+    let boxWidth = window.innerWidth / 10 * 3.55;
     return (
-        <FlexBox style={{
-            flexDirection: 'column',
-            height: 260,
-            width: boxWidth,
-            backgroundColor: 'transparent'
-        }}>
-            <FlexBox style={{flex: 50, height: 120}}>
-                <FlexBox style={{
-                    flex: 33,
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    margin: 5,
-                    backgroundColor: '#292929',
-                    flexDirection: 'column',
-
-                }}>
-                    <FlexBox style={{
-                        fontSize: 15,
-                        color: '#fff',
-                        marginTop: 10,
-                    }}>
-                        고경준App1
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginTop: 0,
-                        fontSize: 50,
-                        color: '#29a1ff',
-                    }}>
-                        1
-                    </FlexBox>
-
-                </FlexBox>
-                <FlexBox style={{
-                    flex: 33,
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    margin: 5,
-                    backgroundColor: '#292929',
-                    flexDirection: 'column',
-
-                }}>
-                    <FlexBox style={{
-                        fontSize: 15,
-                        color: '#fff',
-                        marginTop: 10,
-                    }}>
-                        고경준App1
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginTop: 0,
-                        fontSize: 50,
-                        color: '#29a1ff',
-                    }}>
-                        1
-                    </FlexBox>
-
-                </FlexBox>
-                <FlexBox style={{
-                    flex: 33,
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    margin: 5,
-                    backgroundColor: '#292929',
-                    flexDirection: 'column',
-
-                }}>
-                    <FlexBox style={{
-                        fontSize: 15,
-                        color: '#fff',
-                        marginTop: 10,
-                    }}>
-                        고경준App1
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginTop: 0,
-                        fontSize: 50,
-                        color: '#29a1ff',
-                    }}>
-                        1
-                    </FlexBox>
-
-                </FlexBox>
+        <Placeholder style={{width: boxWidth, height: 250, backgroundColor: 'black'}}>
+            <Placeholder.Image/>
+            <FlexBox style={{justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}>
+                <CircularProgress style={{zIndex: 999999999, color:'#79BF14'}}/>
             </FlexBox>
-            <FlexBox style={{flex: 50}}>
-                <FlexBox style={{
-                    flex: 33,
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    margin: 5,
-                    backgroundColor: '#292929',
-                    flexDirection: 'column',
-
-                }}>
-                    <FlexBox style={{
-                        fontSize: 15,
-                        color: '#fff',
-                        marginTop: 10,
-                    }}>
-                        고경준App1
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginTop: 0,
-                        fontSize: 50,
-                        color: '#29a1ff',
-                    }}>
-                        1
-                    </FlexBox>
-
-                </FlexBox>
-                <FlexBox style={{
-                    flex: 33,
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    margin: 5,
-                    backgroundColor: '#292929',
-                    flexDirection: 'column',
-
-                }}>
-                    <FlexBox style={{
-                        fontSize: 15,
-                        color: '#fff',
-                        marginTop: 10,
-                    }}>
-                        고경준App1
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginTop: 0,
-                        fontSize: 50,
-                        color: '#29a1ff',
-                    }}>
-                        1
-                    </FlexBox>
-
-                </FlexBox>
-                <FlexBox style={{
-                    flex: 33,
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    margin: 5,
-                    backgroundColor: '#292929',
-                    flexDirection: 'column',
-
-                }}>
-                    <FlexBox style={{
-                        fontSize: 15,
-                        color: '#fff',
-                        marginTop: 10,
-                    }}>
-                        고경준App1
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginTop: 0,
-                        fontSize: 50,
-                        color: '#29a1ff',
-                    }}>
-                        1
-                    </FlexBox>
-
-                </FlexBox>
-            </FlexBox>
-        </FlexBox>
+        </Placeholder>
     )
 }
+
+
 
 export const renderLineGraph_Plot = () => {
     let boxWidth = window.innerWidth / 10 * 2.55;
@@ -463,6 +324,54 @@ export const renderLineGraph_Plot = () => {
 }
 
 
+//param1 -->ALl
+//param2 --> [EU,US]
+/**
+ * @todo : fetch App Instance List
+ * @param paramRegionArrayList
+ * @returns {Promise<[]>}
+ */
+export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'US']) => {
 
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
+    let finalizedAppInstanceList = [];
+    for (let index = 0; index < paramRegionArrayList.length; index++) {
+        let serviceBody = {
+            "token": store.userToken,
+            "params": {
+                "region": paramRegionArrayList[index],
+                "appinst": {
+                    "key": {
+                        "app_key": {
+                            "developer_key": {"name": localStorage.selectOrg},
+                        }
+                    }
+                }
+            }
+        }
 
+        let resource = 'ShowAppInsts';
+        const hostname = window.location.hostname;
+        let ServerUrl = 'https://' + hostname + ':3030';
+        let responseResult = await axios.post(ServerUrl + '/' + 'ShowAppInsts', qs.stringify({
+            service: resource,
+            serviceBody: serviceBody,
+            serviceId: Math.round(Math.random() * 10000)
+        })).then((response) => {
+
+            let parseData = JSON.parse(JSON.stringify(response));
+            let finalizedJSON = FormatComputeInst(parseData, serviceBody)
+            console.log('finalizedJSON===>', finalizedJSON);
+            return finalizedJSON;
+        })
+
+        let mergedList = finalizedAppInstanceList.concat(responseResult);
+        finalizedAppInstanceList = mergedList;
+    }
+
+    console.log('mergedAppInstanceList===>', finalizedAppInstanceList);
+
+    return finalizedAppInstanceList;
+
+}

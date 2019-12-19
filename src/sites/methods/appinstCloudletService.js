@@ -61,6 +61,12 @@ export const getDataofAppinst = (region,regionArr) => {
 
     }
 
+    let _store={
+        "email": "mexadmin",
+        "password": "mexadmin123",
+        "userToken": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY3MzY0OTIsImlhdCI6MTU3NjY1MDA5MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.Cb4vFGypczftq4cJOamHi3kI810PNKsV6oWHD05eJAAUH0Wo5hCka0zzaR6N6jnprsArMUvGZCL9ezAHj0WJ-A"
+    }
+
     if(localStorage.selectRole == 'AdminManager') {
         rgn.map((item) => {
             // All show appInst
