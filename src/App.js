@@ -23,6 +23,7 @@ import VerifyContent from './container/verifyContent';
 import './css/index.css';
 
 import './css/pages/audit.css';
+import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import {Test001} from "./sites/Test001";
 // API

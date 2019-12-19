@@ -7,10 +7,10 @@ import * as actions from '../actions';
 import FlexBox from "flexbox-react";
 import {hot} from "react-hot-loader/root";
 import Plot from 'react-plotly.js';
-import {Dropdown, Grid,} from "semantic-ui-react";
+import {Dropdown, Grid, Input,} from "semantic-ui-react";
 import {DatePicker} from 'antd';
 import {formatDate, getTodayDate} from "../utils";
-import './PageMonitoring.css';
+// import './PageMonitoring.css';
 import {
     fetchAppInstanceList,
     renderBarGraph2_Google,
@@ -195,6 +195,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderHeader() {
 
+            return (
+                <Grid.Row className='content_title'
+                          style={{width: 'fit-content', display: 'inline-block'}}>
+                    <Grid.Column className='title_align'
+                                 style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
+                    <div style={{marginLeft: '10px'}}>
+                        <button className="ui circular icon button"><i aria-hidden="true"
+                                                                       className="info icon"></i></button>
+                    </div>
+
+                </Grid.Row>
+
+
+            )
+        }
+
+        renderSelectBox(){
+
             let options1 = [
                 {value: 'ALL', text: 'ALL'},
                 {value: 'EU', text: 'EU'},
@@ -204,138 +222,81 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
 
-                <FlexBox className='' style={{marginRight: 23}}>
-                    {this.state.loading &&
-                    <FlexBox style={{position: 'absolute', top: '2%', left: '15%'}}>
-                        <CircularProgress style={{color: '#79BF14'}}/>
-                    </FlexBox>
-                    }
-                    <Grid.Column className='content_title'
-                                 style={{lineHeight: '36px', fontSize: 30, marginTop: 5,}}>Monitoring
-                    </Grid.Column>
 
-                    <Grid.Column className='content_title2' style={{marginLeft: -10}}>
-                        <button className="ui circular icon button"><i aria-hidden="true"
-                                                                       className="info icon"></i>
-                        </button>
-                    </Grid.Column>
-                    <FlexBox style={{justifyContent: 'flex-end', alignItems: 'flex-end', width: '100%'}}>
-                        <Grid.Column
+                <div className='page_monitoring_select_area'>
+                    <label className='page_monitoring_select_reset'
+                           onClick={() => {
+                               alert('Reset All')
+                           }}>Reset All</label>
+                    <Dropdown
+                        placeholder='REGION'
+                        selection
+                        options={options1}
+                        defaultValue={options1[0].value}
+                        onChange={async (e, {value}) => {
+                            this.handleRegionChanges(value)
+                        }}
+                    />
+                    <Dropdown
+                        placeholder='CloudLet'
+                        selection
+                        options={
+                            [
+                                {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                {key: '1', value: '1', flag: '1', text: 'Last hour'},
 
-                            style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer',marginBottom:1}}
-                            onClick={() => {
-                                alert('Reset All')
+                            ]
+
+                        }
+                    />
+                    <Dropdown
+                        placeholder='Cluster'
+                        selection
+                        options={
+                            [
+                                {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+                            ]
+
+                        }
+                    />
+                    <div style={{display:'flex', flexDirection:'row'}}>
+                        <DatePicker
+                            onChange={(date) => {
+                                let __date = formatDate(date);
+                                this.setState({
+                                    date: __date,
+                                })
                             }}
-                        >
-                            Reset All
-                        </Grid.Column>
-                        {/*###########*/}
-                        {/* COLUMN ONe*/}
-                        {/*###########*/}
-                        <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 30,}}>
-                            <FlexBox style={{marginTop: 10}}>
-                                <div style={{}}>
-                                    Region
-                                </div>
-                                <div style={{marginLeft: 10,}}>
-                                    <Dropdown
-                                        placeholder='REGION'
-                                        selection
-                                        options={options1}
-                                        defaultValue={options1[0].value}
-                                        style={{width: 200}}
-                                        onChange={async (e, {value}) => {
-                                            this.handleRegionChanges(value)
-                                        }}
-                                    />
-                                </div>
-                            </FlexBox>
-                        </Grid.Column>
-                        {/*###########*/}
-                        {/* COLUMN TWO*/}
-                        {/*###########*/}
-                        <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 10,}}>
-                            <div style={{marginTop: 10}}>
-                                <Dropdown
-                                    placeholder='CloudLet'
-                                    selection
-                                    options={
-                                        [
-                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
+                            placeholder="Start Date"
+                            style={{cursor: 'pointer'}}
 
-                                        ]
+                        />
+                        <div style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
+                            -
+                        </div>
+                        <DatePicker
+                            onChange={(date) => {
+                                let __date = formatDate(date);
+                                this.setState({
+                                    date: __date,
+                                })
+                            }}
+                            placeholder="End Date"
+                            style={{cursor: 'pointer'}}
 
-                                    }
-                                    style={{width: 200}}
-                                />
-                            </div>
-                        </Grid.Column>
-                        {/*###########*/}
-                        {/* COLUMN 333*/}
-                        {/*###########*/}
-                        <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 10,}}>
-                            <div style={{marginTop: 10}}>
-                                <Dropdown
-                                    placeholder='Cluster'
-                                    selection
-                                    options={
-                                        [
-                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
+                        />
+                    </div>
 
-                                        ]
+                </div>
 
-                                    }
-                                    style={{width: 200}}
-                                />
-                            </div>
-                        </Grid.Column>
-                        {/*######################*/}
-                        {/* DATE CALENDAR 4444*/}
-                        {/*###########*###########*/}
-                        <Grid.Column className=''
-                                     style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer'}}>
-                            <FlexBox style={{marginBottom: -0.5,}}>
-
-
-                                <DatePicker
-                                    onChange={(date) => {
-                                        let __date = formatDate(date);
-                                        this.setState({
-                                            date: __date,
-                                        })
-                                    }}
-                                    placeholder="Start Date"
-                                    style={{cursor: 'pointer'}}
-
-                                />
-                                <FlexBox style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
-                                    -
-                                </FlexBox>
-                                <DatePicker
-                                    onChange={(date) => {
-                                        let __date = formatDate(date);
-                                        this.setState({
-                                            date: __date,
-                                        })
-                                    }}
-                                    placeholder="End Date"
-                                    style={{cursor: 'pointer'}}
-
-                                />
-
-                            </FlexBox>
-                        </Grid.Column>
-                    </FlexBox>
-
-                </FlexBox>
             )
         }
 
@@ -455,154 +416,167 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*#######################*/}
                         {/*@todo 컨텐츠 BODY 부분...*/}
                         {/*#######################*/}
-                        <div className="page_monitoring">
-                            <FlexBox style={{flexDirection: 'column'}}>
-                                {/*_____row____1111*/}
-                                <FlexBox style={{marginTop: 35,}}>
-                                    {/* ___col___1*/}
-                                    {/* ___col___1*/}
-                                    {/* ___col___1*/}
-                                    <FlexBox style={Styles.box001}>
-                                        <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
-                                            <FlexBox style={Styles.box002}>
-                                                Status Of Launch
-                                            </FlexBox>
-                                            <FlexBox style={{flex: 30}}>
-                                                {/*alksdaskdlaksdlka*/}
-                                            </FlexBox>
-                                        </FlexBox>
-                                        <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
-                                            {this.state.loading0 ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListSortByCloudlet)}
-                                        </FlexBox>
 
-                                    </FlexBox>
-                                    {/* ___col___2*/}
-                                    {/* ___col___2*/}
-                                    {/* ___col___2*/}
-                                    <FlexBox style={Styles.box001}>
-                                        <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
-                                            <FlexBox style={Styles.box002}>
-                                                Top 5 of CPU Usage
-                                            </FlexBox>
-                                            <FlexBox style={{flex: 30}}>
-                                                <Dropdown
-                                                    placeholder='Cluster'
-                                                    selection
-                                                    options={
-                                                        [
-                                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                                        ]
-
-                                                    }
-                                                    style={{width: 200}}
-                                                />
-                                            </FlexBox>
-                                        </FlexBox>
-                                        <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
-                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
-                                        </FlexBox>
-
-                                    </FlexBox>
-                                    {/* ___col___3*/}
-                                    {/* ___col___3*/}
-                                    {/* ___col___3*/}
-                                    <FlexBox style={Styles.box001}>
-                                        <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
-                                            <FlexBox style={Styles.box002}>
-                                                Transition Of CPU
-                                            </FlexBox>
-                                            <FlexBox style={{flex: 30}}>
-                                                {/*dummy____dummy*/}
-                                            </FlexBox>
-                                        </FlexBox>
-                                        <FlexBox style={{marginTop: 0}}>
-                                            {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
-                                        </FlexBox>
-
-                                    </FlexBox>
-                                </FlexBox>
-
-                                {/*row_____22222222*/}
-                                {/*row_____22222222*/}
-                                {/*row_____22222222*/}
-                                <FlexBox style={{marginTop: 70,}}>
-
-                                    {/* ___col___4*/}
-                                    {/* ___col___4*/}
-                                    {/* ___col___4*/}
-                                    <FlexBox style={Styles.box001}>
-                                        <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
-                                            <FlexBox style={Styles.box002}>
-                                                Perfomance Of Apps
-                                            </FlexBox>
-                                            <FlexBox style={{flex: 30}}>
-                                                {/*dummy____dummy*/}
-                                            </FlexBox>
-                                        </FlexBox>
-
-                                        <FlexBox style={{marginTop: 10}}>
-                                            {this.state.loading ? renderPlaceHolder() : renderPieChart2_Google()}
-                                        </FlexBox>
+                        <Grid.Row className='site_content_body'>
+                            <Grid.Column>
+                                <div className="table-no-resized"
+                                     style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
 
 
-                                    </FlexBox>
-                                    {/* ___col___5*/}
-                                    {/* ___col___5*/}
-                                    {/* ___col___5*/}
-                                    <FlexBox style={Styles.box001}>
-                                        <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
-                                            <FlexBox style={Styles.box002}>
-                                                State of MEM Usage
-                                            </FlexBox>
-                                            <FlexBox style={{flex: 30}}>
-                                                <Dropdown
-                                                    placeholder='Cluster'
-                                                    selection
-                                                    options={
-                                                        [
-                                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
+                                    <div className="page_monitoring">
+                                        {this.renderSelectBox()}
+                                        <div className='page_monitoring_dashboard'>
+                                                {/*_____row____1111*/}
+                                                <div className='page_monitoring_row'>
+                                                    {/* ___col___1*/}
+                                                    {/* ___col___1*/}
+                                                    {/* ___col___1*/}
+                                                    <div className='page_monitoring_column'>
+                                                        <div style={{width: '100%', backgroundColor: 'transparent'}}>
+                                                            <div style={Styles.box002}>
+                                                                Status Of Launch
+                                                            </div>
+                                                            <div style={{flex: 30}}>
+                                                                {/*alksdaskdlaksdlka*/}
+                                                            </div>
+                                                        </div>
+                                                        <div style={{marginTop: 0, backgroundColor: 'red'}}>
+                                                            {this.state.loading0 ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListSortByCloudlet)}
+                                                        </div>
 
-                                                        ]
+                                                    </div>
+                                                    {/* ___col___2*/}
+                                                    {/* ___col___2*/}
+                                                    {/* ___col___2*/}
+                                                    <div className='page_monitoring_column'>
+                                                        <div style={{width: '100%', backgroundColor: 'transparent'}}>
+                                                            <div style={Styles.box002}>
+                                                                Top 5 of CPU Usage
+                                                            </div>
+                                                            <div style={{flex: 30}}>
+                                                                <div
+                                                                    placeholder='Cluster'
+                                                                    selection
+                                                                    options={
+                                                                        [
+                                                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
 
-                                                    }
-                                                    style={{width: 200}}
-                                                />
-                                            </FlexBox>
-                                        </FlexBox>
-                                        <FlexBox style={{marginTop: 0}}>
-                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
-                                        </FlexBox>
+                                                                        ]
 
-                                    </FlexBox>
-                                    {/* ___col___6*/}
-                                    {/* ___col___6*/}
-                                    {/* ___col___6*/}
-                                    <FlexBox style={Styles.box001}>
-                                        <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
-                                            <FlexBox style={Styles.box002}>
-                                                Transition Of Mem
-                                            </FlexBox>
-                                            <FlexBox style={{flex: 30}}>
-                                                {/*dummy____dummy*/}
-                                            </FlexBox>
-                                        </FlexBox>
-                                        <FlexBox style={{marginTop: 0}}>
-                                            {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
-                                        </FlexBox>
+                                                                    }
+                                                                    style={{width: 200}}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <div style={{marginTop: 0, backgroundColor: 'red'}}>
+                                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
+                                                        </div>
 
-                                    </FlexBox>
-                                </FlexBox>
-                            </FlexBox>
-                        </div>
+                                                    </div>
+                                                    {/* ___col___3*/}
+                                                    {/* ___col___3*/}
+                                                    {/* ___col___3*/}
+                                                    <div className='page_monitoring_column'>
+                                                        <div style={{width: '100%', backgroundColor: 'transparent'}}>
+                                                            <div style={Styles.box002}>
+                                                                Transition Of CPU
+                                                            </div>
+                                                            <div style={{flex: 30}}>
+                                                                {/*dummy____dummy*/}
+                                                            </div>
+                                                        </div>
+                                                        <div style={{marginTop: 0}}>
+                                                            {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                {/*row_____22222222*/}
+                                                {/*row_____22222222*/}
+                                                {/*row_____22222222*/}
+                                                <div className='page_monitoring_row'>
+
+                                                    {/* ___col___4*/}
+                                                    {/* ___col___4*/}
+                                                    {/* ___col___4*/}
+                                                    <div className='page_monitoring_column'>
+                                                        <div style={{width: '100%', backgroundColor: 'transparent'}}>
+                                                            <div style={Styles.box002}>
+                                                                Perfomance Of Apps
+                                                            </div>
+                                                            <div style={{flex: 30}}>
+                                                                {/*dummy____dummy*/}
+                                                            </div>
+                                                        </div>
+
+                                                        <div style={{marginTop: 10}}>
+                                                            {this.state.loading ? renderPlaceHolder() : renderPieChart2_Google()}
+                                                        </div>
+
+
+                                                    </div>
+                                                    {/* ___col___5*/}
+                                                    {/* ___col___5*/}
+                                                    {/* ___col___5*/}
+                                                    <div className='page_monitoring_column'>
+                                                        <div style={{width: '100%', backgroundColor: 'transparent'}}>
+                                                            <div style={Styles.box002}>
+                                                                State of MEM Usage
+                                                            </div>
+                                                            <div style={{flex: 30}}>
+                                                                <Dropdown
+                                                                    placeholder='Cluster'
+                                                                    selection
+                                                                    options={
+                                                                        [
+                                                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+                                                                        ]
+
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <FlexBox style={{marginTop: 0}}>
+                                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
+                                                        </FlexBox>
+
+                                                    </div>
+                                                    {/* ___col___6*/}
+                                                    {/* ___col___6*/}
+                                                    {/* ___col___6*/}
+                                                    <div className='page_monitoring_column'>
+                                                        <div style={{width: '100%', backgroundColor: 'transparent'}}>
+                                                            <div style={Styles.box002}>
+                                                                Transition Of Mem
+                                                            </div>
+                                                            <div style={{flex: 30}}>
+                                                                {/*dummy____dummy*/}
+                                                            </div>
+                                                        </div>
+                                                        <div style={{marginTop: 0}}>
+                                                            {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
                     </Grid.Column>
 
                 </Grid.Row>
