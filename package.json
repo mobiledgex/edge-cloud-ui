@@ -100,20 +100,16 @@
     "react-router-dom": "^4.2.2",
     "react-s-alert": "^1.4.1",
     "react-scrollbar": "^0.5.4",
-    "react-semantic-ui-datepickers": "^2.1.0",
     "react-simple-maps": "^0.12.1",
     "react-sizeme": "^2.5.2",
     "react-sparklines": "^1.7.0",
     "react-spinners": "^0.4.7",
-    "react-streams": "^13.6.6",
     "react-svg-pan-zoom": "^2.18.0",
     "react-textarea-autosize": "^7.1.0",
     "react-tooltip": "^3.9.0",
     "redux": "^4.0.1",
     "redux-form": "^8.2.0",
     "request": "^2.88.0",
-    "rxjs": "^6.5.3",
-    "semantic-ui-calendar-react": "^0.15.3",
     "semantic-ui-css": "^2.2.12",
     "semantic-ui-react": "^0.83.0",
     "shortid": "^2.2.14",
@@ -130,10 +126,7 @@
   },
   "devDependencies": {
     "cross-env": "^6.0.3",
-    "flow-bin": "^0.114.0",
-    "react-scripts": "^3.3.0",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9"
+    "react-scripts": "^3.3.0"
   },
   "scripts": {
     "start": "HTTPS=false react-scripts start",
