@@ -2,6 +2,8 @@ import * as React from 'react';
 import {CircularProgress} from "@material-ui/core";
 import ndjsonStream from "can-ndjson-stream";
 import FlexBox from "flexbox-react";
+import axios from 'axios'
+import qs from "qs";
 
 type Props = {
     history: any,
@@ -34,25 +36,21 @@ export class StreamingRequestExample extends React.Component<Props, State> {
             body: JSON.stringify({
                 "region": 'US',
             })
-        }).then((response) => {
-            return ndjsonStream(response.body); //ndjsonStream parses the response.body
-        }).then((streamData) => {
+        }).then((response) => ndjsonStream(response.body)).then((streamData) => {
             const reader = streamData.getReader();
             let read;
             let _results = [];
             reader.read().then(read = (result) => {
                 //todo:스트림이 완료 된 경우...
                 if (result.done) {
-
-                    setTimeout(() => {
-                        this.setState({
-                            loading: false,
-                            results: _results,
-                        })
-                    }, 250)
-                    return;
+                    this.setState({
+                        loading: false,
+                        results: _results,
+                    }, () => {
+                        console.log('streamed results===>', this.state.results);
+                    })
+                    return false;
                 }
-
                 console.log("streaming data====>", result.value.data);
                 let streamedDataOne = result.value.data;
                 _results.push(streamedDataOne)
@@ -97,62 +95,42 @@ export class StreamingRequestExample extends React.Component<Props, State> {
 
 
 /*
-async fetchShowAppInst0002() {
 
-    this.setState({
-        loading: true,
-    })
-    fetch('/api/v1/auth/ctrl/CreateClusterInst', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY4MDk5MzIsImlhdCI6MTU3NjcyMzUzMiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.JPKz83yI45GdSIacNanYyX_7zmmE7HvaQvISTLVpWr-IofHwGY8tTQGChyizMpaMcOtKWg2J989p16Rm_2Mr1w",
-        },
+axios({
+    method: 'POST',
+    url: '/api/v1/auth/ctrl/ShowAppInst',
+    data: JSON.stringify({
+        "region": 'US',
+    }),
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY4MDk5MzIsImlhdCI6MTU3NjcyMzUzMiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.JPKz83yI45GdSIacNanYyX_7zmmE7HvaQvISTLVpWr-IofHwGY8tTQGChyizMpaMcOtKWg2J989p16Rm_2Mr1w",
+    },
+}).then(response => {
 
+    console.log('sdlkfsldkflksdflksdlfk===>', response);
+    //return ndjsonStream(response); //ndjsonStream parses the response.body
+}).then((streamData) => {
+    const reader = streamData.getReader();
+    let read;
+    let _results = [];
+    reader.read().then(read = (result) => {
+        //todo:스트림이 완료 된 경우...
+        if (result.done) {
 
-        body: JSON.stringify({
-                "region": "US",
-                "clusterinst": {
-                    "key": {
-                        "cluster_key": {
-                            "name": "bictestCloudlet1206-01"
-                        },
-                        "cloudlet_key": {
-                            "operator_key": {
-                                "name": "MEX"
-                            },
-                            "name": [
-                                "jlm-dind"
-                            ]
-                        },
-                        "developer": "MobiledgeX"
-                    },
-                    "deployment": "docker",
-                    "flavor": {
-                        "name": "m4.xlarge"
-                    },
-                    "ip_access": 1,
-                    "num_masters": 0,
-                    "num_nodes": 0
-                }
-            }
-        )
-    }).then((response) => {
-        return ndjsonStream(response.body); //ndjsonStream parses the response.body
-
-    }).then((streamData) => {
-        const reader = streamData.getReader();
-        let read;
-        reader.read().then(read = (result) => {
-            if (result.done) {
+            setTimeout(() => {
                 this.setState({
                     loading: false,
+                    results: _results,
                 })
-                return;
-            }
-            console.log("streaming data====>", result.value.data);
-            reader.read().then(read);
+            }, 250)
+            return;
+        }
 
-        });
+        console.log("streaming data====>", result.value.data);
+        let streamedDataOne = result.value.data;
+        _results.push(streamedDataOne)
+        //todo:다음 Stream 데이터를 읽어온다..
+        reader.read().then(read);
     });
-}*/
+});*/
