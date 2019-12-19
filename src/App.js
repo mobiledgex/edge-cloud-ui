@@ -323,24 +323,28 @@ class App extends Component {
     }
     render() {
         return (
-            <Router history={history} ref={router=> this.router = router}>
-                <div style={{width:'100%', height:'100%'}}>
-                    <Route exact path='/logout' component={DashboardContainer.bind(this, {mainPath:'/logout'})} />
-                    <Route exact path='/' component={DashboardContainer.bind(this, {mainPath:'/site1'})} />
-                    <Route exact path='/site1/:page' component={DashboardContainer.bind(this, {mainPath:'/site1'})} />
-                    <Route exact path='/site1' component={DashboardContainer.bind(this, {mainPath:'/site1'})} />
-                    <Route exact path='/site2/:page' component={DashboardContainer.bind(this, {mainPath:'/site2'})} />
-                    <Route exact path='/site2' component={DashboardContainer.bind(this, {mainPath:'/site2'})} />
-                    <Route exact path='/site3/:page' component={DashboardContainer.bind(this, {mainPath:'/site3'})} />
-                    <Route exact path='/site3' component={DashboardContainer.bind(this, {mainPath:'/site3'})} />
-                    <Route exact path='/site4' component={DashboardContainer.bind(this, {mainPath:'/site4'})} />
-                    <Route exact path='/site4/:page' component={DashboardContainer.bind(this, {mainPath:'/site4', ...history.location.search})} />
-                    <Route exact path='/site5' component={DashboardContainer.bind(this, {mainPath:'/site5'})} />
-                    <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
-                    <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
-                    <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
-                    <Route exact path='/Test001' component={Test001} />
 
+            <Router history={history} ref={router => this.router = router}>
+                <div style={{width: '100%', height: '100%'}}>
+                    <Route exact path='/logout' component={DashboardContainer.bind(this, {mainPath: '/logout'})}/>
+                    <Route exact path='/' component={DashboardContainer.bind(this, {mainPath: '/site1'})}/>
+                    <Route exact path='/site1/:page' component={DashboardContainer.bind(this, {mainPath: '/site1'})}/>
+                    <Route exact path='/site1' component={DashboardContainer.bind(this, {mainPath: '/site1'})}/>
+                    <Route exact path='/site2/:page' component={DashboardContainer.bind(this, {mainPath: '/site2'})}/>
+                    <Route exact path='/site2' component={DashboardContainer.bind(this, {mainPath: '/site2'})}/>
+                    <Route exact path='/site3/:page' component={DashboardContainer.bind(this, {mainPath: '/site3'})}/>
+                    <Route exact path='/site3' component={DashboardContainer.bind(this, {mainPath: '/site3'})}/>
+                    <Route exact path='/site4' component={DashboardContainer.bind(this, {mainPath: '/site4'})}/>
+                    <Route exact path='/site4/:page'
+                           component={DashboardContainer.bind(this, {mainPath: '/site4', ...history.location.search})}/>
+
+                    <Route exact path='/site5' component={DashboardContainer.bind(this, {mainPath: '/site5'})}/>
+                    <Route exact path='/createAccount'
+                           component={DashboardContainer.bind(this, {mainPath: '/createAccount'})}/>
+                    <Route exact path='/passwordreset'
+                           component={DashboardContainer.bind(this, {mainPath: '/passwordreset'})}/>
+                    <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath: '/verify'})}/>
+                    <Route exact path='/Test001' component={Test001} />
                 </div>
             </Router>
         );

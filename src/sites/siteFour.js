@@ -35,7 +35,6 @@ import SiteFourPageApps from './siteFour_page_apps';
 import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
-import SiteFourPageCloudletPool from './siteFour_page_cloudletPool';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
 import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
@@ -1245,6 +1244,7 @@ class SiteFourNew extends React.Component {
                     </Grid.Row>
                 </Container>
 
+<<<<<<< HEAD
                 <<<<<<< HEAD
             </Grid.Row>
         {
@@ -1268,6 +1268,17 @@ class SiteFourNew extends React.Component {
                 </div>
                 : null
         }
+=======
+                {/*#############################*/}
+                {/*PAGE BODY RENDERING PART     */}
+                {/*페이지의 BODY부분을 렌더링 하는 부분*/}
+                {/*#############################*/}
+                <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
+                    {/*모니터링 페이지인 경우...*/}
+                    {this.state.page === 'pg=Monitoring' ?
+                        <PageMonitoring/> :
+                        this.renderSiteBody(viewMode)
+>>>>>>> devMaster
 
         <Grid.Row className='site_content_body'>
             <Grid.Column>
@@ -1296,6 +1307,7 @@ class SiteFourNew extends React.Component {
                                                                                                         (this.state.page === 'pg=monitor')? <SiteFourPageMonitoring></SiteFourPageMonitoring> :
                                                                                                             <div> </div>
                     }
+<<<<<<< HEAD
                 </div>
             </Grid.Column>
         </Grid.Row>
@@ -1311,6 +1323,9 @@ class SiteFourNew extends React.Component {
     {this.state.page === 'pg=Monitoring' ?
     <PageMonitoring/> :
     this.renderSiteBody(viewMode)
+=======
+                </Container>
+>>>>>>> devMaster
 
     }
     >>>>>>> dbfb47ff69cec37304834bee4fcd523cd9bdfc88
