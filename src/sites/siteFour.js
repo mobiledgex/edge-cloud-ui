@@ -37,6 +37,7 @@ import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
 import SiteFourPageCloudletPool from './siteFour_page_cloudletPool';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
+import SiteFourPageCloudletPoolReg from './siteFour_page_cloudletPoolReg';
 import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
@@ -53,10 +54,12 @@ import SiteFourPageAudits from './siteFour_page_audits';
 
 import Alert from 'react-s-alert';
 
-import '../css/introjs.css';
-import '../css/introjs-dark.css';
+
 import PageMonitoring from "./PageMonitoring";
 import SiteFourPageMonitoring from "./siteFour_page_monitoring";
+
+import '../css/introjs.css';
+import '../css/introjs-dark.css';
 
 let devOptions = [{key: 'af', value: 'af', text: 'SK Telecom'}]
 const locationOptions = [
@@ -683,6 +686,13 @@ class SiteFour extends React.Component {
             this.setState({intoCity: false})
         }
 
+        //set category
+        if(nextProps.detailData !== this.props.detailData) {
+            // alert(JSON.stringify(nextProps.detailData))
+            this.setState({detailData:nextProps.detailData})
+        }
+
+
     }
 
     componentDidUpdate() {
@@ -927,6 +937,13 @@ class SiteFour extends React.Component {
                                         data: null,
                                         viewMode: 'listView'
                                     })}>Close Details</Button>
+                                    <div>
+                                        {this.state.detailData.Region + " > "}
+                                        {(this.state.headerTitle === "Cloudlets") ? this.state.detailData.CloudletName : null}
+                                        {(this.state.headerTitle === 'Cluster Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterName : null}
+                                        {(this.state.headerTitle === 'App Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterInst + " > " + this.state.detailData.AppName : null}
+
+                                    </div>
                                 </Grid.Column>
                                 : null
                         }
@@ -1005,7 +1022,9 @@ class SiteFour extends React.Component {
                                                                 <SiteFourPageApps></SiteFourPageApps> :
                                                                 (this.state.page === 'pg=6') ?
                                                                     <SiteFourPageAppInst></SiteFourPageAppInst> :
-                                                                    (this.state.page === 'pg=newOrg') ?
+                                                                    (this.state.page === 'pg=7')?
+                                                                        <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
+                                                                        (this.state.page === 'pg=newOrg') ?
                                                                         <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                         (this.state.page === 'pg=createApp') ?
                                                                             <SiteFourPageAppReg
@@ -1016,7 +1035,9 @@ class SiteFour extends React.Component {
                                                                                 (this.state.page === 'pg=createAppInst') ?
                                                                                     <SiteFourPageAppInstReg
                                                                                         editable={false}></SiteFourPageAppInstReg> :
-                                                                                    (this.state.page === 'pg=editAppInst') ?
+                                                                                    (this.state.page === 'pg=createCloudletPool')?
+                                                                                        <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                        (this.state.page === 'pg=editAppInst') ?
                                                                                         <SiteFourPageAppInstReg
                                                                                             editable={true}></SiteFourPageAppInstReg> :
                                                                                         (this.state.page === 'pg=createClusterInst') ?
@@ -1030,7 +1051,7 @@ class SiteFour extends React.Component {
                                                                                                         (this.state.page === 'pg=Monitoring2') ?
                                                                                                             <SiteFourPageMonitoring></SiteFourPageMonitoring> :
 
-                                                                                                        <div></div>
+                                                                                                            <div></div>
                                 }
                             </div>
                         </Grid.Column>
@@ -1269,6 +1290,7 @@ const mapStateToProps = (state) => {
     let submitInfo = (state.submitInfo) ? state.submitInfo : null;
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let checkedAudit = (state.checkedAudit) ? state.checkedAudit.audit : null;
+    let detailData = (state.changeViewMode && state.changeViewMode.mode)?state.changeViewMode.mode.data : null;
 
     return {
         viewBtn: state.btnMnmt ? state.btnMnmt : null,
@@ -1297,6 +1319,7 @@ const mapStateToProps = (state) => {
         regionInfo: regionInfo,
         audit: checkedAudit,
         clickCity: state.clickCityList.list,
+        detailData:detailData,
     }
 };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import {Dropdown, Grid, Menu} from 'semantic-ui-react';
 import {Chart} from "react-google-charts";
+import ndjsonStream from "can-ndjson-stream";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FlexBox from "flexbox-react";
 import Plot from "../../node_modules/react-plotly.js/react-plotly";
@@ -354,6 +355,8 @@ export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'U
         let resource = 'ShowAppInsts';
         const hostname = window.location.hostname;
         let ServerUrl = 'https://' + hostname + ':3030';
+
+        //https://mc.mobiledgex.net:9900/api/v1/auth/ctrl/ShowAppInst
         let responseResult = await axios.post(ServerUrl + '/' + 'ShowAppInsts', qs.stringify({
             service: resource,
             serviceBody: serviceBody,
