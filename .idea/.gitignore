@@ -8,3 +8,5 @@ server/yarn-error.log
 server/yarn.lock
 
 
+# Editor-based HTTP Client requests
+/httpRequests/
