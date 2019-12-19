@@ -35,7 +35,9 @@ import SiteFourPageApps from './siteFour_page_apps';
 import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
+import SiteFourPageCloudletPool from './siteFour_page_cloudletPool';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
+import SiteFourPageCloudletPoolReg from './siteFour_page_cloudletPoolReg';
 import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
@@ -52,10 +54,12 @@ import SiteFourPageAudits from './siteFour_page_audits';
 
 import Alert from 'react-s-alert';
 
-import '../css/introjs.css';
-import '../css/introjs-dark.css';
+
 import PageMonitoring from "./PageMonitoring";
 import SiteFourPageMonitoring from "./siteFour_page_monitoring";
+
+import '../css/introjs.css';
+import '../css/introjs-dark.css';
 
 let devOptions = [{key: 'af', value: 'af', text: 'SK Telecom'}]
 const locationOptions = [
@@ -87,7 +91,7 @@ const orgaSteps = organizationTutor();
 const cloudletSteps = CloudletTutor();
 let _self = null;
 
-class SiteFourNew extends React.Component {
+class SiteFour extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -1015,7 +1019,9 @@ class SiteFourNew extends React.Component {
                                                                 <SiteFourPageApps></SiteFourPageApps> :
                                                                 (this.state.page === 'pg=6') ?
                                                                     <SiteFourPageAppInst></SiteFourPageAppInst> :
-                                                                    (this.state.page === 'pg=newOrg') ?
+                                                                    (this.state.page === 'pg=7')?
+                                                                        <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
+                                                                        (this.state.page === 'pg=newOrg') ?
                                                                         <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                         (this.state.page === 'pg=createApp') ?
                                                                             <SiteFourPageAppReg
@@ -1026,7 +1032,9 @@ class SiteFourNew extends React.Component {
                                                                                 (this.state.page === 'pg=createAppInst') ?
                                                                                     <SiteFourPageAppInstReg
                                                                                         editable={false}></SiteFourPageAppInstReg> :
-                                                                                    (this.state.page === 'pg=editAppInst') ?
+                                                                                    (this.state.page === 'pg=createCloudletPool')?
+                                                                                        <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                        (this.state.page === 'pg=editAppInst') ?
                                                                                         <SiteFourPageAppInstReg
                                                                                             editable={true}></SiteFourPageAppInstReg> :
                                                                                         (this.state.page === 'pg=createClusterInst') ?
@@ -1244,31 +1252,6 @@ class SiteFourNew extends React.Component {
                     </Grid.Row>
                 </Container>
 
-<<<<<<< HEAD
-                <<<<<<< HEAD
-            </Grid.Row>
-        {
-            (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log'  && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1 ) ?
-                (this.state.intoCity)?<Button onClick={this.onClickBackBtn}>Back</Button>:<Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
-                    <label style={{padding:'0 10px'}}>Region</label>
-                    <Dropdown className='selection'
-                              options={this.state.regions}
-                              defaultValue={this.state.regions[0].value}
-                              value={this.props.changeRegion}
-                              onChange={this.onChangeRegion}
-                    />
-                </Grid.Row>
-                : null
-        }
-        {
-            (this.state.headerTitle == 'User Roles') ?
-                <div className='user_search' style={{top:15, right:65, position:'absolute',zIndex:99}}>
-                    <Input icon='search' placeholder={'Search '+this.state.searchChangeValue} style={{marginRight:'20px'}}  onChange={this.searchClick} />
-                    <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange} />
-                </div>
-                : null
-        }
-=======
                 {/*#############################*/}
                 {/*PAGE BODY RENDERING PART     */}
                 {/*페이지의 BODY부분을 렌더링 하는 부분*/}
@@ -1278,74 +1261,25 @@ class SiteFourNew extends React.Component {
                     {this.state.page === 'pg=Monitoring' ?
                         <PageMonitoring/> :
                         this.renderSiteBody(viewMode)
->>>>>>> devMaster
 
-        <Grid.Row className='site_content_body'>
-            <Grid.Column>
-                <div className="table-no-resized" style={{height:'100%', display:'flex', overflow:'hidden'}}>
-                    {
-                        (this.state.page === 'pg=0')?<SiteFourPageOrganization></SiteFourPageOrganization> :
-                            (this.state.page === 'pg=1')?<SiteFourPageUser></SiteFourPageUser> :
-                                (this.state.page === 'pg=101')?<SiteFourPageAccount></SiteFourPageAccount> :
-                                    (this.state.page === 'pg=2')?<SiteFourPageCloudlet></SiteFourPageCloudlet> :
-                                        (this.state.page === 'pg=3')?<SiteFourPageFlavor></SiteFourPageFlavor> :
-                                            (this.state.page === 'pg=4')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
-                                                (this.state.page === 'pg=5')?<SiteFourPageApps></SiteFourPageApps>:
-                                                    (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
-                                                        (this.state.page === 'pg=7')? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
-                                                            (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
-                                                                (this.state.page === 'pg=createApp')? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
-                                                                    (this.state.page === 'pg=editApp')? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
-                                                                        (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
-                                                                            (this.state.page === 'pg=editAppInst')? <SiteFourPageAppInstReg editable={true}></SiteFourPageAppInstReg> :
-                                                                                (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
-                                                                                    (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
-                                                                                        (this.state.page === 'pg=createCloudletPool')? <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
-                                                                                            (this.state.page === 'pg=linkOrganize')? <SiteFourPageLinkOrgaizeReg></SiteFourPageLinkOrgaizeReg> :
-                                                                                                (this.state.page === 'pg=createFlavor')? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
-                                                                                                    (this.state.page === 'pg=audits')? <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                        (this.state.page === 'pg=monitor')? <SiteFourPageMonitoring></SiteFourPageMonitoring> :
-                                                                                                            <div> </div>
                     }
-<<<<<<< HEAD
-                </div>
-            </Grid.Column>
-        </Grid.Row>
-        </Grid.Column>
-    </Grid.Row>
-    =======
-    {/*#############################*/}
-    {/*PAGE BODY RENDERING PART     */}
-    {/*페이지의 BODY부분을 렌더링 하는 부분*/}
-    {/*#############################*/}
-    <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
-    {/*모니터링 페이지인 경우...*/}
-    {this.state.page === 'pg=Monitoring' ?
-    <PageMonitoring/> :
-    this.renderSiteBody(viewMode)
-=======
                 </Container>
->>>>>>> devMaster
 
-    }
-    >>>>>>> dbfb47ff69cec37304834bee4fcd523cd9bdfc88
-    </Container>
-
-    <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend}
-    close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
-    <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
-    {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
-    </Motion>
-    </Grid>
-    );
+                <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend}
+                                 close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
+                <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
+                    {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
+                </Motion>
+            </Grid>
+        );
     }
 
-    };
+};
 
-    const mapStateToProps = (state) => {
+const mapStateToProps = (state) => {
     let viewMode = null;
     if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
-    viewMode = state.changeViewMode.mode.viewMode;
+        viewMode = state.changeViewMode.mode.viewMode;
     }
     let action = state.action;
     let tutorState = (state.tutorState) ? state.tutorState.state : null;
@@ -1384,69 +1318,69 @@ class SiteFourNew extends React.Component {
     clickCity: state.clickCityList.list,
     detailData:detailData,
     }
-    };
+};
 
-    const mapDispatchProps = (dispatch) => {
+const mapDispatchProps = (dispatch) => {
     return {
-    handleChangeSite: (data) => {
-    dispatch(actions.changeSite(data))
-    },
-    handleChangeStep: (data) => {
-    dispatch(actions.changeStep(data))
-    },
-    handleInjectData: (data) => {
-    dispatch(actions.injectData(data))
-    },
-    handleInjectDeveloper: (data) => {
-    dispatch(actions.registDeveloper(data))
-    },
-    handleChangeViewBtn: (data) => {
-    dispatch(actions.btnManagement(data))
-    },
-    handleChangeComputeItem: (data) => {
-    dispatch(actions.computeItem(data))
-    },
-    handleChangeClickCity: (data) => {
-    dispatch(actions.clickCityList(data))
-    },
-    handleUserInfo: (data) => {
-    dispatch(actions.userInfo(data))
-    },
-    handleSearchValue: (data, value) => {
-    dispatch(actions.searchValue(data, value))
-    },
-    handleChangeRegion: (data) => {
-    dispatch(actions.changeRegion(data))
-    },
-    handleSelectOrg: (data) => {
-    dispatch(actions.selectOrganiz(data))
-    },
-    handleUserRole: (data) => {
-    dispatch(actions.showUserRole(data))
-    },
-    handleComputeRefresh: (data) => {
-    dispatch(actions.computeRefresh(data))
-    },
-    handleLoadingSpinner: (data) => {
-    dispatch(actions.loadingSpinner(data))
-    },
-    // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))},
-    handleDetail: (data) => {
-    dispatch(actions.changeDetail(data))
-    },
-    handleRoleInfo: (data) => {
-    dispatch(actions.roleInfo(data))
-    },
-    handleAlertInfo: (mode, msg) => {
-    dispatch(actions.alertInfo(mode, msg))
-    },
-    handleAuditCheckCount: (data) => {
-    dispatch(actions.setCheckedAudit(data))
-    },
-    handleResetMap: (data) => {
-    dispatch(actions.resetMap(data))
-    },
+        handleChangeSite: (data) => {
+            dispatch(actions.changeSite(data))
+        },
+        handleChangeStep: (data) => {
+            dispatch(actions.changeStep(data))
+        },
+        handleInjectData: (data) => {
+            dispatch(actions.injectData(data))
+        },
+        handleInjectDeveloper: (data) => {
+            dispatch(actions.registDeveloper(data))
+        },
+        handleChangeViewBtn: (data) => {
+            dispatch(actions.btnManagement(data))
+        },
+        handleChangeComputeItem: (data) => {
+            dispatch(actions.computeItem(data))
+        },
+        handleChangeClickCity: (data) => {
+            dispatch(actions.clickCityList(data))
+        },
+        handleUserInfo: (data) => {
+            dispatch(actions.userInfo(data))
+        },
+        handleSearchValue: (data, value) => {
+            dispatch(actions.searchValue(data, value))
+        },
+        handleChangeRegion: (data) => {
+            dispatch(actions.changeRegion(data))
+        },
+        handleSelectOrg: (data) => {
+            dispatch(actions.selectOrganiz(data))
+        },
+        handleUserRole: (data) => {
+            dispatch(actions.showUserRole(data))
+        },
+        handleComputeRefresh: (data) => {
+            dispatch(actions.computeRefresh(data))
+        },
+        handleLoadingSpinner: (data) => {
+            dispatch(actions.loadingSpinner(data))
+        },
+        // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))},
+        handleDetail: (data) => {
+            dispatch(actions.changeDetail(data))
+        },
+        handleRoleInfo: (data) => {
+            dispatch(actions.roleInfo(data))
+        },
+        handleAlertInfo: (mode, msg) => {
+            dispatch(actions.alertInfo(mode, msg))
+        },
+        handleAuditCheckCount: (data) => {
+            dispatch(actions.setCheckedAudit(data))
+        },
+        handleResetMap: (data) => {
+            dispatch(actions.resetMap(data))
+        },
     };
-    };
+};
 
-    export default withRouter(connect(mapStateToProps, mapDispatchProps)((SiteFour)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)((SiteFour)));
