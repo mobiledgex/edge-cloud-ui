@@ -32,7 +32,6 @@ export class Test001 extends React.Component<Props, State> {
         fetch("https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/ShowAppInst",{
             method: 'post',
             body: {
-                re
             }
 
         }).then((response) => {

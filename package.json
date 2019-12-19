@@ -126,7 +126,10 @@
   },
   "devDependencies": {
     "cross-env": "^6.0.3",
-    "react-scripts": "^3.3.0"
+    "flow-bin": "^0.114.0",
+    "react-scripts": "^3.3.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9"
   },
   "scripts": {
     "start": "HTTPS=false react-scripts start",

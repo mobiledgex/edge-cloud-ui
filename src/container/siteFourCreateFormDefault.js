@@ -421,6 +421,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             </Grid>
                                                             :
 
+
                                                             (fieldKeys[pId][key]['type'] === 'RenderDualListBox') ?
                                                             <Grid>
                                                                 <Grid.Row className={'renderDualListBox'} style={{height:500}}>
@@ -437,6 +438,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 </Grid.Row>
                                                             </Grid>
                                                             :
+
                                                             (fieldKeys[pId][key]['type'] === 'RenderTextArea') ?
                                                             <Field
                                                                 component={renderTextArea}
@@ -444,6 +446,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 value={data[key]}
                                                                 name={key}
                                                             />
+
 
                                                             :
                                                             <Field
