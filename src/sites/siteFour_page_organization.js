@@ -8,7 +8,7 @@ import MaterialIcon from 'material-icons-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
-import * as services from '../services/service_compute_service';
+import * as services from '../services/serviceMC';
 import './siteThree.css';
 import MapWithListView from "./siteFour_page_six";
 import Alert from "react-s-alert";
@@ -92,7 +92,8 @@ class SiteFourPageOrganization extends React.Component {
         }
 
     }
-    receiveResult = (result,resource, self) => {
+    receiveResult = (mcRequest) => {
+        let result = mcRequest.data;
         console.log("resultresultresultresult",result)
 
         // @inki if data has expired token
@@ -123,23 +124,19 @@ class SiteFourPageOrganization extends React.Component {
     }
     getDataDeveloper(token) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, _self.receiveResult)
-        services.getMCService('ShowRole',{token:store ? store.userToken : 'null'}, _self.receiveAdminInfo)
+        services.sendRequest({ token: store ? store.userToken : 'null', method: services.SHOW_ORG }, _self.receiveResult)
+        services.sendRequest({ token: store ? store.userToken : 'null', method: services.SHOW_ROLE }, _self.receiveAdminInfo)
         _self.props.handleLoadingSpinner(true);
     }
-    receiveAdminInfo = (result) => {
+    receiveAdminInfo = (mcRequest) => {
+        let result = mcRequest.response;
         this.props.handleRoleInfo(result.data)
-        if(result.error) {
-
-        } else {
-            result.data.map((item,i) => {
-                if(item.role.indexOf('Admin') > -1){
-                    this.props.handleUserRole(item.role);
-                    localStorage.setItem('selectRole', item.role)
-                }
-            })
-        }
-
+        result.data.map((item, i) => {
+            if (item.role.indexOf('Admin') > -1) {
+                this.props.handleUserRole(item.role);
+                localStorage.setItem('selectRole', item.role)
+            }
+        })
     }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;

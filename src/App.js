@@ -10,8 +10,8 @@ import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
 //redux
 import { connect } from 'react-redux';
 import * as actions from './actions';
-import * as Service from './services/service_login_api';
-import * as computeService from './services/service_compute_service';
+import * as Service from './services/serviceMC';
+import * as serviceMC from './services/serviceMC';
 // API
 
 import { LOCAL_STRAGE_KEY } from './components/utils/Settings'
@@ -86,7 +86,7 @@ const DashboardContainer = ( props, props2) => {
         loaded = true;
         let userInfo = JSON.parse(storeData);
         if(userInfo.userToken) {
-            Service.getCurrentUserInfo('currentUser', {token:userInfo.userToken}, self.receiveCurrentUser, self)
+            Service.sendRequest({ token: userInfo.userToken, method: Service.CURRENT_USER }, self.receiveCurrentUser, self)
         }
 
 
@@ -261,7 +261,8 @@ class App extends Component {
             setTimeout(() => loaded = false)
         }
     }
-    receiveController = (result) => {
+    receiveController = (mcRequest) => {
+        let result = mcRequest.response;
         let regions = [];
         if(result) {
             if(result.data) {
@@ -290,7 +291,7 @@ class App extends Component {
         if(localStorage && localStorage.PROJECT_INIT) {
             let store = JSON.parse(localStorage.PROJECT_INIT);
             console.log('20191118 store...', JSON.parse(localStorage.PROJECT_INIT),":",store.userToken)
-            if(store.userToken) computeService.showController('showController', {token:store.userToken}, scope.receiveController);
+            if (store.userToken) serviceMC.sendRequest({ token: store.userToken, method: serviceMC.SHOW_CONTROLLER }, scope.receiveController);
         }
     }
 

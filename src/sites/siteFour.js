@@ -19,7 +19,6 @@ import sizeMe from 'react-sizeme';
 
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
-import ContainerDimensions from 'react-container-dimensions'
 import {Motion, spring} from "react-motion";
 import { Steps, Hints } from 'intro.js-react';
 
@@ -27,7 +26,7 @@ import { Steps, Hints } from 'intro.js-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
-import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
+import {GridLoader, ClipLoader} from "react-spinners";
 import HeaderGlobalMini from '../container/headerGlobalMini';
 
 //pages
@@ -48,13 +47,10 @@ import SiteFourPageCreateorga from './siteFour_page_createOrga';
 
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import PopLegendViewer from '../container/popLegendViewer';
-import * as services from '../services/service_audit_api';
-import * as Service from '../services/service_login_api';
-import * as computeService from '../services/service_compute_service';
+import * as services from '../services/serviceMC';
 
 import { organizationTutor, CloudletTutor } from '../tutorial';
 import SiteFourPageAudits from './siteFour_page_audits';
-import * as utile from '../utils'
 
 import Alert from 'react-s-alert';
 
@@ -282,7 +278,8 @@ class SiteFour extends React.Component {
         }
         _self.props.handleUserInfo(result.data);
     }
-    receiveResult(result) {
+    receiveControllerResult(mcRequest) {
+        let result = mcRequest.response;
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
@@ -294,7 +291,8 @@ class SiteFour extends React.Component {
         _self.props.handleLoadingSpinner();
         _self.controllerOptions(result.data);
     }
-    receiveAdminInfo = (result) => {
+    receiveAdminInfo = (mcRequest) => {
+        let result = mcRequest.response;
         this.props.handleRoleInfo(result.data)
         if(result.error) {
             _self.props.handleAlertInfo('error', result.error)
@@ -466,9 +464,9 @@ class SiteFour extends React.Component {
         // App에서 체그하기 때문에 아래 코드 막음.
         //Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
 
-        computeService.getMCService('showController', {token:token}, this.receiveResult, this);
-        computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
-        computeService.getMCService('Version',{token:token}, this.receiveVersion, this)
+        services.sendRequest({ token: token, method: services.SHOW_CONTROLLER }, this.receiveControllerResult, this);
+        services.sendRequest({ token: token, method: services.SHOW_ROLE }, this.receiveAdminInfo)
+        //services1.getMCService('Version',{token:token}, this.receiveVersion, this)
     }
     onClickBackBtn =() => {
         this.setState({intoCity:false})
@@ -489,7 +487,7 @@ class SiteFour extends React.Component {
         //get list of customer's info
         // if(store.userToken) {
         //     Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
-        //     computeService.getMCService('showController', {token:store.userToken}, this.receiveResult, this);
+        //     services.getMCService('showController', {token:store.userToken}, this.receiveResult, this);
         // }
         //if there is no role
         //site1으로 이동할 수 없는 문제로 아래 코드 주석처리 by inki
@@ -845,14 +843,16 @@ class SiteFour extends React.Component {
         localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
 
     }
-    receiveResult = (result, resource, self, body) => {
+    
+    receiveResult = (mcRequest) => {
+        let result = mcRequest.response;
+        let resource = mcRequest.method;
         let unchecked = result.data.length;
         let checked = localStorage.getItem('auditChecked')
         if(resource === 'ShowSelf') {
             this.reduceAuditCount(result.data, checked)
         }
         this.props.handleLoadingSpinner(false);
-
     }
     makeOga = (logName) => {
         let lastSub = logName.substring(logName.lastIndexOf('=')+1);
@@ -862,7 +862,7 @@ class SiteFour extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         _self.loadCount = 0;
-        services.showAuditSelf('ShowSelf',{token:store.userToken, params:'{}'}, _self.receiveResult, _self)
+        services.sendRequest({ token: store.userToken, method: services.SHOW_SELF, data: '{}' }, _self.receiveShowSelfResult, _self)
     }
 
     /** audit ********/

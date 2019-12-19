@@ -1737,6 +1737,8 @@ exports.ResetPassword = (req, res) => {
         serviceName = req.body.service;
     }
     console.log('reset password --- serviceName == ', serviceName, 'serviceBody == ', 'mcUrl=',mcUrl)
+    console.log('>>>>', serviceName)
+    console.log('>>>>', serviceBody)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
@@ -1816,6 +1818,8 @@ exports.UpdateVerify = (req, res) => {
         token = req.body.serviceBody.token;
     }
     console.log('Update verify == ', serviceName, 'serviceBody == ', 'token=', token, 'mcUrl=',mcUrl)
+    console.log('>>>>>', serviceName)
+    console.log('>>>>>', serviceBody)
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
@@ -1828,7 +1832,7 @@ exports.UpdateVerify = (req, res) => {
             }
         })
         .catch(function (error) {
-
+            console.log('>>>>>', error)
             responseLoginError(res, error)
         });
 }

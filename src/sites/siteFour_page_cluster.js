@@ -1,16 +1,13 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 import DeveloperListView from '../container/developerListView';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
-import MapWithListView from "./siteFour_page_six";
 import Alert from "react-s-alert";
 
 
@@ -139,7 +136,7 @@ class SiteFourPageCluster extends React.Component {
     }
     getDataDeveloper(region) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let rgn = ['US','KR','EU'];
+        let rgn = ['US','EU'];
         this.setState({devData:[]})
         console.log("changeRegion###@@",_self.props.changeRegion)
         if(region !== 'All'){

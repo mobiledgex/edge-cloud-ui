@@ -1,5 +1,5 @@
 import React from 'react';
-import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
+import {Table, Tab} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -9,15 +9,11 @@ import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import './styles.css';
-import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
-import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
+import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateFormAppDefault from "./siteFourCreateFormAppDefault";
-import Alert from "react-s-alert";
-import * as service from "../services/service_compute_service";
-const ReactGridLayout = WidthProvider(RGL);
 
 
 let itData = '';
@@ -270,11 +266,12 @@ class RegistryViewer extends React.Component {
         if(localStorage.selectMenu == "Apps") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // clusterFlavor
-            service.getMCService('ShowFlavor',{token:store.userToken,region:region}, _self.receiveF)
+            serviceMC.sendRequest({ token: store.userToken, method: serviceMC.SHOW_FLAVOR, data: { region: region } }, _self.receiveF)
         }
     }
 
-    receiveF(result) {
+    receiveF(mcRequest) {
+        let result = mcRequest.data;
         let arr = []
         result.map((item,i) => {
             arr.push(item.FlavorName)

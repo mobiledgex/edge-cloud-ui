@@ -1,16 +1,13 @@
 import React, {Fragment} from 'react';
-import {Form, Input, Grid, Tab, Button} from 'semantic-ui-react';
+import {Form, Input, Grid, Tab} from 'semantic-ui-react';
 import SiteFourCreateFormDefault from './siteFourCreateFormDefault';
 import BubbleGroup from '../charts/bubbleGroup';
 import EditMap from '../libs/simpleMaps/with-react-motion/editMap';
 import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
-import * as services from "../services/service_compute_service";
+import * as serviceMC from "../services/serviceMC";
 import * as aggregate from "../utils";
-import Alert from "react-s-alert";
 import * as actions from "../actions";
 import {connect} from "react-redux";
-import {scaleLinear} from "d3-scale";
-import {Field} from "redux-form";
 import './styles.css';
 import {withRouter} from "react-router-dom";
 
@@ -143,21 +140,24 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
     }
 
-    receiveResultOrg(result) {
+    receiveResultOrg(mcRequest) {
+        let result = mcRequest.data;
         if(result.error) {
             this.props.handleAlertInfo('error',result.error)
         } else {
             _self.groupJoin(result,'organization')
         }
     }
-    receiveResultCloudlet(result) {
+    receiveResultCloudlet(mcRequest) {
+        let result = mcRequest.data;
         if(result.error) {
             this.props.handleAlertInfo('error',result.error)
         } else {
             _self.groupJoin(result,'cloudlet')
         }
     }
-    receiveResultFlavor(result) {
+    receiveResultFlavor(mcRequest) {
+        let result = mcRequest.data;
         if(result.error) {
             this.props.handleAlertInfo('error',result.error)
         } else {
@@ -371,12 +371,11 @@ class SiteFourCreateInstForm extends React.PureComponent {
         }
 
         rgn.map((item) => {
-            services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
-            services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultFlavor)
+            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
+            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.SHOW_FLAVOR, data : {region:item}}, _self.receiveResultFlavor)
 
         })
-
-        services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, _self.receiveResultOrg, _self)
+        serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.SHOW_ORG}, _self.receiveResultOrg, _self)
     }
     handleTabChange = (e, { activeIndex }) => {
         this.setState({ activeIndex })

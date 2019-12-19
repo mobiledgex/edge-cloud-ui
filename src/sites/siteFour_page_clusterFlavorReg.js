@@ -1,17 +1,14 @@
 import React from 'react';
-import { Tab } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as services from '../services/service_compute_service';
+import * as serviceMC from '../services/serviceMC';
 import './siteThree.css';
 
 import Alert from "react-s-alert";
 import RegistryClusterFlavorViewer from "../container/registryClusterFlavorViewer";
-import * as reducer from "../utils";
 
 
 
@@ -100,7 +97,8 @@ class SiteFourPageClusterFlavorReg extends React.Component {
 
 
     }
-    receiveResult(result) {
+    receiveResult(mcRequest) {
+        let result = mcRequest.data;
         // @inki if data has expired token
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
@@ -122,8 +120,7 @@ class SiteFourPageClusterFlavorReg extends React.Component {
     }
 
     getDataDeveloper(token, region) {
-
-        services.getMCService('ShowFlavor',{token:token, region:(region === 'All') ? 'US' : region}, _self.receiveResult)
+        serviceMC.sendRequest({ token: token, method: serviceMC.SHOW_FLAVOR, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
     }
 
     /*

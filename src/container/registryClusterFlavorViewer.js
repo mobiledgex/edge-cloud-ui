@@ -72,7 +72,7 @@ class RegistryClusterFlavorViewer extends React.Component {
             apps:[],
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU']},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
                     'ClusterFlavor':{label:'Cluster Flaver', type:'RenderInput', necessary:true, tip:null, active:true},
                     'MasterFlavor':{label:'MasterFlavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
                     'NumberOfMasterNode':{label:'NumberOfMasterNode', type:'RenderInput', necessary:true, tip:null, active:true, items:[null]},

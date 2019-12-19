@@ -10,11 +10,11 @@ import * as actions from '../../actions';
 import Alert from 'react-s-alert';
 // API
 import { LOCAL_STRAGE_KEY } from '../utils/Settings'
-import * as serviceLogin from '../../services/service_login_api';
+ import * as serviceLogin from '../../services/service_login_api';
+ import * as serviceMC from '../../services/serviceMC';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
 import * as service from "../../services/service_compute_service";
-import * as ServiceLogin from '../../services/service_login_api';
 import CustomContentAlert from './CustomContentAlert';
 /*
 
@@ -440,8 +440,8 @@ class Login extends Component {
      * 로그인이 성공했을 때 토큰을 저장한다.
      * @param result
      */
-    receiveToken(result) {
-
+    receiveToken(mcRequest) {
+        let result = mcRequest.response;
         if(result.data.token) {
             self.params['userToken'] = result.data.token
             localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
@@ -478,7 +478,7 @@ class Login extends Component {
         setTimeout(()=>self.setState({forgotPass:false, forgotMessage:false, loginMode:'login'}), 1000)
     }
     requestToken(self) {
-        serviceLogin.getMethodCall('requestToken', {username:self.state.username, password:self.state.password}, self.receiveToken)
+        serviceMC.sendRequest({ method: serviceMC.LOGIN, data: { username: self.state.username, password: self.state.password } }, self.receiveToken)
         //self.receiveToken({data:{token:'my test token'}})
     }
     handleClickLogin(mode) {

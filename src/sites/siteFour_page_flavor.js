@@ -8,7 +8,7 @@ import MaterialIcon from 'material-icons-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
-import * as services from '../services/service_compute_service';
+import * as services from '../services/serviceMC';
 import './siteThree.css';
 import MapWithListView from "./siteFour_page_six";
 import Alert from "react-s-alert";
@@ -92,7 +92,8 @@ class SiteFourPageFlavor extends React.Component {
         }
         
     }
-    receiveResult = (result) => {
+    receiveResult = (mcRequest) => {
+        let result = mcRequest.data;
         // @inki if data has expired token
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
@@ -130,8 +131,8 @@ class SiteFourPageFlavor extends React.Component {
             rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
         rgn.map((item) => {
-            
-            services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult)
+            let requestData = { token: store ? store.userToken : 'null', method: services.SHOW_FLAVOR, data: { region: item } };
+            services.sendRequest(requestData, _self.receiveResult)
         })
     }
     render() {

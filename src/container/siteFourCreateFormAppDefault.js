@@ -1,10 +1,9 @@
 import React, { Fragment } from "react";
 
-import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup, Icon, Input, Checkbox} from "semantic-ui-react";
+import {Button, Form, Grid, Header, Item, Popup, Icon} from "semantic-ui-react";
 
-import { Field, reduxForm, initialize, reset, stopSubmit, change } from "redux-form";
-import MaterialIcon from "material-icons-react";
-import * as services from '../services/service_compute_service';
+import { Field, reduxForm, stopSubmit, change } from "redux-form";
+import * as serviceMC from '../services/serviceMC';
 import './styles.css';
 
 let portNum = 0;
@@ -238,7 +237,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
         }
         if(this.props.getUserRole == 'AdminManager') {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, this.receiveResult)
+            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.SHOW_ORG}, this.receiveResult)
         }
     }
 
@@ -321,7 +320,8 @@ class SiteFourCreateFormAppDefault extends React.Component {
         }
         this.setState({portArray:arr});
     }
-    receiveResult = (result) => {
+    receiveResult = (mcRequest) => {
+        let result = mcRequest.data;
         let arr = [];
         result.map((item,i) => {
             if(item.Type === 'developer'){

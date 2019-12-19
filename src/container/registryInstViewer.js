@@ -1,22 +1,18 @@
 import React from 'react';
-import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
+import {Tab} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import RGL, { WidthProvider } from "react-grid-layout";
 
 import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import './styles.css';
-import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
-import MaterialIcon from "material-icons-react";
 import * as services from '../services/service_compute_service';
+import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateFormAppInstDefault from "./siteFourCreateFormAppInstDefault";
-import Alert from "react-s-alert";
 import {withRouter} from "react-router-dom";
-const ReactGridLayout = WidthProvider(RGL);
 
 
 const headerStyle = {
@@ -120,12 +116,13 @@ class RegistryInstViewer extends React.Component {
         //this.props.handleChangeSite(data.children.props.to)
     }
     getDataDeveloper(token,_region) {
-        services.getMCService('ShowApps',{token:token,region:_region}, this.receiveResultApp)
-        setTimeout(() => services.getMCService('ShowCloudlet',{token:token,region:_region}, this.receiveResultCloudlet), 200);
-        setTimeout(() => services.getMCService('ShowClusterInst',{token:token,region:_region}, this.receiveResultClusterInst), 400);
-        
+        serviceMC.sendRequest({ token: token, method: serviceMC.SHOW_APP, data: { region: _region } }, this.receiveResultApp)
+        setTimeout(() => serviceMC.sendRequest({ token: token, method: serviceMC.SHOW_CLOUDLET, data: { region: _region } }, this.receiveResultCloudlet), 200);
+        setTimeout(() => serviceMC.sendRequest({ token: token, method: serviceMC.SHOW_CLUSTER_INST, data: { region: _region } }, this.receiveResultClusterInst), 400);
+
     }
-    receiveResultCloudlet = (result) => {
+    receiveResultCloudlet = (mcRequest) => {
+        let result = mcRequest.data;
         if(result.error){
 
         } else {
@@ -150,7 +147,8 @@ class RegistryInstViewer extends React.Component {
         this.props.handleLoadingSpinner(false);
 
     }
-    receiveResultApp = (result) => {
+    receiveResultApp = (mcRequest) => {
+        let result = mcRequest.data;
         if(result.error) {
             this.props.handleAlertInfo('error',String(result.error))
         } else {
@@ -162,7 +160,8 @@ class RegistryInstViewer extends React.Component {
             this.props.handleLoadingSpinner(false);
         }
     }
-    receiveResultClusterInst = (result) => {
+    receiveResultClusterInst = (mcRequest) => {
+        let result = mcRequest.data;
         if(result.error) {
             this.props.handleAlertInfo('error',String(result.error))
         } else {
@@ -563,7 +562,6 @@ const mapStateToProps = (state) => {
     let validateValue = null;
     let selectedOrgName = null;
     let selectedRegion = null;
-    // alert(JSON.stringify(state.form.createAppFormDefault))
     if(state.form.createAppFormDefault) {
         if(state.form.createAppFormDefault.values.Cloudlet !== "") {
             selectedCloudlet = state.form.createAppFormDefault.values.Cloudlet;

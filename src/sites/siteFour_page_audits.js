@@ -5,12 +5,13 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
 import * as services from '../services/service_audit_api';
+import * as serviceMC from '../services/serviceMC';
 import './siteThree.css';
 import TimelineAuditViewNew from "../container/TimelineAuditViewNew";
 
 
 let _self = null;
-let rgn = ['US', 'KR', 'EU'];
+let rgn = ['US', 'EU'];
 
 class SiteFourPageAudits extends React.Component {
     constructor(props) {
@@ -169,7 +170,9 @@ class SiteFourPageAudits extends React.Component {
 
     }
 
-    receiveResult = (result, resource, self, body) => {
+    receiveResult = (mcRequest) => {
+        let result  = mcRequest.response;
+        let resource = mcRequest.method;
         // @inki if data has expired token
         console.log('20191106 receive result...', result, ":", resource)
         if (result.error && result.error.indexOf('Expired') > -1) {
@@ -183,7 +186,7 @@ class SiteFourPageAudits extends React.Component {
 
         let unchecked = result.data.length;
         let checked = localStorage.getItem('auditChecked')
-        if (resource === 'ShowSelf' || resource === 'ShowOrg') {
+        if (resource === serviceMC.SHOW_SELF || resource === serviceMC.SHOW_ORG) {
             console.log('20191106 audit result..', result, ":", resource, ": unchecked : ", unchecked)
             _self.reduceAuditCount(result.data, checked)
 
@@ -222,7 +225,7 @@ class SiteFourPageAudits extends React.Component {
                     token: store.userToken,
                     params: {"org": this.makeOga(orgName)}
                 })
-                this.receiveResult(response, 'ShowOrg')
+                this.receiveResult({response:response, method:serviceMC.SHOW_ORG})
             } catch (e) {
                 //alert(e)
                 this.props.handleLoadingSpinner(false);
@@ -232,7 +235,7 @@ class SiteFourPageAudits extends React.Component {
             }
 
         } else {
-            services.showAuditSelf('ShowSelf', {token: store.userToken, params: '{}'}, _self.receiveResult, _self)
+            serviceMC.sendRequest({token: store.userToken, method:serviceMC.SHOW_SELF, data: '{}'}, _self.receiveResult, _self)
         }
     }
 

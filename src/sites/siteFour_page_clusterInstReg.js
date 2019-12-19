@@ -6,7 +6,7 @@ import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as services from '../services/service_compute_service';
+import * as serviceMC from '../services/serviceMC';
 import './siteThree.css';
 
 import Alert from "react-s-alert";
@@ -90,7 +90,8 @@ class SiteFourPageClusterInstReg extends React.Component {
 
 
     }
-    receiveResult(result) {
+    receiveResult(mcRequest) {
+        let result = mcRequest.data;
         if(result.error) {
             this.props.handleAlertInfo('error',result.error)
         } else {
@@ -109,7 +110,7 @@ class SiteFourPageClusterInstReg extends React.Component {
 
     getDataDeveloper(token, region) {
 
-        services.getMCService('ShowFlavor',{token:token, region:(region === 'All') ? 'US' : region}, _self.receiveResult)
+        serviceMC.sendRequest({token:token, method:serviceMC.SHOW_FLAVOR, data:{region:(region === 'All') ? 'US' : region}}, _self.receiveResult)
     }
 
     /*

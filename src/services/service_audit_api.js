@@ -52,7 +52,6 @@ export const showAuditOrg2 = async (resource, body) => {
 
 
 export function showAuditSelf(resource, body, callback, self) {
-
     axios.post(ServerUrl + '/' + resource, qs.stringify({
         service: resource,
         serviceBody: body

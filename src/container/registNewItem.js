@@ -1,14 +1,11 @@
 import React from 'react';
-import {Button, Divider, Modal, Grid, Input, TextArea, Dropdown} from "semantic-ui-react";
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RegistNewInput from "./registNewInput";
 
-//http://react-s-alert.jsdemo.be/
-import Alert from 'react-s-alert';
-
 import * as service from "../services/service_compute_service";
+import * as serviceMC from "../services/serviceMC";
 import * as aggregate from "../utils";
 
 let _self = null;
@@ -80,11 +77,8 @@ class RegistNewItem extends React.Component {
     }
 
     componentDidMount() {
-        
-
         // developer(Organization)
-        //service.getMCService('showOrg',{token:store.userToken}, _self.receiveDev)
-        
+        //service.getMCService('showOrg',{token:store.userToken}, _self.receiveDev)  
     }
     componentDidUpdate(){
         
@@ -248,7 +242,8 @@ class RegistNewItem extends React.Component {
         _self.setState({devOptionsFour: cl, devOptionsFive: vr})
     }
     //Show Option Operator(19.04.25)
-    receiveOper(result) {
+    receiveOper(mcRequest) {
+        let result = mcRequest.data;
         let operArr = [];
         let CloudArr = [];
         result.map((item,i) => {
@@ -267,7 +262,8 @@ class RegistNewItem extends React.Component {
     // }
 
     //Show Option clusterFlavor(19.04.25)
-    receiveCF(result) {
+    receiveCF(mcRequest) {
+        let result = mcRequest.data;
         _self.setState({devOptionsCF: result.map((item, i) => (
             { key: i, value: item.FlavorName, text: item.FlavorName }
         ))})
@@ -281,7 +277,8 @@ class RegistNewItem extends React.Component {
         let groupByOper = aggregate.groupBy(result, 'DeveloperName')
         _self.setState({appResult:groupByOper})
     }
-    receiveOrg(result) {
+    receiveOrg(mcRequest) {
+        let result = mcRequest.data;
         _self.setState({devOptionsDeveloper: result.map((item, i) => (
             { key: i, value: item.Organization, text: item.Organization }
         ))})
@@ -429,16 +426,16 @@ class RegistNewItem extends React.Component {
         if(localStorage.selectMenu == "Cluster Instances") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // operator, cloudlet
-            service.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null',region:region}, _self.receiveOper)
+            serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
             // Flavor
-            setTimeout(() => service.getMCService('ShowFlavor',{token:store.userToken,region:region}, _self.receiveCF), 500);
+            setTimeout(() => serviceMC.sendRequest({ token: store.userToken, method: serviceMC.SHOW_FLAVOR, data: { region: region } }, _self.receiveCF), 500);
         }
     }
 
     getOrgData = () => {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // Organization
-            service.getMCService('showOrg',{token:store ? store.userToken : 'null'}, this.receiveOrg)
+            serviceMC.sendRequest({token:store ? store.userToken : 'null', method: serviceMC.SHOW_ORG}, this.receiveOrg)
         
     }
     
