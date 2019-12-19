@@ -432,12 +432,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/* ___col___1*/}
                                                     {/* ___col___1*/}
                                                     <div className='page_monitoring_column'>
-                                                        <div style={{width: '100%', backgroundColor: 'transparent'}}>
-                                                            <div style={Styles.box002}>
+                                                        <div className='page_monitoring_title_area'>
+                                                            <div className='page_monitoring_title'>
                                                                 Status Of Launch
-                                                            </div>
-                                                            <div style={{flex: 30}}>
-                                                                {/*alksdaskdlaksdlka*/}
                                                             </div>
                                                         </div>
                                                         <div style={{marginTop: 0, backgroundColor: 'red'}}>
@@ -449,12 +446,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/* ___col___2*/}
                                                     {/* ___col___2*/}
                                                     <div className='page_monitoring_column'>
-                                                        <div style={{width: '100%', backgroundColor: 'transparent'}}>
-                                                            <div style={Styles.box002}>
+                                                        <div className='page_monitoring_title_area'>
+                                                            <div className='page_monitoring_title'>
                                                                 Top 5 of CPU Usage
                                                             </div>
-                                                            <div style={{flex: 30}}>
-                                                                <div
+                                                            <div>
+                                                                <Dropdown
                                                                     placeholder='Cluster'
                                                                     selection
                                                                     options={
@@ -481,12 +478,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/* ___col___3*/}
                                                     {/* ___col___3*/}
                                                     <div className='page_monitoring_column'>
-                                                        <div style={{width: '100%', backgroundColor: 'transparent'}}>
-                                                            <div style={Styles.box002}>
+                                                        <div className='page_monitoring_title_area'>
+                                                            <div className='page_monitoring_title'>
                                                                 Transition Of CPU
-                                                            </div>
-                                                            <div style={{flex: 30}}>
-                                                                {/*dummy____dummy*/}
                                                             </div>
                                                         </div>
                                                         <div style={{marginTop: 0}}>
@@ -505,12 +499,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/* ___col___4*/}
                                                     {/* ___col___4*/}
                                                     <div className='page_monitoring_column'>
-                                                        <div style={{width: '100%', backgroundColor: 'transparent'}}>
-                                                            <div style={Styles.box002}>
+                                                        <div className='page_monitoring_title_area'>
+                                                            <div className='page_monitoring_title'>
                                                                 Perfomance Of Apps
-                                                            </div>
-                                                            <div style={{flex: 30}}>
-                                                                {/*dummy____dummy*/}
                                                             </div>
                                                         </div>
 
@@ -524,11 +515,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/* ___col___5*/}
                                                     {/* ___col___5*/}
                                                     <div className='page_monitoring_column'>
-                                                        <div style={{width: '100%', backgroundColor: 'transparent'}}>
-                                                            <div style={Styles.box002}>
+                                                        <div className='page_monitoring_title_area'>
+                                                            <div className='page_monitoring_title'>
                                                                 State of MEM Usage
                                                             </div>
-                                                            <div style={{flex: 30}}>
+                                                            <div>
                                                                 <Dropdown
                                                                     placeholder='Cluster'
                                                                     selection
@@ -555,12 +546,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/* ___col___6*/}
                                                     {/* ___col___6*/}
                                                     <div className='page_monitoring_column'>
-                                                        <div style={{width: '100%', backgroundColor: 'transparent'}}>
-                                                            <div style={Styles.box002}>
+                                                        <div className='page_monitoring_title_area'>
+                                                            <div className='page_monitoring_title'>
                                                                 Transition Of Mem
-                                                            </div>
-                                                            <div style={{flex: 30}}>
-                                                                {/*dummy____dummy*/}
                                                             </div>
                                                         </div>
                                                         <div style={{marginTop: 0}}>
