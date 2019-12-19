@@ -23,4 +23,4 @@ class CPUChart extends React.Component {
         )
     }
 }
-export default MonitoringComponent({width:600, height:400})(CPUChart)
+export default MonitoringComponent({width:'100%', height:220})(CPUChart)

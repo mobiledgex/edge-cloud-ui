@@ -35,13 +35,13 @@ import SiteFourPageApps from './siteFour_page_apps';
 import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
+import SiteFourPageCloudletPool from './siteFour_page_cloudletPool';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
 import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
 import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
 import SiteFourPageCreateorga from './siteFour_page_createOrga';
-import SiteFourPageMonitoring from './siteFour_page_monitoring';
 
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import PopLegendViewer from '../container/popLegendViewer';
@@ -56,6 +56,7 @@ import Alert from 'react-s-alert';
 import '../css/introjs.css';
 import '../css/introjs-dark.css';
 import PageMonitoring from "./PageMonitoring";
+import SiteFourPageMonitoring from "./siteFour_page_monitoring";
 
 let devOptions = [{key: 'af', value: 'af', text: 'SK Telecom'}]
 const locationOptions = [
@@ -158,16 +159,16 @@ class SiteFour extends React.Component {
             {label: 'Accounts', icon: 'dvr', pg: 101}
         ]
         this.menuItems = [
-            {label: 'Cloudlets', icon: 'cloud_queue', pg: 2},
-            {label: 'Flavors', icon: 'free_breakfast', pg: 3},
-            {label: 'Cluster Instances', icon: 'storage', pg: 4},
-            {label: 'Apps', icon: 'apps', pg: 5},
-            {label: 'App Instances', icon: 'storage', pg: 6},
-            {label: 'Audit Log', icon: 'check', pg: 'audits'},
+            {label:'Cloudlets', icon:'cloud_queue', pg:2},
+            {label:'Cloudlet Pool', icon:'pool', pg:7},
+            {label:'Flavors', icon:'free_breakfast', pg:3},
+            {label:'Cluster Instances', icon:'storage', pg:4},
+            {label:'Apps', icon:'apps', pg:5},
+            {label:'App Instances', icon:'storage', pg:6},
+            {label:'Audit Log', icon:'check', pg:'audits'},
             {label: 'Monitoring', icon: 'tv', pg: 'Monitoring'},
-            {label: 'MonitoringTest', icon: 'tv', pg: 'monitor'},
         ]
-        this.auth_three = [this.menuItems[0], this.menuItems[5]] //OperatorManager, OperatorContributor, OperatorViewer
+        this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
             {role: 'AdminManager', view: []},
             {role: 'DeveloperManager', view: [2, 3]},
@@ -271,6 +272,9 @@ class SiteFour extends React.Component {
         } else if (localStorage.selectMenu === 'Cluster Instances') {
             this.setState({page: 'pg=createClusterInst'})
             this.gotoUrl('/site4', 'pg=createClusterInst')
+        } else if(localStorage.selectMenu === 'Cloudlet Pool') {
+            this.setState({page:'pg=createCloudletPool'})
+            this.gotoUrl('/site4', 'pg=createCloudletPool')
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
@@ -898,8 +902,6 @@ class SiteFour extends React.Component {
     }
 
 
-
-
     renderSiteBody(viewMode) {
         return (
             <Grid.Row className='view_contents'>
@@ -1025,7 +1027,7 @@ class SiteFour extends React.Component {
                                                                                                     <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
                                                                                                     (this.state.page === 'pg=audits') ?
                                                                                                         <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                        (this.state.page === 'pg=monitor') ?
+                                                                                                        (this.state.page === 'pg=Monitoring2') ?
                                                                                                             <SiteFourPageMonitoring></SiteFourPageMonitoring> :
 
                                                                                                         <div></div>
@@ -1239,8 +1241,7 @@ class SiteFour extends React.Component {
                 <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
                     {/*모니터링 페이지인 경우...*/}
                     {this.state.page === 'pg=Monitoring' ?
-                        <PageMonitoring/>
-                        :
+                        <PageMonitoring/> :
                         this.renderSiteBody(viewMode)
 
                     }

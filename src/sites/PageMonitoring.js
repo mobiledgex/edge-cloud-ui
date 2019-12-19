@@ -10,19 +10,18 @@ import Plot from 'react-plotly.js';
 import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker} from 'antd';
 import {formatDate, getTodayDate} from "../utils";
-import {Chart} from "react-google-charts";
 import './PageMonitoring.css';
-import CircularProgress from "@material-ui/core/CircularProgress";
 import {
+    fetchAppInstanceList,
     renderBarGraph2_Google,
-    renderGrid,
-    renderLineChart2,
     renderLineGraph_Plot,
-    renderPieChart2_Google
-} from "../shared/MonitoringService";
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+    renderPieChart2_Google, renderPlaceHolder
+} from "../services/PageMonitoringService";
+import axios from "axios";
 
+import * as reducer from '../utils'
+import {CircularProgress} from "@material-ui/core";
+import {GridLoader} from "react-spinners";
 
 const {Column, Row} = Grid;
 
@@ -88,7 +87,10 @@ type State = {
     date: string,
     time: string,
     dateTime: string,
-    datesRange: string
+    datesRange: string,
+    appInstanceListSortByCloudlet: any,
+    loading: boolean,
+    loading0: boolean,
 
 }
 
@@ -96,24 +98,38 @@ let boxWidth = window.innerWidth / 10 * 2.77;
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageMonitoring extends React.Component<Props, State> {
-
+        state = {
+            date: '',
+            time: '',
+            dateTime: '',
+            datesRange: '',
+            appInstanceListSortByCloudlet: [],
+            loading: false,
+            loading0: false,
+        };
 
         constructor(props) {
             super(props);
-            this.state = {
-                date: '',
-                time: '',
-                dateTime: '',
-                datesRange: ''
-            };
         }
 
-        componentDidMount() {
+        componentDidMount = async () => {
+            this.setState({
+                loading: true,
+                loading0: true,
+            })
 
-            let todayDate = getTodayDate()
-            /*  this.setState({
-                  date: todayDate,
-              })*/
+            let appInstanceList = await fetchAppInstanceList();
+            let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+            await this.setState({
+                appInstanceListSortByCloudlet,
+            })
+            setTimeout(() => {
+                this.setState({
+                    loading: false,
+                    loading0: false,
+                })
+            }, 350)
+
         }
 
         componentWillUnmount() {
@@ -155,22 +171,49 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 </div>
             )
         }
-        renderHeader(){
+
+        async handleRegionChanges(value) {
+            let arrayRegions = [];
+            if (value === 'ALL') {
+                arrayRegions.push('EU')
+                arrayRegions.push('US')
+            } else {
+                arrayRegions.push(value);
+            }
+
+            this.setState({
+                loading0: true,
+                appInstanceListSortByCloudlet: [],
+            })
+            let appInstanceList = await fetchAppInstanceList(arrayRegions);
+            let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+            await this.setState({
+                appInstanceListSortByCloudlet,
+                loading0: false,
+            })
+        }
+
+        renderHeader() {
 
             let options1 = [
-                {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                {key: '1', value: '1', flag: '1', text: 'Last hour'},
+                {value: 'ALL', text: 'ALL'},
+                {value: 'EU', text: 'EU'},
+                {value: 'US', text: 'US'},
 
             ]
 
             return (
+
                 <FlexBox className='' style={{marginRight: 23}}>
+                    {this.state.loading &&
+                    <FlexBox style={{position: 'absolute', top: '2%', left: '15%'}}>
+                        <CircularProgress style={{color: '#79BF14'}}/>
+                    </FlexBox>
+                    }
                     <Grid.Column className='content_title'
                                  style={{lineHeight: '36px', fontSize: 30, marginTop: 5,}}>Monitoring
                     </Grid.Column>
+
                     <Grid.Column className='content_title2' style={{marginLeft: -10}}>
                         <button className="ui circular icon button"><i aria-hidden="true"
                                                                        className="info icon"></i>
@@ -179,7 +222,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <FlexBox style={{justifyContent: 'flex-end', alignItems: 'flex-end', width: '100%'}}>
                         <Grid.Column
 
-                            style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer', color: 'white'}}
+                            style={{lineHeight: '36px', marginLeft: 10, cursor: 'pointer',marginBottom:1}}
                             onClick={() => {
                                 alert('Reset All')
                             }}
@@ -190,17 +233,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/* COLUMN ONe*/}
                         {/*###########*/}
                         <Grid.Column className='' style={{lineHeight: '36px', marginLeft: 30,}}>
-                            <div style={{marginTop: 10}}>
-                                <Dropdown
-                                    placeholder='REGION'
-                                    selection
-                                    options={options1
-
-                                    }
-                                    defaultValue={options1[0].value}
-                                    style={{width: 200}}
-                                />
-                            </div>
+                            <FlexBox style={{marginTop: 10}}>
+                                <div style={{}}>
+                                    Region
+                                </div>
+                                <div style={{marginLeft: 10,}}>
+                                    <Dropdown
+                                        placeholder='REGION'
+                                        selection
+                                        options={options1}
+                                        defaultValue={options1[0].value}
+                                        style={{width: 200}}
+                                        onChange={async (e, {value}) => {
+                                            this.handleRegionChanges(value)
+                                        }}
+                                    />
+                                </div>
+                            </FlexBox>
                         </Grid.Column>
                         {/*###########*/}
                         {/* COLUMN TWO*/}
@@ -290,6 +339,108 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        renderGrid = (appInstanceListSortByCloudlet: any) => {
+            let boxWidth = window.innerWidth / 10 * 2.55;
+
+            let cloudletCountList = []
+            for (let i in appInstanceListSortByCloudlet) {
+                console.log('renderGrid===title>', appInstanceListSortByCloudlet[i][0].Cloudlet);
+                console.log('renderGrid===length>', appInstanceListSortByCloudlet[i].length);
+                cloudletCountList.push({
+                    name: appInstanceListSortByCloudlet[i][0].Cloudlet,
+                    length: appInstanceListSortByCloudlet[i].length,
+                })
+            }
+
+            function toChunkArray(myArray: any, chunkSize: any): any {
+                let results = [];
+                while (myArray.length) {
+                    results.push(myArray.splice(0, chunkSize));
+                }
+                return results;
+            }
+
+            let chunkedArraysOfColSize = toChunkArray(cloudletCountList, 3);
+
+            console.log('chunkedArraysOfColSize_length===>', chunkedArraysOfColSize.length);
+            //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
+
+            return (
+                <div style={{}}>
+                    {chunkedArraysOfColSize.map((colSizeArray, index) =>
+                        <FlexBox style={{backgroundColor: 'black', width: boxWidth}} key={index.toString()}>
+                            {colSizeArray.map((item) =>
+                                <FlexBox style={{
+                                    alignItems: 'center',
+                                    justifyContent: 'flex-start',
+                                    margin: 5,
+                                    backgroundColor: '#292929',
+                                    flexDirection: 'column',
+                                    width: (boxWidth) * 0.32,
+                                    height: 115,
+
+                                }}>
+                                    <FlexBox style={{
+                                        fontSize: 15,
+                                        color: '#fff',
+                                        marginTop: 10,
+                                    }}>
+                                        {item.name.toString().substring(0, 17) + "..."}
+                                    </FlexBox>
+                                    <FlexBox style={{
+                                        marginTop: 0,
+                                        fontSize: 50,
+                                        color: '#29a1ff',
+                                    }}>
+                                        {item.length}
+                                    </FlexBox>
+
+                                </FlexBox>
+                            )}
+                        </FlexBox>
+                    )}
+
+                    {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
+                    {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
+                    {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
+                    {chunkedArraysOfColSize.length === 1 &&
+                    <FlexBox style={{backgroundColor: 'black', width: boxWidth}}>
+                        {[1, 2, 3].map((item) =>
+                            <FlexBox style={{
+                                alignItems: 'center',
+                                justifyContent: 'flex-start',
+                                margin: 5,
+                                backgroundColor: 'transprent',
+                                flexDirection: 'column',
+                                width: (boxWidth) * 0.32,
+                                height: 115,
+
+                            }}>
+                                <FlexBox style={{
+                                    fontSize: 15,
+                                    color: '#fff',
+                                    marginTop: 10,
+                                }}>
+                                    {/*blank*/}
+                                </FlexBox>
+                                <FlexBox style={{
+                                    marginTop: 0,
+                                    fontSize: 50,
+                                    color: 'transprent',
+                                }}>
+                                    {/*blank*/}
+                                </FlexBox>
+
+                            </FlexBox>
+                        )}
+                    </FlexBox>
+
+                    }
+
+                </div>
+            );
+        }
+
         render() {
 
 
@@ -306,7 +457,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*#######################*/}
                         <div className="page_monitoring">
                             <FlexBox style={{flexDirection: 'column'}}>
-
                                 {/*_____row____1111*/}
                                 <FlexBox style={{marginTop: 35,}}>
                                     {/* ___col___1*/}
@@ -315,14 +465,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <FlexBox style={Styles.box001}>
                                         <FlexBox style={{width: '100%', backgroundColor: 'transparent'}}>
                                             <FlexBox style={Styles.box002}>
-                                                State of Launuch #2
+                                                Status Of Launch
                                             </FlexBox>
                                             <FlexBox style={{flex: 30}}>
-                                                {/*dummy____dummy*/}
+                                                {/*alksdaskdlaksdlka*/}
                                             </FlexBox>
                                         </FlexBox>
-                                        <FlexBox style={{marginTop: 0}}>
-                                            {renderGrid()}
+                                        <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
+                                            {this.state.loading0 ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListSortByCloudlet)}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -354,7 +504,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
-                                            {renderBarGraph2_Google()}
+                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -371,7 +521,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0}}>
-                                            {renderLineGraph_Plot()}
+                                            {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -396,7 +546,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </FlexBox>
 
                                         <FlexBox style={{marginTop: 10}}>
-                                            {renderPieChart2_Google()}
+                                            {this.state.loading ? renderPlaceHolder() : renderPieChart2_Google()}
                                         </FlexBox>
 
 
@@ -429,7 +579,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0}}>
-                                            {renderBarGraph2_Google()}
+                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -446,7 +596,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0}}>
-                                            {renderLineGraph_Plot()}
+                                            {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
                                         </FlexBox>
 
                                     </FlexBox>

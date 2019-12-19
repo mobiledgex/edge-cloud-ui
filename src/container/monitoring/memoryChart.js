@@ -22,4 +22,4 @@ class MemoryChart extends React.Component {
         )
     }
 }
-export default MonitoringComponent({width:600, height:400})(MemoryChart)
+export default MonitoringComponent({width:null, height:220})(MemoryChart)

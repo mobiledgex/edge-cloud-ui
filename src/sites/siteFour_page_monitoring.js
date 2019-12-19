@@ -1,7 +1,7 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
-
+import {Grid} from 'semantic-ui-react';
 //redux
 import {connect} from 'react-redux';
 import * as actions from '../actions';
@@ -14,6 +14,11 @@ import CPUChart from '../container/monitoring/cpuChart';
 import MemoryGraph from '../container/monitoring/memoryGraph';
 import MemoryChart from '../container/monitoring/memoryChart';
 import PerformanceOfAppTable from '../container/monitoring/performanceOfAppTable';
+//
+import * as services from '../services/service_compute_service';
+import * as reducer from '../utils'
+//
+import * as AppinstCloudletService from './methods/appinstCloudletService'
 
 let _self = null;
 let rgn = ['US', 'KR', 'EU'];
@@ -23,7 +28,11 @@ class SiteFourPageMonitoring extends React.Component {
         super(props);
         _self = this;
         this.state = {
+            devData:[],
+            stateLaunchData:[]
         };
+        this._AppInstDummy = [];
+        this._diffRev = []
     }
 
     gotoUrl(site, subPath) {
@@ -50,42 +59,74 @@ class SiteFourPageMonitoring extends React.Component {
 
     }
 
+
     componentWillMount() {
-        this.setState({bodyHeight: (window.innerHeight - this.headerH)})
-        this.setState({contHeight: (window.innerHeight - this.headerH) / 2 - this.hgap})
+        //this.setState({bodyHeight: (window.innerHeight - this.headerH)})
+        //this.setState({contHeight: (window.innerHeight - this.headerH) / 2 - this.hgap})
     }
 
     componentDidMount() {
+        // get data of appinst
 
+
+    }
+
+    receiveCloudletData (result) {
+        console.log('20191220 receive cloudlet data -- ', result)
+        _self.setState({stateLaunchData:result})
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-
-        this.setState({bodyHeight: (window.innerHeight - this.headerH)})
-        this.setState({contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap})
-
+        if(nextProps.regionInfo.region.length) {
+            AppinstCloudletService.setProps(nextProps.regionInfo.region, nextProps, this.receiveCloudletData);
+            AppinstCloudletService.getDataofAppinst(nextProps.changeRegion,nextProps.regionInfo.region);
+        }
     }
 
     render() {
-
+        let {stateLaunchData} = this.state;
         return (
 
 
-            <div style={{
+            <Grid style={{
                 display: "flex",
                 width: "100%",
                 flexDirection: "column",
                 padding: "20px",
-                background: "#292c33"}}>
-                <StatusOfLaunch title={'StatusOfLaunch'}></StatusOfLaunch>
-                <PerformanceOfApp title={'PerformanceOfApp'}></PerformanceOfApp>
-                <CPUGraph title={'CPU'}></CPUGraph>
-                <CPUChart title={'CPU'}></CPUChart>
-                <MemoryGraph title={'Memory'}></MemoryGraph>
-                <MemoryChart title={'Memory'}></MemoryChart>
-                <PerformanceOfAppTable title={'PerformanceOfAppTable'}></PerformanceOfAppTable>
+                background: "#292c33"}}
+                columns='equal'
+            >
 
-            </div>
+                <Grid.Row>
+                    <Grid.Column>
+                        <StatusOfLaunch title={'StatusOfLaunch'} data={stateLaunchData} rgn={this.props.regionInfo.region}></StatusOfLaunch>
+                    </Grid.Column>
+                    <Grid.Column>
+                        <CPUGraph title={'Top5 of CPU'}></CPUGraph>
+                    </Grid.Column>
+                    <Grid.Column>
+                        <CPUChart title={'Transition of CPU'}></CPUChart>
+                    </Grid.Column>
+                </Grid.Row>
+
+                <Grid.Row>
+                    <Grid.Column>
+                        <PerformanceOfApp title={'PerformanceOfApp'}></PerformanceOfApp>
+                    </Grid.Column>
+                    <Grid.Column>
+                        <MemoryGraph title={'Memory'}></MemoryGraph>
+                    </Grid.Column>
+                    <Grid.Column>
+                        <MemoryChart title={'Memory'}></MemoryChart>
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column>
+                        <PerformanceOfAppTable title={'PerformanceOfAppTable'}></PerformanceOfAppTable>
+                    </Grid.Column>
+                </Grid.Row>
+
+            </Grid>
 
         );
     }
@@ -101,9 +142,11 @@ const mapStateToProps = (state) => {
         viewMode = state.changeViewMode.mode.viewMode;
         detailData = state.changeViewMode.mode.data;
     }
+    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         computeRefresh: (state.computeRefresh) ? state.computeRefresh : null,
         changeRegion: state.changeRegion.region ? state.changeRegion.region : null,
+        regionInfo: regionInfo,
         viewMode: viewMode, detailData: detailData,
         isLoading: state.LoadingReducer.isLoading,
     }
@@ -140,4 +183,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(SiteFourPageMonitoring)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageMonitoring));

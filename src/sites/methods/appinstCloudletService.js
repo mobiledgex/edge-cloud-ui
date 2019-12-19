@@ -1,51 +1,78 @@
 import * as reducer from '../../utils'
+import * as services from '../../services/service_compute_service';
 
 let rgn = [];
+let props = {};
+let loadCount = 0;
+let _AppInstDummy = [];
+let returnData = null;
+
+const gotoUrl = (site, subPath) => {
+    props.history.push({
+        pathname: site,
+        search: subPath
+    });
+    props.history.location.search = subPath;
+
+}
 const receiveResultApp = (result) => {
     if(result.error && result.error.indexOf('Expired') > -1) {
-        _self.props.handleAlertInfo('error', result.error);
-        setTimeout(() => _self.gotoUrl('/logout'), 4000);
-        _self.props.handleLoadingSpinner(false);
+        props.handleAlertInfo('error', result.error);
+        setTimeout(() => gotoUrl('/logout'), 4000);
+        props.handleLoadingSpinner(false);
         return;
     }
 
-    let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-    if(Object.keys(regionGroup)[0]) {
-        _self._AppInstDummy = _self._AppInstDummy.concat(result)
+    let cloudletGroup = (!result.error) ? reducer.groupBy(result, 'Cloudlet'):{};
+    if(Object.keys(cloudletGroup)[0]) {
+        _AppInstDummy = _AppInstDummy.concat(result)
     }
-    _self.loadCount ++;
-    if(rgn.length == _self.loadCount){
-        _self.countJoin()
+    loadCount ++;
+    if(rgn.length == loadCount){
+        countJoin(_AppInstDummy)
     }
-    _self.props.handleLoadingSpinner(false);
+    props.handleLoadingSpinner(false);
 
 }
-const countJoin = () => {
-    let AppInst = this._AppInstDummy;
-    _self.setState({devData:AppInst,dataSort:false})
-    this.props.handleLoadingSpinner(false);
-
+const countJoin = (_AppInstDummy) => {
+    let appInst = [];
+    console.log('20191219 _AppInstDummy == ', _AppInstDummy)
+    appInst = reducer.groupBy(_AppInstDummy, 'Cloudlet')
+    returnData(appInst)
+    props.handleLoadingSpinner(false);
+    // TODO :  결과값을 차트에 적용하기
 }
-export const setRegion =(rgn) => {
-    rgn = rgn;
+export const setProps =(_rgn, _props, _return) => {
+    rgn = _rgn;
+    props = _props;
+    returnData = _return;
 }
 export const getDataofAppinst = (region,regionArr) => {
-    this.props.handleLoadingSpinner(true);
+    props.handleLoadingSpinner(true);
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let serviceBody = {}
-    this.loadCount = 0;
-    this.setState({devData:[]})
-    this._AppInstDummy = []
+    loadCount = 0;
+    //setState({devData:[]})
+    _AppInstDummy = []
     if(region !== 'All'){
         rgn = [region]
     } else {
-        rgn = (regionArr)?regionArr:this.props.regionInfo.region;
+        rgn = (regionArr)?regionArr:props.regionInfo.region;
+
+    }
+
+    let _store={
+        "email": "mexadmin",
+        "password": "mexadmin123",
+        "userToken": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY3MzY0OTIsImlhdCI6MTU3NjY1MDA5MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.Cb4vFGypczftq4cJOamHi3kI810PNKsV6oWHD05eJAAUH0Wo5hCka0zzaR6N6jnprsArMUvGZCL9ezAHj0WJ-A"
     }
 
     if(localStorage.selectRole == 'AdminManager') {
         rgn.map((item) => {
             // All show appInst
-            services.getMCService('ShowAppInst',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultApp)
+
+            services.getMCService('ShowAppInst',{token:store ? store.userToken : 'null', region:item}, receiveResultApp)
+
         })
     } else {
         rgn.map((item) => {
@@ -63,7 +90,9 @@ export const getDataofAppinst = (region,regionArr) => {
                 }
             }
             // org별 show appInst
-            services.getMCService('ShowAppInsts',serviceBody, _self.receiveResultApp)
+
+            services.getMCService('ShowAppInsts',serviceBody, receiveResultApp)
+
         })
     }
 }
