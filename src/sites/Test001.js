@@ -40,16 +40,18 @@ export class Test001 extends React.Component<Props, State> {
         }).then((streamData) => {
             const reader = streamData.getReader();
             let read;
+
+            let index = 0;
             reader.read().then(read = (result) => {
                 if (result.done) {
                     this.setState({
                         loading: false,
                     })
-
                     return;
                 }
-                console.log("datasdflskdfskdf====>", result.value.data);
+                console.log(`data___${index}====>`, result.value.data);
                 reader.read().then(read);
+                index++;
 
             });
         });
