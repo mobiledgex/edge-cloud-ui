@@ -1,0 +1,46 @@
+{
+  "Region": "EU",
+  "OrganizationName": "MobiledgeX",
+  "AppName": "test111qq",
+  "Version": "1",
+  "Operator": "TDG",
+  "Cloudlet": "frankfurt-eu",
+  "ClusterInst": "qqqaaa",
+  "CloudletLocation": {
+    "latitude": 50.110924,
+    "longitude": 8.682127
+  },
+  "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
+  "Liveness": 1,
+  "Mapped_port": [
+    {
+      "proto": "TCP",
+      "internal_port": 1115,
+      "public_port": 1115
+    }
+  ],
+  "Flavor": "m4.medium",
+  "State": 5,
+  "Error": "-",
+  "Runtime": {
+    "container_ids": [
+      "test111qq"
+    ]
+  },
+  "Created": "seconds : 1576223754",
+  "Progress": "",
+  "Edit": [
+    "Region",
+    "DeveloperName",
+    "AppName",
+    "Version",
+    "Operator",
+    "Cloudlet",
+    "ClusterInst",
+    "CloudletLocation",
+    "State",
+    "Editable"
+  ],
+  "Status": {},
+  "Revision": 11
+}

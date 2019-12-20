@@ -74,7 +74,22 @@ export const renderLineChart2 = () => {
     )
 }
 
-export const renderBarGraph2_Google = () => {
+export const renderBarGraph_Google = (cpuUsageList) => {
+
+    //alert(JSON.stringify(cpuUsageList))
+
+    let colorList = ["color: red", "color: #76A7FA", "color: blue", "color: green", "color: yellow"];
+
+    let chartDataList=[];
+
+    chartDataList.push(["Element", "CPU USAGE", {role: "style"}])
+    for (let index in cpuUsageList) {
+        let barDataOne = [`cpu ${index}`, cpuUsageList[index], colorList[index]]
+        chartDataList.push(barDataOne);
+    }
+
+
+
 
     return (
         <Chart
@@ -82,14 +97,7 @@ export const renderBarGraph2_Google = () => {
             height={'250px'}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
-            data={[
-                ["Element", "CPU USAGE", {role: "style"}, {role: 'annotation'}],
-                ["cpu 1", 10, "color: red", '10'],
-                ["cpu 2", 14, "color: #76A7FA", '14'],
-                ["cpu 3", 56, "color: blue", '56'],
-                ["cpu 4", 99, "color: green", '99'],
-                ["cpu 5", 55, "color: yellow", '55'],
-            ]}
+            data={chartDataList}
             options={{
                 is3D: true,
                 title: '',
@@ -221,12 +229,11 @@ export const renderPlaceHolder = () => {
         <Placeholder style={{width: boxWidth, height: 250, backgroundColor: 'black'}}>
             <Placeholder.Image/>
             <FlexBox style={{justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}>
-                <CircularProgress style={{zIndex: 999999999, color:'#79BF14'}}/>
+                <CircularProgress style={{zIndex: 999999999, color: '#79BF14'}}/>
             </FlexBox>
         </Placeholder>
     )
 }
-
 
 
 export const renderLineGraph_Plot = () => {
@@ -333,9 +340,7 @@ export const renderLineGraph_Plot = () => {
  * @returns {Promise<[]>}
  */
 export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'US']) => {
-
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
     let finalizedAppInstanceList = [];
     for (let index = 0; index < paramRegionArrayList.length; index++) {
         let serviceBody = {
@@ -357,7 +362,7 @@ export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'U
         let ServerUrl = 'https://' + hostname + ':3030';
 
         //https://mc.mobiledgex.net:9900/api/v1/auth/ctrl/ShowAppInst
-        let responseResult = await axios.post(ServerUrl + '/' +resource, qs.stringify({
+        let responseResult = await axios.post(ServerUrl + '/' + resource, qs.stringify({
             service: resource,
             serviceBody: serviceBody,
             serviceId: Math.round(Math.random() * 10000)
@@ -374,7 +379,52 @@ export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'U
     }
 
     console.log('mergedAppInstanceList===>', finalizedAppInstanceList);
-
     return finalizedAppInstanceList;
+}
+
+export const getCpuMetricData = async () => {
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+
+    let responseRslt = await axios({
+        url: '/api/v1/auth/metrics/app',
+        method: 'post',
+        data: {
+            "region": "EU",
+            "appinst": {
+                "app_key": {
+                    "developer_key": {
+                        "name": "MobiledgeX"
+                    },
+                    "name": "zzaaa",
+                    "version": "1"
+                },
+                "cluster_inst_key": {
+                    "cluster_key": {
+                        "name": "qqqaaa"
+                    },
+                    "cloudlet_key": {
+                        "name": "frankfurt-eu",
+                        "operator_key": {
+                            "name": "TDG"
+                        }
+                    }
+                }
+            },
+            "selector": "cpu",
+            "last": 5
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + store.userToken
+
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        alert(e)
+    })
+
+    return responseRslt;
 
 }

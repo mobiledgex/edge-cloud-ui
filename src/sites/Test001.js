@@ -17,15 +17,11 @@ export class Test001 extends React.Component<Props, State> {
     }
 
     async componentDidMount(): void {
-
-        //this.getStream();
-
-        this.requestStreamEndPoint();
+        this.getStream();
     }
 
 
     async requestStreamEndPoint() {
-
         this.setState({
             loading: true,
 
@@ -64,26 +60,45 @@ export class Test001 extends React.Component<Props, State> {
         await this.setState({
             loading: true,
         })
-        Axios.request({
-            method: 'post',
-            url: '/api/v1/auth/ctrl/ShowAppInst',
-            responseType: 'stream',
-            headers: {
+
+        let url = 'http://35.221.245.158:8080/TickTock?time=5';
+
+
+        this.setState({
+            loading: true,
+        })
+        fetch(url, {
+            method: 'GET',
+           /* headers: {
                 'Content-Type': 'application/json',
-                'Authorization': "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY4MDk5MzIsImlhdCI6MTU3NjcyMzUzMiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.JPKz83yI45GdSIacNanYyX_7zmmE7HvaQvISTLVpWr-IofHwGY8tTQGChyizMpaMcOtKWg2J989p16Rm_2Mr1w",
-            },
-            data: {
+                //'Authorization': "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY4MDk5MzIsImlhdCI6MTU3NjcyMzUzMiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.JPKz83yI45GdSIacNanYyX_7zmmE7HvaQvISTLVpWr-IofHwGY8tTQGChyizMpaMcOtKWg2J989p16Rm_2Mr1w",
+            },*/
+           /* body: JSON.stringify({
                 "region": 'US',
-            }
-        }).subscribe(
-            response => console.log(response),
-            error => console.log(error),
-            async () => {
-                this.setState({
-                    loading: false,
-                })
-            }
-        );
+            })*/
+        }).then((response) => {
+            return ndjsonStream(response.body); //ndjsonStream parses the response.body
+
+        }).then((streamData) => {
+            const reader = streamData.getReader();
+            let read;
+
+            let index = 0;
+            reader.read().then(read = (result) => {
+                if (result.done) {
+                    this.setState({
+                        loading: false,
+                    })
+                    return;
+                }
+                console.log(`data___${index}====>`, result.value.data);
+                reader.read().then(read);
+                index++;
+
+            });
+        });
+
+
     }
 
     /*requesetExample000001() {

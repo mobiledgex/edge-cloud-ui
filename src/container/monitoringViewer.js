@@ -292,6 +292,8 @@ export default class MonitoringViewer extends React.Component {
 
         }
         if(data.length){
+
+
             data.map((val) => {
                 if(val.values['cmsn']['vCpuUsed']) {
                     this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt] = parseFloat(val.values['cmsn']['vCpuUsed']).toFixed(2);

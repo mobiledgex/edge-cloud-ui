@@ -56,6 +56,7 @@ import '../css/introjs.css';
 import '../css/introjs-dark.css';
 import PageMonitoring from "./PageMonitoring";
 import SiteFourPageMonitoring from "./siteFour_page_monitoring";
+import PageMonitoring2 from "./PageMonitoring2";
 
 let devOptions = [{key: 'af', value: 'af', text: 'SK Telecom'}]
 const locationOptions = [
@@ -166,6 +167,7 @@ class SiteFour extends React.Component {
             {label:'App Instances', icon:'storage', pg:6},
             {label:'Audit Log', icon:'check', pg:'audits'},
             {label: 'Monitoring', icon: 'tv', pg: 'Monitoring'},
+            {label: 'Monitoring2', icon: 'tv', pg: 'Monitoring2'},//@fixme : for test
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
@@ -1241,7 +1243,9 @@ class SiteFour extends React.Component {
                     {/*모니터링 페이지인 경우...*/}
                     {this.state.page === 'pg=Monitoring' ?
                         <PageMonitoring/> :
-                        this.renderSiteBody(viewMode)
+                        (this.state.page === 'pg=Monitoring2') ?
+                            <PageMonitoring2></PageMonitoring2> :
+                            this.renderSiteBody(viewMode)
 
                     }
                 </Container>

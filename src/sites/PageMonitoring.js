@@ -12,8 +12,8 @@ import {DatePicker} from 'antd';
 import {formatDate, getTodayDate} from "../utils";
 import './PageMonitoring.css';
 import {
-    fetchAppInstanceList,
-    renderBarGraph2_Google,
+    fetchAppInstanceList, getCpuMetricData,
+    renderBarGraph_Google,
     renderLineGraph_Plot,
     renderPieChart2_Google, renderPlaceHolder
 } from "../services/PageMonitoringService";
@@ -88,7 +88,7 @@ type State = {
     time: string,
     dateTime: string,
     datesRange: string,
-    appInstanceListSortByCloudlet: any,
+    appInstanceListGroupByCloudlet: any,
     loading: boolean,
     loading0: boolean,
     cloudletList: any,
@@ -96,6 +96,8 @@ type State = {
     startDate: string,
     endDate: string,
     clusterList: any,
+    cpuUsageList: any,
+    cpuUsageList2: any,
 
 }
 
@@ -108,7 +110,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             time: '',
             dateTime: '',
             datesRange: '',
-            appInstanceListSortByCloudlet: [],
+            appInstanceListGroupByCloudlet: [],
             loading: false,
             loading0: false,
             cloudletList: [],
@@ -116,6 +118,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             startDate: '',
             endDate: '',
             clusterList: [],
+            cpuUsageList: [],
+            cpuUsageList2: [100, 50, 30, 20, 10]
         };
 
         constructor(props) {
@@ -142,26 +146,39 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 endDate: getTodayDate(),
             })
 
+            let cpuMetricData = await getCpuMetricData();
+
+            console.log('cpuMetricData====>', cpuMetricData.data[0].Series[0].values);
+
+            let tempList = cpuMetricData.data[0].Series[0].values;
+
+            let cpuUsageList = []
+            for (let i in tempList) {
+                let cpuUsageOne = tempList[i]["4"];
+                cpuUsageList.push(cpuUsageOne);
+            }
+
+            console.log('cpuUsageList====>', cpuUsageList);
+
+
             let appInstanceList = await fetchAppInstanceList();
-            let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
-            let cloudletList = this.makeSelectBoxList(appInstanceListSortByCloudlet, "Cloudlet")
+            let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
             let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
-
-            console.log('clusterList====>' , clusterList);
-
-
             await this.setState({
-                appInstanceListSortByCloudlet,
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 cloudletList: cloudletList,
                 clusterList: clusterList,
+                cpuUsageList: cpuUsageList,
+
+            }, () => {
+                console.log('cpuUsageList====>', this.state.cpuUsageList);
             })
 
             console.log('clusterList====>', clusterList);
 
-            this.setState({
-
-            }, () => {
+            this.setState({}, () => {
                 setTimeout(() => {
                     this.setState({
                         loading: false,
@@ -227,9 +244,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListSortByCloudlet: [],
             })
             let appInstanceList = await fetchAppInstanceList(arrayRegions);
-            let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+
+            //console.log('appInstanceListGroupByCloudlet====>' , appInstanceListGroupByCloudlet)
+
+            console.log('appInstanceListGroupByCloudlet====>', appInstanceListGroupByCloudlet);
+
             await this.setState({
-                appInstanceListSortByCloudlet,
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
             })
         }
@@ -243,7 +265,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             ]
 
-            let dropDownWidth=250;
+            let dropDownWidth = 250;
 
             return (
 
@@ -283,7 +305,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         selection
                                         options={options1}
                                         defaultValue={options1[0].value}
-                                        style={{width: dropDownWidth-50}}
+                                        style={{width: dropDownWidth - 50}}
                                         onChange={async (e, {value}) => {
                                             this.handleRegionChanges(value)
                                         }}
@@ -350,7 +372,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     style={{cursor: 'pointer'}}
 
                                 />
-                             {/*   <FlexBox>
+                                {/*   <FlexBox>
                                     {this.state.startDate}
                                 </FlexBox>*/}
 
@@ -362,16 +384,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderGrid = (appInstanceListSortByCloudlet: any) => {
+        renderGrid = (appInstanceListGroupByCloudlet: any) => {
             let boxWidth = window.innerWidth / 10 * 2.55;
 
             let cloudletCountList = []
-            for (let i in appInstanceListSortByCloudlet) {
-                console.log('renderGrid===title>', appInstanceListSortByCloudlet[i][0].Cloudlet);
-                console.log('renderGrid===length>', appInstanceListSortByCloudlet[i].length);
+            for (let i in appInstanceListGroupByCloudlet) {
+                console.log('renderGrid===title>', appInstanceListGroupByCloudlet[i][0].Cloudlet);
+                console.log('renderGrid===length>', appInstanceListGroupByCloudlet[i].length);
                 cloudletCountList.push({
-                    name: appInstanceListSortByCloudlet[i][0].Cloudlet,
-                    length: appInstanceListSortByCloudlet[i].length,
+                    name: appInstanceListGroupByCloudlet[i][0].Cloudlet,
+                    length: appInstanceListGroupByCloudlet[i].length,
                 })
             }
 
@@ -404,11 +426,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                 }}>
                                     <FlexBox style={{
-                                        fontSize: 15,
+                                        fontSize:
+                                            12,
                                         color: '#fff',
                                         marginTop: 10,
                                     }}>
-                                        {item.name.toString().substring(0, 17) + "..."}
+                                        {item.name.toString()}
                                     </FlexBox>
                                     <FlexBox style={{
                                         marginTop: 0,
@@ -490,12 +513,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             <FlexBox style={Styles.box002}>
                                                 Status Of Launch
                                             </FlexBox>
-                                            <FlexBox style={{flex: 30}}>
-                                                {/*alksdaskdlaksdlka*/}
+                                            <FlexBox style={{flex: 70, color: 'white'}}>
+                                                (By Region, Cloudlet List)(각 클라우드렛에 앱이 설치된 갯수)
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
-                                            {this.state.loading0 ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListSortByCloudlet)}
+                                            {this.state.loading0 ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListGroupByCloudlet)}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -517,7 +540,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
-                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
+                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google(this.state.cpuUsageList)}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -592,7 +615,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0}}>
-                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
+                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google(this.state.cpuUsageList2)}
                                         </FlexBox>
 
                                     </FlexBox>
