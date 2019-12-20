@@ -156,11 +156,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //todo:앱인스턴스 리스트로 Mem,CPU chartData를 가지고 온다.
             //todo:Bring Mem and CPU chart Data with  App Instance List.
-            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM)])
-            let cpuUsageList = cpuOrMemUsageList[0]
+            //let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM)])
+            /*let cpuUsageList = cpuOrMemUsageList[0]
             let memUsageList = cpuOrMemUsageList[1]
-
             console.log('_result===>', cpuOrMemUsageList);
+            */
+
+
+
+            //todo: local json for Test
+            let cpuUsageList = require('../TEMP_KYUNGJOOON/cpuUsage')
+            let memUsageList = require('../TEMP_KYUNGJOOON/memUsage')
 
 
             console.log('memUsageList===>', memUsageList);
@@ -361,7 +367,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderGrid = (appInstanceListSortByCloudlet: any) => {
+        renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any) => {
             // let boxWidth = window.innerWidth / 10 * 2.55;
 
             let cloudletCountList = []
@@ -398,7 +404,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         color: '#fff',
                                         marginTop: 10,
                                     }}>
-                                        {item.name.toString().substring(0, 17) + "..."}
+                                        {item.name.toString().substring(0, 19) + "..."}
                                     </FlexBox>
                                     <FlexBox style={{
                                         marginTop: 0,
@@ -492,18 +498,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <Grid.Row className='view_contents'>
                     <Grid.Column className='contents_body'>
                         {/*#######################*/}
-                        {/*컨텐츠 해더 부분        ..*/}
+                        {/*todo : Content Header part*/}
                         {/*#######################*/}
                         {this.renderHeader()}
-                        {/*#######################*/}
-                        {/*@todo 컨텐츠 BODY 부분...*/}
-                        {/*#######################*/}
 
+
+                        {/*##########################*/}
+                        {/*todo :  Content body part */}
+                        {/*##########################*/}
                         <Grid.Row className='site_content_body'>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
-
 
                                     <div className="page_monitoring">
                                         {this.renderSelectBox()}
@@ -520,7 +526,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading0 ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListGroupByCloudlet)}
+                                                        {this.state.loading0 ? renderPlaceHolder() : this.renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet)}
                                                     </div>
                                                 </div>
                                                 {/* ___col___2*/}
