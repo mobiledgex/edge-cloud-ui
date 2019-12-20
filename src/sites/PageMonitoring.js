@@ -222,79 +222,80 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
 
-
-                <div className='page_monitoring_select_area'>
-                    <label className='page_monitoring_select_reset'
-                           onClick={() => {
-                               alert('Reset All')
-                           }}>Reset All</label>
-                    <Dropdown
-                        placeholder='REGION'
-                        selection
-                        options={options1}
-                        defaultValue={options1[0].value}
-                        onChange={async (e, {value}) => {
-                            this.handleRegionChanges(value)
-                        }}
-                    />
-                    <Dropdown
-                        placeholder='CloudLet'
-                        selection
-                        options={
-                            [
-                                {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                            ]
-
-                        }
-                    />
-                    <Dropdown
-                        placeholder='Cluster'
-                        selection
-                        options={
-                            [
-                                {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                            ]
-
-                        }
-                    />
-                    <div style={{display:'flex', flexDirection:'row'}}>
-                        <DatePicker
-                            onChange={(date) => {
-                                let __date = formatDate(date);
-                                this.setState({
-                                    date: __date,
-                                })
+                <div className='page_monitoring_select_row'>
+                    <div className='page_monitoring_select_area'>
+                        <label className='page_monitoring_select_reset'
+                               onClick={() => {
+                                   alert('Reset All')
+                               }}>Reset All</label>
+                        <Dropdown
+                            placeholder='REGION'
+                            selection
+                            options={options1}
+                            defaultValue={options1[0].value}
+                            onChange={async (e, {value}) => {
+                                this.handleRegionChanges(value)
                             }}
-                            placeholder="Start Date"
-                            style={{cursor: 'pointer'}}
-
                         />
-                        <div style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
-                            -
+                        <Dropdown
+                            placeholder='CloudLet'
+                            selection
+                            options={
+                                [
+                                    {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                    {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                    {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                    {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                    {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+                                ]
+
+                            }
+                        />
+                        <Dropdown
+                            placeholder='Cluster'
+                            selection
+                            options={
+                                [
+                                    {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                    {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                    {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                    {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                    {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+                                ]
+
+                            }
+                        />
+                        <div className='page_monitoring_datepicker_area'>
+                            <DatePicker
+                                onChange={(date) => {
+                                    let __date = formatDate(date);
+                                    this.setState({
+                                        date: __date,
+                                    })
+                                }}
+                                placeholder="Start Date"
+                                style={{cursor: 'pointer'}}
+
+                            />
+                            <div style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
+                                -
+                            </div>
+                            <DatePicker
+                                onChange={(date) => {
+                                    let __date = formatDate(date);
+                                    this.setState({
+                                        date: __date,
+                                    })
+                                }}
+                                placeholder="End Date"
+                                style={{cursor: 'pointer'}}
+
+                            />
                         </div>
-                        <DatePicker
-                            onChange={(date) => {
-                                let __date = formatDate(date);
-                                this.setState({
-                                    date: __date,
-                                })
-                            }}
-                            placeholder="End Date"
-                            style={{cursor: 'pointer'}}
 
-                        />
                     </div>
-
                 </div>
 
             )
@@ -426,138 +427,129 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <div className="page_monitoring">
                                         {this.renderSelectBox()}
                                         <div className='page_monitoring_dashboard'>
-                                                {/*_____row____1111*/}
-                                                <div className='page_monitoring_row'>
-                                                    {/* ___col___1*/}
-                                                    {/* ___col___1*/}
-                                                    {/* ___col___1*/}
-                                                    <div className='page_monitoring_column'>
-                                                        <div className='page_monitoring_title_area'>
-                                                            <div className='page_monitoring_title'>
-                                                                Status Of Launch
-                                                            </div>
+                                            {/*_____row____1111*/}
+                                            <div className='page_monitoring_row'>
+                                                {/* ___col___1*/}
+                                                {/* ___col___1*/}
+                                                {/* ___col___1*/}
+                                                <div className='page_monitoring_column'>
+                                                    <div className='page_monitoring_title_area'>
+                                                        <div className='page_monitoring_title'>
+                                                            Status Of Launch
                                                         </div>
-                                                        <div style={{marginTop: 0, backgroundColor: 'red'}}>
-                                                            {this.state.loading0 ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListSortByCloudlet)}
-                                                        </div>
-
                                                     </div>
-                                                    {/* ___col___2*/}
-                                                    {/* ___col___2*/}
-                                                    {/* ___col___2*/}
-                                                    <div className='page_monitoring_column'>
-                                                        <div className='page_monitoring_title_area'>
-                                                            <div className='page_monitoring_title'>
-                                                                Top 5 of CPU Usage
-                                                            </div>
-                                                            <div>
-                                                                <Dropdown
-                                                                    placeholder='Cluster'
-                                                                    selection
-                                                                    options={
-                                                                        [
-                                                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                                                        ]
-
-                                                                    }
-                                                                    style={{width: 200}}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div style={{marginTop: 0, backgroundColor: 'red'}}>
-                                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
-                                                        </div>
-
-                                                    </div>
-                                                    {/* ___col___3*/}
-                                                    {/* ___col___3*/}
-                                                    {/* ___col___3*/}
-                                                    <div className='page_monitoring_column'>
-                                                        <div className='page_monitoring_title_area'>
-                                                            <div className='page_monitoring_title'>
-                                                                Transition Of CPU
-                                                            </div>
-                                                        </div>
-                                                        <div style={{marginTop: 0}}>
-                                                            {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
-                                                        </div>
-
+                                                    <div className='page_monitoring_container'>
+                                                        {this.state.loading0 ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListSortByCloudlet)}
                                                     </div>
                                                 </div>
-
-                                                {/*row_____22222222*/}
-                                                {/*row_____22222222*/}
-                                                {/*row_____22222222*/}
-                                                <div className='page_monitoring_row'>
-
-                                                    {/* ___col___4*/}
-                                                    {/* ___col___4*/}
-                                                    {/* ___col___4*/}
-                                                    <div className='page_monitoring_column'>
-                                                        <div className='page_monitoring_title_area'>
-                                                            <div className='page_monitoring_title'>
-                                                                Perfomance Of Apps
-                                                            </div>
+                                                {/* ___col___2*/}
+                                                {/* ___col___2*/}
+                                                {/* ___col___2*/}
+                                                <div className='page_monitoring_column'>
+                                                    <div className='page_monitoring_title_area'>
+                                                        <div className='page_monitoring_title'>
+                                                            Top 5 of CPU Usage
                                                         </div>
-
-                                                        <div style={{marginTop: 10}}>
-                                                            {this.state.loading ? renderPlaceHolder() : renderPieChart2_Google()}
+                                                        <div className='page_monitoring_column_select'>
+                                                            <Dropdown
+                                                                placeholder='Cluster'
+                                                                selection
+                                                                options={
+                                                                    [
+                                                                        {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                                                        {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                                                        {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                                                        {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                                                        {key: '1', value: '1', flag: '1', text: 'Last hour'},
+                                                                    ]
+                                                                }
+                                                            />
                                                         </div>
-
-
                                                     </div>
-                                                    {/* ___col___5*/}
-                                                    {/* ___col___5*/}
-                                                    {/* ___col___5*/}
-                                                    <div className='page_monitoring_column'>
-                                                        <div className='page_monitoring_title_area'>
-                                                            <div className='page_monitoring_title'>
-                                                                State of MEM Usage
-                                                            </div>
-                                                            <div>
-                                                                <Dropdown
-                                                                    placeholder='Cluster'
-                                                                    selection
-                                                                    options={
-                                                                        [
-                                                                            {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                                                            {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                                                            {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                                                            {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                                                            {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                                                        ]
-
-                                                                    }
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <FlexBox style={{marginTop: 0}}>
-                                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
-                                                        </FlexBox>
-
-                                                    </div>
-                                                    {/* ___col___6*/}
-                                                    {/* ___col___6*/}
-                                                    {/* ___col___6*/}
-                                                    <div className='page_monitoring_column'>
-                                                        <div className='page_monitoring_title_area'>
-                                                            <div className='page_monitoring_title'>
-                                                                Transition Of Mem
-                                                            </div>
-                                                        </div>
-                                                        <div style={{marginTop: 0}}>
-                                                            {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
-                                                        </div>
-
+                                                    <div className='page_monitoring_container'>
+                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
                                                     </div>
                                                 </div>
+                                                {/* ___col___3*/}
+                                                {/* ___col___3*/}
+                                                {/* ___col___3*/}
+                                                <div className='page_monitoring_column'>
+                                                    <div className='page_monitoring_title_area'>
+                                                        <div className='page_monitoring_title'>
+                                                            Transition Of CPU
+                                                        </div>
+                                                    </div>
+                                                    <div className='page_monitoring_container'>
+                                                        {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
+                                                    </div>
+                                                </div>
+                                            </div>
 
+                                            {/*row_____22222222*/}
+                                            {/*row_____22222222*/}
+                                            {/*row_____22222222*/}
+                                            <div className='page_monitoring_row'>
+
+                                                {/* ___col___4*/}
+                                                {/* ___col___4*/}
+                                                {/* ___col___4*/}
+                                                <div className='page_monitoring_column'>
+                                                    <div className='page_monitoring_title_area'>
+                                                        <div className='page_monitoring_title'>
+                                                            Perfomance Of Apps
+                                                        </div>
+                                                    </div>
+
+                                                    <div className='page_monitoring_container'>
+                                                        {this.state.loading ? renderPlaceHolder() : renderPieChart2_Google()}
+                                                    </div>
+
+                                                </div>
+                                                {/* ___col___5*/}
+                                                {/* ___col___5*/}
+                                                {/* ___col___5*/}
+                                                <div className='page_monitoring_column'>
+                                                    <div className='page_monitoring_title_area'>
+                                                        <div className='page_monitoring_title'>
+                                                            State of MEM Usage
+                                                        </div>
+                                                        <div className='page_monitoring_column_select'>
+                                                            <Dropdown
+                                                                placeholder='Cluster'
+                                                                selection
+                                                                options={
+                                                                    [
+                                                                        {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+                                                                        {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+                                                                        {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+                                                                        {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+                                                                        {key: '1', value: '1', flag: '1', text: 'Last hour'},
+
+                                                                    ]
+
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className='page_monitoring_container'>
+                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
+                                                    </div>
+
+                                                </div>
+                                                {/* ___col___6*/}
+                                                {/* ___col___6*/}
+                                                {/* ___col___6*/}
+                                                <div className='page_monitoring_column'>
+                                                    <div className='page_monitoring_title_area'>
+                                                        <div className='page_monitoring_title'>
+                                                            Transition Of Mem
+                                                        </div>
+                                                    </div>
+                                                    <div className='page_monitoring_container'>
+                                                        {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -575,24 +567,3 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
     }
 ))));
-
-
-const Styles = {
-    box001: {
-        flexDirection: 'column',
-        alignSelf: 'center',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 25,
-        //backgroundColor: 'blue',
-        backgroundColor: 'transparent',
-        marginTop: -50
-    },
-    box002: {
-        fontSize: 22,
-        marginLeft: 10,
-        flex: 70,
-        justifyContent: 'flex-start',
-        color: 'white'
-    }
-}
