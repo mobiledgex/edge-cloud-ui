@@ -152,7 +152,8 @@ export const makeFormForAppInstance = (instanceDataOne, valid = "cpu", token) =>
                     }
                 },
                 "selector": valid,
-                "last": 100
+                //"last": 25
+                "last": 10,
             }
         }
     )

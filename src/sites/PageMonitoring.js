@@ -147,27 +147,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 endDate: getTodayDate(),
             })
 
-
-            //let appInstanceHealth = await getAppInstanceHealth();
-
-            // console.log('appInstanceHealth====>',appInstanceHealth);
-
-
-            let cpuMetricData = await getCpuMetricData();
-
-            console.log('cpuMetricData====>', cpuMetricData.data[0].Series[0].values);
-
-            let tempList = cpuMetricData.data[0].Series[0].values;
-
-            let cpuUsageList = []
-            for (let i in tempList) {
-                let cpuUsageOne = tempList[i]["4"];
-                cpuUsageList.push(cpuUsageOne);
-            }
-
-            console.log('cpuUsageList====>', cpuUsageList);
-
-
             let appInstanceList = await fetchAppInstanceList();
 
             console.log('appInstanceList====>', appInstanceList);
@@ -184,12 +163,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 let appInstanceHealth = await getAppInstanceHealth(instanceInfoOneForm);
 
-                console.log('appInstanceHealth====>', appInstanceHealth)
+                console.log(`appInstanceHealth====>${index}`, appInstanceHealth)
 
                 mergedAppInstanceHealthList.push(appInstanceList)
             }
 
-            console.log('mergedAppInstanceHealthList====>',mergedAppInstanceHealthList);
+            console.log('mergedAppInstanceHealthList====>', mergedAppInstanceHealthList);
 
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
@@ -200,10 +179,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 cloudletList: cloudletList,
                 clusterList: clusterList,
-                cpuUsageList: cpuUsageList,
 
             }, () => {
-                console.log('cpuUsageList====>', this.state.cpuUsageList);
             })
 
             console.log('clusterList====>', clusterList);
