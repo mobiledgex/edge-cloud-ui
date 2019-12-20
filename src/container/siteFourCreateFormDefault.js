@@ -4,11 +4,12 @@ import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup
 
 import { Field, reduxForm, initialize, reset, change, stopSubmit } from "redux-form";
 import MaterialIcon from "material-icons-react";
-
+import { Transfer } from 'antd';
 import * as services from '../services/service_compute_service';
 import './styles.css';
 import Duallist from 'react-duallist';
 import './react_dualist.css'
+import "antd/dist/antd.css";
 
 const makeOption =(options)=> {
 
@@ -150,7 +151,17 @@ const renderDualListInput = ({ input, placeholder, change, type, error, initialV
     </div>
 
 );
-
+const renderDualListBox = (self) => (
+    <Transfer
+        dataSource={self.state.mockData}
+        showSearch
+        filterOption={self.filterOption}
+        targetKeys={self.state.targetKeys}
+        onChange={self.handleChange}
+        onSearch={self.handleSearch}
+        render={item => item.title}
+    />
+)
 
 
 const style = {
@@ -185,6 +196,8 @@ class SiteFourCreateFormDefault extends React.Component {
                 {label: 'Georgia', value: 'GA'},
             ],
             selected: ['AL', 'CA'],
+            mockData: [],
+            targetKeys: [],
         };
 
     }
@@ -211,6 +224,39 @@ class SiteFourCreateFormDefault extends React.Component {
     onChange = (selectedValues) => {
         alert(selectedValues)
     }
+    /**
+     * code by @inki 20191220
+     * add dual list box use ANT
+     * **/
+    getMock = () => {
+        const targetKeys = [];
+        const mockData = [];
+        for (let i = 0; i < 20; i++) {
+            const data = {
+                key: i.toString(),
+                title: `content${i + 1}`,
+                description: `description of content${i + 1}`,
+                chosen: Math.random() * 2 > 1,
+            };
+            if (data.chosen) {
+                targetKeys.push(data.key);
+            }
+            mockData.push(data);
+        }
+        this.setState({ mockData, targetKeys });
+    };
+
+    filterOption = (inputValue, option) => option.description.indexOf(inputValue) > -1;
+
+    handleChange = targetKeys => {
+        this.setState({ targetKeys });
+    };
+
+    handleSearch = (dir, value) => {
+        console.log('search:', dir, value);
+    };
+
+    /** end ANT **/
 
     componentDidMount() {
         if(this.props.data && this.props.data.data.length){
@@ -225,6 +271,9 @@ class SiteFourCreateFormDefault extends React.Component {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, this.receiveResult)
         }
+
+        // test for ANT : should remove...
+        this.getMock();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -425,16 +474,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             (fieldKeys[pId][key]['type'] === 'RenderDualListBox') ?
                                                             <Grid>
                                                                 <Grid.Row className={'renderDualListBox'} style={{height:500}}>
-                                                                    <Duallist
-                                                                        available={available}
-                                                                        selected={selected}
-                                                                        sortable={false}
-                                                                        onMove={this.onMove}
-                                                                        moveLeftIcon={<Icon name='angle left'/>}
-                                                                        moveAllLeftIcon={<Icon name='angle double left'/>}
-                                                                        moveRightIcon={<Icon name='angle right'/>}
-                                                                        moveAllRightIcon={<Icon name='angle double right'/>}
-                                                                    />
+                                                                    {renderDualListBox(this)}
                                                                 </Grid.Row>
                                                             </Grid>
                                                             :
