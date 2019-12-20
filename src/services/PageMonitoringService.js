@@ -442,6 +442,7 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
 
         let fetchingDataNo = 5;
 
+        //todo: 레퀘스트를 요청할 데이터 FORM형식을 만들어 준다.
         let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], paramCpuOrMem, store.userToken, fetchingDataNo)
 
         //console.log('formOne====>', instanceInfoOneForm);
@@ -461,29 +462,37 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
     let newCpuOrMemUsageListPerOneInstance = [];
     //for (let i in cpuUsageListPerOneInstance) {
 
-    for (let i = 0; i < cpuUsageListPerOneInstance.length; i++) {
-        if (cpuUsageListPerOneInstance[i].appInstanceHealth.data[0].Series != null) {
+    for (let index = 0; index < cpuUsageListPerOneInstance.length; index++) {
+        if (cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series != null) {
             //console.log('itemeLength===>', cpuUsageListPerOneInstance[i].appInstanceHealth.data[0].Series[0].values);
 
-            let columns = cpuUsageListPerOneInstance[i].appInstanceHealth.data[0].Series[0].columns;
-            let values = cpuUsageListPerOneInstance[i].appInstanceHealth.data[0].Series[0].values;
+            let columns = cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].columns;
+            let values = cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].values;
 
 
             let sumCpuUsage = 0;
             let sumMemUsage = 0;
-            for (let i = 0; i < values.length; i++) {
+            for (let jIndex = 0; jIndex < values.length; jIndex++) {
                 //console.log('itemeLength===>',  values[i][4]);
 
                 if (paramCpuOrMem === 'cpu') {
-                    sumCpuUsage = sumCpuUsage + values[i][4];
+                    sumCpuUsage = sumCpuUsage + values[jIndex][4];
                 } else {
-                    sumMemUsage = sumCpuUsage + values[i][5];
+                    sumMemUsage = sumCpuUsage + values[jIndex][5];
                 }
 
             }
 
+            //todo: CPU/MEM 사용량 평균값을 계산한다.....
+            sumCpuUsage = sumCpuUsage / cpuUsageListPerOneInstance.length;
+            sumMemUsage = Math.ceil(sumMemUsage / cpuUsageListPerOneInstance.length);
+
+
+
+            console.log('sumMemUsage===>',  sumMemUsage);
+
             newCpuOrMemUsageListPerOneInstance.push({
-                instance: cpuUsageListPerOneInstance[i].instanceData,
+                instance: cpuUsageListPerOneInstance[index].instanceData,
                 columns: columns,
                 values: values,
                 sumCpuUsage: sumCpuUsage,
@@ -491,7 +500,7 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
             });
         } else {
             newCpuOrMemUsageListPerOneInstance.push({
-                instance: cpuUsageListPerOneInstance[i].instanceData,
+                instance: cpuUsageListPerOneInstance[index].instanceData,
                 columns: '',
                 values: '',
                 sumCpuUsage: 0,

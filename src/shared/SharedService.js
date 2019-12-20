@@ -85,34 +85,36 @@ export const makeFormApp = (inst, valid, store) => (
 
 export const getAppInstanceHealth = async (pInstanceOneInfo: string = "") => {
 
-    /* let serviceBody_appInstInfo = {
-         "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY5MTYwODMsImlhdCI6MTU3NjgyOTY4MywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.p3B_KtgZQsNWN8wKzuX2A1l6-xCqyiaFuPmnJFxm0hAKTBzcxx45kjvMLtGlyTKvzXT2u-ZlMEFo6u4CBzpCmQ",
-         "params": {
-             "region": "EU",
-             "appinst": {
-                 "app_key": {
-                     "developer_key": {
-                         "name": "MobiledgeX"
-                     },
-                     "name": "bictestapp1112-01",
-                     "version": "1.0"
-                 },
-                 "cluster_inst_key": {
-                     "cluster_key": {
-                         "name": "qqqaaa"
-                     },
-                     "cloudlet_key": {
-                         "name": "frankfurt-eu",
-                         "operator_key": {
-                             "name": "TDG"
-                         }
-                     }
-                 }
-             },
-             "selector": "cpu",
-             "last": 1200
-         }
-     }*/
+    /*todo:request body example
+     let serviceBody_appInstInfo = {
+           "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY5MTYwODMsImlhdCI6MTU3NjgyOTY4MywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.p3B_KtgZQsNWN8wKzuX2A1l6-xCqyiaFuPmnJFxm0hAKTBzcxx45kjvMLtGlyTKvzXT2u-ZlMEFo6u4CBzpCmQ",
+           "params": {
+               "region": "EU",
+               "appinst": {
+                   "app_key": {
+                       "developer_key": {
+                           "name": "MobiledgeX"
+                       },
+                       "name": "bictestapp1112-01",
+                       "version": "1.0"
+                   },
+                   "cluster_inst_key": {
+                       "cluster_key": {
+                           "name": "qqqaaa"
+                       },
+                       "cloudlet_key": {
+                           "name": "frankfurt-eu",
+                           "operator_key": {
+                               "name": "TDG"
+                           }
+                       }
+                   }
+               },
+               "selector": "cpu",
+               "last": 1200
+           }
+       }
+    */
 
 
     let serverUri = 'https://' + window.location.hostname + ':3030';
@@ -128,9 +130,11 @@ export const getAppInstanceHealth = async (pInstanceOneInfo: string = "") => {
     }).catch(e => {
         alert(e)
     })
+
+
 }
 
-export const makeFormForAppInstance = (instanceDataOne, valid = "cpu", token, fetchingDataNo=20) => {
+export const makeFormForAppInstance = (instanceDataOne, valid = "cpu", token, fetchingDataNo = 20) => {
 
     return (
         {
