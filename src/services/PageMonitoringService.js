@@ -86,8 +86,6 @@ export const renderBarGraph_Google = (usageList: any, hardwareType: string = 'cp
     chartDataList.push(["Element", "CPU USAGE", {role: "style"}])
     //for (let index in cpuUsageList) {
     for (let index = 0; index < 5; index++) {
-
-
         let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...", hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, colorList[index]]
         chartDataList.push(barDataOne);
     }
@@ -435,14 +433,16 @@ export const getCpuMetricData = async () => {
  * @param appInstanceList
  * @returns {Promise<Array>}
  */
-export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = "cpu") => {
+export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = HARDWARE_TYPE.CPU) => {
 
     let cpuUsageListPerOneInstance = []
     for (let index = 0; index < appInstanceList.length; index++) {
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
 
-        let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], paramCpuOrMem, store.userToken)
+        let fetchingDataNo = 5;
+
+        let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], paramCpuOrMem, store.userToken, fetchingDataNo)
 
         //console.log('formOne====>', instanceInfoOneForm);
         //console.log('appInstanceList===>', appInstanceList[index]);

@@ -141,14 +141,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return newArrList;
         }
 
-        isEmpty(value) {
-            if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
-                return true
-            } else {
-                return false
-            }
-        };
-
 
         componentDidMount = async () => {
             this.setState({
@@ -162,10 +154,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             console.log('appInstanceList====>', appInstanceList);
 
-
-            /*let cpuUsageList = await makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU)
-            let memUsageList = await makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM)*/
-
+            //todo:앱인스턴스 리스트로 Mem,CPU chartData를 가지고 온다.
+            //todo:Bring Mem and CPU chart Data with  App Instance List.
             let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM)])
             let cpuUsageList = cpuOrMemUsageList[0]
             let memUsageList = cpuOrMemUsageList[1]
@@ -185,9 +175,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clusterList: clusterList,
                 cpuUsageList: cpuUsageList,
                 memUsageList: memUsageList,
-            }, () => {
-            })
-
+            });
             console.log('clusterList====>', clusterList);
 
             this.setState({}, () => {
@@ -210,37 +198,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        renderPieGraph() {
-            return (
-
-                <div style={{backgroundColor: 'transparent',}}>
-                    <Plot
-                        style={{
-                            backgroundColor: '#373737',
-                            overflow: 'hidden',
-                            color: 'white',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            alignSelf: 'center',
-                            marginTop: 0
-                        }}
-                        data={[{
-                            values: [30, 40, 30],
-                            labels: ['Residential', 'Non-Residential', 'Utility'],
-                            type: 'pie'
-                        }]}
-                        layout={{
-                            height: 350,
-                            width: boxWidth,
-                            paper_bgcolor: 'transparent',
-                            plot_bgcolor: 'transparent',
-                            color: 'white',
-
-                        }}
-                    />
-                </div>
-            )
-        }
 
         async handleRegionChanges(value) {
             let arrayRegions = [];
@@ -312,7 +269,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        renderSelectBox(){
+        renderSelectBox() {
 
             let options1 = [
                 {value: 'ALL', text: 'ALL'},
@@ -431,7 +388,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
 
             return (
-                <div style={{display:'flex', flexDirection:'column', width:'100%'}}>
+                <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
                     {chunkedArraysOfColSize.map((colSizeArray, index) =>
                         <div className='page_monitoring_grid' key={index.toString()}>
                             {colSizeArray.map((item) =>
@@ -460,9 +417,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
                     {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
                     {chunkedArraysOfColSize.length === 1 &&
-                    <div className='page_monitoring_grid_box'>
+                    <div className='page_monitoring_grid_box_blank2'>
                         {[1, 2, 3].map((item) =>
-                            <div className='page_monitoring_grid_box' style={{backgroundColor:'transprent'}}>
+                            <div className='page_monitoring_grid_box_blank2' style={{backgroundColor: 'transprent'}}>
                                 <FlexBox style={{
                                     fontSize: 15,
                                     color: '#fff',
@@ -493,28 +450,39 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (!this.state.isReady) {
 
                 return (
-                    <div style={{position: 'absolute', top: '25%', left: '42%'}}>
-                        {/*<CircularProgress style={{color: 'red'}}/>*/}
-                        <div style={{marginLeft: -120}}>
-                            <Lottie
-                                options={{
-                                    loop: true,
-                                    autoplay: true,
-                                    animationData: animationData,
-                                    rendererSettings: {
-                                        preserveAspectRatio: 'xMidYMid slice'
-                                    }
-                                }}
-                                height={350}
-                                width={350}
-                                isStopped={false}
-                                isPaused={false}
-                            />
-                        </div>
-                        <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop:-80}}>Loading data now. It takes more
-                            than 15 seconds.
-                        </div>
-                    </div>
+
+                    <Grid.Row className='view_contents'>
+                        <Grid.Column className='contents_body'>
+                            {/*#######################*/}
+                            {/*컨텐츠 해더 부분        ..*/}
+                            {/*#######################*/}
+                            {this.renderHeader()}
+                            <div style={{position: 'absolute', top: '25%', left: '42%'}}>
+                                {/*<CircularProgress style={{color: 'red'}}/>*/}
+                                <div style={{marginLeft: -120}}>
+                                    <Lottie
+                                        options={{
+                                            loop: true,
+                                            autoplay: true,
+                                            animationData: animationData,
+                                            rendererSettings: {
+                                                preserveAspectRatio: 'xMidYMid slice'
+                                            }
+                                        }}
+                                        height={350}
+                                        width={350}
+                                        isStopped={false}
+                                        isPaused={false}
+                                    />
+                                </div>
+                                <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop: -80}}>Loading
+                                    data now. It takes more
+                                    than 15 seconds.
+                                </div>
+                            </div>
+                        </Grid.Column>
+                    </Grid.Row>
+
                 )
             }
 
@@ -569,11 +537,36 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 selection
                                                                 options={
                                                                     [
-                                                                        {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                                                        {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                                                        {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                                                        {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                                                        {key: '1', value: '1', flag: '1', text: 'Last hour'},
+                                                                        {
+                                                                            key: '24',
+                                                                            value: '24',
+                                                                            flag: '24',
+                                                                            text: 'Last 24 hours'
+                                                                        },
+                                                                        {
+                                                                            key: '18',
+                                                                            value: '18',
+                                                                            flag: '18',
+                                                                            text: 'Last 18 hours'
+                                                                        },
+                                                                        {
+                                                                            key: '12',
+                                                                            value: '12',
+                                                                            flag: '12',
+                                                                            text: 'Last 12 hours'
+                                                                        },
+                                                                        {
+                                                                            key: '6',
+                                                                            value: '6',
+                                                                            flag: '6',
+                                                                            text: 'Last 6 hours'
+                                                                        },
+                                                                        {
+                                                                            key: '1',
+                                                                            value: '1',
+                                                                            flag: '1',
+                                                                            text: 'Last hour'
+                                                                        },
                                                                     ]
                                                                 }
                                                             />
@@ -632,11 +625,36 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 selection
                                                                 options={
                                                                     [
-                                                                        {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                                                        {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                                                        {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                                                        {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                                                        {key: '1', value: '1', flag: '1', text: 'Last hour'},
+                                                                        {
+                                                                            key: '24',
+                                                                            value: '24',
+                                                                            flag: '24',
+                                                                            text: 'Last 24 hours'
+                                                                        },
+                                                                        {
+                                                                            key: '18',
+                                                                            value: '18',
+                                                                            flag: '18',
+                                                                            text: 'Last 18 hours'
+                                                                        },
+                                                                        {
+                                                                            key: '12',
+                                                                            value: '12',
+                                                                            flag: '12',
+                                                                            text: 'Last 12 hours'
+                                                                        },
+                                                                        {
+                                                                            key: '6',
+                                                                            value: '6',
+                                                                            flag: '6',
+                                                                            text: 'Last 6 hours'
+                                                                        },
+                                                                        {
+                                                                            key: '1',
+                                                                            value: '1',
+                                                                            flag: '1',
+                                                                            text: 'Last hour'
+                                                                        },
 
                                                                     ]
 

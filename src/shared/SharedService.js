@@ -5,7 +5,7 @@ import '../css/introjs-dark.css';
 import '../css/index.css';
 import ndjsonStream from "can-ndjson-stream";
 import axios from "axios-jsonp-pro";
-import FormatMonitorApp from "../services/formatter/formatMonitorApp";
+import Plot from "react-plotly.js";
 
 export const getIPAddress = () => {
     var interfaces = require('os').networkInterfaces();
@@ -85,34 +85,34 @@ export const makeFormApp = (inst, valid, store) => (
 
 export const getAppInstanceHealth = async (pInstanceOneInfo: string = "") => {
 
-   /* let serviceBody_appInstInfo = {
-        "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY5MTYwODMsImlhdCI6MTU3NjgyOTY4MywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.p3B_KtgZQsNWN8wKzuX2A1l6-xCqyiaFuPmnJFxm0hAKTBzcxx45kjvMLtGlyTKvzXT2u-ZlMEFo6u4CBzpCmQ",
-        "params": {
-            "region": "EU",
-            "appinst": {
-                "app_key": {
-                    "developer_key": {
-                        "name": "MobiledgeX"
-                    },
-                    "name": "bictestapp1112-01",
-                    "version": "1.0"
-                },
-                "cluster_inst_key": {
-                    "cluster_key": {
-                        "name": "qqqaaa"
-                    },
-                    "cloudlet_key": {
-                        "name": "frankfurt-eu",
-                        "operator_key": {
-                            "name": "TDG"
-                        }
-                    }
-                }
-            },
-            "selector": "cpu",
-            "last": 1200
-        }
-    }*/
+    /* let serviceBody_appInstInfo = {
+         "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY5MTYwODMsImlhdCI6MTU3NjgyOTY4MywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.p3B_KtgZQsNWN8wKzuX2A1l6-xCqyiaFuPmnJFxm0hAKTBzcxx45kjvMLtGlyTKvzXT2u-ZlMEFo6u4CBzpCmQ",
+         "params": {
+             "region": "EU",
+             "appinst": {
+                 "app_key": {
+                     "developer_key": {
+                         "name": "MobiledgeX"
+                     },
+                     "name": "bictestapp1112-01",
+                     "version": "1.0"
+                 },
+                 "cluster_inst_key": {
+                     "cluster_key": {
+                         "name": "qqqaaa"
+                     },
+                     "cloudlet_key": {
+                         "name": "frankfurt-eu",
+                         "operator_key": {
+                             "name": "TDG"
+                         }
+                     }
+                 }
+             },
+             "selector": "cpu",
+             "last": 1200
+         }
+     }*/
 
 
     let serverUri = 'https://' + window.location.hostname + ':3030';
@@ -130,7 +130,7 @@ export const getAppInstanceHealth = async (pInstanceOneInfo: string = "") => {
     })
 }
 
-export const makeFormForAppInstance = (instanceDataOne, valid = "cpu", token) => {
+export const makeFormForAppInstance = (instanceDataOne, valid = "cpu", token, fetchingDataNo=20) => {
 
     return (
         {
@@ -153,9 +153,49 @@ export const makeFormForAppInstance = (instanceDataOne, valid = "cpu", token) =>
                 },
                 "selector": valid,
                 //"last": 25
-                "last": 10,
+                "last": fetchingDataNo,
             }
         }
     )
 }
 
+export const isEmpty = (value) => {
+    if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
+        return true
+    } else {
+        return false
+    }
+};
+
+
+export const renderPieGraph = () => {
+    return (
+
+        <div style={{backgroundColor: 'transparent',}}>
+            <Plot
+                style={{
+                    backgroundColor: '#373737',
+                    overflow: 'hidden',
+                    color: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                    marginTop: 0
+                }}
+                data={[{
+                    values: [30, 40, 30],
+                    labels: ['Residential', 'Non-Residential', 'Utility'],
+                    type: 'pie'
+                }]}
+                layout={{
+                    height: 350,
+                    width: 300,
+                    paper_bgcolor: 'transparent',
+                    plot_bgcolor: 'transparent',
+                    color: 'white',
+
+                }}
+            />
+        </div>
+    )
+}
