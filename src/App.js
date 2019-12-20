@@ -27,6 +27,7 @@ import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import {Test001} from "./sites/Test001";
 import {StreamingRequestExample} from "./sites/StreamingRequestExample";
+import LottieExampleScreen from "./sites/LottieExampleScreen";
 // API
 
 let self = null;
@@ -296,12 +297,12 @@ class App extends Component {
     }
 
     componentDidMount() {
-        
+
         let pathName = window.location.pathname;
 
         //this.router.history.push(pathName);
-        
-        
+
+
         const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
         if (!storage_data) {
             return;
@@ -343,6 +344,7 @@ class App extends Component {
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
                     <Route exact path='/StreamingRequestExample' component={StreamingRequestExample} />
                     <Route exact path='/Test001' component={Test001} />
+                    <Route exact path='/LottieExampleScreen' component={LottieExampleScreen} />
 
                 </div>
             </Router>

@@ -7,21 +7,22 @@ import * as actions from '../actions';
 import FlexBox from "flexbox-react";
 import {hot} from "react-hot-loader/root";
 import Plot from 'react-plotly.js';
-import {Dropdown, Grid, Input,} from "semantic-ui-react";
+import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker} from 'antd';
+import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
-// import './PageMonitoring.css';
+import './PageMonitoring.css';
 import {
     fetchAppInstanceList,
+    makeCpuOrMemUsageListPerInstance,
     renderBarGraph_Google,
     renderLineGraph_Plot,
-    renderPieChart2_Google, renderPlaceHolder
+    renderPieChart2_Google,
+    renderPlaceHolder
 } from "../services/PageMonitoringService";
-import axios from "axios";
-
-import * as reducer from '../utils'
-import {CircularProgress} from "@material-ui/core";
-import {GridLoader} from "react-spinners";
+import {HARDWARE_TYPE} from "../shared/Constants";
+import Lottie from "react-lottie";
+import animationData from '../lotties/loader003'
 
 const {Column, Row} = Grid;
 
@@ -88,9 +89,17 @@ type State = {
     time: string,
     dateTime: string,
     datesRange: string,
-    appInstanceListSortByCloudlet: any,
+    appInstanceListGroupByCloudlet: any,
     loading: boolean,
     loading0: boolean,
+    cloudletList: any,
+    clusterInstanceGroupList: any,
+    startDate: string,
+    endDate: string,
+    clusterList: any,
+    cpuUsageList: any,
+    cpuUsageList2: any,
+    memUsageList: any,
 
 }
 
@@ -103,32 +112,93 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             time: '',
             dateTime: '',
             datesRange: '',
-            appInstanceListSortByCloudlet: [],
+            appInstanceListGroupByCloudlet: [],
             loading: false,
             loading0: false,
+            cloudletList: [],
+            clusterInstanceGroupList: [],
+            startDate: '',
+            endDate: '',
+            clusterList: [],
+            cpuUsageList: [],
+            cpuUsageList2: [100, 50, 30, 20, 10],
+            isReady: false,
+            memUsageList: [],
         };
 
         constructor(props) {
             super(props);
         }
 
+        makeSelectBoxList(arrList, keyName) {
+            let newArrList = [];
+            for (let i in arrList) {
+                newArrList.push({
+                    value: arrList[i][0][keyName],
+                    text: arrList[i][0][keyName],//.toString()//.substring(0,25)+ "...",
+                })
+            }
+            return newArrList;
+        }
+
+        isEmpty(value) {
+            if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
+                return true
+            } else {
+                return false
+            }
+        };
+
+
         componentDidMount = async () => {
             this.setState({
                 loading: true,
                 loading0: true,
+                startDate: getTodayDate(),
+                endDate: getTodayDate(),
             })
 
             let appInstanceList = await fetchAppInstanceList();
-            let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+
+            console.log('appInstanceList====>', appInstanceList);
+
+
+            /*let cpuUsageList = await makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU)
+            let memUsageList = await makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM)*/
+
+            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM)])
+            let cpuUsageList = cpuOrMemUsageList[0]
+            let memUsageList = cpuOrMemUsageList[1]
+
+            console.log('_result===>', cpuOrMemUsageList);
+
+
+            console.log('memUsageList===>', memUsageList);
+
+            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+            let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
+            let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
+            let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
             await this.setState({
-                appInstanceListSortByCloudlet,
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                cloudletList: cloudletList,
+                clusterList: clusterList,
+                cpuUsageList: cpuUsageList,
+                memUsageList: memUsageList,
+            }, () => {
             })
-            setTimeout(() => {
-                this.setState({
-                    loading: false,
-                    loading0: false,
-                })
-            }, 350)
+
+            console.log('clusterList====>', clusterList);
+
+            this.setState({}, () => {
+                setTimeout(() => {
+                    this.setState({
+                        loading: false,
+                        loading0: false,
+                        isReady: true,
+                    })
+                }, 350)
+            })
 
         }
 
@@ -186,9 +256,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListSortByCloudlet: [],
             })
             let appInstanceList = await fetchAppInstanceList(arrayRegions);
-            let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+
+            //console.log('appInstanceListGroupByCloudlet====>' , appInstanceListGroupByCloudlet)
+
+            console.log('appInstanceListGroupByCloudlet====>', appInstanceListGroupByCloudlet);
+
             await this.setState({
-                appInstanceListSortByCloudlet,
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
             })
         }
@@ -211,6 +286,32 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        async handleRegionChanges(value) {
+            let arrayRegions = [];
+            if (value === 'ALL') {
+                arrayRegions.push('EU')
+                arrayRegions.push('US')
+            } else {
+                arrayRegions.push(value);
+            }
+
+            this.setState({
+                loading0: true,
+                appInstanceListSortByCloudlet: [],
+            })
+            let appInstanceList = await fetchAppInstanceList(arrayRegions);
+            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+
+            //console.log('appInstanceListGroupByCloudlet====>' , appInstanceListGroupByCloudlet)
+
+            console.log('appInstanceListGroupByCloudlet====>', appInstanceListGroupByCloudlet);
+
+            await this.setState({
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                loading0: false,
+            })
+        }
+
         renderSelectBox(){
 
             let options1 = [
@@ -219,6 +320,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 {value: 'US', text: 'US'},
 
             ]
+
+            let dropDownWidth = 250;
 
             return (
 
@@ -234,7 +337,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             options={options1}
                             defaultValue={options1[0].value}
                             onChange={async (e, {value}) => {
-                                this.handleRegionChanges(value)
+                                await this.handleRegionChanges(value)
                             }}
                         />
                         <Dropdown
@@ -359,7 +462,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {chunkedArraysOfColSize.length === 1 &&
                     <div className='page_monitoring_grid_box'>
                         {[1, 2, 3].map((item) =>
-                            <div className='page_monitoring_grid_box'>
+                            <div className='page_monitoring_grid_box' style={{backgroundColor:'transprent'}}>
                                 <FlexBox style={{
                                     fontSize: 15,
                                     color: '#fff',
@@ -386,6 +489,34 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         render() {
+
+            if (!this.state.isReady) {
+
+                return (
+                    <div style={{position: 'absolute', top: '25%', left: '42%'}}>
+                        {/*<CircularProgress style={{color: 'red'}}/>*/}
+                        <div style={{marginLeft: -120}}>
+                            <Lottie
+                                options={{
+                                    loop: true,
+                                    autoplay: true,
+                                    animationData: animationData,
+                                    rendererSettings: {
+                                        preserveAspectRatio: 'xMidYMid slice'
+                                    }
+                                }}
+                                height={350}
+                                width={350}
+                                isStopped={false}
+                                isPaused={false}
+                            />
+                        </div>
+                        <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop:-80}}>Loading data now. It takes more
+                            than 15 seconds.
+                        </div>
+                    </div>
+                )
+            }
 
 
             return (
@@ -421,7 +552,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading0 ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListSortByCloudlet)}
+                                                        {this.state.loading0 ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListGroupByCloudlet)}
                                                     </div>
                                                 </div>
                                                 {/* ___col___2*/}
@@ -449,7 +580,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google()}
+                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google(this.state.cpuUsageList, HARDWARE_TYPE.CPU)}
                                                     </div>
                                                 </div>
                                                 {/* ___col___3*/}
@@ -514,7 +645,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google()}
+                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google(this.state.memUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
 
                                                 </div>

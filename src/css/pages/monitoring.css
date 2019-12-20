@@ -110,6 +110,30 @@
     justify-content: center;
     align-items: center;
 }
+
+.page_monitoring_grid_box_blank{
+    display: flex;
+    flex-direction: column;
+    /*flex-grow: 1;*/
+    width: 33.3333%;
+    height: 100%;
+    margin-right: 10px;
+    background: transparent;
+    justify-content: center;
+    align-items: center;
+}
+
+.page_monitoring_grid_box_blank2{
+    display: flex;
+    flex-direction: column;
+    /*flex-grow: 1;*/
+    width: 100%;
+    height: 100%;
+    background-color: #383838;
+    margin-right: 0px;
+    justify-content: center;
+    align-items: center;
+}
 .page_monitoring_grid_box:last-child {
     margin-right: 0;
 }

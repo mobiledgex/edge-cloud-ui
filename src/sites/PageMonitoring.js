@@ -9,20 +9,20 @@ import {hot} from "react-hot-loader/root";
 import Plot from 'react-plotly.js';
 import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker} from 'antd';
+import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
 import './PageMonitoring.css';
 import {
-    fetchAppInstanceList, getCpuMetricData,
+    fetchAppInstanceList,
+    makeCpuOrMemUsageListPerInstance,
     renderBarGraph_Google,
     renderLineGraph_Plot,
-    renderPieChart2_Google, renderPlaceHolder
+    renderPieChart2_Google,
+    renderPlaceHolder
 } from "../services/PageMonitoringService";
-import axios from "axios";
-
-import * as reducer from '../utils'
-import {CircularProgress} from "@material-ui/core";
-import {GridLoader} from "react-spinners";
-import {getAppInstanceHealth, getIPAddress, makeFormForAppInstance} from "../shared/SharedService";
+import {HARDWARE_TYPE} from "../shared/Constants";
+import Lottie from "react-lottie";
+import animationData from '../lotties/loader003'
 
 const {Column, Row} = Grid;
 
@@ -99,6 +99,7 @@ type State = {
     clusterList: any,
     cpuUsageList: any,
     cpuUsageList2: any,
+    memUsageList: any,
 
 }
 
@@ -120,7 +121,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             endDate: '',
             clusterList: [],
             cpuUsageList: [],
-            cpuUsageList2: [100, 50, 30, 20, 10]
+            cpuUsageList2: [100, 50, 30, 20, 10],
+            isReady: false,
+            memUsageList: [],
         };
 
         constructor(props) {
@@ -138,6 +141,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return newArrList;
         }
 
+        isEmpty(value) {
+            if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
+                return true
+            } else {
+                return false
+            }
+        };
+
 
         componentDidMount = async () => {
             this.setState({
@@ -152,24 +163,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             console.log('appInstanceList====>', appInstanceList);
 
 
-            let mergedAppInstanceHealthList = [];
-            for (let index = 0; index < appInstanceList.length; index++) {
+            /*let cpuUsageList = await makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU)
+            let memUsageList = await makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM)*/
 
-                let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM)])
+            let cpuUsageList = cpuOrMemUsageList[0]
+            let memUsageList = cpuOrMemUsageList[1]
 
-                let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], 'cpu', store.userToken)
+            console.log('_result===>', cpuOrMemUsageList);
 
-                console.log('formOne====>', instanceInfoOneForm);
 
-                let appInstanceHealth = await getAppInstanceHealth(instanceInfoOneForm);
-
-                console.log(`appInstanceHealth====>${index}`, appInstanceHealth)
-
-                mergedAppInstanceHealthList.push(appInstanceList)
-            }
-
-            console.log('mergedAppInstanceHealthList====>', mergedAppInstanceHealthList);
-
+            console.log('memUsageList===>', memUsageList);
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
@@ -179,7 +183,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 cloudletList: cloudletList,
                 clusterList: clusterList,
-
+                cpuUsageList: cpuUsageList,
+                memUsageList: memUsageList,
             }, () => {
             })
 
@@ -190,10 +195,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     this.setState({
                         loading: false,
                         loading0: false,
+                        isReady: true,
                     })
                 }, 350)
             })
-
 
         }
 
@@ -277,11 +282,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <FlexBox className='' style={{marginRight: 23}}>
-                    {this.state.loading &&
+                    {/* {this.state.loading &&
                     <FlexBox style={{position: 'absolute', top: '2%', left: '15%'}}>
                         <CircularProgress style={{color: '#79BF14'}}/>
+
+
                     </FlexBox>
-                    }
+                    }*/}
                     <Grid.Column className='content_title'
                                  style={{lineHeight: '36px', fontSize: 30, marginTop: 5,}}>Monitoring
                     </Grid.Column>
@@ -496,6 +503,33 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         render() {
 
+            if (!this.state.isReady) {
+
+                return (
+                    <div style={{position: 'absolute', top: '25%', left: '42%'}}>
+                        {/*<CircularProgress style={{color: 'red'}}/>*/}
+                        <div style={{marginLeft: -120}}>
+                            <Lottie
+                                options={{
+                                    loop: true,
+                                    autoplay: true,
+                                    animationData: animationData,
+                                    rendererSettings: {
+                                        preserveAspectRatio: 'xMidYMid slice'
+                                    }
+                                }}
+                                height={350}
+                                width={350}
+                                isStopped={false}
+                                isPaused={false}
+                            />
+                        </div>
+                        <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop:-80}}>Loading data now. It takes more
+                            than 15 seconds.
+                        </div>
+                    </div>
+                )
+            }
 
             return (
 
@@ -547,7 +581,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
-                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google(this.state.cpuUsageList)}
+                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google(this.state.cpuUsageList, HARDWARE_TYPE.CPU)}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -622,7 +656,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0}}>
-                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google(this.state.cpuUsageList2)}
+                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google(this.state.memUsageList, HARDWARE_TYPE.MEM)}
                                         </FlexBox>
 
                                     </FlexBox>

@@ -11,6 +11,8 @@ import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
 import {Placeholder} from 'semantic-ui-react'
+import {getAppInstanceHealth, makeFormForAppInstance} from "../shared/SharedService";
+import {HARDWARE_TYPE} from "../shared/Constants";
 
 export const renderLineChart2 = () => {
 
@@ -74,32 +76,32 @@ export const renderLineChart2 = () => {
     )
 }
 
-export const renderBarGraph_Google = (cpuUsageList) => {
+export const renderBarGraph_Google = (usageList: any, hardwareType: string = 'cpu') => {
 
-    //alert(JSON.stringify(cpuUsageList))
+    console.log('cpuUsageList===>', usageList);
 
-    let colorList = ["color: red", "color: #76A7FA", "color: blue", "color: green", "color: yellow"];
+    let colorList = ["color: #79BF14", "color: yellow", "color: red", "color: green", "color: blue"];
 
-    let chartDataList=[];
-
+    let chartDataList = [];
     chartDataList.push(["Element", "CPU USAGE", {role: "style"}])
-    for (let index in cpuUsageList) {
-        let barDataOne = [`cpu ${index}`, cpuUsageList[index], colorList[index]]
+    //for (let index in cpuUsageList) {
+    for (let index = 0; index < 5; index++) {
+
+
+        let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...", hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, colorList[index]]
         chartDataList.push(barDataOne);
     }
 
 
-
-
     return (
         <Chart
-            width={'430px'}
-            height={'250px'}
+            width={'700px'}
+            height={'350px'}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
             options={{
-                is3D: true,
+                is3D: false,
                 title: '',
                 titleTextStyle: {
                     color: 'red'
@@ -114,9 +116,9 @@ export const renderBarGraph_Google = (cpuUsageList) => {
                 hAxis: {
                     title: '',
                     titleTextStyle: {
-                        fontName: "Times",
-                        fontSize: 25,
-                        fontStyle: "normal",
+                        //fontName: "Times",
+                        fontSize: 12,
+                        fontStyle: "italic",
                         color: 'white'
                     },
                     minValue: 0,
@@ -133,13 +135,13 @@ export const renderBarGraph_Google = (cpuUsageList) => {
                 vAxis: {
                     title: '',
                     titleTextStyle: {
-                        fontSize: 25,
+                        fontSize: 12,
                         fontStyle: "normal",
                         color: 'white'
                     },
                     textStyle: {
                         color: "white",
-                        fontSize: 18,
+                        fontSize: 12,
                     },
 
                 },
@@ -163,8 +165,8 @@ export const renderPieChart2_Google = () => {
     return (
         <div className="pieChart">
             <Chart
-                width={'490px'}
-                height={'250px'}
+                width={'700px'}
+                height={'350px'}
                 chartType="PieChart"
                 data={[
                     ["Age", "Weight"], ["a", 30], ["b", 40], ['c', 30]
@@ -224,20 +226,17 @@ function toChunkArray(myArray: any, chunkSize: any): any {
 
 export const renderPlaceHolder = () => {
 
-    let boxWidth = window.innerWidth / 10 * 3.55;
+    let boxWidth = window.innerWidth / 10 * 4.55;
     return (
-        <Placeholder style={{width: boxWidth, height: 250, backgroundColor: 'black'}}>
-            <Placeholder.Image/>
-            <FlexBox style={{justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}>
-                <CircularProgress style={{zIndex: 999999999, color: '#79BF14'}}/>
-            </FlexBox>
-        </Placeholder>
+        <div className='page_monitoring_grid_box_blank2'>
+            <CircularProgress style={{zIndex: 999999999, color: '#79BF14'}}/>
+        </div>
     )
 }
 
 
 export const renderLineGraph_Plot = () => {
-    let boxWidth = window.innerWidth / 10 * 2.55;
+    let boxWidth = window.innerWidth / 10 * 2.8;
 
     return (
         <Plot
@@ -249,7 +248,7 @@ export const renderLineGraph_Plot = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 alignSelf: 'center',
-                marginTop: 0
+                marginTop: -25
 
             }}
             data={
@@ -284,15 +283,15 @@ export const renderLineGraph_Plot = () => {
 
             }
             layout={{
+                height: 360,
+                width: boxWidth,
                 margin: {
                     l: 50,
                     r: 15,
                     b: 35,
-                    t: 5,
+                    t: 30,
                     pad: 0
                 },
-                height: 250,
-                width: boxWidth,
                 paper_bgcolor: 'transparent',
                 plot_bgcolor: 'transparent',
                 color: 'white',
@@ -427,4 +426,93 @@ export const getCpuMetricData = async () => {
 
     return responseRslt;
 
+}
+
+
+/**
+ * @desc : 앱인스턴스 리스트 이용해서 인스턴스에 대한 total cpu usage 리스트를 만든다..
+ * @desc : Using the app instance list, create a list of total cpu usage for the instance.
+ * @param appInstanceList
+ * @returns {Promise<Array>}
+ */
+export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = "cpu") => {
+
+    let cpuUsageListPerOneInstance = []
+    for (let index = 0; index < appInstanceList.length; index++) {
+
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+
+        let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], paramCpuOrMem, store.userToken)
+
+        //console.log('formOne====>', instanceInfoOneForm);
+        //console.log('appInstanceList===>', appInstanceList[index]);
+
+        let appInstanceHealth = await getAppInstanceHealth(instanceInfoOneForm);
+        //console.log(`appInstanceHealth====>${index}`,)
+
+        cpuUsageListPerOneInstance.push({
+            instanceData: appInstanceList[index],
+            appInstanceHealth: appInstanceHealth,
+        });
+
+    }
+
+    //console.log('cpuUsageList====>', cpuUsageListPerOneInstance);
+    let newCpuOrMemUsageListPerOneInstance = [];
+    //for (let i in cpuUsageListPerOneInstance) {
+
+    for (let i = 0; i < cpuUsageListPerOneInstance.length; i++) {
+        if (cpuUsageListPerOneInstance[i].appInstanceHealth.data[0].Series != null) {
+            //console.log('itemeLength===>', cpuUsageListPerOneInstance[i].appInstanceHealth.data[0].Series[0].values);
+
+            let columns = cpuUsageListPerOneInstance[i].appInstanceHealth.data[0].Series[0].columns;
+            let values = cpuUsageListPerOneInstance[i].appInstanceHealth.data[0].Series[0].values;
+
+
+            let sumCpuUsage = 0;
+            let sumMemUsage = 0;
+            for (let i = 0; i < values.length; i++) {
+                //console.log('itemeLength===>',  values[i][4]);
+
+                if (paramCpuOrMem === 'cpu') {
+                    sumCpuUsage = sumCpuUsage + values[i][4];
+                } else {
+                    sumMemUsage = sumCpuUsage + values[i][5];
+                }
+
+            }
+
+            newCpuOrMemUsageListPerOneInstance.push({
+                instance: cpuUsageListPerOneInstance[i].instanceData,
+                columns: columns,
+                values: values,
+                sumCpuUsage: sumCpuUsage,
+                sumMemUsage: sumMemUsage,
+            });
+        } else {
+            newCpuOrMemUsageListPerOneInstance.push({
+                instance: cpuUsageListPerOneInstance[i].instanceData,
+                columns: '',
+                values: '',
+                sumCpuUsage: 0,
+                sumMemUsage: 0,
+            });
+        }
+
+    }
+    //@todo :##################################
+    //@todo : Sort cpu usage in reverse order.
+    //@todo :##################################
+
+    if (paramCpuOrMem === 'cpu') {
+        newCpuOrMemUsageListPerOneInstance.sort(function (a, b) {
+            return b.sumCpuUsage - a.sumCpuUsage;
+        });
+    } else {
+        newCpuOrMemUsageListPerOneInstance.sort(function (a, b) {
+            return b.sumMemUsage - a.sumMemUsage;
+        });
+    }
+
+    return newCpuOrMemUsageListPerOneInstance;
 }
