@@ -11,7 +11,7 @@ import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
 import {Placeholder} from 'semantic-ui-react'
-import {getAppInstanceHealth, makeFormForAppInstance} from "../shared/SharedService";
+import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
 import {HARDWARE_TYPE} from "../shared/Constants";
 
 export const renderLineChart2 = () => {
@@ -487,9 +487,7 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
             sumCpuUsage = sumCpuUsage / cpuUsageListPerOneInstance.length;
             sumMemUsage = Math.ceil(sumMemUsage / cpuUsageListPerOneInstance.length);
 
-
-
-            console.log('sumMemUsage===>',  sumMemUsage);
+            console.log('sumMemUsage===>', sumMemUsage);
 
             newCpuOrMemUsageListPerOneInstance.push({
                 instance: cpuUsageListPerOneInstance[index].instanceData,
@@ -512,13 +510,12 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
     //@todo :##################################
     //@todo : Sort cpu usage in reverse order.
     //@todo :##################################
-
     if (paramCpuOrMem === 'cpu') {
-        newCpuOrMemUsageListPerOneInstance.sort(function (a, b) {
+        newCpuOrMemUsageListPerOneInstance.sort((a, b) => {
             return b.sumCpuUsage - a.sumCpuUsage;
         });
     } else {
-        newCpuOrMemUsageListPerOneInstance.sort(function (a, b) {
+        newCpuOrMemUsageListPerOneInstance.sort((a, b) => {
             return b.sumMemUsage - a.sumMemUsage;
         });
     }

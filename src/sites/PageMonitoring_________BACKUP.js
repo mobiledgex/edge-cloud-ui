@@ -106,7 +106,7 @@ type State = {
 let boxWidth = window.innerWidth / 10 * 2.77;
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
-    class PageMonitoring extends React.Component<Props, State> {
+    class PageMonitoring____BACKUP extends React.Component<Props, State> {
         state = {
             date: '',
             time: '',
