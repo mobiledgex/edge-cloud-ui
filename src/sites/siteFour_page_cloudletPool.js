@@ -8,7 +8,7 @@ import PagePoolDetailViewer from '../container/pagePoolDetailViewer';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as services from '../services/service_compute_service';
+import * as services from '../services/service_cloudlet_pool';
 import './siteThree.css';
 import InsideListView from "../container/insideListView";
 import Alert from "react-s-alert";
@@ -147,7 +147,7 @@ class SiteFourPageCloudletPool extends React.Component {
         }
 
         this.loadCount ++;
-        console.log("20191119 ..cloudlet EditEditEdit",rgn.length,":::",this.loadCount)
+        console.log("20191219 ..cloudlet EditEditEdit",rgn.length,":::",this.loadCount)
         if(rgn.length == this.loadCount){
             _self.countJoin()            
         }
@@ -189,7 +189,7 @@ class SiteFourPageCloudletPool extends React.Component {
 
         rgn.map((item, i) => {
             //setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 0)
-            services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult)
+            services.getListCloudletPool('ShowCloudletPool',{token:store.userToken, region:item}, _self.receiveResult)
         })
         this.props.handleLoadingSpinner(true);
     }
