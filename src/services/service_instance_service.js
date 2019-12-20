@@ -90,6 +90,8 @@ export function getAppinstHealth(resource, callback) {
 
             console.log('getAppinstHealth====>' + reso);
 
+            console.log('ServerUrl====>',ServerUrl);
+
             return axios.post(ServerUrl + '/timeAppinst', {
                 service: 'timeAppinst',
                 serviceBody: reso,

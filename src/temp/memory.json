@@ -1,25 +1,27 @@
 {
-  "region": "EU",
+  "region": "US",
   "appinst": {
     "app_key": {
       "developer_key": {
         "name": "MobiledgeX"
       },
-      "name": "bictestapp1112-01",
+      "name": "mexprometheusappname",
       "version": "1.0"
     },
     "cluster_inst_key": {
       "cluster_key": {
-        "name": "qqqaaa"
+        "name": "rah-cluster1"
       },
       "cloudlet_key": {
-        "name": "frankfurt-eu",
+        "name": "automationBerlinCloudletStage",
         "operator_key": {
           "name": "TDG"
         }
       }
     }
   },
-  "selector": "cpu",
+  "selector": "mem",
   "last": 1200
 }
+
+메모리lksdflk

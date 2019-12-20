@@ -295,6 +295,8 @@ class PageDetailViewer extends React.Component {
 
         let params = _self.getParams(page, data, store);
 
+        console.log('params2====>',params);
+
         (page === 'appInst' && store.userToken) ?
 
             serviceInstance.getAppinstHealth(params, _self.receiveInstanceInfo) :

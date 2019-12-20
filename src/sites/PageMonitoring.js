@@ -22,6 +22,7 @@ import axios from "axios";
 import * as reducer from '../utils'
 import {CircularProgress} from "@material-ui/core";
 import {GridLoader} from "react-spinners";
+import {getAppInstanceHealth, getIPAddress, makeFormForAppInstance} from "../shared/SharedService";
 
 const {Column, Row} = Grid;
 
@@ -146,6 +147,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 endDate: getTodayDate(),
             })
 
+
+            //let appInstanceHealth = await getAppInstanceHealth();
+
+            // console.log('appInstanceHealth====>',appInstanceHealth);
+
+
             let cpuMetricData = await getCpuMetricData();
 
             console.log('cpuMetricData====>', cpuMetricData.data[0].Series[0].values);
@@ -162,6 +169,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
             let appInstanceList = await fetchAppInstanceList();
+
+            console.log('appInstanceList====>', appInstanceList);
+
+
+            let mergedAppInstanceHealthList = [];
+            for (let index = 0; index < appInstanceList.length; index++) {
+
+                let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+
+                let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], 'cpu', store.userToken)
+
+                console.log('formOne====>', instanceInfoOneForm);
+
+                let appInstanceHealth = await getAppInstanceHealth(instanceInfoOneForm);
+
+                console.log('appInstanceHealth====>', appInstanceHealth)
+
+                mergedAppInstanceHealthList.push(appInstanceList)
+            }
+
+            console.log('mergedAppInstanceHealthList====>',mergedAppInstanceHealthList);
+
+
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
             let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
