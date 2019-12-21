@@ -1,6 +1,5 @@
 import 'react-hot-loader'
 import React from 'react';
-import Loader from 'react-loader-spinner'
 import {Button, Dropdown, Modal} from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
@@ -387,37 +386,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                                 </FlexBox>
                                 }
-                                {/* <Button onClick={() => {
-                                    this.props.toggleLoading(false)
-                                }}>
-                                    false
-                                </Button>
-
-                                <Button onClick={() => {
-                                    this.props.toggleLoading(true)
-                                }}>
-                                    true
-                                </Button>*/}
-                                {/*#######################################*/}
-                                {/*desc: Timeline Status (topLeft)        */}
-                                {/*#######################################*/}
-                                {/*  {!this.state.isLoading && <div style={{
-                                    top: -5,
-                                    color: '#f8f8f8',
-                                    borderWidth: 10,
-                                    borderColor: 'grey',
-                                    backgroundColor: 'blue',
-                                    height: 70,
-
-                                }}>
-                                    <div style={{color: 'orange'}}>{this.state.currentTask.toString()}</div>
-                                    <FlexBox style={{width: 10}}/>
-                                    <div>  {this.state.currentTaskTime.replace('timeline-dot-', '')}</div>
-                                </div>
-                                }*/}
-
-                                {/*#######################################*/}
-                                {/*#######################################*/}
                                 {/*#######################################*/}
                                 {/*todo: Timeline display part            */}
                                 {/*#######################################*/}
