@@ -28,6 +28,7 @@ import './css/components/timelineH.css';
 import {Test001} from "./sites/Test001";
 import {StreamingRequestExample} from "./sites/StreamingRequestExample";
 import LottieExampleScreen from "./sites/LottieExampleScreen";
+import LineChart from "./sites/LineChart";
 // API
 
 let self = null;
@@ -344,7 +345,7 @@ class App extends Component {
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
                     <Route exact path='/StreamingRequestExample' component={StreamingRequestExample} />
                     <Route exact path='/Test001' component={Test001} />
-                    <Route exact path='/LottieExampleScreen' component={LottieExampleScreen} />
+                    <Route exact path='/LineChart' component={LineChart} />
 
                 </div>
             </Router>
