@@ -1,8 +1,9 @@
-.recharts-legend-item-text{
+.recharts-legend-item-text {
     font-size: 22px;
     color: whitesmoke;
 }
-.recharts-default-legend{
+
+.recharts-default-legend {
     visibility: hidden;
 }
 
@@ -20,7 +21,6 @@
     border: 1px solid black;
 }
 
-
 #reactgooglegraph-4 text {
     color: #fff
 }
@@ -28,6 +28,7 @@
 .barChart rect {
     fill: black
 }
+
 .pieChart text {
     fill: white
 }
@@ -15499,6 +15500,7 @@ span.ant-radio + * {
     color: white;
     cursor: pointer;
     height: 39px;
+    width: 250px;
 }
 
 .ant-calendar-picker-input.ant-input {

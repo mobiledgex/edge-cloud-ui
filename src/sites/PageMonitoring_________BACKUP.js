@@ -15,7 +15,7 @@ import './PageMonitoring.css';
 import {
     fetchAppInstanceList,
     makeCpuOrMemUsageListPerInstance,
-    renderBarGraph_Google,
+    renderBarGraph_GoogleChart,
     renderLineGraph_Plot,
     renderPieChart2_Google,
     renderPlaceHolder
@@ -581,7 +581,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0, backgroundColor: 'red'}}>
-                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google(this.state.cpuUsageList, HARDWARE_TYPE.CPU)}
+                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph_GoogleChart(this.state.cpuUsageList, HARDWARE_TYPE.CPU)}
                                         </FlexBox>
 
                                     </FlexBox>
@@ -656,7 +656,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             </FlexBox>
                                         </FlexBox>
                                         <FlexBox style={{marginTop: 0}}>
-                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google(this.state.memUsageList, HARDWARE_TYPE.MEM)}
+                                            {this.state.loading ? renderPlaceHolder() : renderBarGraph_GoogleChart(this.state.memUsageList, HARDWARE_TYPE.MEM)}
                                         </FlexBox>
 
                                     </FlexBox>

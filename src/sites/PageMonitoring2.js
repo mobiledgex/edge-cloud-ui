@@ -15,7 +15,7 @@ import './PageMonitoring.css';
 import {
     fetchAppInstanceList,
     makeCpuOrMemUsageListPerInstance,
-    renderBarGraph_Google, renderInstanceOnCloudletGrid, renderLineChart_react_chartjs, renderLineChart_recharts,
+    renderBarGraph_GoogleChart, renderInstanceOnCloudletGrid, renderLineChart_react_chartjs, renderLineChart_recharts,
     renderLineGraph_Plot,
     renderPieChart2_Google,
     renderPlaceHolder
@@ -300,36 +300,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             onChange={async (e, {value}) => {
                                 await this.handleRegionChanges(value)
                             }}
+                            style={{width: 250}}
                         />
                         <Dropdown
                             placeholder='CloudLet'
                             selection
-                            options={
-                                [
-                                    {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                    {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                    {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                    {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                    {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                ]
-
-                            }
+                            options={this.state.cloudletList}
+                            style={{width: 250}}
                         />
                         <Dropdown
                             placeholder='Cluster'
                             selection
-                            options={
-                                [
-                                    {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                    {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                    {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                    {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                    {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                ]
-
-                            }
+                            options={this.state.clusterList}
+                            style={{width: 250}}
                         />
                         <div className='page_monitoring_datepicker_area'>
                             <DatePicker
@@ -495,7 +478,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google(this.state.cpuUsageList, HARDWARE_TYPE.CPU)}
+                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph_GoogleChart(this.state.cpuUsageList, HARDWARE_TYPE.CPU)}
                                                     </div>
                                                 </div>
                                                 {/* ___col___3*/}
@@ -585,7 +568,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph_Google(this.state.memUsageList, HARDWARE_TYPE.MEM)}
+                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph_GoogleChart(this.state.memUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
 
                                                 </div>

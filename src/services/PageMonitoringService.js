@@ -7,7 +7,7 @@ import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
 import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
-import {HARDWARE_TYPE} from "../shared/Constants";
+import {CHART_COLOR_LIST, HARDWARE_TYPE} from "../shared/Constants";
 import CanvasJSReact from '../assets/canvasjs.react';
 import {Brush, CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis, Legend} from "recharts";
 import {Line as ReactChartJs} from 'react-chartjs-2';
@@ -78,17 +78,15 @@ export const renderLineChart2 = () => {
     )
 }
 
-export const renderBarGraph_Google = (usageList: any, hardwareType: string = 'cpu') => {
+export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string = 'cpu') => {
 
     console.log('cpuUsageList===>', usageList);
-
-    let colorList = ["color: #79BF14", "color: yellow", "color: red", "color: green", "color: blue"];
 
     let chartDataList = [];
     chartDataList.push(["Element", "CPU USAGE", {role: "style"}])
     //for (let index in cpuUsageList) {
     for (let index = 0; index < 5; index++) {
-        let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...", hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, colorList[index]]
+        let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...", hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, CHART_COLOR_LIST[index]]
         chartDataList.push(barDataOne);
     }
 
@@ -309,7 +307,6 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
     console.log('instanceNameList===>', instanceNameList);
     console.log('cpuUsageSetList===>', cpuUsageSetList);
 
-    let colorList = ['red', 'blue', 'green', 'orange', 'pink']
 
     let finalDataSets = [];
 
@@ -320,8 +317,8 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
                 label: instanceNameList[i],
                 fill: false,
                 lineTension: 0.1,
-                backgroundColor: colorList[i],
-                borderColor: colorList[i],
+                backgroundColor: CHART_COLOR_LIST[i],
+                borderColor: CHART_COLOR_LIST[i],
                 borderCapStyle: 'butt',
                 borderDash: [],
                 borderDashOffset: 0.0,
@@ -360,7 +357,7 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
 
     console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsageDesc);
 
-    let width = window.innerWidth * 0.33
+    let width = window.innerWidth * 0.28
     let height = 500 + 50;
     return (
         <div>

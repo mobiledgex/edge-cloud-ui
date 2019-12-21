@@ -7,3 +7,5 @@ export const HARDWARE_TYPE = {
     MEM: "mem",
 
 }
+
+export const CHART_COLOR_LIST = ['green', 'red', 'blue', 'orange', 'red']
