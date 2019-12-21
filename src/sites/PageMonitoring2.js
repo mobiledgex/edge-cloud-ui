@@ -1,5 +1,5 @@
 import 'react-hot-loader'
-import React from 'react';
+import React, {Component} from 'react';
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -15,7 +15,7 @@ import './PageMonitoring.css';
 import {
     fetchAppInstanceList,
     makeCpuOrMemUsageListPerInstance,
-    renderBarGraph_Google,
+    renderBarGraph_Google, renderLineChart_react_chartjs, renderLineChart_recharts,
     renderLineGraph_Plot,
     renderPieChart2_Google,
     renderPlaceHolder
@@ -25,6 +25,8 @@ import Lottie from "react-lottie";
 import animationData from '../lotties/loader003'
 
 const {Column, Row} = Grid;
+
+
 
 
 const mapStateToProps = (state) => {
@@ -156,17 +158,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //todo:앱인스턴스 리스트로 Mem,CPU chartData를 가지고 온다.
             //todo:Bring Mem and CPU chart Data with  App Instance List.
-            //let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM)])
-            /*let cpuUsageList = cpuOrMemUsageList[0]
+            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM)])
+            let cpuUsageList = cpuOrMemUsageList[0]
             let memUsageList = cpuOrMemUsageList[1]
             console.log('_result===>', cpuOrMemUsageList);
-            */
 
 
 
             //todo: local json for Test
-            let cpuUsageList = require('../TEMP_KYUNGJOOON/cpuUsage')
-            let memUsageList = require('../TEMP_KYUNGJOOON/memUsage')
+            /*let cpuUsageList = require('../TEMP_KYUNGJOOON/cpuUsage')
+            let memUsageList = require('../TEMP_KYUNGJOOON/memUsage')*/
 
 
             console.log('memUsageList===>', memUsageList);
@@ -592,7 +593,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
+                                                        {this.state.loading ? renderPlaceHolder() : renderLineChart_react_chartjs(this.state.cpuUsageList, HARDWARE_TYPE.CPU)}
                                                     </div>
                                                 </div>
                                             </div>
