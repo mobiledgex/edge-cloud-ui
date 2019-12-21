@@ -11,7 +11,7 @@ import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
 //import './PageMonitoring.css';
 import {
-    fetchAppInstanceList,
+    fetchAppInstanceList, makeCpuOrMemUsageListPerInstance,
     renderBarGraph_GoogleChart,
     renderInstanceOnCloudletGrid,
     renderLineChart_react_chartjs,
@@ -169,22 +169,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             console.log('appInstanceList====>', appInstanceList);
 
             //todo: ####################################################################################
-            //todo: 앱인스턴스 리스트를 가지고 Mem,CPU CHART_DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
-            //todo: Bring Mem and CPU chart Data with  App Instance List.
+            //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
+            //todo: Bring Mem and CPU chart Data with App Instance List.
             //todo: ####################################################################################
-            /*
             let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
             let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
             let memUsageListPerOneInstance = cpuOrMemUsageList[1]
             console.log('_result===>', cpuOrMemUsageList);
-            */
 
 
             //todo: ################################################################
-            //todo: (last 100 datas) - Local Fake JSON for test
+            //todo: (last 100 datas) - Local Fake JSON FOR TEST
             //todo: ################################################################
-            let cpuUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/cpuUsage_100Count')
-            let memUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/memUsage_100Count')
+            /*let cpuUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/cpuUsage_100Count')
+            let memUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/memUsage_100Count')*/
 
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');

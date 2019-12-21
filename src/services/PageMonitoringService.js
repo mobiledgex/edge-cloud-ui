@@ -525,8 +525,7 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
 }
 
 
-//param1 -->ALl
-//param2 --> [EU,US]
+
 /**
  * @todo 현재 선택된 지역의 인스턴스 리스트를 가지고 온다...
  * @todo : fetch App Instance List BY region
@@ -590,9 +589,6 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
 
-        /*//
-        let recentDataLimitCount = 100;*/
-
         //todo: 레퀘스트를 요청할 데이터 FORM형식을 만들어 준다.
         let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], paramCpuOrMem, store.userToken, recentDataLimitCount)
 
@@ -609,17 +605,13 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
 
     }
 
-    //console.log('cpuUsageList====>', cpuUsageListPerOneInstance);
     let newCpuOrMemUsageListPerOneInstance = [];
-    //for (let i in cpuUsageListPerOneInstance) {
 
     for (let index = 0; index < cpuUsageListPerOneInstance.length; index++) {
         if (cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series != null) {
-            //console.log('itemeLength===>', cpuUsageListPerOneInstance[i].appInstanceHealth.data[0].Series[0].values);
 
             let columns = cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].columns;
             let values = cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].values;
-
 
             let sumCpuUsage = 0;
             let sumMemUsage = 0;
@@ -665,7 +657,7 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
         newCpuOrMemUsageListPerOneInstance.sort((a, b) => {
             return b.sumCpuUsage - a.sumCpuUsage;
         });
-    } else {
+    } else {//mem
         newCpuOrMemUsageListPerOneInstance.sort((a, b) => {
             return b.sumMemUsage - a.sumMemUsage;
         });
