@@ -36,6 +36,7 @@
     "nodemailer": "^6.3.1",
     "nodemailer-smtp-transport": "^2.7.4",
     "qs": "^6.6.0",
+    "react-live-clock": "^3.1.0",
     "rebuild": "^0.1.2",
     "request": "^2.88.0",
     "request-ip": "^2.1.3",

@@ -22,8 +22,7 @@ import {
 } from "../services/PageMonitoringService";
 import {HARDWARE_TYPE} from "../shared/Constants";
 import Lottie from "react-lottie";
-import animationData from '../lotties/loader003'
-import {cutArrayList} from "../services/SharedService";
+import Clock from 'react-live-clock';
 
 const {Column, Row} = Grid;
 
@@ -101,6 +100,7 @@ type State = {
     cpuUsageList: any,
     cpuUsageList2: any,
     memUsageList: any,
+    counter: number,
 
 }
 
@@ -125,11 +125,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             cpuUsageList2: [100, 50, 30, 20, 10],
             isReady: false,
             memUsageList: [],
+            counter: 0,
         };
 
         constructor(props) {
             super(props);
         }
+
+        intervalHandle = null;
+
+
+        tick() {
+            let _counter = this.state.counter;
+            _counter = _counter + 1;
+            this.setState({
+                counter: _counter
+            })
+        }
+
 
         makeSelectBoxList(arrList, keyName) {
             let newArrList = [];
@@ -144,6 +157,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         componentDidMount = async () => {
+
+            this.intervalHandle = setInterval(this.tick.bind(this), 1000);
+
             this.setState({
                 loading: true,
                 loading0: true,
@@ -155,17 +171,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             console.log('appInstanceList====>', appInstanceList);
 
-            //todo:앱인스턴스 리스트로 Mem,CPU chartData를 가지고 온다.
+
+            //todo:앱인스턴스 리스트로 Mem,CPU chartData를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo:Bring Mem and CPU chart Data with  App Instance List.
-            //@todo: 최근 100개 날짜의 데이터만을 끌어온다
-            /*let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
+            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
             let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
             let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-            console.log('_result===>', cpuOrMemUsageList);*/
+            console.log('_result===>', cpuOrMemUsageList);
 
-            //todo: local json for Test(last 100 datas)
-            let cpuUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/cpuUsage_100Count')
-            let memUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/memUsage_100Count')
+
+            //todo: ################################################################
+            //todo: (last 100 datas) - Local Fake JSON for test
+            //todo: ################################################################
+            /*let cpuUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/cpuUsage_100Count')
+            let memUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/memUsage_100Count')*/
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
@@ -186,6 +205,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         loading: false,
                         loading0: false,
                         isReady: true,
+                    },()=>{
+                        clearInterval(this.intervalHandle)
                     })
                 }, 350)
             })
@@ -347,13 +368,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-
         render() {
 
+
+            //todo:Components showing when the loading of graph data is not completed.
             if (!this.state.isReady) {
-
                 return (
-
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
                             {/*#######################*/}
@@ -362,25 +382,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '25%', left: '42%'}}>
                                 {/*<CircularProgress style={{color: 'red'}}/>*/}
-                                <div style={{marginLeft: -120}}>
+                                <div style={{marginLeft: -120, display:'flex', flexDirection:'row'}}>
                                     <Lottie
                                         options={{
                                             loop: true,
                                             autoplay: true,
-                                            animationData: animationData,
+                                            animationData: require('../lotties/79-animated-graph'),
                                             rendererSettings: {
                                                 preserveAspectRatio: 'xMidYMid slice'
                                             }
                                         }}
-                                        height={350}
-                                        width={350}
+                                        height={120}
+                                        width={120}
                                         isStopped={false}
                                         isPaused={false}
                                     />
                                 </div>
-                                <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop: -80}}>Loading
+                                <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop: 20}}>Loading
                                     data now. It takes more
                                     than 15 seconds.
+                                </div>
+                                <div style={{marginLeft:53 , fontSize: 50, color: 'white', marginTop: 10, height:150}}>
+                                    {this.state.counter}
                                 </div>
                             </div>
                         </Grid.Column>
@@ -439,7 +462,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 placeholder='Cluster'
                                                                 selection
                                                                 options={this.state.clusterList}
-                                                                style={{width:250}}
+                                                                style={{width: 250}}
 
 
                                                             />
@@ -497,7 +520,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 placeholder='Cluster'
                                                                 selection
                                                                 options={this.state.clusterList}
-                                                                style={{width:250}}
+                                                                style={{width: 250}}
                                                             />
                                                         </div>
                                                     </div>

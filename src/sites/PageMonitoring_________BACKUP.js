@@ -22,7 +22,7 @@ import {
 } from "../services/PageMonitoringService";
 import {HARDWARE_TYPE} from "../shared/Constants";
 import Lottie from "react-lottie";
-import animationData from '../lotties/loader003'
+import animationData from '../lotties/material-loading'
 
 const {Column, Row} = Grid;
 
@@ -518,13 +518,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         preserveAspectRatio: 'xMidYMid slice'
                                     }
                                 }}
-                                height={350}
-                                width={350}
+                                height={80}
+                                width={80}
                                 isStopped={false}
                                 isPaused={false}
                             />
                         </div>
-                        <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop:-80}}>Loading data now. It takes more
+                        <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop:-125}}>Loading data now. It takes more
                             than 15 seconds.
                         </div>
                     </div>
