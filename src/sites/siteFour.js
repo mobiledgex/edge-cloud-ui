@@ -166,7 +166,7 @@ class SiteFour extends React.Component {
             {label:'Apps', icon:'apps', pg:5},
             {label:'App Instances', icon:'storage', pg:6},
             {label:'Audit Log', icon:'check', pg:'audits'},
-            {label: 'Monitoring_REAL', icon: 'tv', pg: 'Monitoring2'},
+            {label: 'Monitoring_REAL', icon: 'graphic_eq', pg: 'Monitoring2'},
             {label: 'Monitoring_TEST', icon: 'tv', pg: 'Monitoring'},//@fixme : for test(It will be deleted later.)
 
         ]

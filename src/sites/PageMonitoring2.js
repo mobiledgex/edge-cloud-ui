@@ -171,20 +171,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             console.log('appInstanceList====>', appInstanceList);
 
-
-            //todo:앱인스턴스 리스트로 Mem,CPU chartData를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
-            //todo:Bring Mem and CPU chart Data with  App Instance List.
-            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
+            //todo: ####################################################################################
+            //todo: 앱인스턴스 리스트를 가지고 Mem,CPU CHART_DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
+            //todo: Bring Mem and CPU chart Data with  App Instance List.
+            //todo: ####################################################################################
+          /*  let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
             let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
             let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-            console.log('_result===>', cpuOrMemUsageList);
+            console.log('_result===>', cpuOrMemUsageList);*/
 
 
             //todo: ################################################################
             //todo: (last 100 datas) - Local Fake JSON for test
             //todo: ################################################################
-            /*let cpuUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/cpuUsage_100Count')
-            let memUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/memUsage_100Count')*/
+            let cpuUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/cpuUsage_100Count')
+            let memUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/memUsage_100Count')
+
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
@@ -205,7 +207,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         loading: false,
                         loading0: false,
                         isReady: true,
-                    },()=>{
+                    }, () => {
                         clearInterval(this.intervalHandle)
                     })
                 }, 350)
@@ -214,10 +216,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentWillUnmount() {
-
-        }
-
-        componentWillReceiveProps(nextProps, nextContext) {
 
         }
 
@@ -238,8 +236,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let appInstanceList = await fetchAppInstanceList(arrayRegions);
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
 
-            //console.log('appInstanceListGroupByCloudlet====>' , appInstanceListGroupByCloudlet)
-
             console.log('appInstanceListGroupByCloudlet====>', appInstanceListGroupByCloudlet);
 
             await this.setState({
@@ -248,8 +244,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
-        renderHeader() {
-
+        renderHeader = () => {
             return (
                 <Grid.Row className='content_title'
                           style={{width: 'fit-content', display: 'inline-block'}}>
@@ -259,12 +254,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <button className="ui circular icon button"><i aria-hidden="true"
                                                                        className="info icon"></i></button>
                     </div>
-
                 </Grid.Row>
-
-
             )
         }
+
 
         async handleRegionChanges(value) {
             let arrayRegions = [];
@@ -369,9 +362,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         render() {
-
-
-            //todo:Components showing when the loading of graph data is not completed.
+            //todo: ####################################################################
+            //todo: Components showing when the loading of graph data is not completed.
+            //todo: ####################################################################
             if (!this.state.isReady) {
                 return (
                     <Grid.Row className='view_contents'>
@@ -382,7 +375,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '25%', left: '42%'}}>
                                 {/*<CircularProgress style={{color: 'red'}}/>*/}
-                                <div style={{marginLeft: -120, display:'flex', flexDirection:'row'}}>
+                                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
                                     <Lottie
                                         options={{
                                             loop: true,
@@ -402,7 +395,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     data now. It takes more
                                     than 15 seconds.
                                 </div>
-                                <div style={{marginLeft:53 , fontSize: 50, color: 'white', marginTop: 10, height:150}}>
+                                <div style={{marginLeft: 53, fontSize: 50, color: 'white', marginTop: 10, height: 150}}>
                                     {this.state.counter}
                                 </div>
                             </div>
