@@ -8,6 +8,6 @@ export const HARDWARE_TYPE = {
 
 }
 
-export const CHART_COLOR_LIST = ['#4cef57', '#567fef', '#f2607b', 'orange', 'blue']
+export const CHART_COLOR_LIST = ['#4cef57', 'red', 'blue', 'orange', 'grey']
 
 export const GRAPH_HEIGHT = 300
