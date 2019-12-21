@@ -358,7 +358,7 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
 
     console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsage);
 
-    let width = window.innerWidth * 0.25
+    let width = window.innerWidth * 0.255
     let height = 500 + 50;
 
     let options = {

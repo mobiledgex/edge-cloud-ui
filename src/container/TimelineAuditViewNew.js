@@ -379,19 +379,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 }}
                             >
 
-                                {/*@todo:jkjkjkjkjkhjkhjkhjkhjkhjkhjk*/}
-                                {/*@todo:11111*/}
-
+                                {/*@todo:CircularProgress(topLeft)*/}
                                 {this.props.isLoading &&
                                 <FlexBox style={{position: 'absolute', top: '5%', zIndex: 9999999}}>
-                                    {/*<CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}
-                                                      size={20}/>*/}
-                                    <Loader
-                                        type="Audio"
-                                        color="#77BD25"
-                                        height={50}
-                                        width={50}
-                                    />
+                                    <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}
+                                                      size={20}/>
 
                                 </FlexBox>
                                 }
