@@ -162,6 +162,16 @@ export const renderPieChart2_Google = () => {
 }
 
 
+/**
+ * @todo: toChunkArray for TopLeftGrid
+ * @todo: toChunkArray for TopLeftGrid
+ * @todo: toChunkArray for TopLeftGrid
+ * @todo: toChunkArray for TopLeftGrid
+ * @todo: toChunkArray for TopLeftGrid
+ * @param myArray
+ * @param chunkSize
+ * @returns {Array}
+ */
 export const toChunkArray = (myArray: any, chunkSize: any): any => {
     let results = [];
     while (myArray.length) {
