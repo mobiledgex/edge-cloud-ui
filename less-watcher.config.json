@@ -1,0 +1,7 @@
+{
+  "watchFolder": "src/css/components/antd/",
+  "outputFolder": "src/css/components/antd/css",
+  "sourceMap": true,
+  "runOnce": false,
+  "enableJs": true
+}
