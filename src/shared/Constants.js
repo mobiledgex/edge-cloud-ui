@@ -10,6 +10,4 @@ export const HARDWARE_TYPE = {
 
 export const CHART_COLOR_LIST = ['green', 'red', 'blue', 'orange', 'red']
 
-//export const CHART_COLOR_LIST = ['green', 'red', 'blue', 'orange', 'red']
-
 export const GRAPH_HEIGHT = 300

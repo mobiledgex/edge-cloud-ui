@@ -1,12 +1,10 @@
 import 'react-hot-loader'
-import React, {Component} from 'react';
+import React from 'react';
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
-import FlexBox from "flexbox-react";
 import {hot} from "react-hot-loader/root";
-import Plot from 'react-plotly.js';
 import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker} from 'antd';
 import * as reducer from "../utils";
@@ -14,15 +12,14 @@ import {formatDate, getTodayDate} from "../utils";
 //import './PageMonitoring.css';
 import {
     fetchAppInstanceList,
-    makeCpuOrMemUsageListPerInstance,
-    renderBarGraph_GoogleChart, renderInstanceOnCloudletGrid, renderLineChart_react_chartjs, renderLineChart_recharts,
-    renderLineGraph_Plot,
+    renderBarGraph_GoogleChart,
+    renderInstanceOnCloudletGrid,
+    renderLineChart_react_chartjs,
     renderPieChart2_Google,
     renderPlaceHolder
 } from "../services/PageMonitoringService";
 import {HARDWARE_TYPE} from "../shared/Constants";
 import Lottie from "react-lottie";
-import Clock from 'react-live-clock';
 
 const {Column, Row} = Grid;
 
@@ -128,12 +125,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             counter: 0,
         };
 
+        intervalHandle = null;
+
+
         constructor(props) {
             super(props);
         }
-
-        intervalHandle = null;
-
 
         tick() {
             let _counter = this.state.counter;
@@ -175,10 +172,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 Mem,CPU CHART_DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with  App Instance List.
             //todo: ####################################################################################
-          /*  let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
+            /*
+            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
             let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
             let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-            console.log('_result===>', cpuOrMemUsageList);*/
+            console.log('_result===>', cpuOrMemUsageList);
+            */
 
 
             //todo: ################################################################
@@ -258,35 +257,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-
-        async handleRegionChanges(value) {
-            let arrayRegions = [];
-            if (value === 'ALL') {
-                arrayRegions.push('EU')
-                arrayRegions.push('US')
-            } else {
-                arrayRegions.push(value);
-            }
-
-            this.setState({
-                loading0: true,
-                appInstanceListSortByCloudlet: [],
-            })
-            let appInstanceList = await fetchAppInstanceList(arrayRegions);
-            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
-
-            //console.log('appInstanceListGroupByCloudlet====>' , appInstanceListGroupByCloudlet)
-
-            console.log('appInstanceListGroupByCloudlet====>', appInstanceListGroupByCloudlet);
-
-            await this.setState({
-                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                loading0: false,
-            })
-        }
-
         renderSelectBox() {
-
             let options1 = [
                 {value: 'ALL', text: 'ALL'},
                 {value: 'EU', text: 'EU'},
@@ -295,7 +266,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             ]
 
             let dropDownWidth = 250;
-
             return (
 
                 <div className='page_monitoring_select_row'>
@@ -362,16 +332,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         render() {
-            //todo: ####################################################################
+            //todo:####################################################################
             //todo: Components showing when the loading of graph data is not completed.
-            //todo: ####################################################################
+            //todo:####################################################################
             if (!this.state.isReady) {
                 return (
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
-                            {/*#######################*/}
-                            {/*컨텐츠 해더 부분        ..*/}
-                            {/*#######################*/}
+                            {/*todo:####################*/}
+                            {/*todo:Content Header part      */}
+                            {/*todo:####################*/}
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '25%', left: '42%'}}>
                                 {/*<CircularProgress style={{color: 'red'}}/>*/}
@@ -410,24 +380,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 <Grid.Row className='view_contents'>
                     <Grid.Column className='contents_body'>
-                        {/*#######################*/}
-                        {/*todo : Content Header part*/}
-                        {/*#######################*/}
+                        {/*todo:####################*/}
+                        {/*todo:Content Header part      */}
+                        {/*todo:####################*/}
                         {this.renderHeader()}
 
-
-                        {/*##########################*/}
-                        {/*todo :  Content body part */}
-                        {/*##########################*/}
+                        {/*todo:####################*/}
+                        {/*todo:Content Body part   */}
+                        {/*todo:####################*/}
                         <Grid.Row className='site_content_body'>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
 
                                     <div className="page_monitoring">
+                                        {/*todo:####################*/}
+                                        {/*todo:render SelectBox    */}
+                                        {/*todo:####################*/}
                                         {this.renderSelectBox()}
                                         <div className='page_monitoring_dashboard'>
-                                            {/*_____row____1111*/}
+                                            {/*_____row____1*/}
+                                            {/*_____row____1*/}
+                                            {/*_____row____1*/}
                                             <div className='page_monitoring_row'>
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
@@ -480,9 +454,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 </div>
                                             </div>
 
-                                            {/*row_____22222222*/}
-                                            {/*row_____22222222*/}
-                                            {/*row_____22222222*/}
+                                            {/*_____row______2*/}
+                                            {/*_____row______2*/}
+                                            {/*_____row______2*/}
                                             <div className='page_monitoring_row'>
 
                                                 {/* ___col___4*/}
