@@ -111,6 +111,19 @@ export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string 
  */
 export const renderPieChart2_Google = () => {
 
+
+    let colorList = CHART_COLOR_LIST;
+
+    let newColorList = []
+    for (let i in colorList) {
+
+        let itemOne = {
+            color: colorList[i],
+        }
+        newColorList.push(itemOne)
+    }
+
+
     return (
         <div className="pieChart">
             <Chart
@@ -119,31 +132,43 @@ export const renderPieChart2_Google = () => {
 
                 chartType="PieChart"
                 data={[
-                    ["Age", "Weight"], ["a", 30], ["b", 40], ['c', 30]
+                    ["Age", "Weight"], ["app_A", 30], ["app_B", 10], ['appd', 30], ['app_E', 10], ['app_Z', 20]
                 ]}
+
                 options={{
+
+                    is3D: true,
                     title: "",
                     chartArea: {left: 0, right: 150, top: 20, width: "50%", height: "80%"},
                     pieHole: 1.0,
-                    slices: [
-                        {
-                            color: "#2BB673"
-                        },
-                        {
-                            color: "red"
-                        },
-                        {
-                            color: "#007fad"
-                        },
-                        {
-                            color: "#e9a227"
-                        }
-                    ],
+                    /* slices: [
+                         {
+                             color: "red"
+                         },
+                         {
+                             color: "blue"
+                         },
+                         {
+                             color: "#007fad"
+                         },
+                         {
+                             color: "#e9a227"
+                         },
+                         {
+                             color: "grey"
+                         }
+                     ],
+                     */
+                    pieSliceTextStyle: {
+                        color: 'black',
+                        fontSize: 22,
+                    },
+                    slices: newColorList,
                     legend: {
                         position: "bottom",
                         alignment: "center",
                         textStyle: {
-                            color: "233238",
+                            color: "black",
                             fontSize: 14
                         }
                     },
@@ -151,7 +176,7 @@ export const renderPieChart2_Google = () => {
                         showColorCode: true
                     },
                     fontName: "Roboto",
-                    fontColor: 'white',
+                    fontColor: 'black',
                     backgroundColor: 'black',
                 }}
                 graph_id="PieChart"
