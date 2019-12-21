@@ -440,40 +440,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             <Dropdown
                                                                 placeholder='Cluster'
                                                                 selection
-                                                                options={
-                                                                    [
-                                                                        {
-                                                                            key: '24',
-                                                                            value: '24',
-                                                                            flag: '24',
-                                                                            text: 'Last 24 hours'
-                                                                        },
-                                                                        {
-                                                                            key: '18',
-                                                                            value: '18',
-                                                                            flag: '18',
-                                                                            text: 'Last 18 hours'
-                                                                        },
-                                                                        {
-                                                                            key: '12',
-                                                                            value: '12',
-                                                                            flag: '12',
-                                                                            text: 'Last 12 hours'
-                                                                        },
-                                                                        {
-                                                                            key: '6',
-                                                                            value: '6',
-                                                                            flag: '6',
-                                                                            text: 'Last 6 hours'
-                                                                        },
-                                                                        {
-                                                                            key: '1',
-                                                                            value: '1',
-                                                                            flag: '1',
-                                                                            text: 'Last hour'
-                                                                        },
-                                                                    ]
-                                                                }
+                                                                options={this.state.clusterList}
+
+
                                                             />
                                                         </div>
                                                     </div>
@@ -528,42 +497,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             <Dropdown
                                                                 placeholder='Cluster'
                                                                 selection
-                                                                options={
-                                                                    [
-                                                                        {
-                                                                            key: '24',
-                                                                            value: '24',
-                                                                            flag: '24',
-                                                                            text: 'Last 24 hours'
-                                                                        },
-                                                                        {
-                                                                            key: '18',
-                                                                            value: '18',
-                                                                            flag: '18',
-                                                                            text: 'Last 18 hours'
-                                                                        },
-                                                                        {
-                                                                            key: '12',
-                                                                            value: '12',
-                                                                            flag: '12',
-                                                                            text: 'Last 12 hours'
-                                                                        },
-                                                                        {
-                                                                            key: '6',
-                                                                            value: '6',
-                                                                            flag: '6',
-                                                                            text: 'Last 6 hours'
-                                                                        },
-                                                                        {
-                                                                            key: '1',
-                                                                            value: '1',
-                                                                            flag: '1',
-                                                                            text: 'Last hour'
-                                                                        },
-
-                                                                    ]
-
-                                                                }
+                                                                options={this.state.clusterList}
                                                             />
                                                         </div>
                                                     </div>
