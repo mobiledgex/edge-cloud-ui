@@ -10,6 +10,7 @@ import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
 import {CHART_COLOR_LIST, HARDWARE_TYPE} from "../shared/Constants";
 import {Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
+import Lottie from "react-lottie";
 
 
 /**
@@ -178,7 +179,23 @@ export const renderPlaceHolder = () => {
     let boxWidth = window.innerWidth / 10 * 4.55;
     return (
         <div className='page_monitoring_grid_box_blank2'>
-            <CircularProgress style={{zIndex: 999999999, color: '#79BF14'}}/>
+            {/*<CircularProgress style={{zIndex: 999999999, color: '#79BF14', marginTop:-50}}/>*/}
+            <div style={{marginTop: -50}}>
+                <Lottie
+                    options={{
+                        loop: true,
+                        autoplay: true,
+                        animationData: require('../lotties/loader001'),
+                        rendererSettings: {
+                            preserveAspectRatio: 'xMidYMid slice'
+                        }
+                    }}
+                    height={120}
+                    width={120}
+                    isStopped={false}
+                    isPaused={false}
+                />
+            </div>
         </div>
     )
 }
@@ -523,7 +540,6 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
         </div>
     );
 }
-
 
 
 /**
