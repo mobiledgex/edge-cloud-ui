@@ -62,6 +62,19 @@
     padding: 10px;
     margin-right: 20px;
 }
+.page_monitoring_column_kj {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex-grow: 1;
+    overflow: hidden;
+    border: 1px solid #4b4d52;
+    border-radius: 5px;
+    padding: 10px;
+    margin-right: 20px;
+    height:320px;
+}
+
 .page_monitoring_column:last-child {
     margin-right:0px;
 }

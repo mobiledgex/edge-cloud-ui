@@ -78,27 +78,29 @@ export const renderLineChart2 = () => {
     )
 }
 
-export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string = 'cpu') => {
+export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU) => {
 
     console.log('cpuUsageList===>', usageList);
 
     let chartDataList = [];
-    chartDataList.push(["Element", "CPU USAGE", {role: "style"}])
+    chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}])
     //for (let index in cpuUsageList) {
     for (let index = 0; index < 5; index++) {
         let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...", hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, CHART_COLOR_LIST[index]]
         chartDataList.push(barDataOne);
     }
 
+    let _height = window.innerHeight * 0.33 + 50
 
     return (
         <Chart
-            width={window.innerWidth * 0.33}
-            height={window.innerHeight * 0.33 + 50}
+            width={window.innerWidth * 0.31}
+            height={250}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
             options={{
+
                 is3D: false,
                 title: '',
                 titleTextStyle: {
@@ -109,7 +111,7 @@ export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string 
                     italic: <boolean>   // true of false*/
                 },
                 titlePosition: 'out',
-                chartArea: {width: '50%',},
+                chartArea: {left: 100, right: 150, top: 20, width: "50%", height: "80%"},
                 legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
                 hAxis: {
                     title: '',
@@ -164,13 +166,15 @@ export const renderPieChart2_Google = () => {
         <div className="pieChart">
             <Chart
                 width={window.innerWidth * 0.33}
-                height={window.innerHeight * 0.33 + 50}
+                height={250}
+
                 chartType="PieChart"
                 data={[
                     ["Age", "Weight"], ["a", 30], ["b", 40], ['c', 30]
                 ]}
                 options={{
                     title: "",
+                    chartArea: {left: 0, right: 150, top: 20, width: "50%", height: "80%"},
                     pieHole: 1.0,
                     slices: [
                         {
@@ -196,12 +200,6 @@ export const renderPieChart2_Google = () => {
                     },
                     tooltip: {
                         showColorCode: true
-                    },
-                    chartArea: {
-                        left: 0,
-                        top: 25,
-                        width: "100%",
-                        height: "65%"
                     },
                     fontName: "Roboto",
                     fontColor: 'white',
@@ -267,36 +265,31 @@ export const renderLineChart_recharts = (cpuUsageList, hardwareType: string) => 
     );
 }
 
-export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsageDesc, hardwareType: string) => {
+export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
+    console.log('itemeLength===>', cpuUsageListPerInstanceSortByUsage);
 
-    console.log('itemeLength===>', cpuUsageListPerInstanceSortByUsageDesc);
-
-
-    console.log('itemeLength===>', cpuUsageListPerInstanceSortByUsageDesc);
-
-    console.log('itemeLength===>', cpuUsageListPerInstanceSortByUsageDesc);
 
     let instanceAppName = ''
     let instanceNameList = [];
     let cpuUsageSetList = []
-    let dateList = []
-    for (let i in cpuUsageListPerInstanceSortByUsageDesc) {
-        let values = cpuUsageListPerInstanceSortByUsageDesc[i].values
+    let dateTimeList = []
+    for (let i in cpuUsageListPerInstanceSortByUsage) {
+        let seriesValues = cpuUsageListPerInstanceSortByUsage[i].values
 
-        instanceAppName = cpuUsageListPerInstanceSortByUsageDesc[i].instance.AppName
+        instanceAppName = cpuUsageListPerInstanceSortByUsage[i].instance.AppName
         let usageList = [];
 
-        for (let j in values) {
+        for (let j in seriesValues) {
 
             let usageOne = 0;
             if (hardwareType === HARDWARE_TYPE.CPU) {
-                usageOne = values[j]["4"];
+                usageOne = seriesValues[j]["4"];
             } else {
-                usageOne = values[j]["5"];
+                usageOne = seriesValues[j]["5"];
             }
 
             usageList.push(usageOne);
-            dateList.push(values[j]["0"]);
+            dateTimeList.push(seriesValues[j]["0"]);
         }
 
         instanceNameList.push(instanceAppName)
@@ -304,11 +297,7 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
     }
 
 
-    console.log('instanceNameList===>', instanceNameList);
-    console.log('cpuUsageSetList===>', cpuUsageSetList);
-
-
-    let finalDataSets = [];
+    let finalSeriesDataSets = [];
 
     for (let i in cpuUsageSetList) {
         //@todo: top5 만을 추린다
@@ -335,35 +324,92 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
                 data: cpuUsageSetList[i],
             }
 
-            finalDataSets.push(datasetsOne)
+            finalSeriesDataSets.push(datasetsOne)
         }
 
     }
 
     //@todo: last를 100개로 (최근데이타100개)  설정 했으므로 날짜를 100개로 잘라준다
-    let newDateList = []
-    for (let i in dateList) {
+    let newDateTimeList = []
+    for (let i in dateTimeList) {
         if (i < 100) {
-            newDateList.push(dateList[i])
+
+            console.log('dateTimeList===>',  dateTimeList[i]);
+
+            let splitDateTimeArrayList= dateTimeList[i].toString().split(".");
+
+            //console.log('splitDateTimeArrayList==>',  splitDateTimeArrayList[0]);
+
+            newDateTimeList.push(splitDateTimeArrayList[0].replace("T", "T"))
         }
 
     }
 
+
+
+
+
+
     const data = {
-        labels: newDateList, //todo:하단(X)축에 랜더링 되는 DateList.(LabelList)
-        datasets: finalDataSets //todo: 렌더링할 데이터셋
+        labels: newDateTimeList, //todo:하단(X)축에 랜더링 되는 DateList.(LabelList)
+        datasets: finalSeriesDataSets //todo: 렌더링할 데이터셋
     };
 
 
-    console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsageDesc);
+    console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsage);
 
-    let width = window.innerWidth * 0.28
+    let width = window.innerWidth * 0.25
     let height = 500 + 50;
+
+    let options = {
+        maintainAspectRatio: false,
+        responsive: true,
+        layout: {
+            padding: {
+                left: 0,
+                right: 10,
+                top: 0,
+                bottom: 0
+            }
+        },
+        legend: {
+            position: 'top',
+            labels: {
+                boxWidth: 10,
+                fontColor:'white'
+            }
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true,
+                    fontColor: 'white'
+                },
+            }],
+            xAxes: [{
+                ticks: {
+                    fontColor: 'white'
+                },
+            }]
+        }
+
+    }
+
+    //todo :#######################
+    //todo : chart rendering part
+    //todo :#######################
     return (
         <div>
-            <ReactChartJs width={width} height={height} data={data} options={{}}/>
+            <ReactChartJs
+                width={width}
+                height={300}
+                data={data}
+                options={options}
+            />
         </div>
     );
+
+
 }
 
 

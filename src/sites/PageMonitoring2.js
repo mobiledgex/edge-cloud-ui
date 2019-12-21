@@ -11,7 +11,7 @@ import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
-import './PageMonitoring.css';
+//import './PageMonitoring.css';
 import {
     fetchAppInstanceList,
     makeCpuOrMemUsageListPerInstance,
@@ -159,15 +159,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo:Bring Mem and CPU chart Data with  App Instance List.
             //@todo: 최근 100개 날짜의 데이터만을 끌어온다
             /*let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
-            let cpuUsageList = cpuOrMemUsageList[0]
-            let memUsageList = cpuOrMemUsageList[1]
+            let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
+            let memUsageListPerOneInstance = cpuOrMemUsageList[1]
             console.log('_result===>', cpuOrMemUsageList);*/
 
             //todo: local json for Test(last 100 datas)
             let cpuUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/cpuUsage_100Count')
             let memUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/memUsage_100Count')
-
-            console.log('memUsageList===>', memUsageListPerOneInstance);
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
@@ -418,7 +416,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
-                                                <div className='page_monitoring_column'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Status Of Launch
@@ -431,16 +429,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___2*/}
                                                 {/* ___col___2*/}
                                                 {/* ___col___2*/}
-                                                <div className='page_monitoring_column'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Top 5 of CPU Usage
                                                         </div>
-                                                        <div className='page_monitoring_column_select'>
+                                                        <div className='page_monitoring_column_kj_select'>
                                                             <Dropdown
                                                                 placeholder='Cluster'
                                                                 selection
                                                                 options={this.state.clusterList}
+                                                                style={{width:250}}
 
 
                                                             />
@@ -453,7 +452,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___3*/}
                                                 {/* ___col___3*/}
                                                 {/* ___col___3*/}
-                                                <div className='page_monitoring_column'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Transition Of CPU
@@ -473,7 +472,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___4*/}
                                                 {/* ___col___4*/}
                                                 {/* ___col___4*/}
-                                                <div className='page_monitoring_column'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Perfomance Of Apps
@@ -488,16 +487,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___5*/}
                                                 {/* ___col___5*/}
                                                 {/* ___col___5*/}
-                                                <div className='page_monitoring_column'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             State of MEM Usage
                                                         </div>
-                                                        <div className='page_monitoring_column_select'>
+                                                        <div className='page_monitoring_column_kj_select'>
                                                             <Dropdown
                                                                 placeholder='Cluster'
                                                                 selection
                                                                 options={this.state.clusterList}
+                                                                style={{width:250}}
                                                             />
                                                         </div>
                                                     </div>
@@ -509,7 +509,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___6*/}
                                                 {/* ___col___6*/}
                                                 {/* ___col___6*/}
-                                                <div className='page_monitoring_column'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Transition Of Mem
