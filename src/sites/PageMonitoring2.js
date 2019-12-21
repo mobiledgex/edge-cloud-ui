@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import * as actions from '../actions';
 import {hot} from "react-hot-loader/root";
 import {Dropdown, Grid,} from "semantic-ui-react";
-import {DatePicker} from 'antd';
+import {DatePicker, notification} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
 //import './PageMonitoring.css';
@@ -269,7 +269,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_select_area'>
                         <label className='page_monitoring_select_reset'
                                onClick={() => {
-                                   alert('Reset All')
+                                   notification.success({
+                                       duration: 0.5,
+                                       message: 'reset all',
+                                   });
                                }}>Reset All</label>
                         <Dropdown
                             placeholder='REGION'
