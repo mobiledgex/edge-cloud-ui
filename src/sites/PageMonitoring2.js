@@ -181,9 +181,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: ################################################################
             //todo: (last 100 datas) - Local Fake JSON FOR TEST
             //todo: ################################################################
-            let cpuUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/cpuUsage_100Count')
-            let memUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/memUsage_100Count')
-
+            let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
+            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
