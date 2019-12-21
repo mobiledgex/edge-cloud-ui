@@ -15,7 +15,7 @@ import './PageMonitoring.css';
 import {
     fetchAppInstanceList,
     makeCpuOrMemUsageListPerInstance,
-    renderBarGraph_Google, renderLineChart_react_chartjs, renderLineChart_recharts,
+    renderBarGraph_Google, renderInstanceOnCloudletGrid, renderLineChart_react_chartjs, renderLineChart_recharts,
     renderLineGraph_Plot,
     renderPieChart2_Google,
     renderPlaceHolder
@@ -23,10 +23,9 @@ import {
 import {HARDWARE_TYPE} from "../shared/Constants";
 import Lottie from "react-lottie";
 import animationData from '../lotties/loader003'
+import {cutArrayList} from "../services/SharedService";
 
 const {Column, Row} = Grid;
-
-
 
 
 const mapStateToProps = (state) => {
@@ -158,19 +157,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //todo:앱인스턴스 리스트로 Mem,CPU chartData를 가지고 온다.
             //todo:Bring Mem and CPU chart Data with  App Instance List.
-            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM)])
+            //@todo: 최근 100개 날짜의 데이터만을 끌어온다
+            /*let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
             let cpuUsageList = cpuOrMemUsageList[0]
             let memUsageList = cpuOrMemUsageList[1]
-            console.log('_result===>', cpuOrMemUsageList);
+            console.log('_result===>', cpuOrMemUsageList);*/
 
+            //todo: local json for Test(last 100 datas)
+            let cpuUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/cpuUsage_100Count')
+            let memUsageListPerOneInstance = require('../TEMP_KYUNGJOOON/memUsage_100Count')
 
-
-            //todo: local json for Test
-            /*let cpuUsageList = require('../TEMP_KYUNGJOOON/cpuUsage')
-            let memUsageList = require('../TEMP_KYUNGJOOON/memUsage')*/
-
-
-            console.log('memUsageList===>', memUsageList);
+            console.log('memUsageList===>', memUsageListPerOneInstance);
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
@@ -180,8 +177,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 cloudletList: cloudletList,
                 clusterList: clusterList,
-                cpuUsageList: cpuUsageList,
-                memUsageList: memUsageList,
+                cpuUsageList: cpuUsageListPerOneInstance,
+                memUsageList: memUsageListPerOneInstance,
             });
             console.log('clusterList====>', clusterList);
 
@@ -368,89 +365,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any) => {
-            // let boxWidth = window.innerWidth / 10 * 2.55;
 
-            let cloudletCountList = []
-            for (let i in appInstanceListSortByCloudlet) {
-                console.log('renderGrid===title>', appInstanceListSortByCloudlet[i][0].Cloudlet);
-                console.log('renderGrid===length>', appInstanceListSortByCloudlet[i].length);
-                cloudletCountList.push({
-                    name: appInstanceListSortByCloudlet[i][0].Cloudlet,
-                    length: appInstanceListSortByCloudlet[i].length,
-                })
-            }
-
-            function toChunkArray(myArray: any, chunkSize: any): any {
-                let results = [];
-                while (myArray.length) {
-                    results.push(myArray.splice(0, chunkSize));
-                }
-                return results;
-            }
-
-            let chunkedArraysOfColSize = toChunkArray(cloudletCountList, 3);
-
-            console.log('chunkedArraysOfColSize_length===>', chunkedArraysOfColSize.length);
-            //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
-
-            return (
-                <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-                    {chunkedArraysOfColSize.map((colSizeArray, index) =>
-                        <div className='page_monitoring_grid' key={index.toString()}>
-                            {colSizeArray.map((item) =>
-                                <div className='page_monitoring_grid_box'>
-                                    <FlexBox style={{
-                                        fontSize: 15,
-                                        color: '#fff',
-                                        marginTop: 10,
-                                    }}>
-                                        {item.name.toString().substring(0, 19) + "..."}
-                                    </FlexBox>
-                                    <FlexBox style={{
-                                        marginTop: 0,
-                                        fontSize: 50,
-                                        color: '#29a1ff',
-                                    }}>
-                                        {item.length}
-                                    </FlexBox>
-
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
-                    {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
-                    {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
-                    {chunkedArraysOfColSize.length === 1 &&
-                    <div className='page_monitoring_grid_box_blank2'>
-                        {[1, 2, 3].map((item) =>
-                            <div className='page_monitoring_grid_box_blank2' style={{backgroundColor: 'transprent'}}>
-                                <FlexBox style={{
-                                    fontSize: 15,
-                                    color: '#fff',
-                                    marginTop: 10,
-                                }}>
-                                    {/*blank*/}
-                                </FlexBox>
-                                <FlexBox style={{
-                                    marginTop: 0,
-                                    fontSize: 50,
-                                    color: 'transprent',
-                                }}>
-                                    {/*blank*/}
-                                </FlexBox>
-
-                            </div>
-                        )}
-                    </div>
-
-                    }
-
-                </div>
-            );
-        }
 
         render() {
 
@@ -527,7 +442,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading0 ? renderPlaceHolder() : this.renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet)}
+                                                        {this.state.loading0 ? renderPlaceHolder() : renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet)}
                                                     </div>
                                                 </div>
                                                 {/* ___col___2*/}
@@ -683,8 +598,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             Transition Of Mem
                                                         </div>
                                                     </div>
+
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
+                                                        {this.state.loading ? renderPlaceHolder() : renderLineChart_react_chartjs(this.state.memUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
                                                 </div>
                                             </div>

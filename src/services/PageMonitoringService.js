@@ -10,7 +10,8 @@ import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
 import {HARDWARE_TYPE} from "../shared/Constants";
 import CanvasJSReact from '../assets/canvasjs.react';
 import {Brush, CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis, Legend} from "recharts";
-import {Line as Line2} from 'react-chartjs-2';
+import {Line as ReactChartJs} from 'react-chartjs-2';
+import FlexBox from "flexbox-react";
 
 const {CanvasJSChart} = CanvasJSReact
 
@@ -94,8 +95,8 @@ export const renderBarGraph_Google = (usageList: any, hardwareType: string = 'cp
 
     return (
         <Chart
-            width={'700px'}
-            height={'350px'}
+            width={window.innerWidth * 0.33}
+            height={window.innerHeight * 0.33 + 50}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -164,8 +165,8 @@ export const renderPieChart2_Google = () => {
     return (
         <div className="pieChart">
             <Chart
-                width={'700px'}
-                height={'350px'}
+                width={window.innerWidth * 0.33}
+                height={window.innerHeight * 0.33 + 50}
                 chartType="PieChart"
                 data={[
                     ["Age", "Weight"], ["a", 30], ["b", 40], ['c', 30]
@@ -280,7 +281,7 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
     let instanceAppName = ''
     let instanceNameList = [];
     let cpuUsageSetList = []
-    let dateList =[]
+    let dateList = []
     for (let i in cpuUsageListPerInstanceSortByUsageDesc) {
         let values = cpuUsageListPerInstanceSortByUsageDesc[i].values
 
@@ -289,7 +290,13 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
 
         for (let j in values) {
 
-            let usageOne = values[j]["4"];
+            let usageOne = 0;
+            if (hardwareType === HARDWARE_TYPE.CPU) {
+                usageOne = values[j]["4"];
+            } else {
+                usageOne = values[j]["5"];
+            }
+
             usageList.push(usageOne);
             dateList.push(values[j]["0"]);
         }
@@ -302,145 +309,62 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
     console.log('instanceNameList===>', instanceNameList);
     console.log('cpuUsageSetList===>', cpuUsageSetList);
 
-    let colorList= ['red', 'blue', 'green', 'orange', 'pink']
+    let colorList = ['red', 'blue', 'green', 'orange', 'pink']
 
     let finalDataSets = [];
 
     for (let i in cpuUsageSetList) {
         //@todo: top5 만을 추린다
-       if ( i<5){
-           let datasetsOne = {
-               label: instanceNameList[i],
-               fill: false,
-               lineTension: 0.1,
-               backgroundColor: colorList[i],
-               borderColor: colorList[i],
-               borderCapStyle: 'butt',
-               borderDash: [],
-               borderDashOffset: 0.0,
-               borderJoinStyle: 'miter',
-               pointBorderColor: 'rgba(75,192,192,1)',
-               pointBackgroundColor: '#fff',
-               pointBorderWidth: 1,
-               pointHoverRadius: 5,
-               pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-               pointHoverBorderColor: 'rgba(220,220,220,1)',
-               pointHoverBorderWidth: 2,
-               pointRadius: 1,
-               pointHitRadius: 10,
-               data: cpuUsageSetList[i],
-           }
+        if (i < 5) {
+            let datasetsOne = {
+                label: instanceNameList[i],
+                fill: false,
+                lineTension: 0.1,
+                backgroundColor: colorList[i],
+                borderColor: colorList[i],
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: 'rgba(75,192,192,1)',
+                pointBackgroundColor: '#fff',
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                pointHoverBorderColor: 'rgba(220,220,220,1)',
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 10,
+                data: cpuUsageSetList[i],
+            }
 
-           finalDataSets.push(datasetsOne)
-       }
+            finalDataSets.push(datasetsOne)
+        }
 
     }
-    let newDateList=[]
-    for (let i in dateList){
-        if ( i<100){
+
+    //@todo: last를 100개로 (최근데이타100개)  설정 했으므로 날짜를 100개로 잘라준다
+    let newDateList = []
+    for (let i in dateList) {
+        if (i < 100) {
             newDateList.push(dateList[i])
         }
 
     }
 
     const data = {
-        labels: newDateList,
-        datasets: finalDataSets
-        /* datasets: [
-             {
-                 label: 'CPU1',
-                 fill: false,
-                 lineTension: 0.1,
-                 backgroundColor: 'rgba(75,192,192,0.4)',
-                 borderColor: 'rgba(75,192,192,1)',
-                 borderCapStyle: 'butt',
-                 borderDash: [],
-                 borderDashOffset: 0.0,
-                 borderJoinStyle: 'miter',
-                 pointBorderColor: 'rgba(75,192,192,1)',
-                 pointBackgroundColor: '#fff',
-                 pointBorderWidth: 1,
-                 pointHoverRadius: 5,
-                 pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                 pointHoverBorderColor: 'rgba(220,220,220,1)',
-                 pointHoverBorderWidth: 2,
-                 pointRadius: 1,
-                 pointHitRadius: 10,
-                 data: [65, 59, 80, 81, 56, 55, 40]
-             },
-             {
-                 label: 'CPU2',
-                 fill: false,
-                 lineTension: 0.1,
-                 backgroundColor: 'green',
-                 borderColor: 'green',
-                 borderCapStyle: 'butt',
-                 borderDash: [],
-                 borderDashOffset: 0.0,
-                 borderJoinStyle: 'miter',
-                 pointBorderColor: 'rgba(75,192,192,1)',
-                 pointBackgroundColor: '#fff',
-                 pointBorderWidth: 1,
-                 pointHoverRadius: 5,
-                 pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                 pointHoverBorderColor: 'rgba(220,220,220,1)',
-                 pointHoverBorderWidth: 2,
-                 pointRadius: 1,
-                 pointHitRadius: 10,
-                 data: [1, 2, 3, 33, 55, 77, 99]
-             },
-             {
-                 label: 'CPU3',
-                 fill: false,
-                 lineTension: 0.1,
-                 backgroundColor: 'rgba(157,0,0,0.4)',
-                 borderColor: 'rgb(157,0,0)',
-                 borderCapStyle: 'butt',
-                 borderDash: [],
-                 borderDashOffset: 0.0,
-                 borderJoinStyle: 'miter',
-                 pointBorderColor: 'rgba(75,192,192,1)',
-                 pointBackgroundColor: '#fff',
-                 pointBorderWidth: 1,
-                 pointHoverRadius: 5,
-                 pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                 pointHoverBorderColor: 'rgba(220,220,220,1)',
-                 pointHoverBorderWidth: 2,
-                 pointRadius: 1,
-                 pointHitRadius: 10,
-                 data: [5, 3, 7, 81, 12, 65, 23]
-             },
-             {
-                 label: 'CPU4',
-                 fill: false,
-                 lineTension: 0.1,
-                 backgroundColor: 'blue',
-                 borderColor: 'blue',
-                 borderCapStyle: 'butt',
-                 borderDash: [],
-                 borderDashOffset: 0.0,
-                 borderJoinStyle: 'miter',
-                 pointBorderColor: 'rgba(75,192,192,1)',
-                 pointBackgroundColor: '#fff',
-                 pointBorderWidth: 1,
-                 pointHoverRadius: 5,
-                 pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                 pointHoverBorderColor: 'rgba(220,220,220,1)',
-                 pointHoverBorderWidth: 2,
-                 pointRadius: 1,
-                 pointHitRadius: 10,
-                 data: [55, 33, 27, 51, 15, 25, 53]
-             }
-         ]*/
+        labels: newDateList, //todo:하단(X)축에 랜더링 되는 DateList.(LabelList)
+        datasets: finalDataSets //todo: 렌더링할 데이터셋
     };
 
 
     console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsageDesc);
 
-
+    let width = window.innerWidth * 0.33
+    let height = 500 + 50;
     return (
         <div>
-            <Line2 width={850} height={600} data={data} options={{}}/>
+            <ReactChartJs width={width} height={height} data={data} options={{}}/>
         </div>
     );
 }
@@ -539,6 +463,90 @@ export const renderLineGraph_Plot = () => {
             }}
         />
     )
+}
+
+export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any) => {
+    // let boxWidth = window.innerWidth / 10 * 2.55;
+
+    let cloudletCountList = []
+    for (let i in appInstanceListSortByCloudlet) {
+        console.log('renderGrid===title>', appInstanceListSortByCloudlet[i][0].Cloudlet);
+        console.log('renderGrid===length>', appInstanceListSortByCloudlet[i].length);
+        cloudletCountList.push({
+            name: appInstanceListSortByCloudlet[i][0].Cloudlet,
+            length: appInstanceListSortByCloudlet[i].length,
+        })
+    }
+
+    function toChunkArray(myArray: any, chunkSize: any): any {
+        let results = [];
+        while (myArray.length) {
+            results.push(myArray.splice(0, chunkSize));
+        }
+        return results;
+    }
+
+    let chunkedArraysOfColSize = toChunkArray(cloudletCountList, 3);
+
+    console.log('chunkedArraysOfColSize_length===>', chunkedArraysOfColSize.length);
+    //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
+
+    return (
+        <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+            {chunkedArraysOfColSize.map((colSizeArray, index) =>
+                <div className='page_monitoring_grid' key={index.toString()}>
+                    {colSizeArray.map((item) =>
+                        <div className='page_monitoring_grid_box'>
+                            <FlexBox style={{
+                                fontSize: 15,
+                                color: '#fff',
+                                marginTop: 10,
+                            }}>
+                                {item.name.toString().substring(0, 19) + "..."}
+                            </FlexBox>
+                            <FlexBox style={{
+                                marginTop: 0,
+                                fontSize: 50,
+                                color: '#29a1ff',
+                            }}>
+                                {item.length}
+                            </FlexBox>
+
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
+            {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
+            {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
+            {chunkedArraysOfColSize.length === 1 &&
+            <div className='page_monitoring_grid_box_blank2'>
+                {[1, 2, 3].map((item) =>
+                    <div className='page_monitoring_grid_box_blank2' style={{backgroundColor: 'transprent'}}>
+                        <FlexBox style={{
+                            fontSize: 15,
+                            color: '#fff',
+                            marginTop: 10,
+                        }}>
+                            {/*blank*/}
+                        </FlexBox>
+                        <FlexBox style={{
+                            marginTop: 0,
+                            fontSize: 50,
+                            color: 'transprent',
+                        }}>
+                            {/*blank*/}
+                        </FlexBox>
+
+                    </div>
+                )}
+            </div>
+
+            }
+
+        </div>
+    );
 }
 
 
@@ -646,17 +654,18 @@ export const getCpuMetricData = async () => {
  * @param appInstanceList
  * @returns {Promise<Array>}
  */
-export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = HARDWARE_TYPE.CPU) => {
+export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = HARDWARE_TYPE.CPU, recentDataLimitCount: number) => {
 
     let cpuUsageListPerOneInstance = []
     for (let index = 0; index < appInstanceList.length; index++) {
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
 
-        let fetchingDataNo = 100;
+        /*//
+        let recentDataLimitCount = 100;*/
 
         //todo: 레퀘스트를 요청할 데이터 FORM형식을 만들어 준다.
-        let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], paramCpuOrMem, store.userToken, fetchingDataNo)
+        let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], paramCpuOrMem, store.userToken, recentDataLimitCount)
 
         //console.log('formOne====>', instanceInfoOneForm);
         //console.log('appInstanceList===>', appInstanceList[index]);

@@ -24,6 +24,24 @@ export const getIPAddress = () => {
 }
 
 
+/**
+ * last top5  extractor in ArrayList
+ * @param length
+ * @param paramArrayList
+ * @returns {Array}
+ */
+export const cutArrayList = (length: number, paramArrayList: any) => {
+
+    let newArrayList = [];
+    for (let i in paramArrayList) {
+        if (i < 5) {
+            newArrayList.push(paramArrayList)
+        }
+    }
+    return newArrayList;
+}
+
+
 export const requestShowAppInst = async () => {
     let streamData = await fetch('/api/v1/auth/ctrl/ShowAppInst', {
         method: 'POST',
