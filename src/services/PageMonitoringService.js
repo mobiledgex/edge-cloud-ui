@@ -8,76 +8,17 @@ import FormatComputeInst from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
 import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
 import {CHART_COLOR_LIST, HARDWARE_TYPE} from "../shared/Constants";
-import CanvasJSReact from '../assets/canvasjs.react';
-import {Brush, CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis, Legend} from "recharts";
 import {Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 
-const {CanvasJSChart} = CanvasJSReact
 
-
-export const renderLineChart2 = () => {
-
-    return (
-        <Chart
-            className={'barChart'}
-            chartType="Line"
-            width={'450px'}
-            height={'250px'}
-            loader={<div>Loading Chart</div>}
-            data={[
-                ["Year", "CPUI1", "CPUI2", 'CPUI3', 'CPUI4', 'CPUI5'],
-                ["2004", 1000, 400, 500, 700, 1500],
-                ["2005", 1170, 460, 600, 700, 1200],
-                ["2006", 660, 1120, 700, 800, 1500],
-                ["2007", 1030, 540, 800, 900, 2500]
-            ]}
-            options={{
-                chart: {
-                    title: "  ",
-                    subtitle: ""
-                },
-                //X
-                hAxis: {
-                    title: 'asdasdasd',
-                    titleTextStyle: {
-                        fontName: "Times",
-                        fontSize: 30,
-                        fontStyle: "normal",
-                        color: 'white'
-                    },
-                    minValue: 0,
-                    textStyle: {
-                        color: "white"
-                    },
-                    gridlines: {
-                        color: "grey"
-                    },
-                    baselineColor: 'grey',
-                    textPosition: 'in',
-
-                },
-                //Y축
-                vAxis: {
-                    textPosition: 'in',
-                    title: 'asdasdasdasd',
-                    titleTextStyle: {
-                        fontSize: 25,
-                        fontStyle: "normal",
-                        color: 'white'
-                    },
-                    textStyle: {
-                        color: "white",
-                        fontSize: 18,
-                    },
-
-                },
-
-            }}
-        />
-    )
-}
-
+/**
+ * @todo: Bar Graph Rendering By Google Chart
+ * @todo: 바그래프 랜더링 By Google Chart
+ * @param usageList
+ * @param hardwareType
+ * @returns {*}
+ */
 export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU) => {
 
     console.log('cpuUsageList===>', usageList);
@@ -160,6 +101,13 @@ export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string 
 
 }
 
+
+/**
+ *
+ * @todo: 구글차트를 이용해서 pie차트를 랜더링
+ * @todo: Render pie charts using Google charts
+ * @returns {*}
+ */
 export const renderPieChart2_Google = () => {
 
     return (
@@ -212,7 +160,8 @@ export const renderPieChart2_Google = () => {
     );
 }
 
-function toChunkArray(myArray: any, chunkSize: any): any {
+
+export const toChunkArray = (myArray: any, chunkSize: any): any => {
     let results = [];
     while (myArray.length) {
         results.push(myArray.splice(0, chunkSize));
@@ -220,8 +169,12 @@ function toChunkArray(myArray: any, chunkSize: any): any {
     return results;
 }
 
-export const renderPlaceHolder = () => {
 
+/**
+ * @todo: 로딩이 완료 되기전에 placeholder를 보여준다..
+ * @returns {*}
+ */
+export const renderPlaceHolder = () => {
     let boxWidth = window.innerWidth / 10 * 4.55;
     return (
         <div className='page_monitoring_grid_box_blank2'>
@@ -230,41 +183,13 @@ export const renderPlaceHolder = () => {
     )
 }
 
-export const renderLineChart_recharts = (cpuUsageList, hardwareType: string) => {
 
-    const data = [
-        {name: '2019-01 ', cpu4: 40, cpu3: 24, cpu2: 54, cpu1: 12},
-        {name: '2019-02 ', cpu4: 41, cpu3: 25, cpu2: 34, cpu1: 18},
-        {name: '2019-03 ', cpu4: 42, cpu3: 22, cpu2: 24, cpu1: 32},
-        {name: '2019-04 ', cpu4: 43, cpu3: 15, cpu2: 14, cpu1: 52},
-    ];
-
-
-    console.log('cpuUsageList===>', cpuUsageList);
-
-
-    return (
-        <div>
-            <LineChart width={900} height={600} data={data}
-                       style={{backgroundColor: 'black'}}
-                       margin={{top: 30, right: 100, left: 20, bottom: 30}}>
-                <XAxis dataKey="name" tick={{fill: 'white', fontSize: 20}}/>
-                <YAxis tick={{fill: 'white', fontSize: 20}}/>
-                <Tooltip/>
-                <Legend/>
-                <Line type="monotone" dataKey="cpu1" stroke="#8884d8" strokeWidth={5}
-                      activeDot={{r: 10, strokeWidth: 5,}}/>
-                <Line type="monotone" dataKey="cpu2" stroke="#82ca9d" strokeWidth={5}
-                      activeDot={{r: 10, strokeWidth: 5,}}/>
-                <Line type="monotone" dataKey="cpu3" stroke="red" strokeWidth={5} activeDot={{r: 10, strokeWidth: 5,}}/>
-                <Line type="monotone" dataKey="cpu4" stroke="blue" strokeWidth={5}
-                      activeDot={{r: 10, strokeWidth: 5,}}/>
-
-            </LineChart>
-        </div>
-    );
-}
-
+/**
+ * @TODO: react_chartjs를 이용해서 라인 차트를 랜더링.
+ * @param cpuUsageListPerInstanceSortByUsage
+ * @param hardwareType
+ * @returns {*}
+ */
 export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
     console.log('itemeLength===>', cpuUsageListPerInstanceSortByUsage);
 
@@ -334,9 +259,9 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
     for (let i in dateTimeList) {
         if (i < 100) {
 
-            console.log('dateTimeList===>',  dateTimeList[i]);
+            console.log('dateTimeList===>', dateTimeList[i]);
 
-            let splitDateTimeArrayList= dateTimeList[i].toString().split(".");
+            let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
 
             //console.log('splitDateTimeArrayList==>',  splitDateTimeArrayList[0]);
 
@@ -344,10 +269,6 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
         }
 
     }
-
-
-
-
 
 
     const data = {
@@ -376,13 +297,13 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
             position: 'top',
             labels: {
                 boxWidth: 10,
-                fontColor:'white'
+                fontColor: 'white'
             }
         },
         scales: {
             yAxes: [{
                 ticks: {
-                    beginAtZero:true,
+                    beginAtZero: true,
                     fontColor: 'white'
                 },
             }],
@@ -413,6 +334,10 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
 }
 
 
+/**
+ * @todo: PlotJS를 이용해서 라인차트를 랜더링
+ * @returns {*}
+ */
 export const renderLineGraph_Plot = () => {
     let boxWidth = window.innerWidth / 10 * 2.8;
 
@@ -508,6 +433,13 @@ export const renderLineGraph_Plot = () => {
     )
 }
 
+
+/**
+ * @TODO: 모니터링Page 좌측 상단에 클라우드렛에 올라가있는 인스턴스 갯수를 랜더링...
+ * @desc: Render the number of instances on the cloudlet at the top left of the monitoring page ...
+ * @param appInstanceListSortByCloudlet
+ * @returns {*}
+ */
 export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any) => {
     // let boxWidth = window.innerWidth / 10 * 2.55;
 
@@ -596,7 +528,8 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
 //param1 -->ALl
 //param2 --> [EU,US]
 /**
- * @todo : fetch App Instance List
+ * @todo 현재 선택된 지역의 인스턴스 리스트를 가지고 온다...
+ * @todo : fetch App Instance List BY region
  * @param paramRegionArrayList
  * @returns {Promise<[]>}
  */
@@ -641,53 +574,6 @@ export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'U
 
     console.log('mergedAppInstanceList===>', finalizedAppInstanceList);
     return finalizedAppInstanceList;
-}
-
-export const getCpuMetricData = async () => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
-    let responseRslt = await axios({
-        url: '/api/v1/auth/metrics/app',
-        method: 'post',
-        data: {
-            "region": "EU",
-            "appinst": {
-                "app_key": {
-                    "developer_key": {
-                        "name": "MobiledgeX"
-                    },
-                    "name": "zzaaa",
-                    "version": "1"
-                },
-                "cluster_inst_key": {
-                    "cluster_key": {
-                        "name": "qqqaaa"
-                    },
-                    "cloudlet_key": {
-                        "name": "frankfurt-eu",
-                        "operator_key": {
-                            "name": "TDG"
-                        }
-                    }
-                }
-            },
-            "selector": "cpu",
-            "last": 5
-        },
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + store.userToken
-
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        alert(e)
-    })
-
-    return responseRslt;
-
 }
 
 
@@ -787,3 +673,155 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
 
     return newCpuOrMemUsageListPerOneInstance;
 }
+
+
+/*
+export const getCpuMetricData = async () => {
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+
+    let responseRslt = await axios({
+        url: '/api/v1/auth/metrics/app',
+        method: 'post',
+        data: {
+            "region": "EU",
+            "appinst": {
+                "app_key": {
+                    "developer_key": {
+                        "name": "MobiledgeX"
+                    },
+                    "name": "zzaaa",
+                    "version": "1"
+                },
+                "cluster_inst_key": {
+                    "cluster_key": {
+                        "name": "qqqaaa"
+                    },
+                    "cloudlet_key": {
+                        "name": "frankfurt-eu",
+                        "operator_key": {
+                            "name": "TDG"
+                        }
+                    }
+                }
+            },
+            "selector": "cpu",
+            "last": 5
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + store.userToken
+
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        alert(e)
+    })
+
+    return responseRslt;
+
+}*/
+
+/*
+
+
+export const renderLineChart_recharts = (cpuUsageList, hardwareType: string) => {
+    const data = [
+        {name: '2019-01 ', cpu4: 40, cpu3: 24, cpu2: 54, cpu1: 12},
+        {name: '2019-02 ', cpu4: 41, cpu3: 25, cpu2: 34, cpu1: 18},
+        {name: '2019-03 ', cpu4: 42, cpu3: 22, cpu2: 24, cpu1: 32},
+        {name: '2019-04 ', cpu4: 43, cpu3: 15, cpu2: 14, cpu1: 52},
+    ];
+
+
+    console.log('cpuUsageList===>', cpuUsageList);
+
+
+    return (
+        <div>
+            <LineChart width={900} height={600} data={data}
+                       style={{backgroundColor: 'black'}}
+                       margin={{top: 30, right: 100, left: 20, bottom: 30}}>
+                <XAxis dataKey="name" tick={{fill: 'white', fontSize: 20}}/>
+                <YAxis tick={{fill: 'white', fontSize: 20}}/>
+                <Tooltip/>
+                <Legend/>
+                <Line type="monotone" dataKey="cpu1" stroke="#8884d8" strokeWidth={5}
+                      activeDot={{r: 10, strokeWidth: 5,}}/>
+                <Line type="monotone" dataKey="cpu2" stroke="#82ca9d" strokeWidth={5}
+                      activeDot={{r: 10, strokeWidth: 5,}}/>
+                <Line type="monotone" dataKey="cpu3" stroke="red" strokeWidth={5} activeDot={{r: 10, strokeWidth: 5,}}/>
+                <Line type="monotone" dataKey="cpu4" stroke="blue" strokeWidth={5}
+                      activeDot={{r: 10, strokeWidth: 5,}}/>
+
+            </LineChart>
+        </div>
+    );
+}
+*/
+
+
+/*
+
+export const renderLineChart2 = () => {
+    return (
+        <Chart
+            className={'barChart'}
+            chartType="Line"
+            width={'450px'}
+            height={'250px'}
+            loader={<div>Loading Chart</div>}
+            data={[
+                ["Year", "CPUI1", "CPUI2", 'CPUI3', 'CPUI4', 'CPUI5'],
+                ["2004", 1000, 400, 500, 700, 1500],
+                ["2005", 1170, 460, 600, 700, 1200],
+                ["2006", 660, 1120, 700, 800, 1500],
+                ["2007", 1030, 540, 800, 900, 2500]
+            ]}
+            options={{
+                chart: {
+                    title: "  ",
+                    subtitle: ""
+                },
+                //X
+                hAxis: {
+                    title: 'asdasdasd',
+                    titleTextStyle: {
+                        fontName: "Times",
+                        fontSize: 30,
+                        fontStyle: "normal",
+                        color: 'white'
+                    },
+                    minValue: 0,
+                    textStyle: {
+                        color: "white"
+                    },
+                    gridlines: {
+                        color: "grey"
+                    },
+                    baselineColor: 'grey',
+                    textPosition: 'in',
+
+                },
+                //Y축
+                vAxis: {
+                    textPosition: 'in',
+                    title: 'asdasdasdasd',
+                    titleTextStyle: {
+                        fontSize: 25,
+                        fontStyle: "normal",
+                        color: 'white'
+                    },
+                    textStyle: {
+                        color: "white",
+                        fontSize: 18,
+                    },
+
+                },
+
+            }}
+        />
+    )
+}
+*/
