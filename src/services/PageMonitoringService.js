@@ -75,7 +75,7 @@ export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string 
                     gridlines: {
                         color: "grey"
                     },
-                    format: '#\'%\'',
+                    format:  hardwareType===HARDWARE_TYPE.CPU ? '#\'%\'' : '#\' byte\'',
                     baselineColor: 'grey',
                     //out', 'in', 'none'.
                 },
