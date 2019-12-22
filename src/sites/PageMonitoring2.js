@@ -152,9 +152,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return newArrList;
         }
 
-
         componentDidMount = async () => {
-
             this.intervalHandle = setInterval(this.tick.bind(this), 1000);
 
             this.setState({
@@ -212,7 +210,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentWillUnmount() {
-
+            clearInterval(this.intervalHandle)
         }
 
 
