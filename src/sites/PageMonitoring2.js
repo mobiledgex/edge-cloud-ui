@@ -161,7 +161,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 console.log('Region===>', item.AppName);
             })
 
-
             //todo: ####################################################################################
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List.
@@ -259,7 +258,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         setAppInstanceOne(paramAppName: string) {
             //alert()
 
-            this.props.toggleLoading(true);
+            // this.props.toggleLoading(true);
             paramAppName = paramAppName.replace("...", "");
 
             let appInstanceOne: TypeAppInstance = '';
@@ -274,9 +273,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             this.setState({
                 appInstanceOne: appInstanceOne,
             }, () => {
-                setTimeout(() => {
-                    this.props.toggleLoading(false);
-                }, 250)
+                /* setTimeout(() => {
+                     this.props.toggleLoading(false);
+                 }, 250)*/
             })
 
             //alert(appInstanceOne.AppName)
@@ -486,7 +485,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             Perfomance Of Apps
 
-                                                           {/* {this.props.isLoading ?
+                                                            {/* {this.props.isLoading ?
                                                                 <FlexBox style={{height: 25}}>
                                                                     <Lottie
                                                                         options={{
