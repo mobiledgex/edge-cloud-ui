@@ -349,7 +349,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                     <div className="page_monitoring">
                                         {/*todo:####################*/}
-                                        {/*todo:SelectBox part  */}
+                                        {/*todo:SelectBox part start */}
                                         {/*todo:####################*/}
                                         <div className='page_monitoring_select_row'>
                                             <div className='page_monitoring_select_area'>
@@ -412,6 +412,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                             </div>
                                         </div>
+                                        {/*todo:####################*/}
+                                        {/*todo:SelectBox End  */}
+                                        {/*todo:####################*/}
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
