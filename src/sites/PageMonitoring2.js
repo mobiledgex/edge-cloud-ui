@@ -11,64 +11,31 @@ import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker, notification} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
-//import './PageMonitoring.css';
-
-import DialogBox from './ModelessDialog'
 import {
     fetchAppInstanceList,
-    renderBarGraph_GoogleChart, renderBubbleChart,
+    renderBarGraph_GoogleChart,
+    renderBubbleChart,
     renderInstanceOnCloudletGrid,
     renderLineChart_react_chartjs,
-    renderPieChart2_Google,
+    renderPieChart2AndAppStatus,
     renderPlaceHolder
 } from "../services/PageMonitoringService";
 import {HARDWARE_TYPE} from "../shared/Constants";
 import Lottie from "react-lottie";
+import type {TypeAppInstance} from "../shared/Types";
+//import './PageMonitoring.css';
 
 const {Column, Row} = Grid;
 
 
 const mapStateToProps = (state) => {
-    let viewMode = null;
-    let detailData = null;
-
-    if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
-        viewMode = state.changeViewMode.mode.viewMode;
-        detailData = state.changeViewMode.mode.data;
-    }
     return {
-        computeRefresh: (state.computeRefresh) ? state.computeRefresh : null,
-        changeRegion: state.changeRegion.region ? state.changeRegion.region : null,
-        viewMode: viewMode, detailData: detailData,
         isLoading: state.LoadingReducer.isLoading,
     }
 };
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => {
-            dispatch(actions.changeSite(data))
-        },
-        handleInjectData: (data) => {
-            dispatch(actions.injectData(data))
-        },
-        handleInjectDeveloper: (data) => {
-            dispatch(actions.registDeveloper(data))
-        },
-        handleComputeRefresh: (data) => {
-            dispatch(actions.computeRefresh(data))
-        },
-        handleLoadingSpinner: (data) => {
-            dispatch(actions.loadingSpinner(data))
-        },
-        handleAlertInfo: (mode, msg) => {
-            dispatch(actions.alertInfo(mode, msg))
-        },
-        handleDetail: (data) => {
-            dispatch(actions.changeDetail(data))
-        },
-        handleAuditCheckCount: (data) => {
-            dispatch(actions.setCheckedAudit(data))
-        },
+
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
         }
@@ -83,6 +50,7 @@ type Props = {
     sendingContent: any,
     loading: boolean,
     isLoading: boolean,
+    toggleLoading: Function,
 }
 
 type State = {
@@ -103,6 +71,8 @@ type State = {
     memUsageList: any,
     counter: number,
     currentAppName: string,
+    appInstanceList: Array<TypeAppInstance>,
+    appInstanceOne: TypeAppInstance,
 
 }
 
@@ -128,7 +98,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isReady: false,
             memUsageList: [],
             counter: 0,
-            currentAppName: '----'
+            currentAppName: '----',
+            appInstanceList: [],
+            appInstanceOne: {},
         };
 
         intervalHandle = null;
@@ -136,6 +108,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         constructor(props) {
             super(props);
+
         }
 
         tick() {
@@ -168,9 +141,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 endDate: getTodayDate(),
             })
 
-            let appInstanceList = await fetchAppInstanceList();
+            //todo: REALDATA
+            //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
-            console.log('appInstanceList====>', appInstanceList);
+            //todo: FAKEJSON
+            let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
+
+            appInstanceList.map(async (item: TypeAppInstance, index) => {
+
+                if (index === 0) {
+                    this.setState({
+                        currentAppName: item.AppName,
+                        appInstanceOne: item,
+                    }, () => {
+                        this.props.toggleLoading(false);
+                    })
+
+                }
+
+                console.log('Region===index>', index);
+                console.log('Region===>', item.AppName);
+            })
+
 
             //todo: ####################################################################################
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
@@ -183,7 +175,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
             //todo: ################################################################
-            //todo: (last 100 datas) - Local Fake JSON FOR TEST
+            //todo: (last 100 datas) - Fake JSON FOR TEST
             //todo: ################################################################
             let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
             let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
@@ -193,6 +185,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
             let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
             await this.setState({
+                appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 cloudletList: cloudletList,
                 clusterList: clusterList,
@@ -334,11 +327,31 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        changeAppName(appName: string) {
-            //alert(appName);
-            this.setState({
-                currentAppName: appName,
+        setAppInstanceOne(paramAppName: string) {
+            //alert()
+
+            this.props.toggleLoading(true);
+            paramAppName = paramAppName.replace("...", "");
+
+            let appInstanceOne: TypeAppInstance = '';
+            this.state.appInstanceList.map((item: TypeAppInstance) => {
+                if (item.AppName.includes(paramAppName)) {
+                    appInstanceOne = item;
+                    console.log('item_AppName===>', item.AppName);
+                }
+
+
             })
+            this.setState({
+                appInstanceOne: appInstanceOne,
+            }, () => {
+                setTimeout(() => {
+                    this.props.toggleLoading(false);
+                }, 250)
+            })
+
+            //alert(appInstanceOne.AppName)
+
         }
 
         render() {
@@ -476,20 +489,45 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Perfomance Of Apps
-                                                            <div style={{marginLeft: 50, color: 'red'}}>
-                                                                {this.state.currentAppName}
-                                                            </div>
+
+                                                            {this.props.isLoading ?
+                                                                <FlexBox style={{height: 25}}>
+                                                                    <Lottie
+                                                                        options={{
+                                                                            loop: true,
+                                                                            autoplay: true,
+                                                                            animationData: require('../lotties/loader003'),
+                                                                            rendererSettings: {
+                                                                                preserveAspectRatio: 'xMidYMid slice'
+                                                                            }
+                                                                        }}
+                                                                        height={55}
+                                                                        width={55}
+                                                                        isStopped={false}
+                                                                        isPaused={false}
+                                                                        style={{marginLeft: 30, marginBottom:110,}}
+                                                                    />
+                                                                </FlexBox>
+                                                                :
+                                                                <div style={{marginLeft: 50, color: '#77BD25'}}>
+                                                                    {this.state.appInstanceOne.AppName}
+                                                                </div>
+                                                            }
+
                                                         </div>
                                                     </div>
-                                                    {/*todo:######################################***/}
-                                                    {/*todo:render BubbleChart N PIE Chart          */}
-                                                    {/*todo:######################################***/}
+                                                    {/*todo:###########################***/}
+                                                    {/*todo:render BubbleChart          */}
+                                                    {/*todo:###########################***/}
                                                     <FlexBox>
                                                         <div>
                                                             {this.state.loading ? renderPlaceHolder() : renderBubbleChart(this)}
                                                         </div>
                                                         <div style={{marginRight: 10,}}>
-                                                            {renderPieChart2_Google(this.state.currentAppName)}
+                                                            {/*todo:#########################################****/}
+                                                            {/*todo: RENDER Donut Chart  N  App Status          */}
+                                                            {/*todo:#########################################****/}
+                                                            {renderPieChart2AndAppStatus(this.state.appInstanceOne, this)}
                                                         </div>
                                                     </FlexBox>
 

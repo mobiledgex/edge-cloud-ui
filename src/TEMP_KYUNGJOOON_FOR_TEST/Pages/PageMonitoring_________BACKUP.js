@@ -17,7 +17,7 @@ import {
     makeCpuOrMemUsageListPerInstance,
     renderBarGraph_GoogleChart,
     renderLineGraph_Plot,
-    renderPieChart2_Google,
+    renderPieChart2AndAppStatus,
     renderPlaceHolder
 } from "../../services/PageMonitoringService";
 import {HARDWARE_TYPE} from "../../shared/Constants";
@@ -624,7 +624,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </FlexBox>
 
                                         <FlexBox style={{marginTop: 10}}>
-                                            {this.state.loading ? renderPlaceHolder() : renderPieChart2_Google()}
+                                            {this.state.loading ? renderPlaceHolder() : renderPieChart2AndAppStatus()}
                                         </FlexBox>
 
 

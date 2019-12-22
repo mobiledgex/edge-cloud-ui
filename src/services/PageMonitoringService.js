@@ -13,8 +13,8 @@ import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
 import BubbleChart from "@weknow/react-bubble-chart-d3";
 import {notification} from "antd";
-import DialogBox from 'react-modeless'
 import PageMonitoring2 from "../sites/PageMonitoring2";
+import type {TypeAppInstance} from "../shared/Types";
 
 
 /**
@@ -75,7 +75,7 @@ export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string 
                     gridlines: {
                         color: "grey"
                     },
-                    format:  hardwareType===HARDWARE_TYPE.CPU ? '#\'%\'' : '#\' byte\'',
+                    format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '#\' byte\'',
                     baselineColor: 'grey',
                     //out', 'in', 'none'.
                 },
@@ -115,7 +115,7 @@ export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string 
  * @todo: Render pie charts using Google charts
  * @returns {*}
  */
-export const renderPieChart2_Google = (currrentAppName: string) => {
+export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _this: PageMonitoring2) => {
 
 
     let colorList = CHART_COLOR_LIST;
@@ -188,57 +188,148 @@ export const renderPieChart2_Google = (currrentAppName: string) => {
                 }}
                 graph_id="PieChart"
                 legend_toggle
-            />
-            <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
-                     style={{flexDirection: 'column', marginTop: 10, marginLeft: -3}}>
-
-
-                {/*todo: disk usage 표시 부분*/}
-                {/*<div style={{color: 'white', textAlign: 'center', }}>900/1000MB</div>*/}
-
-                <div style={{color: 'white', textAlign: 'center',}}>{currrentAppName}</div>
-
-                {/*__row__1*/}
-                <FlexBox style={{marginTop: 15,}}>
-                    <FlexBox style={{marginLeft: 5, backgroundColor: 'black', flex: .5, alignItems: 'center'}}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
-                    </FlexBox>
-                    <FlexBox style={{marginLeft: 0, backgroundColor: 'grey', flex: .5, alignItems: 'center'}}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
-                    </FlexBox>
-                </FlexBox>
-
-                {/*__row__1*/}
-                <FlexBox>
-                    <FlexBox style={{marginLeft: 5, backgroundColor: 'black', flex: .5, alignItems: 'center'}}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
-                    </FlexBox>
-                    <FlexBox style={{marginLeft: 0, backgroundColor: 'grey', flex: .5, alignItems: 'center'}}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
-                    </FlexBox>
-                </FlexBox>
-
-                {/*__row__1*/}
-                <FlexBox>
-                    <FlexBox style={{marginLeft: 5, backgroundColor: 'black', flex: .5, alignItems: 'center'}}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Regions</div>
-                    </FlexBox>
-                    <FlexBox style={{marginLeft: 0, backgroundColor: 'grey', flex: .5, alignItems: 'center'}}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>US</div>
-                    </FlexBox>
-                </FlexBox>
-
-                {/*__row__1*/}
-                <FlexBox>
-                    <FlexBox style={{marginLeft: 5, backgroundColor: 'black', flex: .5, alignItems: 'center'}}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
-                    </FlexBox>
-                    <FlexBox style={{marginLeft: 0, backgroundColor: 'grey', flex: .5, alignItems: 'center'}}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>Frankfurt</div>
-                    </FlexBox>
-                </FlexBox>
-
+            >
+            </Chart>
+            <FlexBox style={{
+                marginTop: 0,
+                color: 'white',
+                top: '65.5%',
+                left: '25%',
+                position: 'absolute',
+                fontSize: 9,
+                alignSelf: 'center',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                {appInstanceOne.AppName.substring(0, 12)}
             </FlexBox>
+            {_this.props.isLoading ?
+                <FlexBox className='center001'>
+                    <Lottie
+                        options={{
+                            loop: true,
+                            autoplay: true,
+                            animationData: require('../lotties/loading-animation001'),
+                            rendererSettings: {
+                                preserveAspectRatio: 'xMidYMid slice'
+                            }
+                        }}
+                        height={80}
+                        width={80}
+                        isStopped={false}
+                        isPaused={false}
+                        style={{marginLeft: 45,}}
+                    />
+                </FlexBox>
+                :
+                <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
+                         style={{flexDirection: 'column', marginTop: 10, marginLeft: -3}}>
+
+
+                    {/*todo: disk usage 표시 부분*/}
+                    {/*<div style={{color: 'white', textAlign: 'center', }}>900/1000MB</div>*/}
+
+                    <div style={{color: 'white', textAlign: 'center', fontSize: 12}}>{appInstanceOne.AppName}</div>
+
+                    {/*__row__1*/}
+                    <FlexBox style={{marginTop: 15, height: 21,}}>
+                        <FlexBox style={{
+                            marginLeft: 5,
+                            backgroundColor: 'black',
+                            flex: .5,
+                            alignItems: 'center',
+                            fontSize: 10
+                        }}>
+                            <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
+                        </FlexBox>
+                        <FlexBox style={{
+                            marginLeft: 0,
+                            backgroundColor: 'grey',
+                            flex: .5,
+                            alignItems: 'center',
+                            fontSize: 10
+                        }}>
+                            <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
+                        </FlexBox>
+                    </FlexBox>
+
+                    {/*__row__2*/}
+                    <FlexBox style={{marginTop: 0, height: 21,}}>
+                        <FlexBox style={{
+                            marginLeft: 5,
+                            backgroundColor: 'black',
+                            flex: .5,
+                            alignItems: 'center',
+                            fontSize: 10
+                        }}>
+                            <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
+                        </FlexBox>
+                        <FlexBox style={{
+                            marginLeft: 0,
+                            backgroundColor: 'grey',
+                            flex: .5,
+                            alignItems: 'center',
+                            fontSize: 10
+                        }}>
+                            <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
+                        </FlexBox>
+                    </FlexBox>
+
+                    {/*__row__3*/}
+                    <FlexBox style={{marginTop: 0, height: 21,}}>
+                        <FlexBox style={{
+                            marginLeft: 5,
+                            backgroundColor: 'black',
+                            flex: .5,
+                            alignItems: 'center',
+                            fontSize: 10
+                        }}>
+                            <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Regions</div>
+                        </FlexBox>
+                        <FlexBox style={{
+                            marginLeft: 0,
+                            backgroundColor: 'grey',
+                            flex: .5,
+                            alignItems: 'center',
+                            fontSize: 10
+                        }}>
+                            <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
+                                {appInstanceOne.Region}
+                            </div>
+                        </FlexBox>
+                    </FlexBox>
+
+                    {/*__row__4*/}
+                    <FlexBox style={{marginTop: 0, height: 21,}}>
+                        <FlexBox style={{
+                            marginLeft: 5,
+                            backgroundColor: 'black',
+                            flex: .5,
+                            alignItems: 'center',
+                            fontSize: 10
+                        }}>
+                            <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
+                        </FlexBox>
+                        <FlexBox style={{
+                            marginLeft: 0,
+                            backgroundColor: 'grey',
+                            flex: .5,
+                            alignItems: 'center',
+                            fontSize: 10
+                        }}>
+                            <div
+                                style={{
+                                    color: 'white',
+                                    textAlign: 'center',
+                                    marginLeft: 5
+                                }}>{appInstanceOne.Cloudlet.toString().substring(0, 15) + "..."}</div>
+                        </FlexBox>
+                    </FlexBox>
+
+                </FlexBox>
+            }
+
+
         </div>
     );
 }
@@ -298,41 +389,54 @@ export const renderPlaceHolder = () => {
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
  * @returns {*}
  */
-export const renderBubbleChart = (pageMonitoringInstance: PageMonitoring2) => {
+export const renderBubbleChart = (_this: PageMonitoring2) => {
+
+    /*[
+        {label: 'app1', value: 1},
+        {label: 'app2', value: 5},
+        {label: 'app3', value: 12},
+        {label: 'app4', value: 3},
+        {label: 'app5', value: 12},
+        {label: 'app6', value: 3},
+        {label: 'app7', value: 12},
+        {label: 'app8', value: 3},
+        {label: 'app9', value: 3},
+        {label: 'app10', value: 3},
+        {label: 'app11', value: 3},
+
+    ]*/
+
+    let appInstanceList = _this.state.appInstanceList
+
+    let chartData = [];
+    appInstanceList.map((item: TypeAppInstance) => {
+        chartData.push({
+            appName: item.AppName,
+            label: item.AppName.toString().substring(0, 10) + "...",
+            value: item.State,
+        })
+    })
+
 
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
-            <div style={{
+            {/* <div style={{
                 marginLeft: 1,
                 marginRight: 1,
                 width: 80,
 
             }}>
                 <FlexBox style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-                    <FlexBox>
-                        App 1
-                    </FlexBox>
-                    <FlexBox>
-                        App 2
-                    </FlexBox>
-                    <FlexBox>
-                        App 3
-                    </FlexBox>
-                    <FlexBox>
-                        App 4
-                    </FlexBox>
-                    <FlexBox>
-                        App 5
-                    </FlexBox>
-                    <FlexBox>
-                        App 6
-                    </FlexBox>
-                    <FlexBox>
-                        App 7
-                    </FlexBox>
+                    {appInstanceList.map((item: TypeAppInstance) => {
+                        return (
+                            <FlexBox>
+                                {item.AppName}
+                            </FlexBox>
+                        )
+                    })}
                 </FlexBox>
 
-            </div>
+            </div>*/}
             <div style={{
                 //backgroundColor: 'blue',
                 backgroundColor: 'black',
@@ -343,9 +447,9 @@ export const renderBubbleChart = (pageMonitoringInstance: PageMonitoring2) => {
                     graph={{
                         zoom: 0.9,
                         offsetX: 0.05,
-                        offsetY: -0.02,
+                        offsetY: -0.09,
                     }}
-                    width={265}
+                    width={355}
                     height={243}
                     padding={0} // optional value, number that set the padding between bubbles
                     showLegend={false} // optional value, pass false to disable the legend.
@@ -358,39 +462,27 @@ export const renderBubbleChart = (pageMonitoringInstance: PageMonitoring2) => {
                     }}
                     valueFont={{
                         family: 'Arial',
-                        size: 9,
+                        size: 15,
                         color: 'black',
                         weight: 'bold',
                     }}
                     labelFont={{
                         //family: 'Arial',
-                        size: 12,
+                        size: 8,
                         color: 'black',
                         weight: 'bold',
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
                     bubbleClickFun={(label) => {
+
                         notification.success({
                             duration: 0.5,
                             message: label,
                         });
-                        pageMonitoringInstance.changeAppName(label);
+                        _this.setAppInstanceOne(label);
                     }}
                     //legendClickFun={this.legendClick.bind(this)}
-                    data={[
-                        {label: 'app1', value: 1},
-                        {label: 'app2', value: 5},
-                        {label: 'app3', value: 12},
-                        {label: 'app4', value: 3},
-                        {label: 'app5', value: 12},
-                        {label: 'app6', value: 3},
-                        {label: 'app7', value: 12},
-                        {label: 'app8', value: 3},
-                        {label: 'app9', value: 3},
-                        {label: 'app10', value: 3},
-                        {label: 'app11', value: 3},
-
-                    ]}
+                    data={chartData}
                 />
             </div>
 
@@ -474,7 +566,7 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
     for (let i in dateTimeList) {
         if (i < 100) {
 
-            console.log('dateTimeList===>', dateTimeList[i]);
+            //console.log('dateTimeList===>', dateTimeList[i]);
 
             let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
 
@@ -746,7 +838,7 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
  * @param paramRegionArrayList
  * @returns {Promise<[]>}
  */
-export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'US']) => {
+export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'US']): Array<TypeAppInstance> => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let finalizedAppInstanceList = [];
     for (let index = 0; index < paramRegionArrayList.length; index++) {
