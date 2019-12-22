@@ -59,6 +59,7 @@ export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string 
                 titlePosition: 'out',
                 chartArea: {left: 100, right: 150, top: 20, width: "50%", height: "80%"},
                 legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
+                //xc춧
                 hAxis: {
                     title: '',
                     titleTextStyle: {
@@ -74,6 +75,7 @@ export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string 
                     gridlines: {
                         color: "grey"
                     },
+                    format: '#\'%\'',
                     baselineColor: 'grey',
                     //out', 'in', 'none'.
                 },
@@ -296,7 +298,7 @@ export const renderPlaceHolder = () => {
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
  * @returns {*}
  */
-export const renderBubbleChart = (pageMonitoringInstance : PageMonitoring2) => {
+export const renderBubbleChart = (pageMonitoringInstance: PageMonitoring2) => {
 
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
