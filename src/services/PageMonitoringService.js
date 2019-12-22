@@ -7,7 +7,7 @@ import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
 import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
-import {CHART_COLOR_LIST, HARDWARE_TYPE} from "../shared/Constants";
+import {CHART_COLOR_LIST, HARDWARE_TYPE, REGION} from "../shared/Constants";
 import {Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
@@ -203,131 +203,111 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
             }}>
                 {appInstanceOne.AppName.substring(0, 12)}
             </FlexBox>
-            {_this.props.isLoading ?
-                <FlexBox className='center001'>
-                    <Lottie
-                        options={{
-                            loop: true,
-                            autoplay: true,
-                            animationData: require('../lotties/loading-animation001'),
-                            rendererSettings: {
-                                preserveAspectRatio: 'xMidYMid slice'
-                            }
-                        }}
-                        height={80}
-                        width={80}
-                        isStopped={false}
-                        isPaused={false}
-                        style={{marginLeft: 45,}}
-                    />
+            <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
+                     style={{flexDirection: 'column', marginTop: 10, marginLeft: -3}}>
+
+
+                {/*todo: disk usage 표시 부분*/}
+                {/*<div style={{color: 'white', textAlign: 'center', }}>900/1000MB</div>*/}
+
+                <div style={{color: 'white', textAlign: 'center', fontSize: 12}}>{appInstanceOne.AppName}</div>
+
+                {/*__row__1*/}
+                <FlexBox style={{marginTop: 15, height: 21,}}>
+                    <FlexBox style={{
+                        marginLeft: 5,
+                        backgroundColor: 'black',
+                        flex: .5,
+                        alignItems: 'center',
+                        fontSize: 10
+                    }}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
+                    </FlexBox>
+                    <FlexBox style={{
+                        marginLeft: 0,
+                        backgroundColor: 'grey',
+                        flex: .5,
+                        alignItems: 'center',
+                        fontSize: 10
+                    }}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
+                    </FlexBox>
                 </FlexBox>
-                :
-                <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
-                         style={{flexDirection: 'column', marginTop: 10, marginLeft: -3}}>
 
-
-                    {/*todo: disk usage 표시 부분*/}
-                    {/*<div style={{color: 'white', textAlign: 'center', }}>900/1000MB</div>*/}
-
-                    <div style={{color: 'white', textAlign: 'center', fontSize: 12}}>{appInstanceOne.AppName}</div>
-
-                    {/*__row__1*/}
-                    <FlexBox style={{marginTop: 15, height: 21,}}>
-                        <FlexBox style={{
-                            marginLeft: 5,
-                            backgroundColor: 'black',
-                            flex: .5,
-                            alignItems: 'center',
-                            fontSize: 10
-                        }}>
-                            <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
-                        </FlexBox>
-                        <FlexBox style={{
-                            marginLeft: 0,
-                            backgroundColor: 'grey',
-                            flex: .5,
-                            alignItems: 'center',
-                            fontSize: 10
-                        }}>
-                            <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
-                        </FlexBox>
+                {/*__row__2*/}
+                <FlexBox style={{marginTop: 0, height: 21,}}>
+                    <FlexBox style={{
+                        marginLeft: 5,
+                        backgroundColor: 'black',
+                        flex: .5,
+                        alignItems: 'center',
+                        fontSize: 10
+                    }}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
                     </FlexBox>
-
-                    {/*__row__2*/}
-                    <FlexBox style={{marginTop: 0, height: 21,}}>
-                        <FlexBox style={{
-                            marginLeft: 5,
-                            backgroundColor: 'black',
-                            flex: .5,
-                            alignItems: 'center',
-                            fontSize: 10
-                        }}>
-                            <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
-                        </FlexBox>
-                        <FlexBox style={{
-                            marginLeft: 0,
-                            backgroundColor: 'grey',
-                            flex: .5,
-                            alignItems: 'center',
-                            fontSize: 10
-                        }}>
-                            <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
-                        </FlexBox>
+                    <FlexBox style={{
+                        marginLeft: 0,
+                        backgroundColor: 'grey',
+                        flex: .5,
+                        alignItems: 'center',
+                        fontSize: 10
+                    }}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
                     </FlexBox>
-
-                    {/*__row__3*/}
-                    <FlexBox style={{marginTop: 0, height: 21,}}>
-                        <FlexBox style={{
-                            marginLeft: 5,
-                            backgroundColor: 'black',
-                            flex: .5,
-                            alignItems: 'center',
-                            fontSize: 10
-                        }}>
-                            <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Regions</div>
-                        </FlexBox>
-                        <FlexBox style={{
-                            marginLeft: 0,
-                            backgroundColor: 'grey',
-                            flex: .5,
-                            alignItems: 'center',
-                            fontSize: 10
-                        }}>
-                            <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
-                                {appInstanceOne.Region}
-                            </div>
-                        </FlexBox>
-                    </FlexBox>
-
-                    {/*__row__4*/}
-                    <FlexBox style={{marginTop: 0, height: 21,}}>
-                        <FlexBox style={{
-                            marginLeft: 5,
-                            backgroundColor: 'black',
-                            flex: .5,
-                            alignItems: 'center',
-                            fontSize: 10
-                        }}>
-                            <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
-                        </FlexBox>
-                        <FlexBox style={{
-                            marginLeft: 0,
-                            backgroundColor: 'grey',
-                            flex: .5,
-                            alignItems: 'center',
-                            fontSize: 10
-                        }}>
-                            <div
-                                style={{
-                                    color: 'white',
-                                    textAlign: 'center',
-                                    marginLeft: 5
-                                }}>{appInstanceOne.Cloudlet.toString().substring(0, 15) + "..."}</div>
-                        </FlexBox>
-                    </FlexBox>
-
                 </FlexBox>
-            }
+
+                {/*__row__3*/}
+                <FlexBox style={{marginTop: 0, height: 21,}}>
+                    <FlexBox style={{
+                        marginLeft: 5,
+                        backgroundColor: 'black',
+                        flex: .5,
+                        alignItems: 'center',
+                        fontSize: 10
+                    }}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Regions</div>
+                    </FlexBox>
+                    <FlexBox style={{
+                        marginLeft: 0,
+                        backgroundColor: 'grey',
+                        flex: .5,
+                        alignItems: 'center',
+                        fontSize: 10
+                    }}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
+                            {appInstanceOne.Region}
+                        </div>
+                    </FlexBox>
+                </FlexBox>
+
+                {/*__row__4*/}
+                <FlexBox style={{marginTop: 0, height: 21,}}>
+                    <FlexBox style={{
+                        marginLeft: 5,
+                        backgroundColor: 'black',
+                        flex: .5,
+                        alignItems: 'center',
+                        fontSize: 10
+                    }}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
+                    </FlexBox>
+                    <FlexBox style={{
+                        marginLeft: 0,
+                        backgroundColor: 'grey',
+                        flex: .5,
+                        alignItems: 'center',
+                        fontSize: 10
+                    }}>
+                        <div
+                            style={{
+                                color: 'white',
+                                textAlign: 'center',
+                                marginLeft: 5
+                            }}>{appInstanceOne.Cloudlet.toString().substring(0, 15) + "..."}</div>
+                    </FlexBox>
+                </FlexBox>
+
+            </FlexBox>
 
 
         </div>
@@ -383,6 +363,31 @@ export const renderPlaceHolder = () => {
     )
 }
 
+export const renderPlaceHolder2 = () => {
+    let boxWidth = window.innerWidth * 0.3;
+    return (
+        <div style={{width: 350, height: 250, backgroundColor: 'black'}}>
+            <div style={{marginTop: 0}}>
+                <Lottie
+                    options={{
+                        loop: true,
+                        autoplay: true,
+                        animationData: require('../lotties/loader001'),
+                        rendererSettings: {
+                            preserveAspectRatio: 'xMidYMid slice'
+                        }
+                    }}
+                    height={150}
+                    width={150}
+                    isStopped={false}
+                    isPaused={false}
+                    style={{marginTop: 0,}}
+                />
+            </div>
+        </div>
+    )
+}
+
 
 /**
  * todo: @weknow/react-bubble-chart-d3로 버블차트를 그린다..
@@ -420,23 +425,9 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
 
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
-            {/* <div style={{
-                marginLeft: 1,
-                marginRight: 1,
-                width: 80,
+            {/* <div style={{                marginLeft: 1,                marginRight: 1,                width: 80,            }}>                <FlexBox style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>                    {appInstanceList.map((item: TypeAppInstance) => {                        return (                            <FlexBox>                                {item.AppName}                            </FlexBox>                        )                    })}                </FlexBox>            </div>            */}
 
-            }}>
-                <FlexBox style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-                    {appInstanceList.map((item: TypeAppInstance) => {
-                        return (
-                            <FlexBox>
-                                {item.AppName}
-                            </FlexBox>
-                        )
-                    })}
-                </FlexBox>
 
-            </div>*/}
             <div style={{
                 //backgroundColor: 'blue',
                 backgroundColor: 'black',
@@ -445,9 +436,9 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 <BubbleChart
                     className={'bubbleChart'}
                     graph={{
-                        zoom: 0.9,
-                        offsetX: 0.05,
-                        offsetY: -0.09,
+                        zoom: appInstanceList.length <= 4 ? 0.60 : 0.75,
+                        offsetX: 0.10,
+                        offsetY: appInstanceList.length <= 4 ? 0.05 : -0.05,
                     }}
                     width={355}
                     height={243}
@@ -484,6 +475,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     //legendClickFun={this.legendClick.bind(this)}
                     data={chartData}
                 />
+
             </div>
 
         </div>
@@ -829,6 +821,20 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
 
         </div>
     );
+}
+
+
+export const filterAppInstanceListByRegion = (pRegion: string, appInstanceList: Array<TypeAppInstance>) => {
+    if (pRegion === REGION.ALL) {
+        return appInstanceList;
+    } else {
+        let filteredAppInstanceList = appInstanceList.filter((item: TypeAppInstance) => {
+            if (item.Region === pRegion) {
+                return item;
+            }
+        });
+        return filteredAppInstanceList;
+    }
 }
 
 

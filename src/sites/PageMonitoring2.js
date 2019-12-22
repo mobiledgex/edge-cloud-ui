@@ -12,15 +12,15 @@ import {DatePicker, notification} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
 import {
-    fetchAppInstanceList,
+    fetchAppInstanceList, filterAppInstanceListByRegion,
     renderBarGraph_GoogleChart,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
     renderLineChart_react_chartjs,
     renderPieChart2AndAppStatus,
-    renderPlaceHolder
+    renderPlaceHolder, renderPlaceHolder2
 } from "../services/PageMonitoringService";
-import {HARDWARE_TYPE} from "../shared/Constants";
+import {HARDWARE_TYPE, REGION} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance} from "../shared/Types";
 //import './PageMonitoring.css';
@@ -70,9 +70,9 @@ type State = {
     cpuUsageList2: any,
     memUsageList: any,
     counter: number,
-    currentAppName: string,
     appInstanceList: Array<TypeAppInstance>,
     appInstanceOne: TypeAppInstance,
+    currentRegion: string,
 
 }
 
@@ -98,9 +98,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isReady: false,
             memUsageList: [],
             counter: 0,
-            currentAppName: '----',
             appInstanceList: [],
             appInstanceOne: {},
+            currentRegion: '',
         };
 
         intervalHandle = null;
@@ -142,19 +142,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
             //todo: REALDATA
-            //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
+            let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
             //todo: FAKEJSON
-            let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
+            //let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
 
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     this.setState({
-                        currentAppName: item.AppName,
                         appInstanceOne: item,
                     }, () => {
-                        this.props.toggleLoading(false);
+
                     })
+
+                    this.props.toggleLoading(false);
                 }
                 console.log('Region===index>', index);
                 console.log('Region===>', item.AppName);
@@ -212,28 +213,32 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        async handleRegionChanges(value) {
-            let arrayRegions = [];
-            if (value === 'ALL') {
-                arrayRegions.push('EU')
-                arrayRegions.push('US')
-            } else {
-                arrayRegions.push(value);
-            }
+        async handleRegionChanges(pRegion) {
 
-            this.setState({
+            this.props.toggleLoading(true)
+            await this.setState({
                 loading0: true,
                 appInstanceListSortByCloudlet: [],
+                currentRegion: pRegion,
             })
-            let appInstanceList = await fetchAppInstanceList(arrayRegions);
-            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
 
-            console.log('appInstanceListGroupByCloudlet====>', appInstanceListGroupByCloudlet);
+
+            let appInstanceList = await fetchAppInstanceList()
+
+            console.log('appInstanceList2222222===>', appInstanceList);
+
+            let filteredAppInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
+
+            console.log('filteredAppInstanceList===>', filteredAppInstanceList);
+
+            let appInstanceListGroupByCloudlet = reducer.groupBy(filteredAppInstanceList, 'Cloudlet');
 
             await this.setState({
+                appInstanceList: filteredAppInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
             })
+            this.props.toggleLoading(false)
         }
 
         renderHeader = () => {
@@ -250,81 +255,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderSelectBox() {
-            let options1 = [
-                {value: 'ALL', text: 'ALL'},
-                {value: 'EU', text: 'EU'},
-                {value: 'US', text: 'US'},
-
-            ]
-
-            let dropDownWidth = 250;
-            return (
-
-                <div className='page_monitoring_select_row'>
-                    <div className='page_monitoring_select_area'>
-                        <label className='page_monitoring_select_reset'
-                               onClick={() => {
-                                   notification.success({
-                                       duration: 0.5,
-                                       message: 'reset all',
-                                   });
-                               }}>Reset All</label>
-                        <Dropdown
-                            placeholder='REGION'
-                            selection
-                            options={options1}
-                            defaultValue={options1[0].value}
-                            onChange={async (e, {value}) => {
-                                await this.handleRegionChanges(value)
-                            }}
-                            style={{width: 250}}
-                        />
-                        <Dropdown
-                            placeholder='CloudLet'
-                            selection
-                            options={this.state.cloudletList}
-                            style={{width: 250}}
-                        />
-                        <Dropdown
-                            placeholder='Cluster'
-                            selection
-                            options={this.state.clusterList}
-                            style={{width: 250}}
-                        />
-                        <div className='page_monitoring_datepicker_area'>
-                            <DatePicker
-                                onChange={(date) => {
-                                    let __date = formatDate(date);
-                                    this.setState({
-                                        date: __date,
-                                    })
-                                }}
-                                placeholder="Start Date"
-                                style={{cursor: 'pointer'}}
-
-                            />
-                            <div style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
-                                -
-                            </div>
-                            <DatePicker
-                                onChange={(date) => {
-                                    let __date = formatDate(date);
-                                    this.setState({
-                                        date: __date,
-                                    })
-                                }}
-                                placeholder="End Date"
-                                style={{cursor: 'pointer'}}
-
-                            />
-                        </div>
-
-                    </div>
-                </div>
-
-            )
-        }
 
         setAppInstanceOne(paramAppName: string) {
             //alert()
@@ -396,6 +326,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             }
 
+            let options1 = [
+                {value: 'ALL', text: 'ALL'},
+                {value: 'EU', text: 'EU'},
+                {value: 'US', text: 'US'},
+
+            ]
+
 
             return (
 
@@ -416,9 +353,69 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                     <div className="page_monitoring">
                                         {/*todo:####################*/}
-                                        {/*todo:render SelectBox    */}
+                                        {/*todo:SelectBox part  */}
                                         {/*todo:####################*/}
-                                        {this.renderSelectBox()}
+                                        <div className='page_monitoring_select_row'>
+                                            <div className='page_monitoring_select_area'>
+                                                <label className='page_monitoring_select_reset'
+                                                       onClick={() => {
+                                                           notification.success({
+                                                               duration: 0.5,
+                                                               message: 'reset all',
+                                                           });
+                                                       }}>Reset All</label>
+                                                <Dropdown
+                                                    placeholder='REGION'
+                                                    selection
+                                                    options={options1}
+                                                    defaultValue={options1[0].value}
+                                                    onChange={async (e, {value}) => {
+                                                        await this.handleRegionChanges(value)
+                                                    }}
+                                                    style={{width: 250}}
+                                                />
+                                                <Dropdown
+                                                    placeholder='CloudLet'
+                                                    selection
+                                                    options={this.state.cloudletList}
+                                                    style={{width: 250}}
+                                                />
+                                                <Dropdown
+                                                    placeholder='Cluster'
+                                                    selection
+                                                    options={this.state.clusterList}
+                                                    style={{width: 250}}
+                                                />
+                                                <div className='page_monitoring_datepicker_area'>
+                                                    <DatePicker
+                                                        onChange={(date) => {
+                                                            let __date = formatDate(date);
+                                                            this.setState({
+                                                                date: __date,
+                                                            })
+                                                        }}
+                                                        placeholder="Start Date"
+                                                        style={{cursor: 'pointer'}}
+
+                                                    />
+                                                    <div style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
+                                                        -
+                                                    </div>
+                                                    <DatePicker
+                                                        onChange={(date) => {
+                                                            let __date = formatDate(date);
+                                                            this.setState({
+                                                                date: __date,
+                                                            })
+                                                        }}
+                                                        placeholder="End Date"
+                                                        style={{cursor: 'pointer'}}
+
+                                                    />
+                                                </div>
+
+                                            </div>
+                                        </div>
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
@@ -489,7 +486,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             Perfomance Of Apps
 
-                                                            {this.props.isLoading ?
+                                                           {/* {this.props.isLoading ?
                                                                 <FlexBox style={{height: 25}}>
                                                                     <Lottie
                                                                         options={{
@@ -509,9 +506,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 </FlexBox>
                                                                 :
                                                                 <div style={{marginLeft: 50, color: '#77BD25'}}>
-                                                                    {this.state.appInstanceOne.AppName}
+                                                                    {this.state.appInstanceOne.AppName.substring(0, 14) + "..."}
                                                                 </div>
-                                                            }
+                                                            }*/}
 
                                                         </div>
                                                     </div>
@@ -520,7 +517,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo:###########################***/}
                                                     <FlexBox>
                                                         <div>
-                                                            {this.state.loading ? renderPlaceHolder() : renderBubbleChart(this)}
+                                                            {this.props.isLoading ? renderPlaceHolder2() : renderBubbleChart(this)}
                                                         </div>
                                                         <div style={{marginRight: 10,}}>
                                                             {/*todo:#########################################****/}

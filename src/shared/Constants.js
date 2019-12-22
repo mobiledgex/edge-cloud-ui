@@ -11,3 +11,9 @@ export const HARDWARE_TYPE = {
 export const CHART_COLOR_LIST = ['green', 'red', 'blue', 'orange', 'grey']
 
 export const GRAPH_HEIGHT = 300
+
+export const REGION = {
+    ALL: 'ALL',
+    US: "US",
+    EU: 'EU',
+}
