@@ -1,5 +1,7 @@
 import 'react-hot-loader'
+
 import React from 'react';
+import FlexBox from "flexbox-react";
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -12,7 +14,7 @@ import {formatDate, getTodayDate} from "../utils";
 //import './PageMonitoring.css';
 import {
     fetchAppInstanceList,
-    renderBarGraph_GoogleChart,
+    renderBarGraph_GoogleChart, renderBubbleChart,
     renderInstanceOnCloudletGrid,
     renderLineChart_react_chartjs,
     renderPieChart2_Google,
@@ -170,10 +172,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List.
             //todo: ####################################################################################
-          /*  let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
-            let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
-            let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-            console.log('_result===>', cpuOrMemUsageList);*/
+            /*  let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
+              let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
+              let memUsageListPerOneInstance = cpuOrMemUsageList[1]
+              console.log('_result===>', cpuOrMemUsageList);*/
 
 
             //todo: ################################################################
@@ -465,10 +467,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             Perfomance Of Apps
                                                         </div>
                                                     </div>
-
-                                                    <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderPieChart2_Google()}
-                                                    </div>
+                                                    {/*todo:######################################***/}
+                                                    {/*todo:render BubbleChart N PIE Chart          */}
+                                                    {/*todo:######################################***/}
+                                                    <FlexBox>
+                                                        <div>
+                                                            {this.state.loading ? renderPlaceHolder() : renderBubbleChart()}
+                                                        </div>
+                                                        <div style={{marginRight:10,}}>
+                                                            {renderPieChart2_Google()}
+                                                        </div>
+                                                    </FlexBox>
 
                                                 </div>
                                                 {/* ___col___5*/}

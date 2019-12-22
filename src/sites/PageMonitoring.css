@@ -3,14 +3,24 @@
     color: whitesmoke;
 }
 
+svg .bubble-chart {
+    background-color: red;
+}
+
+
 .recharts-default-legend {
     visibility: hidden;
 }
 
 /**//*line chart 백그라운드 설정*/
 /**//*line chart 백그라운드 설정*/
-.chartjs-render-monitor{
+.chartjs-render-monitor {
     background-color: black;
+}
+
+.bubble_left_div {
+
+
 }
 
 

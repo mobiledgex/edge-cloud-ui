@@ -11,10 +11,7 @@ import {CHART_COLOR_LIST, HARDWARE_TYPE} from "../shared/Constants";
 import {Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
-
-
-
-
+import BubbleChart from "@weknow/react-bubble-chart-d3";
 
 
 /**
@@ -131,20 +128,19 @@ export const renderPieChart2_Google = () => {
     return (
         <div className="pieChart">
             <Chart
-                width={window.innerWidth * 0.33}
+                width={165}
                 height={250}
 
                 chartType="PieChart"
                 data={[
-                    ["Age", "Weight"], ["app_A", 30], ["app_B", 10], ['appd', 30], ['app_E', 10], ['app_Z', 20]
+                    ["Age", "Weight"], ["app_A", 80], ["", 20]
                 ]}
 
                 options={{
-
-                    is3D: true,
+                    pieHole: 0.8,
+                    //is3D: true,
                     title: "",
-                    chartArea: {left: 0, right: 150, top: 20, width: "50%", height: "80%"},
-                    pieHole: 1.0,
+                    chartArea: {left: 20, right: 20, top: 50, width: "30%", height: "50%"},
                     /* slices: [
                          {
                              color: "red"
@@ -169,7 +165,7 @@ export const renderPieChart2_Google = () => {
                     },
                     slices: newColorList,
                     legend: {
-                        position: "bottom",
+                        position: "none",
                         alignment: "center",
                         textStyle: {
                             color: "black",
@@ -181,6 +177,7 @@ export const renderPieChart2_Google = () => {
                     },
                     fontName: "Roboto",
                     fontColor: 'black',
+                    //backgroundColor: 'grey',
                     backgroundColor: 'black',
                 }}
                 graph_id="PieChart"
@@ -235,6 +232,103 @@ export const renderPlaceHolder = () => {
                     isPaused={false}
                 />
             </div>
+        </div>
+    )
+}
+
+export const renderBubbleChart = () => {
+
+    return (
+        <div style={{display: 'flex', flexDirection: 'row'}}>
+            <div style={{
+                marginLeft: 1,
+                marginRight: 1,
+                width: 80,
+
+            }}>
+                <FlexBox style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                    <FlexBox>
+                        App 1
+                    </FlexBox>
+                    <FlexBox>
+                        App 2
+                    </FlexBox>
+                    <FlexBox>
+                        App 3
+                    </FlexBox>
+                    <FlexBox>
+                        App 4
+                    </FlexBox>
+                    <FlexBox>
+                        App 5
+                    </FlexBox>
+                    <FlexBox>
+                        App 6
+                    </FlexBox>
+                    <FlexBox>
+                        App 7
+                    </FlexBox>
+                </FlexBox>
+
+            </div>
+            <div style={{
+                //backgroundColor: 'blue',
+                backgroundColor: 'black',
+                marginLeft: 0, marginRight: 0, marginBottom: 10,
+            }}>
+                <BubbleChart
+                    className={'bubbleChart'}
+                    graph={{
+                        zoom: 0.9,
+                        offsetX: 0.05,
+                        offsetY: -0.02,
+                    }}
+                    width={265}
+                    height={243}
+                    padding={0} // optional value, number that set the padding between bubbles
+                    showLegend={false} // optional value, pass false to disable the legend.
+                    legendPercentage={20} // number that represent the % of with that legend going to use.
+                    legendFont={{
+                        family: 'Arial',
+                        size: 9,
+                        color: 'yellow',
+                        weight: 'bold',
+                    }}
+                    valueFont={{
+                        family: 'Arial',
+                        size: 9,
+                        color: 'black',
+                        weight: 'bold',
+                    }}
+                    labelFont={{
+                        family: 'Arial',
+                        size: 9,
+                        color: 'black',
+                        weight: 'bold',
+                    }}
+                    //Custom bubble/legend click functions such as searching using the label, redirecting to other page
+                    bubbleClickFunc={() => {
+                        alert('sdlfksdlkflsdkf')
+                    }}
+                    //legendClickFun={this.legendClick.bind(this)}
+                    data={[
+                        {label: 'app1', value: 1},
+                        {label: 'app2', value: 5},
+                        {label: 'app3', value: 12},
+                        {label: 'app4', value: 3},
+                        {label: 'app5', value: 12},
+                        {label: 'app6', value: 3},
+                        {label: 'app7', value: 12},
+                        {label: 'app8', value: 3},
+                        {label: 'app9', value: 3},
+                        {label: 'app10', value: 3},
+                        {label: 'app11', value: 3},
+
+
+                    ]}
+                />
+            </div>
+
         </div>
     )
 }
