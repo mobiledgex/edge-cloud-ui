@@ -148,7 +148,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
 
             appInstanceList.map(async (item: TypeAppInstance, index) => {
-
                 if (index === 0) {
                     this.setState({
                         currentAppName: item.AppName,
@@ -156,9 +155,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     }, () => {
                         this.props.toggleLoading(false);
                     })
-
                 }
-
                 console.log('Region===index>', index);
                 console.log('Region===>', item.AppName);
             })
@@ -168,10 +165,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List.
             //todo: ####################################################################################
-            /*  let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
+            /*
+              let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, 100), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, 100)])
               let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
               let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-              console.log('_result===>', cpuOrMemUsageList);*/
+              console.log('_result===>', cpuOrMemUsageList);
+            */
 
 
             //todo: ################################################################
@@ -505,7 +504,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                         width={55}
                                                                         isStopped={false}
                                                                         isPaused={false}
-                                                                        style={{marginLeft: 30, marginBottom:110,}}
+                                                                        style={{marginLeft: 30, marginBottom: 110,}}
                                                                     />
                                                                 </FlexBox>
                                                                 :
