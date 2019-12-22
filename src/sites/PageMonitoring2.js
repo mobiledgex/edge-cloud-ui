@@ -11,7 +11,7 @@ import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
 //import './PageMonitoring.css';
 import {
-    fetchAppInstanceList, makeCpuOrMemUsageListPerInstance,
+    fetchAppInstanceList,
     renderBarGraph_GoogleChart,
     renderInstanceOnCloudletGrid,
     renderLineChart_react_chartjs,

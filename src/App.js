@@ -25,10 +25,6 @@ import './css/index.css';
 import './css/pages/audit.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
-import {Test001} from "./sites/Test001";
-import {StreamingRequestExample} from "./sites/StreamingRequestExample";
-import LottieExampleScreen from "./sites/LottieExampleScreen";
-import LineChart from "./sites/LineChart";
 // API
 
 let self = null;
@@ -343,10 +339,8 @@ class App extends Component {
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
-                    <Route exact path='/StreamingRequestExample' component={StreamingRequestExample} />
-                    <Route exact path='/Test001' component={Test001} />
-                    <Route exact path='/LineChart' component={LineChart} />
-
+                    {/*<Route exact path='/StreamingRequestExample' component={StreamingRequestExample} />
+                    <Route exact path='/Test001' component={Test001} />*/}
                 </div>
             </Router>
         );

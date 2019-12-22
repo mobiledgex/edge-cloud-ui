@@ -6,12 +6,12 @@ import {connect} from 'react-redux';
 import * as actions from '../actions';
 import FlexBox from "flexbox-react";
 import {hot} from "react-hot-loader/root";
-import Plot from 'react-plotly.js';
+import Plot from '../../node_modules/react-plotly.js/react-plotly';
 import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
-import './PageMonitoring.css';
+import '../sites/PageMonitoring.css';
 import {
     fetchAppInstanceList,
     makeCpuOrMemUsageListPerInstance,
