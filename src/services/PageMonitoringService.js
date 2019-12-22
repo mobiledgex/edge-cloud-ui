@@ -190,11 +190,14 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                 legend_toggle
             >
             </Chart>
+            {/*todo:파이그래프 중앙의 앱네임*/}
+            {/*todo:파이그래프 중앙의 앱네임*/}
+            {/*todo:파이그래프 중앙의 앱네임*/}
             <FlexBox style={{
                 marginTop: 0,
                 color: 'white',
                 top: '65.5%',
-                left: '25%',
+                left: '26.2%',
                 position: 'absolute',
                 fontSize: 9,
                 alignSelf: 'center',
