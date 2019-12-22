@@ -14,6 +14,7 @@ import Lottie from "react-lottie";
 import BubbleChart from "@weknow/react-bubble-chart-d3";
 import {notification} from "antd";
 import DialogBox from 'react-modeless'
+import PageMonitoring2 from "../sites/PageMonitoring2";
 
 
 /**
@@ -295,7 +296,7 @@ export const renderPlaceHolder = () => {
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
  * @returns {*}
  */
-export const renderBubbleChart = (_this) => {
+export const renderBubbleChart = (pageMonitoringInstance : PageMonitoring2) => {
 
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -367,7 +368,11 @@ export const renderBubbleChart = (_this) => {
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
                     bubbleClickFun={(label) => {
-                        _this.changeAppName(label);
+                        notification.success({
+                            duration: 0.5,
+                            message: label,
+                        });
+                        pageMonitoringInstance.changeAppName(label);
                     }}
                     //legendClickFun={this.legendClick.bind(this)}
                     data={[
@@ -382,7 +387,6 @@ export const renderBubbleChart = (_this) => {
                         {label: 'app9', value: 3},
                         {label: 'app10', value: 3},
                         {label: 'app11', value: 3},
-
 
                     ]}
                 />
