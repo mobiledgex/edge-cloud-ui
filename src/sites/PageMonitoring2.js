@@ -11,6 +11,7 @@ import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker, notification} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
+import FontAwesome from 'react-fontawesome'
 import {
     fetchAppInstanceList, filterAppInstanceListByRegion, makeCpuOrMemUsageListPerInstance,
     renderBarGraph_GoogleChart,
@@ -22,6 +23,7 @@ import {
 } from "../services/PageMonitoringService";
 import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
 import Lottie from "react-lottie";
+
 import type {TypeAppInstance} from "../shared/Types";
 //import './PageMonitoring.css';
 
@@ -165,16 +167,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List.
             //todo: ####################################################################################
-            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
+            /*let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
             let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
             let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-            console.log('_result===>', cpuOrMemUsageList);
+            console.log('_result===>', cpuOrMemUsageList);*/
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
             //todo: ################################################################
-            /*let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
-            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')*/
+            let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
+            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
@@ -309,13 +311,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         isPaused={false}
                                     />
                                 </div>
-                                <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop: 20}}>Loading
+
+                                <div style={{marginLeft: -100, fontSize: 17, color: 'white', marginTop: 20}}>Loading
                                     data now. It takes more
                                     than 15 seconds.
                                 </div>
-                                <div style={{marginLeft: 55, fontSize: 50, color: 'white', marginTop: 10, height: 150}}>
-                                    {this.state.counter}
-                                </div>
+                                <FlexBox style={{marginLeft:40}}>
+                                    <FontAwesome
+                                        name="hourglass"
+                                        size="3x"
+                                        style={{textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)', color: 'white', marginTop:27,marginRight:-30}}
+                                    />
+                                    <div style={{marginLeft: 45, fontSize: 50, color: 'white', marginTop: 10, height: 150}}>
+                                        {this.state.counter}
+                                    </div>
+                                </FlexBox>
+
                             </div>
                         </Grid.Column>
                     </Grid.Row>
