@@ -418,7 +418,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
-                                                            Status Of App Instance Launch
+                                                            Status Of Launched App Instance
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
