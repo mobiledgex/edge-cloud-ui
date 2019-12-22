@@ -12,6 +12,8 @@ import {DatePicker, notification} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
 //import './PageMonitoring.css';
+
+import DialogBox from './ModelessDialog'
 import {
     fetchAppInstanceList,
     renderBarGraph_GoogleChart, renderBubbleChart,
@@ -100,6 +102,7 @@ type State = {
     cpuUsageList2: any,
     memUsageList: any,
     counter: number,
+    currentAppName: string,
 
 }
 
@@ -125,6 +128,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isReady: false,
             memUsageList: [],
             counter: 0,
+            currentAppName: '----'
         };
 
         intervalHandle = null;
@@ -330,6 +334,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        changeAppName(appName: string) {
+            //alert(appName);
+            this.setState({
+                currentAppName: appName,
+            })
+        }
 
         render() {
             //todo:####################################################################
@@ -453,6 +463,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 </div>
                                             </div>
 
+
                                             {/*_____row______2*/}
                                             {/*_____row______2*/}
                                             {/*_____row______2*/}
@@ -465,6 +476,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Perfomance Of Apps
+                                                            <div style={{marginLeft: 50, color: 'red'}}>
+                                                                {this.state.currentAppName}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     {/*todo:######################################***/}
@@ -472,10 +486,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo:######################################***/}
                                                     <FlexBox>
                                                         <div>
-                                                            {this.state.loading ? renderPlaceHolder() : renderBubbleChart()}
+                                                            {this.state.loading ? renderPlaceHolder() : renderBubbleChart(this)}
                                                         </div>
-                                                        <div style={{marginRight:10,}}>
-                                                            {renderPieChart2_Google()}
+                                                        <div style={{marginRight: 10,}}>
+                                                            {renderPieChart2_Google(this.state.currentAppName)}
                                                         </div>
                                                     </FlexBox>
 

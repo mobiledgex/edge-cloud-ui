@@ -93,6 +93,7 @@
     "react-loader-spinner": "^3.1.5",
     "react-lottie": "^1.2.3",
     "react-material-icons": "^1.0.3",
+    "react-modeless": "^0.1.0",
     "react-motion": "^0.5.2",
     "react-motion-ui-pack": "^0.10.3",
     "react-native-rsa": "0.0.3",

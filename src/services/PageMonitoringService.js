@@ -13,6 +13,7 @@ import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
 import BubbleChart from "@weknow/react-bubble-chart-d3";
 import {notification} from "antd";
+import DialogBox from 'react-modeless'
 
 
 /**
@@ -22,7 +23,7 @@ import {notification} from "antd";
  * @param hardwareType
  * @returns {*}
  */
-export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU) => {
+export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
 
     console.log('cpuUsageList===>', usageList);
 
@@ -111,7 +112,7 @@ export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string 
  * @todo: Render pie charts using Google charts
  * @returns {*}
  */
-export const renderPieChart2_Google = () => {
+export const renderPieChart2_Google = (currrentAppName: string) => {
 
 
     let colorList = CHART_COLOR_LIST;
@@ -130,7 +131,7 @@ export const renderPieChart2_Google = () => {
         <div className="pieChart">
             <Chart
                 width={165}
-                height={250}
+                height={120}
 
                 chartType="PieChart"
                 data={[
@@ -141,7 +142,7 @@ export const renderPieChart2_Google = () => {
                     pieHole: 0.8,
                     //is3D: true,
                     title: "",
-                    chartArea: {left: 20, right: 20, top: 50, width: "30%", height: "50%"},
+                    chartArea: {left: 20, right: 20, top: 10, width: "30%", height: "80%"},
                     /* slices: [
                          {
                              color: "red"
@@ -164,6 +165,7 @@ export const renderPieChart2_Google = () => {
                         color: 'black',
                         fontSize: 22,
                     },
+                    pieSliceText: 'none',
                     slices: newColorList,
                     legend: {
                         position: "none",
@@ -184,6 +186,56 @@ export const renderPieChart2_Google = () => {
                 graph_id="PieChart"
                 legend_toggle
             />
+            <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
+                     style={{flexDirection: 'column', marginTop: 10, marginLeft: -3}}>
+
+
+                {/*todo: disk usage 표시 부분*/}
+                {/*<div style={{color: 'white', textAlign: 'center', }}>900/1000MB</div>*/}
+
+                <div style={{color: 'white', textAlign: 'center',}}>{currrentAppName}</div>
+
+                {/*__row__1*/}
+                <FlexBox style={{marginTop: 15,}}>
+                    <FlexBox style={{marginLeft: 5, backgroundColor: 'black', flex: .5, alignItems: 'center'}}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
+                    </FlexBox>
+                    <FlexBox style={{marginLeft: 0, backgroundColor: 'grey', flex: .5, alignItems: 'center'}}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
+                    </FlexBox>
+                </FlexBox>
+
+                {/*__row__1*/}
+                <FlexBox>
+                    <FlexBox style={{marginLeft: 5, backgroundColor: 'black', flex: .5, alignItems: 'center'}}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
+                    </FlexBox>
+                    <FlexBox style={{marginLeft: 0, backgroundColor: 'grey', flex: .5, alignItems: 'center'}}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
+                    </FlexBox>
+                </FlexBox>
+
+                {/*__row__1*/}
+                <FlexBox>
+                    <FlexBox style={{marginLeft: 5, backgroundColor: 'black', flex: .5, alignItems: 'center'}}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Regions</div>
+                    </FlexBox>
+                    <FlexBox style={{marginLeft: 0, backgroundColor: 'grey', flex: .5, alignItems: 'center'}}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>US</div>
+                    </FlexBox>
+                </FlexBox>
+
+                {/*__row__1*/}
+                <FlexBox>
+                    <FlexBox style={{marginLeft: 5, backgroundColor: 'black', flex: .5, alignItems: 'center'}}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
+                    </FlexBox>
+                    <FlexBox style={{marginLeft: 0, backgroundColor: 'grey', flex: .5, alignItems: 'center'}}>
+                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>Frankfurt</div>
+                    </FlexBox>
+                </FlexBox>
+
+            </FlexBox>
         </div>
     );
 }
@@ -243,7 +295,7 @@ export const renderPlaceHolder = () => {
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
  * @returns {*}
  */
-export const renderBubbleChart = () => {
+export const renderBubbleChart = (_this) => {
 
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -308,17 +360,14 @@ export const renderBubbleChart = () => {
                         weight: 'bold',
                     }}
                     labelFont={{
-                        family: 'Arial',
-                        size: 9,
+                        //family: 'Arial',
+                        size: 12,
                         color: 'black',
                         weight: 'bold',
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
                     bubbleClickFun={(label) => {
-                        notification.success({
-                            duration: 0.5,
-                            message: label,
-                        });
+                        _this.changeAppName(label);
                     }}
                     //legendClickFun={this.legendClick.bind(this)}
                     data={[
