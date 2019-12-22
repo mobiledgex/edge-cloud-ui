@@ -12,6 +12,7 @@ import {Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
 import BubbleChart from "@weknow/react-bubble-chart-d3";
+import {notification} from "antd";
 
 
 /**
@@ -307,8 +308,11 @@ export const renderBubbleChart = () => {
                         weight: 'bold',
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
-                    bubbleClickFunc={() => {
-                        alert('sdlfksdlkflsdkf')
+                    bubbleClickFun={(label) => {
+                        notification.success({
+                            duration: 0.5,
+                            message: label,
+                        });
                     }}
                     //legendClickFun={this.legendClick.bind(this)}
                     data={[
