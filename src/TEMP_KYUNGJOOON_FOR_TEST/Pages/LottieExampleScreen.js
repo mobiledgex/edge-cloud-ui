@@ -1,6 +1,6 @@
 import React from 'react'
 import Lottie from 'react-lottie';
-import animationData from '../lotties/material-loading.json'
+import animationData from '../../lotties/material-loading.json'
 
 export default class LottieExampleScreen extends React.Component {
 

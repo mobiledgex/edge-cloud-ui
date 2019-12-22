@@ -3,15 +3,15 @@ import React from 'react';
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../../actions';
 import FlexBox from "flexbox-react";
 import {hot} from "react-hot-loader/root";
-import Plot from '../../node_modules/react-plotly.js/react-plotly';
+import Plot from 'react-plotly.js';
 import {Dropdown, Grid,} from "semantic-ui-react";
 import {DatePicker} from 'antd';
-import * as reducer from "../utils";
-import {formatDate, getTodayDate} from "../utils";
-import '../sites/PageMonitoring.css';
+import * as reducer from "../../utils";
+import {formatDate, getTodayDate} from "../../utils";
+import '../../sites/PageMonitoring.css';
 import {
     fetchAppInstanceList,
     makeCpuOrMemUsageListPerInstance,
@@ -19,10 +19,10 @@ import {
     renderLineGraph_Plot,
     renderPieChart2_Google,
     renderPlaceHolder
-} from "../services/PageMonitoringService";
-import {HARDWARE_TYPE} from "../shared/Constants";
+} from "../../services/PageMonitoringService";
+import {HARDWARE_TYPE} from "../../shared/Constants";
 import Lottie from "react-lottie";
-import animationData from '../lotties/material-loading'
+import animationData from '../../lotties/material-loading'
 
 const {Column, Row} = Grid;
 
@@ -524,7 +524,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 isPaused={false}
                             />
                         </div>
-                        <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop:-125}}>Loading data now. It takes more
+                        <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop: -125}}>Loading data now.
+                            It takes more
                             than 15 seconds.
                         </div>
                     </div>
