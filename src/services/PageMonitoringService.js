@@ -7,7 +7,7 @@ import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
 import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
-import {CHART_COLOR_LIST, HARDWARE_TYPE, REGION} from "../shared/Constants";
+import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
 import {Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
@@ -426,8 +426,6 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
             {/* <div style={{                marginLeft: 1,                marginRight: 1,                width: 80,            }}>                <FlexBox style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>                    {appInstanceList.map((item: TypeAppInstance) => {                        return (                            <FlexBox>                                {item.AppName}                            </FlexBox>                        )                    })}                </FlexBox>            </div>            */}
-
-
             <div style={{
                 //backgroundColor: 'blue',
                 backgroundColor: 'black',
@@ -553,17 +551,11 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
 
     }
 
-    //@todo: last를 100개로 (최근데이타100개)  설정 했으므로 날짜를 100개로 잘라준다
+    //@todo: last를 RECENT_DATA_LIMIT_COUNT개로 (최근데이타 RECENT_DATA_LIMIT_COUNT 개)  설정 했으므로 날짜를 RECENT_DATA_LIMIT_COUNT 개로 잘라준다
     let newDateTimeList = []
     for (let i in dateTimeList) {
-        if (i < 100) {
-
-            //console.log('dateTimeList===>', dateTimeList[i]);
-
+        if (i < RECENT_DATA_LIMIT_COUNT) {
             let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
-
-            //console.log('splitDateTimeArrayList==>',  splitDateTimeArrayList[0]);
-
             newDateTimeList.push(splitDateTimeArrayList[0].replace("T", "T"))
         }
 

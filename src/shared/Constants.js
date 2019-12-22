@@ -17,3 +17,5 @@ export const REGION = {
     US: "US",
     EU: 'EU',
 }
+
+export const RECENT_DATA_LIMIT_COUNT = 50

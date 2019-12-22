@@ -75,31 +75,6 @@ export const requestShowAppInst = async () => {
 }
 
 
-export const makeFormApp = (inst, valid, store) => (
-    {
-        "token": store,
-        "params": {
-            "region": inst.Region,
-            "appinst": {
-                "app_key": {
-                    "developer_key": {"name": inst.OrganizationName},
-                    "name": this.getAppName(inst.AppName),
-                    "version": inst.Version
-                },
-                "cluster_inst_key": {
-                    "cluster_key": {"name": inst.ClusterInst},
-                    "cloudlet_key": {
-                        "name": inst.Cloudlet,
-                        "operator_key": {"name": inst.Operator}
-                    }
-                }
-            },
-            "selector": valid,
-            "last": 1200
-        }
-    }
-)
-
 
 export const getAppInstanceHealth = async (pInstanceOneInfo: string = "") => {
 
