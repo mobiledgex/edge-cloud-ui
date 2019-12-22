@@ -237,6 +237,12 @@ export const renderPlaceHolder = () => {
     )
 }
 
+
+/**
+ * todo: @weknow/react-bubble-chart-d3로 버블차트를 그린다..
+ * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
+ * @returns {*}
+ */
 export const renderBubbleChart = () => {
 
     return (
