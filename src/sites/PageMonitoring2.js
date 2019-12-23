@@ -26,7 +26,7 @@ import {
     renderBarGraphForCpuMem,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
-    renderLineChart_react_chartjs,
+    renderLineChart,
     renderPieChart2AndAppStatus,
     renderPlaceHolder,
     renderPlaceHolder2
@@ -606,7 +606,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.props.isLoading ? renderPlaceHolder() : renderLineChart_react_chartjs(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                                                        {this.props.isLoading ? renderPlaceHolder() : renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                                                     </div>
                                                 </div>
                                             </div>
@@ -674,7 +674,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.props.isLoading ? renderPlaceHolder() : renderLineChart_react_chartjs(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                                                        {this.props.isLoading ? renderPlaceHolder() : renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
                                                 </div>
                                             </div>

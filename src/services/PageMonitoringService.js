@@ -1,7 +1,6 @@
 import React from 'react';
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Plot from "../../node_modules/react-plotly.js/react-plotly";
 import axios from "axios";
 import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
@@ -12,10 +11,16 @@ import {Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
 import BubbleChart from "@weknow/react-bubble-chart-d3";
-import {notification} from "antd";
 import PageMonitoring2 from "../sites/PageMonitoring2";
 import type {TypeAppInstance} from "../shared/Types";
 
+
+/**
+ * todo: 클라우드렛위에 올라와 있는 인스턴스 리스트를 flitering by pCloudlet.
+ * @param appInstanceListGroupByCloudlet
+ * @param pCloudLet
+ * @returns {[]}
+ */
 export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet, pCloudLet) => {
     let filterInstanceCountOnCloutLetOne = [];
     for (let [key, value] of Object.entries(appInstanceListGroupByCloudlet)) {
@@ -61,6 +66,15 @@ export const filterCpuOrMemUsageByCluster = (cpuOrMemUsageList, pCluster) => {
 }
 
 
+/**
+ * todo: Fliter app instace list by cloudlet Value
+ * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
+ * * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
+ * * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
+ * @param appInstanceList
+ * @param pCloudLet
+ * @returns {[]}
+ */
 export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '') => {
 
     let instanceListFilteredByCloudlet = []
@@ -72,20 +86,14 @@ export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '')
     return instanceListFilteredByCloudlet;
 }
 
-export const filterAppInstanceListByCluster = (appInstanceList, pCloudLet = '') => {
 
-    let instanceListFilteredByCloudlet = []
-    appInstanceList.map(item => {
-        if (item.Cloudlet === pCloudLet) {
-            instanceListFilteredByCloudlet.push(item);
-        }
-    })
-    return instanceListFilteredByCloudlet;
-}
-
-
+/**
+ * todo: Filter Instance List by clusterInst value
+ * @param appInstanceList
+ * @param pCluster
+ * @returns {[]}
+ */
 export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '') => {
-
     let instanceListFilteredByClusterInst = []
     appInstanceList.map(item => {
         if (item.ClusterInst === pCluster) {
@@ -93,10 +101,16 @@ export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '
         }
     })
 
-    console.log('instanceListFilteredByClusterInst===>', instanceListFilteredByClusterInst);
     return instanceListFilteredByClusterInst;
 }
 
+
+/**
+ * @todo: arrayList에서 중복값을 제거.
+ * @todo: Remove duplicates from an array.
+ * @param names
+ * @returns {string[]}
+ */
 function removeDups(names) {
     let unique = {};
     names.forEach(function (i) {
@@ -141,7 +155,12 @@ export const makeClusterListSelectBox = (appInstanceList: Array, pCloudLet) => {
     return clusterSelectBoxData;
 }
 
-
+/**
+ * @todo : 클러스터렛 리스트를 셀렉트 박스 형태로 가공
+ * @todo : Process clusterlet list into select box
+ * @param appInstanceList
+ * @returns {[]}
+ */
 export const makeCloudletListSelectBox = (appInstanceList: Array) => {
     let cloudletList = []
     appInstanceList.map(item => {
@@ -174,9 +193,6 @@ export const makeCloudletListSelectBox = (appInstanceList: Array) => {
  */
 export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
 
-
-    console.log('cpuUsageList22===>', usageList);
-
     let chartDataList = [];
     chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}])
     for (let index = 0; index < usageList.length; index++) {
@@ -187,8 +203,6 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
         }
 
     }
-
-    let _height = window.innerHeight * 0.33 + 50
 
     return (
         <Chart
@@ -473,9 +487,6 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
 /**
  * @todo: toChunkArray for TopLeftGrid
  * @todo: toChunkArray for TopLeftGrid
- * @todo: toChunkArray for TopLeftGrid
- * @todo: toChunkArray for TopLeftGrid
- * @todo: toChunkArray for TopLeftGrid
  * @param myArray
  * @param chunkSize
  * @returns {Array}
@@ -518,6 +529,10 @@ export const renderPlaceHolder = () => {
     )
 }
 
+/**
+ * @todo: 로딩이 완료 되기전에 placeholder2를 보여준다..
+ * @returns {*}
+ */
 export const renderPlaceHolder2 = () => {
     let boxWidth = window.innerWidth * 0.3;
     return (
@@ -545,22 +560,22 @@ export const renderPlaceHolder2 = () => {
 
 
 /**
- * @todo : app instance SPEC 더 낳은것이 (큰것이) priorityValue가 높다....
+ * @todo : app instance(COMPUTER engine) SPEC 더 낳은것이(큰것이) performanceValue 높다....
  * @param flavor
  * @returns {number}
  */
 export const instanceFlavorToPerformanceValue = (flavor: string) => {
-    let priorityValue = 0;
+    let performanceValue = 0;
     if (flavor === 'm4.medium') {
-        priorityValue = 1
+        performanceValue = 1
     } else if (flavor === 'x1.medium') {
-        priorityValue = 2
+        performanceValue = 2
     } else if (flavor === 'x1.large') {
-        priorityValue = 3
+        performanceValue = 3
     } else {
-        priorityValue = 0
+        performanceValue = 0
     }
-    return priorityValue;
+    return performanceValue;
 }
 
 
@@ -664,13 +679,14 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
 
 /**
  * @TODO: react_chartjs를 이용해서 라인 차트를 랜더링.
+ * @desc : React wrapper for Chart.js 2 Open for PRs and contributions!
+ * @desc : https://github.com/jerairrest/react-chartjs-2
  * @param cpuUsageListPerInstanceSortByUsage
  * @param hardwareType
  * @returns {*}
  */
-export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
+export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
     console.log('itemeLength===>', cpuUsageListPerInstanceSortByUsage);
-
 
     let instanceAppName = ''
     let instanceNameList = [];
@@ -803,106 +819,6 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
     );
 
 
-}
-
-
-/**
- * @todo: PlotJS를 이용해서 라인차트를 랜더링
- * @returns {*}
- */
-export const renderLineGraph_Plot = () => {
-    let boxWidth = window.innerWidth / 10 * 2.8;
-
-    return (
-        <Plot
-            style={{
-                //backgroundColor: 'transparent',
-                backgroundColor: 'black',
-                overflow: 'hidden',
-                color: 'white',
-                alignItems: 'center',
-                justifyContent: 'center',
-                alignSelf: 'center',
-                marginTop: -25
-
-            }}
-            data={
-                [
-                    {
-                        x: [1, 2, 3, 4],
-                        y: [10, 15, 13, 17],
-                        type: 'scatter'
-                    },
-                    {
-                        x: [1, 2, 3, 4],
-                        y: [16, 5, 11, 9],
-                        type: 'scatter'
-                    },
-                    {
-                        x: [1, 2, 3, 4],
-                        y: [4, 3, 13, 19],
-                        type: 'scatter'
-                    },
-                    {
-                        x: [1, 2, 3, 4],
-                        y: [5, 4, 7, 29],
-                        type: 'scatter'
-                    },
-                    {
-                        x: [1, 2, 3, 4],
-                        y: [5, 5, 6, 9],
-                        type: 'scatter'
-                    },
-
-                ]
-
-            }
-            layout={{
-                height: 360,
-                width: boxWidth,
-                margin: {
-                    l: 50,
-                    r: 15,
-                    b: 35,
-                    t: 30,
-                    pad: 0
-                },
-                paper_bgcolor: 'transparent',
-                plot_bgcolor: 'transparent',
-                color: 'white',
-                xaxis: {
-                    showgrid: false,
-                    zeroline: true,
-                    showline: true,
-                    mirror: 'ticks',
-                    gridcolor: 'rgba(255,255,255,.05)',
-                    gridwidth: 1,
-                    zerolinecolor: 'rgba(255,255,255,0)',
-                    zerolinewidth: 1,
-                    linecolor: 'rgba(255,255,255,.2)',
-                    linewidth: 1,
-                    color: 'rgba(255,255,255,.4)',
-                    domain: [0, 0.94]
-                },
-                yaxis: {
-                    showgrid: true,
-                    zeroline: false,
-                    showline: true,
-                    mirror: 'ticks',
-                    ticklen: 5,
-                    tickcolor: 'rgba(0,0,0,0)',
-                    gridcolor: 'rgba(255,255,255,.05)',
-                    gridwidth: 1,
-                    zerolinecolor: 'rgba(255,255,255,0)',
-                    zerolinewidth: 1,
-                    linecolor: 'rgba(255,255,255,.2)',
-                    linewidth: 1,
-                    color: 'rgba(255,255,255,.4)',
-                    //rangemode: 'tozero'
-                },
-            }}
-        />
-    )
 }
 
 
@@ -1324,6 +1240,104 @@ export const renderLineChart2 = () => {
 
                 },
 
+            }}
+        />
+    )
+}
+*/
+
+/*
+
+export const renderLineGraph_Plot = () => {
+    let boxWidth = window.innerWidth / 10 * 2.8;
+
+    return (
+        <Plot
+            style={{
+                //backgroundColor: 'transparent',
+                backgroundColor: 'black',
+                overflow: 'hidden',
+                color: 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+                alignSelf: 'center',
+                marginTop: -25
+
+            }}
+            data={
+                [
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [10, 15, 13, 17],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [16, 5, 11, 9],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [4, 3, 13, 19],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [5, 4, 7, 29],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [5, 5, 6, 9],
+                        type: 'scatter'
+                    },
+
+                ]
+
+            }
+            layout={{
+                height: 360,
+                width: boxWidth,
+                margin: {
+                    l: 50,
+                    r: 15,
+                    b: 35,
+                    t: 30,
+                    pad: 0
+                },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                color: 'white',
+                xaxis: {
+                    showgrid: false,
+                    zeroline: true,
+                    showline: true,
+                    mirror: 'ticks',
+                    gridcolor: 'rgba(255,255,255,.05)',
+                    gridwidth: 1,
+                    zerolinecolor: 'rgba(255,255,255,0)',
+                    zerolinewidth: 1,
+                    linecolor: 'rgba(255,255,255,.2)',
+                    linewidth: 1,
+                    color: 'rgba(255,255,255,.4)',
+                    domain: [0, 0.94]
+                },
+                yaxis: {
+                    showgrid: true,
+                    zeroline: false,
+                    showline: true,
+                    mirror: 'ticks',
+                    ticklen: 5,
+                    tickcolor: 'rgba(0,0,0,0)',
+                    gridcolor: 'rgba(255,255,255,.05)',
+                    gridwidth: 1,
+                    zerolinecolor: 'rgba(255,255,255,0)',
+                    zerolinewidth: 1,
+                    linecolor: 'rgba(255,255,255,.2)',
+                    linewidth: 1,
+                    color: 'rgba(255,255,255,.4)',
+                    //rangemode: 'tozero'
+                },
             }}
         />
     )
