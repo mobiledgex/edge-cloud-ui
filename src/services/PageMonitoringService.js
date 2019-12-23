@@ -49,8 +49,17 @@ export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '')
             instanceListFilteredByCloudlet.push(item);
         }
     })
+    return instanceListFilteredByCloudlet;
+}
 
+export const filterAppInstanceListByCluster = (appInstanceList, pCloudLet = '') => {
 
+    let instanceListFilteredByCloudlet = []
+    appInstanceList.map(item => {
+        if (item.Cloudlet === pCloudLet) {
+            instanceListFilteredByCloudlet.push(item);
+        }
+    })
     return instanceListFilteredByCloudlet;
 }
 
@@ -63,6 +72,8 @@ export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '
             instanceListFilteredByClusterInst.push(item);
         }
     })
+
+    console.log('instanceListFilteredByClusterInst===>', instanceListFilteredByClusterInst);
     return instanceListFilteredByClusterInst;
 }
 

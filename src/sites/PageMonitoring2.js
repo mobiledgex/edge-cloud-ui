@@ -368,7 +368,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             onChange={async (e, {value}) => {
 
 
-                                // await this.handleRegionChanges(this.state.currentRegion, this.state.currentCloudLet, value)
+                                await this.handleRegionChanges(this.state.currentRegion, this.state.currentCloudLet, value)
                             }}
                         />
 
@@ -456,9 +456,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 필터링 처리 By pCluster
             //todo: ##########################################
             if (pCluster !== '') {
+                appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
 
+                let CloudLetOneList = appInstanceListGroupByCloudlet[0];
+                console.log('CLouletOne===>', CloudLetOneList);
+                let filteredappInstOnCloudlet= []
+                CloudLetOneList.map(item => {
+                    if (item.ClusterInst === pCluster) {
+                        filteredappInstOnCloudlet.push(item);
+                    }
+                })
+                appInstanceListGroupByCloudlet[0] = filteredappInstOnCloudlet
             }
-
             this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
@@ -641,7 +650,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             State of MEM Usage
                                                         </div>
-                                                       {/* <div className='page_monitoring_column_kj_select'>
+                                                        {/* <div className='page_monitoring_column_kj_select'>
                                                             <Dropdown
                                                                 placeholder='Cluster'
                                                                 selection
