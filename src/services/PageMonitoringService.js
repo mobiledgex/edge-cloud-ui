@@ -17,7 +17,6 @@ import PageMonitoring2 from "../sites/PageMonitoring2";
 import type {TypeAppInstance} from "../shared/Types";
 
 export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet, pCloudLet) => {
-
     let filterInstanceCountOnCloutLetOne = [];
     for (let [key, value] of Object.entries(appInstanceListGroupByCloudlet)) {
         if (key === pCloudLet) {
@@ -28,7 +27,13 @@ export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet,
     return filterInstanceCountOnCloutLetOne;
 }
 
-
+/**
+ * @fixme : 리펙토링 필요 (below method와 함꼐 merge)
+ * @todo: 그래프 데이터를 필터링 BY Cloudlet
+ * @param cpuOrMemUsageList
+ * @param pCloudLet
+ * @returns {*}
+ */
 export const filterCpuOrMemUsageByCloudLet = (cpuOrMemUsageList, pCloudLet) => {
 
     let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
@@ -36,7 +41,22 @@ export const filterCpuOrMemUsageByCloudLet = (cpuOrMemUsageList, pCloudLet) => {
             return item;
         }
     });
+    return filteredCpuOrMemUsageList
+}
 
+/**
+ * @fixme : 리펙토링 필요
+ * @todo: 그래프 데이터를 clusterinst에 맞게 필터링
+ * @param cpuOrMemUsageList
+ * @param pCluster
+ * @returns {*}
+ */
+export const filterCpuOrMemUsageByCluster = (cpuOrMemUsageList, pCluster) => {
+    let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
+        if (item.instance.ClusterInst === pCluster) {
+            return item;
+        }
+    });
     return filteredCpuOrMemUsageList
 }
 
@@ -529,7 +549,7 @@ export const renderPlaceHolder2 = () => {
  * @param flavor
  * @returns {number}
  */
-export const instanceFlavorToPriorityValue = (flavor: string) => {
+export const instanceFlavorToPerformanceValue = (flavor: string) => {
     let priorityValue = 0;
     if (flavor === 'm4.medium') {
         priorityValue = 1
@@ -545,27 +565,27 @@ export const instanceFlavorToPriorityValue = (flavor: string) => {
 
 
 /**
+ * @todo: LeftTop의 클라우듯렛웨에 올라가는 인스턴스 리스트를 필터링 처리하는 로직.
+ * @param CloudLetOneList
+ * @returns {[]}
+ */
+export const filterAppInstOnCloudlet = (CloudLetOneList: Array, pCluster: string) => {
+
+    let filteredAppInstOnCloudlet = []
+    CloudLetOneList.map(item => {
+        if (item.ClusterInst === pCluster) {
+            filteredAppInstOnCloudlet.push(item);
+        }
+    })
+    return filteredAppInstOnCloudlet;
+}
+
+/**
  * todo: @weknow/react-bubble-chart-d3로 버블차트를 그린다..
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
  * @returns {*}
  */
 export const renderBubbleChart = (_this: PageMonitoring2) => {
-
-    /*[
-        {label: 'app1', value: 1},
-        {label: 'app2', value: 5},
-        {label: 'app3', value: 12},
-        {label: 'app4', value: 3},
-        {label: 'app5', value: 12},
-        {label: 'app6', value: 3},
-        {label: 'app7', value: 12},
-        {label: 'app8', value: 3},
-        {label: 'app9', value: 3},
-        {label: 'app10', value: 3},
-        {label: 'app11', value: 3},
-
-    ]*/
-
     let appInstanceList = _this.state.appInstanceList
 
 
@@ -578,7 +598,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
         chartData.push({
             //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
             label: item.AppName.toString().substring(0, 10) + "...",
-            value: instanceFlavorToPriorityValue(item.Flavor),
+            value: instanceFlavorToPerformanceValue(item.Flavor),
         })
     })
 
@@ -1024,7 +1044,7 @@ export const filterCpuOrMemUsageListByRegion = (pRegion: string, memOrCpuUsageLi
  * @param paramRegionArrayList
  * @returns {Promise<[]>}
  */
-export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'US']): Array<TypeAppInstance> => {
+export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'US']) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let finalizedAppInstanceList = [];
     for (let index = 0; index < paramRegionArrayList.length; index++) {

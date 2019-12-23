@@ -16,8 +16,8 @@ import {
     fetchAppInstanceList,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
-    filterAppInstanceListByRegion,
-    filterCpuOrMemUsageByCloudLet,
+    filterAppInstanceListByRegion, filterAppInstOnCloudlet,
+    filterCpuOrMemUsageByCloudLet, filterCpuOrMemUsageByCluster,
     filterCpuOrMemUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
     makeCloudletListSelectBox,
@@ -424,11 +424,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 cloudletList: [],
             })
 
+            //todo : fetch data from remote
+            //let appInstanceList = await fetchAppInstanceList();
+
+
             let appInstanceList = this.state.allAppInstanceList;
 
-
             //todo: ##########################################
-            //todo:  필터링처리 By pRegion
+            //todo:  flitering By pRegion
             //todo: ##########################################
             //todo:appInstanceList를 리전에 의해서 필터링 처리
             appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
@@ -440,33 +443,30 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let filteredMemUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allMemUsageList);
 
             //todo: ##########################################
-            //todo: 필터링 처리 By pCloudLet
+            //todo: flitering  By pCloudLet
             //todo: ##########################################
             let clusterSelectBoxList = [];
             if (pCloudLet !== '') {
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                 appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
+
                 filteredCpuUsageList = filterCpuOrMemUsageByCloudLet(filteredCpuUsageList, pCloudLet);
                 filteredMemUsageList = filterCpuOrMemUsageByCloudLet(filteredMemUsageList, pCloudLet);
                 clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
-                console.log('clusterSelectBox====>', clusterSelectBoxList);
             }
 
             //todo: ##########################################
-            //todo: 필터링 처리 By pCluster
+            //todo: flitering By pCluster
             //todo: ##########################################
             if (pCluster !== '') {
+                //todo:LeftTop의 클라우듯렛웨에 올라가는 인스턴스 리스트를 필터링 처리하는 로직.
+                appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
+                //todo:app instalce list를 필터링
                 appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
 
-                let CloudLetOneList = appInstanceListGroupByCloudlet[0];
-                console.log('CLouletOne===>', CloudLetOneList);
-                let filteredappInstOnCloudlet= []
-                CloudLetOneList.map(item => {
-                    if (item.ClusterInst === pCluster) {
-                        filteredappInstOnCloudlet.push(item);
-                    }
-                })
-                appInstanceListGroupByCloudlet[0] = filteredappInstOnCloudlet
+                filteredCpuUsageList = filterCpuOrMemUsageByCluster(filteredCpuUsageList, pCluster);
+                filteredMemUsageList = filterCpuOrMemUsageByCluster(filteredMemUsageList, pCluster);
+
             }
             this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
