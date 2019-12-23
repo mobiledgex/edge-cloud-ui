@@ -641,14 +641,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             State of MEM Usage
                                                         </div>
-                                                        <div className='page_monitoring_column_kj_select'>
+                                                       {/* <div className='page_monitoring_column_kj_select'>
                                                             <Dropdown
                                                                 placeholder='Cluster'
                                                                 selection
                                                                 options={this.state.clusterList}
                                                                 style={{width: 250}}
                                                             />
-                                                        </div>
+                                                        </div>*/}
                                                     </div>
                                                     <div className='page_monitoring_container'>
                                                         {this.props.isLoading ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
