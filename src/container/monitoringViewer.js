@@ -399,7 +399,7 @@ export default class MonitoringViewer extends React.Component {
         return (
             <Grid.Row className="monitoring">
                 <Grid.Column>
-                    <div className='wrapperPercentage'>
+                    <div className={(this.props.data.page === 'cloudlet')? 'cloudlet wrapperPercentage' : 'wrapperPercentage'}>
                         {
                             this.makeChartContainer((this.props.data.page === 'cloudlet')?"vCPUs" : "CPU", this.state.lastCPU,  this.state.maxCPU, ' Count', 'CPU')
                         }
@@ -518,7 +518,7 @@ export default class MonitoringViewer extends React.Component {
                             <div style={{width:'100%', height:400}}>
                                 <Header>MEM</Header>
                                 <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} showLegend={true} single='1'
-                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94} dataType={(this.props.data.page === 'cloudlet')? 'MEM' : null}></TimeSeries>
                             </div>
                     }
 

@@ -347,24 +347,24 @@ class SiteFourCreatePoolForm extends React.PureComponent {
 
     }
 
-    getDataDeveloper = (region,regionArr) => {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let rgn = [];
-        //this.setState({devData:[]})
-        if(region !== 'All'){
-            rgn = [region]
-        } else {
-            rgn = (regionArr)?regionArr:this.props.regionInfo.region;
-        }
-
-        rgn.map((item) => {
-            services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
-            services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultFlavor)
-
-        })
-
-        services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, _self.receiveResultOrg, _self)
-    }
+    // getDataDeveloper = (region,regionArr) => {
+    //     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+    //     let rgn = [];
+    //     //this.setState({devData:[]})
+    //     if(region !== 'All'){
+    //         rgn = [region]
+    //     } else {
+    //         rgn = (regionArr)?regionArr:this.props.regionInfo.region;
+    //     }
+    //
+    //     rgn.map((item) => {
+    //         services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
+    //         services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultFlavor)
+    //
+    //     })
+    //
+    //     services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, _self.receiveResultOrg, _self)
+    // }
     handleTabChange = (e, { activeIndex }) => {
         this.setState({ activeIndex })
         if(this.state.locData.length) this.props.handleGetRegion(this.state.locData)
@@ -376,15 +376,18 @@ class SiteFourCreatePoolForm extends React.PureComponent {
         this.props.handleGetRegion(null);
     }
     componentWillReceiveProps(nextProps, nextContext) {
+        if(nextProps.regionInfo === this.state.regionInfo) return;
+
         if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
-            _self.setState({regionToggle:true})
+            _self.setState({regionToggle:true, regionInfo:nextProps.getRegion})
+
             if(localStorage.selectMenu == 'Cluster Instances'){
                 _self.setState({clusterShow: false});
-                this.getDataDeveloper(nextProps.data.region,nextProps.regionInfo.region)
+                //this.getDataDeveloper(nextProps.data.region,nextProps.regionInfo.region)
             }
         }
-        
-        if(nextProps.data) this.setState({devData: nextProps.data, keys:nextProps.keys})
+        console.log('20191220 props dev data nextProps.data=', nextProps.data)
+        if(nextProps.data) this.setState({devData: nextProps.data, keys:nextProps.keys, regionInfo:nextProps.regionInfo})
         //reset cluster and node count
         if(nextProps.nodeNumber || nextProps.selectedFlavor) {
             this.setFlavorNode([nextProps.masterNumber,nextProps.nodeNumber],nextProps.selectedFlavor);
@@ -491,7 +494,7 @@ class SiteFourCreatePoolForm extends React.PureComponent {
             <Grid>
                 <Grid.Row className="grid_map_container">
                     <Grid.Column className="left">
-                        <SiteFourCreateFormDefault data={this.state.devData} pId={0} getUserRole={this.props.getUserRole}
+                        <SiteFourCreateFormDefault data={data} pId={0} getUserRole={this.props.getUserRole}
                                                    gotoUrl={this.gotoUrl} clusterHide={this.clusterHide}
                                                    randomState = {randomState}
                                                    toggleSubmit={this.props.toggleSubmit}

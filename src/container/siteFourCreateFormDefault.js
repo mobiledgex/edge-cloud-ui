@@ -4,11 +4,13 @@ import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup
 
 import { Field, reduxForm, initialize, reset, change, stopSubmit } from "redux-form";
 import MaterialIcon from "material-icons-react";
-
+import { Transfer } from 'antd';
 import * as services from '../services/service_compute_service';
 import './styles.css';
 import Duallist from 'react-duallist';
 import './react_dualist.css'
+import "antd/dist/antd.css";
+import stylesheetUrl from "../css/components/antd/css/transfer.css";
 
 const makeOption =(options)=> {
 
@@ -150,7 +152,17 @@ const renderDualListInput = ({ input, placeholder, change, type, error, initialV
     </div>
 
 );
-
+const renderDualListBox = (self, data) => (
+    <Transfer
+        dataSource={self.getMock(data)}
+        showSearch
+        filterOption={self.filterOption}
+        targetKeys={self.state.targetKeys}
+        onChange={self.handleChange}
+        onSearch={self.handleSearch}
+        render={item => item.title}
+    />
+)
 
 
 const style = {
@@ -185,6 +197,8 @@ class SiteFourCreateFormDefault extends React.Component {
                 {label: 'Georgia', value: 'GA'},
             ],
             selected: ['AL', 'CA'],
+            mockData: [],
+            targetKeys: [],
         };
 
     }
@@ -211,6 +225,48 @@ class SiteFourCreateFormDefault extends React.Component {
     onChange = (selectedValues) => {
         alert(selectedValues)
     }
+    /**
+     * code by @inki 20191220
+     * add dual list box use ANT
+     * **/
+    getMock = (data) => {
+
+        const targetKeys = [];
+        const mockData = [];
+
+        console.log('20191220 mock data -- ', data, ":")
+        if(data.length) {
+            data.map((item, i) => {
+                console.log('20191220 mock selectCloudlet -- ', item['cloudlet'], ":")
+
+                const data = {
+                    key: i.toString(),
+                    title: item['cloudlet'],
+                    description: item['cloudlet'],
+                    chosen: 0,
+                };
+                if (data.chosen) {
+                    targetKeys.push(data.key);
+                }
+                mockData.push(data)
+
+            })
+        }
+        console.log('20191220 mock data -- ', mockData, ":")
+        return mockData;
+    };
+
+    filterOption = (inputValue, option) => option.description.indexOf(inputValue) > -1;
+
+    handleChange = targetKeys => {
+        this.setState({ targetKeys });
+    };
+
+    handleSearch = (dir, value) => {
+        console.log('search:', dir, value);
+    };
+
+    /** end ANT **/
 
     componentDidMount() {
         if(this.props.data && this.props.data.data.length){
@@ -225,10 +281,11 @@ class SiteFourCreateFormDefault extends React.Component {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, this.receiveResult)
         }
+
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('20191213 nextProps in form default..', nextProps)
+        console.log('20191220 nextProps in form default..', nextProps.data)
         if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
@@ -241,8 +298,7 @@ class SiteFourCreateFormDefault extends React.Component {
                 this.setState({dataInit:true})
             }
         }
-        
-        
+
     }
 
     getLabel (key, pId) {
@@ -329,9 +385,14 @@ class SiteFourCreateFormDefault extends React.Component {
         const {  dimmer, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat } = this.props;
         const { data, regKeys, fieldKeys, available, selected } = this.state;
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
+        let disableLabel = true;
+        if(fieldKeys && fieldKeys.length && fieldKeys[0]['poolName']) {
+            disableLabel = false;
+        }
+        console.log('20191219 pid == ', fieldKeys, ": data =", data)
         return (
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
-                <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>
+                {(disableLabel)?<Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>:null}
                 <Fragment >
                     <Form onSubmit={this.onHandleSubmit} getFormState={this.onFormState} className={"fieldForm"} >
                         <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
@@ -425,16 +486,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             (fieldKeys[pId][key]['type'] === 'RenderDualListBox') ?
                                                             <Grid>
                                                                 <Grid.Row className={'renderDualListBox'} style={{height:500}}>
-                                                                    <Duallist
-                                                                        available={available}
-                                                                        selected={selected}
-                                                                        sortable={false}
-                                                                        onMove={this.onMove}
-                                                                        moveLeftIcon={<Icon name='angle left'/>}
-                                                                        moveAllLeftIcon={<Icon name='angle double left'/>}
-                                                                        moveRightIcon={<Icon name='angle right'/>}
-                                                                        moveAllRightIcon={<Icon name='angle double right'/>}
-                                                                    />
+                                                                    {renderDualListBox(this, data[key])}
                                                                 </Grid.Row>
                                                             </Grid>
                                                             :

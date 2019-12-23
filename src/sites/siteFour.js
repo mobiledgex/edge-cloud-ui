@@ -35,7 +35,9 @@ import SiteFourPageApps from './siteFour_page_apps';
 import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
+import SiteFourPageCloudletPool from './siteFour_page_cloudletPool';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
+import SiteFourPageCloudletPoolReg from './siteFour_page_cloudletPoolReg';
 import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
@@ -55,8 +57,13 @@ import Alert from 'react-s-alert';
 import '../css/introjs.css';
 import '../css/introjs-dark.css';
 import PageMonitoring from "../TEMP_KYUNGJOOON_FOR_TEST/Pages/PageMonitoring_________BACKUP";
+
+import PageMonitoring from "./PageMonitoring";
 import SiteFourPageMonitoring from "./siteFour_page_monitoring";
 import PageMonitoring2 from "./PageMonitoring2";
+
+import '../css/introjs.css';
+import '../css/introjs-dark.css';
 
 let devOptions = [{key: 'af', value: 'af', text: 'SK Telecom'}]
 const locationOptions = [
@@ -685,6 +692,13 @@ class SiteFour extends React.Component {
             this.setState({intoCity: false})
         }
 
+        //set category
+        if(nextProps.detailData !== this.props.detailData) {
+            // alert(JSON.stringify(nextProps.detailData))
+            this.setState({detailData:nextProps.detailData})
+        }
+
+
     }
 
     componentDidUpdate() {
@@ -929,6 +943,13 @@ class SiteFour extends React.Component {
                                         data: null,
                                         viewMode: 'listView'
                                     })}>Close Details</Button>
+                                    <div>
+                                        {this.state.detailData.Region + " > "}
+                                        {(this.state.headerTitle === "Cloudlets") ? this.state.detailData.CloudletName : null}
+                                        {(this.state.headerTitle === 'Cluster Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterName : null}
+                                        {(this.state.headerTitle === 'App Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterInst + " > " + this.state.detailData.AppName : null}
+
+                                    </div>
                                 </Grid.Column>
                                 : null
                         }
@@ -1007,7 +1028,9 @@ class SiteFour extends React.Component {
                                                                 <SiteFourPageApps></SiteFourPageApps> :
                                                                 (this.state.page === 'pg=6') ?
                                                                     <SiteFourPageAppInst></SiteFourPageAppInst> :
-                                                                    (this.state.page === 'pg=newOrg') ?
+                                                                    (this.state.page === 'pg=7')?
+                                                                        <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
+                                                                        (this.state.page === 'pg=newOrg') ?
                                                                         <SiteFourPageCreateorga></SiteFourPageCreateorga> :
                                                                         (this.state.page === 'pg=createApp') ?
                                                                             <SiteFourPageAppReg
@@ -1018,7 +1041,9 @@ class SiteFour extends React.Component {
                                                                                 (this.state.page === 'pg=createAppInst') ?
                                                                                     <SiteFourPageAppInstReg
                                                                                         editable={false}></SiteFourPageAppInstReg> :
-                                                                                    (this.state.page === 'pg=editAppInst') ?
+                                                                                    (this.state.page === 'pg=createCloudletPool')?
+                                                                                        <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                        (this.state.page === 'pg=editAppInst') ?
                                                                                         <SiteFourPageAppInstReg
                                                                                             editable={true}></SiteFourPageAppInstReg> :
                                                                                         (this.state.page === 'pg=createClusterInst') ?
@@ -1032,7 +1057,7 @@ class SiteFour extends React.Component {
                                                                                                         (this.state.page === 'pg=Monitoring2') ?
                                                                                                             <SiteFourPageMonitoring></SiteFourPageMonitoring> :
 
-                                                                                                        <div></div>
+                                                                                                            <div></div>
                                 }
                             </div>
                         </Grid.Column>

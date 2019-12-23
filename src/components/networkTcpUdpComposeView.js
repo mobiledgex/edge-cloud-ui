@@ -1,10 +1,10 @@
 import React from 'react';
 import { Grid, Dropdown } from 'semantic-ui-react'
-import NetworkInoutLegend from './network/networkInoutLegend';
+
 import TimeSeries from '../charts/plotly/timeseries';
 import sizeMe from 'react-sizeme'
 import SelectRangeTcpudp from '../components/selectRangeTcpudp';
-import NetworkInOutSimple from "../container/developerSideInfo";
+
 import {connect} from "react-redux";
 import * as utils from '../utils';
 import * as serviceCluster from "../services/service_instance_service";

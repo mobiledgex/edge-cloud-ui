@@ -8,7 +8,7 @@ import PagePoolDetailViewer from '../container/pagePoolDetailViewer';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as services from '../services/service_compute_service';
+import * as services from '../services/service_cloudlet_pool';
 import './siteThree.css';
 import InsideListView from "../container/insideListView";
 import Alert from "react-s-alert";
@@ -82,12 +82,13 @@ class SiteFourPageCloudletPool extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         // this.getDataDeveloper(this.props.changeRegion);
         this.userToken = store.userToken;
+        //test...
+        this.createCloudletPoolMember('EU', 'TDG', 'frankfurt-eu', 'bicCloudletPool20191220-1')
     }
     componentWillUnmount() {
         this._devData = [];
         this._cloudletDummy = [];
     }
-
 
     componentWillReceiveProps(nextProps) {
         console.log("20191119 ..cloudlet 11 region info in page cloudlet",nextProps.changeRegion,"-- : --",this.state.changeRegion,": props region ==>",nextProps.regionInfo.region,": state region==>",this.state.regions)
@@ -110,6 +111,8 @@ class SiteFourPageCloudletPool extends React.Component {
             console.log("20191119 ..cloudlet 22 nextProps.changeRegion = ",nextProps.changeRegion,"-- : --",this.props.changeRegion)
             this.setState({changeRegion: nextProps.changeRegion})
             this.getDataDeveloper(nextProps.changeRegion, this.state.regions);
+            ///care pool test
+            //this.createCloudletPool('EU','bicCloudletPool20191220-3');
         } else {
 
         }
@@ -129,9 +132,11 @@ class SiteFourPageCloudletPool extends React.Component {
         }
 
 
+
+
     }
     receiveResult = (result) => {
-
+        console.log('20191220 receive result cloudlet pool...', JSON.stringify(result));
         // @inki if data has expired token
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
@@ -147,7 +152,7 @@ class SiteFourPageCloudletPool extends React.Component {
         }
 
         this.loadCount ++;
-        console.log("20191119 ..cloudlet EditEditEdit",rgn.length,":::",this.loadCount)
+        console.log("20191220 ..cloudlet EditEditEdit",rgn.length,":::",this.loadCount)
         if(rgn.length == this.loadCount){
             _self.countJoin()            
         }
@@ -166,6 +171,19 @@ class SiteFourPageCloudletPool extends React.Component {
         //     return
         // }
 
+    }
+
+    // receiveResult = (result) => {
+    //     console.log('20191220 receive result cloudlet pool...', JSON.stringify(result));
+    // }
+    receiveResultCreate = (result) => {
+        console.log('20191220 receive result cloudlet pool create ...', JSON.stringify(result));
+    }
+    receiveResultMember = (result) => {
+        console.log('20191220 receive result cloudlet pool member  ...', JSON.stringify(result));
+    }
+    receiveResultCreateMember = (result) => {
+        console.log('20191220 receive result cloudlet pool create member  ...', JSON.stringify(result));
     }
 
     countJoin() {
@@ -188,11 +206,27 @@ class SiteFourPageCloudletPool extends React.Component {
         }
 
         rgn.map((item, i) => {
-            //setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 0)
-            services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult)
+            services.getListCloudletPool('ShowCloudletPool',{token:store.userToken, region:item}, _self.receiveResult)
+            //services.getListCloudletPoolMember('ShowCloudletPoolMember',{token:store.userToken, region:item}, _self.receiveResultMember)
         })
         this.props.handleLoadingSpinner(true);
+
     }
+    createCloudletPool = (_region, _poolName) => {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        services.createCloudletPool('CreateCloudletPool',{token:store.userToken, region:_region, name:_poolName}, _self.receiveResultCreate)
+    }
+    /*
+       example : region=EU operator=TDG cloudlet=deleteme pool=DeletemePool
+     */
+    createCloudletPoolMember = (_region, _oper, _cloudlet, _pool) => {
+        //TODO: 맴버 가져오기
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let _params = {region: _region, operator: _oper, cloudlet: _cloudlet, pool:_pool};
+        services.createCloudletPoolMember('CreateCloudletPoolMember',{token:store.userToken, params:_params}, _self.receiveResultCreateMember)
+
+    }
+
     getDataDeveloperSub = (region) => {
         let _region = (region)?region:'All';
         this.getDataDeveloper(_region);
