@@ -608,7 +608,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     {/*todo:###########################***/}
-                                                    {/*todo:render BubbleChart          */}
+                                                    {/*todo:RENDER BubbleChart          */}
                                                     {/*todo:###########################***/}
                                                     <FlexBox>
                                                         <div>
@@ -616,7 +616,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                         <div style={{marginRight: 10,}}>
                                                             {/*todo:#########################################****/}
-                                                            {/*todo: RENDER Donut Chart  N  App Status          */}
+                                                            {/*todo: RENDER Donut Chart N App Status          */}
                                                             {/*todo:#########################################****/}
                                                             {renderPieChart2AndAppStatus(this.state.appInstanceOne, this)}
                                                         </div>
