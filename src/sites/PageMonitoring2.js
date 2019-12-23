@@ -1,16 +1,16 @@
 import 'react-hot-loader'
-
 import React from 'react';
-import FlexBox from "flexbox-react";
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
 import {hot} from "react-hot-loader/root";
-import {Dropdown, Grid,} from "semantic-ui-react";
+import Plot from 'react-plotly.js';
+import {Dropdown, Grid, Input,} from "semantic-ui-react";
 import {DatePicker, notification} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
+
 import {
     fetchAppInstanceList, filterAppInstanceListByRegion, makeCpuOrMemUsageListPerInstance,
     renderBarGraph_GoogleChart,
@@ -23,7 +23,7 @@ import {
 import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance} from "../shared/Types";
-//import './PageMonitoring.css';
+
 
 const {Column, Row} = Grid;
 
@@ -35,7 +35,6 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchProps = (dispatch) => {
     return {
-
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
         }
@@ -101,10 +100,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             appInstanceList: [],
             appInstanceOne: {},
             currentRegion: '',
+
         };
 
         intervalHandle = null;
-
 
         constructor(props) {
             super(props);
@@ -129,6 +128,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
             return newArrList;
+
         }
 
         componentDidMount = async () => {
@@ -180,6 +180,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
             let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
             let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
+
             await this.setState({
                 appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
@@ -200,6 +201,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         clearInterval(this.intervalHandle)
                     })
                 }, 350)
+
             })
 
         }
@@ -218,13 +220,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentRegion: pRegion,
             })
 
-
             let appInstanceList = await fetchAppInstanceList()
 
             console.log('appInstanceList2222222===>', appInstanceList);
 
             let filteredAppInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
-
             console.log('filteredAppInstanceList===>', filteredAppInstanceList);
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(filteredAppInstanceList, 'Cloudlet');
@@ -235,9 +235,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading0: false,
             })
             this.props.toggleLoading(false)
+
         }
 
         renderHeader = () => {
+
             return (
                 <Grid.Row className='content_title'
                           style={{width: 'fit-content', display: 'inline-block'}}>
@@ -247,7 +249,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <button className="ui circular icon button"><i aria-hidden="true"
                                                                        className="info icon"></i></button>
                     </div>
+
                 </Grid.Row>
+
+
             )
         }
 
@@ -265,7 +270,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     console.log('item_AppName===>', item.AppName);
                 }
 
-
             })
             this.setState({
                 appInstanceOne: appInstanceOne,
@@ -279,6 +283,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
+
         render() {
             //todo:####################################################################
             //todo: Components showing when the loading of graph data is not completed.
@@ -291,32 +296,40 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:Content Header part      */}
                             {/*todo:####################*/}
                             {this.renderHeader()}
-                            <div style={{position: 'absolute', top: '25%', left: '42%'}}>
-                                {/*<CircularProgress style={{color: 'red'}}/>*/}
-                                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
-                                    <Lottie
-                                        options={{
-                                            loop: true,
-                                            autoplay: true,
-                                            animationData: require('../lotties/79-animated-graph'),
-                                            rendererSettings: {
-                                                preserveAspectRatio: 'xMidYMid slice'
-                                            }
-                                        }}
-                                        height={120}
-                                        width={120}
-                                        isStopped={false}
-                                        isPaused={false}
-                                    />
-                                </div>
-                                <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop: 20}}>Loading
-                                    data now. It takes more
-                                    than 15 seconds.
-                                </div>
-                                <div style={{marginLeft: 55, fontSize: 50, color: 'white', marginTop: 10, height: 150}}>
-                                    {this.state.counter}
-                                </div>
-                            </div>
+
+                            <Grid.Row className='site_content_body'>
+                                <Grid.Column>
+                                    <div className="table-no-resized"
+                                         style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
+                                        <div style={{position: 'absolute', top: '25%', left: '42%'}}>
+                                            {/*<CircularProgress style={{color: 'red'}}/>*/}
+                                            <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
+                                                <Lottie
+                                                    options={{
+                                                        loop: true,
+                                                        autoplay: true,
+                                                        animationData: require('../lotties/79-animated-graph'),
+                                                        rendererSettings: {
+                                                            preserveAspectRatio: 'xMidYMid slice'
+                                                        }
+                                                    }}
+                                                    height={120}
+                                                    width={120}
+                                                    isStopped={false}
+                                                    isPaused={false}
+                                                />
+                                            </div>
+                                            <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop: 20}}>Loading
+                                                data now. It takes more
+                                                than 15 seconds.
+                                            </div>
+                                            <div style={{marginLeft: 55, fontSize: 50, color: 'white', marginTop: 10, height: 150}}>
+                                                {this.state.counter}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Grid.Column>
+                            </Grid.Row>
                         </Grid.Column>
                     </Grid.Row>
                 )
@@ -339,6 +352,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:####################*/}
                         {this.renderHeader()}
 
+
                         {/*todo:####################*/}
                         {/*todo:Content Body part   */}
                         {/*todo:####################*/}
@@ -346,6 +360,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
+
 
                                     <div className="page_monitoring">
                                         {/*todo:####################*/}
@@ -368,19 +383,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     onChange={async (e, {value}) => {
                                                         await this.handleRegionChanges(value)
                                                     }}
-                                                    style={{width: 250}}
                                                 />
                                                 <Dropdown
                                                     placeholder='CloudLet'
                                                     selection
                                                     options={this.state.cloudletList}
-                                                    style={{width: 250}}
                                                 />
                                                 <Dropdown
                                                     placeholder='Cluster'
                                                     selection
                                                     options={this.state.clusterList}
-                                                    style={{width: 250}}
+
                                                 />
                                                 <div className='page_monitoring_datepicker_area'>
                                                     <DatePicker
@@ -415,6 +428,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {/*todo:####################*/}
                                         {/*todo:SelectBox End  */}
                                         {/*todo:####################*/}
+
+
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
@@ -423,7 +438,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
-                                                <div className='page_monitoring_column_kj'>
+                                                <div className='page_monitoring_column'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Status Of Launched App Instance
@@ -436,18 +451,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___2*/}
                                                 {/* ___col___2*/}
                                                 {/* ___col___2*/}
-                                                <div className='page_monitoring_column_kj'>
+                                                <div className='page_monitoring_column'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Top 5 of CPU Usage
                                                         </div>
-                                                        <div className='page_monitoring_column_kj_select'>
+                                                        <div className='page_monitoring_column_select'>
                                                             <Dropdown
                                                                 placeholder='Cluster'
                                                                 selection
                                                                 options={this.state.clusterList}
-                                                                style={{width: 250}}
-
 
                                                             />
                                                         </div>
@@ -459,7 +472,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___3*/}
                                                 {/* ___col___3*/}
                                                 {/* ___col___3*/}
-                                                <div className='page_monitoring_column_kj'>
+                                                <div className='page_monitoring_column'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Transition Of CPU Usage
@@ -471,7 +484,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 </div>
                                             </div>
 
-
                                             {/*_____row______2*/}
                                             {/*_____row______2*/}
                                             {/*_____row______2*/}
@@ -480,13 +492,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___4*/}
                                                 {/* ___col___4*/}
                                                 {/* ___col___4*/}
-                                                <div className='page_monitoring_column_kj'>
+                                                <div className='page_monitoring_column'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Perfomance Of Apps
 
+
                                                             {/* {this.props.isLoading ?
-                                                                <FlexBox style={{height: 25}}>
+                                                                <div style={{height: 25}}>
                                                                     <Lottie
                                                                         options={{
                                                                             loop: true,
@@ -502,45 +515,45 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                         isPaused={false}
                                                                         style={{marginLeft: 30, marginBottom: 110,}}
                                                                     />
-                                                                </FlexBox>
+                                                                </div>
                                                                 :
                                                                 <div style={{marginLeft: 50, color: '#77BD25'}}>
                                                                     {this.state.appInstanceOne.AppName.substring(0, 14) + "..."}
                                                                 </div>
                                                             }*/}
 
+
                                                         </div>
                                                     </div>
                                                     {/*todo:###########################***/}
                                                     {/*todo:render BubbleChart          */}
                                                     {/*todo:###########################***/}
-                                                    <FlexBox>
+                                                    <div className='page_monitoring_container'>
                                                         <div>
                                                             {this.props.isLoading ? renderPlaceHolder2() : renderBubbleChart(this)}
                                                         </div>
-                                                        <div style={{marginRight: 10,}}>
+                                                        <div>
                                                             {/*todo:#########################################****/}
                                                             {/*todo: RENDER Donut Chart  N  App Status          */}
                                                             {/*todo:#########################################****/}
                                                             {renderPieChart2AndAppStatus(this.state.appInstanceOne, this)}
                                                         </div>
-                                                    </FlexBox>
+                                                    </div>
 
                                                 </div>
                                                 {/* ___col___5*/}
                                                 {/* ___col___5*/}
                                                 {/* ___col___5*/}
-                                                <div className='page_monitoring_column_kj'>
+                                                <div className='page_monitoring_column'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             State of MEM Usage
                                                         </div>
-                                                        <div className='page_monitoring_column_kj_select'>
+                                                        <div className='page_monitoring_column_select'>
                                                             <Dropdown
                                                                 placeholder='Cluster'
                                                                 selection
                                                                 options={this.state.clusterList}
-                                                                style={{width: 250}}
                                                             />
                                                         </div>
                                                     </div>
@@ -552,13 +565,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___6*/}
                                                 {/* ___col___6*/}
                                                 {/* ___col___6*/}
-                                                <div className='page_monitoring_column_kj'>
+                                                <div className='page_monitoring_column'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Transition Of Mem Usage
                                                         </div>
                                                     </div>
-
                                                     <div className='page_monitoring_container'>
                                                         {this.state.loading ? renderPlaceHolder() : renderLineChart_react_chartjs(this.state.memUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>

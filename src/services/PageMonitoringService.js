@@ -38,10 +38,12 @@ export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string 
 
     let _height = window.innerHeight * 0.33 + 50
 
+    let boxWidth = (window.innerWidth-340)/3 - 22;
+
     return (
         <Chart
-            width={window.innerWidth * 0.31}
-            height={250}
+            width={boxWidth}
+            height={275}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -96,7 +98,7 @@ export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string 
                 //colors: ['#FB7A21'],
                 fontColor: 'white',
                 backgroundColor: {
-                    fill: 'black'
+                    fill: '#1e2124'
                 }
                 //colors: ['green']
             }}
@@ -130,12 +132,13 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
     }
 
 
+    let boxWidth = (window.innerWidth-340)/3 - 22;
+
     return (
         <div className="pieChart">
             <Chart
-                width={165}
+                width={boxWidth}
                 height={120}
-
                 chartType="PieChart"
                 data={[
                     ["Age", "Weight"], ["app_A", 80], ["", 20]
@@ -182,9 +185,10 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         showColorCode: true
                     },
                     fontName: "Roboto",
-                    fontColor: 'black',
+                    // fontColor: 'black',
                     //backgroundColor: 'grey',
-                    backgroundColor: 'black',
+                    fontColor: 'white',
+                    backgroundColor: '#1e2124',
                 }}
                 graph_id="PieChart"
                 legend_toggle
@@ -366,11 +370,13 @@ export const renderPlaceHolder = () => {
     )
 }
 
+
 export const renderPlaceHolder2 = () => {
     let boxWidth = window.innerWidth * 0.3;
+    // let boxWidth = window.innerWidth / 10 * 3.55;
     return (
-        <div style={{width: 350, height: 250, backgroundColor: 'black'}}>
-            <div style={{marginTop: 0}}>
+        <div style={{display:'flex', flexGrow:1, width:'100%', height:'100%', justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}>
+            {/*<div style={{marginTop: 0}}>*/}
                 <Lottie
                     options={{
                         loop: true,
@@ -386,7 +392,8 @@ export const renderPlaceHolder2 = () => {
                     isPaused={false}
                     style={{marginTop: 0,}}
                 />
-            </div>
+            {/*</div>*/}
+            {/*<CircularProgress style={{zIndex: 999999999, color:'#79BF14'}}/>*/}
         </div>
     )
 }
@@ -633,13 +640,14 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
  * @returns {*}
  */
 export const renderLineGraph_Plot = () => {
-    let boxWidth = window.innerWidth / 10 * 2.8;
+
+    let boxWidth = (window.innerWidth-340)/3 - 22;
 
     return (
         <Plot
             style={{
-                //backgroundColor: 'transparent',
-                backgroundColor: 'black',
+                // backgroundColor: 'transparent',
+                backgroundColor: '#1e2124',
                 overflow: 'hidden',
                 color: 'white',
                 alignItems: 'center',
@@ -765,23 +773,35 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
             {chunkedArraysOfColSize.map((colSizeArray, index) =>
                 <div className='page_monitoring_grid' key={index.toString()}>
                     {colSizeArray.map((item) =>
-                        <div className='page_monitoring_grid_box'>
-                            <FlexBox style={{
-                                fontSize: 15,
-                                color: '#fff',
-                                marginTop: 10,
-                            }}>
-                                {item.name.toString().substring(0, 19) + "..."}
-                            </FlexBox>
-                            <FlexBox style={{
-                                marginTop: 0,
-                                fontSize: 50,
-                                color: '#29a1ff',
-                            }}>
-                                {item.length}
-                            </FlexBox>
+                        <div className='page_monitoring_grid_box_layout'>
+                            <div className='page_monitoring_grid_box'>
+                                <div className='page_monitoring_grid_box_name'>
+                                    {item.name}
+                                    {/*{item.name.toString().substring(0, 19) + "..."}*/}
+                                </div>
+                                <div className='page_monitoring_grid_box_num'>
+                                    {item.length}
+                                </div>
 
+                            </div>
                         </div>
+                        // <div className='page_monitoring_grid_box'>
+                        //     <FlexBox style={{
+                        //         fontSize: 15,
+                        //         color: '#fff',
+                        //         marginTop: 10,
+                        //     }}>
+                        //         {item.name.toString().substring(0, 19) + "..."}
+                        //     </FlexBox>
+                        //     <FlexBox style={{
+                        //         marginTop: 0,
+                        //         fontSize: 50,
+                        //         color: '#29a1ff',
+                        //     }}>
+                        //         {item.length}
+                        //     </FlexBox>
+                        //
+                        // </div>
                     )}
                 </div>
             )}

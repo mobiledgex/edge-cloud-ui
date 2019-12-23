@@ -43,7 +43,6 @@
     flex-direction: column;
     flex-grow: 1;
     height: 100%;
-    overflow: scroll; /*나중에 제거할 것 remove later*/
 }
 .page_monitoring_row {
     display: flex;
@@ -102,19 +101,12 @@
     height:100%;
 }
 
-.page_monitoring_container2 {
-    display: flex;
-    flex-grow: 1;
-    overflow: hidden;
-    width:70%;
-    height:100%;
-}
-
 
 .page_monitoring_grid {
     display: flex;
     flex-direction: row;
     /*flex-wrap: wrap;*/
+    flex-grow: 1;
     width: 100%;
     height: 100%;
     margin-bottom: 10px;
@@ -122,42 +114,56 @@
 .page_monitoring_grid:last-child {
     margin-bottom: 0;
 }
+
+
+.page_monitoring_grid_box_layout {
+    display: flex;
+    flex-direction: column;
+    /*flex-grow: 1;*/
+    width: 33.3333%;
+    height: 100%;
+    padding:0 5px;
+}
 .page_monitoring_grid_box{
     display: flex;
     flex-direction: column;
-    /*flex-grow: 1;*/
-    width: 33.3333%;
+    flex-grow: 1;
+    width: 100%;
     height: 100%;
-    margin-right: 10px;
     background: #1e2124;
     justify-content: center;
     align-items: center;
+    padding: 10px;
 }
 
-.page_monitoring_grid_box_blank{
-    display: flex;
-    flex-direction: column;
-    /*flex-grow: 1;*/
-    width: 33.3333%;
-    height: 100%;
-    margin-right: 10px;
-    background: transparent;
-    justify-content: center;
-    align-items: center;
+.page_monitoring_grid_box_name {
+    color: #c5c6c8;
+    max-width:100%;
+    font-size: 14px;
+    line-height: 1.2em;
+    height: 36px;
+    text-align: center;
+    white-space: pre-wrap;
+    text-after-overflow: ellipsis;
+    overflow: hidden;
+}
+.page_monitoring_grid_box_num {
+    font-size: 48px;
+    line-height: 1.2em;
+    color: #29a1ff;
+
 }
 
-.page_monitoring_grid_box_blank2{
+.page_monitoring_chart {
+
     display: flex;
     flex-direction: column;
-    /*flex-grow: 1;*/
+    /*flex-wrap: wrap;*/
     width: 100%;
     height: 100%;
-    background-color: transparent;
-    margin-right: 0px;
-    justify-content: center;
-    align-items: center;
+    margin-bottom: 10px;
+
 }
-.page_monitoring_grid_box:last-child {
-    margin-right: 0;
-}
+
+
 
