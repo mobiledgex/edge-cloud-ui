@@ -31,7 +31,7 @@ import {
     renderPlaceHolder,
     renderPlaceHolder2
 } from "../services/PageMonitoringService";
-import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
+import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance} from "../shared/Types";
 import {CircularProgress} from "@material-ui/core";
@@ -283,18 +283,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderSelectBox() {
 
-            let options1 = [
-                {value: 'ALL', text: 'ALL'},
-                {value: 'EU', text: 'EU'},
-                {value: 'US', text: 'US'},
-
-            ]
-
-
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
-
                         {/*  <label className='page_monitoring_select_reset'
                                onClick={() => {
                                    notification.success({
@@ -304,7 +295,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                }}>
                             Reload
                         </label>*/}
-                        <div style={{
+                        {/*<div style={{
                             display: 'flex',
                             width: 80,
                             //backgroundColor: 'red',
@@ -314,9 +305,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                         }}>
                             <FA name="refresh" style={{fontSize: 30,}} onClick={() => {
-                                alert('sdasd christmas!!!!!')
+                                alert('SDFSDFSDF SDFSDF!!!!!')
                             }}/>
-                        </div>
+                        </div>*/}
                         <label className='page_monitoring_select_reset'
                                onClick={() => {
                                    notification.success({
@@ -330,14 +321,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <Dropdown
                             placeholder='REGION'
                             selection
-                            options={options1}
-                            defaultValue={options1[0].value}
+                            options={REGIONS_OPTIONS}
+                            defaultValue={REGIONS_OPTIONS[0].value}
                             onChange={async (e, {value}) => {
                                 await this.handleRegionChanges(value)
                             }}
                             style={{width: 250}}
                         />
-
 
                         {/*todo:CloudLet selectbox*/}
                         {/*todo:CloudLet selectbox*/}

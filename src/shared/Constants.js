@@ -35,4 +35,10 @@ export const APP_PERFORMANCE_VALUES = {
     },
 }
 
+export const REGIONS_OPTIONS = [
+    {value: 'ALL', text: 'ALL'},
+    {value: 'EU', text: 'EU'},
+    {value: 'US', text: 'US'},
+
+]
 
