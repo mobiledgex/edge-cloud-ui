@@ -165,10 +165,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List.
             //todo: ####################################################################################
-        /*    let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
-            let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
-            let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-            console.log('_result===>', cpuOrMemUsageList);*/
+            /*    let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
+                let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
+                let memUsageListPerOneInstance = cpuOrMemUsageList[1]
+                console.log('_result===>', cpuOrMemUsageList);*/
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
@@ -279,6 +279,81 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
+        renderSelectBox() {
+
+            let options1 = [
+                {value: 'ALL', text: 'ALL'},
+                {value: 'EU', text: 'EU'},
+                {value: 'US', text: 'US'},
+
+            ]
+
+
+            return (
+                <div className='page_monitoring_select_row'>
+                    <div className='page_monitoring_select_area'>
+                        <label className='page_monitoring_select_reset'
+                               onClick={() => {
+                                   notification.success({
+                                       duration: 0.5,
+                                       message: 'reset all',
+                                   });
+                               }}>Reset All</label>
+                        <Dropdown
+                            placeholder='REGION'
+                            selection
+                            options={options1}
+                            defaultValue={options1[0].value}
+                            onChange={async (e, {value}) => {
+                                await this.handleRegionChanges(value)
+                            }}
+                            style={{width: 250}}
+                        />
+                        <Dropdown
+                            placeholder='CloudLet'
+                            selection
+                            options={this.state.cloudletList}
+                            style={{width: 250}}
+                        />
+                        <Dropdown
+                            placeholder='Cluster'
+                            selection
+                            options={this.state.clusterList}
+                            style={{width: 250}}
+                        />
+                        <div className='page_monitoring_datepicker_area'>
+                            <DatePicker
+                                onChange={(date) => {
+                                    let __date = formatDate(date);
+                                    this.setState({
+                                        date: __date,
+                                    })
+                                }}
+                                placeholder="Start Date"
+                                style={{cursor: 'pointer'}}
+
+                            />
+                            <div style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
+                                -
+                            </div>
+                            <DatePicker
+                                onChange={(date) => {
+                                    let __date = formatDate(date);
+                                    this.setState({
+                                        date: __date,
+                                    })
+                                }}
+                                placeholder="End Date"
+                                style={{cursor: 'pointer'}}
+
+                            />
+                        </div>
+
+                    </div>
+                </div>
+            )
+        }
+
         render() {
             //todo:####################################################################
             //todo: Components showing when the loading of graph data is not completed.
@@ -322,13 +397,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 )
             }
 
-            let options1 = [
-                {value: 'ALL', text: 'ALL'},
-                {value: 'EU', text: 'EU'},
-                {value: 'US', text: 'US'},
-
-            ]
-
 
             return (
 
@@ -351,70 +419,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {/*todo:####################*/}
                                         {/*todo:SelectBox part start */}
                                         {/*todo:####################*/}
-                                        <div className='page_monitoring_select_row'>
-                                            <div className='page_monitoring_select_area'>
-                                                <label className='page_monitoring_select_reset'
-                                                       onClick={() => {
-                                                           notification.success({
-                                                               duration: 0.5,
-                                                               message: 'reset all',
-                                                           });
-                                                       }}>Reset All</label>
-                                                <Dropdown
-                                                    placeholder='REGION'
-                                                    selection
-                                                    options={options1}
-                                                    defaultValue={options1[0].value}
-                                                    onChange={async (e, {value}) => {
-                                                        await this.handleRegionChanges(value)
-                                                    }}
-                                                    style={{width: 250}}
-                                                />
-                                                <Dropdown
-                                                    placeholder='CloudLet'
-                                                    selection
-                                                    options={this.state.cloudletList}
-                                                    style={{width: 250}}
-                                                />
-                                                <Dropdown
-                                                    placeholder='Cluster'
-                                                    selection
-                                                    options={this.state.clusterList}
-                                                    style={{width: 250}}
-                                                />
-                                                <div className='page_monitoring_datepicker_area'>
-                                                    <DatePicker
-                                                        onChange={(date) => {
-                                                            let __date = formatDate(date);
-                                                            this.setState({
-                                                                date: __date,
-                                                            })
-                                                        }}
-                                                        placeholder="Start Date"
-                                                        style={{cursor: 'pointer'}}
-
-                                                    />
-                                                    <div style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
-                                                        -
-                                                    </div>
-                                                    <DatePicker
-                                                        onChange={(date) => {
-                                                            let __date = formatDate(date);
-                                                            this.setState({
-                                                                date: __date,
-                                                            })
-                                                        }}
-                                                        placeholder="End Date"
-                                                        style={{cursor: 'pointer'}}
-
-                                                    />
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        {/*todo:####################*/}
-                                        {/*todo:SelectBox End  */}
-                                        {/*todo:####################*/}
+                                        {this.renderSelectBox()}
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
@@ -484,31 +489,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Perfomance Of Apps
-
-                                                            {/* {this.props.isLoading ?
-                                                                <FlexBox style={{height: 25}}>
-                                                                    <Lottie
-                                                                        options={{
-                                                                            loop: true,
-                                                                            autoplay: true,
-                                                                            animationData: require('../lotties/loader003'),
-                                                                            rendererSettings: {
-                                                                                preserveAspectRatio: 'xMidYMid slice'
-                                                                            }
-                                                                        }}
-                                                                        height={55}
-                                                                        width={55}
-                                                                        isStopped={false}
-                                                                        isPaused={false}
-                                                                        style={{marginLeft: 30, marginBottom: 110,}}
-                                                                    />
-                                                                </FlexBox>
-                                                                :
-                                                                <div style={{marginLeft: 50, color: '#77BD25'}}>
-                                                                    {this.state.appInstanceOne.AppName.substring(0, 14) + "..."}
-                                                                </div>
-                                                            }*/}
-
                                                         </div>
                                                     </div>
                                                     {/*todo:###########################***/}

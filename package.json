@@ -33,6 +33,7 @@
     "fetch-jsonp": "^1.1.3",
     "file-system": "^2.2.2",
     "flexbox-react": "^4.4.0",
+    "flow-bin": "^0.114.0",
     "fs": "0.0.1-security",
     "fs-es6": "0.0.2",
     "gsap": "^2.0.2",
