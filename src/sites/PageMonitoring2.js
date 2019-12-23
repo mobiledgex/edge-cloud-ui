@@ -12,13 +12,17 @@ import {DatePicker, notification} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
 import {
-    fetchAppInstanceList, filterAppInstanceListByRegion, makeCpuOrMemUsageListPerInstance,
-    renderBarGraph_GoogleChart,
+    fetchAppInstanceList,
+    filterAppInstanceListByRegion,
+    filterCpuOrMemUsageListByRegion,
+    makeCpuOrMemUsageListPerInstance,
+    renderBarGraphForCpuMem,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
     renderLineChart_react_chartjs,
     renderPieChart2AndAppStatus,
-    renderPlaceHolder, renderPlaceHolder2
+    renderPlaceHolder,
+    renderPlaceHolder2
 } from "../services/PageMonitoringService";
 import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
 import Lottie from "react-lottie";
@@ -66,13 +70,16 @@ type State = {
     startDate: string,
     endDate: string,
     clusterList: any,
-    cpuUsageList: any,
-    cpuUsageList2: any,
-    memUsageList: any,
+    filteredCpuUsageList: any,
+    filteredMemUsageList: any,
     counter: number,
     appInstanceList: Array<TypeAppInstance>,
+    allAppInstanceList: Array<TypeAppInstance>,
     appInstanceOne: TypeAppInstance,
     currentRegion: string,
+    allCpuUsageList: Array,
+    allMemUsageList: Array,
+
 
 }
 
@@ -93,14 +100,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             startDate: '',
             endDate: '',
             clusterList: [],
-            cpuUsageList: [],
-            cpuUsageList2: [100, 50, 30, 20, 10],
+            filteredCpuUsageList: [],
+            filteredMemUsageList: [],
             isReady: false,
-            memUsageList: [],
             counter: 0,
             appInstanceList: [],
+            allAppInstanceList: [],
             appInstanceOne: {},
             currentRegion: '',
+            allCpuUsageList: [],
+            allMemUsageList: [],
         };
 
         intervalHandle = null;
@@ -142,10 +151,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
             //todo: REALDATA
-            let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
+            //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
             //todo: FAKEJSON
-            //let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
+            let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
 
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
@@ -163,12 +172,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //todo: ####################################################################################
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
-            //todo: Bring Mem and CPU chart Data with App Instance List.
+            //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            /*    let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
-                let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
-                let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-                console.log('_result===>', cpuOrMemUsageList);*/
+            /*let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
+            let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
+            let memUsageListPerOneInstance = cpuOrMemUsageList[1]
+            console.log('_result===>', cpuOrMemUsageList);*/
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
@@ -182,11 +191,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
             await this.setState({
                 appInstanceList: appInstanceList,
+                //todo: 전체 app Instance list
+                allAppInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 cloudletList: cloudletList,
                 clusterList: clusterList,
-                cpuUsageList: cpuUsageListPerOneInstance,
-                memUsageList: memUsageListPerOneInstance,
+                //todo: 전체 cpu/mem 사용량 리스트..
+                allCpuUsageList: cpuUsageListPerOneInstance,
+                allMemUsageList: memUsageListPerOneInstance,
+                filteredCpuUsageList: cpuUsageListPerOneInstance,
+                filteredMemUsageList: memUsageListPerOneInstance,
+
             });
             console.log('clusterList====>', clusterList);
 
@@ -208,34 +223,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clearInterval(this.intervalHandle)
         }
 
-
-        async handleRegionChanges(pRegion) {
-
-            this.props.toggleLoading(true)
-            await this.setState({
-                loading0: true,
-                appInstanceListSortByCloudlet: [],
-                currentRegion: pRegion,
-            })
-
-
-            let appInstanceList = await fetchAppInstanceList()
-
-            console.log('appInstanceList2222222===>', appInstanceList);
-
-            let filteredAppInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
-
-            console.log('filteredAppInstanceList===>', filteredAppInstanceList);
-
-            let appInstanceListGroupByCloudlet = reducer.groupBy(filteredAppInstanceList, 'Cloudlet');
-
-            await this.setState({
-                appInstanceList: filteredAppInstanceList,
-                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                loading0: false,
-            })
-            this.props.toggleLoading(false)
-        }
 
         renderHeader = () => {
             return (
@@ -354,6 +341,42 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+
+        /**
+         * @todo: 셀렉트박스 리전을 변경할때 처리되는 프로세스..
+         * @param pRegion
+         * @returns {Promise<void>}
+         */
+        async handleRegionChanges(pRegion) {
+            this.props.toggleLoading(true)
+            await this.setState({
+                loading0: true,
+                appInstanceListSortByCloudlet: [],
+                currentRegion: pRegion,
+            })
+
+            let appInstanceList = await fetchAppInstanceList()
+            let filteredAppInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
+
+            //todo: 클라우드렛 별로 인스턴스를 GroupBy..
+            let appInstanceListGroupByCloudlet = reducer.groupBy(filteredAppInstanceList, 'Cloudlet');
+
+            //todo:리전별로 필터링된 CPU/MEM UsageList(전체 리스트로 부터 필터링처리)
+            let filteredCpuUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allCpuUsageList);
+            let filteredMemUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allMemUsageList);
+
+            this.setState({
+                filteredCpuUsageList: filteredCpuUsageList,
+                filteredMemUsageList: filteredMemUsageList,
+                appInstanceList: filteredAppInstanceList,
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                loading0: false,
+            })
+
+            this.props.toggleLoading(false)
+        }
+
+
         render() {
             //todo:####################################################################
             //todo: Components showing when the loading of graph data is not completed.
@@ -407,9 +430,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:####################*/}
                         {this.renderHeader()}
 
-                        {/*todo:####################*/}
-                        {/*todo:Content Body part   */}
-                        {/*todo:####################*/}
+
                         <Grid.Row className='site_content_body'>
                             <Grid.Column>
                                 <div className="table-no-resized"
@@ -420,6 +441,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {/*todo:SelectBox part start */}
                                         {/*todo:####################*/}
                                         {this.renderSelectBox()}
+                                        {/*todo:####################*/}
+                                        {/*todo:Content Body part   */}
+                                        {/*todo:####################*/}
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
@@ -438,9 +462,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {this.state.loading0 ? renderPlaceHolder() : renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet)}
                                                     </div>
                                                 </div>
-                                                {/* ___col___2*/}
-                                                {/* ___col___2*/}
-                                                {/* ___col___2*/}
+                                                {/* cpu___col___2*/}
+                                                {/* cpu___col___2*/}
+                                                {/* cpu___col___2*/}
                                                 <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
@@ -458,20 +482,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph_GoogleChart(this.state.cpuUsageList, HARDWARE_TYPE.CPU)}
+                                                        {this.props.isLoading ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                                                     </div>
                                                 </div>
-                                                {/* ___col___3*/}
-                                                {/* ___col___3*/}
-                                                {/* ___col___3*/}
-                                                <div className='page_monitoring_column_kj'>
+                                                {/* cpu___col___3*/}
+                                                {/* cpu___col___3*/}
+                                                {/* cpu___col___3*/}
+                                                 <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Transition Of CPU Usage
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderLineChart_react_chartjs(this.state.cpuUsageList, HARDWARE_TYPE.CPU)}
+                                                        {this.props.isLoading ? renderPlaceHolder() : renderLineChart_react_chartjs(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                                                     </div>
                                                 </div>
                                             </div>
@@ -507,9 +531,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     </FlexBox>
 
                                                 </div>
-                                                {/* ___col___5*/}
-                                                {/* ___col___5*/}
-                                                {/* ___col___5*/}
+                                                {/* mem___col___5*/}
+                                                {/* mem___col___5*/}
+                                                {/* mem___col___5 */}
                                                 <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
@@ -524,23 +548,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             />
                                                         </div>
                                                     </div>
-                                                    <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph_GoogleChart(this.state.memUsageList, HARDWARE_TYPE.MEM)}
+                                                      <div className='page_monitoring_container'>
+                                                        {this.props.isLoading ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
 
                                                 </div>
-                                                {/* ___col___6*/}
-                                                {/* ___col___6*/}
-                                                {/* ___col___6*/}
+                                                {/* mem___col___6*/}
+                                                {/* mem___col___6*/}
+                                                {/* mem___col___6*/}
                                                 <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Transition Of Mem Usage
                                                         </div>
                                                     </div>
-
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderLineChart_react_chartjs(this.state.memUsageList, HARDWARE_TYPE.MEM)}
+                                                        {this.props.isLoading ? renderPlaceHolder() : renderLineChart_react_chartjs(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
                                                 </div>
                                             </div>

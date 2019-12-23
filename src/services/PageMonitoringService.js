@@ -24,16 +24,20 @@ import type {TypeAppInstance} from "../shared/Types";
  * @param hardwareType
  * @returns {*}
  */
-export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
+export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
 
-    console.log('cpuUsageList===>', usageList);
+
+    console.log('cpuUsageList22===>', usageList);
 
     let chartDataList = [];
     chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}])
-    //for (let index in cpuUsageList) {
-    for (let index = 0; index < 5; index++) {
-        let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...", hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, CHART_COLOR_LIST[index]]
-        chartDataList.push(barDataOne);
+    for (let index = 0; index < usageList.length; index++) {
+
+        if (index < 5) {
+            let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...", hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, CHART_COLOR_LIST[index]]
+            chartDataList.push(barDataOne);
+        }
+
     }
 
     let _height = window.innerHeight * 0.33 + 50
@@ -393,6 +397,26 @@ export const renderPlaceHolder2 = () => {
 
 
 /**
+ * @todo : app instance SPEC 더 낳은것이 (큰것이) priorityValue가 높다....
+ * @param flavor
+ * @returns {number}
+ */
+export const instanceFlavorToPriorityValue = (flavor: string) => {
+    let priorityValue = 0;
+    if (flavor === 'm4.medium') {
+        priorityValue = 1
+    } else if (flavor === 'x1.medium') {
+        priorityValue = 2
+    } else if (flavor === 'x1.large') {
+        priorityValue = 3
+    } else {
+        priorityValue = 0
+    }
+    return priorityValue;
+}
+
+
+/**
  * todo: @weknow/react-bubble-chart-d3로 버블차트를 그린다..
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
  * @returns {*}
@@ -416,15 +440,19 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
 
     let appInstanceList = _this.state.appInstanceList
 
+
+    console.log('appInstanceList2222====>', appInstanceList)
+
     let chartData = [];
     appInstanceList.map((item: TypeAppInstance) => {
+
+        console.log('Flavor222====>', item.Flavor);
         chartData.push({
-            appName: item.AppName,
+            //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
             label: item.AppName.toString().substring(0, 10) + "...",
-            value: item.State,
+            value: instanceFlavorToPriorityValue(item.Flavor),
         })
     })
-
 
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -439,13 +467,13 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     graph={{
                         zoom: appInstanceList.length <= 4 ? 0.60 : 0.75,
                         offsetX: 0.10,
-                        offsetY: appInstanceList.length <= 4 ? 0.05 : -0.05,
+                        offsetY: appInstanceList.length <= 4 ? 0.15 : -0.02,
                     }}
                     width={355}
                     height={243}
                     padding={0} // optional value, number that set the padding between bubbles
                     showLegend={false} // optional value, pass false to disable the legend.
-                    legendPercentage={20} // number that represent the % of with that legend going to use.
+                    legendPercentage={30} // number that represent the % of with that legend going to use.
                     legendFont={{
                         family: 'Arial',
                         size: 9,
@@ -467,10 +495,12 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
                     bubbleClickFun={(label) => {
 
+                        /*
                         notification.success({
-                            duration: 0.5,
-                            message: label,
-                        });
+                              duration: 0.5,
+                              message: label,
+                          });
+                        */
                         _this.setAppInstanceOne(label);
                     }}
                     //legendClickFun={this.legendClick.bind(this)}
@@ -819,6 +849,12 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
 }
 
 
+/**
+ * @todo: 앱의 인스턴스 리스트를 리전에 맞게 필터링처리..
+ * @param pRegion
+ * @param appInstanceList
+ * @returns {TypeAppInstance[]|Array<TypeAppInstance>}
+ */
 export const filterAppInstanceListByRegion = (pRegion: string, appInstanceList: Array<TypeAppInstance>) => {
     if (pRegion === REGION.ALL) {
         return appInstanceList;
@@ -830,6 +866,27 @@ export const filterAppInstanceListByRegion = (pRegion: string, appInstanceList: 
         });
         return filteredAppInstanceList;
     }
+}
+
+/**
+ * @todo: Cpu/Mem 사용량을 리전별로 필터링
+ * @param pRegion
+ * @param memOrCpuUsageList
+ * @returns {*}
+ */
+export const filterCpuOrMemUsageListByRegion = (pRegion: string, memOrCpuUsageList) => {
+    if (pRegion === REGION.ALL) {
+        return memOrCpuUsageList;
+    } else {
+        let filteredUsageListByRegion = memOrCpuUsageList.filter((item) => {
+            if (item.instance.Region === pRegion) {
+                return item;
+            }
+        });
+        return filteredUsageListByRegion;
+    }
+
+
 }
 
 
