@@ -1,72 +1,41 @@
 import 'react-hot-loader'
+
 import React from 'react';
+import FlexBox from "flexbox-react";
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
-import FlexBox from "flexbox-react";
 import {hot} from "react-hot-loader/root";
-import Plot from 'react-plotly.js';
-import {Dropdown, Grid, Input,} from "semantic-ui-react";
-import {DatePicker} from 'antd';
+import {Dropdown, Grid,} from "semantic-ui-react";
+import {DatePicker, notification} from 'antd';
+import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
-// import './PageMonitoring.css';
 import {
-    fetchAppInstanceList,
-    renderBarGraph2_Google,
-    renderLineGraph_Plot,
-    renderPieChart2_Google, renderPlaceHolder
+    fetchAppInstanceList, filterAppInstanceListByRegion, makeCpuOrMemUsageListPerInstance,
+    renderBarGraph_GoogleChart,
+    renderBubbleChart,
+    renderInstanceOnCloudletGrid,
+    renderLineChart_react_chartjs,
+    renderPieChart2AndAppStatus,
+    renderPlaceHolder, renderPlaceHolder2
 } from "../services/PageMonitoringService";
-import axios from "axios";
-
-import * as reducer from '../utils'
-import {CircularProgress} from "@material-ui/core";
-import {GridLoader} from "react-spinners";
+import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
+import Lottie from "react-lottie";
+import type {TypeAppInstance} from "../shared/Types";
+//import './PageMonitoring.css';
 
 const {Column, Row} = Grid;
 
 
 const mapStateToProps = (state) => {
-    let viewMode = null;
-    let detailData = null;
-
-    if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
-        viewMode = state.changeViewMode.mode.viewMode;
-        detailData = state.changeViewMode.mode.data;
-    }
     return {
-        computeRefresh: (state.computeRefresh) ? state.computeRefresh : null,
-        changeRegion: state.changeRegion.region ? state.changeRegion.region : null,
-        viewMode: viewMode, detailData: detailData,
         isLoading: state.LoadingReducer.isLoading,
     }
 };
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => {
-            dispatch(actions.changeSite(data))
-        },
-        handleInjectData: (data) => {
-            dispatch(actions.injectData(data))
-        },
-        handleInjectDeveloper: (data) => {
-            dispatch(actions.registDeveloper(data))
-        },
-        handleComputeRefresh: (data) => {
-            dispatch(actions.computeRefresh(data))
-        },
-        handleLoadingSpinner: (data) => {
-            dispatch(actions.loadingSpinner(data))
-        },
-        handleAlertInfo: (mode, msg) => {
-            dispatch(actions.alertInfo(mode, msg))
-        },
-        handleDetail: (data) => {
-            dispatch(actions.changeDetail(data))
-        },
-        handleAuditCheckCount: (data) => {
-            dispatch(actions.setCheckedAudit(data))
-        },
+
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
         }
@@ -81,6 +50,7 @@ type Props = {
     sendingContent: any,
     loading: boolean,
     isLoading: boolean,
+    toggleLoading: Function,
 }
 
 type State = {
@@ -88,9 +58,21 @@ type State = {
     time: string,
     dateTime: string,
     datesRange: string,
-    appInstanceListSortByCloudlet: any,
+    appInstanceListGroupByCloudlet: any,
     loading: boolean,
     loading0: boolean,
+    cloudletList: any,
+    clusterInstanceGroupList: any,
+    startDate: string,
+    endDate: string,
+    clusterList: any,
+    cpuUsageList: any,
+    cpuUsageList2: any,
+    memUsageList: any,
+    counter: number,
+    appInstanceList: Array<TypeAppInstance>,
+    appInstanceOne: TypeAppInstance,
+    currentRegion: string,
 
 }
 
@@ -103,98 +85,159 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             time: '',
             dateTime: '',
             datesRange: '',
-            appInstanceListSortByCloudlet: [],
+            appInstanceListGroupByCloudlet: [],
             loading: false,
             loading0: false,
+            cloudletList: [],
+            clusterInstanceGroupList: [],
+            startDate: '',
+            endDate: '',
+            clusterList: [],
+            cpuUsageList: [],
+            cpuUsageList2: [100, 50, 30, 20, 10],
+            isReady: false,
+            memUsageList: [],
+            counter: 0,
+            appInstanceList: [],
+            appInstanceOne: {},
+            currentRegion: '',
         };
+
+        intervalHandle = null;
+
 
         constructor(props) {
             super(props);
+
+        }
+
+        tick() {
+            let _counter = this.state.counter;
+            _counter = _counter + 1;
+            this.setState({
+                counter: _counter
+            })
+        }
+
+
+        makeSelectBoxList(arrList, keyName) {
+            let newArrList = [];
+            for (let i in arrList) {
+                newArrList.push({
+                    value: arrList[i][0][keyName],
+                    text: arrList[i][0][keyName],//.toString()//.substring(0,25)+ "...",
+                })
+            }
+            return newArrList;
         }
 
         componentDidMount = async () => {
+            this.intervalHandle = setInterval(this.tick.bind(this), 1000);
+
             this.setState({
                 loading: true,
                 loading0: true,
+                startDate: getTodayDate(),
+                endDate: getTodayDate(),
             })
 
-            let appInstanceList = await fetchAppInstanceList();
-            let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
-            await this.setState({
-                appInstanceListSortByCloudlet,
+            //todo: REALDATA
+            let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
+
+            //todo: FAKEJSON
+            //let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
+
+            appInstanceList.map(async (item: TypeAppInstance, index) => {
+                if (index === 0) {
+                    this.setState({
+                        appInstanceOne: item,
+                    }, () => {
+
+                    })
+
+                    this.props.toggleLoading(false);
+                }
+                console.log('Region===index>', index);
+                console.log('Region===>', item.AppName);
             })
-            setTimeout(() => {
-                this.setState({
-                    loading: false,
-                    loading0: false,
-                })
-            }, 350)
+
+            //todo: ####################################################################################
+            //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
+            //todo: Bring Mem and CPU chart Data with App Instance List.
+            //todo: ####################################################################################
+        /*    let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
+            let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
+            let memUsageListPerOneInstance = cpuOrMemUsageList[1]
+            console.log('_result===>', cpuOrMemUsageList);*/
+
+            //todo: ################################################################
+            //todo: (last 100 datas) - Fake JSON FOR TEST
+            //todo: ################################################################
+            let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
+            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
+
+            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+            let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
+            let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
+            let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
+            await this.setState({
+                appInstanceList: appInstanceList,
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                cloudletList: cloudletList,
+                clusterList: clusterList,
+                cpuUsageList: cpuUsageListPerOneInstance,
+                memUsageList: memUsageListPerOneInstance,
+            });
+            console.log('clusterList====>', clusterList);
+
+            this.setState({}, () => {
+                setTimeout(() => {
+                    this.setState({
+                        loading: false,
+                        loading0: false,
+                        isReady: true,
+                    }, () => {
+                        clearInterval(this.intervalHandle)
+                    })
+                }, 350)
+            })
 
         }
 
         componentWillUnmount() {
-
+            clearInterval(this.intervalHandle)
         }
 
-        componentWillReceiveProps(nextProps, nextContext) {
 
-        }
+        async handleRegionChanges(pRegion) {
 
-        renderPieGraph() {
-            return (
-
-                <div style={{backgroundColor: 'transparent',}}>
-                    <Plot
-                        style={{
-                            backgroundColor: '#373737',
-                            overflow: 'hidden',
-                            color: 'white',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            alignSelf: 'center',
-                            marginTop: 0
-                        }}
-                        data={[{
-                            values: [30, 40, 30],
-                            labels: ['Residential', 'Non-Residential', 'Utility'],
-                            type: 'pie'
-                        }]}
-                        layout={{
-                            height: 350,
-                            width: boxWidth,
-                            paper_bgcolor: 'transparent',
-                            plot_bgcolor: 'transparent',
-                            color: 'white',
-
-                        }}
-                    />
-                </div>
-            )
-        }
-
-        async handleRegionChanges(value) {
-            let arrayRegions = [];
-            if (value === 'ALL') {
-                arrayRegions.push('EU')
-                arrayRegions.push('US')
-            } else {
-                arrayRegions.push(value);
-            }
-
-            this.setState({
+            this.props.toggleLoading(true)
+            await this.setState({
                 loading0: true,
                 appInstanceListSortByCloudlet: [],
+                currentRegion: pRegion,
             })
-            let appInstanceList = await fetchAppInstanceList(arrayRegions);
-            let appInstanceListSortByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+
+
+            let appInstanceList = await fetchAppInstanceList()
+
+            console.log('appInstanceList2222222===>', appInstanceList);
+
+            let filteredAppInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
+
+            console.log('filteredAppInstanceList===>', filteredAppInstanceList);
+
+            let appInstanceListGroupByCloudlet = reducer.groupBy(filteredAppInstanceList, 'Cloudlet');
+
             await this.setState({
-                appInstanceListSortByCloudlet,
+                appInstanceList: filteredAppInstanceList,
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
             })
+            this.props.toggleLoading(false)
         }
 
-        renderHeader() {
-
+        renderHeader = () => {
             return (
                 <Grid.Row className='content_title'
                           style={{width: 'fit-content', display: 'inline-block'}}>
@@ -204,14 +247,80 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <button className="ui circular icon button"><i aria-hidden="true"
                                                                        className="info icon"></i></button>
                     </div>
-
                 </Grid.Row>
-
-
             )
         }
 
-        renderSelectBox(){
+
+        setAppInstanceOne(paramAppName: string) {
+            //alert()
+
+            // this.props.toggleLoading(true);
+            paramAppName = paramAppName.replace("...", "");
+
+            let appInstanceOne: TypeAppInstance = '';
+            this.state.appInstanceList.map((item: TypeAppInstance) => {
+                if (item.AppName.includes(paramAppName)) {
+                    appInstanceOne = item;
+                    console.log('item_AppName===>', item.AppName);
+                }
+
+
+            })
+            this.setState({
+                appInstanceOne: appInstanceOne,
+            }, () => {
+                /* setTimeout(() => {
+                     this.props.toggleLoading(false);
+                 }, 250)*/
+            })
+
+            //alert(appInstanceOne.AppName)
+
+        }
+
+        render() {
+            //todo:####################################################################
+            //todo: Components showing when the loading of graph data is not completed.
+            //todo:####################################################################
+            if (!this.state.isReady) {
+                return (
+                    <Grid.Row className='view_contents'>
+                        <Grid.Column className='contents_body'>
+                            {/*todo:####################*/}
+                            {/*todo:Content Header part      */}
+                            {/*todo:####################*/}
+                            {this.renderHeader()}
+                            <div style={{position: 'absolute', top: '25%', left: '42%'}}>
+                                {/*<CircularProgress style={{color: 'red'}}/>*/}
+                                <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row'}}>
+                                    <Lottie
+                                        options={{
+                                            loop: true,
+                                            autoplay: true,
+                                            animationData: require('../lotties/79-animated-graph'),
+                                            rendererSettings: {
+                                                preserveAspectRatio: 'xMidYMid slice'
+                                            }
+                                        }}
+                                        height={120}
+                                        width={120}
+                                        isStopped={false}
+                                        isPaused={false}
+                                    />
+                                </div>
+                                <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop: 20}}>Loading
+                                    data now. It takes more
+                                    than 15 seconds.
+                                </div>
+                                <div style={{marginLeft: 55, fontSize: 50, color: 'white', marginTop: 10, height: 150}}>
+                                    {this.state.counter}
+                                </div>
+                            </div>
+                        </Grid.Column>
+                    </Grid.Row>
+                )
+            }
 
             let options1 = [
                 {value: 'ALL', text: 'ALL'},
@@ -220,315 +329,238 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             ]
 
-            return (
-
-                <div className='page_monitoring_select_row'>
-                    <div className='page_monitoring_select_area'>
-                        <label className='page_monitoring_select_reset'
-                               onClick={() => {
-                                   alert('Reset All')
-                               }}>Reset All</label>
-                        <Dropdown
-                            placeholder='REGION'
-                            selection
-                            options={options1}
-                            defaultValue={options1[0].value}
-                            onChange={async (e, {value}) => {
-                                this.handleRegionChanges(value)
-                            }}
-                        />
-                        <Dropdown
-                            placeholder='CloudLet'
-                            selection
-                            options={
-                                [
-                                    {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                    {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                    {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                    {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                    {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                ]
-
-                            }
-                        />
-                        <Dropdown
-                            placeholder='Cluster'
-                            selection
-                            options={
-                                [
-                                    {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                    {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                    {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                    {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                    {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                ]
-
-                            }
-                        />
-                        <div className='page_monitoring_datepicker_area'>
-                            <DatePicker
-                                onChange={(date) => {
-                                    let __date = formatDate(date);
-                                    this.setState({
-                                        date: __date,
-                                    })
-                                }}
-                                placeholder="Start Date"
-                                style={{cursor: 'pointer'}}
-
-                            />
-                            <div style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
-                                -
-                            </div>
-                            <DatePicker
-                                onChange={(date) => {
-                                    let __date = formatDate(date);
-                                    this.setState({
-                                        date: __date,
-                                    })
-                                }}
-                                placeholder="End Date"
-                                style={{cursor: 'pointer'}}
-
-                            />
-                        </div>
-
-                    </div>
-                </div>
-
-            )
-        }
-
-        renderGrid = (appInstanceListSortByCloudlet: any) => {
-            // let boxWidth = window.innerWidth / 10 * 2.55;
-
-            let cloudletCountList = []
-            for (let i in appInstanceListSortByCloudlet) {
-                console.log('renderGrid===title>', appInstanceListSortByCloudlet[i][0].Cloudlet);
-                console.log('renderGrid===length>', appInstanceListSortByCloudlet[i].length);
-                cloudletCountList.push({
-                    name: appInstanceListSortByCloudlet[i][0].Cloudlet,
-                    length: appInstanceListSortByCloudlet[i].length,
-                })
-            }
-
-            function toChunkArray(myArray: any, chunkSize: any): any {
-                let results = [];
-                while (myArray.length) {
-                    results.push(myArray.splice(0, chunkSize));
-                }
-                return results;
-            }
-
-            let chunkedArraysOfColSize = toChunkArray(cloudletCountList, 3);
-
-            console.log('chunkedArraysOfColSize_length===>', chunkedArraysOfColSize.length);
-            //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
-
-            return (
-                <div style={{display:'flex', flexDirection:'column', width:'100%'}}>
-                    {chunkedArraysOfColSize.map((colSizeArray, index) =>
-                        <div className='page_monitoring_grid' key={index.toString()}>
-                            {colSizeArray.map((item) =>
-                                <div className='page_monitoring_grid_box'>
-                                    <FlexBox style={{
-                                        fontSize: 15,
-                                        color: '#fff',
-                                        marginTop: 10,
-                                    }}>
-                                        {item.name.toString().substring(0, 17) + "..."}
-                                    </FlexBox>
-                                    <FlexBox style={{
-                                        marginTop: 0,
-                                        fontSize: 50,
-                                        color: '#29a1ff',
-                                    }}>
-                                        {item.length}
-                                    </FlexBox>
-
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
-                    {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
-                    {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
-                    {chunkedArraysOfColSize.length === 1 &&
-                    <div className='page_monitoring_grid_box'>
-                        {[1, 2, 3].map((item) =>
-                            <div className='page_monitoring_grid_box'>
-                                <FlexBox style={{
-                                    fontSize: 15,
-                                    color: '#fff',
-                                    marginTop: 10,
-                                }}>
-                                    {/*blank*/}
-                                </FlexBox>
-                                <FlexBox style={{
-                                    marginTop: 0,
-                                    fontSize: 50,
-                                    color: 'transprent',
-                                }}>
-                                    {/*blank*/}
-                                </FlexBox>
-
-                            </div>
-                        )}
-                    </div>
-
-                    }
-
-                </div>
-            );
-        }
-
-        render() {
-
 
             return (
 
                 <Grid.Row className='view_contents'>
                     <Grid.Column className='contents_body'>
-                        {/*#######################*/}
-                        {/*컨텐츠 해더 부분        ..*/}
-                        {/*#######################*/}
+                        {/*todo:####################*/}
+                        {/*todo:Content Header part      */}
+                        {/*todo:####################*/}
                         {this.renderHeader()}
-                        {/*#######################*/}
-                        {/*@todo 컨텐츠 BODY 부분...*/}
-                        {/*#######################*/}
 
+                        {/*todo:####################*/}
+                        {/*todo:Content Body part   */}
+                        {/*todo:####################*/}
                         <Grid.Row className='site_content_body'>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
 
-
                                     <div className="page_monitoring">
-                                        {this.renderSelectBox()}
+                                        {/*todo:####################*/}
+                                        {/*todo:SelectBox part start */}
+                                        {/*todo:####################*/}
+                                        <div className='page_monitoring_select_row'>
+                                            <div className='page_monitoring_select_area'>
+                                                <label className='page_monitoring_select_reset'
+                                                       onClick={() => {
+                                                           notification.success({
+                                                               duration: 0.5,
+                                                               message: 'reset all',
+                                                           });
+                                                       }}>Reset All</label>
+                                                <Dropdown
+                                                    placeholder='REGION'
+                                                    selection
+                                                    options={options1}
+                                                    defaultValue={options1[0].value}
+                                                    onChange={async (e, {value}) => {
+                                                        await this.handleRegionChanges(value)
+                                                    }}
+                                                    style={{width: 250}}
+                                                />
+                                                <Dropdown
+                                                    placeholder='CloudLet'
+                                                    selection
+                                                    options={this.state.cloudletList}
+                                                    style={{width: 250}}
+                                                />
+                                                <Dropdown
+                                                    placeholder='Cluster'
+                                                    selection
+                                                    options={this.state.clusterList}
+                                                    style={{width: 250}}
+                                                />
+                                                <div className='page_monitoring_datepicker_area'>
+                                                    <DatePicker
+                                                        onChange={(date) => {
+                                                            let __date = formatDate(date);
+                                                            this.setState({
+                                                                date: __date,
+                                                            })
+                                                        }}
+                                                        placeholder="Start Date"
+                                                        style={{cursor: 'pointer'}}
+
+                                                    />
+                                                    <div style={{fontSize: 25, marginLeft: 3, marginRight: 3,}}>
+                                                        -
+                                                    </div>
+                                                    <DatePicker
+                                                        onChange={(date) => {
+                                                            let __date = formatDate(date);
+                                                            this.setState({
+                                                                date: __date,
+                                                            })
+                                                        }}
+                                                        placeholder="End Date"
+                                                        style={{cursor: 'pointer'}}
+
+                                                    />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        {/*todo:####################*/}
+                                        {/*todo:SelectBox End  */}
+                                        {/*todo:####################*/}
                                         <div className='page_monitoring_dashboard'>
-                                            {/*_____row____1111*/}
+                                            {/*_____row____1*/}
+                                            {/*_____row____1*/}
+                                            {/*_____row____1*/}
                                             <div className='page_monitoring_row'>
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
-                                                <div className='page_monitoring_column'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
-                                                            Status Of Launch
+                                                            Status Of Launched App Instance
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading0 ? renderPlaceHolder() : this.renderGrid(this.state.appInstanceListSortByCloudlet)}
+                                                        {this.state.loading0 ? renderPlaceHolder() : renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet)}
                                                     </div>
                                                 </div>
                                                 {/* ___col___2*/}
                                                 {/* ___col___2*/}
                                                 {/* ___col___2*/}
-                                                <div className='page_monitoring_column'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Top 5 of CPU Usage
                                                         </div>
-                                                        <div className='page_monitoring_column_select'>
+                                                        <div className='page_monitoring_column_kj_select'>
                                                             <Dropdown
                                                                 placeholder='Cluster'
                                                                 selection
-                                                                options={
-                                                                    [
-                                                                        {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                                                        {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                                                        {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                                                        {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                                                        {key: '1', value: '1', flag: '1', text: 'Last hour'},
-                                                                    ]
-                                                                }
+                                                                options={this.state.clusterList}
+                                                                style={{width: 250}}
+
+
                                                             />
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
+                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph_GoogleChart(this.state.cpuUsageList, HARDWARE_TYPE.CPU)}
                                                     </div>
                                                 </div>
                                                 {/* ___col___3*/}
                                                 {/* ___col___3*/}
                                                 {/* ___col___3*/}
-                                                <div className='page_monitoring_column'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
-                                                            Transition Of CPU
+                                                            Transition Of CPU Usage
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
+                                                        {this.state.loading ? renderPlaceHolder() : renderLineChart_react_chartjs(this.state.cpuUsageList, HARDWARE_TYPE.CPU)}
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            {/*row_____22222222*/}
-                                            {/*row_____22222222*/}
-                                            {/*row_____22222222*/}
+
+                                            {/*_____row______2*/}
+                                            {/*_____row______2*/}
+                                            {/*_____row______2*/}
                                             <div className='page_monitoring_row'>
 
                                                 {/* ___col___4*/}
                                                 {/* ___col___4*/}
                                                 {/* ___col___4*/}
-                                                <div className='page_monitoring_column'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Perfomance Of Apps
+
+                                                            {/* {this.props.isLoading ?
+                                                                <FlexBox style={{height: 25}}>
+                                                                    <Lottie
+                                                                        options={{
+                                                                            loop: true,
+                                                                            autoplay: true,
+                                                                            animationData: require('../lotties/loader003'),
+                                                                            rendererSettings: {
+                                                                                preserveAspectRatio: 'xMidYMid slice'
+                                                                            }
+                                                                        }}
+                                                                        height={55}
+                                                                        width={55}
+                                                                        isStopped={false}
+                                                                        isPaused={false}
+                                                                        style={{marginLeft: 30, marginBottom: 110,}}
+                                                                    />
+                                                                </FlexBox>
+                                                                :
+                                                                <div style={{marginLeft: 50, color: '#77BD25'}}>
+                                                                    {this.state.appInstanceOne.AppName.substring(0, 14) + "..."}
+                                                                </div>
+                                                            }*/}
+
                                                         </div>
                                                     </div>
-
-                                                    <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderPieChart2_Google()}
-                                                    </div>
+                                                    {/*todo:###########################***/}
+                                                    {/*todo:render BubbleChart          */}
+                                                    {/*todo:###########################***/}
+                                                    <FlexBox>
+                                                        <div>
+                                                            {this.props.isLoading ? renderPlaceHolder2() : renderBubbleChart(this)}
+                                                        </div>
+                                                        <div style={{marginRight: 10,}}>
+                                                            {/*todo:#########################################****/}
+                                                            {/*todo: RENDER Donut Chart  N  App Status          */}
+                                                            {/*todo:#########################################****/}
+                                                            {renderPieChart2AndAppStatus(this.state.appInstanceOne, this)}
+                                                        </div>
+                                                    </FlexBox>
 
                                                 </div>
                                                 {/* ___col___5*/}
                                                 {/* ___col___5*/}
                                                 {/* ___col___5*/}
-                                                <div className='page_monitoring_column'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             State of MEM Usage
                                                         </div>
-                                                        <div className='page_monitoring_column_select'>
+                                                        <div className='page_monitoring_column_kj_select'>
                                                             <Dropdown
                                                                 placeholder='Cluster'
                                                                 selection
-                                                                options={
-                                                                    [
-                                                                        {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
-                                                                        {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
-                                                                        {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
-                                                                        {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
-                                                                        {key: '1', value: '1', flag: '1', text: 'Last hour'},
-
-                                                                    ]
-
-                                                                }
+                                                                options={this.state.clusterList}
+                                                                style={{width: 250}}
                                                             />
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph2_Google()}
+                                                        {this.state.loading ? renderPlaceHolder() : renderBarGraph_GoogleChart(this.state.memUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
 
                                                 </div>
                                                 {/* ___col___6*/}
                                                 {/* ___col___6*/}
                                                 {/* ___col___6*/}
-                                                <div className='page_monitoring_column'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
-                                                            Transition Of Mem
+                                                            Transition Of Mem Usage
                                                         </div>
                                                     </div>
+
                                                     <div className='page_monitoring_container'>
-                                                        {this.state.loading ? renderPlaceHolder() : renderLineGraph_Plot()}
+                                                        {this.state.loading ? renderPlaceHolder() : renderLineChart_react_chartjs(this.state.memUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
                                                 </div>
                                             </div>

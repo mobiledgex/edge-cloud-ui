@@ -1,6 +1,5 @@
 import 'react-hot-loader'
 import React from 'react';
-import Loader from 'react-loader-spinner'
 import {Button, Dropdown, Modal} from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
@@ -379,53 +378,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 }}
                             >
 
-                                {/*@todo:jkjkjkjkjkhjkhjkhjkhjkhjkhjk*/}
-                                {/*@todo:11111*/}
-
+                                {/*@todo:#########################*/}
+                                {/*@todo:CircularProgress(topLeft)*/}
+                                {/*@todo:#########################*/}
                                 {this.props.isLoading &&
-                                <FlexBox style={{position: 'absolute', top: '5%', zIndex: 9999999}}>
-                                    {/*<CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}
-                                                      size={20}/>*/}
-                                    <Loader
-                                        type="Audio"
-                                        color="#77BD25"
-                                        height={50}
-                                        width={50}
-                                    />
+                                <FlexBox style={{position: 'absolute', top: '9%', left: '2%', zIndex: 9999999}}>
+                                    <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}
+                                                      size={20}/>
 
                                 </FlexBox>
                                 }
-                                {/* <Button onClick={() => {
-                                    this.props.toggleLoading(false)
-                                }}>
-                                    false
-                                </Button>
-
-                                <Button onClick={() => {
-                                    this.props.toggleLoading(true)
-                                }}>
-                                    true
-                                </Button>*/}
-                                {/*#######################################*/}
-                                {/*desc: Timeline Status (topLeft)        */}
-                                {/*#######################################*/}
-                                {/*  {!this.state.isLoading && <div style={{
-                                    top: -5,
-                                    color: '#f8f8f8',
-                                    borderWidth: 10,
-                                    borderColor: 'grey',
-                                    backgroundColor: 'blue',
-                                    height: 70,
-
-                                }}>
-                                    <div style={{color: 'orange'}}>{this.state.currentTask.toString()}</div>
-                                    <FlexBox style={{width: 10}}/>
-                                    <div>  {this.state.currentTaskTime.replace('timeline-dot-', '')}</div>
-                                </div>
-                                }*/}
-
-                                {/*#######################################*/}
-                                {/*#######################################*/}
                                 {/*#######################################*/}
                                 {/*todo: Timeline display part            */}
                                 {/*#######################################*/}
