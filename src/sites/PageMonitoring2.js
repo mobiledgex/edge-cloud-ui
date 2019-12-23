@@ -164,7 +164,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //todo: FAKEJSON FOR TEST
             //let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
-
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     this.setState({
