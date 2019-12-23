@@ -16,6 +16,59 @@ import {notification} from "antd";
 import PageMonitoring2 from "../sites/PageMonitoring2";
 import type {TypeAppInstance} from "../shared/Types";
 
+export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet, pCloudLet) => {
+
+    let filterInstanceCountOnCloutLetOne = [];
+    for (let [key, value] of Object.entries(appInstanceListGroupByCloudlet)) {
+        if (key === pCloudLet) {
+            filterInstanceCountOnCloutLetOne.push(value)
+            break;
+        }
+    }
+    return filterInstanceCountOnCloutLetOne;
+}
+
+export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '') => {
+
+    console.log('filterAppInstanceListByCloudLet_appInstanceList====>', appInstanceList);
+
+
+    let instanceListFilteredByCloudlet = []
+    appInstanceList.map(item => {
+        if (item.Cloudlet === pCloudLet) {
+            instanceListFilteredByCloudlet.push(item);
+        }
+    })
+
+    console.log('instanceListFilteredByCloudlet====>', instanceListFilteredByCloudlet);
+
+    return instanceListFilteredByCloudlet;
+}
+
+
+export const makeCloudletListSelectBox = (appInstanceList: Array) => {
+
+
+    let cloudletList = []
+    appInstanceList.map(item => {
+        cloudletList.push(item.Cloudlet)
+    })
+    //@todo Deduplication
+    let uniquedCloudletList = cloudletList.filter(function (item, pos) {
+        return cloudletList.indexOf(item) == pos;
+    })
+
+    let cloudletListForSelectbox = []
+    uniquedCloudletList.map(item => {
+        let selectOne = {
+            value: item,
+            text: item,
+        }
+        cloudletListForSelectbox.push(selectOne);
+    })
+
+    return cloudletListForSelectbox;
+}
 
 /**
  * @todo: Bar Graph Rendering By Google Chart

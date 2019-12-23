@@ -12,9 +12,10 @@ import {DatePicker, notification} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
 import {
-    fetchAppInstanceList,
+    extractorCloudletListFromAppInstaceList,
+    fetchAppInstanceList, filterAppInstanceListByCloudLet,
     filterAppInstanceListByRegion,
-    filterCpuOrMemUsageListByRegion,
+    filterCpuOrMemUsageListByRegion, filterInstanceCountOnCloutLetOne, makeCloudletListSelectBox,
     makeCpuOrMemUsageListPerInstance,
     renderBarGraphForCpuMem,
     renderBubbleChart,
@@ -27,8 +28,9 @@ import {
 import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance} from "../shared/Types";
+import {CircularProgress} from "@material-ui/core";
 //import './PageMonitoring.css';
-
+const FA = require('react-fontawesome')
 const {Column, Row} = Grid;
 
 
@@ -79,6 +81,7 @@ type State = {
     currentRegion: string,
     allCpuUsageList: Array,
     allMemUsageList: Array,
+    cloudLetSelectBoxPlaceholder: string,
 
 
 }
@@ -110,6 +113,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             currentRegion: '',
             allCpuUsageList: [],
             allMemUsageList: [],
+            cloudLetSelectBoxPlaceholder: 'CloudLet',
         };
 
         intervalHandle = null;
@@ -279,6 +283,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
+
+                        {/*  <label className='page_monitoring_select_reset'
+                               onClick={() => {
+                                   notification.success({
+                                       duration: 0.5,
+                                       message: 'Reload',
+                                   });
+                               }}>
+                            Reload
+                        </label>*/}
+                        <div style={{
+                            display: 'flex',
+                            width: 80,
+                            //backgroundColor: 'red',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginBottom: 10,
+
+                        }}>
+                            <FA name="refresh" style={{fontSize: 30,}} onClick={() => {
+                                alert('Miri christmas!!!!!')
+                            }}/>
+                        </div>
                         <label className='page_monitoring_select_reset'
                                onClick={() => {
                                    notification.success({
@@ -286,6 +313,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                        message: 'reset all',
                                    });
                                }}>Reset All</label>
+                        {/*todo:REGION selectbox*/}
+                        {/*todo:REGION selectbox*/}
+                        {/*todo:REGION selectbox*/}
                         <Dropdown
                             placeholder='REGION'
                             selection
@@ -296,18 +326,37 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }}
                             style={{width: 250}}
                         />
+
+
+                        {/*todo:CloudLet selectbox*/}
+                        {/*todo:CloudLet selectbox*/}
+                        {/*todo:CloudLet selectbox*/}
                         <Dropdown
-                            placeholder='CloudLet'
-                            selection
+                            loading={this.props.isLoading}
+                            placeholder={this.state.cloudLetSelectBoxPlaceholder}
+                            selection={true}
                             options={this.state.cloudletList}
                             style={{width: 250}}
+                            onChange={async (e, {value}) => {
+                                await this.handleRegionChanges(this.state.currentRegion, value)
+                            }}
                         />
+
+
+                        {/*todo:Cluster selectbox*/}
+                        {/*todo:Cluster selectbox*/}
+                        {/*todo:Cluster selectbox*/}
                         <Dropdown
+                            loading={this.props.isLoading}
                             placeholder='Cluster'
                             selection
                             options={this.state.clusterList}
                             style={{width: 250}}
                         />
+
+                        {/*todo:DatePicker selectbox*/}
+                        {/*todo:DatePicker selectbox*/}
+                        {/*todo:DatePicker selectbox*/}
                         <div className='page_monitoring_datepicker_area'>
                             <DatePicker
                                 onChange={(date) => {
@@ -347,30 +396,57 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
          * @param pRegion
          * @returns {Promise<void>}
          */
-        async handleRegionChanges(pRegion) {
+        async handleRegionChanges(pRegion, pCloudLet: string = '') {
             this.props.toggleLoading(true)
             await this.setState({
                 loading0: true,
                 appInstanceListSortByCloudlet: [],
                 currentRegion: pRegion,
+                cloudletList: [],
             })
 
-            let appInstanceList = await fetchAppInstanceList()
-            let filteredAppInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
+            let appInstanceList = this.state.allAppInstanceList;
+
+
+            //todo:appInstanceList를 리전에 의해서 필터링 처리
+            appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
+
+            let cloudletSelectBox = makeCloudletListSelectBox(appInstanceList)
 
             //todo: 클라우드렛 별로 인스턴스를 GroupBy..
-            let appInstanceListGroupByCloudlet = reducer.groupBy(filteredAppInstanceList, 'Cloudlet');
+            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+
+
+            console.log('appInstanceList33333333====>',appInstanceList);
+
+            //todo: ##########################################
+            //todo: paramCloudLet 파라메터 값이 있는 경우 필터링 처리
+            //todo: ##########################################
+            if (pCloudLet !== '') {
+
+                appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
+                appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
+            }
+
 
             //todo:리전별로 필터링된 CPU/MEM UsageList(전체 리스트로 부터 필터링처리)
             let filteredCpuUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allCpuUsageList);
             let filteredMemUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allMemUsageList);
 
+            //todo: appInstanceList를 필터링 BY 클라우드렛..
+
+
             this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
-                appInstanceList: filteredAppInstanceList,
+                appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
+                cloudletList: cloudletSelectBox,
+
+
+            }, () => {
+
             })
 
             this.props.toggleLoading(false)
@@ -488,7 +564,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* cpu___col___3*/}
                                                 {/* cpu___col___3*/}
                                                 {/* cpu___col___3*/}
-                                                 <div className='page_monitoring_column_kj'>
+                                                <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Transition Of CPU Usage
@@ -512,7 +588,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
-                                                            Perfomance Of Apps
+                                                            Perfomance Of App instance
                                                         </div>
                                                     </div>
                                                     {/*todo:###########################***/}
@@ -548,7 +624,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             />
                                                         </div>
                                                     </div>
-                                                      <div className='page_monitoring_container'>
+                                                    <div className='page_monitoring_container'>
                                                         {this.props.isLoading ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
 
