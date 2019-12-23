@@ -1,5 +1,4 @@
 import 'react-hot-loader'
-
 import React from 'react';
 import FlexBox from "flexbox-react";
 import sizeMe from 'react-sizeme';
@@ -12,17 +11,16 @@ import {DatePicker, notification} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
 import {
-    extractorCloudletListFromAppInstaceList,
-    fetchAppInstanceList,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
-    filterAppInstanceListByRegion, filterAppInstOnCloudlet,
-    filterCpuOrMemUsageByCloudLet, filterCpuOrMemUsageByCluster,
+    filterAppInstanceListByRegion,
+    filterAppInstOnCloudlet,
+    filterCpuOrMemUsageByCloudLet,
+    filterCpuOrMemUsageByCluster,
     filterCpuOrMemUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
     makeCloudletListSelectBox,
     makeClusterListSelectBox,
-    makeCpuOrMemUsageListPerInstance,
     renderBarGraphForCpuMem,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
@@ -31,14 +29,12 @@ import {
     renderPlaceHolder,
     renderPlaceHolder2
 } from "../services/PageMonitoringService";
-import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, REGIONS_OPTIONS} from "../shared/Constants";
+import {HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance} from "../shared/Types";
-import {CircularProgress} from "@material-ui/core";
 //import './PageMonitoring.css';
 const FA = require('react-fontawesome')
 const {Column, Row} = Grid;
-
 
 const mapStateToProps = (state) => {
     return {
@@ -94,7 +90,6 @@ type State = {
 
 }
 
-let boxWidth = window.innerWidth / 10 * 2.77;
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageMonitoring2 extends React.Component<Props, State> {
@@ -127,7 +122,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         };
 
         intervalHandle = null;
-
 
         constructor(props) {
             super(props);
@@ -324,7 +318,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             options={REGIONS_OPTIONS}
                             defaultValue={REGIONS_OPTIONS[0].value}
                             onChange={async (e, {value}) => {
-                                await this.handleRegionChanges(value)
+                                await this.handleSelectBoxChanges(value)
                             }}
                             style={{width: 250}}
                         />
@@ -341,7 +335,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             onChange={async (e, {value}) => {
 
 
-                                await this.handleRegionChanges(this.state.currentRegion, value)
+                                await this.handleSelectBoxChanges(this.state.currentRegion, value)
                             }}
                         />
 
@@ -358,7 +352,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             onChange={async (e, {value}) => {
 
 
-                                await this.handleRegionChanges(this.state.currentRegion, this.state.currentCloudLet, value)
+                                await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, value)
                             }}
                         />
 
@@ -399,13 +393,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
+
         /**
          * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
          * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
-         * @param pRegion
-         * @returns {Promise<void>}
-         */
-        async handleRegionChanges(pRegion: string = '', pCloudLet: string = '', pCluster: string = '') {
+        */
+        async handleSelectBoxChanges(pRegion: string = '', pCloudLet: string = '', pCluster: string = '') {
             this.props.toggleLoading(true)
             await this.setState({
                 loading0: true,
@@ -417,13 +410,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo : fetch data from remote
             //let appInstanceList = await fetchAppInstanceList();
 
-
+            //todo : fetch data from LOCAL
             let appInstanceList = this.state.allAppInstanceList;
 
             //todo: ##########################################
             //todo:  flitering By pRegion
             //todo: ##########################################
-            //todo:appInstanceList를 리전에 의해서 필터링 처리
             appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
             let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
             //todo: 클라우드렛 별로 인스턴스를 GroupBy..
@@ -432,6 +424,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let filteredCpuUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allCpuUsageList);
             let filteredMemUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allMemUsageList);
 
+
             //todo: ##########################################
             //todo: flitering  By pCloudLet
             //todo: ##########################################
@@ -439,7 +432,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (pCloudLet !== '') {
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                 appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
-
                 filteredCpuUsageList = filterCpuOrMemUsageByCloudLet(filteredCpuUsageList, pCloudLet);
                 filteredMemUsageList = filterCpuOrMemUsageByCloudLet(filteredMemUsageList, pCloudLet);
                 clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
@@ -453,11 +445,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
                 //todo:app instalce list를 필터링
                 appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
-
                 filteredCpuUsageList = filterCpuOrMemUsageByCluster(filteredCpuUsageList, pCluster);
                 filteredMemUsageList = filterCpuOrMemUsageByCluster(filteredMemUsageList, pCluster);
 
             }
+
             this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
@@ -468,7 +460,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clusterList: clusterSelectBoxList,
                 currentCloudLet: pCloudLet,
             }, () => {
-
                 setTimeout(() => {
                     this.setState({
                         cloudLetSelectBoxPlaceholder: 'Select CloudLet',
