@@ -28,6 +28,19 @@ export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet,
     return filterInstanceCountOnCloutLetOne;
 }
 
+
+export const filterCpuOrMemUsageByCloudLet = (cpuOrMemUsageList, pCloudLet) => {
+
+    let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
+        if (item.instance.Cloudlet === pCloudLet) {
+            return item;
+        }
+    });
+
+    return filteredCpuOrMemUsageList
+}
+
+
 export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '') => {
 
     console.log('filterAppInstanceListByCloudLet_appInstanceList====>', appInstanceList);
@@ -520,7 +533,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     graph={{
                         zoom: appInstanceList.length <= 4 ? 0.60 : 0.75,
                         offsetX: 0.10,
-                        offsetY: appInstanceList.length <= 4 ? 0.15 : -0.02,
+                        offsetY: appInstanceList.length <= 4 ? 0.05 : -0.02,
                     }}
                     width={355}
                     height={243}

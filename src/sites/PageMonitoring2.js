@@ -14,7 +14,7 @@ import {formatDate, getTodayDate} from "../utils";
 import {
     extractorCloudletListFromAppInstaceList,
     fetchAppInstanceList, filterAppInstanceListByCloudLet,
-    filterAppInstanceListByRegion,
+    filterAppInstanceListByRegion, filterCpuOrMemUsageByCloudLet,
     filterCpuOrMemUsageListByRegion, filterInstanceCountOnCloutLetOne, makeCloudletListSelectBox,
     makeCpuOrMemUsageListPerInstance,
     renderBarGraphForCpuMem,
@@ -392,11 +392,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         /**
-         * @todo: 셀렉트박스 리전을 변경할때 처리되는 프로세스..
+         * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
          * @param pRegion
          * @returns {Promise<void>}
          */
-        async handleRegionChanges(pRegion, pCloudLet: string = '') {
+        async handleRegionChanges(pRegion: string = '', pCloudLet: string = '') {
             this.props.toggleLoading(true)
             await this.setState({
                 loading0: true,
@@ -408,32 +408,27 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let appInstanceList = this.state.allAppInstanceList;
 
 
+            //todo: ##########################################
+            //todo:  필터링처리 By pRegion
+            //todo: ##########################################
             //todo:appInstanceList를 리전에 의해서 필터링 처리
             appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
-
             let cloudletSelectBox = makeCloudletListSelectBox(appInstanceList)
-
             //todo: 클라우드렛 별로 인스턴스를 GroupBy..
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
-
-
-            console.log('appInstanceList33333333====>',appInstanceList);
+            //todo:리전별로 필터링된 CPU/MEM UsageList(전체 리스트로 부터 필터링처리)
+            let filteredCpuUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allCpuUsageList);
+            let filteredMemUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allMemUsageList);
 
             //todo: ##########################################
             //todo: paramCloudLet 파라메터 값이 있는 경우 필터링 처리
             //todo: ##########################################
             if (pCloudLet !== '') {
-
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                 appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
+                filteredCpuUsageList = filterCpuOrMemUsageByCloudLet(filteredCpuUsageList, pCloudLet);
+                filteredMemUsageList = filterCpuOrMemUsageByCloudLet(filteredMemUsageList, pCloudLet);
             }
-
-
-            //todo:리전별로 필터링된 CPU/MEM UsageList(전체 리스트로 부터 필터링처리)
-            let filteredCpuUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allCpuUsageList);
-            let filteredMemUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allMemUsageList);
-
-            //todo: appInstanceList를 필터링 BY 클라우드렛..
 
 
             this.setState({
@@ -443,13 +438,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
                 cloudletList: cloudletSelectBox,
-
-
             }, () => {
-
+                setTimeout(() => {
+                    this.setState({
+                        cloudLetSelectBoxPlaceholder: '-Select CloudLet-'
+                    })
+                }, 700)
+                this.props.toggleLoading(false)
             })
 
-            this.props.toggleLoading(false)
+
         }
 
 
