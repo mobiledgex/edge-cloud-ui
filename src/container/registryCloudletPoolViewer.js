@@ -123,9 +123,9 @@ class RegistryCloudletPoolViewer extends React.Component {
         _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=2'})
     }
 
-    generateDOM(open, dimmer, data, keysData, hideHeader, region) {
+    generateDOM(open, dimmer, _data, _keysData, hideHeader, _region) {
 
-        let panelParams = {data:data, keys:keysData, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
+        let panelParams = {data:_data, keys:_keysData, region:_region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
 
         return layout.map((item, i) => (
 
@@ -246,7 +246,7 @@ class RegistryCloudletPoolViewer extends React.Component {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-        if(nextProps.devData.length > 1) {
+        if(nextProps.devData.length > 0) {
             console.log('20191220 props dev data -- ', nextProps.devData)
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         } else {
@@ -291,10 +291,9 @@ class RegistryCloudletPoolViewer extends React.Component {
 
     render() {
         const { open, dimmer, dummyData } = this.state;
-        const { hiddenKeys } = this.props;
+        const { hiddenKeys, devData } = this.props;
         return (
             <div className="regis_container">
-                {/*<RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>*/}
                 <div
                     draggableHandle
                     layout={this.state.layout}
