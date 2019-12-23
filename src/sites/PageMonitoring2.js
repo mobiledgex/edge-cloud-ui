@@ -13,9 +13,15 @@ import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
 import {
     extractorCloudletListFromAppInstaceList,
-    fetchAppInstanceList, filterAppInstanceListByCloudLet,
-    filterAppInstanceListByRegion, filterCpuOrMemUsageByCloudLet,
-    filterCpuOrMemUsageListByRegion, filterInstanceCountOnCloutLetOne, makeCloudletListSelectBox,
+    fetchAppInstanceList,
+    filterAppInstanceListByCloudLet,
+    filterAppInstanceListByClusterInst,
+    filterAppInstanceListByRegion,
+    filterCpuOrMemUsageByCloudLet,
+    filterCpuOrMemUsageListByRegion,
+    filterInstanceCountOnCloutLetOne,
+    makeCloudletListSelectBox,
+    makeClusterListSelectBox,
     makeCpuOrMemUsageListPerInstance,
     renderBarGraphForCpuMem,
     renderBubbleChart,
@@ -82,6 +88,7 @@ type State = {
     allCpuUsageList: Array,
     allMemUsageList: Array,
     cloudLetSelectBoxPlaceholder: string,
+    currentCloudLet: string,
 
 
 }
@@ -114,6 +121,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allCpuUsageList: [],
             allMemUsageList: [],
             cloudLetSelectBoxPlaceholder: 'CloudLet',
+            currentCloudLet: '',
         };
 
         intervalHandle = null;
@@ -157,7 +165,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: REALDATA
             //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
-            //todo: FAKEJSON
+            //todo: FAKEJSON FOR TEST
             let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
 
             appInstanceList.map(async (item: TypeAppInstance, index) => {
@@ -178,10 +186,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            /*let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
-            let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
-            let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-            console.log('_result===>', cpuOrMemUsageList);*/
+            /*
+             let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
+               let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
+               let memUsageListPerOneInstance = cpuOrMemUsageList[1]
+               console.log('_result===>', cpuOrMemUsageList);*/
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
@@ -338,6 +347,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             options={this.state.cloudletList}
                             style={{width: 250}}
                             onChange={async (e, {value}) => {
+
+
                                 await this.handleRegionChanges(this.state.currentRegion, value)
                             }}
                         />
@@ -352,6 +363,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             selection
                             options={this.state.clusterList}
                             style={{width: 250}}
+                            onChange={async (e, {value}) => {
+
+
+                               // await this.handleRegionChanges(this.state.currentRegion, this.state.currentCloudLet, value)
+                            }}
                         />
 
                         {/*todo:DatePicker selectbox*/}
@@ -393,10 +409,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         /**
          * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
+         * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
          * @param pRegion
          * @returns {Promise<void>}
          */
-        async handleRegionChanges(pRegion: string = '', pCloudLet: string = '') {
+        async handleRegionChanges(pRegion: string = '', pCloudLet: string = '', pCluster: string = '') {
             this.props.toggleLoading(true)
             await this.setState({
                 loading0: true,
@@ -421,13 +438,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let filteredMemUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allMemUsageList);
 
             //todo: ##########################################
-            //todo: paramCloudLet 파라메터 값이 있는 경우 필터링 처리
+            //todo: 필터링 처리 By pCloudLet
             //todo: ##########################################
+            let clusterSelectBox = [];
             if (pCloudLet !== '') {
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                 appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
                 filteredCpuUsageList = filterCpuOrMemUsageByCloudLet(filteredCpuUsageList, pCloudLet);
                 filteredMemUsageList = filterCpuOrMemUsageByCloudLet(filteredMemUsageList, pCloudLet);
+                //clusterSelectBox = makeClusterListSelectBox(appInstanceList, pCloudLet)
+                console.log('clusterSelectBox====>',clusterSelectBox);
+            }
+
+            //todo: ##########################################
+            //todo: 필터링 처리 By pCluster
+            //todo: ##########################################
+            if (pCluster !== '') {
+
             }
 
 
@@ -438,7 +465,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
                 cloudletList: cloudletSelectBox,
+                clusterList: clusterSelectBox,
+                currentCloudLet: pCloudLet,
             }, () => {
+
                 setTimeout(() => {
                     this.setState({
                         cloudLetSelectBoxPlaceholder: '-Select CloudLet-'
@@ -446,7 +476,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }, 700)
                 this.props.toggleLoading(false)
             })
-
 
         }
 
@@ -459,9 +488,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return (
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
-                            {/*todo:####################*/}
-                            {/*todo:Content Header part      */}
-                            {/*todo:####################*/}
                             {this.renderHeader()}
                             <div style={{position: 'absolute', top: '25%', left: '42%'}}>
                                 {/*<CircularProgress style={{color: 'red'}}/>*/}
@@ -483,7 +509,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </div>
                                 <div style={{marginLeft: -120, fontSize: 17, color: 'white', marginTop: 20}}>Loading
                                     data now. It takes more
-                                    than 15 seconds.
+                                    than 25 seconds.
                                 </div>
                                 <div style={{marginLeft: 55, fontSize: 50, color: 'white', marginTop: 10, height: 150}}>
                                     {this.state.counter}
@@ -544,7 +570,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             Top 5 of CPU Usage
                                                         </div>
-                                                        <div className='page_monitoring_column_kj_select'>
+                                                        {/*  <div className='page_monitoring_column_kj_select'>
                                                             <Dropdown
                                                                 placeholder='Cluster'
                                                                 selection
@@ -553,7 +579,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
                                                             />
-                                                        </div>
+                                                        </div>*/}
                                                     </div>
                                                     <div className='page_monitoring_container'>
                                                         {this.props.isLoading ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}

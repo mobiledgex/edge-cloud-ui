@@ -1,12 +1,14 @@
+let appInstaceList = require('./appInstanceList.json')
 
 
-let memUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
+let filteredAppInstanceList = appInstaceList.filter((item) => {
 
-
-let filteredAppInstanceList = memUsageListPerOneInstance.filter((item) => {
-    if ( item.instance.Cloudlet==='frankfurt-eu'){
-        return item;
+    if (item.Cloudlet==='frankfurt-eu'){
+        console.log('CloudLet====>', item.Cloudlet + "-->" + item.ClusterInst);
     }
+
+    //console.log('ClusterInst====>',item.ClusterInst);
+
 });
 
-console.log('filteredAppInstanceList====>',filteredAppInstanceList.length);
+console.log('filteredAppInstanceList====>', filteredAppInstanceList.length);

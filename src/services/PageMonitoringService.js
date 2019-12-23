@@ -43,9 +43,6 @@ export const filterCpuOrMemUsageByCloudLet = (cpuOrMemUsageList, pCloudLet) => {
 
 export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '') => {
 
-    console.log('filterAppInstanceListByCloudLet_appInstanceList====>', appInstanceList);
-
-
     let instanceListFilteredByCloudlet = []
     appInstanceList.map(item => {
         if (item.Cloudlet === pCloudLet) {
@@ -53,15 +50,61 @@ export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '')
         }
     })
 
-    console.log('instanceListFilteredByCloudlet====>', instanceListFilteredByCloudlet);
 
     return instanceListFilteredByCloudlet;
 }
 
 
+export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '') => {
+
+    let instanceListFilteredByClusterInst = []
+    appInstanceList.map(item => {
+        if (item.ClusterInst === pCluster) {
+            instanceListFilteredByClusterInst.push(item);
+        }
+    })
+    return instanceListFilteredByClusterInst;
+}
+
+
+/**
+ * @todo 클러스트 리스트 셀렉트 박스 형태의 리스트를 만들어준다..
+ * @param appInstanceList
+ * @param pCloudLet
+ * @returns {[]}
+ */
+export const makeClusterListSelectBox = (appInstanceList: Array, pCloudLet) => {
+
+    let instanceListFilteredByCloudLet = []
+    appInstanceList.map(item => {
+        if (item.Cloudlet === pCloudLet) {
+            instanceListFilteredByCloudLet.push(item);
+        }
+    })
+
+
+
+    //@todo Deduplication
+    let uniquedClusterList = instanceListFilteredByCloudLet.filter(function (item, pos) {
+        return instanceListFilteredByCloudLet.indexOf(item) == pos;
+    })
+
+    let clusterSelectBoxData = []
+    uniquedClusterList.map(item => {
+        let selectOne = {
+            value: item,
+            text: item,
+        }
+        clusterSelectBoxData.push(selectOne);
+    })
+
+
+    console.log('clusterSelectBoxData====>',clusterSelectBoxData);
+    return clusterSelectBoxData;
+}
+
+
 export const makeCloudletListSelectBox = (appInstanceList: Array) => {
-
-
     let cloudletList = []
     appInstanceList.map(item => {
         cloudletList.push(item.Cloudlet)
@@ -82,6 +125,7 @@ export const makeCloudletListSelectBox = (appInstanceList: Array) => {
 
     return cloudletListForSelectbox;
 }
+
 
 /**
  * @todo: Bar Graph Rendering By Google Chart
