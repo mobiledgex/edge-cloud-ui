@@ -73,6 +73,8 @@ class RegistryCloudletPoolViewer extends React.Component {
             validateError:[],
             regSuccess:true,
             errorClose:false,
+            changeRegion:[],
+            regionToggle:false,
             keysData:[
                 {
                     'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
@@ -121,10 +123,9 @@ class RegistryCloudletPoolViewer extends React.Component {
         _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=2'})
     }
 
+    generateDOM(open, dimmer, _data, _keysData, hideHeader, _region) {
 
-    generateDOM(open, dimmer, data, keysData, hideHeader, region) {
-
-        let panelParams = {data:data, keys:keysData, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
+        let panelParams = {data:_data, keys:_keysData, region:_region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
 
         return layout.map((item, i) => (
 
@@ -177,7 +178,7 @@ class RegistryCloudletPoolViewer extends React.Component {
             if (result.data.error) {
                 this.props.handleAlertInfo('error', result.data.error)
             } else {
-                console.log('20191119 receive submit result is success..', result,":", result.data)
+                console.log('20191220 receive submit result is success..', result,":", result.data)
                 this.props.handleAlertInfo('success',result.data.message)
             }
             if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
@@ -229,29 +230,24 @@ class RegistryCloudletPoolViewer extends React.Component {
     }
 
     componentDidMount() {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        if(this.props.regionInfo.region.length){
 
-        this.setFildData();
 
-        /************
-         * set Organization Name
-         * **********/
-        let assObj = Object.assign([], this.state.fakeData);
-        assObj[0].OperatorName = localStorage.selectOrg;
-        this.setState({fakeData:assObj});
+
+        }
 
     }
     componentWillUnmount() {
         _self.props.handleGetRegion(null)
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps.regionInfo.region.length){
-            // let assObj = Object.assign([], this.state.keysData);
-            // assObj[0].Region.items = nextProps.regionInfo.region;
-        }
+
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-        if(nextProps.devData.length > 1) {
+        if(nextProps.devData.length > 0) {
+            console.log('20191220 props dev data -- ', nextProps.devData)
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         } else {
             this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
@@ -275,8 +271,7 @@ class RegistryCloudletPoolViewer extends React.Component {
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
                 console.log('20191119 create cloudlet....',nextProps.submitValues)
-                //service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit, nextProps.validateValue.Cloudlet)
-                service.createNewCloudlet('CreateCloudlet', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
+                //service.createCloudletPool('CreateCloudlet', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
                 setTimeout(() => {
                     this.props.handleLoadingSpinner(false);
                     this.props.gotoUrl();
@@ -290,14 +285,15 @@ class RegistryCloudletPoolViewer extends React.Component {
         }
 
 
+
+
     }
 
     render() {
         const { open, dimmer, dummyData } = this.state;
-        const { hiddenKeys } = this.props;
+        const { hiddenKeys, devData } = this.props;
         return (
             <div className="regis_container">
-                {/*<RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>*/}
                 <div
                     draggableHandle
                     layout={this.state.layout}

@@ -10,6 +10,7 @@ import './styles.css';
 import Duallist from 'react-duallist';
 import './react_dualist.css'
 import "antd/dist/antd.css";
+import stylesheetUrl from "../css/components/antd/css/transfer.css";
 
 const makeOption =(options)=> {
 
@@ -151,9 +152,9 @@ const renderDualListInput = ({ input, placeholder, change, type, error, initialV
     </div>
 
 );
-const renderDualListBox = (self) => (
+const renderDualListBox = (self, data) => (
     <Transfer
-        dataSource={self.state.mockData}
+        dataSource={self.getMock(data)}
         showSearch
         filterOption={self.filterOption}
         targetKeys={self.state.targetKeys}
@@ -228,22 +229,31 @@ class SiteFourCreateFormDefault extends React.Component {
      * code by @inki 20191220
      * add dual list box use ANT
      * **/
-    getMock = () => {
+    getMock = (data) => {
+
         const targetKeys = [];
         const mockData = [];
-        for (let i = 0; i < 20; i++) {
-            const data = {
-                key: i.toString(),
-                title: `content${i + 1}`,
-                description: `description of content${i + 1}`,
-                chosen: Math.random() * 2 > 1,
-            };
-            if (data.chosen) {
-                targetKeys.push(data.key);
-            }
-            mockData.push(data);
+
+        console.log('20191220 mock data -- ', data, ":")
+        if(data.length) {
+            data.map((item, i) => {
+                console.log('20191220 mock selectCloudlet -- ', item['cloudlet'], ":")
+
+                const data = {
+                    key: i.toString(),
+                    title: item['cloudlet'],
+                    description: item['cloudlet'],
+                    chosen: 0,
+                };
+                if (data.chosen) {
+                    targetKeys.push(data.key);
+                }
+                mockData.push(data)
+
+            })
         }
-        this.setState({ mockData, targetKeys });
+        console.log('20191220 mock data -- ', mockData, ":")
+        return mockData;
     };
 
     filterOption = (inputValue, option) => option.description.indexOf(inputValue) > -1;
@@ -272,12 +282,10 @@ class SiteFourCreateFormDefault extends React.Component {
             services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, this.receiveResult)
         }
 
-        // test for ANT : should remove...
-        this.getMock();
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('20191213 nextProps in form default..', nextProps)
+        console.log('20191220 nextProps in form default..', nextProps.data)
         if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
@@ -290,8 +298,7 @@ class SiteFourCreateFormDefault extends React.Component {
                 this.setState({dataInit:true})
             }
         }
-        
-        
+
     }
 
     getLabel (key, pId) {
@@ -378,9 +385,14 @@ class SiteFourCreateFormDefault extends React.Component {
         const {  dimmer, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat } = this.props;
         const { data, regKeys, fieldKeys, available, selected } = this.state;
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
+        let disableLabel = true;
+        if(fieldKeys && fieldKeys.length && fieldKeys[0]['poolName']) {
+            disableLabel = false;
+        }
+        console.log('20191219 pid == ', fieldKeys, ": data =", data)
         return (
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
-                <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>
+                {(disableLabel)?<Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>:null}
                 <Fragment >
                     <Form onSubmit={this.onHandleSubmit} getFormState={this.onFormState} className={"fieldForm"} >
                         <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
@@ -474,7 +486,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             (fieldKeys[pId][key]['type'] === 'RenderDualListBox') ?
                                                             <Grid>
                                                                 <Grid.Row className={'renderDualListBox'} style={{height:500}}>
-                                                                    {renderDualListBox(this)}
+                                                                    {renderDualListBox(this, data[key])}
                                                                 </Grid.Row>
                                                             </Grid>
                                                             :

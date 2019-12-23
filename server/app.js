@@ -528,6 +528,17 @@ app.post('/showself', apiMCAudit.ShowSelf)
  */
 app.post('/sendMail', apiMCAudit.SendMail)
 
+/******
+ * 20191219
+ * show cloudlet pool
+ * @type {string}
+ */
+
+app.post('/showCloudletPool', apiMC.ShowCloudletPool)
+app.post('/createCloudletPool', apiMC.CreateCloudletPool)
+app.post('/showCloudletPoolMember', apiMC.ShowCloudletPoolMember)
+app.post('/createCloudletPoolMember', apiMC.CreateCloudletPoolMember)
+
 // http
 
 //app.listen(port, () => console.log(`Example app listening on port ${port}!`))
