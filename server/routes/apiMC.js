@@ -2037,14 +2037,13 @@ exports.CreateCloudletPool = (req, res) => {
     let region = 'local';
     let poolName = '';
     if(req.body.serviceBody){
-        poolName = req.body.serviceBody.name;
+        poolName = req.body.serviceBody.params.name;
         superpass = req.body.serviceBody.token;
-        region = req.body.serviceBody.region;
+        region = req.body.serviceBody.params.region;
+        serviceBody = req.body.serviceBody.params;
     }
-    console.log('create  cloudlet pool -- ', 'domain req.body.serviceBody==',req.body.serviceBody)
-    axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudletPool', {
-            region:region, name:poolName
-        },
+    console.log('create  cloudlet pool -- ', 'domain req.body.serviceBody==',req.body.serviceBody, ":region = ",region, ": poolName=", poolName)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudletPool', serviceBody,
         {
             headers: {
                 'Authorization':`Bearer ${superpass}`}

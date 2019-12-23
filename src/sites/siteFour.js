@@ -38,6 +38,7 @@ import SiteFourPageCloudlet from './siteFour_page_cloudlet';
 import SiteFourPageCloudletPool from './siteFour_page_cloudletPool';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
 import SiteFourPageCloudletPoolReg from './siteFour_page_cloudletPoolReg';
+import SiteFourPageLinkOrganizeReg from './siteFour_page_linkOrganizeReg';
 import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
@@ -1037,6 +1038,8 @@ class SiteFour extends React.Component {
                                                                                         editable={false}></SiteFourPageAppInstReg> :
                                                                                     (this.state.page === 'pg=createCloudletPool')?
                                                                                         <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                        (this.state.page === 'pg=linkOrganize')?
+                                                                                        <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
                                                                                         (this.state.page === 'pg=editAppInst') ?
                                                                                         <SiteFourPageAppInstReg
                                                                                             editable={true}></SiteFourPageAppInstReg> :

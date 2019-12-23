@@ -82,8 +82,7 @@ class SiteFourPageCloudletPool extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         // this.getDataDeveloper(this.props.changeRegion);
         this.userToken = store.userToken;
-        //test...
-        this.createCloudletPoolMember('EU', 'TDG', 'frankfurt-eu', 'bicCloudletPool20191220-1')
+
     }
     componentWillUnmount() {
         this._devData = [];
@@ -111,8 +110,7 @@ class SiteFourPageCloudletPool extends React.Component {
             console.log("20191119 ..cloudlet 22 nextProps.changeRegion = ",nextProps.changeRegion,"-- : --",this.props.changeRegion)
             this.setState({changeRegion: nextProps.changeRegion})
             this.getDataDeveloper(nextProps.changeRegion, this.state.regions);
-            ///care pool test
-            //this.createCloudletPool('EU','bicCloudletPool20191220-3');
+
         } else {
 
         }
@@ -219,13 +217,6 @@ class SiteFourPageCloudletPool extends React.Component {
     /*
        example : region=EU operator=TDG cloudlet=deleteme pool=DeletemePool
      */
-    createCloudletPoolMember = (_region, _oper, _cloudlet, _pool) => {
-        //TODO: 맴버 가져오기
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let _params = {region: _region, operator: _oper, cloudlet: _cloudlet, pool:_pool};
-        services.createCloudletPoolMember('CreateCloudletPoolMember',{token:store.userToken, params:_params}, _self.receiveResultCreateMember)
-
-    }
 
     getDataDeveloperSub = (region) => {
         let _region = (region)?region:'All';

@@ -57,15 +57,18 @@ class SiteFourPageClusterInstPoolReg extends React.Component {
     }
     countJoin() {
         let cloudlet = this._cloudletDummy;
-        console.log('20191220 props dev data countJoin---', cloudlet, ": state devData == ", this.state.devData)
+        console.log('20191223 props dev data countJoin---', cloudlet, ": regions == ", rgn, ":", this.props.region)
         let cloudletList = [];
         cloudlet.map((list) => {
             cloudletList.push({region:list['Region'], cloudlet:list['CloudletName']})
         })
         //TODO: cloudlet --- 20191220 폼에 맞는 데이터 형태로 가공 필요
         let fieldValue = [{
+            'Region':rgn,
             'poolName':'',
-            'selectCloudlet':cloudletList
+            'selectCloudlet':cloudletList,
+            'invisibleField':''
+
         }]
         _self.setState({devData:fieldValue, dataSort:false})
         _self.forceUpdate();
