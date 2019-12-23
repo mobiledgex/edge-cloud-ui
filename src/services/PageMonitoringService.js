@@ -657,7 +657,6 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
                     bubbleClickFun={(label) => {
-
                         /*
                         notification.success({
                               duration: 0.5,

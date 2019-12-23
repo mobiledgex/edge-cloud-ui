@@ -19,3 +19,20 @@ export const REGION = {
 }
 
 export const RECENT_DATA_LIMIT_COUNT = 100
+
+export const APP_PERFORMANCE_VALUES = {
+    M4_MEDIUM: {
+        KEY: 'm4.medium',
+        VALUE: 1,
+    },
+    X1_MEDIUM: {
+        KEY: 'x1.medium',
+        VALUE: 2,
+    },
+    X1_LARGE: {
+        KEY: 'x1.large',
+        VALUE: 3,
+    },
+}
+
+
