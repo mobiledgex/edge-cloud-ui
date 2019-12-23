@@ -88,6 +88,7 @@ type State = {
     allCpuUsageList: Array,
     allMemUsageList: Array,
     cloudLetSelectBoxPlaceholder: string,
+    clusterSelectBoxPlaceholder: string,
     currentCloudLet: string,
 
 
@@ -120,7 +121,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             currentRegion: '',
             allCpuUsageList: [],
             allMemUsageList: [],
-            cloudLetSelectBoxPlaceholder: 'CloudLet',
+            cloudLetSelectBoxPlaceholder: 'Select CloudLet',
+            clusterSelectBoxPlaceholder: 'Select cluster',
             currentCloudLet: '',
         };
 
@@ -312,7 +314,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                         }}>
                             <FA name="refresh" style={{fontSize: 30,}} onClick={() => {
-                                alert('Miri christmas!!!!!')
+                                alert('sdasd christmas!!!!!')
                             }}/>
                         </div>
                         <label className='page_monitoring_select_reset'
@@ -359,14 +361,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Cluster selectbox*/}
                         <Dropdown
                             loading={this.props.isLoading}
-                            placeholder='Cluster'
+                            placeholder={this.state.clusterSelectBoxPlaceholder}
                             selection
                             options={this.state.clusterList}
                             style={{width: 250}}
                             onChange={async (e, {value}) => {
 
 
-                               // await this.handleRegionChanges(this.state.currentRegion, this.state.currentCloudLet, value)
+                                // await this.handleRegionChanges(this.state.currentRegion, this.state.currentCloudLet, value)
                             }}
                         />
 
@@ -430,7 +432,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: ##########################################
             //todo:appInstanceList를 리전에 의해서 필터링 처리
             appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
-            let cloudletSelectBox = makeCloudletListSelectBox(appInstanceList)
+            let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
             //todo: 클라우드렛 별로 인스턴스를 GroupBy..
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             //todo:리전별로 필터링된 CPU/MEM UsageList(전체 리스트로 부터 필터링처리)
@@ -440,14 +442,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: ##########################################
             //todo: 필터링 처리 By pCloudLet
             //todo: ##########################################
-            let clusterSelectBox = [];
+            let clusterSelectBoxList = [];
             if (pCloudLet !== '') {
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                 appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
                 filteredCpuUsageList = filterCpuOrMemUsageByCloudLet(filteredCpuUsageList, pCloudLet);
                 filteredMemUsageList = filterCpuOrMemUsageByCloudLet(filteredMemUsageList, pCloudLet);
-                //clusterSelectBox = makeClusterListSelectBox(appInstanceList, pCloudLet)
-                console.log('clusterSelectBox====>',clusterSelectBox);
+                clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
+                console.log('clusterSelectBox====>', clusterSelectBoxList);
             }
 
             //todo: ##########################################
@@ -457,21 +459,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             }
 
-
             this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
                 appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
-                cloudletList: cloudletSelectBox,
-                clusterList: clusterSelectBox,
+                cloudletList: cloudletSelectBoxList,
+                clusterList: clusterSelectBoxList,
                 currentCloudLet: pCloudLet,
             }, () => {
 
                 setTimeout(() => {
                     this.setState({
-                        cloudLetSelectBoxPlaceholder: '-Select CloudLet-'
+                        cloudLetSelectBoxPlaceholder: 'Select CloudLet',
+                        clusterSelectBoxPlaceholder: 'Select Cluster',
                     })
                 }, 700)
                 this.props.toggleLoading(false)

@@ -66,6 +66,15 @@ export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '
     return instanceListFilteredByClusterInst;
 }
 
+function removeDups(names) {
+    let unique = {};
+    names.forEach(function (i) {
+        if (!unique[i]) {
+            unique[i] = true;
+        }
+    });
+    return Object.keys(unique);
+}
 
 /**
  * @todo 클러스트 리스트 셀렉트 박스 형태의 리스트를 만들어준다..
@@ -82,15 +91,15 @@ export const makeClusterListSelectBox = (appInstanceList: Array, pCloudLet) => {
         }
     })
 
-
-
-    //@todo Deduplication
-    let uniquedClusterList = instanceListFilteredByCloudLet.filter(function (item, pos) {
-        return instanceListFilteredByCloudLet.indexOf(item) == pos;
+    let filteredClusterList = []
+    instanceListFilteredByCloudLet.map(item => {
+        filteredClusterList.push(item.ClusterInst)
     })
 
+
+    let uniqueClusterList = removeDups(filteredClusterList);
     let clusterSelectBoxData = []
-    uniquedClusterList.map(item => {
+    uniqueClusterList.map(item => {
         let selectOne = {
             value: item,
             text: item,
@@ -98,8 +107,6 @@ export const makeClusterListSelectBox = (appInstanceList: Array, pCloudLet) => {
         clusterSelectBoxData.push(selectOne);
     })
 
-
-    console.log('clusterSelectBoxData====>',clusterSelectBoxData);
     return clusterSelectBoxData;
 }
 
