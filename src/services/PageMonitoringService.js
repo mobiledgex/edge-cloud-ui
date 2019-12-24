@@ -8,7 +8,7 @@ import '../sites/PageMonitoring.css';
 import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
 import {
     BORDER_CHART_COLOR_LIST,
-    CHART_COLOR_LIST,
+    CHART_COLOR_LIST, CHART_COLOR_LIST2,
     HARDWARE_TYPE,
     RECENT_DATA_LIMIT_COUNT,
     REGION
@@ -197,18 +197,61 @@ export const makeCloudletListSelectBox = (appInstanceList: Array) => {
  * @param hardwareType
  * @returns {*}
  */
-export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
+export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
 
     let chartDataList = [];
     chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
+
+    function renderUsageData(usageList: Array, index: number) {
+
+        let usageDataOne = 0
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            usageDataOne = usageList[index].sumCpuUsage
+        }
+
+        if (hardwareType === HARDWARE_TYPE.MEM) {
+            usageDataOne = usageList[index].sumMemUsage
+        }
+
+        if (hardwareType === HARDWARE_TYPE.DISK) {
+            usageDataOne = usageList[index].sumDiskUsage
+        }
+
+        if (hardwareType === HARDWARE_TYPE.NETWORK) {
+            usageDataOne = usageList[index].sumRecvBytes
+        }
+
+        return usageDataOne
+    }
+
+    function renderUsageAnnotation(usageList: Array, index: number) {
+
+        let usageDataAnnotationOne = 0
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            usageDataAnnotationOne = usageList[index].sumCpuUsage.toFixed(2) + "%"
+        }
+        if (hardwareType === HARDWARE_TYPE.MEM) {
+            usageDataAnnotationOne = usageList[index].sumMemUsage.toFixed(2) + "%"
+        }
+        if (hardwareType === HARDWARE_TYPE.DISK) {
+            usageDataAnnotationOne = usageList[index].sumDiskUsage.toFixed(2) + "Byte"
+        }
+
+        if (hardwareType === HARDWARE_TYPE.NETWORK) {
+            usageDataAnnotationOne = usageList[index].sumRecvBytes.toFixed(2) + "Byte"
+        }
+
+        return usageDataAnnotationOne;
+    }
+
     for (let index = 0; index < usageList.length; index++) {
 
         if (index < 5) {
             let barDataOne = [
-                usageList[index].instance.AppName.toString().substring(0, 10) + "...",
-                hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage,
+                usageList[index].instance.AppName,
+                renderUsageData(usageList, index),
                 CHART_COLOR_LIST[index],
-                hardwareType === 'cpu' ? usageList[index].sumCpuUsage.toFixed(2) + "%" : usageList[index].sumMemUsage.toFixed(0) + " Byte",
+                renderUsageAnnotation(usageList, index),
             ]
             chartDataList.push(barDataOne);
         }
@@ -287,7 +330,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                     fill: 'black'
                 },
                 animation: {
-                    duration: 1000,
+                    duration: 300,
                     easing: 'out',
                     startup: true
                 }
@@ -322,7 +365,7 @@ export const renderBarGraph2 = (appInstanceListOnCloudlet: any, _this) => {
         let barDataOne = [
             key,
             value.length,
-            '#1771ff',
+            CHART_COLOR_LIST[index],
             value.length.toString(),
         ]
         chartDataList.push(barDataOne);
@@ -342,40 +385,40 @@ export const renderBarGraph2 = (appInstanceListOnCloudlet: any, _this) => {
                     alwaysOutside: true,
                     textStyle: {
                         // fontName: 'Times-Roman',
-                        fontSize: 25,
+                        fontSize: 30,
                         bold: true,
                         italic: true,
                         color: 'white',     // The color of the text.
-                        auraColor: '#2011ff', // The color of the text outline.
+                        auraColor: 'black', // The color of the text outline.
                         opacity: 1.0          // The transparency of the text.
                     },
-                    boxStyle: {
-                        // Color of the box outline.
-                        stroke: 'white',
-                        // Thickness of the box outline.
-                        strokeWidth: 40,
-                        // x-radius of the corner curvature.
-                        rx: 0,
-                        // y-radius of the corner curvature.
-                        ry: 0,
-                        // Attributes for linear gradient fill.
-                        gradient: {
-                            // Start color for gradient.
-                            color1: 'white',
-                            // Finish color for gradient.
-                            color2: 'white',
-                            // Where on the boundary to start and
-                            // end the color1/color2 gradient,
-                            // relative to the upper left corner
-                            // of the boundary.
-                            x1: '150%', y1: '100%',
-                            x2: '150%', y2: '100%',
-                            // If true, the boundary for x1,
-                            // y1, x2, and y2 is the box. If
-                            // false, it's the entire chart.
-                            useObjectBoundingBoxUnits: true
-                        }
-                    }
+                    /* boxStyle: {
+                         // Color of the box outline.
+                         stroke: 'blue',
+                         // Thickness of the box outline.
+                         strokeWidth: 43,
+                         // x-radius of the corner curvature.
+                         rx: 0,
+                         // y-radius of the corner curvature.
+                         ry: 0,
+                         // Attributes for linear gradient fill.
+                         gradient: {
+                             // Start color for gradient.
+                             color1: 'white',
+                             // Finish color for gradient.
+                             color2: 'white',
+                             // Where on the boundary to start and
+                             // end the color1/color2 gradient,
+                             // relative to the upper left corner
+                             // of the boundary.
+                             x1: '150%', y1: '100%',
+                             x2: '150%', y2: '100%',
+                             // If true, the boundary for x1,
+                             // y1, x2, and y2 is the box. If
+                             // false, it's the entire chart.
+                             useObjectBoundingBoxUnits: true
+                         }
+                     }*/
                 },
                 is3D: false,
                 title: '',
@@ -391,7 +434,7 @@ export const renderBarGraph2 = (appInstanceListOnCloudlet: any, _this) => {
                     height: "80%",
                     backgroundColor: {
                         //  'fill': '#F4F4F4',
-                        'opacity': 100
+                        'opacity': 0.5
                     },
                 },
                 legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
@@ -799,7 +842,7 @@ export const renderCpuBody = (_this: PageMonitoring2) => {
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
-                        {_this.state.isReady ? renderBarGraphForCpuMem(_this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
+                        {_this.state.isReady ? renderBarGraph(_this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
                     </div>
                 </div>
                 {/* cpu___col___4*/}
@@ -812,7 +855,7 @@ export const renderCpuBody = (_this: PageMonitoring2) => {
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
-                        {_this.state.isReady ? renderLineChart(_this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
+                        {_this.state.isReady ? renderLineChart_real(_this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
                     </div>
                 </div>
 
@@ -887,7 +930,7 @@ export const renderMemBody = (_this: PageMonitoring2) => {
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
-                        {_this.state.isReady ? renderBarGraphForCpuMem(_this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
+                        {_this.state.isReady ? renderBarGraph(_this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
                     </div>
                 </div>
                 {/* cpu___col___4*/}
@@ -900,7 +943,7 @@ export const renderMemBody = (_this: PageMonitoring2) => {
                         </div>
                     </div>
                     <div className='page_monitoring_container'>
-                        {_this.state.isReady ? renderLineChart(_this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
+                        {_this.state.isReady ? renderLineChart_real(_this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
                     </div>
                 </div>
 
@@ -1036,8 +1079,31 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
  * @param hardwareType
  * @returns {*}
  */
-export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
+export const renderLineChart_real = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
     console.log('itemeLength===>', cpuUsageListPerInstanceSortByUsage);
+
+    function renderUsageData(seriesValues: Array, index: number) {
+
+        let seriesValueOne = 0
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            seriesValueOne = seriesValues[index]["4"];
+        }
+
+        if (hardwareType === HARDWARE_TYPE.MEM) {
+            seriesValueOne = seriesValues[index]["5"];
+        }
+
+        if (hardwareType === HARDWARE_TYPE.DISK) {
+            seriesValueOne = seriesValues[index]["5"];
+        }
+
+        if (hardwareType === HARDWARE_TYPE.NETWORK) {
+            seriesValueOne = seriesValues[index]["6"]; //revceive Byte
+            //seriesValueOne = seriesValues[index]["7"];//send Btye
+        }
+        return seriesValueOne
+    }
+
 
     let instanceAppName = ''
     let instanceNameList = [];
@@ -1049,17 +1115,12 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
         instanceAppName = cpuUsageListPerInstanceSortByUsage[i].instance.AppName
         let usageList = [];
 
-        for (let j in seriesValues) {
+        for (let jIndex in seriesValues) {
 
-            let usageOne = 0;
-            if (hardwareType === HARDWARE_TYPE.CPU) {
-                usageOne = seriesValues[j]["4"];
-            } else {
-                usageOne = seriesValues[j]["5"];
-            }
+            let usageOne = renderUsageData(seriesValues, jIndex)
 
             usageList.push(usageOne);
-            let dateOne = seriesValues[j]["0"];
+            let dateOne = seriesValues[jIndex]["0"];
             let arraySplitDate = dateOne.toString().split("T")
             dateTimeList.push(arraySplitDate[1]);
 
@@ -1415,9 +1476,8 @@ export const getInstHealth = async () => {
  */
 export const makeHardwareUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = HARDWARE_TYPE.CPU, recentDataLimitCount: number) => {
 
-    let cpuUsageListPerOneInstance = []
+    let usageListPerOneInstance = []
     for (let index = 0; index < appInstanceList.length; index++) {
-
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
 
         //todo: 레퀘스트를 요청할 데이터 FORM형식을 만들어 준다.
@@ -1429,7 +1489,7 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
         let appInstanceHealth = await getAppInstanceHealth(instanceInfoOneForm);
         //console.log(`appInstanceHealth====>${index}`,)
 
-        cpuUsageListPerOneInstance.push({
+        usageListPerOneInstance.push({
             instanceData: appInstanceList[index],
             appInstanceHealth: appInstanceHealth,
         });
@@ -1438,11 +1498,11 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
 
     let newHardwareUsageList = [];
 
-    for (let index = 0; index < cpuUsageListPerOneInstance.length; index++) {
-        if (cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series != null) {
+    for (let index = 0; index < usageListPerOneInstance.length; index++) {
+        if (usageListPerOneInstance[index].appInstanceHealth.data[0].Series != null) {
 
-            let columns = cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].columns;
-            let values = cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].values;
+            let columns = usageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].columns;
+            let values = usageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].values;
 
             let sumCpuUsage = 0;
             let sumMemUsage = 0;
@@ -1466,8 +1526,8 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
             }
 
             //todo: CPU/MEM 사용량 평균값을 계산한다.....
-            sumCpuUsage = sumCpuUsage / cpuUsageListPerOneInstance.length;
-            sumMemUsage = Math.ceil(sumMemUsage / cpuUsageListPerOneInstance.length);
+            sumCpuUsage = sumCpuUsage / usageListPerOneInstance.length;
+            sumMemUsage = Math.ceil(sumMemUsage / usageListPerOneInstance.length);
 
             console.log('sumMemUsage===>', sumMemUsage);
 
@@ -1475,7 +1535,7 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
             let body = {}
             if (paramCpuOrMem === 'cpu') {
                 body = {
-                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    instance: usageListPerOneInstance[index].instanceData,
                     columns: columns,
                     values: values,
                     sumCpuUsage: sumCpuUsage,
@@ -1483,7 +1543,7 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
 
             } else if (paramCpuOrMem === 'mem') {
                 body = {
-                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    instance: usageListPerOneInstance[index].instanceData,
                     columns: columns,
                     values: values,
                     sumMemUsage: sumMemUsage,
@@ -1491,14 +1551,14 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
 
             } else if (paramCpuOrMem === 'disk') {
                 body = {
-                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    instance: usageListPerOneInstance[index].instanceData,
                     columns: columns,
                     values: values,
                     sumDiskUsage: sumDiskUsage,
                 }
             } else {//network
                 body = {
-                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    instance: usageListPerOneInstance[index].instanceData,
                     columns: columns,
                     values: values,
                     sumRecvBytes: sumRecvBytes,
@@ -1514,7 +1574,7 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
             let body = {}
             if (paramCpuOrMem === 'cpu') {
                 body = {
-                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    instance: usageListPerOneInstance[index].instanceData,
                     columns: '',
                     values: '',
                     sumCpuUsage: 0,
@@ -1522,7 +1582,7 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
 
             } else if (paramCpuOrMem === 'mem') {
                 body = {
-                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    instance: usageListPerOneInstance[index].instanceData,
                     columns: '',
                     values: '',
                     sumMemUsage: 0,
@@ -1530,14 +1590,14 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
 
             } else if (paramCpuOrMem === 'disk') {
                 body = {
-                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    instance: usageListPerOneInstance[index].instanceData,
                     columns: '',
                     values: '',
                     sumDiskUsage: 0,
                 }
             } else {//network
                 body = {
-                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    instance: usageListPerOneInstance[index].instanceData,
                     columns: '',
                     values: '',
                     sumRecvBytes: 0,
@@ -1550,19 +1610,23 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
 
     }
     //@todo :##################################
-    //@todo : Sort cpu usage in reverse order.
+    //@todo : Sort usage in reverse order.
     //@todo :##################################
-    if (paramCpuOrMem === 'cpu') {
+    if (paramCpuOrMem === HARDWARE_TYPE.CPU) {
         newHardwareUsageList.sort((a, b) => {
             return b.sumCpuUsage - a.sumCpuUsage;
         });
-    } else if (paramCpuOrMem === 'network') {
+    } else if (paramCpuOrMem === HARDWARE_TYPE.MEM) {
+        newHardwareUsageList.sort((a, b) => {
+            return b.sumMemUsage - a.sumMemUsage;
+        });
+    } else if (paramCpuOrMem === HARDWARE_TYPE.NETWORK) {
         newHardwareUsageList.sort((a, b) => {
             return b.sumRecvBytes - a.sumRecvBytes;
         });
-    } else {//mem
+    } else if (paramCpuOrMem === HARDWARE_TYPE.DISK) {
         newHardwareUsageList.sort((a, b) => {
-            return b.sumMemUsage - a.sumMemUsage;
+            return b.sumDiskUsage - a.sumDiskUsage;
         });
     }
     return newHardwareUsageList;

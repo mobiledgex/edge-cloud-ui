@@ -22,10 +22,10 @@ import {
     filterInstanceCountOnCloutLetOne, getInstHealth,
     makeCloudletListSelectBox,
     makeClusterListSelectBox, makeHardwareUsageListPerInstance,
-    renderBarGraphForCpuMem,
+    renderBarGraph,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
-    renderLineChart,
+    renderLineChart_real,
     renderPieChart2AndAppStatus,
     renderPlaceHolder,
     renderPlaceHolder2

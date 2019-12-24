@@ -3493,6 +3493,300 @@
         {
             "instance": {
                 "Region": "EU",
+                "OrganizationName": "testaaa",
+                "AppName": "jjj kkk",
+                "Version": "1.0",
+                "Operator": "TDG",
+                "Cloudlet": "frankfurt-eu",
+                "ClusterInst": "kkkkkkk",
+                "CloudletLocation": {
+                    "latitude": 50.110924,
+                    "longitude": 8.682127
+                },
+                "URI": "frankfurt-eu.tdg.mobiledgex.net",
+                "Liveness": 1,
+                "Mapped_port": [
+                    {
+                        "proto": 1,
+                        "internal_port": 11111,
+                        "public_port": 11111,
+                        "fqdn_prefix": "jjjkkk-tcp."
+                    },
+                    {
+                        "proto": 2,
+                        "internal_port": 8888,
+                        "public_port": 8888,
+                        "fqdn_prefix": "jjjkkk-udp."
+                    }
+                ],
+                "Flavor": "m4.medium",
+                "State": 8,
+                "Error": [
+                    "Update App Inst failed: error running kubectl apply command unable to recognize \"jjjkkk23.yaml\": Get https://10.101.1.10:6443/api?timeout=32s: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"kubernetes\")\nunable to recognize \"jjjkkk23.yaml\": Get https://10.101.1.10:6443/api?timeout=32s: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"kubernetes\")\nunable to recognize \"jjjkkk23.yaml\": Get https://10.101.1.10:6443/api?timeout=32s: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"kubernetes\"), Process exited with status 1"
+                ],
+                "Runtime": {
+                    "container_ids": [
+                        "jjjkkk-deployment-b6f54656f-2xf4h"
+                    ]
+                },
+                "Created": "seconds : 1570741867",
+                "Progress": "",
+                "Edit": [
+                    "Region",
+                    "DeveloperName",
+                    "AppName",
+                    "Version",
+                    "Operator",
+                    "Cloudlet",
+                    "ClusterInst",
+                    "CloudletLocation",
+                    "State",
+                    "Editable"
+                ],
+                "Status": {},
+                "Revision": 21
+            },
+            "columns": [
+                "time",
+                "app",
+                "cloudlet",
+                "cluster",
+                "dev",
+                "disk",
+                "operator"
+            ],
+            "values": [
+                [
+                    "2019-10-19T23:02:11.496000051Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:02:03.191999912Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:01:46.391999959Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:01:38.010999917Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:01:29.677000045Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:01:21.200999975Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:01:04.252000093Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:00:55.839999914Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:00:47.496000051Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:00:38.971999883Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:00:30.700000047Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:00:22.371000051Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:00:13.937999963Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T23:00:05.54399991Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T22:59:57.170000076Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T22:59:48.657000064Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T22:59:40.371999979Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T22:59:32Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T22:59:23.684000015Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T22:59:15.321000099Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T22:58:58.528000116Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T22:58:41.686000108Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T22:58:33.10800004Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T22:58:24.700000047Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ],
+                [
+                    "2019-10-19T22:58:16.028000116Z",
+                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                    "frankfurt-eu",
+                    "kkkkkkk",
+                    "testaaa",
+                    35254272,
+                    "TDG"
+                ]
+            ],
+            "sumDiskUsage": 881356800
+        },
+        {
+            "instance": {
+                "Region": "EU",
                 "OrganizationName": "MobiledgeX",
                 "AppName": "MEXPrometheusAppName",
                 "Version": "1.0",
@@ -4744,300 +5038,6 @@
                 ]
             ],
             "sumDiskUsage": 0
-        },
-        {
-            "instance": {
-                "Region": "EU",
-                "OrganizationName": "testaaa",
-                "AppName": "jjj kkk",
-                "Version": "1.0",
-                "Operator": "TDG",
-                "Cloudlet": "frankfurt-eu",
-                "ClusterInst": "kkkkkkk",
-                "CloudletLocation": {
-                    "latitude": 50.110924,
-                    "longitude": 8.682127
-                },
-                "URI": "frankfurt-eu.tdg.mobiledgex.net",
-                "Liveness": 1,
-                "Mapped_port": [
-                    {
-                        "proto": 1,
-                        "internal_port": 11111,
-                        "public_port": 11111,
-                        "fqdn_prefix": "jjjkkk-tcp."
-                    },
-                    {
-                        "proto": 2,
-                        "internal_port": 8888,
-                        "public_port": 8888,
-                        "fqdn_prefix": "jjjkkk-udp."
-                    }
-                ],
-                "Flavor": "m4.medium",
-                "State": 8,
-                "Error": [
-                    "Update App Inst failed: error running kubectl apply command unable to recognize \"jjjkkk23.yaml\": Get https://10.101.1.10:6443/api?timeout=32s: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"kubernetes\")\nunable to recognize \"jjjkkk23.yaml\": Get https://10.101.1.10:6443/api?timeout=32s: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"kubernetes\")\nunable to recognize \"jjjkkk23.yaml\": Get https://10.101.1.10:6443/api?timeout=32s: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"kubernetes\"), Process exited with status 1"
-                ],
-                "Runtime": {
-                    "container_ids": [
-                        "jjjkkk-deployment-b6f54656f-2xf4h"
-                    ]
-                },
-                "Created": "seconds : 1570741867",
-                "Progress": "",
-                "Edit": [
-                    "Region",
-                    "DeveloperName",
-                    "AppName",
-                    "Version",
-                    "Operator",
-                    "Cloudlet",
-                    "ClusterInst",
-                    "CloudletLocation",
-                    "State",
-                    "Editable"
-                ],
-                "Status": {},
-                "Revision": 21
-            },
-            "columns": [
-                "time",
-                "app",
-                "cloudlet",
-                "cluster",
-                "dev",
-                "disk",
-                "operator"
-            ],
-            "values": [
-                [
-                    "2019-10-19T23:02:11.496000051Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:02:03.191999912Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:01:46.391999959Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:01:38.010999917Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:01:29.677000045Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:01:21.200999975Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:01:04.252000093Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:00:55.839999914Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:00:47.496000051Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:00:38.971999883Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:00:30.700000047Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:00:22.371000051Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:00:13.937999963Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T23:00:05.54399991Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T22:59:57.170000076Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T22:59:48.657000064Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T22:59:40.371999979Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T22:59:32Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T22:59:23.684000015Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T22:59:15.321000099Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T22:58:58.528000116Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T22:58:41.686000108Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T22:58:33.10800004Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T22:58:24.700000047Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ],
-                [
-                    "2019-10-19T22:58:16.028000116Z",
-                    "jjjkkk-deployment-b6f54656f-2xf4h",
-                    "frankfurt-eu",
-                    "kkkkkkk",
-                    "testaaa",
-                    35254272,
-                    "TDG"
-                ]
-            ],
-            "sumDiskUsage": 881356800
         },
         {
             "instance": {

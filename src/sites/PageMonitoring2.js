@@ -22,10 +22,10 @@ import {
     filterInstanceCountOnCloutLetOne,
     makeCloudletListSelectBox,
     makeClusterListSelectBox, makeHardwareUsageListPerInstance, renderBarGraph2,
-    renderBarGraphForCpuMem,
+    renderBarGraph,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
-    renderLineChart,
+    renderLineChart_real,
     renderPieChart2AndAppStatus,
     renderPlaceHolder,
     renderPlaceHolder2
@@ -91,6 +91,10 @@ type State = {
     currentCloudLet: string,
     isReady: boolean,
     isAppInstaceDataReady: boolean,
+    usageListCPU: Array,
+    usageListMEM: Array,
+    usageListDISK: Array,
+    usageListNETWORK: Array,
 
 
 }
@@ -125,6 +129,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clusterSelectBoxPlaceholder: 'Select cluster',
             currentCloudLet: '',
             isAppInstaceDataReady: false,
+            usageListCPU: [],
+            usageListMEM: [],
+            usageListDISK: [],
+            usageListNETWORK: [],
         };
 
         intervalHandle = null;
@@ -155,8 +163,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-            this.intervalHandle = setInterval(this.tick.bind(this), 1000);
+            this.getInitData();
+        }
 
+
+        async getInitData() {
+            this.intervalHandle = setInterval(this.tick.bind(this), 1000);
             this.setState({
                 loading: true,
                 loading0: true,
@@ -164,7 +176,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 endDate: getTodayDate(),
                 isReady: false,
             })
-
             //todo: REALDATA
             //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
@@ -179,7 +190,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 appInstanceList: appInstanceList,
-                //todo: 전체 app Instance list
                 allAppInstanceList: appInstanceList,
             })
             await this.setState({
@@ -190,7 +200,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-          /*  let usageList = await Promise.all([
+            let usageList = await Promise.all([
                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
@@ -198,34 +208,32 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             ])
             let cpuUsageListPerOneInstance = usageList[0]
             let memUsageListPerOneInstance = usageList[1]
-            console.log('_result===>', usageList);*/
+            console.log('_result===>', usageList);
+
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
             //todo: ################################################################
-            let usageList = require('../jsons/allUsageList_50')
+            /*let usageList = require('../jsons/allUsageList_50')
             let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
-            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
+            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')*/
+
 
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
             let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
             let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
             await this.setState({
-
                 usageListCPU: usageList[0],
                 usageListMEM: usageList[1],
                 usageListDISK: usageList[2],
                 usageListNETWORK: usageList[3],
-
                 allCpuUsageList: cpuUsageListPerOneInstance,
                 allMemUsageList: memUsageListPerOneInstance,
                 cloudletList: cloudletList,
                 clusterList: clusterList,
                 filteredCpuUsageList: cpuUsageListPerOneInstance,
                 filteredMemUsageList: memUsageListPerOneInstance,
-
             });
-
             await this.setState({
                 loading: false,
                 loading0: false,
@@ -233,7 +241,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
             clearInterval(this.intervalHandle)
             this.props.toggleLoading(false);
-
+            notification.success({
+                message: 'Data loading complete!'
+            })
         }
 
         componentWillUnmount() {
@@ -288,16 +298,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
-                        {/*  <label className='page_monitoring_select_reset'
-                               onClick={() => {
-                                   notification.success({
-                                       duration: 0.5,
-                                       message: 'Reload',
-                                   });
-                               }}>
-                            Reload
-                        </label>*/}
-                        {/*<div style={{
+                        <div style={{
                             display: 'flex',
                             width: 80,
                             //backgroundColor: 'red',
@@ -306,17 +307,37 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             marginBottom: 10,
 
                         }}>
-                            <FA name="refresh" style={{fontSize: 30,}} onClick={() => {
-                                alert('SDFSDFSDF SDFSDF!!!!!')
+                            <FA name="refresh" style={{fontSize: 30,}} onClick={async () => {
+
+                                notification.success({
+                                    duration: 1.5,
+                                    message: 'reload data ',
+                                });
+                                await this.setState({
+                                    appInstanceListGroupByCloudlet: [],
+                                    appInstanceList: [],
+                                    allAppInstanceList: [],
+                                    usageListCPU: [],
+                                    usageListMEM: [],
+                                    usageListDISK: [],
+                                    usageListNETWORK: [],
+                                    allCpuUsageList: [],
+                                    allMemUsageList: [],
+                                    cloudletList: [],
+                                    clusterList: [],
+                                    filteredCpuUsageList: [],
+                                    filteredMemUsageList: [],
+                                });
+                                this.getInitData();
                             }}/>
-                        </div>*/}
-                        <label className='page_monitoring_select_reset'
+                        </div>
+                        {/*   <label className='page_monitoring_select_reset'
                                onClick={() => {
                                    notification.success({
                                        duration: 0.5,
                                        message: 'reset all',
                                    });
-                               }}>Reset All</label>
+                               }}>Reset All</label>*/}
                         {/*todo:REGION selectbox*/}
                         {/*todo:REGION selectbox*/}
                         {/*todo:REGION selectbox*/}
@@ -520,7 +541,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/* ___col___1*/}
                         {/* ___col___1*/}
                         {/* ___col___1*/}
-                      {/*  <div className='page_monitoring_column_kj'>
+                        {/*  <div className='page_monitoring_column_kj'>
                             <div className='page_monitoring_title_area'>
                                 <div className='page_monitoring_title'>
                                     Status Of Launched App Instance
@@ -592,7 +613,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </div>
                             </div>
                             <div className='page_monitoring_container'>
-                                {this.state.isReady ? renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
+                                {this.state.isReady ? renderBarGraph(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
                             </div>
                         </div>
                         {/* cpu___col___2*/}
@@ -605,7 +626,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </div>
                             </div>
                             <div className='page_monitoring_container'>
-                                {this.state.isReady ? renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
+                                {this.state.isReady ? renderLineChart_real(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
                             </div>
                         </div>
 
@@ -629,7 +650,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </div>
                             </div>
                             <div className='page_monitoring_container'>
-                                {this.state.isReady ? renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
+                                {this.state.isReady ? renderBarGraph(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
                             </div>
                         </div>
                         {/* cpu___col___2*/}
@@ -642,7 +663,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </div>
                             </div>
                             <div className='page_monitoring_container'>
-                                {this.state.isReady ? renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
+                                {this.state.isReady ? renderLineChart_real(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
                             </div>
                         </div>
 
@@ -652,8 +673,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         renderAppInstaceList() {
-
-
             return (
                 <div style={{marginTop: 10}}>
                     {!this.state.isReady && <CircularProgress style={{color: 'green'}}/>}
@@ -721,6 +740,80 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        renderDiskBody() {
+            return (
+                <div className='page_monitoring_dashboard'>
+                    <div className='page_monitoring_row'>
+
+                        {/* ___col___1*/}
+                        {/* ___col___1*/}
+                        {/* ___col___1*/}
+                        <div className='page_monitoring_column_kj'>
+                            <div className='page_monitoring_title_area'>
+                                <div className='page_monitoring_title'>
+                                    Top 5 of DISK Usage
+                                </div>
+                            </div>
+                            <div className='page_monitoring_container'>
+                                {this.state.isReady ? renderBarGraph(this.state.usageListDISK, HARDWARE_TYPE.DISK) : renderPlaceHolder()}
+                            </div>
+                        </div>
+                        {/* cpu___col___2*/}
+                        {/* cpu___col___2*/}
+                        {/* cpu___col___2*/}
+                        <div className='page_monitoring_column_kj'>
+                            <div className='page_monitoring_title_area'>
+                                <div className='page_monitoring_title'>
+                                    Transition Of DISK Usage
+                                </div>
+                            </div>
+                            <div className='page_monitoring_container'>
+                                {this.state.isReady ? renderLineChart_real(this.state.usageListDISK, HARDWARE_TYPE.DISK) : renderPlaceHolder()}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            )
+        }
+
+        renderNetworkBody() {
+            return (
+                <div className='page_monitoring_dashboard'>
+                    <div className='page_monitoring_row'>
+
+                        {/* ___col___1*/}
+                        {/* ___col___1*/}
+                        {/* ___col___1*/}
+                        <div className='page_monitoring_column_kj'>
+                            <div className='page_monitoring_title_area'>
+                                <div className='page_monitoring_title'>
+                                    Top 5 of NETWORK Usage (RCV Bytes)
+                                </div>
+                            </div>
+                            <div className='page_monitoring_container'>
+                                {this.state.isReady ? renderBarGraph(this.state.usageListNETWORK, HARDWARE_TYPE.NETWORK) : renderPlaceHolder()}
+                            </div>
+                        </div>
+                        {/* cpu___col___2*/}
+                        {/* cpu___col___2*/}
+                        {/* cpu___col___2*/}
+                        <div className='page_monitoring_column_kj'>
+                            <div className='page_monitoring_title_area'>
+                                <div className='page_monitoring_title'>
+                                    Transition Of NETWORK Usage(RCV Bytes)
+                                </div>
+                            </div>
+                            <div className='page_monitoring_container'>
+                                {this.state.isReady ? renderLineChart_real(this.state.usageListNETWORK, HARDWARE_TYPE.NETWORK) : renderPlaceHolder()}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            )
+        }
+
 
         /**###############################
          * * MONITORINGTABS
@@ -767,40 +860,25 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
             },
             {
+                menuItem: 'DISK', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderDiskBody()}
+                        </Pane>
+                    )
+                }
+            },
+            {
                 menuItem: 'NETWORK', render: () => {
                     return (
                         <Pane>
-                            <div>
-                                NETWORK
-                            </div>
-                            <div>
-                                NETWORK
-                            </div>
-                            <div>
-                                NETWORK
-                            </div>
+                            {this.renderNetworkBody()}
                         </Pane>
                     )
                 }
             },
 
-            {
-                menuItem: 'DISK/IO', render: () => {
-                    return (
-                        <Pane>
-                            <div>
-                                DISK_IO
-                            </div>
-                            <div>
-                                DISK_IO
-                            </div>
-                            <div>
-                                DISK_IO
-                            </div>
-                        </Pane>
-                    )
-                }
-            },
+
         ]
 
         render() {
