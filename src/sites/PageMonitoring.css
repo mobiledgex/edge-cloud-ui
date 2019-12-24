@@ -3,6 +3,19 @@
     color: whitesmoke;
 }
 
+.ui.tabular.menu .item {
+    color: #9c9c9c;
+}
+.ui.attached.tabular.menu {
+    border-bottom-color: #525252;
+}
+
+.ui.attached:not(.message)+.ui.attached.segment:not(.top) {
+    border-top: none;
+    border-top-color: #525252;
+    border-color: #525252;
+}
+
 .ui.selection.dropdown > .dropdown.icon::after {
     border-color: #24ffec;
 }

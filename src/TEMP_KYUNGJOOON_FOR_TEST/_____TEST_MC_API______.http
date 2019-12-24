@@ -69,3 +69,29 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY5MDMwM
 
 ###
 
+POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cluster
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzcyMzk2ODYsImlhdCI6MTU3NzE1MzI4NiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.SQslZmKn1cer4tfKpZfvzbHAp3zyoxCWdsdVeDhS1E8X4WJ6lT3DEiawXwJgQYoiS0oacTlNW5h-T1wS-Pcofg
+
+{
+  "region": "EU",
+  "clusterinst": {
+    "cluster_key": {
+      "name": "AppCluster"
+    },
+    "cloudlet_key": {
+      "operator_key": {
+        "name": "mexdev"
+      },
+      "name": "localtest"
+    },
+    "developer": "MobiledgeX"
+  },
+  "starttime": "2019-12-23T21:26:04Z",
+  "endtime": "2019-12-24T21:26:10Z",
+  "last": 6,
+  "selector": "cpu"
+}
+
+###
+

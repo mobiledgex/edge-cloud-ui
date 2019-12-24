@@ -38,6 +38,7 @@ import {toggleLoading} from "../actions";
 const FA = require('react-fontawesome')
 const {Column, Row} = Grid;
 const {Pane} = Tab
+
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
@@ -90,13 +91,14 @@ type State = {
     currentCloudLet: string,
     isReady: boolean,
     isAppInstaceDataReady: boolean,
+    activeTabIndex:number,
 
 
 }
 
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
-    class PageMonitoring2 extends React.Component<Props, State> {
+    class PageMonitoring3 extends React.Component<Props, State> {
         state = {
             date: '',
             time: '',
@@ -124,6 +126,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clusterSelectBoxPlaceholder: 'Select cluster',
             currentCloudLet: '',
             isAppInstaceDataReady: false,
+            activeTabIndex:0,
         };
 
         intervalHandle = null;
@@ -468,230 +471,80 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        renderLoaderForEntrance() {
-            return (
-                <Grid.Row className='view_contents'>
-                    <Grid.Column className='contents_body'>
-                        {this.renderHeader()}
-                        <div style={{position: 'absolute', top: '25%', left: '42%'}}>
-                            {/*<CircularProgress style={{color: 'red'}}/>*/}
-                            <div style={{marginLeft: 0, display: 'flex', flexDirection: 'row'}}>
-                                <Lottie
-                                    options={{
-                                        loop: true,
-                                        autoplay: true,
-                                        animationData: require('../lotties/79-animated-graph'),
-                                        rendererSettings: {
-                                            preserveAspectRatio: 'xMidYMid slice'
-                                        }
-                                    }}
-                                    height={120}
-                                    width={120}
-                                    isStopped={false}
-                                    isPaused={false}
-                                />
-                            </div>
-                            {/*   <div style={{marginLeft: 55, fontSize: 50, color: 'white', marginTop: 10, height: 150}}>
-                                    {this.state.counter}
-                                </div>*/}
-                        </div>
-                    </Grid.Column>
-                </Grid.Row>
-            )
-        }
-
-        renderInfoBody() {
-            return (
-                <div className='page_monitoring_dashboard'>
-                    {/*_____row____1*/}
-                    {/*_____row____1*/}
-                    {/*_____row____1*/}
-                    <div className='page_monitoring_row'>
-                        {/* ___col___1*/}
-                        {/* ___col___1*/}
-                        {/* ___col___1*/}
-                        <div className='page_monitoring_column_kj'>
-                            <div className='page_monitoring_title_area'>
-                                <div className='page_monitoring_title'>
-                                    Status Of Launched App Instance
-                                </div>
-                            </div>
-                            <div className='page_monitoring_container'>
-                                {this.state.isAppInstaceDataReady ? renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet) : renderPlaceHolder()}
-                            </div>
-                        </div>
-                        {/* cpu___col___2*/}
-                        {/* cpu___col___2*/}
-                        {/* cpu___col___2*/}
-                        <div className='page_monitoring_column_kj'>
-                            <div className='page_monitoring_title_area'>
-                                <div className='page_monitoring_title'>
-                                    Perfomance Of App instance
-                                </div>
-                            </div>
-                            {/*todo:###########################***/}
-                            {/*todo:RENDER BubbleChart          */}
-                            {/*todo:###########################***/}
-                            <FlexBox>
-                                <div>
-                                    {this.state.isAppInstaceDataReady ? renderBubbleChart(this) : renderPlaceHolder2()}
-                                </div>
-                                <div style={{marginRight: 10,}}>
-                                    {/*todo:#########################################****/}
-                                    {/*todo: RENDER Donut Chart N App Status          */}
-                                    {/*todo:#########################################****/}
-                                    {renderPieChart2AndAppStatus(this.state.appInstanceOne, this)}
-                                </div>
-                            </FlexBox>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-            )
-        }
-
-        renderCpuBody() {
-            return (
-                <div className='page_monitoring_dashboard'>
-                    <div className='page_monitoring_row'>
-
-                        {/* ___col___1*/}
-                        {/* ___col___1*/}
-                        {/* ___col___1*/}
-                        <div className='page_monitoring_column_kj'>
-                            <div className='page_monitoring_title_area'>
-                                <div className='page_monitoring_title'>
-                                    Top 5 of CPU Usage
-                                </div>
-                            </div>
-                            <div className='page_monitoring_container'>
-                                {this.state.isReady ? renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
-                            </div>
-                        </div>
-                        {/* cpu___col___2*/}
-                        {/* cpu___col___2*/}
-                        {/* cpu___col___2*/}
-                        <div className='page_monitoring_column_kj'>
-                            <div className='page_monitoring_title_area'>
-                                <div className='page_monitoring_title'>
-                                    Transition Of CPU Usage
-                                </div>
-                            </div>
-                            <div className='page_monitoring_container'>
-                                {this.state.isReady ? renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            )
-        }
-
-        renderMemBody() {
-            return (
-                <div className='page_monitoring_dashboard'>
-                    <div className='page_monitoring_row'>
-
-                        {/* ___col___1*/}
-                        {/* ___col___1*/}
-                        {/* ___col___1*/}
-                        <div className='page_monitoring_column_kj'>
-                            <div className='page_monitoring_title_area'>
-                                <div className='page_monitoring_title'>
-                                    Top 5 of CPU Usage
-                                </div>
-                            </div>
-                            <div className='page_monitoring_container'>
-                                {this.state.isReady ? renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
-                            </div>
-                        </div>
-                        {/* cpu___col___2*/}
-                        {/* cpu___col___2*/}
-                        {/* cpu___col___2*/}
-                        <div className='page_monitoring_column_kj'>
-                            <div className='page_monitoring_title_area'>
-                                <div className='page_monitoring_title'>
-                                    Transition Of CPU Usage
-                                </div>
-                            </div>
-                            <div className='page_monitoring_container'>
-                                {this.state.isReady ? renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            )
-        }
-
-
-        tabs = [
-            {
-                menuItem: 'INFO', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderInfoBody()}
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'CPU', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderCpuBody()}
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'MEMORY', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderMemBody()}
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'NETWORK', render: () => {
-                    return (
-                        <Pane>
-                            <div>
-                                NETWORK
-                            </div>
-                            <div>
-                                NETWORK
-                            </div>
-                            <div>
-                                NETWORK
-                            </div>
-                            <div>
-                                NETWORK
-                            </div>
-                            <div>
-                                NETWORK
-                            </div>
-                            <div>
-                                NETWORK
-                            </div>
-
-                        </Pane>
-                    )
-                }
-            },
-        ]
 
         render() {
             //todo:####################################################################
             //todo: Components showing when the loading of graph data is not completed.
             //todo:####################################################################
             if (!this.state.isAppInstaceDataReady) {
-                return this.renderLoaderForEntrance();
+                return (
+                    <Grid.Row className='view_contents'>
+                        <Grid.Column className='contents_body'>
+                            {this.renderHeader()}
+                            <div style={{position: 'absolute', top: '25%', left: '42%'}}>
+                                {/*<CircularProgress style={{color: 'red'}}/>*/}
+                                <div style={{marginLeft: 0, display: 'flex', flexDirection: 'row'}}>
+                                    <Lottie
+                                        options={{
+                                            loop: true,
+                                            autoplay: true,
+                                            animationData: require('../lotties/79-animated-graph'),
+                                            rendererSettings: {
+                                                preserveAspectRatio: 'xMidYMid slice'
+                                            }
+                                        }}
+                                        height={120}
+                                        width={120}
+                                        isStopped={false}
+                                        isPaused={false}
+                                    />
+                                </div>
+                                {/*   <div style={{marginLeft: 55, fontSize: 50, color: 'white', marginTop: 10, height: 150}}>
+                                    {this.state.counter}
+                                </div>*/}
+                            </div>
+                        </Grid.Column>
+                    </Grid.Row>
+                )
             }
+
+            const panes = [
+                {
+                    menuItem: 'CPU', render: () => {
+                        return (
+                            <Pane>
+                                <div>
+                                    sdfsdlkflksfd
+                                </div>
+                                <div>
+                                    sdfsdlkflksfd
+                                </div>
+                                <div>
+                                    sdfsdlkflksfd
+                                </div>
+                                <div>
+                                    sdfsdlkflksfd
+                                </div>
+                            </Pane>
+                        )
+                    }
+                },
+                {
+                    menuItem: 'MEMORY', render: () => {
+                        return (
+                            <Pane>Tab 1 Content</Pane>
+                        )
+                    }
+                },
+                {
+                    menuItem: 'NETWORK', render: () => {
+                        return (
+                            <Pane>Tab 1 Content</Pane>
+                        )
+                    }
+                },
+            ]
+
 
             return (
 
@@ -719,7 +572,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         <div className='page_monitoring_dashboard'>
 
                                             <Tab
-                                                panes={this.tabs}
+                                                panes={panes}
                                                 /*activeIndex={this.state.activeTabIndex}
                                                 onTabChange={(e, {activeIndex}) => {
                                                     this.setState({

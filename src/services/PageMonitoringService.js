@@ -206,8 +206,8 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
 
     return (
         <Chart
-            width={window.innerWidth * 0.31}
-            height={250}
+            width={window.innerWidth * 0.5}
+            height={540}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -299,7 +299,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
     return (
         <div className="pieChart">
             <Chart
-                width={165}
+                width={200}
                 height={120}
 
                 chartType="PieChart"
@@ -359,7 +359,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
-            <FlexBox style={{
+          {/*  <FlexBox style={{
                 marginTop: 0,
                 color: 'white',
                 top: '65.5%',
@@ -371,7 +371,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                 justifyContent: 'center'
             }}>
                 {appInstanceOne.AppName.substring(0, 12)}
-            </FlexBox>
+            </FlexBox>*/}
             <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
                      style={{flexDirection: 'column', marginTop: 10, marginLeft: -3}}>
 
@@ -558,6 +558,182 @@ export const renderPlaceHolder2 = () => {
     )
 }
 
+export const renderCpuBody = (_this: PageMonitoring2) => {
+    return (
+        <div className='page_monitoring_dashboard'>
+            {/*_____row____1*/}
+            {/*_____row____1*/}
+            {/*_____row____1*/}
+            <div className='page_monitoring_row'>
+                {/* ___col___1*/}
+                {/* ___col___1*/}
+                {/* ___col___1*/}
+                <div className='page_monitoring_column_kj'>
+                    <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title'>
+                            Status Of Launched App Instance
+                        </div>
+                    </div>
+                    <div className='page_monitoring_container'>
+                        {_this.state.isAppInstaceDataReady ? renderInstanceOnCloudletGrid(_this.state.appInstanceListGroupByCloudlet) : renderPlaceHolder()}
+                    </div>
+                </div>
+                {/* cpu___col___2*/}
+                {/* cpu___col___2*/}
+                {/* cpu___col___2*/}
+                <div className='page_monitoring_column_kj'>
+                    <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title'>
+                            Perfomance Of App instance
+                        </div>
+                    </div>
+                    {/*todo:###########################***/}
+                    {/*todo:RENDER BubbleChart          */}
+                    {/*todo:###########################***/}
+                    <FlexBox>
+                        <div>
+                            {_this.state.isAppInstaceDataReady ? renderBubbleChart(_this) : renderPlaceHolder2()}
+                        </div>
+                        <div style={{marginRight: 10,}}>
+                            {/*todo:#########################################****/}
+                            {/*todo: RENDER Donut Chart N App Status          */}
+                            {/*todo:#########################################****/}
+                            {renderPieChart2AndAppStatus(_this.state.appInstanceOne, _this)}
+                        </div>
+                    </FlexBox>
+
+                </div>
+
+
+            </div>
+
+
+            {/*_____row______2*/}
+            {/*_____row______2*/}
+            {/*_____row______2*/}
+            <div className='page_monitoring_row'>
+
+                {/* ___col___3*/}
+                {/* ___col___3*/}
+                {/* ___col___3*/}
+                <div className='page_monitoring_column_kj'>
+                    <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title'>
+                            Top 5 of CPU Usage
+                        </div>
+                    </div>
+                    <div className='page_monitoring_container'>
+                        {_this.state.isReady ? renderBarGraphForCpuMem(_this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
+                    </div>
+                </div>
+                {/* cpu___col___4*/}
+                {/* cpu___col___4*/}
+                {/* cpu___col___4*/}
+                <div className='page_monitoring_column_kj'>
+                    <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title'>
+                            Transition Of CPU Usage
+                        </div>
+                    </div>
+                    <div className='page_monitoring_container'>
+                        {_this.state.isReady ? renderLineChart(_this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    )
+}
+
+export const  renderMemBody =(_this:PageMonitoring2)=> {
+    return (
+
+        <div className='page_monitoring_dashboard'>
+            {/*_____row____1*/}
+            {/*_____row____1*/}
+            {/*_____row____1*/}
+            <div className='page_monitoring_row'>
+                {/* ___col___1*/}
+                {/* ___col___1*/}
+                {/* ___col___1*/}
+                <div className='page_monitoring_column_kj'>
+                    <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title'>
+                            Status Of Launched App Instance
+                        </div>
+                    </div>
+                    <div className='page_monitoring_container'>
+                        {_this.state.isAppInstaceDataReady ? renderInstanceOnCloudletGrid(_this.state.appInstanceListGroupByCloudlet) : renderPlaceHolder()}
+                    </div>
+                </div>
+                {/* cpu___col___2*/}
+                {/* cpu___col___2*/}
+                {/* cpu___col___2*/}
+                <div className='page_monitoring_column_kj'>
+                    <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title'>
+                            Perfomance Of App instance
+                        </div>
+                    </div>
+                    {/*todo:###########################***/}
+                    {/*todo:RENDER BubbleChart          */}
+                    {/*todo:###########################***/}
+                    <FlexBox>
+                        <div>
+                            {_this.state.isAppInstaceDataReady ? renderBubbleChart(_this) : renderPlaceHolder2()}
+                        </div>
+                        <div style={{marginRight: 10,}}>
+                            {/*todo:#########################################****/}
+                            {/*todo: RENDER Donut Chart N App Status          */}
+                            {/*todo:#########################################****/}
+                            {renderPieChart2AndAppStatus(_this.state.appInstanceOne, _this)}
+                        </div>
+                    </FlexBox>
+
+                </div>
+
+
+
+            </div>
+
+
+            {/*_____row______2*/}
+            {/*_____row______2*/}
+            {/*_____row______2*/}
+            <div className='page_monitoring_row'>
+
+                {/* ___col___3*/}
+                {/* ___col___3*/}
+                {/* ___col___3*/}
+                <div className='page_monitoring_column_kj'>
+                    <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title'>
+                            Top 5 of MEM Usage
+                        </div>
+                    </div>
+                    <div className='page_monitoring_container'>
+                        {_this.state.isReady ? renderBarGraphForCpuMem(_this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
+                    </div>
+                </div>
+                {/* cpu___col___4*/}
+                {/* cpu___col___4*/}
+                {/* cpu___col___4*/}
+                <div className='page_monitoring_column_kj'>
+                    <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title'>
+                            Transition Of MEM Usage
+                        </div>
+                    </div>
+                    <div className='page_monitoring_container'>
+                        {_this.state.isReady ? renderLineChart(_this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    )
+}
+
 
 /**
  * @todo : app instance(COMPUTER engine) SPEC 더 낳은것이(큰것이) performanceValue 높다....
@@ -595,6 +771,7 @@ export const filterAppInstOnCloudlet = (CloudLetOneList: Array, pCluster: string
     return filteredAppInstOnCloudlet;
 }
 
+
 /**
  * todo: @weknow/react-bubble-chart-d3로 버블차트를 그린다..
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
@@ -628,12 +805,12 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 <BubbleChart
                     className={'bubbleChart'}
                     graph={{
-                        zoom: appInstanceList.length <= 4 ? 0.60 : 0.75,
+                        zoom: 0.80,
                         offsetX: 0.10,
-                        offsetY: appInstanceList.length <= 4 ? 0.05 : -0.02,
+                        offsetY: 0.07,
                     }}
-                    width={355}
-                    height={243}
+                    width={560}
+                    height={550}
                     padding={0} // optional value, number that set the padding between bubbles
                     showLegend={false} // optional value, pass false to disable the legend.
                     legendPercentage={30} // number that represent the % of with that legend going to use.
@@ -766,7 +943,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
 
     console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsage);
 
-    let width = window.innerWidth * 0.255
+    let width = window.innerWidth * 0.40
     let height = 500 + 50;
 
     let options = {
@@ -864,7 +1041,7 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
                                 color: '#fff',
                                 marginTop: 10,
                             }}>
-                                {item.name.toString().substring(0, 19) + "..."}
+                                {item.name}
                             </FlexBox>
                             <FlexBox style={{
                                 marginTop: 0,
