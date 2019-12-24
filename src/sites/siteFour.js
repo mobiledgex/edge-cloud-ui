@@ -35,7 +35,9 @@ import SiteFourPageApps from './siteFour_page_apps';
 import SiteFourPageAppInst from './siteFour_page_appinst';
 import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
+import SiteFourPageCloudletPool from './siteFour_page_cloudletPool';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
+import SiteFourPageCloudletPoolReg from './siteFour_page_cloudletPoolReg';
 import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
@@ -54,7 +56,8 @@ import Alert from 'react-s-alert';
 
 import '../css/introjs.css';
 import '../css/introjs-dark.css';
-import PageMonitoring from "../TEMP_KYUNGJOOON_FOR_TEST/Pages/PageMonitoring_________BACKUP";
+//import PageMonitoring from "../TEMP_KYUNGJOOON_FOR_TEST/Pages/PageMonitoring_________BACKUP";
+//import PageMonitoring from "./PageMonitoring";
 import SiteFourPageMonitoring from "./siteFour_page_monitoring";
 import PageMonitoring2 from "./PageMonitoring2";
 
@@ -159,16 +162,14 @@ class SiteFour extends React.Component {
             {label: 'Accounts', icon: 'dvr', pg: 101}
         ]
         this.menuItems = [
-            {label:'Cloudlets', icon:'cloud_queue', pg:2},
-            {label:'Cloudlet Pool', icon:'pool', pg:7},
-            {label:'Flavors', icon:'free_breakfast', pg:3},
-            {label:'Cluster Instances', icon:'storage', pg:4},
-            {label:'Apps', icon:'apps', pg:5},
-            {label:'App Instances', icon:'storage', pg:6},
-            {label:'Audit Log', icon:'check', pg:'audits'},
-            {label: 'Monitoring_REAL', icon: 'graphic_eq', pg: 'Monitoring2'},
-            {label: 'Monitoring_TEST', icon: 'tv', pg: 'Monitoring'},//@fixme : for test(It will be deleted later.)
-
+            {label: 'Cloudlets', icon: 'cloud_queue', pg: 2},
+            {label: 'Cloudlet Pool', icon: 'pool', pg: 7},
+            {label: 'Flavors', icon: 'free_breakfast', pg: 3},
+            {label: 'Cluster Instances', icon: 'storage', pg: 4},
+            {label: 'Apps', icon: 'apps', pg: 5},
+            {label: 'App Instances', icon: 'storage', pg: 6},
+            {label: 'Audit Log', icon: 'check', pg: 'audits'},
+            {label: 'Monitoring', icon: 'graphic_eq', pg: 'Monitoring2'},
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
@@ -274,8 +275,8 @@ class SiteFour extends React.Component {
         } else if (localStorage.selectMenu === 'Cluster Instances') {
             this.setState({page: 'pg=createClusterInst'})
             this.gotoUrl('/site4', 'pg=createClusterInst')
-        } else if(localStorage.selectMenu === 'Cloudlet Pool') {
-            this.setState({page:'pg=createCloudletPool'})
+        } else if (localStorage.selectMenu === 'Cloudlet Pool') {
+            this.setState({page: 'pg=createCloudletPool'})
             this.gotoUrl('/site4', 'pg=createCloudletPool')
         } else {
             this.props.handleInjectDeveloper('newRegist');
@@ -685,6 +686,13 @@ class SiteFour extends React.Component {
             this.setState({intoCity: false})
         }
 
+        //set category
+        if (nextProps.detailData !== this.props.detailData) {
+            // alert(JSON.stringify(nextProps.detailData))
+            this.setState({detailData: nextProps.detailData})
+        }
+
+
     }
 
     componentDidUpdate() {
@@ -929,6 +937,13 @@ class SiteFour extends React.Component {
                                         data: null,
                                         viewMode: 'listView'
                                     })}>Close Details</Button>
+                                    <div>
+                                        {this.state.detailData.Region + " > "}
+                                        {(this.state.headerTitle === "Cloudlets") ? this.state.detailData.CloudletName : null}
+                                        {(this.state.headerTitle === 'Cluster Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterName : null}
+                                        {(this.state.headerTitle === 'App Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterInst + " > " + this.state.detailData.AppName : null}
+
+                                    </div>
                                 </Grid.Column>
                                 : null
                         }
@@ -1007,32 +1022,36 @@ class SiteFour extends React.Component {
                                                                 <SiteFourPageApps></SiteFourPageApps> :
                                                                 (this.state.page === 'pg=6') ?
                                                                     <SiteFourPageAppInst></SiteFourPageAppInst> :
-                                                                    (this.state.page === 'pg=newOrg') ?
-                                                                        <SiteFourPageCreateorga></SiteFourPageCreateorga> :
-                                                                        (this.state.page === 'pg=createApp') ?
-                                                                            <SiteFourPageAppReg
-                                                                                editable={false}></SiteFourPageAppReg> :
-                                                                            (this.state.page === 'pg=editApp') ?
+                                                                    (this.state.page === 'pg=7') ?
+                                                                        <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
+                                                                        (this.state.page === 'pg=newOrg') ?
+                                                                            <SiteFourPageCreateorga></SiteFourPageCreateorga> :
+                                                                            (this.state.page === 'pg=createApp') ?
                                                                                 <SiteFourPageAppReg
-                                                                                    editable={true}></SiteFourPageAppReg> :
-                                                                                (this.state.page === 'pg=createAppInst') ?
-                                                                                    <SiteFourPageAppInstReg
-                                                                                        editable={false}></SiteFourPageAppInstReg> :
-                                                                                    (this.state.page === 'pg=editAppInst') ?
+                                                                                    editable={false}></SiteFourPageAppReg> :
+                                                                                (this.state.page === 'pg=editApp') ?
+                                                                                    <SiteFourPageAppReg
+                                                                                        editable={true}></SiteFourPageAppReg> :
+                                                                                    (this.state.page === 'pg=createAppInst') ?
                                                                                         <SiteFourPageAppInstReg
-                                                                                            editable={true}></SiteFourPageAppInstReg> :
-                                                                                        (this.state.page === 'pg=createClusterInst') ?
-                                                                                            <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
-                                                                                            (this.state.page === 'pg=createCloudlet') ?
-                                                                                                <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
-                                                                                                (this.state.page === 'pg=createFlavor') ?
-                                                                                                    <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
-                                                                                                    (this.state.page === 'pg=audits') ?
-                                                                                                        <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                        (this.state.page === 'pg=Monitoring2') ?
-                                                                                                            <SiteFourPageMonitoring></SiteFourPageMonitoring> :
+                                                                                            editable={false}></SiteFourPageAppInstReg> :
+                                                                                        (this.state.page === 'pg=createCloudletPool') ?
+                                                                                            <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                            (this.state.page === 'pg=editAppInst') ?
+                                                                                                <SiteFourPageAppInstReg
+                                                                                                    editable={true}></SiteFourPageAppInstReg> :
+                                                                                                (this.state.page === 'pg=createClusterInst') ?
+                                                                                                    <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
+                                                                                                    (this.state.page === 'pg=createCloudlet') ?
+                                                                                                        <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
+                                                                                                        (this.state.page === 'pg=createFlavor') ?
+                                                                                                            <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
+                                                                                                            (this.state.page === 'pg=audits') ?
+                                                                                                                <SiteFourPageAudits></SiteFourPageAudits> :
+                                                                                                                (this.state.page === 'pg=Monitoring2') ?
+                                                                                                                    <SiteFourPageMonitoring></SiteFourPageMonitoring> :
 
-                                                                                                        <div></div>
+                                                                                                                    <div></div>
                                 }
                             </div>
                         </Grid.Column>
@@ -1242,11 +1261,9 @@ class SiteFour extends React.Component {
                 {/*#############################*/}
                 <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
                     {/*모니터링 페이지인 경우...*/}
-                    {this.state.page === 'pg=Monitoring' ?
-                        <PageMonitoring/> :
-                        (this.state.page === 'pg=Monitoring2') ?
-                            <PageMonitoring2></PageMonitoring2> :
-                            this.renderSiteBody(viewMode)
+                    {(this.state.page === 'pg=Monitoring2') ?
+                        <PageMonitoring2/> :
+                        this.renderSiteBody(viewMode)
 
                     }
                 </Container>

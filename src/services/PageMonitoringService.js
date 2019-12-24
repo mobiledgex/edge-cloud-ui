@@ -1,7 +1,6 @@
 import React from 'react';
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Plot from "../../node_modules/react-plotly.js/react-plotly";
 import axios from "axios";
 import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
@@ -12,9 +11,177 @@ import {Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
 import BubbleChart from "@weknow/react-bubble-chart-d3";
-import {notification} from "antd";
 import PageMonitoring2 from "../sites/PageMonitoring2";
 import type {TypeAppInstance} from "../shared/Types";
+
+
+/**
+ * todo: 클라우드렛위에 올라와 있는 인스턴스 리스트를 flitering by pCloudlet.
+ * @param appInstanceListGroupByCloudlet
+ * @param pCloudLet
+ * @returns {[]}
+ */
+export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet, pCloudLet) => {
+    let filterInstanceCountOnCloutLetOne = [];
+    for (let [key, value] of Object.entries(appInstanceListGroupByCloudlet)) {
+        if (key === pCloudLet) {
+            filterInstanceCountOnCloutLetOne.push(value)
+            break;
+        }
+    }
+    return filterInstanceCountOnCloutLetOne;
+}
+
+/**
+ * @fixme : 리펙토링 필요 (below method와 함꼐 merge)
+ * @todo: 그래프 데이터를 필터링 BY Cloudlet
+ * @param cpuOrMemUsageList
+ * @param pCloudLet
+ * @returns {*}
+ */
+export const filterCpuOrMemUsageByCloudLet = (cpuOrMemUsageList, pCloudLet) => {
+
+    let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
+        if (item.instance.Cloudlet === pCloudLet) {
+            return item;
+        }
+    });
+    return filteredCpuOrMemUsageList
+}
+
+/**
+ * @fixme : 리펙토링 필요
+ * @todo: 그래프 데이터를 clusterinst에 맞게 필터링
+ * @param cpuOrMemUsageList
+ * @param pCluster
+ * @returns {*}
+ */
+export const filterCpuOrMemUsageByCluster = (cpuOrMemUsageList, pCluster) => {
+    let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
+        if (item.instance.ClusterInst === pCluster) {
+            return item;
+        }
+    });
+    return filteredCpuOrMemUsageList
+}
+
+
+/**
+ * todo: Fliter app instace list by cloudlet Value
+ * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
+ * * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
+ * * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
+ * @param appInstanceList
+ * @param pCloudLet
+ * @returns {[]}
+ */
+export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '') => {
+
+    let instanceListFilteredByCloudlet = []
+    appInstanceList.map(item => {
+        if (item.Cloudlet === pCloudLet) {
+            instanceListFilteredByCloudlet.push(item);
+        }
+    })
+    return instanceListFilteredByCloudlet;
+}
+
+
+/**
+ * todo: Filter Instance List by clusterInst value
+ * @param appInstanceList
+ * @param pCluster
+ * @returns {[]}
+ */
+export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '') => {
+    let instanceListFilteredByClusterInst = []
+    appInstanceList.map(item => {
+        if (item.ClusterInst === pCluster) {
+            instanceListFilteredByClusterInst.push(item);
+        }
+    })
+
+    return instanceListFilteredByClusterInst;
+}
+
+
+/**
+ * @todo: arrayList에서 중복값을 제거.
+ * @todo: Remove duplicates from an array.
+ * @param names
+ * @returns {string[]}
+ */
+function removeDups(names) {
+    let unique = {};
+    names.forEach(function (i) {
+        if (!unique[i]) {
+            unique[i] = true;
+        }
+    });
+    return Object.keys(unique);
+}
+
+/**
+ * @todo 클러스트 리스트 셀렉트 박스 형태의 리스트를 만들어준다..
+ * @param appInstanceList
+ * @param pCloudLet
+ * @returns {[]}
+ */
+export const makeClusterListSelectBox = (appInstanceList: Array, pCloudLet) => {
+
+    let instanceListFilteredByCloudLet = []
+    appInstanceList.map(item => {
+        if (item.Cloudlet === pCloudLet) {
+            instanceListFilteredByCloudLet.push(item);
+        }
+    })
+
+    let filteredClusterList = []
+    instanceListFilteredByCloudLet.map(item => {
+        filteredClusterList.push(item.ClusterInst)
+    })
+
+
+    let uniqueClusterList = removeDups(filteredClusterList);
+    let clusterSelectBoxData = []
+    uniqueClusterList.map(item => {
+        let selectOne = {
+            value: item,
+            text: item,
+        }
+        clusterSelectBoxData.push(selectOne);
+    })
+
+    return clusterSelectBoxData;
+}
+
+/**
+ * @todo : 클러스터렛 리스트를 셀렉트 박스 형태로 가공
+ * @todo : Process clusterlet list into select box
+ * @param appInstanceList
+ * @returns {[]}
+ */
+export const makeCloudletListSelectBox = (appInstanceList: Array) => {
+    let cloudletList = []
+    appInstanceList.map(item => {
+        cloudletList.push(item.Cloudlet)
+    })
+    //@todo Deduplication
+    let uniquedCloudletList = cloudletList.filter(function (item, pos) {
+        return cloudletList.indexOf(item) == pos;
+    })
+
+    let cloudletListForSelectbox = []
+    uniquedCloudletList.map(item => {
+        let selectOne = {
+            value: item,
+            text: item,
+        }
+        cloudletListForSelectbox.push(selectOne);
+    })
+
+    return cloudletListForSelectbox;
+}
 
 
 /**
@@ -24,19 +191,18 @@ import type {TypeAppInstance} from "../shared/Types";
  * @param hardwareType
  * @returns {*}
  */
-export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
-
-    console.log('cpuUsageList===>', usageList);
+export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
 
     let chartDataList = [];
     chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}])
-    //for (let index in cpuUsageList) {
-    for (let index = 0; index < 5; index++) {
-        let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...", hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, CHART_COLOR_LIST[index]]
-        chartDataList.push(barDataOne);
-    }
+    for (let index = 0; index < usageList.length; index++) {
 
-    let _height = window.innerHeight * 0.33 + 50
+        if (index < 5) {
+            let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...", hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, CHART_COLOR_LIST[index]]
+            chartDataList.push(barDataOne);
+        }
+
+    }
 
     let boxWidth = (window.innerWidth-340)/3 - 22;
 
@@ -263,9 +429,6 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
 /**
  * @todo: toChunkArray for TopLeftGrid
  * @todo: toChunkArray for TopLeftGrid
- * @todo: toChunkArray for TopLeftGrid
- * @todo: toChunkArray for TopLeftGrid
- * @todo: toChunkArray for TopLeftGrid
  * @param myArray
  * @param chunkSize
  * @returns {Array}
@@ -309,6 +472,10 @@ export const renderPlaceHolder = () => {
 }
 
 
+/**
+ * @todo: 로딩이 완료 되기전에 placeholder2를 보여준다..
+ * @returns {*}
+ */
 export const renderPlaceHolder2 = () => {
     let boxWidth = window.innerWidth * 0.3;
     // let boxWidth = window.innerWidth / 10 * 3.55;
@@ -338,37 +505,63 @@ export const renderPlaceHolder2 = () => {
 
 
 /**
+ * @todo : app instance(COMPUTER engine) SPEC 더 낳은것이(큰것이) performanceValue 높다....
+ * @param flavor
+ * @returns {number}
+ */
+export const instanceFlavorToPerformanceValue = (flavor: string) => {
+    let performanceValue = 0;
+    if (flavor === 'm4.medium') {
+        performanceValue = 1
+    } else if (flavor === 'x1.medium') {
+        performanceValue = 2
+    } else if (flavor === 'x1.large') {
+        performanceValue = 3
+    } else {
+        performanceValue = 0
+    }
+    return performanceValue;
+}
+
+
+/**
+ * @todo: LeftTop의 클라우듯렛웨에 올라가는 인스턴스 리스트를 필터링 처리하는 로직.
+ * @param CloudLetOneList
+ * @returns {[]}
+ */
+export const filterAppInstOnCloudlet = (CloudLetOneList: Array, pCluster: string) => {
+
+    let filteredAppInstOnCloudlet = []
+    CloudLetOneList.map(item => {
+        if (item.ClusterInst === pCluster) {
+            filteredAppInstOnCloudlet.push(item);
+        }
+    })
+    return filteredAppInstOnCloudlet;
+}
+
+/**
  * todo: @weknow/react-bubble-chart-d3로 버블차트를 그린다..
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
  * @returns {*}
  */
 export const renderBubbleChart = (_this: PageMonitoring2) => {
-
-    /*[
-        {label: 'app1', value: 1},
-        {label: 'app2', value: 5},
-        {label: 'app3', value: 12},
-        {label: 'app4', value: 3},
-        {label: 'app5', value: 12},
-        {label: 'app6', value: 3},
-        {label: 'app7', value: 12},
-        {label: 'app8', value: 3},
-        {label: 'app9', value: 3},
-        {label: 'app10', value: 3},
-        {label: 'app11', value: 3},
-
-    ]*/
-
     let appInstanceList = _this.state.appInstanceList
+
+
+    console.log('appInstanceList2222====>', appInstanceList)
 
     let chartData = [];
     appInstanceList.map((item: TypeAppInstance) => {
+
+        console.log('Flavor222====>', item.Flavor);
         chartData.push({
-            appName: item.AppName,
+            //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
             label: item.AppName.toString().substring(0, 10) + "...",
-            value: item.State,
+            value: instanceFlavorToPerformanceValue(item.Flavor),
         })
     })
+
 
 
     let boxWidth = (window.innerWidth-340)/3 - 22
@@ -386,13 +579,13 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     graph={{
                         zoom: appInstanceList.length <= 4 ? 0.60 : 0.75,
                         offsetX: 0.10,
-                        offsetY: appInstanceList.length <= 4 ? 0.05 : -0.05,
+                        offsetY: appInstanceList.length <= 4 ? 0.05 : -0.02,
                     }}
                     width={boxWidth}
                     height={250}
                     padding={0} // optional value, number that set the padding between bubbles
                     showLegend={false} // optional value, pass false to disable the legend.
-                    legendPercentage={20} // number that represent the % of with that legend going to use.
+                    legendPercentage={30} // number that represent the % of with that legend going to use.
                     legendFont={{
                         family: 'Arial',
                         size: 9,
@@ -413,11 +606,12 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
                     bubbleClickFun={(label) => {
-
+                        /*
                         notification.success({
-                            duration: 0.5,
-                            message: label,
-                        });
+                              duration: 0.5,
+                              message: label,
+                          });
+                        */
                         _this.setAppInstanceOne(label);
                     }}
                     //legendClickFun={this.legendClick.bind(this)}
@@ -433,13 +627,14 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
 
 /**
  * @TODO: react_chartjs를 이용해서 라인 차트를 랜더링.
+ * @desc : React wrapper for Chart.js 2 Open for PRs and contributions!
+ * @desc : https://github.com/jerairrest/react-chartjs-2
  * @param cpuUsageListPerInstanceSortByUsage
  * @param hardwareType
  * @returns {*}
  */
-export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
+export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
     console.log('itemeLength===>', cpuUsageListPerInstanceSortByUsage);
-
 
     let instanceAppName = ''
     let instanceNameList = [];
@@ -579,6 +774,7 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
 
 
 /**
+<<<<<<< HEAD
  * @todo: PlotJS를 이용해서 라인차트를 랜더링
  * @returns {*}
  */
@@ -680,6 +876,8 @@ export const renderLineGraph_Plot = () => {
 
 
 /**
+=======
+>>>>>>> devMaster
  * @TODO: 모니터링Page 좌측 상단에 클라우드렛에 올라가있는 인스턴스 갯수를 랜더링...
  * @desc: Render the number of instances on the cloudlet at the top left of the monitoring page ...
  * @param appInstanceListSortByCloudlet
@@ -782,6 +980,12 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
 }
 
 
+/**
+ * @todo: 앱의 인스턴스 리스트를 리전에 맞게 필터링처리..
+ * @param pRegion
+ * @param appInstanceList
+ * @returns {TypeAppInstance[]|Array<TypeAppInstance>}
+ */
 export const filterAppInstanceListByRegion = (pRegion: string, appInstanceList: Array<TypeAppInstance>) => {
     if (pRegion === REGION.ALL) {
         return appInstanceList;
@@ -795,6 +999,27 @@ export const filterAppInstanceListByRegion = (pRegion: string, appInstanceList: 
     }
 }
 
+/**
+ * @todo: Cpu/Mem 사용량을 리전별로 필터링
+ * @param pRegion
+ * @param memOrCpuUsageList
+ * @returns {*}
+ */
+export const filterCpuOrMemUsageListByRegion = (pRegion: string, memOrCpuUsageList) => {
+    if (pRegion === REGION.ALL) {
+        return memOrCpuUsageList;
+    } else {
+        let filteredUsageListByRegion = memOrCpuUsageList.filter((item) => {
+            if (item.instance.Region === pRegion) {
+                return item;
+            }
+        });
+        return filteredUsageListByRegion;
+    }
+
+
+}
+
 
 /**
  * @todo 현재 선택된 지역의 인스턴스 리스트를 가지고 온다...
@@ -802,7 +1027,7 @@ export const filterAppInstanceListByRegion = (pRegion: string, appInstanceList: 
  * @param paramRegionArrayList
  * @returns {Promise<[]>}
  */
-export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'US']): Array<TypeAppInstance> => {
+export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'US']) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let finalizedAppInstanceList = [];
     for (let index = 0; index < paramRegionArrayList.length; index++) {
@@ -1082,6 +1307,104 @@ export const renderLineChart2 = () => {
 
                 },
 
+            }}
+        />
+    )
+}
+*/
+
+/*
+
+export const renderLineGraph_Plot = () => {
+    let boxWidth = window.innerWidth / 10 * 2.8;
+
+    return (
+        <Plot
+            style={{
+                //backgroundColor: 'transparent',
+                backgroundColor: 'black',
+                overflow: 'hidden',
+                color: 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+                alignSelf: 'center',
+                marginTop: -25
+
+            }}
+            data={
+                [
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [10, 15, 13, 17],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [16, 5, 11, 9],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [4, 3, 13, 19],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [5, 4, 7, 29],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [5, 5, 6, 9],
+                        type: 'scatter'
+                    },
+
+                ]
+
+            }
+            layout={{
+                height: 360,
+                width: boxWidth,
+                margin: {
+                    l: 50,
+                    r: 15,
+                    b: 35,
+                    t: 30,
+                    pad: 0
+                },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                color: 'white',
+                xaxis: {
+                    showgrid: false,
+                    zeroline: true,
+                    showline: true,
+                    mirror: 'ticks',
+                    gridcolor: 'rgba(255,255,255,.05)',
+                    gridwidth: 1,
+                    zerolinecolor: 'rgba(255,255,255,0)',
+                    zerolinewidth: 1,
+                    linecolor: 'rgba(255,255,255,.2)',
+                    linewidth: 1,
+                    color: 'rgba(255,255,255,.4)',
+                    domain: [0, 0.94]
+                },
+                yaxis: {
+                    showgrid: true,
+                    zeroline: false,
+                    showline: true,
+                    mirror: 'ticks',
+                    ticklen: 5,
+                    tickcolor: 'rgba(0,0,0,0)',
+                    gridcolor: 'rgba(255,255,255,.05)',
+                    gridwidth: 1,
+                    zerolinecolor: 'rgba(255,255,255,0)',
+                    zerolinewidth: 1,
+                    linecolor: 'rgba(255,255,255,.2)',
+                    linewidth: 1,
+                    color: 'rgba(255,255,255,.4)',
+                    //rangemode: 'tozero'
+                },
             }}
         />
     )

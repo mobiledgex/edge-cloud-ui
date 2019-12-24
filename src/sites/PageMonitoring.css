@@ -3,6 +3,10 @@
     color: whitesmoke;
 }
 
+.ui.selection.dropdown > .dropdown.icon::after {
+    border-color: #24ffec;
+}
+
 
 .center001 {
     justify-content: center;
