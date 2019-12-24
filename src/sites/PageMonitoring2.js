@@ -165,10 +165,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
             //todo: REALDATA
-            let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
+            //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
             //todo: FAKEJSON FOR TEST
-            //let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
+            let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({appInstanceOne: item,});
@@ -189,10 +189,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            /*   let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
-               let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
-               let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-               console.log('_result===>', cpuOrMemUsageList);*/
+         /*   let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
+            let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
+            let memUsageListPerOneInstance = cpuOrMemUsageList[1]
+            console.log('_result===>', cpuOrMemUsageList);*/
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
@@ -627,7 +627,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-
         tabs = [
             {
                 menuItem: 'INFO', render: () => {
@@ -669,20 +668,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <div>
                                 NETWORK
                             </div>
-                            <div>
-                                NETWORK
-                            </div>
-                            <div>
-                                NETWORK
-                            </div>
-                            <div>
-                                NETWORK
-                            </div>
-
                         </Pane>
                     )
                 }
             },
+
+            {
+                menuItem: 'DISK/IO', render: () => {
+                    return (
+                        <Pane>
+                            <div>
+                                DISK_IO
+                            </div>
+                            <div>
+                                DISK_IO
+                            </div>
+                            <div>
+                                DISK_IO
+                            </div>
+                        </Pane>
+                    )
+                }
+            },
+
         ]
 
         render() {
@@ -720,12 +728,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                             <Tab
                                                 panes={this.tabs}
-                                                /*activeIndex={this.state.activeTabIndex}
+                                                activeIndex={this.state.activeTabIndex}
                                                 onTabChange={(e, {activeIndex}) => {
                                                     this.setState({
                                                         activeTabIndex:activeIndex,
                                                     })
-                                                }}*/
+                                                }}
                                             />
                                         </div>
                                     </div>

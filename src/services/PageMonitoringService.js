@@ -6,7 +6,13 @@ import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
 import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
-import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
+import {
+    BORDER_CHART_COLOR_LIST,
+    CHART_COLOR_LIST,
+    HARDWARE_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGION
+} from "../shared/Constants";
 import {Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
@@ -828,7 +834,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     }}
                     labelFont={{
                         //family: 'Arial',
-                        size: 8,
+                        size: 12,
                         color: 'black',
                         weight: 'bold',
                     }}
@@ -884,7 +890,11 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
             }
 
             usageList.push(usageOne);
-            dateTimeList.push(seriesValues[j]["0"]);
+            let dateOne = seriesValues[j]["0"];
+            let arraySplitDate=dateOne.toString().split("T")
+            dateTimeList.push(arraySplitDate[1]);
+
+
         }
 
         instanceNameList.push(instanceAppName)
@@ -899,24 +909,26 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
         if (i < 5) {
             let datasetsOne = {
                 label: instanceNameList[i],
-                fill: false,
+                fill: true,
                 lineTension: 0.1,
-                backgroundColor: CHART_COLOR_LIST[i],
-                borderColor: CHART_COLOR_LIST[i],
+                backgroundColor: hardwareType ===HARDWARE_TYPE.MEM ? 'transparent' :CHART_COLOR_LIST[i],
+                borderColor: BORDER_CHART_COLOR_LIST[i],
                 borderCapStyle: 'butt',
                 borderDash: [],
                 borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
-                pointBorderColor: 'rgba(75,192,192,1)',
+                pointBorderColor: 'rgba(220,220,220,1)',
                 pointBackgroundColor: '#fff',
                 pointBorderWidth: 1,
                 pointHoverRadius: 5,
-                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                pointHoverBackgroundColor: 'rgba(220,220,220,1)',
                 pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointHoverBorderWidth: 2,
                 pointRadius: 1,
                 pointHitRadius: 10,
                 data: cpuUsageSetList[i],
+                /*fillColor: "#FF1717",
+                pointColor: "#da3e2f",*/
             }
 
             finalSeriesDataSets.push(datasetsOne)
@@ -947,6 +959,8 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
     let height = 500 + 50;
 
     let options = {
+        bezierCurve: true,
+        datasetFill: true,
         maintainAspectRatio: false,
         responsive: true,
         layout: {

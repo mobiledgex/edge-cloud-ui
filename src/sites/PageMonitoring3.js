@@ -126,7 +126,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clusterSelectBoxPlaceholder: 'Select cluster',
             currentCloudLet: '',
             isAppInstaceDataReady: false,
-            activeTabIndex:0,
+            activeTabIndex:1,
         };
 
         intervalHandle = null;
