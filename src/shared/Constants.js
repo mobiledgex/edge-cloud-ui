@@ -7,12 +7,12 @@ export const HARDWARE_TYPE = {
     MEM: "mem",
 
 }
+//rgb(255,0,10)
 
+export const BORDER_CHART_COLOR_LIST = ["rgb(255,0,10)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
+export const CHART_COLOR_LIST = ["rgb(255,0,10)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
 
-export const BORDER_CHART_COLOR_LIST = ["red", "blue", "green", "yellow", "maroon"]
-export const CHART_COLOR_LIST = ["rgb(255, 74, 74)", "rgb(28,34,255)", "rgb(30,135,0)", "rgb(217,255,79)", "rgb(155,63,255)"]
-
-export const CHART_COLOR_LIST2 = ["rgba(255, 74, 74, 0.25)", "rgba(68,197,255,0.25)", "rgba(19,255,69,0.25)", "rgba(217,255,79,0.25)", "rgba(155,63,255,0.25)"]
+export const CHART_COLOR_LIST2 = ["rgba(255, 0, 10, 0.25)", "rgba(255,94,29,0.25)", "rgba(227,220,57,0.25)", "rgba(18,135,2,0.25)", "rgba(28,34,255,0.25)"]
 
 export const GRAPH_HEIGHT = 300
 

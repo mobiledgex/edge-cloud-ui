@@ -601,7 +601,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div className='page_monitoring_column_kj'>
                             <div className='page_monitoring_title_area'>
                                 <div className='page_monitoring_title'>
-                                    Top 5 of CPU Usage
+                                    Top 5 of MEM Usage
                                 </div>
                             </div>
                             <div className='page_monitoring_container'>
@@ -614,7 +614,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div className='page_monitoring_column_kj'>
                             <div className='page_monitoring_title_area'>
                                 <div className='page_monitoring_title'>
-                                    Transition Of CPU Usage
+                                    Transition Of MEM Usage
                                 </div>
                             </div>
                             <div className='page_monitoring_container'>

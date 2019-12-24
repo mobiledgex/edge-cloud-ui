@@ -200,11 +200,16 @@ export const makeCloudletListSelectBox = (appInstanceList: Array) => {
 export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
 
     let chartDataList = [];
-    chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}])
+    chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
     for (let index = 0; index < usageList.length; index++) {
 
         if (index < 5) {
-            let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...", hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, CHART_COLOR_LIST[index]]
+            let barDataOne = [
+                usageList[index].instance.AppName.toString().substring(0, 10) + "...",
+                hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage,
+                CHART_COLOR_LIST[index],
+                hardwareType === 'cpu' ? usageList[index].sumCpuUsage.toFixed(2) + "%" : usageList[index].sumMemUsage.toFixed(0) + " Byte",
+            ]
             chartDataList.push(barDataOne);
         }
 
@@ -212,7 +217,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
 
     return (
         <Chart
-            width={window.innerWidth * 0.5}
+            width={window.innerWidth * 0.48}
             height={540}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
@@ -229,10 +234,21 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                     italic: <boolean>   // true of false*/
                 },
                 titlePosition: 'out',
-                chartArea: {left: 100, right: 150, top: 20, width: "50%", height: "80%"},
+                chartArea: {
+                    left: 100,
+                    right: 150,
+                    top: 20,
+                    width: "50%",
+                    height: "80%",
+                    backgroundColor: {
+                      //  'fill': '#F4F4F4',
+                        'opacity': 100
+                    },
+                },
                 legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
-                //xc춧
+                //xAxis
                 hAxis: {
+                    textPosition: 'none',//HIDE xAxis
                     title: '',
                     titleTextStyle: {
                         //fontName: "Times",
@@ -245,7 +261,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                         color: "white"
                     },
                     gridlines: {
-                        color: "grey"
+                        color: "transparent"
                     },
                     format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '#\' byte\'',
                     baselineColor: 'grey',
@@ -255,13 +271,13 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                 vAxis: {
                     title: '',
                     titleTextStyle: {
-                        fontSize: 12,
+                        fontSize: 14,
                         fontStyle: "normal",
                         color: 'white'
                     },
                     textStyle: {
                         color: "white",
-                        fontSize: 12,
+                        fontSize: 15,
                     },
 
                 },
@@ -269,6 +285,11 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                 fontColor: 'white',
                 backgroundColor: {
                     fill: 'black'
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'out',
+                    startup: true
                 }
                 //colors: ['green']
             }}
@@ -305,7 +326,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
     return (
         <div className="pieChart">
             <Chart
-                width={200}
+                width={260}
                 height={120}
 
                 chartType="PieChart"
@@ -365,7 +386,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
-          {/*  <FlexBox style={{
+            {/*  <FlexBox style={{
                 marginTop: 0,
                 color: 'white',
                 top: '65.5%',
@@ -385,7 +406,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                 {/*todo: disk usage 표시 부분*/}
                 {/*<div style={{color: 'white', textAlign: 'center', }}>900/1000MB</div>*/}
 
-                <div style={{color: 'white', textAlign: 'center', fontSize: 12}}>{appInstanceOne.AppName}</div>
+                <div style={{color: 'white', textAlign: 'center', fontSize: 19}}>{appInstanceOne.AppName}</div>
 
                 {/*__row__1*/}
                 <FlexBox style={{marginTop: 15, height: 21,}}>
@@ -394,7 +415,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'black',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 10
+                        fontSize: 15
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
                     </FlexBox>
@@ -403,7 +424,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'grey',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 10
+                        fontSize: 15
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
                     </FlexBox>
@@ -416,7 +437,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'black',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 10
+                        fontSize: 15
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
                     </FlexBox>
@@ -425,7 +446,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'grey',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 10
+                        fontSize: 15
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
                     </FlexBox>
@@ -438,7 +459,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'black',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 10
+                        fontSize: 15
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Regions</div>
                     </FlexBox>
@@ -447,7 +468,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'grey',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 10
+                        fontSize: 15
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
                             {appInstanceOne.Region}
@@ -462,7 +483,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'black',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 10
+                        fontSize: 15
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
                     </FlexBox>
@@ -471,7 +492,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'grey',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 10
+                        fontSize: 15
                     }}>
                         <div
                             style={{
@@ -651,7 +672,7 @@ export const renderCpuBody = (_this: PageMonitoring2) => {
     )
 }
 
-export const  renderMemBody =(_this:PageMonitoring2)=> {
+export const renderMemBody = (_this: PageMonitoring2) => {
     return (
 
         <div className='page_monitoring_dashboard'>
@@ -697,7 +718,6 @@ export const  renderMemBody =(_this:PageMonitoring2)=> {
                     </FlexBox>
 
                 </div>
-
 
 
             </div>
@@ -811,15 +831,15 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 <BubbleChart
                     className={'bubbleChart'}
                     graph={{
-                        zoom: 0.80,
-                        offsetX: 0.10,
+                        zoom: 0.90,
+                        offsetX: 0.07,
                         offsetY: 0.07,
                     }}
-                    width={560}
+                    width={500}
                     height={550}
-                    padding={0} // optional value, number that set the padding between bubbles
-                    showLegend={false} // optional value, pass false to disable the legend.
-                    legendPercentage={30} // number that represent the % of with that legend going to use.
+                    padding={0}
+                    showLegend={false}
+                    legendPercentage={30}
                     legendFont={{
                         family: 'Arial',
                         size: 9,
@@ -891,7 +911,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
 
             usageList.push(usageOne);
             let dateOne = seriesValues[j]["0"];
-            let arraySplitDate=dateOne.toString().split("T")
+            let arraySplitDate = dateOne.toString().split("T")
             dateTimeList.push(arraySplitDate[1]);
 
 
@@ -911,7 +931,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
                 label: instanceNameList[i],
                 fill: true,
                 lineTension: 0.1,
-                backgroundColor: hardwareType ===HARDWARE_TYPE.MEM ? 'transparent' :CHART_COLOR_LIST[i],
+                backgroundColor: hardwareType === HARDWARE_TYPE.MEM ? 'transparent' : CHART_COLOR_LIST[i],
                 borderColor: BORDER_CHART_COLOR_LIST[i],
                 borderCapStyle: 'butt',
                 borderDash: [],
