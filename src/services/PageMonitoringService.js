@@ -5,7 +5,7 @@ import Plot from "../../node_modules/react-plotly.js/react-plotly";
 import axios from "axios";
 import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
-import '../sites/PageMonitoring.css';
+// import '../sites/PageMonitoring.css';
 import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
 import {Line as ReactChartJs} from 'react-chartjs-2';
@@ -43,7 +43,7 @@ export const renderBarGraph_GoogleChart = (usageList: any, hardwareType: string 
     return (
         <Chart
             width={boxWidth}
-            height={275}
+            height={250}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -133,11 +133,12 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
 
 
     let boxWidth = (window.innerWidth-340)/3 - 22;
+    let sideWidth = boxWidth*1/4
 
     return (
-        <div className="pieChart">
+        <div className="page_monitoring_pieChart">
             <Chart
-                width={boxWidth}
+                width={180}
                 height={120}
                 chartType="PieChart"
                 data={[
@@ -148,7 +149,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                     pieHole: 0.8,
                     //is3D: true,
                     title: "",
-                    chartArea: {left: 20, right: 20, top: 10, width: "30%", height: "80%"},
+                    chartArea: {top: 10, width: "100%", height: "100%"},
                     /* slices: [
                          {
                              color: "red"
@@ -184,11 +185,11 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                     tooltip: {
                         showColorCode: true
                     },
-                    fontName: "Roboto",
+                    // fontName: "Roboto",
                     // fontColor: 'black',
                     //backgroundColor: 'grey',
                     fontColor: 'white',
-                    backgroundColor: '#1e2124',
+                    backgroundColor: 'transparent',
                 }}
                 graph_id="PieChart"
                 legend_toggle
@@ -197,124 +198,61 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
-            <FlexBox style={{
-                marginTop: 0,
-                color: 'white',
-                top: '65.5%',
-                left: '26.2%',
-                position: 'absolute',
-                fontSize: 9,
-                alignSelf: 'center',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                {appInstanceOne.AppName.substring(0, 12)}
-            </FlexBox>
-            <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
-                     style={{flexDirection: 'column', marginTop: 10, marginLeft: -3}}>
-
+            <div className='page_monitoring_pieChart_name_position'>
+                <div className='page_monitoring_pieChart_name'>
+                    {appInstanceOne.AppName}
+                {/*{appInstanceOne.AppName.substring(0, 12)}*/}
+                </div>
+            </div>
+            <div className='page_monitoring_pieChart_title'>
+                {appInstanceOne.AppName}
 
                 {/*todo: disk usage 표시 부분*/}
                 {/*<div style={{color: 'white', textAlign: 'center', }}>900/1000MB</div>*/}
+            </div>
 
-                <div style={{color: 'white', textAlign: 'center', fontSize: 12}}>{appInstanceOne.AppName}</div>
-
+            <div className='page_monitoring_pieChart_table'>
                 {/*__row__1*/}
-                <FlexBox style={{marginTop: 15, height: 21,}}>
-                    <FlexBox style={{
-                        marginLeft: 5,
-                        backgroundColor: 'black',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginLeft: 0,
-                        backgroundColor: 'grey',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
-                    </FlexBox>
-                </FlexBox>
+                <div className='page_monitoring_pieChart_table_row'>
+                    <div className='page_monitoring_pieChart_table_left_column'>
+                        DISK
+                    </div>
+                    <div className='page_monitoring_pieChart_table_right_column'>
+                        80
+                    </div>
+                </div>
 
                 {/*__row__2*/}
-                <FlexBox style={{marginTop: 0, height: 21,}}>
-                    <FlexBox style={{
-                        marginLeft: 5,
-                        backgroundColor: 'black',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginLeft: 0,
-                        backgroundColor: 'grey',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
-                    </FlexBox>
-                </FlexBox>
+                <div className='page_monitoring_pieChart_table_row'>
+                    <div className='page_monitoring_pieChart_table_left_column'>
+                        vCPU
+                    </div>
+                    <div className='page_monitoring_pieChart_table_right_column'>
+                        80
+                    </div>
+                </div>
 
                 {/*__row__3*/}
-                <FlexBox style={{marginTop: 0, height: 21,}}>
-                    <FlexBox style={{
-                        marginLeft: 5,
-                        backgroundColor: 'black',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Regions</div>
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginLeft: 0,
-                        backgroundColor: 'grey',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
+                <div className='page_monitoring_pieChart_table_row'>
+                    <div className='page_monitoring_pieChart_table_left_column'>
+                        Regions
+                    </div>
+                    <div className='page_monitoring_pieChart_table_right_column'>
                             {appInstanceOne.Region}
-                        </div>
-                    </FlexBox>
-                </FlexBox>
+                    </div>
+                </div>
 
                 {/*__row__4*/}
-                <FlexBox style={{marginTop: 0, height: 21,}}>
-                    <FlexBox style={{
-                        marginLeft: 5,
-                        backgroundColor: 'black',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginLeft: 0,
-                        backgroundColor: 'grey',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div
-                            style={{
-                                color: 'white',
-                                textAlign: 'center',
-                                marginLeft: 5
-                            }}>{appInstanceOne.Cloudlet.toString().substring(0, 15) + "..."}</div>
-                    </FlexBox>
-                </FlexBox>
+                <div className='page_monitoring_pieChart_table_row'>
+                    <div className='page_monitoring_pieChart_table_left_column'>
+                        Cloutlet
+                    </div>
+                    <div className='page_monitoring_pieChart_table_right_column'>
+                        {appInstanceOne.Cloudlet.toString().substring(0, 15) + "..."}
+                    </div>
+                </div>
 
-            </FlexBox>
+            </div>
 
 
         </div>
@@ -433,12 +371,14 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
     })
 
 
+    let boxWidth = (window.innerWidth-340)/3 - 22
+
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
             {/* <div style={{                marginLeft: 1,                marginRight: 1,                width: 80,            }}>                <FlexBox style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>                    {appInstanceList.map((item: TypeAppInstance) => {                        return (                            <FlexBox>                                {item.AppName}                            </FlexBox>                        )                    })}                </FlexBox>            </div>            */}
             <div style={{
                 //backgroundColor: 'blue',
-                backgroundColor: 'black',
+                backgroundColor: '#1e2124',
                 marginLeft: 0, marginRight: 0, marginBottom: 10,
             }}>
                 <BubbleChart
@@ -448,8 +388,8 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                         offsetX: 0.10,
                         offsetY: appInstanceList.length <= 4 ? 0.05 : -0.05,
                     }}
-                    width={355}
-                    height={243}
+                    width={boxWidth}
+                    height={250}
                     padding={0} // optional value, number that set the padding between bubbles
                     showLegend={false} // optional value, pass false to disable the legend.
                     legendPercentage={20} // number that represent the % of with that legend going to use.
@@ -580,7 +520,7 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
 
     console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsage);
 
-    let width = window.innerWidth * 0.255
+    let boxWidth = (window.innerWidth-340)/3 - 22;
     let height = 500 + 50;
 
     let options = {
@@ -620,11 +560,14 @@ export const renderLineChart_react_chartjs = (cpuUsageListPerInstanceSortByUsage
     //todo :#######################
     //todo : chart rendering part
     //todo :#######################
+
+
+
     return (
         <div>
             <ReactChartJs
-                width={width}
-                height={300}
+                width={boxWidth}
+                height={230}
                 data={data}
                 options={options}
             />

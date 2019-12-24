@@ -529,15 +529,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo:render BubbleChart          */}
                                                     {/*todo:###########################***/}
                                                     <div className='page_monitoring_container'>
-                                                        <div>
+                                                        {/*<div className='page_monitoring_container_column'>*/}
                                                             {this.props.isLoading ? renderPlaceHolder2() : renderBubbleChart(this)}
-                                                        </div>
-                                                        <div>
+                                                        {/*</div>*/}
+                                                        {/*<div className='page_monitoring_container_column'>*/}
                                                             {/*todo:#########################################****/}
                                                             {/*todo: RENDER Donut Chart  N  App Status          */}
                                                             {/*todo:#########################################****/}
                                                             {renderPieChart2AndAppStatus(this.state.appInstanceOne, this)}
-                                                        </div>
+                                                        {/*</div>*/}
                                                     </div>
 
                                                 </div>

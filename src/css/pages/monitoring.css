@@ -20,7 +20,9 @@
 .page_monitoring_select_area .ui.selection.dropdown {
     margin-right: 20px;
     margin-bottom: 10px;
+    min-width: 250px;
 }
+
 .page_monitoring_datepicker_area {
     display: flex;
     flexDirection: row;
@@ -99,7 +101,26 @@
     overflow: hidden;
     width:100%;
     height:100%;
+    position: relative;
 }
+
+.page_monitoring_container_row {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    width:100%;
+    height:100%;
+}
+
+.page_monitoring_container_column {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width:100%;
+    height:100%;
+
+}
+
 
 
 .page_monitoring_grid {
@@ -141,10 +162,12 @@
     max-width:100%;
     font-size: 14px;
     line-height: 1.2em;
-    height: 36px;
+    height: 32px;
     text-align: center;
+    word-break: keep-all;
+    /*word-wrap: break-word;*/
     white-space: pre-wrap;
-    text-after-overflow: ellipsis;
+    text-overflow: ellipsis;
     overflow: hidden;
 }
 .page_monitoring_grid_box_num {
@@ -165,5 +188,97 @@
 
 }
 
+.page_monitoring_pieChart {
+    display: flex;
+    position: absolute;
+    top:0;
+    right:0;
+    flex-direction: column;
+    width: 180px;
+    height: 100%;
+    background-color: rgba(45, 45, 45, 0.6);
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.page_monitoring_pieChart_name_position {
+    position: absolute;
+    top: 5px;
+    display: flex;
+    width: 100%;
+    height: 120px;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.page_monitoring_pieChart_name {
+    font-size: 12px;
+    line-height: 1.2;
+    color: #fff;
+    width: 76px;
+    max-height:34px;
+    text-align: center;
+    word-break: keep-all;
+    /*word-wrap: break-word;*/
+    white-space: pre-wrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+}
+
+.page_monitoring_pieChart_title {
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.6;
+    width: 100%;
+    padding: 0 10px;
+    text-align: center;
+    word-break: keep-all;
+    /*word-wrap: break-word;*/
+    white-space: pre-wrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+}
 
 
+.page_monitoring_pieChart_table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.page_monitoring_pieChart_table_row {
+    display: flex;
+    flex-direction: row;
+    /*width: 100%;*/
+    height: 14px;
+    border-radius: 2px;
+    border: 1px solid #000;
+    overflow: hidden;
+    margin: 0 5px 5px 5px;
+}
+
+.page_monitoring_pieChart_table_left_column {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    background-color: #000;
+    align-items: flex-end;
+    justify-content: center;
+    font-size: 10px;
+    color: #fff;
+    padding: 0 5px;
+}
+
+.page_monitoring_pieChart_table_right_column {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    background-color: transparent;
+    justify-content: center;
+    font-size: 10px;
+    color: #fff;
+    padding: 0 5px;
+}
