@@ -4,7 +4,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
-import '../sites/PageMonitoring.css';
+// import '../sites/PageMonitoring.css';
 import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
 import {Line as ReactChartJs} from 'react-chartjs-2';
@@ -204,10 +204,12 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
 
     }
 
+    let boxWidth = (window.innerWidth-340)/3 - 22;
+
     return (
         <Chart
-            width={window.innerWidth * 0.5}
-            height={540}
+            width={boxWidth}
+            height={250}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -262,7 +264,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                 //colors: ['#FB7A21'],
                 fontColor: 'white',
                 backgroundColor: {
-                    fill: 'black'
+                    fill: '#1e2124'
                 }
                 //colors: ['green']
             }}
@@ -296,12 +298,14 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
     }
 
 
-    return (
-        <div className="pieChart">
-            <Chart
-                width={200}
-                height={120}
+    let boxWidth = (window.innerWidth-340)/3 - 22;
+    let sideWidth = boxWidth*1/4
 
+    return (
+        <div className="page_monitoring_pieChart">
+            <Chart
+                width={180}
+                height={120}
                 chartType="PieChart"
                 data={[
                     ["Age", "Weight"], ["app_A", 80], ["", 20]
@@ -311,7 +315,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                     pieHole: 0.8,
                     //is3D: true,
                     title: "",
-                    chartArea: {left: 20, right: 20, top: 10, width: "30%", height: "80%"},
+                    chartArea: {top: 10, width: "100%", height: "100%"},
                     /* slices: [
                          {
                              color: "red"
@@ -347,10 +351,11 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                     tooltip: {
                         showColorCode: true
                     },
-                    fontName: "Roboto",
-                    fontColor: 'black',
+                    // fontName: "Roboto",
+                    // fontColor: 'black',
                     //backgroundColor: 'grey',
-                    backgroundColor: 'black',
+                    fontColor: 'white',
+                    backgroundColor: 'transparent',
                 }}
                 graph_id="PieChart"
                 legend_toggle
@@ -359,124 +364,61 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
-          {/*  <FlexBox style={{
-                marginTop: 0,
-                color: 'white',
-                top: '65.5%',
-                left: '26.2%',
-                position: 'absolute',
-                fontSize: 9,
-                alignSelf: 'center',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                {appInstanceOne.AppName.substring(0, 12)}
-            </FlexBox>*/}
-            <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
-                     style={{flexDirection: 'column', marginTop: 10, marginLeft: -3}}>
-
+            <div className='page_monitoring_pieChart_name_position'>
+                <div className='page_monitoring_pieChart_name'>
+                    {appInstanceOne.AppName}
+                {/*{appInstanceOne.AppName.substring(0, 12)}*/}
+                </div>
+            </div>
+            <div className='page_monitoring_pieChart_title'>
+                {appInstanceOne.AppName}
 
                 {/*todo: disk usage 표시 부분*/}
                 {/*<div style={{color: 'white', textAlign: 'center', }}>900/1000MB</div>*/}
+            </div>
 
-                <div style={{color: 'white', textAlign: 'center', fontSize: 12}}>{appInstanceOne.AppName}</div>
-
+            <div className='page_monitoring_pieChart_table'>
                 {/*__row__1*/}
-                <FlexBox style={{marginTop: 15, height: 21,}}>
-                    <FlexBox style={{
-                        marginLeft: 5,
-                        backgroundColor: 'black',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginLeft: 0,
-                        backgroundColor: 'grey',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
-                    </FlexBox>
-                </FlexBox>
+                <div className='page_monitoring_pieChart_table_row'>
+                    <div className='page_monitoring_pieChart_table_left_column'>
+                        DISK
+                    </div>
+                    <div className='page_monitoring_pieChart_table_right_column'>
+                        80
+                    </div>
+                </div>
 
                 {/*__row__2*/}
-                <FlexBox style={{marginTop: 0, height: 21,}}>
-                    <FlexBox style={{
-                        marginLeft: 5,
-                        backgroundColor: 'black',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginLeft: 0,
-                        backgroundColor: 'grey',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
-                    </FlexBox>
-                </FlexBox>
+                <div className='page_monitoring_pieChart_table_row'>
+                    <div className='page_monitoring_pieChart_table_left_column'>
+                        vCPU
+                    </div>
+                    <div className='page_monitoring_pieChart_table_right_column'>
+                        80
+                    </div>
+                </div>
 
                 {/*__row__3*/}
-                <FlexBox style={{marginTop: 0, height: 21,}}>
-                    <FlexBox style={{
-                        marginLeft: 5,
-                        backgroundColor: 'black',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Regions</div>
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginLeft: 0,
-                        backgroundColor: 'grey',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
+                <div className='page_monitoring_pieChart_table_row'>
+                    <div className='page_monitoring_pieChart_table_left_column'>
+                        Regions
+                    </div>
+                    <div className='page_monitoring_pieChart_table_right_column'>
                             {appInstanceOne.Region}
-                        </div>
-                    </FlexBox>
-                </FlexBox>
+                    </div>
+                </div>
 
                 {/*__row__4*/}
-                <FlexBox style={{marginTop: 0, height: 21,}}>
-                    <FlexBox style={{
-                        marginLeft: 5,
-                        backgroundColor: 'black',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginLeft: 0,
-                        backgroundColor: 'grey',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div
-                            style={{
-                                color: 'white',
-                                textAlign: 'center',
-                                marginLeft: 5
-                            }}>{appInstanceOne.Cloudlet.toString().substring(0, 15) + "..."}</div>
-                    </FlexBox>
-                </FlexBox>
+                <div className='page_monitoring_pieChart_table_row'>
+                    <div className='page_monitoring_pieChart_table_left_column'>
+                        Cloutlet
+                    </div>
+                    <div className='page_monitoring_pieChart_table_right_column'>
+                        {appInstanceOne.Cloudlet.toString().substring(0, 15) + "..."}
+                    </div>
+                </div>
 
-            </FlexBox>
+            </div>
 
 
         </div>
@@ -529,15 +471,17 @@ export const renderPlaceHolder = () => {
     )
 }
 
+
 /**
  * @todo: 로딩이 완료 되기전에 placeholder2를 보여준다..
  * @returns {*}
  */
 export const renderPlaceHolder2 = () => {
     let boxWidth = window.innerWidth * 0.3;
+    // let boxWidth = window.innerWidth / 10 * 3.55;
     return (
-        <div style={{width: 350, height: 250, backgroundColor: 'black'}}>
-            <div style={{marginTop: 0}}>
+        <div style={{display:'flex', flexGrow:1, width:'100%', height:'100%', justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}>
+            {/*<div style={{marginTop: 0}}>*/}
                 <Lottie
                     options={{
                         loop: true,
@@ -553,183 +497,8 @@ export const renderPlaceHolder2 = () => {
                     isPaused={false}
                     style={{marginTop: 0,}}
                 />
-            </div>
-        </div>
-    )
-}
-
-export const renderCpuBody = (_this: PageMonitoring2) => {
-    return (
-        <div className='page_monitoring_dashboard'>
-            {/*_____row____1*/}
-            {/*_____row____1*/}
-            {/*_____row____1*/}
-            <div className='page_monitoring_row'>
-                {/* ___col___1*/}
-                {/* ___col___1*/}
-                {/* ___col___1*/}
-                <div className='page_monitoring_column_kj'>
-                    <div className='page_monitoring_title_area'>
-                        <div className='page_monitoring_title'>
-                            Status Of Launched App Instance
-                        </div>
-                    </div>
-                    <div className='page_monitoring_container'>
-                        {_this.state.isAppInstaceDataReady ? renderInstanceOnCloudletGrid(_this.state.appInstanceListGroupByCloudlet) : renderPlaceHolder()}
-                    </div>
-                </div>
-                {/* cpu___col___2*/}
-                {/* cpu___col___2*/}
-                {/* cpu___col___2*/}
-                <div className='page_monitoring_column_kj'>
-                    <div className='page_monitoring_title_area'>
-                        <div className='page_monitoring_title'>
-                            Perfomance Of App instance
-                        </div>
-                    </div>
-                    {/*todo:###########################***/}
-                    {/*todo:RENDER BubbleChart          */}
-                    {/*todo:###########################***/}
-                    <FlexBox>
-                        <div>
-                            {_this.state.isAppInstaceDataReady ? renderBubbleChart(_this) : renderPlaceHolder2()}
-                        </div>
-                        <div style={{marginRight: 10,}}>
-                            {/*todo:#########################################****/}
-                            {/*todo: RENDER Donut Chart N App Status          */}
-                            {/*todo:#########################################****/}
-                            {renderPieChart2AndAppStatus(_this.state.appInstanceOne, _this)}
-                        </div>
-                    </FlexBox>
-
-                </div>
-
-
-            </div>
-
-
-            {/*_____row______2*/}
-            {/*_____row______2*/}
-            {/*_____row______2*/}
-            <div className='page_monitoring_row'>
-
-                {/* ___col___3*/}
-                {/* ___col___3*/}
-                {/* ___col___3*/}
-                <div className='page_monitoring_column_kj'>
-                    <div className='page_monitoring_title_area'>
-                        <div className='page_monitoring_title'>
-                            Top 5 of CPU Usage
-                        </div>
-                    </div>
-                    <div className='page_monitoring_container'>
-                        {_this.state.isReady ? renderBarGraphForCpuMem(_this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
-                    </div>
-                </div>
-                {/* cpu___col___4*/}
-                {/* cpu___col___4*/}
-                {/* cpu___col___4*/}
-                <div className='page_monitoring_column_kj'>
-                    <div className='page_monitoring_title_area'>
-                        <div className='page_monitoring_title'>
-                            Transition Of CPU Usage
-                        </div>
-                    </div>
-                    <div className='page_monitoring_container'>
-                        {_this.state.isReady ? renderLineChart(_this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU) : renderPlaceHolder()}
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    )
-}
-
-export const  renderMemBody =(_this:PageMonitoring2)=> {
-    return (
-
-        <div className='page_monitoring_dashboard'>
-            {/*_____row____1*/}
-            {/*_____row____1*/}
-            {/*_____row____1*/}
-            <div className='page_monitoring_row'>
-                {/* ___col___1*/}
-                {/* ___col___1*/}
-                {/* ___col___1*/}
-                <div className='page_monitoring_column_kj'>
-                    <div className='page_monitoring_title_area'>
-                        <div className='page_monitoring_title'>
-                            Status Of Launched App Instance
-                        </div>
-                    </div>
-                    <div className='page_monitoring_container'>
-                        {_this.state.isAppInstaceDataReady ? renderInstanceOnCloudletGrid(_this.state.appInstanceListGroupByCloudlet) : renderPlaceHolder()}
-                    </div>
-                </div>
-                {/* cpu___col___2*/}
-                {/* cpu___col___2*/}
-                {/* cpu___col___2*/}
-                <div className='page_monitoring_column_kj'>
-                    <div className='page_monitoring_title_area'>
-                        <div className='page_monitoring_title'>
-                            Perfomance Of App instance
-                        </div>
-                    </div>
-                    {/*todo:###########################***/}
-                    {/*todo:RENDER BubbleChart          */}
-                    {/*todo:###########################***/}
-                    <FlexBox>
-                        <div>
-                            {_this.state.isAppInstaceDataReady ? renderBubbleChart(_this) : renderPlaceHolder2()}
-                        </div>
-                        <div style={{marginRight: 10,}}>
-                            {/*todo:#########################################****/}
-                            {/*todo: RENDER Donut Chart N App Status          */}
-                            {/*todo:#########################################****/}
-                            {renderPieChart2AndAppStatus(_this.state.appInstanceOne, _this)}
-                        </div>
-                    </FlexBox>
-
-                </div>
-
-
-
-            </div>
-
-
-            {/*_____row______2*/}
-            {/*_____row______2*/}
-            {/*_____row______2*/}
-            <div className='page_monitoring_row'>
-
-                {/* ___col___3*/}
-                {/* ___col___3*/}
-                {/* ___col___3*/}
-                <div className='page_monitoring_column_kj'>
-                    <div className='page_monitoring_title_area'>
-                        <div className='page_monitoring_title'>
-                            Top 5 of MEM Usage
-                        </div>
-                    </div>
-                    <div className='page_monitoring_container'>
-                        {_this.state.isReady ? renderBarGraphForCpuMem(_this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
-                    </div>
-                </div>
-                {/* cpu___col___4*/}
-                {/* cpu___col___4*/}
-                {/* cpu___col___4*/}
-                <div className='page_monitoring_column_kj'>
-                    <div className='page_monitoring_title_area'>
-                        <div className='page_monitoring_title'>
-                            Transition Of MEM Usage
-                        </div>
-                    </div>
-                    <div className='page_monitoring_container'>
-                        {_this.state.isReady ? renderLineChart(_this.state.filteredMemUsageList, HARDWARE_TYPE.MEM) : renderPlaceHolder()}
-                    </div>
-                </div>
-
-            </div>
+            {/*</div>*/}
+            {/*<CircularProgress style={{zIndex: 999999999, color:'#79BF14'}}/>*/}
         </div>
     )
 }
@@ -771,7 +540,6 @@ export const filterAppInstOnCloudlet = (CloudLetOneList: Array, pCluster: string
     return filteredAppInstOnCloudlet;
 }
 
-
 /**
  * todo: @weknow/react-bubble-chart-d3로 버블차트를 그린다..
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
@@ -794,23 +562,27 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
         })
     })
 
+
+
+    let boxWidth = (window.innerWidth-340)/3 - 22
+
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
             {/* <div style={{                marginLeft: 1,                marginRight: 1,                width: 80,            }}>                <FlexBox style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>                    {appInstanceList.map((item: TypeAppInstance) => {                        return (                            <FlexBox>                                {item.AppName}                            </FlexBox>                        )                    })}                </FlexBox>            </div>            */}
             <div style={{
                 //backgroundColor: 'blue',
-                backgroundColor: 'black',
+                backgroundColor: '#1e2124',
                 marginLeft: 0, marginRight: 0, marginBottom: 10,
             }}>
                 <BubbleChart
                     className={'bubbleChart'}
                     graph={{
-                        zoom: 0.80,
+                        zoom: appInstanceList.length <= 4 ? 0.60 : 0.75,
                         offsetX: 0.10,
-                        offsetY: 0.07,
+                        offsetY: appInstanceList.length <= 4 ? 0.05 : -0.02,
                     }}
-                    width={560}
-                    height={550}
+                    width={boxWidth}
+                    height={250}
                     padding={0} // optional value, number that set the padding between bubbles
                     showLegend={false} // optional value, pass false to disable the legend.
                     legendPercentage={30} // number that represent the % of with that legend going to use.
@@ -943,7 +715,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
 
     console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsage);
 
-    let width = window.innerWidth * 0.40
+    let boxWidth = (window.innerWidth-340)/3 - 22;
     let height = 500 + 50;
 
     let options = {
@@ -983,11 +755,14 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
     //todo :#######################
     //todo : chart rendering part
     //todo :#######################
+
+
+
     return (
         <div>
             <ReactChartJs
-                width={width}
-                height={300}
+                width={boxWidth}
+                height={230}
                 data={data}
                 options={options}
             />
@@ -999,6 +774,110 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
 
 
 /**
+<<<<<<< HEAD
+ * @todo: PlotJS를 이용해서 라인차트를 랜더링
+ * @returns {*}
+ */
+export const renderLineGraph_Plot = () => {
+
+    let boxWidth = (window.innerWidth-340)/3 - 22;
+
+    return (
+        <Plot
+            style={{
+                // backgroundColor: 'transparent',
+                backgroundColor: '#1e2124',
+                overflow: 'hidden',
+                color: 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+                alignSelf: 'center',
+                marginTop: -25
+
+            }}
+            data={
+                [
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [10, 15, 13, 17],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [16, 5, 11, 9],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [4, 3, 13, 19],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [5, 4, 7, 29],
+                        type: 'scatter'
+                    },
+                    {
+                        x: [1, 2, 3, 4],
+                        y: [5, 5, 6, 9],
+                        type: 'scatter'
+                    },
+
+                ]
+
+            }
+            layout={{
+                height: 360,
+                width: boxWidth,
+                margin: {
+                    l: 50,
+                    r: 15,
+                    b: 35,
+                    t: 30,
+                    pad: 0
+                },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                color: 'white',
+                xaxis: {
+                    showgrid: false,
+                    zeroline: true,
+                    showline: true,
+                    mirror: 'ticks',
+                    gridcolor: 'rgba(255,255,255,.05)',
+                    gridwidth: 1,
+                    zerolinecolor: 'rgba(255,255,255,0)',
+                    zerolinewidth: 1,
+                    linecolor: 'rgba(255,255,255,.2)',
+                    linewidth: 1,
+                    color: 'rgba(255,255,255,.4)',
+                    domain: [0, 0.94]
+                },
+                yaxis: {
+                    showgrid: true,
+                    zeroline: false,
+                    showline: true,
+                    mirror: 'ticks',
+                    ticklen: 5,
+                    tickcolor: 'rgba(0,0,0,0)',
+                    gridcolor: 'rgba(255,255,255,.05)',
+                    gridwidth: 1,
+                    zerolinecolor: 'rgba(255,255,255,0)',
+                    zerolinewidth: 1,
+                    linecolor: 'rgba(255,255,255,.2)',
+                    linewidth: 1,
+                    color: 'rgba(255,255,255,.4)',
+                    //rangemode: 'tozero'
+                },
+            }}
+        />
+    )
+}
+
+
+/**
+=======
+>>>>>>> devMaster
  * @TODO: 모니터링Page 좌측 상단에 클라우드렛에 올라가있는 인스턴스 갯수를 랜더링...
  * @desc: Render the number of instances on the cloudlet at the top left of the monitoring page ...
  * @param appInstanceListSortByCloudlet
@@ -1035,23 +914,35 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
             {chunkedArraysOfColSize.map((colSizeArray, index) =>
                 <div className='page_monitoring_grid' key={index.toString()}>
                     {colSizeArray.map((item) =>
-                        <div className='page_monitoring_grid_box'>
-                            <FlexBox style={{
-                                fontSize: 15,
-                                color: '#fff',
-                                marginTop: 10,
-                            }}>
-                                {item.name}
-                            </FlexBox>
-                            <FlexBox style={{
-                                marginTop: 0,
-                                fontSize: 50,
-                                color: '#29a1ff',
-                            }}>
-                                {item.length}
-                            </FlexBox>
+                        <div className='page_monitoring_grid_box_layout'>
+                            <div className='page_monitoring_grid_box'>
+                                <div className='page_monitoring_grid_box_name'>
+                                    {item.name}
+                                    {/*{item.name.toString().substring(0, 19) + "..."}*/}
+                                </div>
+                                <div className='page_monitoring_grid_box_num'>
+                                    {item.length}
+                                </div>
 
+                            </div>
                         </div>
+                        // <div className='page_monitoring_grid_box'>
+                        //     <FlexBox style={{
+                        //         fontSize: 15,
+                        //         color: '#fff',
+                        //         marginTop: 10,
+                        //     }}>
+                        //         {item.name.toString().substring(0, 19) + "..."}
+                        //     </FlexBox>
+                        //     <FlexBox style={{
+                        //         marginTop: 0,
+                        //         fontSize: 50,
+                        //         color: '#29a1ff',
+                        //     }}>
+                        //         {item.length}
+                        //     </FlexBox>
+                        //
+                        // </div>
                     )}
                 </div>
             )}
