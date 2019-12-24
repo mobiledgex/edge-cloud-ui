@@ -74,13 +74,13 @@ class RegistryCloudletPoolViewer extends React.Component {
             validateError:[],
             regSuccess:true,
             errorClose:false,
-            selectedCloudlet:[],
+            changeRegion:[],
+            regionToggle:false,
             keysData:[
                 {
                     'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
                     'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
-                    'selectCloudlet':{label:'Into the pool', type:'RenderDualListBox', necessary:false, tip:'select a cloudlet', active:true},
-                    'invisibleField':{label:'Invisible', type:'InvisibleField', necessary:false, tip:'invisible field', active:true}
+                    'selectCloudlet':{label:'Into the pool', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
                 },
                 {
 
@@ -90,25 +90,7 @@ class RegistryCloudletPoolViewer extends React.Component {
                 {
                     'Region':'',
                     'poolName':'',
-                    'selectCloudlet':'',
-                    'invisibleField':''
-                }
-            ],
-            keysDataLink:[
-                {
-                    'CloudletPool':{label:'Cloudlet Pool', type:'RenderDropDown', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
-                    'LinktoOrganization':{label:'Into the pool', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
-                    'LinkDiagram':{label:'Linked Status', type:'RenderLinkedDiagram', necessary:false, tip:'linked the cloudlet pool with the organization', active:true},
-                },
-                {
-
-                }
-            ],
-            fakeDataLink:[
-                {
-                    'CloudletPool':'',
-                    'LinktoOrganization':'',
-                    'LinkDiagram':''
+                    'selectCloudlet':''
                 }
             ]
 
@@ -119,7 +101,7 @@ class RegistryCloudletPoolViewer extends React.Component {
 
     }
 
-
+    
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
         this.setState({ open: false })
@@ -144,10 +126,9 @@ class RegistryCloudletPoolViewer extends React.Component {
         _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=2'})
     }
 
+    generateDOM(open, dimmer, _data, _keysData, hideHeader, _region) {
 
-    generateDOM(open, dimmer, data, keysData, hideHeader, region) {
-
-        let panelParams = {data:data, keys:keysData, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
+        let panelParams = {data:_data, keys:_keysData, region:_region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
 
         return layout.map((item, i) => (
 
@@ -184,18 +165,6 @@ class RegistryCloudletPoolViewer extends React.Component {
             _self.setState({dummyData:_self.state.fakeData, resultData:(!_self.state.resultData)?_self.props.devData:_self.state.resultData})
         }
     }
-
-    /**
-     *
-     */
-    createCloudletPoolMember = (_region, _oper, _cloudlet, _pool) => {
-        //TODO: 맴버 가져오기
-        let selectedCloudlet = this.state.selectedCloudlet;
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let _params = {region: _region, operator: _oper, cloudlet: _cloudlet, pool:_pool};
-        services.createCloudletPoolMember('CreateCloudletPoolMember',{token:store.userToken, params:_params}, _self.receiveResultCreateMember)
-
-    }
     receiveSubmit = (result, body) => {
         console.log("20191119 cloudlet paseDatapaseDatapaseData",result, ": this.props.changeRegion=", this.props.changeRegion,": region = ", this.props.region, ":", this.props.regionInfo, ":", this.props.getRegion)
         this.pauseRender = false;
@@ -204,7 +173,7 @@ class RegistryCloudletPoolViewer extends React.Component {
             //this.setState({clusterInstCreate:false})
             this.props.handleLoadingSpinner(false);
             if(paseData.error == 'Key already exists'){
-
+                
             } else {
                 this.props.handleAlertInfo('error',paseData.error)
             }
@@ -212,39 +181,71 @@ class RegistryCloudletPoolViewer extends React.Component {
             if (result.data.error) {
                 this.props.handleAlertInfo('error', result.data.error)
             } else {
-                console.log('20191119 receive submit result is success..', result,":", result.data)
-                this.props.handleAlertInfo('success','Created successfully')
-
-                /** add pool-member to cloudlet pool if has data of selected cloudlet  **/
+                console.log('20191220 receive submit result is success..', result,":", result.data)
+                this.props.handleAlertInfo('success',result.data.message)
+            }
+            if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
 
             }
-
         }
-    }
-    receiveSubmitMember = (result, body) => {
+        setTimeout(() => {
+            console.log('20191119 props refresh...', this.props.refresh, ": this.props.changeRegion=", this.props.changeRegion,": region = ", this.props.region, ":", this.props.regionInfo, ":", this.props.getRegion)
+            if(_self.props.refresh){
+                _self.props.refresh(this.props.changeRegion ? this.props.changeRegion : 'All');
+            } else {
+                //_self.props.handleChangeRegion(this.props.changeRegion ? this.props.changeRegion : 'All');
+                //_self.props.handleComputeRefresh(true);
+                _self.gotoUrl();
+            }
+
+        }, 3000);
+
+        // if(paseData.message) {
+        //     Alert.error(paseData.message, {
+        //         position: 'top-right',
+        //         effect: 'slide',
+        //         onShow: function () {
+        //             console.log('aye!')
+        //         },
+        //         beep: true,
+        //         timeout: 5000,
+        //         offset: 100
+        //     });
+        // } else {
+        //     let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
+
+        //     if(result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
+        //         Alert.success("Success!", {
+        //             position: 'top-right',
+        //             effect: 'slide',
+        //             onShow: function () {
+        //                 console.log('aye!')
+        //             },
+        //             beep: true,
+        //             timeout: 5000,
+        //             offset: 100
+        //         });
+        //         _self.props.success();
+        //         _self.reqCount = 0;
+        //     }
+        // }
 
     }
 
     componentDidMount() {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        if(this.props.regionInfo.region.length){
 
-        this.setFildData();
 
-        /************
-         * set Organization Name
-         * **********/
-        let assObj = Object.assign([], this.state.fakeData);
-        assObj[0].OperatorName = localStorage.selectOrg;
-        this.setState({fakeData:assObj});
+
+        }
 
     }
     componentWillUnmount() {
         _self.props.handleGetRegion(null)
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps.regionInfo.region.length){
-            let assObj = Object.assign([], this.state.keysData);
-            assObj[0].Region.items = nextProps.regionInfo.region;
-        }
+
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -258,37 +259,23 @@ class RegistryCloudletPoolViewer extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
         if(nextProps.submitValues && !this.state.toggleSubmit) {
-            const cluster = ['Region','poolName'];
-            //add if platform_type is openstack  (placement should be better)
-            // if(nextProps.submitValues.cloudlet.platform_type !== 2)
-            // {
-            //     nextProps.submitValues.cloudlet.accessvars = undefined
-            // }
+
+            const cluster = ['Region','CloudletName','OperatorName','IPSupport','NumberOfDynamicIPs','PhysicalName','PlatformType','Latitude','Longitude'];
             let error = [];
             cluster.map((item) => {
                 if(!nextProps.validateValue[item]) {
                     error.push(item)
                 }
             })
+
             //close tutorial
             this.props.handleStateTutor('done');
 
-            console.log('20191223 create cloudlet pool....',nextProps.submitValues, ": nextProps.formClusterInst.submitSucceeded=", nextProps.formClusterInst,
-                '  : this.pauseRender =',this.pauseRender, ": error= ", error
-                )
-
             if(!this.pauseRender && nextProps.formClusterInst.submitSucceeded && error.length == 0){
-                this.setState({toggleSubmit:true,validateError:error,regSuccess:true, selectedCloudlet:nextProps.formClusterInst.value['invisibleField']});
+                this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
-                console.log('20191223 create cloudlet pool....',nextProps.submitValues)
-                servicePool.createCloudletPool('CreateCloudletPool', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
-
-                // --- test ---
-                this.createCloudletPoolMember(a,b,c)
-
-
-
-
+                console.log('20191223 create cloudlet....',nextProps.submitValues)
+                //servicePool.createCloudletPool('CreateCloudletPool', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
                 setTimeout(() => {
                     this.props.handleLoadingSpinner(false);
                     this.props.gotoUrl();
@@ -298,18 +285,19 @@ class RegistryCloudletPoolViewer extends React.Component {
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }
-
+            
         }
+
+
 
 
     }
 
     render() {
         const { open, dimmer, dummyData } = this.state;
-        const { hiddenKeys } = this.props;
+        const { hiddenKeys, devData } = this.props;
         return (
             <div className="regis_container">
-                {/*<RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>*/}
                 <div
                     draggableHandle
                     layout={this.state.layout}
@@ -320,6 +308,9 @@ class RegistryCloudletPoolViewer extends React.Component {
                 >
                     {this.generateDOM(open, dimmer, dummyData, this.state.keysData, hiddenKeys, this.props.region)}
                 </div>
+                <PopPoolDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopPoolDetailViewer>
+                <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
+                <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
             </div>
 
         );
@@ -347,26 +338,34 @@ class RegistryCloudletPoolViewer extends React.Component {
  */
 const getInteger = (str) => (
     (str === 'Openstack')? 2 :
-        (str === 'Azure')? 3 :
-            (str === 'GCP')? 4 : false
+    (str === 'Azure')? 3 :
+    (str === 'GCP')? 4 : false
 )
 const getInteger_ip = (str) => (
     (str === 'Static')? 1 :
-        (str === 'Dynamic')? 2 : false
+    (str === 'Dynamic')? 2 : false
 )
 const createFormat = (data,loc) => (
     {
         "region":data['Region'],
-        "cloudletpool":{"key": {"name":data['poolName']}}
+        "cloudlet":{
+            "key":{
+                "operator_key":{"name":data['OperatorName']},
+                "name":data['CloudletName']
+            },
+            "location":{
+                // "latitude":Number((loc)?loc.lat:0),
+                // "longitude":Number((loc)?loc.long:0),
+                "latitude":Number(data['Latitude']),
+                "longitude":Number(data['Longitude']),
+                "timestamp":{}
+            },
+            "ip_support":getInteger_ip(data['IPSupport']),
+            "num_dynamic_ips":Number(data['NumberOfDynamicIPs']),
+            "physical_name":data['PhysicalName'],
+            "platform_type":getInteger(data['PlatformType'])
+        }
     }
-)
-//http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateCloudletPoolMember <<< '{"cloudletpoolmember":{"cloudlet_key":{"name":"frankfurt-eu","operator_key":{"name":"TDG"}},"pool_key":{"name":"TEST1223"}},"region":"EU"}'
-const createFormatMember = (data,loc) => (
-    // {
-    //     "region":data['Region'],
-    //     "cloudletpool":{"key": {"name":data['poolName']}}
-    // }
-    {"cloudletpoolmember":{"cloudlet_key":{"name":"frankfurt-eu","operator_key":{"name":"TDG"}},"pool_key":{"name":"TEST1223"}},"region":"EU"}
 )
 const mapStateToProps = (state) => {
     let account = state.registryAccount.account;
@@ -380,7 +379,7 @@ const mapStateToProps = (state) => {
     let selectedApp = null;
     let flavors = null;
     let validateValue = {};
-
+    
     //TODO : 건희 20190902 새롭게 추가된 필드 'Cloudlet Type'데 대한 기능 구현 ()
     /**
      * EDGECLOUD-1187 Web UI - need to add new fields for creating a new cloudlet
@@ -403,14 +402,13 @@ const mapStateToProps = (state) => {
         state.form.createAppFormDefault.values.Latitude = state.getRegion.region.lat;
         state.form.createAppFormDefault.values.Longitude = state.getRegion.region.long;
     }
-
+    
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
-        console.log('20191223 state.form.createAppFormDefault == ', state.form.createAppFormDefault)
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
         submitVal = createFormat(enableValue,state.getRegion.region);
         validateValue = state.form.createAppFormDefault.values;
     }
-
+    
     let region = state.changeRegion
         ? {
             value: state.changeRegion.region
@@ -439,7 +437,7 @@ const mapStateToProps = (state) => {
         getRegion : (state.getRegion)?state.getRegion.region:null,
         regionInfo: regionInfo
     }
-
+    
     // return (dimm) ? {
     //     dimmInfo : dimm
     // } : (account)? {

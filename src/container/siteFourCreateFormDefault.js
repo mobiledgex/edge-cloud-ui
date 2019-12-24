@@ -6,6 +6,7 @@ import { Field, reduxForm, initialize, reset, change, stopSubmit } from "redux-f
 import MaterialIcon from "material-icons-react";
 import { Transfer } from 'antd';
 import * as services from '../services/service_compute_service';
+import SankeyDiagram from '../charts/plotly/SankeyDiagram';
 import './styles.css';
 import Duallist from 'react-duallist';
 import './react_dualist.css'
@@ -104,7 +105,6 @@ const renderTextArea = field => (
     </div>
 );
 
-
 const renderDropDown = field => (
     <div>
         <Form.Dropdown
@@ -158,12 +158,26 @@ const renderDualListBox = (self, data) => (
         showSearch
         filterOption={self.filterOption}
         targetKeys={self.state.targetKeys}
+        onSelectChange={self.handleSelectChange}
         onChange={self.handleChange}
         onSearch={self.handleSearch}
         render={item => item.title}
     />
 )
-
+const renderLinkedDiagram = (self, data) => (
+    <SankeyDiagram size={{width:800, height:500}}></SankeyDiagram>
+)
+//<div style={{display:'none', visible:'hidden'}}>
+const renderInputInvisible = field => (
+    <div>
+        <Form.Input
+            {...field.input}
+            type={field.type}
+            label={field.label}
+            placeholder={field.placeholder}
+        />
+    </div>
+);
 
 const style = {
     borderRadius: 0,
@@ -197,8 +211,9 @@ class SiteFourCreateFormDefault extends React.Component {
                 {label: 'Georgia', value: 'GA'},
             ],
             selected: ['AL', 'CA'],
-            mockData: [],
+            _mockData: [],
             targetKeys: [],
+            invisibleValue:[]
         };
 
     }
@@ -235,6 +250,7 @@ class SiteFourCreateFormDefault extends React.Component {
         const mockData = [];
 
         console.log('20191220 mock data -- ', data, ":")
+        this._mockData = data;
         if(data.length) {
             data.map((item, i) => {
                 console.log('20191220 mock selectCloudlet -- ', item['cloudlet'], ":")
@@ -258,8 +274,29 @@ class SiteFourCreateFormDefault extends React.Component {
 
     filterOption = (inputValue, option) => option.description.indexOf(inputValue) > -1;
 
-    handleChange = targetKeys => {
-        this.setState({ targetKeys });
+
+    handleChange = (nextTargetKeys, direction, moveKeys) => {
+        this.setState({ targetKeys: nextTargetKeys });
+
+        console.log('targetKeys: ', nextTargetKeys);
+        console.log('direction: ', direction);
+        console.log('moveKeys: ', moveKeys);
+        let selected = [];
+        moveKeys.map((data) => {
+            selected.push(this._mockData[parseInt(data)])
+        })
+        console.log('20191223 invisibleValue.. ', selected, ": invisible Field == ", document.getElementsByName("invisibleField"))
+        /**
+        you would dispatch() the change(form:String, field:String, value:String) action creator:
+         **/
+        this.props.dispatch(change('createAppFormDefault', 'invisibleField', JSON.stringify(selected)));
+    };
+
+    handleSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
+        this.setState({ selectedKeys: [...sourceSelectedKeys, ...targetSelectedKeys] });
+
+        console.log('sourceSelectedKeys: ', sourceSelectedKeys);
+        console.log('targetSelectedKeys: ', targetSelectedKeys);
     };
 
     handleSearch = (dir, value) => {
@@ -386,7 +423,7 @@ class SiteFourCreateFormDefault extends React.Component {
         const { data, regKeys, fieldKeys, available, selected } = this.state;
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         let disableLabel = true;
-        if(fieldKeys && fieldKeys.length && fieldKeys[0]['poolName']) {
+        if(fieldKeys && fieldKeys.length && ( fieldKeys[0]['poolName'] || fieldKeys[0]['CloudletPool'] )) {
             disableLabel = false;
         }
         console.log('20191219 pid == ', fieldKeys, ": data =", data)
@@ -485,12 +522,18 @@ class SiteFourCreateFormDefault extends React.Component {
 
                                                             (fieldKeys[pId][key]['type'] === 'RenderDualListBox') ?
                                                             <Grid>
-                                                                <Grid.Row className={'renderDualListBox'} style={{height:500}}>
+                                                                <Grid.Row className={'renderDualListBox'}>
                                                                     {renderDualListBox(this, data[key])}
                                                                 </Grid.Row>
                                                             </Grid>
                                                             :
-
+                                                            (fieldKeys[pId][key]['type'] === 'RenderLinkedDiagram') ?
+                                                                <Grid>
+                                                                    <Grid.Row className={'RenderLinkedDiagram'}>
+                                                                        {renderLinkedDiagram(this, data[key])}
+                                                                    </Grid.Row>
+                                                                </Grid>
+                                                            :
                                                             (fieldKeys[pId][key]['type'] === 'RenderTextArea') ?
                                                             <Field
                                                                 component={renderTextArea}
@@ -498,8 +541,15 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 value={data[key]}
                                                                 name={key}
                                                             />
-
-
+                                                            :
+                                                            (fieldKeys[pId][key]['type'] === 'InvisibleField') ?
+                                                                <Field
+                                                                    component={renderInputInvisible}
+                                                                    value={this.state.invisibleValue}
+                                                                    initialValue={this.state.invisibleValue}
+                                                                    placeholder={this.state.invisibleValue}
+                                                                    name={key}
+                                                                />
                                                             :
                                                             <Field
                                                                 component={renderInput}
