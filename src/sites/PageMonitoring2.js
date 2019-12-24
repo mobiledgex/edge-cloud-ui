@@ -21,7 +21,7 @@ import {
     filterCpuOrMemUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, makeHardwareUsageListPerInstance,
+    makeClusterListSelectBox, makeHardwareUsageListPerInstance, renderBarGraph2,
     renderBarGraphForCpuMem,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
@@ -520,7 +520,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/* ___col___1*/}
                         {/* ___col___1*/}
                         {/* ___col___1*/}
-                        <div className='page_monitoring_column_kj'>
+                      {/*  <div className='page_monitoring_column_kj'>
                             <div className='page_monitoring_title_area'>
                                 <div className='page_monitoring_title'>
                                     Status Of Launched App Instance
@@ -528,6 +528,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                             <div className='page_monitoring_container'>
                                 {this.state.isAppInstaceDataReady ? renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet) : renderPlaceHolder()}
+                            </div>
+                        </div>*/}
+
+                        {/* ___col___1*/}
+                        {/* ___col___1*/}
+                        {/* ___col___1*/}
+                        <div className='page_monitoring_column_kj'>
+                            <div className='page_monitoring_title_area'>
+                                <div className='page_monitoring_title'>
+                                    Status Of Launched App Instance
+                                </div>
+                            </div>
+                            <div className='page_monitoring_container'>
+                                {this.state.isAppInstaceDataReady ? renderBarGraph2(this.state.appInstanceListGroupByCloudlet, this) : renderPlaceHolder()}
                             </div>
                         </div>
                         {/* cpu___col___2*/}
@@ -714,20 +728,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
          * * MONITORINGTABS
          ##################################*/
         monitoringTabs = [
-            {
-                menuItem: 'APP', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderAppInstaceList()}
-                        </Pane>
-                    )
-                }
-            },
+
             {
                 menuItem: 'INFO', render: () => {
                     return (
                         <Pane>
                             {this.renderInfoBody()}
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'APP', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderAppInstaceList()}
                         </Pane>
                     )
                 }

@@ -301,6 +301,155 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
 
 }
 
+export const renderBarGraph2 = (appInstanceListOnCloudlet: any, _this) => {
+
+    console.log('appInstanceListOnCloudlet===>', appInstanceListOnCloudlet);
+
+    let chartDataList = [];
+    chartDataList.push(["Element", " Instance Count On Cloudlet", {role: "style"}, {
+        calc: "stringify",
+        sourceColumn: 1,
+        type: "string",
+        role: "annotation"
+    }])
+    let index = 0;
+    for (let [key, value] of Object.entries(appInstanceListOnCloudlet)) {
+        //filterInstanceCountOnCloutLetOne.push(value)
+
+        console.log('key111===>', key)
+        console.log('key111..value===>', value.length)
+
+        let barDataOne = [
+            key,
+            value.length,
+            '#1771ff',
+            value.length.toString(),
+        ]
+        chartDataList.push(barDataOne);
+        index++;
+    }
+
+
+    return (
+        <Chart
+            width={window.innerWidth * 0.45}
+            height={540}
+            chartType="BarChart"
+            loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
+            data={chartDataList}
+            options={{
+                annotations: {
+                    alwaysOutside: true,
+                    textStyle: {
+                        // fontName: 'Times-Roman',
+                        fontSize: 25,
+                        bold: true,
+                        italic: true,
+                        color: 'white',     // The color of the text.
+                        auraColor: '#2011ff', // The color of the text outline.
+                        opacity: 1.0          // The transparency of the text.
+                    },
+                    boxStyle: {
+                        // Color of the box outline.
+                        stroke: 'white',
+                        // Thickness of the box outline.
+                        strokeWidth: 40,
+                        // x-radius of the corner curvature.
+                        rx: 0,
+                        // y-radius of the corner curvature.
+                        ry: 0,
+                        // Attributes for linear gradient fill.
+                        gradient: {
+                            // Start color for gradient.
+                            color1: 'white',
+                            // Finish color for gradient.
+                            color2: 'white',
+                            // Where on the boundary to start and
+                            // end the color1/color2 gradient,
+                            // relative to the upper left corner
+                            // of the boundary.
+                            x1: '150%', y1: '100%',
+                            x2: '150%', y2: '100%',
+                            // If true, the boundary for x1,
+                            // y1, x2, and y2 is the box. If
+                            // false, it's the entire chart.
+                            useObjectBoundingBoxUnits: true
+                        }
+                    }
+                },
+                is3D: false,
+                title: '',
+                titleTextStyle: {
+                    color: 'red'
+                },
+                titlePosition: 'out',
+                chartArea: {
+                    left: 100,
+                    right: 150,
+                    top: 20,
+                    width: "50%",
+                    height: "80%",
+                    backgroundColor: {
+                        //  'fill': '#F4F4F4',
+                        'opacity': 100
+                    },
+                },
+                legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
+                //xAxis
+                hAxis: {
+                    textPosition: 'none',//HIDE xAxis
+                    title: '',
+                    titleTextStyle: {
+                        //fontName: "Times",
+                        fontSize: 12,
+                        fontStyle: "italic",
+                        color: 'white'
+                    },
+                    minValue: 0,
+                    textStyle: {
+                        color: "white"
+                    },
+                    gridlines: {
+                        color: "transparent"
+                    },
+                    //format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '#\' byte\'',
+                    baselineColor: 'grey',
+                    //out', 'in', 'none'.
+                },
+                //Y축
+                vAxis: {
+                    title: '',
+                    titleTextStyle: {
+                        fontSize: 14,
+                        fontStyle: "normal",
+                        color: 'white'
+                    },
+                    textStyle: {
+                        color: "white",
+                        fontSize: 15,
+                    },
+
+                },
+                //colors: ['#FB7A21'],
+                fontColor: 'white',
+                backgroundColor: {
+                    fill: 'black'
+                },
+                animation: {
+                    duration: 90,
+                    easing: 'out',
+                    startup: true
+                }
+                //colors: ['green']
+            }}
+
+            // For tests
+            rootProps={{'data-testid': '1'}}
+        />
+    );
+
+}
+
 
 /**
  *
