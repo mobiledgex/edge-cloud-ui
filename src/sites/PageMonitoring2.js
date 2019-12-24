@@ -189,16 +189,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-         /*   let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
+            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
             let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
             let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-            console.log('_result===>', cpuOrMemUsageList);*/
+            console.log('_result===>', cpuOrMemUsageList);
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
             //todo: ################################################################
-            let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
-            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
+            /*let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
+            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')*/
 
 
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
