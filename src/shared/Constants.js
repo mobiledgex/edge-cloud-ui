@@ -5,6 +5,8 @@ export const HARDWARE_TYPE = {
 
     CPU: "cpu",
     MEM: "mem",
+    NETWORK: "network",
+    DISK: "disk"
 
 }
 //rgb(255,0,10)
@@ -22,7 +24,7 @@ export const REGION = {
     EU: 'EU',
 }
 
-export const RECENT_DATA_LIMIT_COUNT = 100
+export const RECENT_DATA_LIMIT_COUNT = 25
 
 export const APP_PERFORMANCE_VALUES = {
     M4_MEDIUM: {

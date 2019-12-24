@@ -6,7 +6,7 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
 import {hot} from "react-hot-loader/root";
-import {Dropdown, Grid, Tab,} from "semantic-ui-react";
+import {Dropdown, Form, Grid, Tab,} from "semantic-ui-react";
 import {DatePicker, notification} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
@@ -21,7 +21,7 @@ import {
     filterCpuOrMemUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, makeCpuOrMemUsageListPerInstance,
+    makeClusterListSelectBox, makeHardwareUsageListPerInstance,
     renderBarGraphForCpuMem,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
@@ -34,6 +34,7 @@ import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../shared
 import Lottie from "react-lottie";
 import type {TypeAppInstance} from "../shared/Types";
 import {toggleLoading} from "../actions";
+import {CircularProgress} from "@material-ui/core";
 //import './PageMonitoring.css';
 const FA = require('react-fontawesome')
 const {Column, Row} = Grid;
@@ -189,28 +190,37 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
-            let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
-            let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-            console.log('_result===>', cpuOrMemUsageList);
+          /*  let usageList = await Promise.all([
+                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
+                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
+                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
+                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
+            ])
+            let cpuUsageListPerOneInstance = usageList[0]
+            let memUsageListPerOneInstance = usageList[1]
+            console.log('_result===>', usageList);*/
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
             //todo: ################################################################
-            /*let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
-            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')*/
-
+            let usageList = require('../jsons/allUsageList_50')
+            let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
+            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
 
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
             let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
             let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
             await this.setState({
 
-                cloudletList: cloudletList,
-                clusterList: clusterList,
-                //todo: 전체 cpu/mem 사용량 리스트..
+                usageListCPU: usageList[0],
+                usageListMEM: usageList[1],
+                usageListDISK: usageList[2],
+                usageListNETWORK: usageList[3],
+
                 allCpuUsageList: cpuUsageListPerOneInstance,
                 allMemUsageList: memUsageListPerOneInstance,
+                cloudletList: cloudletList,
+                clusterList: clusterList,
                 filteredCpuUsageList: cpuUsageListPerOneInstance,
                 filteredMemUsageList: memUsageListPerOneInstance,
 
@@ -627,7 +637,92 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        tabs = [
+        renderAppInstaceList() {
+
+
+            return (
+                <div style={{marginTop: 10}}>
+                    {!this.state.isReady && <CircularProgress style={{color: 'green'}}/>}
+                    <Grid columns={7} padded={true}>
+                        <Row>
+                            <Column color={'grey'}>
+                                NAME
+                            </Column>
+                            <Column color={'grey'}>
+                                CPU(%)
+                            </Column>
+                            <Column color={'grey'}>
+                                RSS MEM
+                            </Column>
+                            <Column color={'grey'}>
+                                RecvBytes
+                            </Column>
+                            <Column color={'grey'}>
+                                SendBytes
+                            </Column>
+                            <Column color={'grey'}>
+                                Status
+                            </Column>
+                            <Column color={'grey'}>
+                                Start
+                            </Column>
+                        </Row>
+                        {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
+
+
+                            /*   sumCpuUsage: sumCpuUsage,
+                               sumMemUsage: sumMemUsage,
+                               sumDiskUsage: sumDiskUsage,
+                               sumRecvBytes: sumRecvBytes,
+                               sumSendBytes: sumSendBytes,*/
+
+                            return (
+                                <Row>
+                                    <Column>
+                                        {item.AppName}
+                                    </Column>
+                                    <Column>
+                                        {this.state.usageListCPU[index].sumCpuUsage.toFixed(2) + "%"}
+                                    </Column>
+                                    <Column>
+                                        {this.state.usageListMEM[index].sumMemUsage.toFixed(0) + ' Byte'}
+                                    </Column>
+                                    <Column>
+                                        {this.state.usageListNETWORK[index].sumRecvBytes}
+                                    </Column>
+                                    <Column>
+                                        {this.state.usageListNETWORK[index].sumSendBytes}
+                                    </Column>
+                                    <Column>
+                                        asdasdasd
+                                    </Column>
+                                    <Column>
+                                        adasd
+                                    </Column>
+                                </Row>
+                            )
+                        })}
+                    </Grid>
+                </div>
+            )
+        }
+
+
+        /**###############################
+         * * MONITORINGTABS
+         * * MONITORINGTABS
+         * * MONITORINGTABS
+         ##################################*/
+        monitoringTabs = [
+            {
+                menuItem: 'APP', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderAppInstaceList()}
+                        </Pane>
+                    )
+                }
+            },
             {
                 menuItem: 'INFO', render: () => {
                     return (
@@ -637,6 +732,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     )
                 }
             },
+
             {
                 menuItem: 'CPU', render: () => {
                     return (
@@ -690,7 +786,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     )
                 }
             },
-
         ]
 
         render() {
@@ -727,11 +822,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         <div className='page_monitoring_dashboard'>
 
                                             <Tab
-                                                panes={this.tabs}
+                                                panes={this.monitoringTabs}
                                                 activeIndex={this.state.activeTabIndex}
                                                 onTabChange={(e, {activeIndex}) => {
                                                     this.setState({
-                                                        activeTabIndex:activeIndex,
+                                                        activeTabIndex: activeIndex,
                                                     })
                                                 }}
                                             />

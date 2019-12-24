@@ -241,7 +241,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                     width: "50%",
                     height: "80%",
                     backgroundColor: {
-                      //  'fill': '#F4F4F4',
+                        //  'fill': '#F4F4F4',
                         'opacity': 100
                     },
                 },
@@ -1213,6 +1213,50 @@ export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'U
     return finalizedAppInstanceList;
 }
 
+export const getInstHealth = async () => {
+
+    let ServerUrl = 'https://' + window.location.hostname + ':3030';
+
+    axios({
+        method: 'post', //you can set what request you want to be
+        url: ServerUrl + '/api/v1/auth/metrics/app',
+        data: {
+            "region": "EU",
+            "appinst": {
+                "app_key": {
+                    "developer_key": {
+                        "name": "testaaa"
+                    },
+                    "name": "jjjkkk",
+                    "version": "1.0"
+                },
+                "cluster_inst_key": {
+                    "cluster_key": {
+                        "name": "kkkkkkk"
+                    },
+                    "cloudlet_key": {
+                        "name": "frankfurt-eu",
+                        "operator_key": {
+                            "name": "TDG"
+                        }
+                    }
+                }
+            },
+            "selector": "cpu",
+            "last": 3
+        },
+        headers: {
+            Authorization: 'Bearer ' + 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzcyNDkyMzAsImlhdCI6MTU3NzE2MjgzMCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.mXNokQljXGEWiskwNVC7TRIV64FxkosPMpcmw7cs6aWx1XjxPJvoJ4D3NZKJjnl-WswPUHo2PD4QcAoKyy8J8g'
+        }
+    }).then(res => {
+        console.log('sdlkfsldkflksdflksdlfk===>', res);
+    }).catch(e => {
+        alert(e)
+    })
+
+
+}
+
 
 /**
  * @desc : 앱인스턴스 리스트 이용해서 인스턴스에 대한 total cpu usage 리스트를 만든다..
@@ -1220,7 +1264,7 @@ export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'U
  * @param appInstanceList
  * @returns {Promise<Array>}
  */
-export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = HARDWARE_TYPE.CPU, recentDataLimitCount: number) => {
+export const makeHardwareUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = HARDWARE_TYPE.CPU, recentDataLimitCount: number) => {
 
     let cpuUsageListPerOneInstance = []
     for (let index = 0; index < appInstanceList.length; index++) {
@@ -1243,7 +1287,7 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
 
     }
 
-    let newCpuOrMemUsageListPerOneInstance = [];
+    let newHardwareUsageList = [];
 
     for (let index = 0; index < cpuUsageListPerOneInstance.length; index++) {
         if (cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series != null) {
@@ -1253,13 +1297,21 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
 
             let sumCpuUsage = 0;
             let sumMemUsage = 0;
+            let sumDiskUsage = 0;
+            let sumRecvBytes = 0;
+            let sumSendBytes = 0;
             for (let jIndex = 0; jIndex < values.length; jIndex++) {
                 //console.log('itemeLength===>',  values[i][4]);
 
-                if (paramCpuOrMem === 'cpu') {
+                if (paramCpuOrMem === HARDWARE_TYPE.CPU) {
                     sumCpuUsage = sumCpuUsage + values[jIndex][4];
-                } else {
-                    sumMemUsage = sumCpuUsage + values[jIndex][5];
+                } else if (paramCpuOrMem === HARDWARE_TYPE.MEM) {
+                    sumMemUsage = sumMemUsage + values[jIndex][5];
+                } else if (paramCpuOrMem === HARDWARE_TYPE.NETWORK) {
+                    sumRecvBytes = sumRecvBytes + values[jIndex][6];
+                    sumSendBytes = sumSendBytes + values[jIndex][7];
+                } else if (paramCpuOrMem === HARDWARE_TYPE.DISK) {
+                    sumDiskUsage = sumDiskUsage + values[jIndex][5];
                 }
 
             }
@@ -1270,21 +1322,81 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
 
             console.log('sumMemUsage===>', sumMemUsage);
 
-            newCpuOrMemUsageListPerOneInstance.push({
-                instance: cpuUsageListPerOneInstance[index].instanceData,
-                columns: columns,
-                values: values,
-                sumCpuUsage: sumCpuUsage,
-                sumMemUsage: sumMemUsage,
-            });
+
+            let body = {}
+            if (paramCpuOrMem === 'cpu') {
+                body = {
+                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    columns: columns,
+                    values: values,
+                    sumCpuUsage: sumCpuUsage,
+                }
+
+            } else if (paramCpuOrMem === 'mem') {
+                body = {
+                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    columns: columns,
+                    values: values,
+                    sumMemUsage: sumMemUsage,
+                }
+
+            } else if (paramCpuOrMem === 'disk') {
+                body = {
+                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    columns: columns,
+                    values: values,
+                    sumDiskUsage: sumDiskUsage,
+                }
+            } else {//network
+                body = {
+                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    columns: columns,
+                    values: values,
+                    sumRecvBytes: sumRecvBytes,
+                    sumSendBytes: sumSendBytes,
+                }
+
+            }
+
+            newHardwareUsageList.push(body);
+
         } else {
-            newCpuOrMemUsageListPerOneInstance.push({
-                instance: cpuUsageListPerOneInstance[index].instanceData,
-                columns: '',
-                values: '',
-                sumCpuUsage: 0,
-                sumMemUsage: 0,
-            });
+
+            let body = {}
+            if (paramCpuOrMem === 'cpu') {
+                body = {
+                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    columns: '',
+                    values: '',
+                    sumCpuUsage: 0,
+                }
+
+            } else if (paramCpuOrMem === 'mem') {
+                body = {
+                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    columns: '',
+                    values: '',
+                    sumMemUsage: 0,
+                }
+
+            } else if (paramCpuOrMem === 'disk') {
+                body = {
+                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    columns: '',
+                    values: '',
+                    sumDiskUsage: 0,
+                }
+            } else {//network
+                body = {
+                    instance: cpuUsageListPerOneInstance[index].instanceData,
+                    columns: '',
+                    values: '',
+                    sumRecvBytes: 0,
+                    sumSendBytes: 0,
+                }
+
+            }
+            newHardwareUsageList.push(body);
         }
 
     }
@@ -1292,16 +1404,19 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
     //@todo : Sort cpu usage in reverse order.
     //@todo :##################################
     if (paramCpuOrMem === 'cpu') {
-        newCpuOrMemUsageListPerOneInstance.sort((a, b) => {
+        newHardwareUsageList.sort((a, b) => {
             return b.sumCpuUsage - a.sumCpuUsage;
         });
+    } else if (paramCpuOrMem === 'network') {
+        newHardwareUsageList.sort((a, b) => {
+            return b.sumRecvBytes - a.sumRecvBytes;
+        });
     } else {//mem
-        newCpuOrMemUsageListPerOneInstance.sort((a, b) => {
+        newHardwareUsageList.sort((a, b) => {
             return b.sumMemUsage - a.sumMemUsage;
         });
     }
-
-    return newCpuOrMemUsageListPerOneInstance;
+    return newHardwareUsageList;
 }
 
 
