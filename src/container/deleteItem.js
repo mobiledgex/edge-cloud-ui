@@ -178,7 +178,7 @@ class DeleteItem extends React.Component {
             }, 2000)
             
         } else if(this.props.siteId === 'appinst') {
-            const {OrganizationName, AppName, Version, Operator, Cloudlet, ClusterInst, Region} = this.props.selected
+            const {OrganizationName, AppName, Version, Operator, Cloudlet, ClusterInst, Region, ClusterDeveloper} = this.props.selected
             serviceNm = 'DeleteAppInst';
             let clId = '';
             if(ClusterInst.indexOf('autocluster') > -1) {
@@ -195,7 +195,7 @@ class DeleteItem extends React.Component {
                             "cluster_inst_key":{
                                 "cloudlet_key":{"name":Cloudlet,"operator_key":{"name":Operator}},
                                 "cluster_key":{"name":ClusterInst},
-                                "developer":OrganizationName
+                                "developer":(ClusterDeveloper !== '') ? ClusterDeveloper : OrganizationName
                             }
                         },
                         
