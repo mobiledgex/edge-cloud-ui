@@ -554,7 +554,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/* ___col___1*/}
                         {/* ___col___1*/}
                         {/* ___col___1*/}
-                          <div className='page_monitoring_column_kj'>
+                        <div className='page_monitoring_column_kj'>
                             <div className='page_monitoring_title_area'>
                                 <div className='page_monitoring_title'>
                                     Status Of Launched App Instance
@@ -568,7 +568,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/* ___col___1*/}
                         {/* ___col___1*/}
                         {/* ___col___1*/}
-                      {/*  <div className='page_monitoring_column_kj'>
+                        {/*  <div className='page_monitoring_column_kj'>
                             <div className='page_monitoring_title_area'>
                                 <div className='page_monitoring_title'>
                                     Status Of Launched App Instance
@@ -685,10 +685,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderAppInstaceList() {
+        renderAppBody() {
             return (
                 <div style={{marginTop: 10}}>
                     <Grid columns={7} padded={true}>
+                        {/*todo:ROW HEADER*/}
+                        {/*todo:ROW HEADER*/}
+                        {/*todo:ROW HEADER*/}
                         <Row>
                             <Column color={'grey'}>
                                 NAME
@@ -743,10 +746,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {this.state.usageListNETWORK[index].sumSendBytes}
                                     </Column>
                                     <Column>
-                                        asdasdasd
+                                        Status_NULL
                                     </Column>
                                     <Column>
-                                        adasd
+                                        Start_NULL
                                     </Column>
                                 </Row>
                             )
@@ -851,7 +854,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'APP', render: () => {
                     return (
                         <Pane>
-                            {this.renderAppInstaceList()}
+                            {this.renderAppBody()}
                         </Pane>
                     )
                 }
