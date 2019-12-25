@@ -752,6 +752,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         Start_NULL
                                     </Column>
                                 </Row>
+
                             )
                         })}
                     </Grid>
