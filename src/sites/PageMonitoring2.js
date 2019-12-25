@@ -200,15 +200,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            let usageList = await Promise.all([
-                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
-                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
-                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
-                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
-            ])
-            let cpuUsageListPerOneInstance = usageList[0]
-            let memUsageListPerOneInstance = usageList[1]
-            console.log('_result===>', usageList);
+               let usageList = await Promise.all([
+                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
+                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
+                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
+                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
+               ])
+               let cpuUsageListPerOneInstance = usageList[0]
+               let memUsageListPerOneInstance = usageList[1]
+               console.log('_result===>', usageList);
 
 
             //todo: ################################################################
@@ -260,6 +260,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div style={{marginLeft: '10px'}}>
                         <button className="ui circular icon button"><i aria-hidden="true"
                                                                        className="info icon"></i></button>
+                    </div>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: "center",
+                        alignSelf: "center",
+                        width: 200,
+                        marginLeft: 15,
+                        marginBottom: 0
+                    }}>
+                        {!this.state.isReady &&
+                        <CircularProgress style={{color: '#77BD25', fontSize: 15, marginBottom: 5, marginLeft: -50,}} size={35}/>
+                        }
+
                     </div>
                 </Grid.Row>
             )
