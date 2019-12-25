@@ -6,7 +6,7 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
 import {hot} from "react-hot-loader/root";
-import {Dropdown, Form, Grid, Tab,} from "semantic-ui-react";
+import {Dropdown, Form, Grid, Segment, Tab,} from "semantic-ui-react";
 import {DatePicker, notification} from 'antd';
 import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
@@ -200,15 +200,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-               let usageList = await Promise.all([
-                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
-                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
-                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
-                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
-               ])
-               let cpuUsageListPerOneInstance = usageList[0]
-               let memUsageListPerOneInstance = usageList[1]
-               console.log('_result===>', usageList);
+            let usageList = await Promise.all([
+                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
+                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
+                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
+                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
+            ])
+            let cpuUsageListPerOneInstance = usageList[0]
+            let memUsageListPerOneInstance = usageList[1]
+            console.log('_result===>', usageList);
 
 
             //todo: ################################################################
@@ -689,7 +689,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderAppInstaceList() {
             return (
                 <div style={{marginTop: 10}}>
-                    {!this.state.isReady && <CircularProgress style={{color: 'green'}}/>}
                     <Grid columns={7} padded={true}>
                         <Row>
                             <Column color={'grey'}>
@@ -714,8 +713,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 Start
                             </Column>
                         </Row>
+                        {!this.state.isReady && <Row columns={1}>
+                            <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
+                                <CircularProgress style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
+                            </Column>
+                        </Row>}
                         {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
-
 
                             /*   sumCpuUsage: sumCpuUsage,
                                sumMemUsage: sumMemUsage,
