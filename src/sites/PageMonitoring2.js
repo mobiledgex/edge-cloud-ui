@@ -21,7 +21,7 @@ import {
     filterCpuOrMemUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, makeHardwareUsageListPerInstance, renderBarGraph2,
+    makeClusterListSelectBox, makeHardwareUsageListPerInstance, renderBarGraphForInfo,
     renderBarGraph,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
@@ -576,7 +576,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </div>
                             </div>
                             <div className='page_monitoring_container'>
-                                {this.state.isAppInstaceDataReady ? renderBarGraph2(this.state.appInstanceListGroupByCloudlet, this) : renderPlaceHolder()}
+                                {this.state.isAppInstaceDataReady ? renderBarGraphForInfo(this.state.appInstanceListGroupByCloudlet, this) : renderPlaceHolder()}
                             </div>
                         </div>
                         {/* cpu___col___2*/}

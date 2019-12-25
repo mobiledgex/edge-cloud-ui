@@ -344,7 +344,7 @@ export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_T
 
 }
 
-export const renderBarGraph2 = (appInstanceListOnCloudlet: any, _this) => {
+export const renderBarGraphForInfo = (appInstanceListOnCloudlet: any, _this) => {
 
     console.log('appInstanceListOnCloudlet===>', appInstanceListOnCloudlet);
 
