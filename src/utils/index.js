@@ -129,8 +129,10 @@ export const filterSearch = (data, searchValue, searchType) => {
 export const getTodayDate = () => {
     let d = Date.now();
     d = new Date(d);
-    d = (d.getDate()) + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
-
+    let year = d.getFullYear();
+    let month = (d.getMonth() + 1)
+    let day = d.getDate()
+    d = year + "-" + month + "-" + day;
     return d;
 }
 

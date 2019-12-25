@@ -302,7 +302,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         renderGrid = (appInstanceListSortByCloudlet: any) => {
-            let boxWidth = window.innerWidth / 10 * 2.55;
+            // let boxWidth = window.innerWidth / 10 * 2.55;
 
             let cloudletCountList = []
             for (let i in appInstanceListSortByCloudlet) {
@@ -328,74 +328,51 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
 
             return (
-                <div style={{}}>
+                <div style={{display:'flex', flexDirection:'column', width:'100%'}}>
                     {chunkedArraysOfColSize.map((colSizeArray, index) =>
-                        <FlexBox style={{backgroundColor: 'black', width: boxWidth}} key={index.toString()}>
+                        <div className='page_monitoring_grid' key={index.toString()}>
                             {colSizeArray.map((item) =>
-                                <FlexBox style={{
-                                    alignItems: 'center',
-                                    justifyContent: 'flex-start',
-                                    margin: 5,
-                                    backgroundColor: '#292929',
-                                    flexDirection: 'column',
-                                    width: (boxWidth) * 0.32,
-                                    height: 115,
+                                <div className='page_monitoring_grid_box_layout'>
+                                    <div className='page_monitoring_grid_box'>
+                                        <div className='page_monitoring_grid_box_name'>
+                                            {item.name}
+                                            {/*{item.name.toString().substring(0, 17) + "..."}*/}
+                                        </div>
+                                        <div className='page_monitoring_grid_box_num'>
+                                            {item.length}
+                                        </div>
 
-                                }}>
-                                    <FlexBox style={{
-                                        fontSize: 15,
-                                        color: '#fff',
-                                        marginTop: 10,
-                                    }}>
-                                        {item.name.toString().substring(0, 17) + "..."}
-                                    </FlexBox>
-                                    <FlexBox style={{
-                                        marginTop: 0,
-                                        fontSize: 50,
-                                        color: '#29a1ff',
-                                    }}>
-                                        {item.length}
-                                    </FlexBox>
-
-                                </FlexBox>
+                                    </div>
+                                </div>
                             )}
-                        </FlexBox>
+                        </div>
                     )}
 
                     {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
                     {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
                     {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
                     {chunkedArraysOfColSize.length === 1 &&
-                    <FlexBox style={{backgroundColor: 'black', width: boxWidth}}>
+                    <div className='page_monitoring_grid'>
                         {[1, 2, 3].map((item) =>
-                            <FlexBox style={{
-                                alignItems: 'center',
-                                justifyContent: 'flex-start',
-                                margin: 5,
-                                backgroundColor: 'transprent',
-                                flexDirection: 'column',
-                                width: (boxWidth) * 0.32,
-                                height: 115,
-
-                            }}>
-                                <FlexBox style={{
+                            <div>
+                                <div style={{
                                     fontSize: 15,
                                     color: '#fff',
                                     marginTop: 10,
                                 }}>
                                     {/*blank*/}
-                                </FlexBox>
-                                <FlexBox style={{
+                                </div>
+                                <div style={{
                                     marginTop: 0,
                                     fontSize: 50,
                                     color: 'transprent',
                                 }}>
                                     {/*blank*/}
-                                </FlexBox>
+                                </div>
 
-                            </FlexBox>
+                            </div>
                         )}
-                    </FlexBox>
+                    </div>
 
                     }
 

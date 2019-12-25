@@ -8,3 +8,7 @@ server/yarn-error.log
 server/yarn.lock
 
 
+# Editor-based HTTP Client requests
+/httpRequests/
+# Default ignored files
+/workspace.xml

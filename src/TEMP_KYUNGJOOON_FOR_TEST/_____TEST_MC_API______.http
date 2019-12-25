@@ -1,0 +1,97 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection) or
+# paste cURL into the file and request will be converted to HTTP Request format.
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY3OTA4MTgsImlhdCI6MTU3NjcwNDQxOCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.4a2fmGx-NWBDmyJuRN6Rasbay0An5rZflMmuTuVnlIvNn285cGOtJ4KNaLPx5YyxymV1IgOVDujjOJFwA0okfA
+http --auth-type=jwt --auth=$SUPERPASS POST https://mc.mobiledgex.net:9900/api/v1/auth/ctrl/ShowAppInst region=EU
+
+curl -d '{"key1":"value1", "key2":"value2"}' -H "Content-Type: application/json" -X POST http://localhost:3000/data
+POST http://localhost:3000/data
+Content-Type: application/json
+
+{"key1":"value1", "key2":"value2"}
+
+### https://mc.mobiledgex.net:9900
+
+# curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://www.example.com
+POST https://mc.mobiledgex.net:9900/api/v1/auth/ctrl/ShowAppInst
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY3OTA4MTgsImlhdCI6MTU3NjcwNDQxOCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.4a2fmGx-NWBDmyJuRN6Rasbay0An5rZflMmuTuVnlIvNn285cGOtJ4KNaLPx5YyxymV1IgOVDujjOJFwA0okfA
+
+{
+  "region": "EU"
+}
+
+###
+
+POST https://mc-dev.mobiledgex.net:9900/api/v1/auth/ctrl/ShowAppInst
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY4MTYxMjcsImlhdCI6MTU3NjcyOTcyNywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.ukWHnsSLSZoPCq9z4FBGLq7NkTus9sWnt05lj4ozIrTJxJl5aSvxMsWbNQVgbeljUlj15fa6HSFg3MXN2erAMw
+
+{
+  "region": "US"
+}
+
+###cpu 사용량
+
+POST  https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY5MDMwMTksImlhdCI6MTU3NjgxNjYxOSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.SjrGHCkoEKz3bB6dpPQzLHjGpAoaXBmP2n5Goz-0e-Bbs-0jhHjQ4iSnrUxObcqZhbGowez-D5L04bJExDxYog
+
+{
+  "region": "EU",
+  "appinst": {
+    "app_key": {
+      "developer_key": {
+        "name": "MobiledgeX"
+      },
+      "name": "zzaaa",
+      "version": "1"
+    },
+    "cluster_inst_key": {
+      "cluster_key": {
+        "name": "qqqaaa"
+      },
+      "cloudlet_key": {
+        "name": "frankfurt-eu",
+        "operator_key": {
+          "name": "TDG"
+        }
+      }
+    }
+  },
+  "selector": "cpu",
+  "last": 5
+}
+
+###
+
+POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cluster
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzcyMzk2ODYsImlhdCI6MTU3NzE1MzI4NiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.SQslZmKn1cer4tfKpZfvzbHAp3zyoxCWdsdVeDhS1E8X4WJ6lT3DEiawXwJgQYoiS0oacTlNW5h-T1wS-Pcofg
+
+{
+  "region": "EU",
+  "clusterinst": {
+    "cluster_key": {
+      "name": "AppCluster"
+    },
+    "cloudlet_key": {
+      "operator_key": {
+        "name": "mexdev"
+      },
+      "name": "localtest"
+    },
+    "developer": "MobiledgeX"
+  },
+  "starttime": "2019-12-23T21:26:04Z",
+  "endtime": "2019-12-24T21:26:10Z",
+  "last": 6,
+  "selector": "cpu"
+}
+
+###
+

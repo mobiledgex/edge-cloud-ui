@@ -1,0 +1,27 @@
+{
+  "region": "US",
+  "appinst": {
+    "app_key": {
+      "developer_key": {
+        "name": "MobiledgeX"
+      },
+      "name": "mexprometheusappname",
+      "version": "1.0"
+    },
+    "cluster_inst_key": {
+      "cluster_key": {
+        "name": "rah-cluster1"
+      },
+      "cloudlet_key": {
+        "name": "automationBerlinCloudletStage",
+        "operator_key": {
+          "name": "TDG"
+        }
+      }
+    }
+  },
+  "selector": "mem",
+  "last": 1200
+}
+
+메모리lksdflk
