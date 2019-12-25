@@ -73,6 +73,9 @@
     padding: 10px;
     margin-right: 20px;
     height:640px;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-bottom: -10px;
 }
 
 .page_monitoring_column:last-child {

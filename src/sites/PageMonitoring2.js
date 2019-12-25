@@ -837,7 +837,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             {
                 menuItem: 'INFO', render: () => {
                     return (
-                        <Pane>
+                        <Pane style={{marginTop:0, backgroundColor:'transparent'}}>
                             {this.renderInfoBody()}
                         </Pane>
                     )
