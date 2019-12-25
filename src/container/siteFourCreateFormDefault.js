@@ -10,8 +10,8 @@ import SankeyDiagram from '../charts/plotly/SankeyDiagram';
 import './styles.css';
 import Duallist from 'react-duallist';
 import './react_dualist.css'
-import "antd/dist/antd.css";
-import stylesheetUrl from "../css/components/antd/css/transfer.css";
+
+import "../css/antTheme/components/antd/transfer.css";
 
 const makeOption =(options)=> {
 
@@ -306,7 +306,7 @@ class SiteFourCreateFormDefault extends React.Component {
     /** end ANT **/
 
     componentDidMount() {
-        if(this.props.data && this.props.data.data.length){
+        if(this.props.data && this.props.data.data && this.props.data.data.length){
             let keys = Object.keys(this.props.data.data[0])
             this.setState({data:this.props.data.data[0], regKeys:keys, fieldKeys:this.props.data.keys, pId:this.props.pId})
             if(!this.state.dataInit){

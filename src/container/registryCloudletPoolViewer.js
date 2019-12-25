@@ -286,9 +286,6 @@ class RegistryCloudletPoolViewer extends React.Component {
                 // --- test ---
                 this.createCloudletPoolMember(a,b,c)
 
-
-
-
                 setTimeout(() => {
                     this.props.handleLoadingSpinner(false);
                     this.props.gotoUrl();

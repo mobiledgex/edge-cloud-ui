@@ -85,7 +85,7 @@ const cloudletMap = (props, type) => (
     </Fragment>
 )
 let _self = null;
-class SiteFourCreatePoolForm extends React.PureComponent {
+class SiteFourCreatePoolForm extends React.Component {
     constructor() {
         super();
         this.state = {
