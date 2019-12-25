@@ -1105,7 +1105,8 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
                     {colSizeArray.map((item, index) =>
                         <div className='page_monitoring_grid_box' style={{flex: colSizeArray.length === 1 && index === 0 && .326}}>
                             <FlexBox style={{
-                                fontSize: 15,
+                                fontSize: 19,
+                                fontFamily: 'Encode Sans Condensed',
                                 color: '#fff',
                                 marginTop: 10,
                             }}>
