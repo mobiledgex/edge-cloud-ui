@@ -514,8 +514,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderLoaderForEntrance() {
             return (
-                <Grid.Row className='view_contents'>
-                    <Grid.Column className='contents_body'>
+                <Row className='view_contents'>
+                    <Column className='contents_body'>
                         {this.renderHeader()}
                         <div style={{position: 'absolute', top: '25%', left: '42%'}}>
                             {/*<CircularProgress style={{color: 'red'}}/>*/}
@@ -539,8 +539,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     {this.state.counter}
                                 </div>*/}
                         </div>
-                    </Grid.Column>
-                </Grid.Row>
+                    </Column>
+                </Row>
             )
         }
 
@@ -554,7 +554,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/* ___col___1*/}
                         {/* ___col___1*/}
                         {/* ___col___1*/}
-                        {/*  <div className='page_monitoring_column_kj'>
+                          <div className='page_monitoring_column_kj'>
                             <div className='page_monitoring_title_area'>
                                 <div className='page_monitoring_title'>
                                     Status Of Launched App Instance
@@ -563,12 +563,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <div className='page_monitoring_container'>
                                 {this.state.isAppInstaceDataReady ? renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet) : renderPlaceHolder()}
                             </div>
-                        </div>*/}
+                        </div>
 
                         {/* ___col___1*/}
                         {/* ___col___1*/}
                         {/* ___col___1*/}
-                        <div className='page_monitoring_column_kj'>
+                      {/*  <div className='page_monitoring_column_kj'>
                             <div className='page_monitoring_title_area'>
                                 <div className='page_monitoring_title'>
                                     Status Of Launched App Instance
@@ -577,7 +577,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <div className='page_monitoring_container'>
                                 {this.state.isAppInstaceDataReady ? renderBarGraphForInfo(this.state.appInstanceListGroupByCloudlet, this) : renderPlaceHolder()}
                             </div>
-                        </div>
+                        </div>*/}
                         {/* cpu___col___2*/}
                         {/* cpu___col___2*/}
                         {/* cpu___col___2*/}
