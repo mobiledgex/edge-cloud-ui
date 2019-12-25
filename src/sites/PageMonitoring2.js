@@ -721,7 +721,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                sumSendBytes: sumSendBytes,*/
 
                             return (
-                                <Row>
+                                <Row onClick={()=>{
+                                    //this.props.history.push('PageMonitoringDetail')
+                                }}>
                                     <Column>
                                         {item.AppName}
                                     </Column>
