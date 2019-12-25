@@ -910,7 +910,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:####################*/}
                         {this.renderHeader()}
 
-
                         <Grid.Row className='site_content_body'>
                             <Grid.Column>
                                 <div className="table-no-resized"
@@ -918,14 +917,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                     <div className="page_monitoring">
                                         {/*todo:####################*/}
-                                        {/*todo:SelectBox part start */}
+                                        {/*todo:SELECTBOX PART  */}
                                         {/*todo:####################*/}
                                         {this.renderSelectBox()}
+
                                         {/*todo:####################*/}
-                                        {/*todo:Content Body part   */}
+                                        {/*todo:Content Body PART   */}
                                         {/*todo:####################*/}
                                         <div className='page_monitoring_dashboard'>
-
 
                                             {/*todo:#################################*/}
                                             {/*todo:RENDERING TAB & TAB PANE(BODY)   */}

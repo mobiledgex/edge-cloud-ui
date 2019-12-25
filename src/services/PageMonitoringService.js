@@ -1248,6 +1248,9 @@ export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'U
     return finalizedAppInstanceList;
 }
 
+
+
+
 export const getInstHealth = async () => {
 
     let ServerUrl = 'https://' + window.location.hostname + ':3030';
