@@ -200,16 +200,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-          /*  let usageList = await Promise.all([
-                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
-                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
-                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
-                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
-            ])
-            let cpuUsageListPerOneInstance = usageList[0]
-            let memUsageListPerOneInstance = usageList[1]
-            console.log('_result===>', usageList);
-            */
+            /* let usageList = await Promise.all([
+                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
+                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
+                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
+                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
+             ])
+             let cpuUsageListPerOneInstance = usageList[0]
+             let memUsageListPerOneInstance = usageList[1]
+             console.log('_result===>', usageList);*/
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
@@ -217,7 +216,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let usageList = require('../jsons/allUsageList_50')
             let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
             let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
-
 
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
             let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
@@ -242,6 +240,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clearInterval(this.intervalHandle)
             this.props.toggleLoading(false);
             notification.success({
+                duration: 1.5,
                 message: 'Data loading complete!'
             })
         }
