@@ -39,6 +39,7 @@ import {CircularProgress} from "@material-ui/core";
 const FA = require('react-fontawesome')
 const {Column, Row} = Grid;
 const {Pane} = Tab
+
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
@@ -46,7 +47,6 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchProps = (dispatch) => {
     return {
-
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
         }
@@ -95,7 +95,6 @@ type State = {
     usageListMEM: Array,
     usageListDISK: Array,
     usageListNETWORK: Array,
-
 
 }
 
@@ -200,15 +199,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            /* let usageList = await Promise.all([
+            /*
+            let usageList = await Promise.all([
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
              ])
-             let cpuUsageListPerOneInstance = usageList[0]
-             let memUsageListPerOneInstance = usageList[1]
-             console.log('_result===>', usageList);*/
+            let cpuUsageListPerOneInstance = usageList[0]
+            let memUsageListPerOneInstance = usageList[1]
+            console.log('_result===>', usageList);
+            */
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
@@ -280,8 +281,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         setAppInstanceOne(paramAppName: string) {
-            //alert()
-
             // this.props.toggleLoading(true);
             paramAppName = paramAppName.replace("...", "");
 
@@ -291,17 +290,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     appInstanceOne = item;
                     console.log('item_AppName===>', item.AppName);
                 }
-
-
             })
             this.setState({
                 appInstanceOne: appInstanceOne,
-            }, () => {
-                /* setTimeout(() => {
-                     this.props.toggleLoading(false);
-                 }, 250)*/
-            })
-
+            });
             //alert(appInstanceOne.AppName)
 
         }
@@ -836,10 +828,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         /**###############################
-         * * MONITORINGTABS
-         * * MONITORINGTABS
-         * * MONITORINGTABS
-         ##################################*/
+         * * MONITORING_TABS
+         * * MONITORING_TABS
+         * * MONITORING_TABS
+        ##################################*/
         monitoringTabs = [
 
             {
@@ -934,6 +926,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {/*todo:####################*/}
                                         <div className='page_monitoring_dashboard'>
 
+
+                                            {/*todo:#################################*/}
+                                            {/*todo:RENDERING TAB & TAB PANE(BODY)   */}
+                                            {/*todo:#################################*/}
                                             <Tab
                                                 panes={this.monitoringTabs}
                                                 activeIndex={this.state.activeTabIndex}
