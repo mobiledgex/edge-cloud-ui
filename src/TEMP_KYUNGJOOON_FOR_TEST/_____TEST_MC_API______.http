@@ -75,22 +75,28 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzcyMzk2O
 
 {
   "region": "EU",
-  "clusterinst": {
-    "cluster_key": {
-      "name": "AppCluster"
-    },
-    "cloudlet_key": {
-      "operator_key": {
-        "name": "mexdev"
+  "appinst": {
+    "app_key": {
+      "developer_key": {
+        "name": "MobiledgeX"
       },
-      "name": "localtest"
+      "name": "mexprometheusappname",
+      "version": "1.0"
     },
-    "developer": "MobiledgeX"
+    "cluster_inst_key": {
+      "cluster_key": {
+        "name": "rah-cluster9"
+      },
+      "cloudlet_key": {
+        "name": "frankfurt-eu",
+        "operator_key": {
+          "name": "TDG"
+        }
+      }
+    }
   },
-  "starttime": "2019-12-23T21:26:04Z",
-  "endtime": "2019-12-24T21:26:10Z",
-  "last": 6,
-  "selector": "cpu"
+  "selector": "cpu",
+  "last": 100
 }
 
 ###
