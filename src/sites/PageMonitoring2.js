@@ -685,7 +685,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderAppBody() {
+        renderInstanceBody() {
             return (
                 <div style={{marginTop: 10}}>
                     <Grid columns={7} padded={true}>
@@ -852,10 +852,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
             },
             {
-                menuItem: 'APP', render: () => {
+                menuItem: 'INSTANCE', render: () => {
                     return (
                         <Pane>
-                            {this.renderAppBody()}
+                            {this.renderInstanceBody()}
                         </Pane>
                     )
                 }
