@@ -490,128 +490,107 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
-            <FlexBox style={{
-                marginTop: 0,
-                color: 'white',
-                top: '65.5%',
-                left: '26.2%',
-                position: 'absolute',
-                fontSize: 9,
-                alignSelf: 'center',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                {appInstanceOne.AppName.substring(0, 12)}
-            </FlexBox>
-            <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
-                     style={{flexDirection: 'column', marginTop: 10, marginLeft: -3}}>
+            <div>
+                {/* <FlexBox style={{
+                    marginTop: 0,
+                    color: 'white',
+                    top: '65.5%',
+                    left: '26.2%',
+                    position: 'absolute',
+                    fontSize: 9,
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
+                    {appInstanceOne.AppName.substring(0, 12)}
+                </FlexBox>*/}
+                <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
+                         style={{flexDirection: 'column', marginTop: 0, marginLeft: -3, backgroundColor: 'black'}}>
 
 
-                {/*todo: disk usage 표시 부분*/}
-                {/*<div style={{color: 'white', textAlign: 'center', }}>900/1000MB</div>*/}
+                    {/*todo: disk usage 표시 부분*/}
+                    <FlexBox style={Styles.cell003}>900/1000MB</FlexBox>
 
-                <div style={{color: 'white', textAlign: 'center', fontSize: 12}}>{appInstanceOne.AppName}</div>
-
-                {/*__row__1*/}
-                <FlexBox style={{marginTop: 15, height: 21,}}>
-                    <FlexBox style={{
-                        marginLeft: 5,
-                        backgroundColor: 'black',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
+                    <FlexBox style={Styles.cell004}>
+                        {appInstanceOne.AppName}
                     </FlexBox>
-                    <FlexBox style={{
-                        marginLeft: 0,
-                        backgroundColor: 'grey',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
-                    </FlexBox>
+
+                    {/*__row__1*/}
+                    <div>
+                        <FlexBox style={Styles.cpuDiskCol001}>
+                            <FlexBox style={Styles.cell001}>
+                                <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
+                            </FlexBox>
+                            <FlexBox style={Styles.cell001}>
+                                <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
+                            </FlexBox>
+                        </FlexBox>
+
+                        {/*__row__2*/}
+                        <FlexBox style={Styles.cpuDiskCol001}>
+                            <FlexBox style={Styles.cell001}>
+                                <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
+                            </FlexBox>
+                            <FlexBox style={Styles.cell001}>
+                                <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
+                            </FlexBox>
+                        </FlexBox>
+
+                        {/*__row__3*/}
+                        <FlexBox style={Styles.cpuDiskCol001}>
+                            <FlexBox style={Styles.cell001}>
+                                <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Regions</div>
+                            </FlexBox>
+                            <FlexBox style={Styles.cell001}>
+                                <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
+                                    {appInstanceOne.Region}
+                                </div>
+                            </FlexBox>
+                        </FlexBox>
+
+                        {/*__row__4*/}
+                        <FlexBox style={Styles.cpuDiskCol001}>
+                            <FlexBox style={Styles.cell001}>
+                                <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
+                            </FlexBox>
+                            <FlexBox style={Styles.cell001}>
+                                <div
+                                    style={{
+                                        color: 'white',
+                                        textAlign: 'center',
+                                        marginLeft: 5
+                                    }}>{appInstanceOne.Cloudlet.toString().substring(0, 15) + "..."}</div>
+                            </FlexBox>
+                        </FlexBox>
+                    </div>
+
                 </FlexBox>
 
-                {/*__row__2*/}
-                <FlexBox style={{marginTop: 0, height: 21,}}>
-                    <FlexBox style={{
-                        marginLeft: 5,
-                        backgroundColor: 'black',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginLeft: 0,
-                        backgroundColor: 'grey',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
-                    </FlexBox>
-                </FlexBox>
-
-                {/*__row__3*/}
-                <FlexBox style={{marginTop: 0, height: 21,}}>
-                    <FlexBox style={{
-                        marginLeft: 5,
-                        backgroundColor: 'black',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Regions</div>
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginLeft: 0,
-                        backgroundColor: 'grey',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
-                            {appInstanceOne.Region}
-                        </div>
-                    </FlexBox>
-                </FlexBox>
-
-                {/*__row__4*/}
-                <FlexBox style={{marginTop: 0, height: 21,}}>
-                    <FlexBox style={{
-                        marginLeft: 5,
-                        backgroundColor: 'black',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
-                    </FlexBox>
-                    <FlexBox style={{
-                        marginLeft: 0,
-                        backgroundColor: 'grey',
-                        flex: .5,
-                        alignItems: 'center',
-                        fontSize: 10
-                    }}>
-                        <div
-                            style={{
-                                color: 'white',
-                                textAlign: 'center',
-                                marginLeft: 5
-                            }}>{appInstanceOne.Cloudlet.toString().substring(0, 15) + "..."}</div>
-                    </FlexBox>
-                </FlexBox>
-
-            </FlexBox>
-
+            </div>
 
         </div>
     );
+}
+
+const Styles = {
+    cell001: {
+        marginLeft: 0,
+        backgroundColor: 'black',
+        flex: .5,
+        alignItems: 'center',
+        fontSize: 13
+    },
+    cpuDiskCol001: {
+        marginTop: 0, height: 33, width: '100%'
+    },
+    cell003: {
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 34
+    },
+    cell004: {
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 34
+    }
 }
 
 
@@ -763,7 +742,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                         offsetX: 0.10,
                         offsetY: appInstanceList.length <= 4 ? 0.10 : 0.03,
                     }}
-                    width={355}
+                    width={380}
                     height={315}
                     padding={0} // optional value, number that set the padding between bubbles
                     showLegend={false} // optional value, pass false to disable the legend.
