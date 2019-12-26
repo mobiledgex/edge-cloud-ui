@@ -30,12 +30,12 @@ export const getIPAddress = () => {
  * @param paramArrayList
  * @returns {Array}
  */
-export const cutArrayList = (length: number, paramArrayList: any) => {
+export const cutArrayList = (length: number = 5, paramArrayList: any) => {
 
     let newArrayList = [];
-    for (let i in paramArrayList) {
-        if (i < 5) {
-            newArrayList.push(paramArrayList)
+    for (let index in paramArrayList) {
+        if (index < 5) {
+            newArrayList.push(paramArrayList[index])
         }
     }
     return newArrayList;
@@ -73,7 +73,6 @@ export const requestShowAppInst = async () => {
     });
 
 }
-
 
 
 export const getAppInstanceHealth = async (pInstanceOneInfo: string = "") => {

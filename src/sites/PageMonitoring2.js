@@ -34,6 +34,7 @@ import Lottie from "react-lottie";
 import type {TypeAppInstance} from "../shared/Types";
 import MaterialIcon from "material-icons-react";
 import CircularProgress from "../chartGauge/circularProgress";
+import {cutArrayList} from "../services/SharedService";
 //import './PageMonitoring.css';
 const FA = require('react-fontawesome')
 const {Column, Row} = Grid;
@@ -90,7 +91,8 @@ type State = {
     currentCloudLet: string,
     isReady: boolean,
     isModalOpened: false,
-    appInstaceList: Array,
+    appInstaceListForSelectBoxForCpu: Array,
+    appInstaceListForSelectBoxForMem: Array,
 
 
 }
@@ -122,10 +124,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allCpuUsageList: [],
             allMemUsageList: [],
             cloudLetSelectBoxPlaceholder: 'Select CloudLet',
-            clusterSelectBoxPlaceholder: 'Select cluster',
+            clusterSelectBoxPlaceholder: 'Select Cluster',
             currentCloudLet: '',
             isModalOpened: false,
-            appInstaceList: [],
+            appInstaceListForSelectBoxForCpu: [],
+            appInstaceListForSelectBoxForMem: []
         };
 
         intervalHandle = null;
@@ -150,6 +153,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 newArrList.push({
                     value: arrList[i][0][keyName],
                     text: arrList[i][0][keyName],//.toString()//.substring(0,25)+ "...",
+                })
+            }
+            return newArrList;
+        }
+
+        makeSelectBoxList2(arrList, keyName) {
+            let newArrList = [];
+            for (let i in arrList) {
+                newArrList.push({
+                    value: arrList[i].instance.AppName,
+                    text: arrList[i].instance.AppName,
                 })
             }
             return newArrList;
@@ -212,9 +226,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
             let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
             let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
-            let appInstaceList = this.makeSelectBoxList(clusterInstanceGroupList, "AppName")
+
+
             await this.setState({
-                appInstaceList: appInstaceList,
                 usageListCPU: usageList[0],
                 usageListMEM: usageList[1],
                 usageListDISK: usageList[2],
@@ -226,6 +240,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredCpuUsageList: cpuUsageListPerOneInstance,
                 filteredMemUsageList: memUsageListPerOneInstance,
             });
+
+
+            //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
+            let appInstaceListForSelectBoxForCpu = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), "AppName")
+            let appInstaceListForSelectBoxForMem = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredMemUsageList), "AppName")
+
+
+            await this.setState({
+                appInstaceListForSelectBoxForCpu: appInstaceListForSelectBoxForCpu,
+                appInstaceListForSelectBoxForMem: appInstaceListForSelectBoxForMem,
+            });
+
+
             await this.setState({
                 loading: false,
                 loading0: false,
@@ -661,9 +688,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
                                                         <Dropdown
-                                                            placeholder='AppInstance'
+                                                            placeholder='Select App Instance'
                                                             selection
-                                                            options={this.state.appInstaceList}
+                                                            options={this.state.appInstaceListForSelectBoxForCpu}
                                                             style={{width: 250}}
                                                         />
                                                     </div>
@@ -727,9 +754,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                         <div className='page_monitoring_column_kj_select'>
                                                             <Dropdown
-                                                                placeholder='AppInstance'
+                                                                placeholder='Select App Instance'
                                                                 selection
-                                                                options={this.state.appInstaceList}
+                                                                options={this.state.appInstaceListForSelectBoxForMem}
                                                                 style={{width: 250}}
                                                             />
                                                         </div>
