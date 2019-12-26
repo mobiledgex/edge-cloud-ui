@@ -33,8 +33,8 @@ import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../shared
 import Lottie from "react-lottie";
 import type {TypeAppInstance} from "../shared/Types";
 import MaterialIcon from "material-icons-react";
-import CircularProgress from "../chartGauge/circularProgress";
 import {cutArrayList} from "../services/SharedService";
+import CircularProgress from "@material-ui/core/CircularProgress";
 //import './PageMonitoring.css';
 const FA = require('react-fontawesome')
 const {Column, Row} = Grid;
@@ -662,7 +662,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header part      */}
                         {/*todo:####################*/}
                         {this.renderHeader()}
-
 
                         <Grid.Row className='site_content_body' style={{marginTop: 0}}>
                             <Grid.Column>
