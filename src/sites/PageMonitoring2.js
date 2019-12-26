@@ -178,6 +178,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 console.log('Region===>', item.AppName);
             })
 
+
+
             //todo: ####################################################################################
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
