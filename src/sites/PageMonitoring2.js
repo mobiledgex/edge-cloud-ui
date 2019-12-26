@@ -90,6 +90,7 @@ type State = {
     currentCloudLet: string,
     isReady: boolean,
     isModalOpened: false,
+    appInstaceList: Array,
 
 
 }
@@ -124,6 +125,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clusterSelectBoxPlaceholder: 'Select cluster',
             currentCloudLet: '',
             isModalOpened: false,
+            appInstaceList: [],
         };
 
         intervalHandle = null;
@@ -210,7 +212,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
             let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
             let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
+            let appInstaceList = this.makeSelectBoxList(clusterInstanceGroupList, "AppName")
             await this.setState({
+                appInstaceList: appInstaceList,
                 usageListCPU: usageList[0],
                 usageListMEM: usageList[1],
                 usageListDISK: usageList[2],
@@ -242,7 +246,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderHeader = () => {
             return (
-                <FlexBox className='' style={{ }}>
+                <FlexBox className='' style={{}}>
                     <Grid.Column className=''
                                  style={{lineHeight: '36px', fontSize: 30}}>Monitoring</Grid.Column>
                     <div style={{marginLeft: '10px'}}>
@@ -619,7 +623,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.renderHeader()}
 
 
-                        <Grid.Row className='site_content_body' style={{marginTop:0}}>
+                        <Grid.Row className='site_content_body' style={{marginTop: 0}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
@@ -654,16 +658,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             Top 5 of CPU Usage
                                                         </div>
-                                                        {/*  <div className='page_monitoring_column_kj_select'>
-                                                            <Dropdown
-                                                                placeholder='Cluster'
-                                                                selection
-                                                                options={this.state.clusterList}
-                                                                style={{width: 250}}
-
-
-                                                            />
-                                                        </div>*/}
+                                                        <Dropdown
+                                                            placeholder='AppInstance'
+                                                            selection
+                                                            options={this.state.appInstaceList}
+                                                            style={{width: 250}}
+                                                        />
                                                     </div>
                                                     <div className='page_monitoring_container'>
                                                         {!this.state.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
@@ -723,14 +723,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             State of MEM Usage
                                                         </div>
-                                                        {/* <div className='page_monitoring_column_kj_select'>
+                                                        <div className='page_monitoring_column_kj_select'>
                                                             <Dropdown
-                                                                placeholder='Cluster'
+                                                                placeholder='AppInstance'
                                                                 selection
-                                                                options={this.state.clusterList}
+                                                                options={this.state.appInstaceList}
                                                                 style={{width: 250}}
                                                             />
-                                                        </div>*/}
+                                                        </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
                                                         {!this.state.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
