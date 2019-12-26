@@ -759,9 +759,9 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 <BubbleChart
                     className={'bubbleChart'}
                     graph={{
-                        zoom: appInstanceList.length <= 4 ? 0.60 : 0.75,
+                        zoom: appInstanceList.length <= 4 ? 0.65 : 0.80,
                         offsetX: 0.10,
-                        offsetY: -0.02,
+                        offsetY: appInstanceList.length <= 4 ? 0.10 : 0.03,
                     }}
                     width={355}
                     height={315}
@@ -991,7 +991,7 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
             {chunkedArraysOfColSize.map((colSizeArray, index) =>
                 <div className='page_monitoring_grid' key={index.toString()}>
                     {colSizeArray.map((item, index) =>
-                        <div className='page_monitoring_grid_box' style={{flex : colSizeArray.length ===1 && index===0 ? .318 : .33}}>
+                        <div className='page_monitoring_grid_box' style={{flex: colSizeArray.length === 1 && index === 0 ? .318 : .33}}>
                             <FlexBox style={{
                                 fontSize: 15,
                                 marginTop: 10,
