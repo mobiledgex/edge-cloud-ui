@@ -86,6 +86,7 @@ type State = {
     cloudLetSelectBoxPlaceholder: string,
     clusterSelectBoxPlaceholder: string,
     currentCloudLet: string,
+    isReady:boolean,
 
 
 }
@@ -149,82 +150,85 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-            this.intervalHandle = setInterval(this.tick.bind(this), 1000);
+            this.getInitData();
+        }
 
+
+        async getInitData() {
+            this.intervalHandle = setInterval(this.tick.bind(this), 1000);
             this.setState({
                 loading: true,
                 loading0: true,
                 startDate: getTodayDate(),
                 endDate: getTodayDate(),
+                isReady: false,
             })
-
             //todo: REALDATA
-            let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
+            //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
             //todo: FAKEJSON FOR TEST
-            //let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
+            let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
-                    this.setState({
-                        appInstanceOne: item,
-                    }, () => {
-
-                    })
-
-                    this.props.toggleLoading(false);
+                    await this.setState({appInstanceOne: item,});
                 }
-                console.log('Region===index>', index);
-                console.log('Region===>', item.AppName);
             })
-
+            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+            await this.setState({
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                appInstanceList: appInstanceList,
+                allAppInstanceList: appInstanceList,
+            })
+            await this.setState({
+                isAppInstaceDataReady: true,
+            })
 
             //todo: ####################################################################################
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
-            let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
-            let memUsageListPerOneInstance = cpuOrMemUsageList[1]
-            //console.log('_result===>', cpuOrMemUsageList);
+            let usageList = await Promise.all([
+                makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
+                makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
+
+            ])
+            let cpuUsageListPerOneInstance = usageList[0]
+            let memUsageListPerOneInstance = usageList[1]
+            console.log('_result===>', usageList);
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
             //todo: ################################################################
-          /*  let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
+            /*let usageList = require('../jsons/allUsageList_50')
+            let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
             let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')*/
 
-            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
             let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
             let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
             await this.setState({
-                appInstanceList: appInstanceList,
-                //todo: 전체 app Instance list
-                allAppInstanceList: appInstanceList,
-                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                cloudletList: cloudletList,
-                clusterList: clusterList,
-                //todo: 전체 cpu/mem 사용량 리스트..
+                usageListCPU: usageList[0],
+                usageListMEM: usageList[1],
+                usageListDISK: usageList[2],
+                usageListNETWORK: usageList[3],
                 allCpuUsageList: cpuUsageListPerOneInstance,
                 allMemUsageList: memUsageListPerOneInstance,
+                cloudletList: cloudletList,
+                clusterList: clusterList,
                 filteredCpuUsageList: cpuUsageListPerOneInstance,
                 filteredMemUsageList: memUsageListPerOneInstance,
-
             });
-            console.log('clusterList====>', clusterList);
-
-            this.setState({}, () => {
-                setTimeout(() => {
-                    this.setState({
-                        loading: false,
-                        loading0: false,
-                        isReady: true,
-                    }, () => {
-                        clearInterval(this.intervalHandle)
-                    })
-                }, 350)
+            await this.setState({
+                loading: false,
+                loading0: false,
+                isReady: true,
+            });
+            clearInterval(this.intervalHandle)
+            this.props.toggleLoading(false);
+            notification.success({
+                duration: 1.5,
+                message: 'Data loading complete!'
             })
-
         }
 
         componentWillUnmount() {
@@ -278,7 +282,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
                 <div className='page_monitoring_select_row'>
-                    <div className='page_monitoring_select_area' style={{marginLeft:50,}}>
+                    <div className='page_monitoring_select_area' style={{marginLeft: 50,}}>
                         <div style={{
                             display: 'flex',
                             width: 80,
@@ -458,7 +462,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo:####################################################################
             //todo: Components showing when the loading of graph data is not completed.
             //todo:####################################################################
-            if (!this.state.isReady) {
+            if (!this.state.isAppInstaceDataReady) {
                 return (
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
@@ -552,7 +556,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>*/}
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.props.isLoading ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                                                        {!this.props.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                                                     </div>
                                                 </div>
                                                 {/* cpu___col___3*/}
@@ -565,7 +569,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.props.isLoading ? renderPlaceHolder() : renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                                                        {!this.props.isReady ? renderPlaceHolder() : renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                                                     </div>
                                                 </div>
                                             </div>
@@ -619,7 +623,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>*/}
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.props.isLoading ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                                                        {!this.props.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
 
                                                 </div>
@@ -633,7 +637,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {this.props.isLoading ? renderPlaceHolder() : renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                                                        {!this.props.isReady ? renderPlaceHolder() : renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
                                                 </div>
                                             </div>
