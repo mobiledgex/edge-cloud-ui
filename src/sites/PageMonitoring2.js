@@ -642,7 +642,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 <Grid.Row className='view_contents'>
                     <Modal
-                        //closeIcon={true}
+                        closeIcon={true}
                         open={this.state.isModalOpened}
                         closeOnDimmerClick={true}
                         onClose={() => {
