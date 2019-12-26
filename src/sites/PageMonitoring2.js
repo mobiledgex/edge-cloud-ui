@@ -21,16 +21,14 @@ import {
     filterCpuOrMemUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, makeCpuOrMemUsageListPerInstance,
-    renderBarGraphForCpuMem,
+    makeClusterListSelectBox, renderBarGraphForCpuMem,
     renderBubbleChart,
-    renderInstanceOnCloudletGrid,
-    renderLineChart,
+    renderInstanceOnCloudletGrid, renderLineChart,
     renderPieChart2AndAppStatus,
     renderPlaceHolder,
     renderPlaceHolder2
 } from "../services/PageMonitoringService";
-import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../shared/Constants";
+import {HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance} from "../shared/Types";
 //import './PageMonitoring.css';

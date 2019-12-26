@@ -1,20 +1,5 @@
 import React from 'react';
-import {
-    Button,
-    Container,
-    Dropdown,
-    Grid,
-    Header,
-    Icon,
-    Image,
-    Input,
-    Item,
-    Label,
-    Menu,
-    Modal,
-    Popup,
-    Segment
-} from 'semantic-ui-react';
+import {Button, Container, Dropdown, Grid, Header, Icon, Image, Input, Item, Label, Menu, Modal, Popup, Segment} from 'semantic-ui-react';
 
 import {withRouter} from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
@@ -61,7 +46,6 @@ import '../css/introjs-dark.css';
 //import PageMonitoring from "./PageMonitoring";
 import SiteFourPageMonitoring from "./siteFour_page_monitoring";
 import PageMonitoring2 from "./PageMonitoring2";
-import PageMonitoring3 from "./PageMonitoring3";
 
 let devOptions = [{key: 'af', value: 'af', text: 'SK Telecom'}]
 const locationOptions = [
@@ -1308,7 +1292,6 @@ class SiteFour extends React.Component {
                 <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
                     {/*모니터링 페이지인 경우...*/}
                     {(this.state.page === 'pg=Monitoring2') ? <PageMonitoring2/> :
-                        (this.state.page === 'pg=Monitoring3') ? <PageMonitoring3/> :
                             this.renderSiteBody(viewMode)
 
                     }

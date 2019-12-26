@@ -6,13 +6,7 @@ import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
 import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
-import {
-    BORDER_CHART_COLOR_LIST,
-    CHART_COLOR_LIST, CHART_COLOR_LIST2,
-    HARDWARE_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGION
-} from "../shared/Constants";
+import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
 import {Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
@@ -197,62 +191,14 @@ export const makeCloudletListSelectBox = (appInstanceList: Array) => {
  * @param hardwareType
  * @returns {*}
  */
-export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
+export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
 
     let chartDataList = [];
-    chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
-
-    function renderUsageData(usageList: Array, index: number) {
-
-        let usageDataOne = 0
-        if (hardwareType === HARDWARE_TYPE.CPU) {
-            usageDataOne = usageList[index].sumCpuUsage
-        }
-
-        if (hardwareType === HARDWARE_TYPE.MEM) {
-            usageDataOne = usageList[index].sumMemUsage
-        }
-
-        if (hardwareType === HARDWARE_TYPE.DISK) {
-            usageDataOne = usageList[index].sumDiskUsage
-        }
-
-        if (hardwareType === HARDWARE_TYPE.NETWORK) {
-            usageDataOne = usageList[index].sumRecvBytes
-        }
-
-        return usageDataOne
-    }
-
-    function renderUsageAnnotation(usageList: Array, index: number) {
-
-        let usageDataAnnotationOne = 0
-        if (hardwareType === HARDWARE_TYPE.CPU) {
-            usageDataAnnotationOne = usageList[index].sumCpuUsage.toFixed(2) + "%"
-        }
-        if (hardwareType === HARDWARE_TYPE.MEM) {
-            usageDataAnnotationOne = usageList[index].sumMemUsage.toFixed(2) + "%"
-        }
-        if (hardwareType === HARDWARE_TYPE.DISK) {
-            usageDataAnnotationOne = usageList[index].sumDiskUsage.toFixed(2) + "Byte"
-        }
-
-        if (hardwareType === HARDWARE_TYPE.NETWORK) {
-            usageDataAnnotationOne = usageList[index].sumRecvBytes.toFixed(2) + "Byte"
-        }
-
-        return usageDataAnnotationOne;
-    }
-
+    chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}])
     for (let index = 0; index < usageList.length; index++) {
 
         if (index < 5) {
-            let barDataOne = [
-                usageList[index].instance.AppName,
-                renderUsageData(usageList, index),
-                CHART_COLOR_LIST[index],
-                renderUsageAnnotation(usageList, index),
-            ]
+            let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...", hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, CHART_COLOR_LIST[index]]
             chartDataList.push(barDataOne);
         }
 
@@ -260,8 +206,8 @@ export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_T
 
     return (
         <Chart
-            width={window.innerWidth * 0.48}
-            height={480}
+            width={window.innerWidth * 0.31}
+            height={250}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -277,21 +223,10 @@ export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_T
                     italic: <boolean>   // true of false*/
                 },
                 titlePosition: 'out',
-                chartArea: {
-                    left: 100,
-                    right: 150,
-                    top: 20,
-                    width: "50%",
-                    height: "80%",
-                    backgroundColor: {
-                        //  'fill': '#F4F4F4',
-                        'opacity': 100
-                    },
-                },
+                chartArea: {left: 100, right: 150, top: 20, width: "50%", height: "80%"},
                 legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
-                //xAxis
+                //xc춧
                 hAxis: {
-                    textPosition: 'none',//HIDE xAxis
                     title: '',
                     titleTextStyle: {
                         //fontName: "Times",
@@ -304,7 +239,7 @@ export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_T
                         color: "white"
                     },
                     gridlines: {
-                        color: "transparent"
+                        color: "grey"
                     },
                     format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '#\' byte\'',
                     baselineColor: 'grey',
@@ -314,162 +249,13 @@ export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_T
                 vAxis: {
                     title: '',
                     titleTextStyle: {
-                        fontSize: 14,
-                        fontStyle: "normal",
-                        color: 'white'
-                    },
-                    textStyle: {
-                        color: "white",
-                        fontSize: 15,
-                    },
-
-                },
-                //colors: ['#FB7A21'],
-                fontColor: 'white',
-                backgroundColor: {
-                    fill: 'black'
-                },
-                animation: {
-                    duration: 300,
-                    easing: 'out',
-                    startup: true
-                }
-                //colors: ['green']
-            }}
-
-            // For tests
-            rootProps={{'data-testid': '1'}}
-        />
-    );
-
-}
-
-export const renderBarGraphForInfo = (appInstanceListOnCloudlet: any, _this) => {
-
-    console.log('appInstanceListOnCloudlet===>', appInstanceListOnCloudlet);
-
-    let chartDataList = [];
-    chartDataList.push(["Element", " Instance Count On Cloudlet", {role: "style"}, {
-        calc: "stringify",
-        sourceColumn: 1,
-        type: "string",
-        role: "annotation"
-    }])
-    let index = 0;
-    for (let [key, value] of Object.entries(appInstanceListOnCloudlet)) {
-        //filterInstanceCountOnCloutLetOne.push(value)
-
-        console.log('key111===>', key)
-        console.log('key111..value===>', value.length)
-
-        let barDataOne = [
-            key,
-            value.length,
-            CHART_COLOR_LIST[index],
-            value.length.toString(),
-        ]
-        chartDataList.push(barDataOne);
-        index++;
-    }
-
-
-    return (
-        <Chart
-            width={window.innerWidth * 0.45}
-            height={540}
-            chartType="BarChart"
-            loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
-            data={chartDataList}
-            options={{
-                annotations: {
-                    alwaysOutside: true,
-                    textStyle: {
-                        // fontName: 'Times-Roman',
-                        fontSize: 30,
-                        bold: true,
-                        italic: true,
-                        color: 'white',     // The color of the text.
-                        auraColor: 'black', // The color of the text outline.
-                        opacity: 1.0          // The transparency of the text.
-                    },
-                    /* boxStyle: {
-                         // Color of the box outline.
-                         stroke: 'blue',
-                         // Thickness of the box outline.
-                         strokeWidth: 43,
-                         // x-radius of the corner curvature.
-                         rx: 0,
-                         // y-radius of the corner curvature.
-                         ry: 0,
-                         // Attributes for linear gradient fill.
-                         gradient: {
-                             // Start color for gradient.
-                             color1: 'white',
-                             // Finish color for gradient.
-                             color2: 'white',
-                             // Where on the boundary to start and
-                             // end the color1/color2 gradient,
-                             // relative to the upper left corner
-                             // of the boundary.
-                             x1: '150%', y1: '100%',
-                             x2: '150%', y2: '100%',
-                             // If true, the boundary for x1,
-                             // y1, x2, and y2 is the box. If
-                             // false, it's the entire chart.
-                             useObjectBoundingBoxUnits: true
-                         }
-                     }*/
-                },
-                is3D: false,
-                title: '',
-                titleTextStyle: {
-                    color: 'red'
-                },
-                titlePosition: 'out',
-                chartArea: {
-                    left: 100,
-                    right: 150,
-                    top: 20,
-                    width: "50%",
-                    height: "80%",
-                    backgroundColor: {
-                        //  'fill': '#F4F4F4',
-                        'opacity': 0.5
-                    },
-                },
-                legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
-                //xAxis
-                hAxis: {
-                    textPosition: 'none',//HIDE xAxis
-                    title: '',
-                    titleTextStyle: {
-                        //fontName: "Times",
                         fontSize: 12,
-                        fontStyle: "italic",
-                        color: 'white'
-                    },
-                    minValue: 0,
-                    textStyle: {
-                        color: "white"
-                    },
-                    gridlines: {
-                        color: "transparent"
-                    },
-                    //format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '#\' byte\'',
-                    baselineColor: 'grey',
-                    //out', 'in', 'none'.
-                },
-                //Y축
-                vAxis: {
-                    title: '',
-                    titleTextStyle: {
-                        fontSize: 14,
                         fontStyle: "normal",
                         color: 'white'
                     },
                     textStyle: {
                         color: "white",
-                        fontSize: 15,
+                        fontSize: 12,
                     },
 
                 },
@@ -477,11 +263,6 @@ export const renderBarGraphForInfo = (appInstanceListOnCloudlet: any, _this) => 
                 fontColor: 'white',
                 backgroundColor: {
                     fill: 'black'
-                },
-                animation: {
-                    duration: 90,
-                    easing: 'out',
-                    startup: true
                 }
                 //colors: ['green']
             }}
@@ -518,7 +299,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
     return (
         <div className="pieChart">
             <Chart
-                width={260}
+                width={165}
                 height={120}
 
                 chartType="PieChart"
@@ -578,7 +359,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
-            {/*  <FlexBox style={{
+            <FlexBox style={{
                 marginTop: 0,
                 color: 'white',
                 top: '65.5%',
@@ -590,7 +371,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                 justifyContent: 'center'
             }}>
                 {appInstanceOne.AppName.substring(0, 12)}
-            </FlexBox>*/}
+            </FlexBox>
             <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
                      style={{flexDirection: 'column', marginTop: 10, marginLeft: -3}}>
 
@@ -598,7 +379,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                 {/*todo: disk usage 표시 부분*/}
                 {/*<div style={{color: 'white', textAlign: 'center', }}>900/1000MB</div>*/}
 
-                <div style={{color: 'white', textAlign: 'center', fontSize: 19}}>{appInstanceOne.AppName}</div>
+                <div style={{color: 'white', textAlign: 'center', fontSize: 12}}>{appInstanceOne.AppName}</div>
 
                 {/*__row__1*/}
                 <FlexBox style={{marginTop: 15, height: 21,}}>
@@ -607,7 +388,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'black',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 15
+                        fontSize: 10
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
                     </FlexBox>
@@ -616,7 +397,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'grey',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 15
+                        fontSize: 10
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
                     </FlexBox>
@@ -629,7 +410,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'black',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 15
+                        fontSize: 10
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
                     </FlexBox>
@@ -638,7 +419,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'grey',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 15
+                        fontSize: 10
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
                     </FlexBox>
@@ -651,7 +432,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'black',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 15
+                        fontSize: 10
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Regions</div>
                     </FlexBox>
@@ -660,7 +441,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'grey',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 15
+                        fontSize: 10
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
                             {appInstanceOne.Region}
@@ -675,7 +456,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'black',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 15
+                        fontSize: 10
                     }}>
                         <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
                     </FlexBox>
@@ -684,7 +465,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         backgroundColor: 'grey',
                         flex: .5,
                         alignItems: 'center',
-                        fontSize: 15
+                        fontSize: 10
                     }}>
                         <div
                             style={{
@@ -777,6 +558,7 @@ export const renderPlaceHolder2 = () => {
     )
 }
 
+
 /**
  * @todo : app instance(COMPUTER engine) SPEC 더 낳은것이(큰것이) performanceValue 높다....
  * @param flavor
@@ -813,7 +595,6 @@ export const filterAppInstOnCloudlet = (CloudLetOneList: Array, pCluster: string
     return filteredAppInstOnCloudlet;
 }
 
-
 /**
  * todo: @weknow/react-bubble-chart-d3로 버블차트를 그린다..
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
@@ -847,15 +628,15 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 <BubbleChart
                     className={'bubbleChart'}
                     graph={{
-                        zoom: 0.6,
-                        offsetX: 0.07,
-                        offsetY: -0.01,
+                        zoom: appInstanceList.length <= 4 ? 0.60 : 0.75,
+                        offsetX: 0.10,
+                        offsetY: appInstanceList.length <= 4 ? 0.05 : -0.02,
                     }}
-                    width={500}
-                    height={500}
-                    padding={0}
-                    showLegend={false}
-                    legendPercentage={30}
+                    width={355}
+                    height={243}
+                    padding={0} // optional value, number that set the padding between bubbles
+                    showLegend={false} // optional value, pass false to disable the legend.
+                    legendPercentage={30} // number that represent the % of with that legend going to use.
                     legendFont={{
                         family: 'Arial',
                         size: 9,
@@ -870,7 +651,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     }}
                     labelFont={{
                         //family: 'Arial',
-                        size: 12,
+                        size: 8,
                         color: 'black',
                         weight: 'bold',
                     }}
@@ -894,7 +675,6 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
     )
 }
 
-
 /**
  * @TODO: react_chartjs를 이용해서 라인 차트를 랜더링.
  * @desc : React wrapper for Chart.js 2 Open for PRs and contributions!
@@ -903,31 +683,8 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
  * @param hardwareType
  * @returns {*}
  */
-export const renderLineChart_real = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
+export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
     console.log('itemeLength===>', cpuUsageListPerInstanceSortByUsage);
-
-    function renderUsageData(seriesValues: Array, index: number) {
-
-        let seriesValueOne = 0
-        if (hardwareType === HARDWARE_TYPE.CPU) {
-            seriesValueOne = seriesValues[index]["4"];
-        }
-
-        if (hardwareType === HARDWARE_TYPE.MEM) {
-            seriesValueOne = seriesValues[index]["5"];
-        }
-
-        if (hardwareType === HARDWARE_TYPE.DISK) {
-            seriesValueOne = seriesValues[index]["5"];
-        }
-
-        if (hardwareType === HARDWARE_TYPE.NETWORK) {
-            seriesValueOne = seriesValues[index]["6"]; //revceive Byte
-            //seriesValueOne = seriesValues[index]["7"];//send Btye
-        }
-        return seriesValueOne
-    }
-
 
     let instanceAppName = ''
     let instanceNameList = [];
@@ -939,16 +696,17 @@ export const renderLineChart_real = (cpuUsageListPerInstanceSortByUsage, hardwar
         instanceAppName = cpuUsageListPerInstanceSortByUsage[i].instance.AppName
         let usageList = [];
 
-        for (let jIndex in seriesValues) {
+        for (let j in seriesValues) {
 
-            let usageOne = renderUsageData(seriesValues, jIndex)
+            let usageOne = 0;
+            if (hardwareType === HARDWARE_TYPE.CPU) {
+                usageOne = seriesValues[j]["4"];
+            } else {
+                usageOne = seriesValues[j]["5"];
+            }
 
             usageList.push(usageOne);
-            let dateOne = seriesValues[jIndex]["0"];
-            let arraySplitDate = dateOne.toString().split("T")
-            dateTimeList.push(arraySplitDate[1]);
-
-
+            dateTimeList.push(seriesValues[j]["0"]);
         }
 
         instanceNameList.push(instanceAppName)
@@ -963,26 +721,24 @@ export const renderLineChart_real = (cpuUsageListPerInstanceSortByUsage, hardwar
         if (i < 5) {
             let datasetsOne = {
                 label: instanceNameList[i],
-                fill: true,
+                fill: false,
                 lineTension: 0.1,
-                backgroundColor: hardwareType === HARDWARE_TYPE.MEM ? 'transparent' : CHART_COLOR_LIST[i],
-                borderColor: BORDER_CHART_COLOR_LIST[i],
+                backgroundColor: CHART_COLOR_LIST[i],
+                borderColor: CHART_COLOR_LIST[i],
                 borderCapStyle: 'butt',
                 borderDash: [],
                 borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
-                pointBorderColor: 'rgba(220,220,220,1)',
+                pointBorderColor: 'rgba(75,192,192,1)',
                 pointBackgroundColor: '#fff',
                 pointBorderWidth: 1,
                 pointHoverRadius: 5,
-                pointHoverBackgroundColor: 'rgba(220,220,220,1)',
+                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
                 pointHoverBorderColor: 'rgba(220,220,220,1)',
                 pointHoverBorderWidth: 2,
                 pointRadius: 1,
                 pointHitRadius: 10,
                 data: cpuUsageSetList[i],
-                /*fillColor: "#FF1717",
-                pointColor: "#da3e2f",*/
             }
 
             finalSeriesDataSets.push(datasetsOne)
@@ -1009,12 +765,10 @@ export const renderLineChart_real = (cpuUsageListPerInstanceSortByUsage, hardwar
 
     console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsage);
 
-    let width = window.innerWidth * 0.40
+    let width = window.innerWidth * 0.255
     let height = 500 + 50;
 
     let options = {
-        bezierCurve: true,
-        datasetFill: true,
         maintainAspectRatio: false,
         responsive: true,
         layout: {
@@ -1099,18 +853,17 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
     //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
 
     return (
-        <div style={{display: 'flex', flexDirection: 'column', width: '100%',}}>
+        <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
             {chunkedArraysOfColSize.map((colSizeArray, index) =>
                 <div className='page_monitoring_grid' key={index.toString()}>
-                    {colSizeArray.map((item, index) =>
-                        <div className='page_monitoring_grid_box' style={{flex: colSizeArray.length === 1 && index === 0 && .326}}>
+                    {colSizeArray.map((item) =>
+                        <div className='page_monitoring_grid_box'>
                             <FlexBox style={{
-                                fontSize: 19,
-                                fontFamily: 'Encode Sans Condensed',
+                                fontSize: 15,
                                 color: '#fff',
                                 marginTop: 10,
                             }}>
-                                {item.name}
+                                {item.name.toString().substring(0, 19) + "..."}
                             </FlexBox>
                             <FlexBox style={{
                                 marginTop: 0,
@@ -1249,63 +1002,17 @@ export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'U
 }
 
 
-
-
-export const getInstHealth = async () => {
-
-    let ServerUrl = 'https://' + window.location.hostname + ':3030';
-
-    axios({
-        method: 'post', //you can set what request you want to be
-        url: ServerUrl + '/api/v1/auth/metrics/app',
-        data: {
-            "region": "EU",
-            "appinst": {
-                "app_key": {
-                    "developer_key": {
-                        "name": "testaaa"
-                    },
-                    "name": "jjjkkk",
-                    "version": "1.0"
-                },
-                "cluster_inst_key": {
-                    "cluster_key": {
-                        "name": "kkkkkkk"
-                    },
-                    "cloudlet_key": {
-                        "name": "frankfurt-eu",
-                        "operator_key": {
-                            "name": "TDG"
-                        }
-                    }
-                }
-            },
-            "selector": "cpu",
-            "last": 3
-        },
-        headers: {
-            Authorization: 'Bearer ' + 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzcyNDkyMzAsImlhdCI6MTU3NzE2MjgzMCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.mXNokQljXGEWiskwNVC7TRIV64FxkosPMpcmw7cs6aWx1XjxPJvoJ4D3NZKJjnl-WswPUHo2PD4QcAoKyy8J8g'
-        }
-    }).then(res => {
-        console.log('sdlkfsldkflksdflksdlfk===>', res);
-    }).catch(e => {
-        alert(e)
-    })
-
-
-}
-
-
 /**
  * @desc : 앱인스턴스 리스트 이용해서 인스턴스에 대한 total cpu usage 리스트를 만든다..
  * @desc : Using the app instance list, create a list of total cpu usage for the instance.
  * @param appInstanceList
  * @returns {Promise<Array>}
  */
-export const makeHardwareUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = HARDWARE_TYPE.CPU, recentDataLimitCount: number) => {
+export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = HARDWARE_TYPE.CPU, recentDataLimitCount: number) => {
 
-    let usageListPerOneInstance = []
+    let cpuUsageListPerOneInstance = []
     for (let index = 0; index < appInstanceList.length; index++) {
+
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
 
         //todo: 레퀘스트를 요청할 데이터 FORM형식을 만들어 준다.
@@ -1317,147 +1024,72 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
         let appInstanceHealth = await getAppInstanceHealth(instanceInfoOneForm);
         //console.log(`appInstanceHealth====>${index}`,)
 
-        usageListPerOneInstance.push({
+        cpuUsageListPerOneInstance.push({
             instanceData: appInstanceList[index],
             appInstanceHealth: appInstanceHealth,
         });
 
     }
 
-    let newHardwareUsageList = [];
+    let newCpuOrMemUsageListPerOneInstance = [];
 
-    for (let index = 0; index < usageListPerOneInstance.length; index++) {
-        if (usageListPerOneInstance[index].appInstanceHealth.data[0].Series != null) {
+    for (let index = 0; index < cpuUsageListPerOneInstance.length; index++) {
+        if (cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series != null) {
 
-            let columns = usageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].columns;
-            let values = usageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].values;
+            let columns = cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].columns;
+            let values = cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].values;
 
             let sumCpuUsage = 0;
             let sumMemUsage = 0;
-            let sumDiskUsage = 0;
-            let sumRecvBytes = 0;
-            let sumSendBytes = 0;
             for (let jIndex = 0; jIndex < values.length; jIndex++) {
                 //console.log('itemeLength===>',  values[i][4]);
 
-                if (paramCpuOrMem === HARDWARE_TYPE.CPU) {
+                if (paramCpuOrMem === 'cpu') {
                     sumCpuUsage = sumCpuUsage + values[jIndex][4];
-                } else if (paramCpuOrMem === HARDWARE_TYPE.MEM) {
-                    sumMemUsage = sumMemUsage + values[jIndex][5];
-                } else if (paramCpuOrMem === HARDWARE_TYPE.NETWORK) {
-                    sumRecvBytes = sumRecvBytes + values[jIndex][6];
-                    sumSendBytes = sumSendBytes + values[jIndex][7];
-                } else if (paramCpuOrMem === HARDWARE_TYPE.DISK) {
-                    sumDiskUsage = sumDiskUsage + values[jIndex][5];
+                } else {
+                    sumMemUsage = sumCpuUsage + values[jIndex][5];
                 }
 
             }
 
             //todo: CPU/MEM 사용량 평균값을 계산한다.....
-            sumCpuUsage = sumCpuUsage / usageListPerOneInstance.length;
-            sumMemUsage = Math.ceil(sumMemUsage / usageListPerOneInstance.length);
+            sumCpuUsage = sumCpuUsage / cpuUsageListPerOneInstance.length;
+            sumMemUsage = Math.ceil(sumMemUsage / cpuUsageListPerOneInstance.length);
 
             console.log('sumMemUsage===>', sumMemUsage);
 
-
-            let body = {}
-            if (paramCpuOrMem === 'cpu') {
-                body = {
-                    instance: usageListPerOneInstance[index].instanceData,
-                    columns: columns,
-                    values: values,
-                    sumCpuUsage: sumCpuUsage,
-                }
-
-            } else if (paramCpuOrMem === 'mem') {
-                body = {
-                    instance: usageListPerOneInstance[index].instanceData,
-                    columns: columns,
-                    values: values,
-                    sumMemUsage: sumMemUsage,
-                }
-
-            } else if (paramCpuOrMem === 'disk') {
-                body = {
-                    instance: usageListPerOneInstance[index].instanceData,
-                    columns: columns,
-                    values: values,
-                    sumDiskUsage: sumDiskUsage,
-                }
-            } else {//network
-                body = {
-                    instance: usageListPerOneInstance[index].instanceData,
-                    columns: columns,
-                    values: values,
-                    sumRecvBytes: sumRecvBytes,
-                    sumSendBytes: sumSendBytes,
-                }
-
-            }
-
-            newHardwareUsageList.push(body);
-
+            newCpuOrMemUsageListPerOneInstance.push({
+                instance: cpuUsageListPerOneInstance[index].instanceData,
+                columns: columns,
+                values: values,
+                sumCpuUsage: sumCpuUsage,
+                sumMemUsage: sumMemUsage,
+            });
         } else {
-
-            let body = {}
-            if (paramCpuOrMem === 'cpu') {
-                body = {
-                    instance: usageListPerOneInstance[index].instanceData,
-                    columns: '',
-                    values: '',
-                    sumCpuUsage: 0,
-                }
-
-            } else if (paramCpuOrMem === 'mem') {
-                body = {
-                    instance: usageListPerOneInstance[index].instanceData,
-                    columns: '',
-                    values: '',
-                    sumMemUsage: 0,
-                }
-
-            } else if (paramCpuOrMem === 'disk') {
-                body = {
-                    instance: usageListPerOneInstance[index].instanceData,
-                    columns: '',
-                    values: '',
-                    sumDiskUsage: 0,
-                }
-            } else {//network
-                body = {
-                    instance: usageListPerOneInstance[index].instanceData,
-                    columns: '',
-                    values: '',
-                    sumRecvBytes: 0,
-                    sumSendBytes: 0,
-                }
-
-            }
-            newHardwareUsageList.push(body);
+            newCpuOrMemUsageListPerOneInstance.push({
+                instance: cpuUsageListPerOneInstance[index].instanceData,
+                columns: '',
+                values: '',
+                sumCpuUsage: 0,
+                sumMemUsage: 0,
+            });
         }
 
     }
     //@todo :##################################
-    //@todo : Sort usage in reverse order.
+    //@todo : Sort cpu usage in reverse order.
     //@todo :##################################
-    if (paramCpuOrMem === HARDWARE_TYPE.CPU) {
-        newHardwareUsageList.sort((a, b) => {
+    if (paramCpuOrMem === 'cpu') {
+        newCpuOrMemUsageListPerOneInstance.sort((a, b) => {
             return b.sumCpuUsage - a.sumCpuUsage;
         });
-    } else if (paramCpuOrMem === HARDWARE_TYPE.MEM) {
-        newHardwareUsageList.sort((a, b) => {
+    } else {//mem
+        newCpuOrMemUsageListPerOneInstance.sort((a, b) => {
             return b.sumMemUsage - a.sumMemUsage;
         });
-    } else if (paramCpuOrMem === HARDWARE_TYPE.NETWORK) {
-        newHardwareUsageList.sort((a, b) => {
-            return b.sumRecvBytes - a.sumRecvBytes;
-        });
-    } else if (paramCpuOrMem === HARDWARE_TYPE.DISK) {
-        newHardwareUsageList.sort((a, b) => {
-            return b.sumDiskUsage - a.sumDiskUsage;
-        });
     }
-    return newHardwareUsageList;
+
+    return newCpuOrMemUsageListPerOneInstance;
 }
 
 
