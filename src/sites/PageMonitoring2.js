@@ -207,14 +207,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            /*  let usageList = await Promise.all([
+            /*
+              let usageList = await Promise.all([
                   makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
                   makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
-
               ])
               let cpuUsageListPerOneInstance = usageList[0]
               let memUsageListPerOneInstance = usageList[1]
-              console.log('_result===>', usageList);*/
+              console.log('_result===>', usageList);
+            */
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
@@ -245,8 +246,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
             let appInstaceListForSelectBoxForCpu = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), "AppName")
             let appInstaceListForSelectBoxForMem = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredMemUsageList), "AppName")
-
-
             await this.setState({
                 appInstaceListForSelectBoxForCpu: appInstaceListForSelectBoxForCpu,
                 appInstaceListForSelectBoxForMem: appInstaceListForSelectBoxForMem,
