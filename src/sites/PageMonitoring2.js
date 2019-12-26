@@ -545,6 +545,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredCpuUsageList = filterCpuOrMemUsageByCloudLet(filteredCpuUsageList, pCloudLet);
                 filteredMemUsageList = filterCpuOrMemUsageByCloudLet(filteredMemUsageList, pCloudLet);
                 clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
+
+
             }
 
             //todo: ##########################################
@@ -560,6 +562,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             }
 
+
+
             this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
@@ -569,7 +573,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 cloudletList: cloudletSelectBoxList,
                 clusterList: clusterSelectBoxList,
                 currentCloudLet: pCloudLet,
-            }, () => {
+            }, async () => {
+
+                //TODO: TOP 5 CPU/MEM USAGE SELECTBOX
+                //TODO: TOP 5 CPU/MEM USAGE SELECTBOX
+                //TODO: TOP 5 CPU/MEM USAGE SELECTBOX
+                let appInstaceListForSelectBoxForCpu = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), "AppName")
+                let appInstaceListForSelectBoxForMem = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredMemUsageList), "AppName")
+                await this.setState({
+                    appInstaceListForSelectBoxForCpu: appInstaceListForSelectBoxForCpu,
+                    appInstaceListForSelectBoxForMem: appInstaceListForSelectBoxForMem,
+                });
+
                 setTimeout(() => {
                     this.setState({
                         cloudLetSelectBoxPlaceholder: 'Select CloudLet',
