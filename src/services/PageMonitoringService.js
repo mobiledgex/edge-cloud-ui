@@ -837,7 +837,10 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
             }
 
             usageList.push(usageOne);
-            dateTimeList.push(seriesValues[j]["0"]);
+            let dateOne = seriesValues[j]["0"];
+            dateOne = dateOne.toString().split("T")
+
+            dateTimeList.push(dateOne[1]);
         }
 
         instanceNameList.push(instanceAppName)
