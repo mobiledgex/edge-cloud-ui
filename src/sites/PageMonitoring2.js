@@ -658,6 +658,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             Top 5 of CPU Usage
                                                         </div>
+
+
                                                         <Dropdown
                                                             placeholder='AppInstance'
                                                             selection
