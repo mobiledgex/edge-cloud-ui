@@ -442,7 +442,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                     pieHole: 0.8,
                     //is3D: true,
                     title: "",
-                    chartArea: {left: 20, right: 20, top: 10, width: "30%", height: "80%"},
+                    chartArea: {left: 20, right: 20, top: 15, width: "30%", height: "80%"},
                     /* slices: [
                          {
                              color: "red"
@@ -585,11 +585,11 @@ const Styles = {
     },
     cell003: {
         color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 34
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 38, marginTop: -10,
     },
     cell004: {
-        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 34
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor:'grey'
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 40
     }
 }
 
