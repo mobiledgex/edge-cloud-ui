@@ -764,7 +764,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
-                                                            State of MEM Usage
+                                                            Top 5 of MEM Usage
                                                         </div>
                                                         <div className='page_monitoring_column_kj_select'>
                                                             <Dropdown
