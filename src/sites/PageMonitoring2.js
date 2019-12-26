@@ -21,16 +21,17 @@ import {
     filterCpuOrMemUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, renderBarGraphForCpuMem,
+    makeClusterListSelectBox, makeCpuOrMemUsageListPerInstance, renderBarGraphForCpuMem,
     renderBubbleChart,
     renderInstanceOnCloudletGrid, renderLineChart,
     renderPieChart2AndAppStatus,
     renderPlaceHolder,
     renderPlaceHolder2
 } from "../services/PageMonitoringService";
-import {HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
+import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance} from "../shared/Types";
+import MaterialIcon from "material-icons-react";
 //import './PageMonitoring.css';
 const FA = require('react-fontawesome')
 const {Column, Row} = Grid;
@@ -177,21 +178,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
 
-
             //todo: ####################################################################################
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            /*let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
+            let cpuOrMemUsageList = await Promise.all([makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT), makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT)])
             let cpuUsageListPerOneInstance = cpuOrMemUsageList[0]
-            let memUsageListPerOneInstance = cpuOrMemUsageList[1]*/
+            let memUsageListPerOneInstance = cpuOrMemUsageList[1]
             //console.log('_result===>', cpuOrMemUsageList);
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
             //todo: ################################################################
-            let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
-            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
+          /*  let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
+            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')*/
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
@@ -234,15 +234,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderHeader = () => {
             return (
-                <Grid.Row className='content_title'
-                          style={{width: 'fit-content', display: 'inline-block'}}>
+                <FlexBox className='' style={{}}>
                     <Grid.Column className='title_align'
-                                 style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
+                                 style={{lineHeight: '36px', fontSize: 30}}>Monitoring</Grid.Column>
                     <div style={{marginLeft: '10px'}}>
                         <button className="ui circular icon button"><i aria-hidden="true"
                                                                        className="info icon"></i></button>
                     </div>
-                </Grid.Row>
+                    {this.renderSelectBox()}
+                </FlexBox>
             )
         }
 
@@ -278,17 +278,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             return (
                 <div className='page_monitoring_select_row'>
-                    <div className='page_monitoring_select_area'>
-                        {/*  <label className='page_monitoring_select_reset'
-                               onClick={() => {
-                                   notification.success({
-                                       duration: 0.5,
-                                       message: 'Reload',
-                                   });
-                               }}>
-                            Reload
-                        </label>*/}
-                        {/*<div style={{
+                    <div className='page_monitoring_select_area' style={{marginLeft:50,}}>
+                        <div style={{
                             display: 'flex',
                             width: 80,
                             //backgroundColor: 'red',
@@ -300,14 +291,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <FA name="refresh" style={{fontSize: 30,}} onClick={() => {
                                 alert('SDFSDFSDF SDFSDF!!!!!')
                             }}/>
-                        </div>*/}
-                        <label className='page_monitoring_select_reset'
-                               onClick={() => {
-                                   notification.success({
-                                       duration: 0.5,
-                                       message: 'reset all',
-                                   });
-                               }}>Reset All</label>
+                        </div>
                         {/*todo:REGION selectbox*/}
                         {/*todo:REGION selectbox*/}
                         {/*todo:REGION selectbox*/}
@@ -529,10 +513,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <div className="page_monitoring">
                                         {/*todo:####################*/}
                                         {/*todo:SelectBox part start */}
-                                        {/*todo:####################*/}
-                                        {this.renderSelectBox()}
-                                        {/*todo:####################*/}
-                                        {/*todo:Content Body part   */}
                                         {/*todo:####################*/}
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}

@@ -207,7 +207,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
     return (
         <Chart
             width={window.innerWidth * 0.31}
-            height={250}
+            height={320}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -628,12 +628,12 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 <BubbleChart
                     className={'bubbleChart'}
                     graph={{
-                        zoom: appInstanceList.length <= 4 ? 0.60 : 0.75,
+                        zoom: 0.75,
                         offsetX: 0.10,
-                        offsetY: appInstanceList.length <= 4 ? 0.05 : -0.02,
+                        offsetY: -0.02,
                     }}
                     width={355}
-                    height={243}
+                    height={315}
                     padding={0} // optional value, number that set the padding between bubbles
                     showLegend={false} // optional value, pass false to disable the legend.
                     legendPercentage={30} // number that represent the % of with that legend going to use.
