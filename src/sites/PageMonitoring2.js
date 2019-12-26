@@ -739,7 +739,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
-                                                            Perfomance Of App instance
+                                                            Engine Performance State Of App instance
                                                         </div>
                                                     </div>
                                                     {/*todo:###########################***/}
