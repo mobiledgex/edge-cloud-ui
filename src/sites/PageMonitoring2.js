@@ -242,8 +242,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderHeader = () => {
             return (
-                <FlexBox className='' style={{}}>
-                    <Grid.Column className='title_align'
+                <FlexBox className='' style={{ }}>
+                    <Grid.Column className=''
                                  style={{lineHeight: '36px', fontSize: 30}}>Monitoring</Grid.Column>
                     <div style={{marginLeft: '10px'}}>
                         <button className="ui circular icon button"><i aria-hidden="true"
@@ -619,7 +619,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {this.renderHeader()}
 
 
-                        <Grid.Row className='site_content_body'>
+                        <Grid.Row className='site_content_body' style={{marginTop:0}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
