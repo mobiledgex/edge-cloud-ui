@@ -684,7 +684,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_column_kj'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
-                                                            Status Of Launched App Instance
+                                                            Status of Launched App Instances on Cloudlet
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
