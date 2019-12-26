@@ -36,7 +36,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzcyNDkyM
 }
 
 
-###selector(cpu, mem, disk, network )사용량 요청....matrix...
+###selector( cpu, mem, disk, network )사용량 요청....matrix...
 
 POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app
 Content-Type: application/json

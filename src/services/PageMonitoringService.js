@@ -261,7 +261,7 @@ export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_T
     return (
         <Chart
             width={window.innerWidth * 0.48}
-            height={540}
+            height={480}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -847,12 +847,12 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 <BubbleChart
                     className={'bubbleChart'}
                     graph={{
-                        zoom: 0.90,
+                        zoom: 0.6,
                         offsetX: 0.07,
-                        offsetY: 0.07,
+                        offsetY: -0.01,
                     }}
                     width={500}
-                    height={550}
+                    height={500}
                     padding={0}
                     showLegend={false}
                     legendPercentage={30}
