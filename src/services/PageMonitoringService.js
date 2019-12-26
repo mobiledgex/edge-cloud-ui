@@ -987,12 +987,12 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
         <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
             {chunkedArraysOfColSize.map((colSizeArray, index) =>
                 <div className='page_monitoring_grid' key={index.toString()}>
-                    {colSizeArray.map((item) =>
-                        <div className='page_monitoring_grid_box'>
+                    {colSizeArray.map((item, index) =>
+                        <div className='page_monitoring_grid_box' style={{flex : colSizeArray.length ===1 && index===0 ? .318 : .33}}>
                             <FlexBox style={{
                                 fontSize: 15,
-                                color: '#fff',
                                 marginTop: 10,
+
                             }}>
                                 {item.name.toString().substring(0, 19) + "..."}
                             </FlexBox>
@@ -1014,8 +1014,8 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
             {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
             {chunkedArraysOfColSize.length === 1 &&
             <div className='page_monitoring_grid_box_blank2'>
-                {[1, 2, 3].map((item) =>
-                    <div className='page_monitoring_grid_box_blank2' style={{backgroundColor: 'transprent'}}>
+                {[1, 2, 3].map((item, index) =>
+                    <div key={index} className='page_monitoring_grid_box_blank2' style={{backgroundColor: 'transprent'}}>
                         <FlexBox style={{
                             fontSize: 15,
                             color: '#fff',
