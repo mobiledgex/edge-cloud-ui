@@ -518,7 +518,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-
         renderInstanceBody002() {
             return (
                 <div className=''>
@@ -528,11 +527,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/* ___col___1*/}
                         {/* ___col___1*/}
                         <div className='page_monitoring_column_kj'>
-                            <Grid columns={7} padded={true}>
+                            <Grid columns={8} padded={true} style={{height: 50}}>
                                 {/*todo:ROW HEADER*/}
                                 {/*todo:ROW HEADER*/}
                                 {/*todo:ROW HEADER*/}
                                 <Row>
+                                    <Column color={'grey'}>
+                                        index
+                                    </Column>
                                     <Column color={'grey'}>
                                         NAME
                                     </Column>
@@ -555,8 +557,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         Start
                                     </Column>
                                 </Row>
+                            </Grid>
+
+                            <Grid columns={8} padded={true} style={{overflowY: 'auto'}}>
+                                {/*todo:ROW HEADER*/}
+                                {/*todo:ROW HEADER*/}
+                                {/*todo:ROW HEADER*/}
                                 {!this.state.isReady && <Row columns={1}>
-                                    <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
+                                    <Column
+                                        style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
                                         <CircularProgress
                                             style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
                                     </Column>
@@ -573,6 +582,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         <Row onClick={() => {
                                             //this.props.history.push('PageMonitoringDetail')
                                         }}>
+                                            <Column>
+                                                {index.toString()}
+                                            </Column>
                                             <Column>
                                                 {item.AppName}
                                             </Column>
@@ -756,8 +768,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-
-
         /**###############################
          * * MONITORING_TABS
          * * MONITORING_TABS
@@ -768,7 +778,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             {
                 menuItem: 'INSTANCE', render: () => {
                     return (
-                        <Pane style={{marginTop:0, backgroundColor: 'transparent'}}>
+                        <Pane style={{marginTop: 0, backgroundColor: 'transparent'}}>
                             {this.renderInstanceBody002()}
                         </Pane>
                     )
@@ -847,6 +857,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
+
+
+                                                <div className='page_monitoring_column_kj_flex_new001'
+                                                     style={{flex: .5}}>
+                                                    <div className='page_monitoring_title_area'>
+                                                        <div className='page_monitoring_title'>
+                                                            Status Of Launched App Instance
+                                                        </div>
+                                                    </div>
+                                                    <div className='page_monitoring_container'>
+                                                        {this.state.isAppInstaceDataReady ? renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet) : renderPlaceHolder()}
+                                                    </div>
+                                                </div>
+
+                                                {/* ___col___2*/}
+                                                {/* ___col___2*/}
+                                                {/* ___col___2*/}
                                                 <div className='page_monitoring_column_kj_flex_new001'
                                                      style={{flex: .5}}>
                                                     <div className='page_monitoring_title_area'>
@@ -870,25 +897,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     </FlexBox>
 
                                                 </div>
-                                                {/* ___col___1*/}
-                                                {/* ___col___1*/}
-                                                {/* ___col___1*/}
-                                                <div className='page_monitoring_column_kj_flex_new001'
-                                                     style={{flex: .5}}>
-                                                    <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title'>
-                                                            Status Of Launched App Instance
-                                                        </div>
-                                                    </div>
-                                                    <div className='page_monitoring_container'>
-                                                        {this.state.isAppInstaceDataReady ? renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet) : renderPlaceHolder()}
-                                                    </div>
-                                                </div>
                                             </div>
                                             {/*todo:#################################*/}
                                             {/*todo:RENDERING TAB & TAB PANE(BODY)   */}
                                             {/*todo:#################################*/}
-                                            <div style={{marginTop:50}}>
+                                            <div style={{marginTop: 50}}>
                                                 <Tab
                                                     panes={this.monitoringTabs}
                                                     activeIndex={this.state.activeTabIndex}
@@ -898,7 +911,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         })
                                                     }}
                                                     style={{
-                                                        marginTop: -100,
+                                                        marginTop: -70,
                                                         //backgroundColor: 'red'
                                                     }}
                                                 />
