@@ -38,6 +38,7 @@ import SiteFourPageCloudlet from './siteFour_page_cloudlet';
 import SiteFourPageCloudletPool from './siteFour_page_cloudletPool';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
 import SiteFourPageCloudletPoolReg from './siteFour_page_cloudletPoolReg';
+import SiteFourPageLinkOrganizeReg from './siteFour_page_linkOrganizeReg';
 import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
 import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
@@ -60,6 +61,7 @@ import '../css/introjs-dark.css';
 //import PageMonitoring from "./PageMonitoring";
 import SiteFourPageMonitoring from "./siteFour_page_monitoring";
 import PageMonitoring2 from "./PageMonitoring2";
+import PageMonitoring3 from "./PageMonitoring3";
 
 let devOptions = [{key: 'af', value: 'af', text: 'SK Telecom'}]
 const locationOptions = [
@@ -170,6 +172,8 @@ class SiteFour extends React.Component {
             {label: 'App Instances', icon: 'storage', pg: 6},
             {label: 'Audit Log', icon: 'check', pg: 'audits'},
             {label: 'Monitoring', icon: 'graphic_eq', pg: 'Monitoring2'},
+            //{label: 'Monitoring3', icon: 'graphic_eq', pg: 'Monitoring3'},
+            {label: 'MonitoringF', icon: 'graphic_eq', pg: 'MonitoringF'},
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
@@ -707,46 +711,78 @@ class SiteFour extends React.Component {
     }
 
     //compute page menu view
-    menuItemView = (item, i, activeItem) => (
-        <Menu.Item
-            className={'leftMenu_' + item.label}
-            key={i}
-            name={item.label}
-            active={activeItem === item.label}
-            onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
-        >
-            <div className="left_menu_item">
-                <MaterialIcon icon={item.icon}/>
-                <div className='label'>{item.label}</div>
-                {(activeItem === item.label) ?
-                    <div style={{position: 'absolute', right: '12px', top: '12px'}}>
-                        <ClipLoader
-                            size={20}
-                            sizeUnit={'px'}
-                            color={'rgba(136,221,0,.85)'}
-                            loading={this.props.loadingSpinner}
-                            // loading={true}
-                        />
-                        {(item.label === 'Audit Log' && this.props.audit > 0) ?
-                            <Label circular color={'red'} key={'red'}>
-                                {this.props.audit}
-                            </Label> : null}
+    menuItemView = (item, i, activeItem) => {
+
+        //todo: 모니터링 FullScreen인 경우..
+        if ( item.label==="MonitoringF"){
+
+            return (
+                <Menu.Item
+                    className={'leftMenu_' + item.label}
+                    key={i}
+                    name={item.label}
+                    active={activeItem === item.label}
+                    onClick={() => {
+                        this.props.history.push('PageMonitoringFull')
+                    }}
+                >
+                    <div className="left_menu_item">
+                        <MaterialIcon icon={'tv'}/>
+                        <div className='label'>MonitoringFull</div>
+                    </div>
+                </Menu.Item>
+            )
+        }else{
+            return (
+                <Menu.Item
+                    className={'leftMenu_' + item.label}
+                    key={i}
+                    name={item.label}
+                    active={activeItem === item.label}
+                    onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
+                >
+                    <div className="left_menu_item">
+                        <MaterialIcon icon={item.icon}/>
+                        <div className='label'>{item.label}</div>
+                        {(activeItem === item.label) ?
+                            <div style={{position: 'absolute', right: '12px', top: '12px'}}>
+                                <ClipLoader
+                                    size={20}
+                                    sizeUnit={'px'}
+                                    color={'rgba(136,221,0,.85)'}
+                                    loading={this.props.loadingSpinner}
+                                    // loading={true}
+                                />
+                                {(item.label === 'Audit Log' && this.props.audit > 0) ?
+                                    <Label circular color={'red'} key={'red'}>
+                                        {this.props.audit}
+                                    </Label> : null}
+                            </div>
+
+                            : null}
+
+
+                        <div style={{position: 'absolute', right: '12px', top: '12px'}}>
+                            {(item.label === 'Audit Log' && this.props.audit > 0) ?
+                                <Label circular color={'red'} key={'red'}>
+                                    {this.props.audit}
+                                </Label> : null}
+                        </div>
+
                     </div>
 
-                    : null}
+                </Menu.Item>
+            )
+        }
 
 
-                <div style={{position: 'absolute', right: '12px', top: '12px'}}>
-                    {(item.label === 'Audit Log' && this.props.audit > 0) ?
-                        <Label circular color={'red'} key={'red'}>
-                            {this.props.audit}
-                        </Label> : null}
-                </div>
 
-            </div>
+    }
 
-        </Menu.Item>
-    )
+
+
+
+
 
     searchClick = (e) => {
         this.props.handleSearchValue(e.target.value, this.state.searchChangeValue)
@@ -1026,15 +1062,25 @@ class SiteFour extends React.Component {
                                                                         <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
                                                                         (this.state.page === 'pg=newOrg') ?
                                                                             <SiteFourPageCreateorga></SiteFourPageCreateorga> :
+
+
                                                                             (this.state.page === 'pg=createApp') ?
-                                                                                <SiteFourPageAppReg
-                                                                                    editable={false}></SiteFourPageAppReg> :
-                                                                                (this.state.page === 'pg=editApp') ?
-                                                                                    <SiteFourPageAppReg
-                                                                                        editable={true}></SiteFourPageAppReg> :
-                                                                                    (this.state.page === 'pg=createAppInst') ?
-                                                                                        <SiteFourPageAppInstReg
-                                                                                            editable={false}></SiteFourPageAppInstReg> :
+                                                                            <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
+
+                                                                            (this.state.page === 'pg=editApp') ?
+                                                                            <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
+
+
+
+                                                                            (this.state.page === 'pg=createAppInst') ?
+                                                                            <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
+
+                                                                            (this.state.page === 'pg=createCloudletPool')?
+                                                                            <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+
+                                                                            (this.state.page === 'pg=linkOrganize')?
+                                                                            <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
+
                                                                                         (this.state.page === 'pg=createCloudletPool') ?
                                                                                             <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
                                                                                             (this.state.page === 'pg=editAppInst') ?
@@ -1261,9 +1307,9 @@ class SiteFour extends React.Component {
                 {/*#############################*/}
                 <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
                     {/*모니터링 페이지인 경우...*/}
-                    {(this.state.page === 'pg=Monitoring2') ?
-                        <PageMonitoring2/> :
-                        this.renderSiteBody(viewMode)
+                    {(this.state.page === 'pg=Monitoring2') ? <PageMonitoring2/> :
+                        (this.state.page === 'pg=Monitoring3') ? <PageMonitoring3/> :
+                            this.renderSiteBody(viewMode)
 
                     }
                 </Container>
@@ -1290,6 +1336,7 @@ const mapStateToProps = (state) => {
     let submitInfo = (state.submitInfo) ? state.submitInfo : null;
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let checkedAudit = (state.checkedAudit) ? state.checkedAudit.audit : null;
+    let detailData = (state.changeViewMode && state.changeViewMode.mode)?state.changeViewMode.mode.data : null;
 
     return {
         viewBtn: state.btnMnmt ? state.btnMnmt : null,
@@ -1318,6 +1365,7 @@ const mapStateToProps = (state) => {
         regionInfo: regionInfo,
         audit: checkedAudit,
         clickCity: state.clickCityList.list,
+        detailData:detailData,
     }
 };
 

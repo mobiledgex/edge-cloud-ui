@@ -27,7 +27,7 @@ class SiteFourPageAppInst extends React.Component {
             devData:[],
             viewMode:'listView',
             detailData:null,
-            hiddenKeys:['Error','URI', 'Mapped_port', 'Runtime', 'Created', 'Liveness','Flavor','Status','Revision'],
+            hiddenKeys:['Error','URI', 'Mapped_port', 'Runtime', 'Created', 'Liveness','Flavor','Status','Revision','ClusterDeveloper'],
             AppRevision:[],
             regionToggle:false,
             dataSort:false

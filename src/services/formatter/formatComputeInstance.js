@@ -113,7 +113,8 @@ let generateData = (datas,body) => {
                     Progress:'',
                     Edit:null,
                     Status:'',
-                    Revision:''
+                    Revision:'',
+                    ClusterDeveloper:''
                 })
             } else {
                 let Index = i;
@@ -125,6 +126,7 @@ let generateData = (datas,body) => {
                 let Cloudlet = dataResult.data.key.cluster_inst_key.cloudlet_key.name  || '-';
                 let CloudletLocation = dataResult.data.cloudlet_loc || '-';
                 let ClusterInst = dataResult.data.key.cluster_inst_key.cluster_key.name || '-';
+                let ClusterDeveloper = dataResult.data.key.cluster_inst_key.developer || '';
                 let URI = dataResult.data.uri || '-';
                 let liveness = dataResult.data.liveness || '-';
                 let mapped_ports= dataResult.data.mapped_ports || '-';
@@ -159,7 +161,8 @@ let generateData = (datas,body) => {
                     Progress:'',
                     Edit:newRegistKey,
                     Status:Status,
-                    Revision:Revision
+                    Revision:Revision,
+                    ClusterDeveloper:ClusterDeveloper
                 })
             }
         })

@@ -1,6 +1,36 @@
+@import url('https://fonts.googleapis.com/css?family=Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Bungee|Candal|Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Candal|Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Encode+Sans+Condensed|Righteous&display=swap');
 .recharts-legend-item-text {
     font-size: 22px;
     color: whitesmoke;
+}
+.page_monitoring_grid_box{
+    display: flex;
+    flex-direction: column;
+    /*flex-grow: 1;*/
+    width: 33.3333%;
+    height: 100%;
+    margin-right: 10px;
+    background: #1e2124;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.ui.tabular.menu .item {
+    color: #9c9c9c;
+}
+.ui.attached.tabular.menu {
+    border-bottom-color: #525252;
+}
+
+.ui.attached:not(.message)+.ui.attached.segment:not(.top) {
+    border-top: none;
+    border-top-color: #525252;
+    border-color: #525252;
 }
 
 .ui.selection.dropdown > .dropdown.icon::after {

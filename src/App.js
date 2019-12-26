@@ -26,6 +26,8 @@ import './css/pages/audit.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import BubbleChartScreen from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/BubbleChartScreen";
+import PageMonitoringDetail from "./sites/PageMonitoringDetail";
+import PageMonitoringFull from "./sites/PageMonitoringFull";
 // API
 
 let self = null;
@@ -364,12 +366,12 @@ class App extends Component {
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath: '/verify'})}/>
 
                     <Route exact path='/BubbleChartScreen' component={BubbleChartScreen} />
+                    <Route exact path='/PageMonitoringFull' component={PageMonitoringFull} />
                 </div>
             </Router>
         );
     }
 }
-
 //export default App;
 
 App.defaultProps = {}

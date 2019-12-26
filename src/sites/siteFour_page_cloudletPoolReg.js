@@ -10,14 +10,14 @@ import * as services from '../services/service_compute_service';
 import './siteThree.css';
 
 import Alert from "react-s-alert";
-import RegistryCloudletPoolViewer from "../container/registryCloudletPoolViewer";
+import SiteFourPoolStepViewer from '../container/siteFourPoolStepView';
 import * as reducer from "../utils";
 
 
 
 let _self = null;
 let rgn = [];
-class SiteFourPageClusterInstPoolReg extends React.Component {
+class SiteFourPageCloudletPoolReg extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -35,6 +35,7 @@ class SiteFourPageClusterInstPoolReg extends React.Component {
             apps:[],
             hangeRegion:[],
             regionToggle:false,
+            step: 1
         };
         this.headerH = 70;
         this.hgap = 0;
@@ -57,15 +58,18 @@ class SiteFourPageClusterInstPoolReg extends React.Component {
     }
     countJoin() {
         let cloudlet = this._cloudletDummy;
-        console.log('20191220 props dev data countJoin---', cloudlet, ": state devData == ", this.state.devData)
+        console.log('20191223 props dev data countJoin---', cloudlet, ": regions == ", rgn, ":", this.props.region)
         let cloudletList = [];
         cloudlet.map((list) => {
             cloudletList.push({region:list['Region'], cloudlet:list['CloudletName']})
         })
         //TODO: cloudlet --- 20191220 폼에 맞는 데이터 형태로 가공 필요
         let fieldValue = [{
+            'Region':rgn,
             'poolName':'',
-            'selectCloudlet':cloudletList
+            'selectCloudlet':cloudletList,
+            'invisibleField':''
+
         }]
         _self.setState({devData:fieldValue, dataSort:false})
         _self.forceUpdate();
@@ -155,7 +159,7 @@ class SiteFourPageClusterInstPoolReg extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <RegistryCloudletPoolViewer devData={devData} gotoUrl={this.gotoUrl}/>
+            <SiteFourPoolStepViewer devData={devData} stepMove={this.state.step} gotoUrl={this.gotoUrl}/>
         );
     }
 
@@ -187,4 +191,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInstPoolReg)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCloudletPoolReg)));
