@@ -156,8 +156,6 @@ class SiteFour extends React.Component {
             {label: 'App Instances', icon: 'storage', pg: 6},
             {label: 'Audit Log', icon: 'check', pg: 'audits'},
             {label: 'Monitoring', icon: 'graphic_eq', pg: 'Monitoring2'},
-            //{label: 'Monitoring3', icon: 'graphic_eq', pg: 'Monitoring3'},
-            {label: 'MonitoringF', icon: 'graphic_eq', pg: 'MonitoringF'},
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
@@ -696,76 +694,48 @@ class SiteFour extends React.Component {
 
     //compute page menu view
     menuItemView = (item, i, activeItem) => {
-
-        //todo: 모니터링 FullScreen인 경우..
-        if ( item.label==="MonitoringF"){
-
-            return (
-                <Menu.Item
-                    className={'leftMenu_' + item.label}
-                    key={i}
-                    name={item.label}
-                    active={activeItem === item.label}
-                    onClick={() => {
-                        this.props.history.push('PageMonitoringFull')
-                    }}
-                >
-                    <div className="left_menu_item">
-                        <MaterialIcon icon={'tv'}/>
-                        <div className='label'>MonitoringFull</div>
-                    </div>
-                </Menu.Item>
-            )
-        }else{
-            return (
-                <Menu.Item
-                    className={'leftMenu_' + item.label}
-                    key={i}
-                    name={item.label}
-                    active={activeItem === item.label}
-                    onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
-                >
-                    <div className="left_menu_item">
-                        <MaterialIcon icon={item.icon}/>
-                        <div className='label'>{item.label}</div>
-                        {(activeItem === item.label) ?
-                            <div style={{position: 'absolute', right: '12px', top: '12px'}}>
-                                <ClipLoader
-                                    size={20}
-                                    sizeUnit={'px'}
-                                    color={'rgba(136,221,0,.85)'}
-                                    loading={this.props.loadingSpinner}
-                                    // loading={true}
-                                />
-                                {(item.label === 'Audit Log' && this.props.audit > 0) ?
-                                    <Label circular color={'red'} key={'red'}>
-                                        {this.props.audit}
-                                    </Label> : null}
-                            </div>
-
-                            : null}
-
-
+        return (
+            <Menu.Item
+                className={'leftMenu_' + item.label}
+                key={i}
+                name={item.label}
+                active={activeItem === item.label}
+                onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
+            >
+                <div className="left_menu_item">
+                    <MaterialIcon icon={item.icon}/>
+                    <div className='label'>{item.label}</div>
+                    {(activeItem === item.label) ?
                         <div style={{position: 'absolute', right: '12px', top: '12px'}}>
+                            <ClipLoader
+                                size={20}
+                                sizeUnit={'px'}
+                                color={'rgba(136,221,0,.85)'}
+                                loading={this.props.loadingSpinner}
+                                // loading={true}
+                            />
                             {(item.label === 'Audit Log' && this.props.audit > 0) ?
                                 <Label circular color={'red'} key={'red'}>
                                     {this.props.audit}
                                 </Label> : null}
                         </div>
 
+                        : null}
+
+
+                    <div style={{position: 'absolute', right: '12px', top: '12px'}}>
+                        {(item.label === 'Audit Log' && this.props.audit > 0) ?
+                            <Label circular color={'red'} key={'red'}>
+                                {this.props.audit}
+                            </Label> : null}
                     </div>
 
-                </Menu.Item>
-            )
-        }
+                </div>
 
-
+            </Menu.Item>
+        )
 
     }
-
-
-
-
 
 
     searchClick = (e) => {
@@ -826,7 +796,6 @@ class SiteFour extends React.Component {
                 })
             }
         })
-
 
     }
 
