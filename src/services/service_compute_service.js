@@ -513,18 +513,25 @@ export function getMCService(resource, body, callback, self) {
 
 
             if(response.data) {
+
                 if(response.data.error) {
                     if(response.data.error.indexOf('Expired') > -1) {
                         localStorage.setItem('userInfo', null)
                         localStorage.setItem('sessionData', null)
                         callback({error:'Login Timeout Expired.<br/>Please login again'}, resource, self);
                         return;
+                    } else if (response.data.error == 'No user') {
+
+                        parseData = JSON.parse(JSON.stringify(response));
+
                     } else {
                         callback({error:response.data.error}, resource, self);
                         return;
                     }
                 } else {
                     parseData = JSON.parse(JSON.stringify(response));
+
+
                 }
             } else {
                 parseData = response;
