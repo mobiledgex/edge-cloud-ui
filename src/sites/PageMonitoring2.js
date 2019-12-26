@@ -274,8 +274,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     marginBottom: 5,
 
                                 }}>
-                                    <FA name="refresh" style={{fontSize: 30,}} onClick={() => {
-                                        alert('refresh refresh!!!!!')
+                                    <FA name="refresh" style={{fontSize: 30,}} onClick={async () => {
+                                        //alert('refresh refresh!!!!!')
+                                        notification.success({
+                                            message: 'refresh'
+                                        })
+                                        await this.getInitData();
                                     }}/>
                                 </div>
 
@@ -593,6 +597,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                 <Grid.Row className='view_contents'>
                     <Modal
+                        //closeIcon={true}
                         open={this.state.isModalOpened}
                         closeOnDimmerClick={true}
                         onClose={() => {
@@ -600,7 +605,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 isModalOpened: false,
                             })
                         }}
-                        style={{width:'80%'}}
+                        style={{width: '80%'}}
                     >
                         <Modal.Header>App Instance List</Modal.Header>
                         <Modal.Content>
