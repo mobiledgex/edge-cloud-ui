@@ -52,6 +52,8 @@ import * as services from '../services/serviceMC';
 import { organizationTutor, CloudletTutor } from '../tutorial';
 import SiteFourPageAudits from './siteFour_page_audits';
 
+import MexMessage from '../hoc/mexMessage';
+
 import Alert from 'react-s-alert';
 
 import '../css/introjs.css';
@@ -1187,6 +1189,7 @@ const mapStateToProps = (state) => {
             mode: state.alertInfo.mode,
             msg: state.alertInfo.msg
         },
+        requestMessage : (state.ShowSnack.info) ? state.ShowSnack.info:null,
         searchValue : (state.searchValue.search) ? state.searchValue.search: null,
         changeRegion : (state.changeRegion.region) ? state.changeRegion.region : null,
         tableHeaders : (state.tableHeader)? state.tableHeader.headers : null,
@@ -1225,6 +1228,7 @@ const mapDispatchProps = (dispatch) => {
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleAuditCheckCount: (data) => { dispatch(actions.setCheckedAudit(data))},
         handleResetMap: (data) => { dispatch(actions.resetMap(data))},
+        handleShowSnack : (data) => {dispatch(actions.showSnack(data))}
     };
 };
 
