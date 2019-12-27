@@ -85,7 +85,7 @@ const cloudletMap = (props, type) => (
     </Fragment>
 )
 let _self = null;
-class SiteFourCreatePoolForm extends React.PureComponent {
+class SiteFourCreatePoolForm extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -386,7 +386,7 @@ class SiteFourCreatePoolForm extends React.PureComponent {
                 //this.getDataDeveloper(nextProps.data.region,nextProps.regionInfo.region)
             }
         }
-        console.log('20191220 props dev data nextProps.data=', nextProps.data)
+        console.log('20191223 props dev data nextProps.data=', nextProps.data)
         if(nextProps.data) this.setState({devData: nextProps.data, keys:nextProps.keys, regionInfo:nextProps.regionInfo})
         //reset cluster and node count
         if(nextProps.nodeNumber || nextProps.selectedFlavor) {

@@ -75,8 +75,9 @@ class RegistryLinkOrganizeViewer extends React.Component {
             errorClose:false,
             keysData:[
                 {
-                    'SelectCloudletPool':{label:'Select Cloudlet Pool', type:'RenderDropDown', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
+                    'CloudletPool':{label:'Cloudlet Pool', type:'RenderDropDown', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
                     'LinktoOrganization':{label:'Into the pool', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
+                    'LinkDiagram':{label:'Linked Status', type:'RenderLinkedDiagram', necessary:false, tip:'linked the cloudlet pool with the organization', active:true},
                 },
                 {
 
@@ -84,8 +85,9 @@ class RegistryLinkOrganizeViewer extends React.Component {
             ],
             fakeData:[
                 {
-                    'poolName':'',
-                    'selectCloudlet':''
+                    'CloudletPool':'',
+                    'LinktoOrganization':'',
+                    'LinkDiagram':''
                 }
             ]
 
@@ -259,6 +261,7 @@ class RegistryLinkOrganizeViewer extends React.Component {
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
+
         if(nextProps.submitValues && !this.state.toggleSubmit) {
             const cluster = ['Region','CloudletName','OperatorName','IPSupport','NumberOfDynamicIPs','PhysicalName','PlatformType','Latitude','Longitude'];
             let error = [];
@@ -274,7 +277,7 @@ class RegistryLinkOrganizeViewer extends React.Component {
             if(!this.pauseRender && nextProps.formClusterInst.submitSucceeded && error.length == 0){
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
-                console.log('20191119 create cloudlet....',nextProps.submitValues)
+                alert('20191119 create cloudlet....'+nextProps.submitValues)
                 //service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit, nextProps.validateValue.Cloudlet)
                 service.createNewCloudlet('CreateCloudlet', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
                 setTimeout(() => {
@@ -459,3 +462,4 @@ const mapDispatchProps = (dispatch) => {
 
 export default withRouter(connect(mapStateToProps, mapDispatchProps)(RegistryLinkOrganizeViewer));
 
+//http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateCloudletPoolMember <<< '{"region":"US", "cloudlet_key":{"name":"frankfurt-eu","operator_key":{"name":"TDG"}},"pool":{"name": "TEST123"}}'
