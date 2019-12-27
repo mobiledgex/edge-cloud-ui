@@ -10,7 +10,7 @@ import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "
 import {Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
-import BubbleChart from "@weknow/react-bubble-chart-d3";
+import BubbleChart from "./BubbleChart";
 import PageMonitoring2 from "../sites/PageMonitoring2";
 import type {TypeAppInstance} from "../shared/Types";
 
@@ -839,6 +839,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
             //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
             label: item.AppName.toString().substring(0, 10) + "...",
             value: instanceFlavorToPerformanceValue(item.Flavor),
+            favor: item.Flavor,
         })
     })
 
@@ -863,21 +864,21 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     showLegend={false} // optional value, pass false to disable the legend.
                     legendPercentage={30} // number that represent the % of with that legend going to use.
                     legendFont={{
-                        family: 'Arial',
-                        size: 9,
+                        family: 'Candal',
+                        size: 12,
                         color: 'yellow',
                         weight: 'bold',
                     }}
                     valueFont={{
-                        family: 'Arial',
-                        size: 15,
+                        family: 'Righteous',
+                        size: 20,
                         color: 'black',
                         weight: 'bold',
                     }}
                     labelFont={{
-                        //family: 'Arial',
-                        size: 8,
-                        color: 'black',
+                        family: 'Righteous',
+                        size: 10,
+                        color: '#000',
                         weight: 'bold',
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page

@@ -40,7 +40,7 @@ export default class BubbleChart extends Component {
     renderChart() {
         const {
             graph,
-            data,
+            data,//label, value
             height,
             width,
             padding,
@@ -68,8 +68,9 @@ export default class BubbleChart extends Component {
             })
             .each((d) => {
                 if (d.data.label) {
-                    d.label = d.data.label;
+                    d.label = '' + d.data.label; //라벨 셋팅 부분..
                     d.id = d.data.label.toLowerCase().replace(/ |\//g, "-");
+                    d.favor = d.data.favor;
                 }
             });
 
@@ -158,8 +159,10 @@ export default class BubbleChart extends Component {
             .style("stroke-width", () => {
                 return valueFont.lineWeight ? valueFont.lineWeight : 0;
             })
-            .text(function (d) {
-                return d.value;
+            .text((d) => {
+                //@todo:value를 랜더링 하는 부분..
+                //@todo:value를 랜더링 하는 부분..
+                return d.value; //@todo:value를 랜더링 하는 부분..
             });
 
         node.append("text")
@@ -182,7 +185,7 @@ export default class BubbleChart extends Component {
                 return labelFont.lineWeight ? labelFont.lineWeight : 0;
             })
             .text(function (d) {
-                return d.label;
+                return   d.label ;//Label그리는 부분..
             });
 
 
@@ -271,7 +274,7 @@ export default class BubbleChart extends Component {
             .attr("height", legendFont.size)
             .attr("x", 0)
             .attr("y", -legendFont.size)
-            .style("fill", function (d) {
+            .style("fill", (d) => {
                 return d.data.color ? d.data.color : color(nodes.indexOf(d));
             });
 
