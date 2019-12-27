@@ -982,7 +982,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
         gradient2.addColorStop(1, 'rgba(255,72,0,0)');
 
         const gradient3 = ctx.createLinearGradient(0, 0, 0, height);
-        gradient3.addColorStop(0, 'rgba(255,5,0,1)');
+        gradient3.addColorStop(0, 'rgb(237,255,42)');
         gradient3.addColorStop(1, 'rgba(255,5,0,0)');
 
         const gradient4 = ctx.createLinearGradient(0, 0, 0, height);
