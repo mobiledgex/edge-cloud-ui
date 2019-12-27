@@ -48,3 +48,16 @@ export const REGIONS_OPTIONS = [
 
 ]
 
+/*"AppName": "MEXPrometheusAppName",
+    "Cloudlet": "frankfurt-eu",
+    "ClusterInst": "kkkkkkk",*/
+export const MOINTORING_FILTER_ITEM_TYPE = {
+    REGION : "Region",
+    APP_INST: "AppName",
+    CLOUDLET: "Cloudlet",
+    CLUSTERINST: "ClusterInst",
+}
+
+export const SELECT_TYPE_ENUM = "Region"| "AppName" | "Cloudlet" | "ClusterInst"
+
+

@@ -40,13 +40,21 @@ export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet,
  * @returns {*}
  */
 export const filterCpuOrMemUsageByCloudLet = (cpuOrMemUsageList, pCloudLet) => {
-
     let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
         if (item.instance.Cloudlet === pCloudLet) {
             return item;
         }
     });
     return filteredCpuOrMemUsageList
+}
+
+export const filterCpuOrMemUsageByCloudLetByType = (cpuOrMemUsageList, pCloudLet, pType) => {
+    let filteredUsageList = cpuOrMemUsageList.filter((item) => {
+        if (item.instance[pType] === pCloudLet) {
+            return item;
+        }
+    });
+    return filteredUsageList
 }
 
 /**
@@ -607,7 +615,7 @@ const Styles = {
         , justifyContent: 'center', alignItems: 'center', width: '100%', height: 38, marginTop: -10,
     },
     cell004: {
-        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor:'grey'
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'grey'
         , justifyContent: 'center', alignItems: 'center', width: '100%', height: 40
     }
 }
@@ -989,7 +997,8 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
             {chunkedArraysOfColSize.map((colSizeArray, index) =>
                 <div className='page_monitoring_grid' key={index.toString()}>
                     {colSizeArray.map((item, index) =>
-                        <div className='page_monitoring_grid_box' style={{flex: colSizeArray.length === 1 && index === 0 ? .318 : .33}}>
+                        <div className='page_monitoring_grid_box'
+                             style={{flex: colSizeArray.length === 1 && index === 0 ? .318 : .33}}>
                             <FlexBox style={{
                                 fontSize: 15,
                                 marginTop: 10,
@@ -1016,7 +1025,8 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
             {chunkedArraysOfColSize.length === 1 &&
             <div className='page_monitoring_grid_box_blank2'>
                 {[1, 2, 3].map((item, index) =>
-                    <div key={index} className='page_monitoring_grid_box_blank2' style={{backgroundColor: 'transprent'}}>
+                    <div key={index} className='page_monitoring_grid_box_blank2'
+                         style={{backgroundColor: 'transprent'}}>
                         <FlexBox style={{
                             fontSize: 15,
                             color: '#fff',
@@ -1079,8 +1089,19 @@ export const filterCpuOrMemUsageListByRegion = (pRegion: string, memOrCpuUsageLi
         });
         return filteredUsageListByRegion;
     }
+}
 
-
+export const filterCpuOrMemUsageListByType = (pRegion: string, memOrCpuUsageList, type: string) => {
+    if (pRegion === REGION.ALL) {
+        return memOrCpuUsageList;
+    } else {
+        let filteredUsageListByRegion = memOrCpuUsageList.filter((item) => {
+            if (item.instance.Region === pRegion) {
+                return item;
+            }
+        });
+        return filteredUsageListByRegion;
+    }
 }
 
 
@@ -1297,7 +1318,6 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
     }
     return newHardwareUsageList;
 }
-
 
 
 /*
