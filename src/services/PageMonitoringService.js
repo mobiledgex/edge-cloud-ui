@@ -221,11 +221,13 @@ export const makeCloudletListSelectBox = (appInstanceList: Array) => {
 export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
 
     let chartDataList = [];
-    chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}])
+    chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
     for (let index = 0; index < usageList.length; index++) {
 
         if (index < 5) {
-            let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...", hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, CHART_COLOR_LIST[index]]
+            let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
+                hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, CHART_COLOR_LIST[index],
+                hardwareType === 'cpu' ? usageList[index].sumCpuUsage.toFixed(2) + " %" : usageList[index].sumMemUsage+ " Byte"]
             chartDataList.push(barDataOne);
         }
 
@@ -254,7 +256,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                 legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
                 //xc춧
                 hAxis: {
-                    //textPosition: 'none',//HIDE xAxis
+                    textPosition: 'none',//HIDE xAxis
                     title: '',
                     titleTextStyle: {
                         //fontName: "Times",
@@ -267,7 +269,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                         color: "white"
                     },
                     gridlines: {
-                        color: "grey"
+                        color: "none"
                     },
                     format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '#\' byte\'',
                     baselineColor: 'grey',
