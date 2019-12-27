@@ -544,10 +544,6 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
 
                         ],
 
-                        /* pieSliceTextStyle: {
-                             color: 'black',
-                             fontSize: 22,
-                         },*/
                         pieSliceText: 'none',
                         //slices: newColorList,
                         /* legend: {
