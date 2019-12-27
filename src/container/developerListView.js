@@ -442,7 +442,7 @@ class DeveloperListView extends React.Component {
                  style={{backgroundColor: 'transparent', width: 0, height: 0, position: 'relative'}}></div>
             <Button
                     className="table_actions_button"
-                    disabled={(localStorage.selectRole === 'AdminManager' || (this.state.selectUse == index)) ? false : true}
+                    disabled={(localStorage.selectRole === 'AdminManager' || localStorage.selectOrg == item.Organization || (this.state.selectUse == index)) ? false : true}
                     // color={localStorage.selectRole === 'AdminManager' ? 'teal' : (this.state.selectUse == index) ? 'teal' : null}
                     onClick={() => {
                         this.setState({actionContextRef: 'actionCell_' + index})
@@ -463,8 +463,10 @@ class DeveloperListView extends React.Component {
         <div key={j} textAlign='center'
              style={(this.state.selectUse == i) ? {whiteSpace: 'nowrap', background: '#444'} : {whiteSpace: 'nowrap'}}>
             {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager') ?
-                <Button className='stepOrgDeveloper1' color={(this.state.selectUse == i) ? 'teal' : null}
-                        onClick={(evt) => this.onUseOrg(item, i, evt)}>
+                <Button className='stepOrgDeveloper1' color={(localStorage.selectOrg == item.Organization) ? 'teal' : (this.state.selectUse == i) ? 'teal' : null}
+                        onClick={(evt) => this.onUseOrg(item, i, evt)}
+
+                >
                     {/* <Icon name='check' /> */}
                     Manage
                 </Button> : null}
@@ -520,8 +522,9 @@ class DeveloperListView extends React.Component {
 
                                             {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager') ?
                                                 <Button className='stepOrgDeveloper1'
-                                                        color={(this.state.selectUse == i) ? 'teal' : null}
-                                                        onClick={(evt) => this.onUseOrg(item, i, evt)}>
+                                                        color={(localStorage.selectOrg == item.Organization) ? 'teal' :(this.state.selectUse == i) ? 'teal' : null}
+                                                        onClick={(evt) => this.onUseOrg(item, i, evt)}
+                                                >
                                                     {/* <Icon name='check' /> */}
                                                     Manage
                                                 </Button> : null
