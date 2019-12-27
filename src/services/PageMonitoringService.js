@@ -520,7 +520,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
             {diskUsed !== -1 ?
                 <Chart
                     width={165}
-                    height={120}
+                    height={122}
 
                     chartType="PieChart"
                     data={[
@@ -543,14 +543,15 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                             },
 
                         ],
+                        pieSliceBorderColor: 'blue',
                         pieSliceText: 'none',
                         legend: {
                             position: "none",
-                          /*  alignment: "center",
-                            textStyle: {
-                                color: "white",
-                                fontSize: 14
-                            }*/
+                            /*  alignment: "center",
+                              textStyle: {
+                                  color: "white",
+                                  fontSize: 14
+                              }*/
                         },
                         pieHole: 0.7,
                         pieSliceTextStyle: {
@@ -577,7 +578,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                 :
                 <FlexBox style={{
                     width: 165,
-                    backgroundColor: 'black', display: 'flex', justifyContent: 'center', alignSelf: 'center', height: 120, color: 'white', alignItems: 'center', fontSize: 15,
+                    backgroundColor: 'black', display: 'flex', justifyContent: 'center', alignSelf: 'center', height: 122, color: 'white', alignItems: 'center', fontSize: 15,
                 }}>
                     <div style={{marginTop: 50}}>
                         No Data
@@ -699,11 +700,11 @@ const Styles = {
     },
     cell003: {
         color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 38, marginTop: -10,
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 38, marginTop: -9,
     },
     cell004: {
         color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'black'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 40
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 38
     }
 }
 

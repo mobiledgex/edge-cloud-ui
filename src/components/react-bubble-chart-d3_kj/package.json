@@ -1,0 +1,75 @@
+{
+  "_from": "@weknow/react-bubble-chart-d3",
+  "_id": "@weknow/react-bubble-chart-d3@1.0.12",
+  "_inBundle": false,
+  "_integrity": "sha512-pQdCE9G9CgtMdnE4yjUt9vqrcFyz2zh7Ks7oC4idhLOH5xr7elFPDfXJR7JYcZMbgTADaGzJMsjPGGxccq2pCA==",
+  "_location": "/@weknow/react-bubble-chart-d3",
+  "_phantomChildren": {
+    "commander": "2.20.3",
+    "d3-request": "1.0.6",
+    "iconv-lite": "0.4.24",
+    "rw": "1.3.3"
+  },
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@weknow/react-bubble-chart-d3",
+    "name": "@weknow/react-bubble-chart-d3",
+    "escapedName": "@weknow%2freact-bubble-chart-d3",
+    "scope": "@weknow",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@weknow/react-bubble-chart-d3/-/react-bubble-chart-d3-1.0.12.tgz",
+  "_shasum": "d97e48e7b70825c477390e6da34f4253eb02dbd0",
+  "_spec": "@weknow/react-bubble-chart-d3",
+  "_where": "/Users/gilzako/workspace_new001/edge_cloud_ui",
+  "author": {
+    "name": "weKnow Inc"
+  },
+  "bugs": {
+    "url": "https://github.com/weknowinc/react-bubble-chart-d3/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "d3": "^4.13.0",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  },
+  "deprecated": false,
+  "description": "ReactJS component to display data as a bubble chart using D3.",
+  "devDependencies": {
+    "react-build-dist": "0.0.8",
+    "react-build-lib": "0.0.2"
+  },
+  "homepage": "https://github.com/weknowinc/react-bubble-chart-d3#readme",
+  "keywords": [
+    "ReactJS",
+    "Component",
+    "D3",
+    "Charts",
+    "Bubble",
+    "Graphics"
+  ],
+  "license": "GPL-3.0",
+  "main": "lib/index.js",
+  "name": "@weknow/react-bubble-chart-d3",
+  "peerDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weknowinc/react-bubble-chart-d3.git"
+  },
+  "scripts": {
+    "build": "npm run build:lib && npm run build:dist",
+    "build:dist": "react-build-dist --bundle-name react-bubble-chart-d3.js",
+    "build:lib": "react-build-lib",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.12"
+}
