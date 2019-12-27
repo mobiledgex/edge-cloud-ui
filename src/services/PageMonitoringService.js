@@ -227,7 +227,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
         if (index < 5) {
             let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
                 hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, CHART_COLOR_LIST[index],
-                hardwareType === 'cpu' ? usageList[index].sumCpuUsage.toFixed(2) + " %" : usageList[index].sumMemUsage+ " Byte"]
+                hardwareType === 'cpu' ? usageList[index].sumCpuUsage.toFixed(2) + " %" : usageList[index].sumMemUsage + " Byte"]
             chartDataList.push(barDataOne);
         }
 
@@ -905,53 +905,87 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
     }
 
 
-    let finalSeriesDataSets = [];
-
-    for (let i in cpuUsageSetList) {
-        //@todo: top5 만을 추린다
-        if (i < 5) {
-            let datasetsOne = {
-                label: instanceNameList[i],
-                fill: false,
-                lineTension: 0.1,
-                backgroundColor: CHART_COLOR_LIST[i],
-                borderColor: CHART_COLOR_LIST[i],
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: 'rgba(75,192,192,1)',
-                pointBackgroundColor: '#fff',
-                pointBorderWidth: 1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                pointHoverBorderColor: 'rgba(220,220,220,1)',
-                pointHoverBorderWidth: 2,
-                pointRadius: 1,
-                pointHitRadius: 10,
-                data: cpuUsageSetList[i],
-            }
-
-            finalSeriesDataSets.push(datasetsOne)
-        }
-
-    }
-
     //@todo: last를 RECENT_DATA_LIMIT_COUNT개로 (최근데이타 RECENT_DATA_LIMIT_COUNT 개)  설정 했으므로 날짜를 RECENT_DATA_LIMIT_COUNT 개로 잘라준다
     let newDateTimeList = []
     for (let i in dateTimeList) {
         if (i < RECENT_DATA_LIMIT_COUNT) {
             let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
-            newDateTimeList.push(splitDateTimeArrayList[0].replace("T", "T"))
+            let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+            newDateTimeList.push(timeOne.toString().substring(3, timeOne.length))
         }
 
     }
 
 
-    const data = {
-        labels: newDateTimeList, //todo:하단(X)축에 랜더링 되는 DateList.(LabelList)
-        datasets: finalSeriesDataSets //todo: 렌더링할 데이터셋
-    };
+    /*  const data = {
+          labels: newDateTimeList, //todo:하단(X)축에 랜더링 되는 DateList.(LabelList)
+          datasets: finalSeriesDataSets //todo: 렌더링할 데이터셋
+      };*/
+
+    const data = (canvas) => {
+        const ctx = canvas.getContext("2d");
+
+        let gradientList = []
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+
+        //rgba(255, 0, 10, 0.25)
+        // rgba(255,94,29,0.25)
+        // rgba(227,220,57,0.25)
+        // rgba(18,135,2,0.25)
+        // rgba(28,34,255,0.25)
+        gradient.addColorStop(0, 'rgba(112,0,28,1)');
+        gradient.addColorStop(1, 'rgba(112,0,28, 0)');
+
+        const gradient2 = ctx.createLinearGradient(0, 0, 0, height);
+        gradient2.addColorStop(0, 'rgba(255,72,0,1)');
+        gradient2.addColorStop(1, 'rgba(255,72,0,0)');
+
+        const gradient3 = ctx.createLinearGradient(0, 0, 0, height);
+        gradient3.addColorStop(0, 'rgba(255,5,0,1)');
+        gradient3.addColorStop(1, 'rgba(255,5,0,0)');
+
+        const gradient4 = ctx.createLinearGradient(0, 0, 0, height);
+        gradient4.addColorStop(0, 'rgba(18,135,2,1)');
+        gradient4.addColorStop(1, 'rgba(18,135,2,0)');
+
+        const gradient5 = ctx.createLinearGradient(0, 0, 0, height);
+        gradient5.addColorStop(0, 'rgba(28,34,255,1)');
+        gradient5.addColorStop(1, 'rgba(28,34,255,0)');
+
+        gradientList.push(gradient)
+        gradientList.push(gradient2)
+        gradientList.push(gradient3)
+        gradientList.push(gradient4)
+
+        let finalSeriesDataSets = [];
+
+        for (let i in cpuUsageSetList) {
+            //@todo: top5 만을 추린다
+            if (i < 5) {
+                let datasetsOne = {
+                    label: instanceNameList[i],
+                    backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '', // Put the gradient here as a fill color
+                    borderColor: gradientList[i],
+                    borderWidth: 2,
+                    pointColor: "#fff",
+                    pointStrokeColor: 'white',
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: 'white',
+                    data: cpuUsageSetList[i],
+                    pointRadius: 1,
+                }
+
+                finalSeriesDataSets.push(datasetsOne)
+            }
+
+        }
+
+
+        return {
+            labels: newDateTimeList,
+            datasets: finalSeriesDataSets,
+        }
+    }
 
 
     console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsage);
@@ -962,6 +996,8 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
     let options = {
         maintainAspectRatio: false,
         responsive: true,
+        datasetStrokeWidth: 3,
+        pointDotStrokeWidth: 4,
         layout: {
             padding: {
                 left: 0,
@@ -983,11 +1019,33 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
                     beginAtZero: true,
                     fontColor: 'white'
                 },
+                gridLines: {
+                    color: "#505050",
+                },
+
             }],
             xAxes: [{
-                ticks: {
+                /*ticks: {
                     fontColor: 'white'
+                },*/
+                gridLines: {
+                    color: "#505050",
                 },
+                ticks: {
+                    fontSize: 14,
+                    fontColor: 'white',
+                    maxRotation: 0.01,
+                    padding: 10,
+                    labelOffset: 0,
+                    /* callback(value, index) {
+                         if (index % 2 == 0) return '';
+                         return value;
+                     },*/
+                },
+                beginAtZero: true,
+                /* gridLines: {
+                     drawTicks: true,
+                 },*/
             }]
         }
 
