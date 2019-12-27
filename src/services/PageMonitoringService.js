@@ -336,11 +336,11 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                 backgroundColor: {
                     fill: 'black'
                 },
-                animation: {
+               /* animation: {
                     duration: 300,
                     easing: 'out',
                     startup: true
-                }
+                }*/
                 //colors: ['green']
             }}
 
@@ -897,7 +897,7 @@ export const getMetricsUtilization = async (appInstanceOne: TypeAppInstance) => 
     }).then(async response => {
         return response.data;
     }).catch(e => {
-        alert(e)
+        throw new Error(e)
     })
 
     return responseRslt;

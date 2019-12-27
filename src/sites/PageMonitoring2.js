@@ -648,7 +648,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     },
                 })
             } finally {
-
                 await this.setState({
                     loading777: false,
                 })
