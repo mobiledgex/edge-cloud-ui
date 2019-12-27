@@ -226,7 +226,8 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
 
         if (index < 5) {
             let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
-                hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage, CHART_COLOR_LIST[index],
+                hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage,
+                CHART_COLOR_LIST[index],
                 hardwareType === 'cpu' ? usageList[index].sumCpuUsage.toFixed(2) + " %" : usageList[index].sumMemUsage + " Byte"]
             chartDataList.push(barDataOne);
         }
@@ -241,7 +242,48 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
             options={{
-
+                annotations: {
+                    style: 'line',
+                    textStyle: {
+                        //fontName: 'Times-Roman',
+                        fontSize: 20,
+                        bold: true,
+                        italic: true,
+                        // The color of the text.
+                        color: '#fff',
+                        // The color of the text outline.
+                        auraColor: 'black',
+                        // The transparency of the text.
+                        opacity: 1.0
+                    },
+                    boxStyle: {
+                        // Color of the box outline.
+                        stroke: '#ffffff',
+                        // Thickness of the box outline.
+                        strokeWidth: 1,
+                        // x-radius of the corner curvature.
+                        rx: 10,
+                        // y-radius of the corner curvature.
+                        ry: 10,
+                        // Attributes for linear gradient fill.
+                        /* gradient: {
+                             // Start color for gradient.
+                             color1: '#ffecbc',
+                             // Finish color for gradient.
+                             //color2: '#33b679',
+                             // Where on the boundary to start and
+                             // end the color1/color2 gradient,
+                             // relative to the upper left corner
+                             // of the boundary.
+                             x1: '0%', y1: '0%',
+                             x2: '100%', y2: '100%',
+                             // If true, the boundary for x1,
+                             // y1, x2, and y2 is the box. If
+                             // false, it's the entire chart.
+                             useObjectBoundingBoxUnits: false
+                         }*/
+                    }
+                },
                 is3D: false,
                 title: '',
                 titleTextStyle: {
