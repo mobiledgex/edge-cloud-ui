@@ -65,6 +65,15 @@ export const filterCpuOrMemUsageByCluster = (cpuOrMemUsageList, pCluster) => {
     return filteredCpuOrMemUsageList
 }
 
+export const filterCpuOrMemUsageByAppInst = (cpuOrMemUsageList, pAppInst) => {
+    let filteredList = cpuOrMemUsageList.filter((item) => {
+        if (item.instance.AppName === pAppInst) {
+            return item;
+        }
+    });
+    return filteredList
+}
+
 
 /**
  * todo: Fliter app instace list by cloudlet Value
@@ -102,6 +111,16 @@ export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '
     })
 
     return instanceListFilteredByClusterInst;
+}
+
+export const filterAppInstanceListByAppInst = (appInstanceList, pAppInst = '') => {
+    let filteredList = []
+    appInstanceList.map(item => {
+        if (item.AppName === pAppInst) {
+            filteredList.push(item);
+        }
+    })
+    return filteredList;
 }
 
 
@@ -1117,15 +1136,14 @@ export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'U
 
 /**
  * @desc : 앱인스턴스 리스트 이용해서 인스턴스에 대한 total cpu usage 리스트를 만든다..
- * @desc : Using the app instance list, create a list of total cpu usage for the instance.
+ * @desc : Using the app instance list, create a list of TOTAL/AVERAGE CPU, MEM,NETWORK,DISK usage for the instance.
  * @param appInstanceList
  * @returns {Promise<Array>}
  */
-export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = HARDWARE_TYPE.CPU, recentDataLimitCount: number) => {
+export const makeHardwareUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = HARDWARE_TYPE.CPU, recentDataLimitCount: number) => {
 
-    let cpuUsageListPerOneInstance = []
+    let usageListPerOneInstance = []
     for (let index = 0; index < appInstanceList.length; index++) {
-
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
 
         //todo: 레퀘스트를 요청할 데이터 FORM형식을 만들어 준다.
@@ -1137,73 +1155,149 @@ export const makeCpuOrMemUsageListPerInstance = async (appInstanceList: any, par
         let appInstanceHealth = await getAppInstanceHealth(instanceInfoOneForm);
         //console.log(`appInstanceHealth====>${index}`,)
 
-        cpuUsageListPerOneInstance.push({
+        usageListPerOneInstance.push({
             instanceData: appInstanceList[index],
             appInstanceHealth: appInstanceHealth,
         });
 
     }
 
-    let newCpuOrMemUsageListPerOneInstance = [];
+    let newHardwareUsageList = [];
 
-    for (let index = 0; index < cpuUsageListPerOneInstance.length; index++) {
-        if (cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series != null) {
+    for (let index = 0; index < usageListPerOneInstance.length; index++) {
+        if (usageListPerOneInstance[index].appInstanceHealth.data[0].Series != null) {
 
-            let columns = cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].columns;
-            let values = cpuUsageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].values;
+            let columns = usageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].columns;
+            let values = usageListPerOneInstance[index].appInstanceHealth.data[0].Series[0].values;
 
             let sumCpuUsage = 0;
             let sumMemUsage = 0;
+            let sumDiskUsage = 0;
+            let sumRecvBytes = 0;
+            let sumSendBytes = 0;
             for (let jIndex = 0; jIndex < values.length; jIndex++) {
                 //console.log('itemeLength===>',  values[i][4]);
 
-                if (paramCpuOrMem === 'cpu') {
+                if (paramCpuOrMem === HARDWARE_TYPE.CPU) {
                     sumCpuUsage = sumCpuUsage + values[jIndex][4];
-                } else {
-                    sumMemUsage = sumCpuUsage + values[jIndex][5];
+                } else if (paramCpuOrMem === HARDWARE_TYPE.MEM) {
+                    sumMemUsage = sumMemUsage + values[jIndex][5];
+                } else if (paramCpuOrMem === HARDWARE_TYPE.NETWORK) {
+                    sumRecvBytes = sumRecvBytes + values[jIndex][6];
+                    sumSendBytes = sumSendBytes + values[jIndex][7];
+                } else if (paramCpuOrMem === HARDWARE_TYPE.DISK) {
+                    sumDiskUsage = sumDiskUsage + values[jIndex][5];
                 }
 
             }
 
             //todo: CPU/MEM 사용량 평균값을 계산한다.....
-            sumCpuUsage = sumCpuUsage / cpuUsageListPerOneInstance.length;
-            sumMemUsage = Math.ceil(sumMemUsage / cpuUsageListPerOneInstance.length);
+            sumCpuUsage = sumCpuUsage / usageListPerOneInstance.length;
+            sumMemUsage = Math.ceil(sumMemUsage / usageListPerOneInstance.length);
 
             console.log('sumMemUsage===>', sumMemUsage);
 
-            newCpuOrMemUsageListPerOneInstance.push({
-                instance: cpuUsageListPerOneInstance[index].instanceData,
-                columns: columns,
-                values: values,
-                sumCpuUsage: sumCpuUsage,
-                sumMemUsage: sumMemUsage,
-            });
+
+            let body = {}
+            if (paramCpuOrMem === 'cpu') {
+                body = {
+                    instance: usageListPerOneInstance[index].instanceData,
+                    columns: columns,
+                    values: values,
+                    sumCpuUsage: sumCpuUsage,
+                }
+
+            } else if (paramCpuOrMem === 'mem') {
+                body = {
+                    instance: usageListPerOneInstance[index].instanceData,
+                    columns: columns,
+                    values: values,
+                    sumMemUsage: sumMemUsage,
+                }
+
+            } else if (paramCpuOrMem === 'disk') {
+                body = {
+                    instance: usageListPerOneInstance[index].instanceData,
+                    columns: columns,
+                    values: values,
+                    sumDiskUsage: sumDiskUsage,
+                }
+            } else {//network
+                body = {
+                    instance: usageListPerOneInstance[index].instanceData,
+                    columns: columns,
+                    values: values,
+                    sumRecvBytes: sumRecvBytes,
+                    sumSendBytes: sumSendBytes,
+                }
+
+            }
+
+            newHardwareUsageList.push(body);
+
         } else {
-            newCpuOrMemUsageListPerOneInstance.push({
-                instance: cpuUsageListPerOneInstance[index].instanceData,
-                columns: '',
-                values: '',
-                sumCpuUsage: 0,
-                sumMemUsage: 0,
-            });
+
+            let body = {}
+            if (paramCpuOrMem === 'cpu') {
+                body = {
+                    instance: usageListPerOneInstance[index].instanceData,
+                    columns: '',
+                    values: '',
+                    sumCpuUsage: 0,
+                }
+
+            } else if (paramCpuOrMem === 'mem') {
+                body = {
+                    instance: usageListPerOneInstance[index].instanceData,
+                    columns: '',
+                    values: '',
+                    sumMemUsage: 0,
+                }
+
+            } else if (paramCpuOrMem === 'disk') {
+                body = {
+                    instance: usageListPerOneInstance[index].instanceData,
+                    columns: '',
+                    values: '',
+                    sumDiskUsage: 0,
+                }
+            } else {//network
+                body = {
+                    instance: usageListPerOneInstance[index].instanceData,
+                    columns: '',
+                    values: '',
+                    sumRecvBytes: 0,
+                    sumSendBytes: 0,
+                }
+
+            }
+            newHardwareUsageList.push(body);
         }
 
     }
     //@todo :##################################
-    //@todo : Sort cpu usage in reverse order.
+    //@todo : Sort usage in reverse order.
     //@todo :##################################
-    if (paramCpuOrMem === 'cpu') {
-        newCpuOrMemUsageListPerOneInstance.sort((a, b) => {
+    if (paramCpuOrMem === HARDWARE_TYPE.CPU) {
+        newHardwareUsageList.sort((a, b) => {
             return b.sumCpuUsage - a.sumCpuUsage;
         });
-    } else {//mem
-        newCpuOrMemUsageListPerOneInstance.sort((a, b) => {
+    } else if (paramCpuOrMem === HARDWARE_TYPE.MEM) {
+        newHardwareUsageList.sort((a, b) => {
             return b.sumMemUsage - a.sumMemUsage;
         });
+    } else if (paramCpuOrMem === HARDWARE_TYPE.NETWORK) {
+        newHardwareUsageList.sort((a, b) => {
+            return b.sumRecvBytes - a.sumRecvBytes;
+        });
+    } else if (paramCpuOrMem === HARDWARE_TYPE.DISK) {
+        newHardwareUsageList.sort((a, b) => {
+            return b.sumDiskUsage - a.sumDiskUsage;
+        });
     }
-
-    return newCpuOrMemUsageListPerOneInstance;
+    return newHardwareUsageList;
 }
+
 
 
 /*

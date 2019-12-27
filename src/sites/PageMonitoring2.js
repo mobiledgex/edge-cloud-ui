@@ -13,18 +13,24 @@ import * as reducer from "../utils";
 import {formatDate, getTodayDate} from "../utils";
 import {
     fetchAppInstanceList,
+    filterAppInstanceListByAppInst,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
     filterAppInstOnCloudlet,
+    filterCpuOrMemUsageByAppInst,
     filterCpuOrMemUsageByCloudLet,
     filterCpuOrMemUsageByCluster,
     filterCpuOrMemUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, makeCpuOrMemUsageListPerInstance, renderBarGraphForCpuMem,
+    makeClusterListSelectBox,
+    makeCpuOrMemUsageListPerInstance,
+    makeHardwareUsageListPerInstance,
+    renderBarGraphForCpuMem,
     renderBubbleChart,
-    renderInstanceOnCloudletGrid, renderLineChart,
+    renderInstanceOnCloudletGrid,
+    renderLineChart,
     renderPieChart2AndAppStatus,
     renderPlaceHolder,
     renderPlaceHolder2
@@ -86,9 +92,12 @@ type State = {
     currentRegion: string,
     allCpuUsageList: Array,
     allMemUsageList: Array,
+    allDiskUsageList: Array,
+    allNetworkUsageList: Array,
     cloudLetSelectBoxPlaceholder: string,
     clusterSelectBoxPlaceholder: string,
     currentCloudLet: string,
+    currentCluster: string,
     isReady: boolean,
     isModalOpened: false,
     appInstaceListForSelectBoxForCpu: Array,
@@ -123,9 +132,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             currentRegion: '',
             allCpuUsageList: [],
             allMemUsageList: [],
+            allDiskUsageList: [],
+            allNetworkUsageList: [],
             cloudLetSelectBoxPlaceholder: 'Select CloudLet',
             clusterSelectBoxPlaceholder: 'Select Cluster',
             currentCloudLet: '',
+            currentCluster: '',
             isModalOpened: false,
             appInstaceListForSelectBoxForCpu: [],
             appInstaceListForSelectBoxForMem: []
@@ -207,15 +219,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            /*
-              let usageList = await Promise.all([
-                  makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
-                  makeCpuOrMemUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
-              ])
-              let cpuUsageListPerOneInstance = usageList[0]
-              let memUsageListPerOneInstance = usageList[1]
-              console.log('_result===>', usageList);
-            */
+            /* let usageList = await Promise.all([
+                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
+                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
+                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
+                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
+             ])
+             let cpuUsageListPerOneInstance = usageList[0]
+             let memUsageListPerOneInstance = usageList[1]
+             console.log('_result===>', usageList);*/
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
@@ -224,18 +236,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
             let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
 
+
+            //todo: MAKE SELECTBOX.
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
             let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, "Cloudlet")
             let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, "ClusterInst")
 
 
             await this.setState({
-                usageListCPU: usageList[0],
-                usageListMEM: usageList[1],
-                usageListDISK: usageList[2],
-                usageListNETWORK: usageList[3],
-                allCpuUsageList: cpuUsageListPerOneInstance,
-                allMemUsageList: memUsageListPerOneInstance,
+                allCpuUsageList: usageList[0],
+                allMemUsageList: usageList[1],
+                allDiskUsageList: usageList[2],
+                allNetworkUsageList: usageList[3],
                 cloudletList: cloudletList,
                 clusterList: clusterList,
                 filteredCpuUsageList: cpuUsageListPerOneInstance,
@@ -264,6 +276,107 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 message: 'Data loading complete!'
             })
         }
+
+        /**
+         * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
+         * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
+         */
+        async handleSelectBoxChanges(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '') {
+            this.props.toggleLoading(true)
+            await this.setState({
+                loading0: true,
+                appInstanceListSortByCloudlet: [],
+                currentRegion: pRegion,
+                cloudletList: [],
+            })
+
+            //todo : fetch data from remote
+            //let appInstanceList = await fetchAppInstanceList();
+
+            //todo : fetch data from LOCAL
+            let appInstanceList = this.state.allAppInstanceList;
+
+            //todo: ##########################################
+            //todo:  flitering By pRegion
+            //todo: ##########################################
+            appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
+            let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
+            //todo: 클라우드렛 별로 인스턴스를 GroupBy..
+            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
+            //todo:리전별로 필터링된 CPU/MEM UsageList(전체 리스트로 부터 필터링처리)
+            let filteredCpuUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allCpuUsageList);
+            let filteredMemUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allMemUsageList);
+
+
+            //todo: ##########################################
+            //todo: flitering  By pCloudLet
+            //todo: ##########################################
+            let clusterSelectBoxList = [];
+            if (pCloudLet !== '') {
+                appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
+                appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
+                filteredCpuUsageList = filterCpuOrMemUsageByCloudLet(filteredCpuUsageList, pCloudLet);
+                filteredMemUsageList = filterCpuOrMemUsageByCloudLet(filteredMemUsageList, pCloudLet);
+                clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
+
+
+            }
+
+            //todo: ##########################################
+            //todo: flitering By pCluster
+            //todo: ##########################################
+            if (pCluster !== '') {
+                //todo:LeftTop의 Cloudlet위에 올라가는 인스턴스 리스트를 필터링 처리하는 로직.
+                appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
+                //todo:app instalce list를 필터링
+                appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
+                filteredCpuUsageList = filterCpuOrMemUsageByCluster(filteredCpuUsageList, pCluster);
+                filteredMemUsageList = filterCpuOrMemUsageByCluster(filteredMemUsageList, pCluster);
+            }
+
+            //todo: ##########################################
+            //todo: flitering By pAppInstance
+            //todo: ##########################################
+            if (pAppInstance !== '') {
+                //todo:app instalce list를 필터링
+                //appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
+                filteredCpuUsageList = filterCpuOrMemUsageByAppInst(filteredCpuUsageList, pAppInstance);
+                filteredMemUsageList = filterCpuOrMemUsageByAppInst(filteredMemUsageList, pAppInstance);
+            }
+
+
+            this.setState({
+                filteredCpuUsageList: filteredCpuUsageList,
+                filteredMemUsageList: filteredMemUsageList,
+                appInstanceList: appInstanceList,
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                loading0: false,
+                cloudletList: cloudletSelectBoxList,
+                clusterList: clusterSelectBoxList,
+                currentCloudLet: pCloudLet,
+                currentCluster: pCluster,
+            }, async () => {
+
+                //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
+                if (pAppInstance === '') {
+                    let appInstaceListForSelectBoxForCpu = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), "AppName")
+                    let appInstaceListForSelectBoxForMem = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredMemUsageList), "AppName")
+                    await this.setState({
+                        appInstaceListForSelectBoxForCpu: appInstaceListForSelectBoxForCpu,
+                        appInstaceListForSelectBoxForMem: appInstaceListForSelectBoxForMem,
+                    });
+                }
+                setTimeout(() => {
+                    this.setState({
+                        cloudLetSelectBoxPlaceholder: 'Select CloudLet',
+                        clusterSelectBoxPlaceholder: 'Select Cluster',
+                    })
+                }, 700)
+                this.props.toggleLoading(false)
+            })
+
+        }
+
 
         componentWillUnmount() {
             clearInterval(this.intervalHandle)
@@ -356,8 +469,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={this.state.clusterList}
                                 style={{width: 250}}
                                 onChange={async (e, {value}) => {
-
-
                                     await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, value)
                                 }}
                             />
@@ -459,7 +570,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </Row>
                         {!this.state.isReady && <Row columns={1}>
                             <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
-                                <CircularProgress style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
+                                <CircularProgress
+                                    style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
                             </Column>
                         </Row>}
                         {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
@@ -477,16 +589,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         {item.AppName}
                                     </Column>
                                     <Column>
-                                        {this.state.usageListCPU[index].sumCpuUsage.toFixed(2) + "%"}
+                                        {this.state.allCpuUsageList[index].sumCpuUsage.toFixed(2) + "%"}
                                     </Column>
                                     <Column>
-                                        {this.state.usageListMEM[index].sumMemUsage.toFixed(0) + ' Byte'}
+                                        {this.state.allMemUsageList[index].sumMemUsage.toFixed(0) + ' Byte'}
                                     </Column>
                                     <Column>
-                                        {this.state.usageListNETWORK[index].sumRecvBytes}
+                                        {this.state.allNetworkUsageList[index].sumRecvBytes}
                                     </Column>
                                     <Column>
-                                        {this.state.usageListNETWORK[index].sumSendBytes}
+                                        {this.state.allNetworkUsageList[index].sumSendBytes}
                                     </Column>
                                     <Column>
                                         Status_NULL
@@ -501,99 +613,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </Grid>
                 </div>
             )
-        }
-
-
-        /**
-         * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
-         * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
-         */
-        async handleSelectBoxChanges(pRegion: string = '', pCloudLet: string = '', pCluster: string = '') {
-            this.props.toggleLoading(true)
-            await this.setState({
-                loading0: true,
-                appInstanceListSortByCloudlet: [],
-                currentRegion: pRegion,
-                cloudletList: [],
-            })
-
-            //todo : fetch data from remote
-            //let appInstanceList = await fetchAppInstanceList();
-
-            //todo : fetch data from LOCAL
-            let appInstanceList = this.state.allAppInstanceList;
-
-            //todo: ##########################################
-            //todo:  flitering By pRegion
-            //todo: ##########################################
-            appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
-            let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
-            //todo: 클라우드렛 별로 인스턴스를 GroupBy..
-            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
-            //todo:리전별로 필터링된 CPU/MEM UsageList(전체 리스트로 부터 필터링처리)
-            let filteredCpuUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allCpuUsageList);
-            let filteredMemUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allMemUsageList);
-
-
-            //todo: ##########################################
-            //todo: flitering  By pCloudLet
-            //todo: ##########################################
-            let clusterSelectBoxList = [];
-            if (pCloudLet !== '') {
-                appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
-                appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
-                filteredCpuUsageList = filterCpuOrMemUsageByCloudLet(filteredCpuUsageList, pCloudLet);
-                filteredMemUsageList = filterCpuOrMemUsageByCloudLet(filteredMemUsageList, pCloudLet);
-                clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
-
-
-            }
-
-            //todo: ##########################################
-            //todo: flitering By pCluster
-            //todo: ##########################################
-            if (pCluster !== '') {
-                //todo:LeftTop의 클라우듯렛웨에 올라가는 인스턴스 리스트를 필터링 처리하는 로직.
-                appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
-                //todo:app instalce list를 필터링
-                appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
-                filteredCpuUsageList = filterCpuOrMemUsageByCluster(filteredCpuUsageList, pCluster);
-                filteredMemUsageList = filterCpuOrMemUsageByCluster(filteredMemUsageList, pCluster);
-
-            }
-
-
-
-            this.setState({
-                filteredCpuUsageList: filteredCpuUsageList,
-                filteredMemUsageList: filteredMemUsageList,
-                appInstanceList: appInstanceList,
-                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                loading0: false,
-                cloudletList: cloudletSelectBoxList,
-                clusterList: clusterSelectBoxList,
-                currentCloudLet: pCloudLet,
-            }, async () => {
-
-                //TODO: TOP 5 CPU/MEM USAGE SELECTBOX
-                //TODO: TOP 5 CPU/MEM USAGE SELECTBOX
-                //TODO: TOP 5 CPU/MEM USAGE SELECTBOX
-                let appInstaceListForSelectBoxForCpu = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), "AppName")
-                let appInstaceListForSelectBoxForMem = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredMemUsageList), "AppName")
-                await this.setState({
-                    appInstaceListForSelectBoxForCpu: appInstaceListForSelectBoxForCpu,
-                    appInstaceListForSelectBoxForMem: appInstaceListForSelectBoxForMem,
-                });
-
-                setTimeout(() => {
-                    this.setState({
-                        cloudLetSelectBoxPlaceholder: 'Select CloudLet',
-                        clusterSelectBoxPlaceholder: 'Select Cluster',
-                    })
-                }, 700)
-                this.props.toggleLoading(false)
-            })
-
         }
 
 
@@ -641,6 +660,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <Grid.Row className='view_contents'>
+                    {/*todo:#############################*/}
+                    {/*todo: POPUP APP INSTACE LIST DIV  */}
+                    {/*todo:#############################*/}
                     <Modal
                         closeIcon={true}
                         open={this.state.isModalOpened}
@@ -705,6 +727,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             selection
                                                             options={this.state.appInstaceListForSelectBoxForCpu}
                                                             style={{width: 250}}
+                                                            onChange={async (e, {value}) => {
+                                                                await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                                            }}
+
                                                         />
                                                     </div>
                                                     <div className='page_monitoring_container'>
@@ -765,14 +791,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             Top 5 of MEM Usage
                                                         </div>
-                                                        <div className='page_monitoring_column_kj_select'>
+                                                        {/* <div className='page_monitoring_column_kj_select'>
                                                             <Dropdown
                                                                 placeholder='Select App Instance'
                                                                 selection
                                                                 options={this.state.appInstaceListForSelectBoxForMem}
                                                                 style={{width: 250}}
+                                                                onChange={async (e, {value}) => {
+                                                                    await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                                                }}
                                                             />
-                                                        </div>
+                                                        </div>*/}
                                                     </div>
                                                     <div className='page_monitoring_container'>
                                                         {!this.state.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
