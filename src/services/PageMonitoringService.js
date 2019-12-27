@@ -336,11 +336,11 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                 backgroundColor: {
                     fill: 'black'
                 },
-               /* animation: {
-                    duration: 300,
-                    easing: 'out',
-                    startup: true
-                }*/
+                /* animation: {
+                     duration: 300,
+                     easing: 'out',
+                     startup: true
+                 }*/
                 //colors: ['green']
             }}
 
@@ -506,68 +506,92 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
     }
 
 
-    let diskMax = 0;
-    let diskUsed = 0;
+    let diskMax = -1;
+    let diskUsed = -1;
     if (_this.state.currentUtilization[3] !== undefined) {
         diskUsed = _this.state.currentUtilization[3]
         diskMax = _this.state.currentUtilization[2];
     }
 
+    //alert(diskUsed.toString())
 
     return (
         <div className="pieChart">
-            <Chart
-                width={165}
-                height={120}
+            {diskUsed !== -1 ?
+                <Chart
+                    width={165}
+                    height={120}
 
-                chartType="PieChart"
-                data={[
-                    ["Age", "Weight"], ["diskUsed", diskUsed], ["diskMax", diskMax]
-                ]}
+                    chartType="PieChart"
+                    data={[
+                        ["Age", "Weight"], ["diskUsed", diskUsed], ["diskMax", diskMax]
+                    ]}
 
-                options={{
-                    pieHole: 0.65,
-                    //is3D: true,
-                    title: "",
-                    sliceVisibilityThreshold: .2,
-                    chartArea: {left: 20, right: 20, top: 15, width: "30%", height: "80%"},
-                    slices: [
+                    options={{
+                        // pieHole: 0.65,
+                        //is3D: true,
+                        title: "",
+                        sliceVisibilityThreshold: .2,
+                        chartArea: {left: 20, right: 20, top: 15, width: "30%", height: "80%"},
+                        slices: [
 
-                        {
-                            color: "#007fad"
+                            {
+                                color: "#ff54ae"
+                            },
+                            {
+                                color: "#2c77ff"
+                            },
+
+                        ],
+
+                        /* pieSliceTextStyle: {
+                             color: 'black',
+                             fontSize: 22,
+                         },*/
+                        pieSliceText: 'none',
+                        //slices: newColorList,
+                        /* legend: {
+                             position: "start",
+                             alignment: "center",
+                             textStyle: {
+                                 color: "white",
+                                 fontSize: 14
+                             }
+                         },*/
+                        pieHole: 0.5,
+                        pieSliceTextStyle: {
+                            color: 'black',
                         },
-                        {
-                            color: "#77BD25"
+                        legend: 'none',
+                        tooltip: {
+                            //textStyle: {color: 'black', backgroundColor: 'black'},
+                            //text: 'both',
+                            trigger: 'none',
                         },
+                        fontName: "Roboto",
+                        fontColor: 'black',
+                        //backgroundColor: 'grey',
+                        backgroundColor: {
+                            strokeWidth: 0,
+                            fill: 'black',
+                        },
+                        borderColor: 'red',
+                    }}
+                    graph_id="PieChart"
+                    legend_toggle
+                >
+                </Chart>
+                :
+                <FlexBox style={{
+                    width: 165,
+                    backgroundColor: 'black', display: 'flex', justifyContent: 'center', alignSelf: 'center', height: 120, color: 'white', alignItems: 'center', fontSize: 15,
+                }}>
+                    <div style={{marginTop: 50}}>
+                        No Data
+                    </div>
+                </FlexBox>
 
-                    ],
-
-                    pieSliceTextStyle: {
-                        color: 'black',
-                        fontSize: 22,
-                    },
-                    pieSliceText: 'none',
-                    //slices: newColorList,
-                    legend: {
-                        position: "none",
-                        alignment: "center",
-                        textStyle: {
-                            color: "black",
-                            fontSize: 14
-                        }
-                    },
-                    tooltip: {
-                        showColorCode: true
-                    },
-                    fontName: "Roboto",
-                    fontColor: 'black',
-                    //backgroundColor: 'grey',
-                    backgroundColor: 'black',
-                }}
-                graph_id="PieChart"
-                legend_toggle
-            >
-            </Chart>
+            }
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
@@ -648,7 +672,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                                         color: 'white',
                                         textAlign: 'center',
                                         marginLeft: 5
-                                    }}>{appInstanceOne.Cloudlet.toString().substring(0, 15) + "..."}</div>
+                                    }}>{appInstanceOne.Cloudlet.toString().substring(0, 10) + "..."}</div>
                             </FlexBox>
                         </FlexBox>
                     </div>
@@ -665,7 +689,7 @@ const Styles = {
     cell001: {
         marginLeft: 0,
         backgroundColor: 'black',
-        flex: .5,
+        flex: .4,
         alignItems: 'center',
         fontSize: 13
     },
@@ -677,7 +701,7 @@ const Styles = {
         , justifyContent: 'center', alignItems: 'center', width: '100%', height: 38, marginTop: -10,
     },
     cell004: {
-        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'grey'
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'black'
         , justifyContent: 'center', alignItems: 'center', width: '100%', height: 40
     }
 }

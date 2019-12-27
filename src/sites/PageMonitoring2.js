@@ -44,6 +44,7 @@ import MaterialIcon from "material-icons-react";
 import {cutArrayList} from "../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
+
 const FA = require('react-fontawesome')
 const {Column, Row} = Grid;
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
@@ -221,7 +222,33 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
-                    await this.setState({appInstanceOne: item,});
+                    await this.setState({
+                        appInstanceOne: {
+                            "Region": "",
+                            "OrganizationName": "",
+                            "AppName": "",
+                            "Version": "",
+                            "Operator": "",
+                            "Cloudlet": "",
+                            "ClusterInst": "",
+                            "CloudletLocation": {
+                                "latitude": 0,
+                                "longitude": 0,
+                            },
+                            "URI": "",
+                            "Liveness":"",
+                            "Mapped_port": "",
+                            "Flavor": "",
+                            "State": 0,
+                            "Error": "",
+                            "Runtime": "",
+                            "Created": "",
+                            "Progress": "",
+                            "Edit": "",
+                            "Status":"",
+                            "Revision": 0,
+                        },
+                    });
                 }
             })
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
@@ -302,7 +329,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 title: 'Data Loading Complete!',
                 //description: 'This is a Semantic UI toast wich waits 5 seconds before closing',
                 animation: 'bounce',
-                time: 3* 1000,
+                time: 3 * 1000,
                 color: 'black',
             });
 
@@ -430,7 +457,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 title: 'Reset All',
                 //description: 'This is a Semantic UI toast wich waits 5 seconds before closing',
                 animation: 'bounce',
-                time: 3* 1000,
+                time: 3 * 1000,
                 color: 'black',
             });
 
@@ -458,10 +485,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                        className="info icon"></i></button>
                     </div>
 
-                    {this.state.loading777 &&
+                    {/*{this.state.loading777 &&
                     <CircularProgress
                         style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
-                    }
+                    }*/}
                     <div className='page_monitoring_select_row' style={{}}>
                         <div className='page_monitoring_select_area' style={{marginLeft: 200,}}>
                             <div style={{
