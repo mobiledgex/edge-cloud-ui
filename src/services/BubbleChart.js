@@ -143,6 +143,8 @@ export default class BubbleChart extends Component {
         node.append("text")
             .attr("class", "value-text")
             .style("font-size", `${valueFont.size}px`)
+            .style("margin-top", `50px`)
+            .style("margin-bottom", `50px`)
             .attr("clip-path", function (d) {
                 return "url(#clip-" + d.id + ")";
             })
@@ -167,6 +169,8 @@ export default class BubbleChart extends Component {
 
         node.append("text")
             .attr("class", "label-text")
+            .style("margin-top", `50px`)
+            .style("margin-bottom", `50px`)
             .style("font-size", `${labelFont.size}px`)
             .attr("clip-path", function (d) {
                 return "url(#clip-" + d.id + ")";

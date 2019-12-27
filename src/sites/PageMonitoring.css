@@ -9,6 +9,58 @@
     color: whitesmoke;
 }
 
+
+.myelement {
+    background: rgba(200, 54, 54, 0.5);
+}
+
+.loaderDiv {
+    position: fixed;
+    width: 175px;
+    height: 300px;
+    top: 0%;
+    left:-20%;
+    right: 10%;
+    bottom: -55%;
+    margin: auto;
+    background-color: rgba(0,0,0, 0.5);
+}
+
+
+.popupTop {
+    position: fixed;
+    width: 185px;
+    height: 200px;
+    top: -10%;
+    left:-19%;
+    right: 10%;
+    bottom: -55%;
+    margin: auto;
+    background-color: rgba(0,0,0, 0.5);
+}
+
+.popup {
+    position: fixed;
+    width: 185px;
+    height: 190px;
+    top: 10%;
+    left:-19%;
+    right: 10%;
+    bottom: -55%;
+    margin: auto;
+    background-color: rgba(0,0,0, 0.5);
+}
+.popup_inner {
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    top: 25%;
+    bottom: 25%;
+    margin: auto;
+    border-radius: 20px;
+    background: white;
+}
+
 .page_monitoring_grid_box {
     display: flex;
     flex-direction: column;
@@ -19,6 +71,7 @@
     background: #1e2124;
     justify-content: center;
     align-items: center;
+
 }
 
 

@@ -500,7 +500,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
     function renderDiskUsage() {
 
         if (_this.state.currentUtilization[3] !== undefined) {
-            return _this.state.currentUtilization[3] + "/" + _this.state.currentUtilization[2];
+            return _this.state.currentUtilization[3] + " / " + _this.state.currentUtilization[2];
         }
 
     }
@@ -518,161 +518,161 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
     return (
         <div className="pieChart">
             {diskUsed !== -1 ?
-                <Chart
-                    width={165}
-                    height={122}
+                <div className='popupTop'>
+                    <Chart
+                        width={195}
+                        height={122}
 
-                    chartType="PieChart"
-                    data={[
-                        ["Age", "Weight"], ["diskUsed", diskUsed], ["diskMax", diskMax]
-                    ]}
+                        chartType="PieChart"
+                        data={[
+                            ["Age", "Weight"], ["diskUsed", diskUsed], ["diskMax", diskMax]
+                        ]}
 
-                    options={{
-                        // pieHole: 0.65,
-                        //is3D: true,
-                        title: "",
-                        sliceVisibilityThreshold: .2,
-                        chartArea: {left: 20, right: 20, top: 15, width: "30%", height: "80%"},
-                        slices: [
+                        options={{
+                            // pieHole: 0.65,
+                            //is3D: true,
+                            title: "",
+                            sliceVisibilityThreshold: .2,
+                            chartArea: {left: 15, right: 20, top: 0, width: "30%", height: "80%"},
+                            slices: [
 
-                            {
-                                color: "#ff54ae"
+                                {
+                                    color: "#ff54ae"
+                                },
+                                {
+                                    color: "#2c77ff"
+                                },
+
+                            ],
+                            pieSliceBorderColor: 'white',
+                            pieSliceText: 'none',
+                            legend: {
+                                position: "none",
+                                /*  alignment: "center",
+                                  textStyle: {
+                                      color: "white",
+                                      fontSize: 14
+                                  }*/
                             },
-                            {
-                                color: "#2c77ff"
+                            pieHole: 0.7,
+                            pieSliceTextStyle: {
+                                color: 'black',
                             },
-
-                        ],
-                        pieSliceBorderColor: 'blue',
-                        pieSliceText: 'none',
-                        legend: {
-                            position: "none",
-                            /*  alignment: "center",
-                              textStyle: {
-                                  color: "white",
-                                  fontSize: 14
-                              }*/
-                        },
-                        pieHole: 0.7,
-                        pieSliceTextStyle: {
-                            color: 'black',
-                        },
-                        tooltip: {
-                            //textStyle: {color: 'black', backgroundColor: 'black'},
-                            //text: 'both',
-                            trigger: 'none',
-                        },
-                        fontName: "Roboto",
-                        fontColor: 'black',
-                        //backgroundColor: 'grey',
-                        backgroundColor: {
-                            strokeWidth: 0,
-                            fill: 'black',
-                        },
-                        borderColor: 'red',
-                    }}
-                    graph_id="PieChart"
-                    legend_toggle
-                >
-                </Chart>
+                            tooltip: {
+                                //textStyle: {color: 'black', backgroundColor: 'black'},
+                                //text: 'both',
+                                trigger: 'none',
+                            },
+                            fontName: "Roboto",
+                            fontColor: 'black',
+                            //backgroundColor: 'grey',
+                            backgroundColor: {
+                                strokeWidth: 0,
+                                fill: 'transparent',
+                            },
+                            borderColor: 'red',
+                        }}
+                        graph_id="PieChart"
+                        legend_toggle
+                    >
+                    </Chart>
+                </div>
                 :
-                <FlexBox style={{
-                    width: 165,
-                    backgroundColor: 'black', display: 'flex', justifyContent: 'center', alignSelf: 'center', height: 122, color: 'white', alignItems: 'center', fontSize: 15,
-                }}>
-                    <div style={{marginTop: 50}}>
+                <div className='popupTop'>
+                    <FlexBox style={{marginTop: 50, display: 'flex', alignItems: 'center', alignSelf: 'center', justifyContent: 'center'}}>
                         No Data
-                    </div>
-                </FlexBox>
+                    </FlexBox>
+                </div>
 
             }
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
-            <div>
+            <div className='popup'>
+                <div className=''>
+                    {/*todo:파이그래프 하단의 utilisze 정보*/}
+                    {/*todo:파이그래프 하단의 utilisze 정보*/}
+                    {/*todo:파이그래프 하단의 utilisze 정보*/}
+                    <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
+                             style={{flexDirection: 'column', marginTop: 0, marginLeft: -3, backgroundColor: 'transparent'}}>
 
-                {/*todo:파이그래프 하단의 utilisze 정보*/}
-                {/*todo:파이그래프 하단의 utilisze 정보*/}
-                {/*todo:파이그래프 하단의 utilisze 정보*/}
-                <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
-                         style={{flexDirection: 'column', marginTop: 0, marginLeft: -3, backgroundColor: 'black'}}>
+                        {/*todo: disk usage 표시 부분*/}
+                        <FlexBox
+                            style={Styles.cell003}>
+                            {_this.state.loading777 ?
+                                <CircularProgress color={'green'} size={15}
+                                                  style={{color: 'green'}}/> : <div style={{}}>{renderDiskUsage()}</div>}
 
-                    {/*todo: disk usage 표시 부분*/}
-                    <FlexBox
-                        style={Styles.cell003}>
-                        {_this.state.loading777 ?
-                            <CircularProgress color={'green'} size={15}
-                                              style={{color: 'green'}}/> : renderDiskUsage()}
-
-                    </FlexBox>
-
-                    <FlexBox style={Styles.cell004}>
-                        {appInstanceOne.AppName}
-                    </FlexBox>
-
-                    {/*__row__1*/}
-                    <div>
-                        <FlexBox style={Styles.cpuDiskCol001}>
-                            <FlexBox style={Styles.cell000}>
-                                <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
-                            </FlexBox>
-                            <FlexBox style={Styles.cell001}>
-                                <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
-                                    {_this.state.loading777 ? <CircularProgress color={'green'} size={15}
-                                                                                style={{color: 'green'}}/> : _this.state.currentUtilization[3]}
-                                </div>
-                            </FlexBox>
                         </FlexBox>
 
-                        {/*__row__2*/}
-                        <FlexBox style={Styles.cpuDiskCol001}>
-                            <FlexBox style={Styles.cell000}>
-                                <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
-                            </FlexBox>
-                            <FlexBox style={Styles.cell001}>
-                                <div style={{
-                                    color: 'white',
-                                    textAlign: 'center',
-                                    marginLeft: 5
-                                }}>
-
-
-                                    {_this.state.loading777 ? <CircularProgress color={'green'} size={15}
-                                                                                style={{color: 'green'}}/> : _this.state.currentUtilization[7]}
-                                </div>
-                            </FlexBox>
+                        <FlexBox style={Styles.cell004}>
+                            {appInstanceOne.AppName}
                         </FlexBox>
 
-                        {/*__row__3*/}
-                        <FlexBox style={Styles.cpuDiskCol001}>
-                            <FlexBox style={Styles.cell000}>
-                                <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Operator</div>
+                        {/*__row__1*/}
+                        <div>
+                            <FlexBox style={Styles.cpuDiskCol001}>
+                                <FlexBox style={Styles.cell000}>
+                                    <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
+                                </FlexBox>
+                                <FlexBox style={Styles.cell001}>
+                                    <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
+                                        {_this.state.loading777 ? <CircularProgress color={'green'} size={15}
+                                                                                    style={{color: 'green'}}/> : _this.state.currentUtilization[3]}
+                                    </div>
+                                </FlexBox>
                             </FlexBox>
-                            <FlexBox style={Styles.cell001}>
-                                <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
-                                    {appInstanceOne.Operator}
-                                </div>
-                            </FlexBox>
-                        </FlexBox>
 
-                        {/*__row__4*/}
-                        <FlexBox style={Styles.cpuDiskCol001}>
-                            <FlexBox style={Styles.cell000}>
-                                <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
-                            </FlexBox>
-                            <FlexBox style={Styles.cell001}>
-                                <div
-                                    style={{
+                            {/*__row__2*/}
+                            <FlexBox style={Styles.cpuDiskCol001}>
+                                <FlexBox style={Styles.cell000}>
+                                    <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
+                                </FlexBox>
+                                <FlexBox style={Styles.cell001}>
+                                    <div style={{
                                         color: 'white',
                                         textAlign: 'center',
                                         marginLeft: 5
-                                    }}>{appInstanceOne.Cloudlet !== '' ? appInstanceOne.Cloudlet.toString().substring(0, 11) + "..." : ''}</div>
+                                    }}>
+
+
+                                        {_this.state.loading777 ? <CircularProgress color={'green'} size={15}
+                                                                                    style={{color: 'green'}}/> : _this.state.currentUtilization[7]}
+                                    </div>
+                                </FlexBox>
                             </FlexBox>
-                        </FlexBox>
-                    </div>
 
-                </FlexBox>
+                            {/*__row__3*/}
+                            <FlexBox style={Styles.cpuDiskCol001}>
+                                <FlexBox style={Styles.cell000}>
+                                    <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Operator</div>
+                                </FlexBox>
+                                <FlexBox style={Styles.cell001}>
+                                    <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
+                                        {appInstanceOne.Operator}
+                                    </div>
+                                </FlexBox>
+                            </FlexBox>
 
+                            {/*__row__4*/}
+                            <FlexBox style={Styles.cpuDiskCol001}>
+                                <FlexBox style={Styles.cell000}>
+                                    <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
+                                </FlexBox>
+                                <FlexBox style={Styles.cell001}>
+                                    <div
+                                        style={{
+                                            color: 'white',
+                                            textAlign: 'center',
+                                            marginLeft: 5
+                                        }}>{appInstanceOne.Cloudlet !== '' ? appInstanceOne.Cloudlet.toString().substring(0, 18) + "..." : ''}</div>
+                                </FlexBox>
+                            </FlexBox>
+                        </div>
+
+                    </FlexBox>
+
+                </div>
             </div>
 
         </div>
@@ -682,14 +682,14 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
 const Styles = {
     cell000: {
         marginLeft: 0,
-        backgroundColor: 'black',
+        backgroundColor: 'transparent',
         flex: .4,
         alignItems: 'center',
         fontSize: 13
     },
     cell001: {
         marginLeft: 0,
-        backgroundColor: 'black',
+        backgroundColor: 'transparent',
         flex: .6,
         alignItems: 'center',
         fontSize: 13
@@ -700,11 +700,11 @@ const Styles = {
     },
     cell003: {
         color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 38, marginTop: -9,
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35, marginTop: -9,
     },
     cell004: {
-        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'black'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 38
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'transparent'
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35
     }
 }
 
@@ -851,32 +851,37 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 backgroundColor: 'black',
                 marginLeft: 0, marginRight: 0, marginBottom: 10,
             }}>
+                {_this.state.loading777 &&
+                <div className='loaderDiv'>
+                    <CircularProgress style={{marginLeft: 80, marginTop: 120, color: 'green'}}/>
+                </div>
+                }
                 <BubbleChart
                     className={'bubbleChart'}
                     graph={{
-                        zoom: appInstanceList.length <= 4 ? 0.65 : 0.80,
+                        zoom: appInstanceList.length <= 4 ? 0.55 : 0.65,
                         offsetX: 0.10,
-                        offsetY: appInstanceList.length <= 4 ? 0.10 : 0.03,
+                        offsetY: appInstanceList.length <= 4 ? 0.03 : -0.04,
                     }}
-                    width={380}
+                    width={555}
                     height={315}
                     padding={0} // optional value, number that set the padding between bubbles
                     showLegend={false} // optional value, pass false to disable the legend.
                     legendPercentage={30} // number that represent the % of with that legend going to use.
                     legendFont={{
-                        family: 'Candal',
+                        //family: 'Candal',
                         size: 12,
                         color: 'yellow',
                         weight: 'bold',
                     }}
                     valueFont={{
-                        family: 'Righteous',
+                        //family: 'Righteous',
                         size: 20,
                         color: 'black',
                         weight: 'bold',
                     }}
                     labelFont={{
-                        family: 'Righteous',
+                        //family: 'Righteous',
                         size: 10,
                         color: '#000',
                         weight: 'bold',

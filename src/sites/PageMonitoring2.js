@@ -116,6 +116,7 @@ type State = {
     cloudLetSelectBoxClearable: boolean,
     clusterSelectBoxClearable: boolean,
     appInstSelectBoxClearable: boolean,
+    isShowUtilizationArea: boolean
 }
 
 
@@ -164,6 +165,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             cloudLetSelectBoxClearable: false,
             clusterSelectBoxClearable: false,
             appInstSelectBoxClearable: false,
+            isShowUtilizationArea: false,
         };
 
         intervalHandle = null;
@@ -236,7 +238,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 "longitude": 0,
                             },
                             "URI": "",
-                            "Liveness":"",
+                            "Liveness": "",
                             "Mapped_port": "",
                             "Flavor": "",
                             "State": 0,
@@ -245,7 +247,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             "Created": "",
                             "Progress": "",
                             "Edit": "",
-                            "Status":"",
+                            "Status": "",
                             "Revision": 0,
                         },
                     });
@@ -619,7 +621,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         async setAppInstanceOne(paramAppName: string) {
-            //alert()
+            this.setState({
+                loading777: true,
+                isShowUtilizationArea: false,
+            })
 
             // this.props.toggleLoading(true);
             paramAppName = paramAppName.replace("...", "");
@@ -645,9 +650,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             /*console.log('appInstanceOne====>', appInstanceOne);
             let operator = appInstanceOne.Operator;
             console.log('operator====>', operator);*/
-            this.setState({
-                loading777: true,
-            })
+
             let appInstanceUtilizationOne = ''
             try {
                 appInstanceUtilizationOne = await getMetricsUtilization(appInstanceOne);
@@ -677,6 +680,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             } finally {
                 await this.setState({
                     loading777: false,
+                    isShowUtilizationArea: true,
                 })
             }
 
@@ -926,7 +930,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             {/*todo:#########################################****/}
                                                             {/*todo: RENDER Donut Chart N App Status          */}
                                                             {/*todo:#########################################****/}
-                                                            {renderPieChart2AndAppStatus(this.state.appInstanceOne, this)}
+                                                            {!this.state.isShowUtilizationArea ?
+                                                                <FlexBox
+                                                                    style={{backgroundColor: 'black', width: 170, height: 320, alignItem: 'center', alignSelf: "center", justifyContent: "center"}}>
+                                                                    {this.state.loading777 ?
+                                                                        <Lottie
+                                                                            options={{
+                                                                                loop: true,
+                                                                                autoplay: true,
+                                                                                animationData: require('../lotties/loader003'),
+                                                                                rendererSettings: {
+                                                                                    preserveAspectRatio: 'xMidYMid slice'
+                                                                                }
+                                                                            }}
+                                                                            height={120}
+                                                                            width={120}
+                                                                            isStopped={false}
+                                                                            isPaused={false}
+                                                                            style={{marginTop:80}}
+                                                                        />
+                                                                        : <div></div>}
+                                                                </FlexBox>
+
+                                                                : renderPieChart2AndAppStatus(this.state.appInstanceOne, this)}
                                                         </div>
                                                     </FlexBox>
 
