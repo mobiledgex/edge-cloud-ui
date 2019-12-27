@@ -204,11 +204,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-            this.getInitData();
+            this.loadInitData();
         }
 
-
-        async getInitData() {
+        async loadInitData() {
             this.intervalHandle = setInterval(this.tick.bind(this), 1000);
             this.setState({
                 loading: true,
@@ -439,7 +438,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 cloudLetSelectBoxClearable: true,
             })
 
-            await this.getInitData();
+            await this.loadInitData();
             await this.setState({
                 currentRegion: 'ALL',
                 currentCloudLet: '',
