@@ -40,7 +40,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzcyNDkyM
 
 POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzcyNDkyMzAsImlhdCI6MTU3NzE2MjgzMCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.mXNokQljXGEWiskwNVC7TRIV64FxkosPMpcmw7cs6aWx1XjxPJvoJ4D3NZKJjnl-WswPUHo2PD4QcAoKyy8J8g
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzc0OTg2NTQsImlhdCI6MTU3NzQxMjI1NCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.MoaOnk3I0LOfUtCZybOMsYa2xJh4gI5xHT7vSakcRSCkvpQwMkP0xbLc3w2iMsrYiOI-Zm-8h3E5e7IJHiKLDw
 
 {
   "region": "EU",
@@ -68,5 +68,41 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzcyNDkyM
   "last": 3
 }
 
+### http --verify=false --auth-type=jwt --auth=$SUPERPASS POST https://127.0.0.1:9900/api/v1/auth/metrics/cloudlet <<< '{"region":"local","cloudlet":{"operator_key":{"name":"mexdev"},"name":"localtest"},"selector":"utilization","last":1}'
+
+POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cloudlet
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzc0OTg2NTQsImlhdCI6MTU3NzQxMjI1NCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.MoaOnk3I0LOfUtCZybOMsYa2xJh4gI5xHT7vSakcRSCkvpQwMkP0xbLc3w2iMsrYiOI-Zm-8h3E5e7IJHiKLDw
+
+{
+  "region": "EU",
+  "cloudlet": {
+    "operator_key": {
+      "name": "mexdev"
+    },
+    "name": "localtest"
+  },
+  "selector": "utilization",
+  "last": 100
+}
+
 ###
 
+
+POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cloudlet
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzc0OTg2NTQsImlhdCI6MTU3NzQxMjI1NCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.MoaOnk3I0LOfUtCZybOMsYa2xJh4gI5xHT7vSakcRSCkvpQwMkP0xbLc3w2iMsrYiOI-Zm-8h3E5e7IJHiKLDw
+
+{
+  "region": "EU",
+  "cloudlet": {
+    "operator_key": {
+      "name": "TDG"
+    },
+    "name": "frankfurt-eu"
+  },
+  "selector": "utilization",
+  "last": 1
+}
+
+###

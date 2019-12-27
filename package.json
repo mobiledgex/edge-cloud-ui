@@ -100,6 +100,7 @@
     "react-router-dom": "^4.2.2",
     "react-s-alert": "^1.4.1",
     "react-scrollbar": "^0.5.4",
+    "react-semantic-toasts": "^0.6.5",
     "react-simple-maps": "^0.12.1",
     "react-sizeme": "^2.5.2",
     "react-sparklines": "^1.7.0",

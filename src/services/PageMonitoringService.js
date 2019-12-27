@@ -453,6 +453,22 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
         newColorList.push(itemOne)
     }
 
+    function renderDiskUsage() {
+
+        if (_this.state.currentUtilization[3] !== undefined) {
+            return _this.state.currentUtilization[3] + "/" + _this.state.currentUtilization[2];
+        }
+
+    }
+
+
+    let diskMax = 0;
+    let diskUsed = 0;
+    if (_this.state.currentUtilization[3] !== undefined) {
+        diskUsed = _this.state.currentUtilization[3]
+        diskMax = _this.state.currentUtilization[2];
+    }
+
 
     return (
         <div className="pieChart">
@@ -462,38 +478,32 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
 
                 chartType="PieChart"
                 data={[
-                    ["Age", "Weight"], ["app_A", 80], ["", 20]
+                    ["Age", "Weight"], ["diskUsed", diskUsed], ["diskMax", diskMax]
                 ]}
 
                 options={{
-                    pieHole: 0.8,
+                    pieHole: 0.65,
                     //is3D: true,
                     title: "",
+                    sliceVisibilityThreshold: .2,
                     chartArea: {left: 20, right: 20, top: 15, width: "30%", height: "80%"},
-                    /* slices: [
-                         {
-                             color: "red"
-                         },
-                         {
-                             color: "blue"
-                         },
-                         {
-                             color: "#007fad"
-                         },
-                         {
-                             color: "#e9a227"
-                         },
-                         {
-                             color: "grey"
-                         }
-                     ],
-                     */
+                    slices: [
+
+                        {
+                            color: "#007fad"
+                        },
+                        {
+                            color: "#77BD25"
+                        },
+
+                    ],
+
                     pieSliceTextStyle: {
                         color: 'black',
                         fontSize: 22,
                     },
                     pieSliceText: 'none',
-                    slices: newColorList,
+                    //slices: newColorList,
                     legend: {
                         position: "none",
                         alignment: "center",
@@ -518,25 +528,21 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
             {/*todo:파이그래프 중앙의 앱네임*/}
             {/*todo:파이그래프 중앙의 앱네임*/}
             <div>
-                {/* <FlexBox style={{
-                    marginTop: 0,
-                    color: 'white',
-                    top: '65.5%',
-                    left: '26.2%',
-                    position: 'absolute',
-                    fontSize: 9,
-                    alignSelf: 'center',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}>
-                    {appInstanceOne.AppName.substring(0, 12)}
-                </FlexBox>*/}
+
+                {/*todo:파이그래프 하단의 utilisze 정보*/}
+                {/*todo:파이그래프 하단의 utilisze 정보*/}
+                {/*todo:파이그래프 하단의 utilisze 정보*/}
                 <FlexBox AlignItems={'center'} alignSelf={'flex-start'}
                          style={{flexDirection: 'column', marginTop: 0, marginLeft: -3, backgroundColor: 'black'}}>
 
-
                     {/*todo: disk usage 표시 부분*/}
-                    <FlexBox style={Styles.cell003}>900/1000MB</FlexBox>
+                    <FlexBox
+                        style={Styles.cell003}>
+                        {_this.state.loading777 ?
+                            <CircularProgress color={'green'} size={15}
+                                              style={{color: 'green'}}/> : renderDiskUsage()}
+
+                    </FlexBox>
 
                     <FlexBox style={Styles.cell004}>
                         {appInstanceOne.AppName}
@@ -549,7 +555,10 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                                 <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
                             </FlexBox>
                             <FlexBox style={Styles.cell001}>
-                                <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
+                                <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
+                                    {_this.state.loading777 ? <CircularProgress color={'green'} size={15}
+                                                                                style={{color: 'green'}}/> : _this.state.currentUtilization[3]}
+                                </div>
                             </FlexBox>
                         </FlexBox>
 
@@ -559,18 +568,27 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                                 <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
                             </FlexBox>
                             <FlexBox style={Styles.cell001}>
-                                <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>80</div>
+                                <div style={{
+                                    color: 'white',
+                                    textAlign: 'center',
+                                    marginLeft: 5
+                                }}>
+
+
+                                    {_this.state.loading777 ? <CircularProgress color={'green'} size={15}
+                                                                                style={{color: 'green'}}/> : _this.state.currentUtilization[7]}
+                                </div>
                             </FlexBox>
                         </FlexBox>
 
                         {/*__row__3*/}
                         <FlexBox style={Styles.cpuDiskCol001}>
                             <FlexBox style={Styles.cell001}>
-                                <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Regions</div>
+                                <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Operator</div>
                             </FlexBox>
                             <FlexBox style={Styles.cell001}>
                                 <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
-                                    {appInstanceOne.Region}
+                                    {appInstanceOne.Operator}
                                 </div>
                             </FlexBox>
                         </FlexBox>
@@ -741,12 +759,12 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
     let appInstanceList = _this.state.appInstanceList
 
 
-    console.log('appInstanceList2222====>', appInstanceList)
+    //console.log('appInstanceList2222====>', appInstanceList)
 
     let chartData = [];
     appInstanceList.map((item: TypeAppInstance) => {
 
-        console.log('Flavor222====>', item.Flavor);
+        //console.log('Flavor222====>', item.Flavor);
         chartData.push({
             //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
             label: item.AppName.toString().substring(0, 10) + "...",
@@ -794,12 +812,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
                     bubbleClickFun={(label) => {
-                        /*
-                        notification.success({
-                              duration: 0.5,
-                              message: label,
-                          });
-                        */
+
                         _this.setAppInstanceOne(label);
                     }}
                     //legendClickFun={this.legendClick.bind(this)}
@@ -811,6 +824,42 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
         </div>
     )
 }
+
+
+export const getMetricsUtilization = async (appInstanceOne: TypeAppInstance) => {
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+
+    console.log('appInstanceOne====>', appInstanceOne);
+    let responseRslt = await axios({
+        url: '/api/v1/auth/metrics/cloudlet',
+        method: 'post',
+        data: {
+            "region": appInstanceOne.Region,
+            "cloudlet": {
+                "operator_key": {
+                    "name": appInstanceOne.Operator
+                },
+                "name": appInstanceOne.Cloudlet
+            },
+            "selector": "utilization",
+            "last": 1
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + store.userToken
+
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        alert(e)
+    })
+
+    return responseRslt;
+
+}
+
 
 /**
  * @TODO: react_chartjs를 이용해서 라인 차트를 랜더링.
