@@ -68,12 +68,13 @@ class headerGlobalMini extends React.Component {
 
     componentWillReceiveProps(nextProps, nextContext) {
 
-        if(nextProps.user) {
-            this.setState({email:nextProps.user.email})
-        }
-        if(nextProps.userInfo) {
-            this.setState({userInfo:nextProps.userInfo})
-        }
+        /** This blocked code makes unnecessary data loading  불필요한 데이터 로딩을 일으킨다고 판단하여 코드 주석처리 **/
+        // if(nextProps.user) {
+        //     this.setState({email:nextProps.user.email})
+        // }
+        // if(nextProps.userInfo) {
+        //     this.setState({userInfo:nextProps.userInfo})
+        // }
     }
 
     receiveCurrentUser(result) {
@@ -120,7 +121,8 @@ class headerGlobalMini extends React.Component {
         <Button.Group vertical>
             <Button onClick={() => this.profileView()} >Your profile</Button>
             {/*<Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>*/}
-            <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{(this.props.location.pathname === "/site4")? this.props.email :this.state.email}</div><div>Logout</div></Button>
+            {/*<Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{(this.props.location.pathname === "/site4")? this.props.email :this.state.email}</div><div>Logout</div></Button>*/}
+            <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{this.state.userInfo['Name']}</div><div>Logout</div></Button>
         </Button.Group>
 
     )
@@ -139,7 +141,8 @@ class headerGlobalMini extends React.Component {
                         <div style={{cursor:'pointer'}}>
                             <Image src='/assets/avatar/avatar_default.svg' avatar />
                             <span>
-                                {(this.props.location.pathname === "/site4")? this.props.email :this.state.email}
+                                {/*{(this.props.location.pathname === "/site4")? this.props.email :this.state.email}*/}
+                                {this.state.userInfo['Name']}
                             </span>
                         </div>}
                     content={
