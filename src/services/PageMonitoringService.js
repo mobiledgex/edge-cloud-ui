@@ -915,12 +915,11 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
         }
 
     }
-
-
-    /*  const data = {
+    /*
+    const data = {
           labels: newDateTimeList, //todo:하단(X)축에 랜더링 되는 DateList.(LabelList)
           datasets: finalSeriesDataSets //todo: 렌더링할 데이터셋
-      };*/
+    };*/
 
     const data = (canvas) => {
         const ctx = canvas.getContext("2d");
