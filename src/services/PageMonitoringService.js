@@ -533,7 +533,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                             //is3D: true,
                             title: "",
                             sliceVisibilityThreshold: .2,
-                            chartArea: {left: 15, right: 20, top: 0, width: "30%", height: "80%"},
+                            chartArea: {left: 15, right: 20, top: 5, width: "30%", height: "80%"},
                             slices: [
 
                                 {
@@ -544,7 +544,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                                 },
 
                             ],
-                            pieSliceBorderColor: 'white',
+                            pieSliceBorderColor: 'blue',
                             pieSliceText: 'none',
                             legend: {
                                 position: "none",
@@ -612,11 +612,11 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                         {/*__row__1*/}
                         <div>
                             <FlexBox style={Styles.cpuDiskCol001}>
-                                <FlexBox style={Styles.cell000}>
+                                <FlexBox className='cell000'>
                                     <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>DISK</div>
                                 </FlexBox>
                                 <FlexBox style={Styles.cell001}>
-                                    <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
+                                    <div style={{color: 'white', textAlign: 'center', marginLeft: 15}}>
                                         {_this.state.loading777 ? <CircularProgress color={'green'} size={15}
                                                                                     style={{color: 'green'}}/> : _this.state.currentUtilization[3]}
                                     </div>
@@ -625,14 +625,14 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
 
                             {/*__row__2*/}
                             <FlexBox style={Styles.cpuDiskCol001}>
-                                <FlexBox style={Styles.cell000}>
+                                <FlexBox className='cell000'>
                                     <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>vCPU</div>
                                 </FlexBox>
                                 <FlexBox style={Styles.cell001}>
                                     <div style={{
                                         color: 'white',
                                         textAlign: 'center',
-                                        marginLeft: 5
+                                        marginLeft: 15,
                                     }}>
 
 
@@ -644,11 +644,11 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
 
                             {/*__row__3*/}
                             <FlexBox style={Styles.cpuDiskCol001}>
-                                <FlexBox style={Styles.cell000}>
+                                <FlexBox className='cell000'>
                                     <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Operator</div>
                                 </FlexBox>
                                 <FlexBox style={Styles.cell001}>
-                                    <div style={{color: 'white', textAlign: 'center', marginLeft: 5}}>
+                                    <div style={{color: 'white', textAlign: 'center', marginLeft: 15}}>
                                         {appInstanceOne.Operator}
                                     </div>
                                 </FlexBox>
@@ -656,8 +656,8 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
 
                             {/*__row__4*/}
                             <FlexBox style={Styles.cpuDiskCol001}>
-                                <FlexBox style={Styles.cell000}>
-                                    <div style={{color: 'white', textAlign: 'center', marginLeft: 10}}>Cloutlet</div>
+                                <FlexBox className='cell000'>
+                                    <div style={{color: 'white', textAlign: 'center', marginLeft: 15}}>Cloutlet</div>
                                 </FlexBox>
                                 <FlexBox style={Styles.cell001}>
                                     <div
@@ -682,10 +682,10 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
 const Styles = {
     cell000: {
         marginLeft: 0,
-        backgroundColor: 'transparent',
+        backgroundColor: '#a3a3a3',
         flex: .4,
         alignItems: 'center',
-        fontSize: 13
+        fontSize: 13,
     },
     cell001: {
         marginLeft: 0,
