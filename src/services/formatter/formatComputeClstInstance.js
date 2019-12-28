@@ -1,4 +1,6 @@
 import * as moment from 'moment';
+import uuid from 'uuid';
+
 let trimData = (datas) => {
     let newData = datas.splice(0,1);
     return datas ;
@@ -79,7 +81,7 @@ let generateData = (datas,body) => {
                 let Deployment = dataResult.data.deployment;
 
 
-                values.push({Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, State:State, Progress:'', Status:Status, Deployment:Deployment, Edit:newRegistKey})
+                values.push({uuid:uuid(),Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, State:State, Progress:'', Status:Status, Deployment:Deployment, Edit:newRegistKey})
 
             }
         })

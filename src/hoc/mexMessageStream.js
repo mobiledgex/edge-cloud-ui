@@ -5,9 +5,11 @@ import Check from "@material-ui/icons/Check";
 import ErrorIcon from '@material-ui/icons/Error';
 import { green, red } from '@material-ui/core/colors';
 
-export const CODE_FINISH = 100; 
-export const CODE_SUCCESS = 200; 
-export const CODE_FAILED = 400; 
+export const CODE_FINISH = 100;
+export const CODE_SUCCESS = 200;
+export const CODE_FAILED = 400;
+
+let steps = [];
 
 const useStyles = makeStyles(theme => ({
 
@@ -73,7 +75,7 @@ const VerticalStepper = (props) => {
             <div className={classes.root}>
                 {
                     completed ?
-                        props.steps[stepperProps.icon - 1].code === CODE_FAILED ?
+                        steps[stepperProps.icon - 1].code === CODE_FAILED ?
                             <ErrorIcon className={classes.error} /> :
                             <Check className={classes.success} /> :
                         <div className={classes.wrapper}>
@@ -85,14 +87,26 @@ const VerticalStepper = (props) => {
         );
     }
 
+    const loadData = () => {
+        if(props.stepsArray && props.stepsArray && props.uuid && props.uuid !== 0)
+        {
+            props.stepsArray.map(item=>{
+                steps = item.steps
+            })
+        }
+    }
+
+    loadData()
+
+
     return (
-        (props.steps && props.steps.length > 0) ?
+        (steps && steps.length > 0) ?
             <div>
                 <Popover style={{ width: 400, maxHeight: 400 }}
                     anchorReference="anchorPosition"
                     anchorPosition={{ top: 0, left: window.innerWidth }}
-                    onClose={()=>{props.onClose()}}
-                    open={props.steps.length>0} 
+                    onClose={() => { props.onClose() }}
+                    open={props.uuid !== 0}
                     anchorOrigin={{
                         vertical: 'top',
                         horizontal: 'right',
@@ -101,15 +115,15 @@ const VerticalStepper = (props) => {
                         vertical: 'top',
                         horizontal: 'left',
                     }}>
-                <Stepper className={classes.stepper} activeStep={props.steps[props.steps.length - 1].code ===  CODE_FINISH ? props.steps.length : props.steps.length - 1} orientation="vertical">
-                    {props.steps.map((step, index) => (
-                        step.message ?
-                            <Step key={index}>
-                                <StepLabel StepIconComponent={IconSelector}><p className={classes.label}>{step.message}</p></StepLabel>
-                            </Step>
-                            : null
-                    ))}
-                </Stepper>
+                    <Stepper className={classes.stepper} activeStep={steps[steps.length - 1].code === CODE_FINISH ? steps.length : steps.length - 1} orientation="vertical">
+                        {steps.map((step, index) => (
+                            step.message ?
+                                <Step key={index}>
+                                    <StepLabel StepIconComponent={IconSelector}><p className={classes.label}>{step.message}</p></StepLabel>
+                                </Step>
+                                : null
+                        ))}
+                    </Stepper>
                 </Popover>
             </div>
             :

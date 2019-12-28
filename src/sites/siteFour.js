@@ -303,7 +303,7 @@ class SiteFour extends React.Component {
             result.data.map((item,i) => {
                 if(item.role.indexOf('Admin') > -1){
                     this.setState({adminShow:true});
-                    this.props.handleUserRole(item.role);
+                    //this.props.handleUserRole(item.role);
                     localStorage.setItem('selectRole', item.role)
                 }
             })
@@ -1189,7 +1189,6 @@ const mapStateToProps = (state) => {
             mode: state.alertInfo.mode,
             msg: state.alertInfo.msg
         },
-        requestMessage : (state.ShowSnack.info) ? state.ShowSnack.info:null,
         searchValue : (state.searchValue.search) ? state.searchValue.search: null,
         changeRegion : (state.changeRegion.region) ? state.changeRegion.region : null,
         tableHeaders : (state.tableHeader)? state.tableHeader.headers : null,
@@ -1227,8 +1226,7 @@ const mapDispatchProps = (dispatch) => {
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleAuditCheckCount: (data) => { dispatch(actions.setCheckedAudit(data))},
-        handleResetMap: (data) => { dispatch(actions.resetMap(data))},
-        handleShowSnack : (data) => {dispatch(actions.showSnack(data))}
+        handleResetMap: (data) => { dispatch(actions.resetMap(data))}
     };
 };
 

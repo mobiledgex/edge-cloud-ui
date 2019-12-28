@@ -32,8 +32,6 @@ export const VERIFY_EMAIL = "verifyemail"
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
 
 let sockets = [];
-let multiRequestCount = [];
-let wsForceClose = false;
 
 
 export function generateUniqueId() {
@@ -148,7 +146,7 @@ function getPath(request) {
 }
 
 export function sendWSRequest(request, callback) {
-    const ws = new WebSocket(`ws://10.156.106.74:9900/ws${getPath(request)}`)
+    const ws = new WebSocket(`ws://192.168.1.6:9900/ws${getPath(request)}`)
     ws.onopen = () => {
         sockets.push({ uuid: request.uuid, socket: ws, isClosed:false });
         ws.send(`{"token": "${request.token}"}`);
@@ -173,7 +171,7 @@ export function sendWSRequest(request, callback) {
             {
                 if(item.isClosed === false && evt.code===1000)
                 {
-                    callback(undefined)
+                    callback({ request: request })
                 }
                 sockets.splice(i,1)
             }   
