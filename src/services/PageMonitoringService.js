@@ -658,7 +658,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 <BubbleChart
                     className='bubbleChart'
                     graph={{
-                        zoom: appInstanceList.length <= 4 ? 0.55 : 0.98,
+                        zoom: appInstanceList.length <= 4 ? 0.80 : 0.98,
                         offsetX: 0.03,
                         offsetY: appInstanceList.length <= 4 ? 0.03 : -0.06,
                     }}
@@ -1047,7 +1047,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
                     pointHighlightFill: "#fff",
                     pointHighlightStroke: 'white',
                     data: cpuUsageSetList[i],
-                    pointRadius: 1,
+                    //pointRadius: 1,
                 }
 
                 finalSeriesDataSets.push(datasetsOne)
