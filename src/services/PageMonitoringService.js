@@ -477,7 +477,6 @@ export const renderBarGraphForInfo = (appInstanceListOnCloudlet: any, _this) => 
 }
 
 
-
 const Styles = {
     cell000: {
         marginLeft: 0,
@@ -650,7 +649,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 backgroundColor: 'black',
                 marginLeft: 0, marginRight: 0, marginBottom: 10,
             }}>
-               {/* {_this.state.loading777 &&
+                {/* {_this.state.loading777 &&
                 <div className='loaderDiv'>
                     <CircularProgress style={{marginLeft: 80, marginTop: 120, color: 'green'}}/>
                 </div>
@@ -675,9 +674,10 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     }}
                     valueFont={{
                         //family: 'Righteous',
-                        size: 20,
-                        color: 'black',
-                        weight: 'bold',
+                        size: 10,
+                        color: '#2d320d',
+                        //weight: 'bold',
+                        fontStyle: 'italic',
                     }}
                     labelFont={{
                         //family: 'Righteous',
@@ -802,7 +802,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
                 </div>
                 :
                 <div className=''>
-                    <FlexBox style={{marginTop: 0, display: 'flex', alignItems: 'center', alignSelf: 'center', justifyContent: 'center', height:127, backgroundColor:'black'}}>
+                    <FlexBox style={{marginTop: 0, display: 'flex', alignItems: 'center', alignSelf: 'center', justifyContent: 'center', height: 127, backgroundColor: 'black'}}>
                         No Data
                     </FlexBox>
                 </div>
@@ -901,7 +901,6 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
         </div>
     );
 }
-
 
 
 export const getMetricsUtilization = async (appInstanceOne: TypeAppInstance) => {
