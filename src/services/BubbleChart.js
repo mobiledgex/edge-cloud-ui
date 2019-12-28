@@ -164,7 +164,7 @@ export default class BubbleChart extends Component {
             .text((d) => {
                 //@todo:value를 랜더링 하는 부분..
                 //@todo:value를 랜더링 하는 부분..
-                return d.favor; //@todo:value를 랜더링 하는 부분..
+                return d.value; //@todo:value를 랜더링 하는 부분..
             });
 
         node.append("text")

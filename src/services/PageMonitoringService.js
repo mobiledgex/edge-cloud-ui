@@ -674,8 +674,8 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     }}
                     valueFont={{
                         //family: 'Righteous',
-                        size: 10,
-                        color: '#2d320d',
+                        size: 25,
+                        color: 'black',
                         //weight: 'bold',
                         fontStyle: 'italic',
                     }}
