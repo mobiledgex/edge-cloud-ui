@@ -68,6 +68,7 @@
     "react-container-dimensions": "^1.4.1",
     "react-date-range": "^1.0.0-beta",
     "react-dom": "^16.6.3",
+    "react-dual-listbox": "^2.0.0",
     "react-duallist": "^1.1.6",
     "react-faux-dom": "^4.1.0",
     "react-flexa": "^0.9.1",

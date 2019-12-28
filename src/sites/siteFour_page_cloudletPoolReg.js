@@ -11,6 +11,7 @@ import './siteThree.css';
 
 import Alert from "react-s-alert";
 import SiteFourPoolStepViewer from '../container/siteFourPoolStepView';
+import RegistryCloudletPoolViewer from '../container/registryCloudletPoolViewer';
 import * as reducer from "../utils";
 
 
@@ -61,13 +62,13 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         console.log('20191223 props dev data countJoin---', cloudlet, ": regions == ", rgn, ":", this.props.region)
         let cloudletList = [];
         cloudlet.map((list) => {
-            cloudletList.push({region:list['Region'], cloudlet:list['CloudletName']})
+            cloudletList.push({region:list['Region'], cloudlet:list['CloudletName'], orgaName:list['Operator']})
         })
-        //TODO: cloudlet --- 20191220 폼에 맞는 데이터 형태로 가공 필요
+        //
         let fieldValue = [{
             'Region':rgn,
             'poolName':'',
-            'selectCloudlet':cloudletList,
+            'AddCloudlet':cloudletList,
             'invisibleField':''
 
         }]
@@ -139,6 +140,9 @@ class SiteFourPageCloudletPoolReg extends React.Component {
             _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
             this.getDataDeveloper(nextProps.changeRegion,nextProps.regionInfo.region);
         }
+        if(nextProps.appLaunch) {
+            console.log('20191226 app launch=', nextProps.appLaunch)
+        }
 
     }
 
@@ -159,7 +163,10 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <SiteFourPoolStepViewer devData={devData} stepMove={this.state.step} gotoUrl={this.gotoUrl}/>
+            ((this.props.appLaunch && this.props.appLaunch.data) && this.props.appLaunch.data['Region']) ?
+                <RegistryCloudletPoolViewer devData={devData} stepMove={this.state.step} gotoUrl={this.gotoUrl}/>
+                :
+                <SiteFourPoolStepViewer devData={devData} stepMove={this.state.step} gotoUrl={this.gotoUrl}/>
         );
     }
 
@@ -171,11 +178,13 @@ const mapStateToProps = (state) => {
         }
         : {};
     let regionInfo = (state.regionInfo)?state.regionInfo:null;
+    let appLaunch = state.appLaunch;
     return {
         getRegion : (state.getRegion)?state.getRegion.region:null,
         regionInfo: regionInfo,
         region:region,
         changeRegion : state.changeRegion?state.changeRegion.region:null,
+        appLaunch
     }
 };
 

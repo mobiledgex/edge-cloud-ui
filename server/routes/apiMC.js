@@ -2022,9 +2022,7 @@ exports.ShowCloudletPool = (req, res) => {
 
 /**
  * Now creating cloudletpool named "DeletemPool"
- wpark-macmac:edge-cloud-infra wonhopark$  mcctl --addr https://mc-stage.mobiledgex.net:9900 region CreateCloudletPool
- region=EU
- name=DeletemePool
+ http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateCloudletPool <<< '{"region":"EU", "cloudletpool": {"key": {"name": "TEST1223"}}}'
  * @param req
  * @param res
  * @constructor
@@ -2037,10 +2035,10 @@ exports.CreateCloudletPool = (req, res) => {
     let region = 'local';
     let poolName = '';
     if(req.body.serviceBody){
-        poolName = req.body.serviceBody.params.name;
+        poolName = req.body.serviceBody.params.poolName;
         superpass = req.body.serviceBody.token;
-        region = req.body.serviceBody.params.region;
-        serviceBody = req.body.serviceBody.params;
+        region = req.body.serviceBody.params.Region;
+        serviceBody = {"region":region, "cloudletpool": {"key": {"name": poolName}}};
     }
     console.log('create  cloudlet pool -- ', 'domain req.body.serviceBody==',req.body.serviceBody, ":region = ",region, ": poolName=", poolName)
     axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudletPool', serviceBody,
@@ -2128,7 +2126,7 @@ exports.ShowCloudletPoolMember = (req, res) => {
         superpass = req.body.serviceBody.token;
         region = req.body.serviceBody.region;
     }
-    console.log('show me cloudlet member -- ', 'domain url==',mcUrl)
+    console.log('show me cloudlet pool member -- ', 'region==',region)
     axios.post(mcUrl + '/api/v1/auth/ctrl/ShowCloudletPoolMember', qs.stringify({
             region:region
         }),
@@ -2138,7 +2136,7 @@ exports.ShowCloudletPoolMember = (req, res) => {
         }
     )
         .then(function (response) {
-            console.log('success show cloudlet member -- ', "- : -")
+            console.log('success show cloudlet member -- ', "- : -",response.data)
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){

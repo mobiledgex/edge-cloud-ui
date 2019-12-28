@@ -67,16 +67,16 @@ export function getListCloudletPool(resource, body, callback, self) {
         });
 }
 export function getListCloudletPoolMember(resource, body, callback, self) {
-    console.log('20191219 parse data show cloudlet pool member ===>>>>>>>>>> ', resource)
+    console.log('20191227 parse data show cloudlet pool member ===>>>>>>>>>> ', resource)
     axios.post(ServerUrl+'/showCloudletPoolMember', qs.stringify({
         service: resource,
         serviceBody:body,
         serviceId: Math.round(Math.random()*10000)
     }))
         .then(function (response) {
-            console.log('20191219 request get response cloudlet pool member ===== ', response)
+            console.log('20191227 request get response cloudlet pool member ===== ', response)
             let parseData = null;
-
+            let dataArray = null;
             if(response.data) {
                 if(response.data.error) {
                     if(response.data.error.indexOf('Expired') > -1) {
@@ -94,13 +94,12 @@ export function getListCloudletPoolMember(resource, body, callback, self) {
             } else {
                 parseData = response;
             }
-            if(parseData){
-                switch(resource){
 
-                    case 'ShowCloudletPoolMember': callback(FormatComputeCloudletPoolMember(parseData,body)); break;
+            console.log('20191227 paraseData.data type -- ', typeof parseData.data)
 
-                    default : callback(parseData);
-                }
+            switch(resource){
+                case 'ShowCloudletPoolMember': callback(FormatComputeCloudletPoolMember(parseData,body)); break;
+                default : callback(parseData);
             }
         })
         .catch(function (error) {

@@ -77,7 +77,7 @@ class RegistryCloudletPoolViewer extends React.Component {
             selectedCloudlet:[],
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
+                    'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
                     'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
                     'selectCloudlet':{label:'Into the pool', type:'RenderDualListBox', necessary:false, tip:'select a cloudlet', active:true},
                     'invisibleField':{label:'Invisible', type:'InvisibleField', necessary:false, tip:'invisible field', active:true}
@@ -185,17 +185,7 @@ class RegistryCloudletPoolViewer extends React.Component {
         }
     }
 
-    /**
-     *
-     */
-    createCloudletPoolMember = (_region, _oper, _cloudlet, _pool) => {
-        //TODO: 맴버 가져오기
-        let selectedCloudlet = this.state.selectedCloudlet;
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let _params = {region: _region, operator: _oper, cloudlet: _cloudlet, pool:_pool};
-        services.createCloudletPoolMember('CreateCloudletPoolMember',{token:store.userToken, params:_params}, _self.receiveResultCreateMember)
 
-    }
     receiveSubmit = (result, body) => {
         console.log("20191119 cloudlet paseDatapaseDatapaseData",result, ": this.props.changeRegion=", this.props.changeRegion,": region = ", this.props.region, ":", this.props.regionInfo, ":", this.props.getRegion)
         this.pauseRender = false;
@@ -249,7 +239,7 @@ class RegistryCloudletPoolViewer extends React.Component {
             this.setState({ dimmer:'blurring', open: true })
         }
         if(nextProps.devData.length > 0) {
-            console.log('20191220 props dev data -- ', nextProps.devData)
+            console.log('20191226 props dev data -- ', nextProps.devData)
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         } else {
             this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
@@ -282,9 +272,6 @@ class RegistryCloudletPoolViewer extends React.Component {
                 this.props.handleLoadingSpinner(true);
                 console.log('20191223 create cloudlet pool....',nextProps.submitValues)
                 servicePool.createCloudletPool('CreateCloudletPool', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
-
-                // --- test ---
-                this.createCloudletPoolMember(a,b,c)
 
                 setTimeout(() => {
                     this.props.handleLoadingSpinner(false);
@@ -371,11 +358,6 @@ const mapStateToProps = (state) => {
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
-    let selectedRegion = null;
-    let selectedCloudlet = null;
-    let selectedOperator = null;
-    let selectedApp = null;
-    let flavors = null;
     let validateValue = {};
 
     //TODO : 건희 20190902 새롭게 추가된 필드 'Cloudlet Type'데 대한 기능 구현 ()
@@ -427,11 +409,11 @@ const mapStateToProps = (state) => {
         itemLabel: state.computeItem.item,
         userToken : (state.user.userToken) ? state.userToken: null,
         submitValues: submitVal,
+        validateValue:validateValue,
         region: region.value,
         flavors: (state.showFlavor) ? state.showFlavor.flavor : null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
-        validateValue:validateValue,
         formClusterInst : formClusterInst,
         getRegion : (state.getRegion)?state.getRegion.region:null,
         regionInfo: regionInfo

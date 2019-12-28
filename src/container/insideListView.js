@@ -356,6 +356,8 @@ class InsideListView extends React.Component {
      * If you click the buttons that are grouped
      ** *****/
     onHandlePopMenu = (a, b) => {
+        //cloudlet pool
+        this.state.item.State = b.children;
         this.setState({ isOpen: false })
         console.log('20191104 ... on handle pop menu.. ', a, b.children, ': orgName=', this.state.orgName)
         if(b.children === 'Launch') {
@@ -365,7 +367,6 @@ class InsideListView extends React.Component {
         } else if(b.children === 'Delete') {
             this.setState({openDelete: true, selected:this.state.item})
         }
-        //cloudlet pool
         if(b.children === 'Add') {
             this.addCloudlet(this.state.item)
         } else if(b.children === 'Link') {

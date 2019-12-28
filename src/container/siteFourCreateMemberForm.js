@@ -75,17 +75,17 @@ const clusterNode = (props) => (
 const cloudletMap = (props, type) => (
     <Fragment>
         {(type === 'cloudlets')?
-        <div className='panel_worldmap' style={{width:'100%'}}>
-            <ClustersMap parentProps={{locData:props.locData, reg:'cloudletAndClusterMap', zoomIn:()=>console.log('zoomin'), zoomOut:()=>console.log('zoomout'), resetMap:()=>console.log('resetmap') }} icon={'cloudlet'} zoomControl={{center:[0, 0], zoom:1.5} }></ClustersMap>
-        </div>
+            <div className='panel_worldmap' style={{width:'100%'}}>
+                <ClustersMap parentProps={{locData:props.locData, reg:'cloudletAndClusterMap', zoomIn:()=>console.log('zoomin'), zoomOut:()=>console.log('zoomout'), resetMap:()=>console.log('resetmap') }} icon={'cloudlet'} zoomControl={{center:[0, 0], zoom:1.5} }></ClustersMap>
+            </div>
 
-        :
-        <EditMap parentProps={{devData:props.cloudletData}}></EditMap>}
+            :
+            <EditMap parentProps={{devData:props.cloudletData}}></EditMap>}
 
     </Fragment>
 )
 let _self = null;
-class SiteFourCreatePoolForm extends React.Component {
+class SiteFourCreateMemberForm extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -179,7 +179,7 @@ class SiteFourCreatePoolForm extends React.Component {
 
             let cloudletDataReady = this.state.cloudletData.filter((item) => {return item.State === 5});
             this.setState({cloudletData : cloudletDataReady.concat(result)});
-            
+
             // this.setState({cloudletData : this.state.cloudletData.concat(result)});
         }
         else if(cmpt == 'flavor') {
@@ -427,7 +427,7 @@ class SiteFourCreatePoolForm extends React.Component {
         if(value === 'Kubernetes' && panes.length == 1){
             panes.push({ menuItem: 'Show Cluster', render: (props) => <Tab.Pane>{clusterNode(props)}</Tab.Pane> });
             this.setState({clusterShow:true})
-        } 
+        }
     }
     handleChangeLong = (e, {value}) => {
         // if(value == '-') {
@@ -447,7 +447,7 @@ class SiteFourCreatePoolForm extends React.Component {
 
         if(onlyNum != 0) {
             onlyNum = onlyNum.replace(/(^0+)/, "")
-        } 
+        }
 
         this.setState({ locationLong: onlyNum, longerror:'' })
         this.locationValue(onlyNum,this.state.locationLat)
@@ -463,10 +463,10 @@ class SiteFourCreatePoolForm extends React.Component {
             e.target.value=null;
             return
         }
-        
+
         if(onlyNum != 0) {
             onlyNum = onlyNum.replace(/(^0+)/, "")
-        } 
+        }
         this.setState({ locationLat: onlyNum, laterror:'' })
         this.locationValue(this.state.locationLong,onlyNum)
     }
@@ -573,4 +573,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourCreatePoolForm));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourCreateMemberForm));

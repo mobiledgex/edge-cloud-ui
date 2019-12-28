@@ -284,6 +284,7 @@ class SiteFour extends React.Component {
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
+        this.props.handleAppLaunch(null)
         this.props.handleChangeClickCity([])
         this.setState({intoCity: false})
     }
@@ -861,10 +862,8 @@ class SiteFour extends React.Component {
         let savedArray = localStorage.getItem('auditUnChecked');
         let checkedArray = localStorage.getItem('auditChecked');
         let checked = [];
-        console.log('20191022 item is -- ', all, "  :  ", savedArray, typeof savedArray)
         all.map((item, i) => {
             if (savedArray && JSON.parse(savedArray).length) {
-                console.log('20191022 item is -- ', JSON.parse(savedArray).findIndex(k => k == item.traceid))
                 //이전에 없던 데이터 이면 추가하기
                 if (JSON.parse(savedArray).findIndex(k => k == item.traceid) === -1) addArray.push(item.traceid)
             } else {
@@ -873,7 +872,6 @@ class SiteFour extends React.Component {
         })
 
         if (addArray.length) {
-            console.log('20191022 if has new data ... ', addArray)
             JSON.parse(savedArray).concat(addArray);
         }
 
@@ -888,7 +886,6 @@ class SiteFour extends React.Component {
         }
 
         checked = (checkedArray) ? JSON.parse(checkedArray) : [];
-        console.log('20191022  unchecked... is -- ', checkResult.length, ":", checked.length, " - ", (checkResult.length - checked.length))
         this.props.handleAuditCheckCount(checkResult.length - checked.length)
         localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
 
@@ -1396,6 +1393,9 @@ const mapDispatchProps = (dispatch) => {
         handleResetMap: (data) => {
             dispatch(actions.resetMap(data))
         },
+        handleAppLaunch: (data) => {
+            dispatch(actions.appLaunch(data))
+        }
     };
 };
 

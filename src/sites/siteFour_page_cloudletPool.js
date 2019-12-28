@@ -133,7 +133,7 @@ class SiteFourPageCloudletPool extends React.Component {
 
 
     }
-    receiveResult = (result) => {
+    receiveResultShow = (result) => {
         console.log('20191220 receive result cloudlet pool...', JSON.stringify(result));
         // @inki if data has expired token
         if(result.error && result.error.indexOf('Expired') > -1) {
@@ -152,33 +152,36 @@ class SiteFourPageCloudletPool extends React.Component {
         this.loadCount ++;
         console.log("20191220 ..cloudlet EditEditEdit",rgn.length,":::",this.loadCount)
         if(rgn.length == this.loadCount){
-            _self.countJoin()            
+            _self.countJoin()
         }
         _self.props.handleLoadingSpinner(false);
 
-        // let join = null;
-        // if(result[0]['Edit']) {
-        //     join = this.state.devData.concat(result);
-        // } else {
-        //     join = this.state.devData;
-        // }
-        // this.loadCount ++;
-        // this.setState({devData:join})
-        // this.props.handleLoadingSpinner(false);
-        // if(rgn.length == this.loadCount-1){
-        //     return
-        // }
-
     }
 
-    // receiveResult = (result) => {
-    //     console.log('20191220 receive result cloudlet pool...', JSON.stringify(result));
-    // }
     receiveResultCreate = (result) => {
         console.log('20191220 receive result cloudlet pool create ...', JSON.stringify(result));
     }
     receiveResultMember = (result) => {
-        console.log('20191220 receive result cloudlet pool member  ...', JSON.stringify(result));
+        console.log('20191227 receive result cloudlet pool member  ...mm  ..', result);
+        if(result.error && result.error.indexOf('Expired') > -1) {
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleComputeRefresh(false);
+            _self.props.handleLoadingSpinner(false);
+            return;
+        }
+
+        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
+        if(Object.keys(regionGroup)[0]) {
+            _self._memberDummy = _self._memberDummy.concat(result)
+        }
+
+        this.loadCount ++;
+        console.log("20191227 .._memberDummy ",rgn.length,":::",_self._memberDummy)
+        if(rgn.length == this.loadCount){
+
+        }
+        _self.props.handleLoadingSpinner(false);
     }
     receiveResultCreateMember = (result) => {
         console.log('20191220 receive result cloudlet pool create member  ...', JSON.stringify(result));
@@ -204,8 +207,8 @@ class SiteFourPageCloudletPool extends React.Component {
         }
 
         rgn.map((item, i) => {
-            services.getListCloudletPool('ShowCloudletPool',{token:store.userToken, region:item}, _self.receiveResult)
-            //services.getListCloudletPoolMember('ShowCloudletPoolMember',{token:store.userToken, region:item}, _self.receiveResultMember)
+            services.getListCloudletPool('ShowCloudletPool',{token:store.userToken, region:item}, _self.receiveResultShow)
+            services.getListCloudletPoolMember('ShowCloudletPoolMember',{token:store.userToken, region:item}, _self.receiveResultMember)
         })
         this.props.handleLoadingSpinner(true);
 
