@@ -539,7 +539,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     await this.handleSelectBoxChanges(value)
                                     setTimeout(() => {
                                         this.setState({
-                                            cloudLetSelectBoxPlaceholder: 'Select Cloudlet'
+                                            cloudLetSelectBoxPlaceholder: 'Select CloudLet'
                                         })
                                     }, 1000)
                                 }}
