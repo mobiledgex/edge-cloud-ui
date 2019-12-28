@@ -9,13 +9,14 @@
     color: whitesmoke;
 }
 
-.cell000 {
-     margin-left: 0;
-     background-color: rgba(163, 163, 163, 0.5);
-     flex: .4;
-     align-items: center;
-     font-sze: 13;
- }
+.cellHeader {
+    margin-left: 0;
+    background-color: rgba(163, 163, 163, 0.5);
+    flex: .4;
+    align-items: center;
+    justify-content: flex-start;
+    font-sze: 13;
+}
 
 .center001 {
     justify-content: center;
@@ -41,9 +42,9 @@
 
 
 .popupTop {
-    position: fixed;
-    width: 185px;
-    height: 200px;
+    /*position: fixed;*/
+    width: 180px;
+    height: 126px;
     top: -8%;
     left: -19%;
     right: 10%;
@@ -53,26 +54,24 @@
 }
 
 .popup {
-    position: fixed;
-    width: 185px;
-    height: 190px;
-    top: 14%;
-    left: -19%;
-    right: 10%;
-    bottom: -55%;
+    /*position: fixed;*/
+    width: 180px;
+    height: 195px;
+    top: 0%;
+    /*left: -19%;*/
     margin: auto;
     background-color: rgba(0, 0, 0, 0.5);
 }
 
 .popup_inner {
-    position: absolute;
-    left: 25%;
-    right: 25%;
-    top: 25%;
-    bottom: 25%;
-    margin: auto;
-    border-radius: 20px;
-    background: white;
+    /* position: absolute;
+     left: 25%;
+     right: 25%;
+     top: 25%;
+     bottom: 25%;
+     margin: auto;
+     border-radius: 20px;
+     background: white;*/
 }
 
 .page_monitoring_grid_box {

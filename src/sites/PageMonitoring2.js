@@ -932,19 +932,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             {/*todo:#########################################****/}
                                                             {!this.state.isShowUtilizationArea ?
                                                                 <FlexBox
-                                                                    style={{backgroundColor: 'black', width: 170, height: 320, alignItem: 'center', alignSelf: "center", justifyContent: "center"}}>
+                                                                    style={{backgroundColor: 'black', width: 180, height: 320, alignItem: 'center', alignSelf: "center", justifyContent: "center"}}>
                                                                     {this.state.loading777 ?
                                                                         <Lottie
                                                                             options={{
                                                                                 loop: true,
                                                                                 autoplay: true,
-                                                                                animationData: require('../lotties/loader003'),
+                                                                                animationData: require('../lotties/loading-animation001'),
                                                                                 rendererSettings: {
                                                                                     preserveAspectRatio: 'xMidYMid slice'
                                                                                 }
                                                                             }}
                                                                             height={120}
-                                                                            width={120}
+                                                                            width={130}
                                                                             isStopped={false}
                                                                             isPaused={false}
                                                                             style={{marginTop:80}}
