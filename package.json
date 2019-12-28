@@ -124,7 +124,8 @@
     "ua-parser-js": "^0.7.20",
     "url-search-params": "^1.1.0",
     "urlencode": "^1.1.0",
-    "vue-tabulator": "^1.2.2"
+    "vue-tabulator": "^1.2.2",
+    "websocket": "^1.0.31"
   },
   "devDependencies": {
     "concurrently": "^5.0.2",

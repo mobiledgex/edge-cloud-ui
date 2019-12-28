@@ -28,6 +28,7 @@ import './css/components/timelineH.css';
 import BubbleChartScreen from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/BubbleChartScreen";
 import {Test001} from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
 import Test002 from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test002";
+import Test003 from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test003";
 // API
 
 let self = null;
@@ -367,6 +368,7 @@ class App extends Component {
 
                     <Route exact path='/BubbleChartScreen' component={BubbleChartScreen} />
                     <Route exact path='/Test002' component={Test002} />
+                    <Route exact path='/Test003' component={Test003} />
                 </div>
             </Router>
         );

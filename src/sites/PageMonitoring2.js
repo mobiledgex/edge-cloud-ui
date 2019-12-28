@@ -1,7 +1,7 @@
 import 'react-hot-loader'
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
-import React from 'react';
+import React, {Component} from 'react';
 import {Button, Header, Image, Modal} from 'semantic-ui-react'
 import FlexBox from "flexbox-react";
 import sizeMe from 'react-sizeme';
@@ -121,7 +121,7 @@ type State = {
 
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
-    class PageMonitoring2 extends React.Component<Props, State> {
+    class PageMonitoring2 extends Component<Props, State> {
         state = {
             date: '',
             time: '',
@@ -947,7 +947,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                             width={130}
                                                                             isStopped={false}
                                                                             isPaused={false}
-                                                                            style={{marginTop:80}}
+                                                                            style={{marginTop: 80}}
                                                                         />
                                                                         : <div></div>}
                                                                 </FlexBox>
