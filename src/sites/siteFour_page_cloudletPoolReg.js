@@ -69,7 +69,10 @@ class SiteFourPageCloudletPoolReg extends React.Component {
             'Region':rgn,
             'poolName':'',
             'AddCloudlet':cloudletList,
-            'invisibleField':''
+            'invisibleField':'',
+            'CloudletPool':'',
+            'LinktoOrganization':'',
+            'LinkDiagram':''
 
         }]
         _self.setState({devData:fieldValue, dataSort:false})

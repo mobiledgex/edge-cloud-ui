@@ -59,6 +59,7 @@ const keys = [
         'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
     },
     {
+        'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
         'CloudletPool':{label:'Cloudlet Pool', type:'RenderDropDown', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
         'LinktoOrganization':{label:'Into the pool', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
         'LinkDiagram':{label:'Linked Status', type:'RenderLinkedDiagram', necessary:false, tip:'linked the cloudlet pool with the organization', active:true},
@@ -96,12 +97,12 @@ class SiteFourPoolStepView extends React.Component {
             detailViewData:null,
             selected:{},
             openUser:false,
-            step:3, //default is 1
             typeOperator:'Developer',
             orgaName:'',
             validateError:[],
-            keysData: [keys[0]],
-            fakeData: [fakes[0]],
+            step:3, //default is 1
+            keysData: [keys[2]],
+            fakeData: [fakes[2]],
             devData: [],
             region:[],
             selectedRegion:null,
@@ -164,7 +165,6 @@ class SiteFourPoolStepView extends React.Component {
 
         <Item className='content create-org' style={{margin:'30px auto 0px auto', maxWidth:1200}}>
             <div className='content_title' style={{padding:'0px 0px 10px 0'}}>Create new Cloudlet Pool</div>
-
             <Step.Group stackable='tablet' style={{width:'100%'}}>
                 {
                     stepData.map((item,i) => (
@@ -178,13 +178,11 @@ class SiteFourPoolStepView extends React.Component {
                     ))
                 }
             </Step.Group>
-
             {
                 (this.state.step ==1) ? <SiteFourPoolOne onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} toggleSubmit={this.props.toggleSubmit} data={data}></SiteFourPoolOne> :
                     (this.state.step ==2) ? <SiteFourPoolTwo onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} data={data} selectedData={{region:this.state.selectedRegion, poolName:this.state.gavePoolName}}></SiteFourPoolTwo> :
                         (this.state.step ==3) ? <SiteFourPoolThree onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName} data={data}></SiteFourPoolThree> : null
             }
-
         </Item>
     )
 
@@ -194,7 +192,6 @@ class SiteFourPoolStepView extends React.Component {
         let panelParams = {data:data, keys:keysData, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
 
         return layout.map((item, i) => (
-
             (i === 0)?
                 <div className="round_panel" key={i}>
                     <div className="grid_table" style={{overflow:'auto'}}>
@@ -207,8 +204,6 @@ class SiteFourPoolStepView extends React.Component {
                         Map viewer
                     </div>
                 </div>
-
-
         ))
     }
 

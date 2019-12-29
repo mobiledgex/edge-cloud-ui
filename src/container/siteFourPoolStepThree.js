@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import {Button, Form, Header, Message, List, Grid, Card} from "semantic-ui-react";
 import { Field, reduxForm } from "redux-form";
 import MaterialIcon from "../sites/siteFour_page_createOrga";
+import SiteFourLinkOrganizeForm from "./siteFourLinkOrganizeForm";
 import './styles.css';
 
 const validate = values => {
@@ -121,32 +122,7 @@ const renderInput = field => (
         placeholder={field.placeholder}
     />
 );
-// const typeOperator = (selected) => (
-//
-//     <Button.Group>
-//         <Button positive={(selected === 'Developer')}>Developer</Button>
-//         <Button.Or />
-//         <Button positive={(selected === 'Operator')}>Operator</Button>
-//     </Button.Group>
-// )
 
-
-// const makeCardContent = (item, i) => (
-//     <Grid.Column>
-//         <Card>
-//             <Card.Content>
-//                 <Card.Header>{item['header']}</Card.Header>
-//                 <Card.Meta>{type}</Card.Meta>
-//                 <Card.Description>
-//                     {makeRoleList(type, i)}
-//                 </Card.Description>
-//                 <div style={{position:'absolute', top:'1em', right:'1em', width:'auto', display:'flex', alignItem:'right', justifyContent:'right' }}>
-//                     <MaterialIcon icon={(item['header'] === role)?'check_circle':'check_circle_outline'} size={40} color={(item['header'] === role)?'rgba(136,221,0,.9)':'rgba(255,255,255,.6)'}/>
-//                 </div>
-//             </Card.Content>
-//         </Card>
-//     </Grid.Column>
-// )
 class SiteFourPoolThree extends React.Component {
     constructor(props) {
         super(props);
@@ -164,57 +140,8 @@ class SiteFourPoolThree extends React.Component {
         return (
             <Fragment>
                 <Grid>
-                    <Grid.Column width={11}>
-                        <Form>
-                            <Header className="newOrg3-1">{`Organization "`+ org + `" has been created.`}</Header>
-
-                            <Form.Group widths="equal" style={{flexDirection:'column', alignContent:'space-around'}}>
-                                <Grid>
-                                    <Grid.Row>
-                                        {
-                                            (type === 'Developer')?
-                                            <Grid.Column>
-                                                <div className="newOrg3-2">
-                                                    <div>
-                                                        If your image is docker, please upload your image with your MobiledgeX Account Credentials to our docker registry using the following docker commands.
-                                                    </div>
-                                                    <br></br>
-                                                    <div>
-                                                        {`$ docker login -u <username> docker.mobiledgex.net`}
-                                                    </div>
-                                                    <div>
-                                                        {`$ docker tag <your application> docker.mobiledgex.net/` + String(org).toLowerCase() + `/images/<application name>:<version>`}
-                                                    </div>
-                                                    <div>
-                                                        {`$ docker push docker.mobiledgex.net/` + String(org).toLowerCase() + `/images/<application name>:<version>`}
-                                                    </div>
-                                                    <div>
-                                                        $ docker logout docker.mobiledgex.net
-                                                    </div>
-                                                </div>
-                                                <br></br>
-                                                <div className="newOrg3-3">
-                                                    <div>
-                                                        If you image is VM, please upload to our VM registry with your MobiledgeX Account Credentials.
-                                                    </div>
-                                                    <div>
-                                                        {`curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-` + org + `/<target_file_path>"`}
-                                                    </div>
-                                                </div>
-                                            </Grid.Column>
-                                            :
-                                            <Grid.Column></Grid.Column>
-                                        }
-                                        
-                                    </Grid.Row>
-                                </Grid>
-                            </Form.Group>
-                            <Form.Group className='orgButton' style={{width:'100%'}}>
-                                <Button className="newOrg3-4" onClick={this.changeOrg} type='submit' positive style={{width:'100%'}}>Check your Organization</Button>
-                            </Form.Group>
-                        </Form>
-                    </Grid.Column>
-                    <Grid.Column width={5}>
+                    <Grid.Column>
+                        <SiteFourLinkOrganizeForm data={this.props.data}  validError={this.props.error || []}></SiteFourLinkOrganizeForm>
                     </Grid.Column>
                 </Grid>
             </Fragment>

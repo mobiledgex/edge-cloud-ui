@@ -2153,3 +2153,49 @@ exports.ShowCloudletPoolMember = (req, res) => {
             //res.json({error:'Login Timeout Expired. Please login again'})
         });
 }
+
+
+/**
+ * http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/orgcloudletpool/create <<< '{"cloudletpool":"cloudletPool_bictest_1223-01","org":"bicinkiOper","region":"EU"}'
+ * @param req
+ * @param res
+ * @constructor
+ */
+exports.CreateLinkPoolOrg = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    console.log('show me cloudlet pool member -- ', 'region==',region)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/ShowCloudletPoolMember', qs.stringify({
+            region:region
+        }),
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success show cloudlet member -- ', "- : -",response.data)
+            if(response.data && response.statusText === 'OK') {
+                res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+            console.log('error show ShowCloudlet pool member ..', String(error));
+            res.json({error:'Execution Of Request Failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
+        });
+}
