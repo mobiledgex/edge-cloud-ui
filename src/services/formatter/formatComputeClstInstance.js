@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import uuid from 'uuid';
+import {generateUniqueId} from '../serviceMC';
 
 let trimData = (datas) => {
     let newData = datas.splice(0,1);
@@ -81,7 +81,7 @@ let generateData = (datas,body) => {
                 let Deployment = dataResult.data.deployment;
 
 
-                values.push({uuid:uuid(),Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, State:State, Progress:'', Status:Status, Deployment:Deployment, Edit:newRegistKey})
+                values.push({uuid:generateUniqueId(),Region:Region, ClusterName:ClusterName, OrganizationName:DeveloperName, Operator:Operator, Cloudlet:Cloudlet, Flavor:Flavor, IpAccess:IpAccess, CloudletLocation:CloudletLocation, State:State, Progress:'', Status:Status, Deployment:Deployment, Edit:newRegistKey})
 
             }
         })

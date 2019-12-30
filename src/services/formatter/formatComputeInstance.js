@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import uuid from 'uuid';
+import {generateUniqueId} from '../serviceMC';
 
 let trimData = (datas) => {
     let newData = datas.splice(0,1);
@@ -142,7 +142,7 @@ let generateData = (datas,body) => {
 
 
                 values.push({
-                    uuid:uuid(),
+                    uuid:generateUniqueId(),
                     Region:Region,
                     OrganizationName:DeveloperName,
                     AppName:AppName,
