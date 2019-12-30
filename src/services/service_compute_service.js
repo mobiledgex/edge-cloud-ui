@@ -419,18 +419,18 @@ export function errorTempFile(_item, callback) {
 
 
 export function createNewFlavor(resource, body, callback) {
-    // axios.post(ServerUrl+'/CreateFlavor',{
-    //     service: resource,
-    //     serviceBody:body,
-    //     serviceDomain:serviceDomain
-    // })
-    //     .then(function (response) {
-    //         console.log('response flavor result-',response);
-    //         callback(response, body)
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     });
+    axios.post(ServerUrl+'/CreateFlavor',{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('response flavor result-',response);
+            callback(response, body)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 }
 
 export function createNewClusterFlavor(resource, body, callback) {
@@ -531,9 +531,21 @@ export function getMCService(resource, body, callback, self) {
             }
             if(parseData){
                 switch(resource){
+                    case 'showOrg': callback(FormatComputeOrganization(parseData)); break;
+                    case 'ShowFlavor': callback(FormatComputeFlavor(parseData,body)); break;
                     case 'ShowClusterFlavor': callback(FormatComputeCluster(parseData,body)); break;
+                    case 'ShowUsers': callback(formatComputeUsers(parseData)); break;
+                    case 'ShowAccounts': callback(formatComputeAccounts(parseData)); break;
+                    case 'ShowCloudlet': callback(FormatComputeCloudlet(parseData,body)); break;
+                    case 'ShowClusterInst': callback(FormatComputeClstInst(parseData,body)); break;
+                    case 'ShowClusterInsts': callback(FormatComputeClstInst(parseData,body)); break;
+                    case 'ShowApps': callback(FormatComputeApp(parseData,body)); break;
+                    case 'ShowApp': callback(FormatComputeApp(parseData,body)); break;
                     case 'ShowAppInst': callback(FormatComputeInst(parseData,body)); break;
                     case 'ShowAppInsts': callback(FormatComputeInst(parseData,body)); break;
+                    case 'showController': callback(parseData); break;
+                    case 'ShowRole': callback(parseData); break;
+                    case 'UpdateVerify': callback(parseData); break;
                     case 'ResetPassword': callback(parseData); break;
                     case 'passwordreset': callback(parseData); break;
                     default : callback(parseData);
