@@ -419,18 +419,18 @@ export function errorTempFile(_item, callback) {
 
 
 export function createNewFlavor(resource, body, callback) {
-    axios.post(ServerUrl+'/CreateFlavor',{
-        service: resource,
-        serviceBody:body,
-        serviceDomain:serviceDomain
-    })
-        .then(function (response) {
-            console.log('response flavor result-',response);
-            callback(response, body)
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+    // axios.post(ServerUrl+'/CreateFlavor',{
+    //     service: resource,
+    //     serviceBody:body,
+    //     serviceDomain:serviceDomain
+    // })
+    //     .then(function (response) {
+    //         console.log('response flavor result-',response);
+    //         callback(response, body)
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     });
 }
 
 export function createNewClusterFlavor(resource, body, callback) {

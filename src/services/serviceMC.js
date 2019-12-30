@@ -16,11 +16,14 @@ export const SHOW_ACCOUNTS = "ShowAccounts";
 export const SHOW_ROLE = "ShowRole";
 export const SHOW_CONTROLLER = "showController"
 export const SHOW_CLOUDLET = "ShowCloudlet";
+export const DELETE_CLOUDLET = "DeleteCloudlet";
 export const CREATE_CLOUDLET = "CreateCloudlet";
 export const SHOW_CLUSTER_INST = "ShowClusterInst";
 export const CREATE_CLUSTER_INST = "CreateClusterInst";
 export const DELETE_CLUSTER_INST = "DeleteClusterInst";
 export const SHOW_FLAVOR = "ShowFlavor";
+export const CREATE_FLAVOR = "CreateFlavor";
+export const DELETE_FLAVOR = "DeleteFlavor"
 export const SHOW_APP = "ShowApp";
 export const SHOW_APP_INST = "ShowAppInst";
 export const SHOW_SELF = "showself";
@@ -28,7 +31,7 @@ export const LOGIN = "login";
 export const SETTING_LOCK = "SettingLock";
 export const CURRENT_USER = "current";
 export const VERIFY_EMAIL = "verifyemail"
-
+export const RESET_PASSWORD = "passwordreset";
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
 
 let sockets = [];
@@ -104,7 +107,7 @@ function formatData(request, response) {
         case SHOW_SELF:
             return { response: response, method: request.method };
         default:
-            return { response: response };
+            return { request: request, response: response };
     }
 }
 
@@ -133,6 +136,8 @@ function getPath(request) {
         case DELETE_CLUSTER_INST:
         case STREAM_CLUSTER_INST:
         case SHOW_FLAVOR:
+        case CREATE_FLAVOR:
+        case DELETE_FLAVOR:
         case SHOW_APP:
         case SHOW_APP_INST:
             return `/api/v1/auth/ctrl/${request.method}`;
@@ -159,8 +164,8 @@ export function sendWSRequest(request, callback) {
         switch (request.method) {
             case CREATE_CLUSTER_INST:
             case DELETE_CLUSTER_INST:
+            case CREATE_CLOUDLET:
                 clearSockets(request.uuid);
-
         }
         callback({ request: request, response: response });
     }

@@ -1,4 +1,6 @@
 import * as moment from 'moment';
+import uuid from 'uuid';
+
 let trimData = (datas) => {
     let newData = datas.splice(0,1);
     return datas ;
@@ -140,6 +142,7 @@ let generateData = (datas,body) => {
 
 
                 values.push({
+                    uuid:uuid(),
                     Region:Region,
                     OrganizationName:DeveloperName,
                     AppName:AppName,

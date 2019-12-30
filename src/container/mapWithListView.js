@@ -617,9 +617,7 @@ class MapWithListView extends React.Component {
             if (nextProps.devData.length > 0 && this.state.dummyData !== nextProps.devData) {
                 nextProps.devData.map(_item => {
                     if (_item.State !== 5) {
-                        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-                        let data = { "region": _item.Region, "clusterinst": { "key": { "cluster_key": { "name": _item.ClusterName }, "cloudlet_key": { "operator_key": { "name": _item.Operator }, "name": _item.Cloudlet }, "developer": _item.OrganizationName } } }
-                        serviceMC.sendWSRequest({ uuid: _item.uuid, token: store.userToken, method: serviceMC.STREAM_CLUSTER_INST, data: data }, this.requestResponse)
+                        this.sendWSRequest(_item)
                     }
                 })
                 this.setState({ dummyData: nextProps.devData })
@@ -644,6 +642,25 @@ class MapWithListView extends React.Component {
     }
     resetMap() {
         this.props.handleChangeClickCity([])
+    }
+
+    sendWSRequest = (_item) =>
+    {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        console.log('Rahul1234', this.props.siteId)
+        let data = null;
+        switch(this.props.siteId)
+        {
+            case 'Cloudlet':
+                data = { "region": _item.Region, "cloudlet": { "key": { "operator_key": { "name": _item.Operator }, "name": _item.CloudletName } }}
+            case 'ClusterInst':
+                data = { "region": _item.Region, "clusterinst": { "key": { "cluster_key": { "name": _item.ClusterName }, "cloudlet_key": { "operator_key": { "name": _item.Operator }, "name": _item.Cloudlet }, "developer": _item.OrganizationName } } }
+                break;
+        }
+        if(data)
+        { 
+            serviceMC.sendWSRequest({ uuid: _item.uuid, token: store.userToken, method: serviceMC.STREAM_CLUSTER_INST, data: data }, this.requestResponse) 
+        }
     }
 
 

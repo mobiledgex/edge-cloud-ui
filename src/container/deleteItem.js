@@ -90,18 +90,20 @@ class DeleteItem extends React.Component {
 
     }
 
-    receiveListSubmit = (result, body) => {
+    receiveListSubmit = (mcRequest) => {
+        let result = mcRequest.response;
+        let data = mcRequest.request.data;
         let msg = '';
-        if (this.props.siteId == 'Cloudlet') msg = 'Cloudlet ' + body.params.cloudlet.key.name
-        else if (this.props.siteId == 'Flavors') msg = 'Flavor ' + body.params.flavor.key.name
-        else if (this.props.siteId == 'App') msg = 'Your application ' + body.params.app.key.name
+        if (this.props.siteId == 'Cloudlet') msg = 'Cloudlet ' + data.cloudlet.key.name
+        else if (this.props.siteId == 'Flavors') msg = 'Flavor ' + data.flavor.key.name
+        else if (this.props.siteId == 'App') msg = 'Your application ' + data.app.key.name
 
         this.props.handleLoadingSpinner(false);
         this.props.refresh(this.props.changeRegion)
 
         if (result.data.error) {
             if (result.data.error.indexOf('Flavor in use by Cluster') > -1) {
-                this.props.handleAlertInfo('error', 'Error deleting ' + body.params.flavor.key.name + '. Flavor is in use by a Cluster Instance.')
+                this.props.handleAlertInfo('error', 'Error deleting ' + data.flavor.key.name + '. Flavor is in use by a Cluster Instance.')
             } else {
                 this.props.handleAlertInfo('error', result.data.error)
             }
@@ -145,7 +147,10 @@ class DeleteItem extends React.Component {
         }
     }
 
-    newReceiveSubmitResult = (result, body) => {
+    wsResponse = (mcRequest) => {
+        this.props.handleDeleteReset(true);
+        this.props.refresh(this.props.changeRegion);
+        this.props.handleLoadingSpinner(false);
     }
 
     onHandleDelete() {
@@ -168,199 +173,189 @@ class DeleteItem extends React.Component {
                     "flavor": { "name": Flavor }
                 }
             }
-        serviceMC.sendWSRequest({ uuid: serviceMC.generateUniqueId(), token: store ? store.userToken : 'null', data: data, method: serviceMC.DELETE_CLUSTER_INST }, this.newReceiveSubmitResult)
-        setTimeout(() => {
-            this.props.handleDeleteReset(true);
-            this.props.refresh(this.props.changeRegion);
-            this.props.handleLoadingSpinner(false);
-        }, 2000)
+            serviceMC.sendWSRequest({ uuid: serviceMC.generateUniqueId(), token: store ? store.userToken : 'null', data: data, method: serviceMC.DELETE_CLUSTER_INST }, this.wsResponse)
+        } else if (this.props.siteId === 'appinst') {
+            const { OrganizationName, AppName, Version, Operator, Cloudlet, ClusterInst, Region } = this.props.selected
+            serviceNm = 'DeleteAppInst';
+            let clId = '';
+            if (ClusterInst.indexOf('autocluster') > -1) {
+                clId = 'autocluster';
+            }
+            clId = clId + AppName + '-' + OrganizationName + '-' + Operator
+            serviceBody = {
+                "token": store ? store.userToken : 'null',
+                "params": {
+                    "region": Region,
+                    "appinst": {
+                        "key": {
+                            "app_key": { "developer_key": { "name": OrganizationName }, "name": AppName, "version": Version },
+                            "cluster_inst_key": {
+                                "cloudlet_key": { "name": Cloudlet, "operator_key": { "name": Operator } },
+                                "cluster_key": { "name": ClusterInst },
+                                "developer": OrganizationName
+                            }
+                        },
 
-    } else if(this.props.siteId === 'appinst') {
-    const { OrganizationName, AppName, Version, Operator, Cloudlet, ClusterInst, Region } = this.props.selected
-    serviceNm = 'DeleteAppInst';
-    let clId = '';
-    if (ClusterInst.indexOf('autocluster') > -1) {
-        clId = 'autocluster';
-    }
-    clId = clId + AppName + '-' + OrganizationName + '-' + Operator
-    serviceBody = {
-        "token": store ? store.userToken : 'null',
-        "params": {
-            "region": Region,
-            "appinst": {
-                "key": {
-                    "app_key": { "developer_key": { "name": OrganizationName }, "name": AppName, "version": Version },
-                    "cluster_inst_key": {
-                        "cloudlet_key": { "name": Cloudlet, "operator_key": { "name": Operator } },
-                        "cluster_key": { "name": ClusterInst },
-                        "developer": OrganizationName
                     }
                 },
-
+                "instanceId": clId.toLowerCase()
             }
-        },
-        "instanceId": clId.toLowerCase()
-    }
-    //autoclusterbicapp   bictest1129-2
-    service.deleteCompute(serviceNm, serviceBody, this.receiveResult)
-    setTimeout(() => {
-        this.props.handleDeleteReset(true);
-        this.props.refresh(this.props.changeRegion);
-        this.props.handleLoadingSpinner(false);
-    }, 1000)
-} else if (this.props.siteId === 'User') {
-    let userArr = [];
-    Object.values(this.props.selected).map((item, i) => {
-        userArr.push(item);
-    })
-    serviceNm = 'removeuser'
-    serviceBody = {
-        "token": store ? store.userToken : 'null',
-        "params": {
-            "org": userArr[1],
-            "username": userArr[0],
-            "role": userArr[2]
-        }
-    }
-    service.deleteUser(serviceNm, serviceBody, this.receiveUserSubmit)
-} else if (this.props.siteId === 'Account') {
-    let userArr = [];
-    Object.values(this.props.selected).map((item, i) => {
-        userArr.push(item);
-    })
-    serviceNm = 'delete'
-    serviceBody = {
-        "token": store ? store.userToken : 'null',
-        "params": {
-            "name": userArr[0]
-        }
-    }
-    service.deleteAccount(serviceNm, serviceBody, this.receiveUserSubmit)
-} else if (this.props.siteId === 'Organization') {
-    const { Organization, Type, Address, Phone } = this.props.selected
-    serviceNm = 'delete'
-    serviceBody = {
-        "token": store.userToken,
-        "params": {
-            "name": Organization,
-            "type": Type,
-            "address": Address,
-            "phone": Phone
-        }
-    }
-    service.deleteOrg(serviceNm, serviceBody, this.receiveUserSubmit)
-} else if (this.props.siteId === 'Flavors') {
-    const { FlavorName, Region } = this.props.selected
-    serviceNm = 'DeleteFlavor'
-    serviceBody = {
-        "token": store.userToken,
-        "params": {
-            "region": Region,
-            "flavor": {
-                "key": { "name": FlavorName }
-            }
-        }
-    }
-    service.deleteCompute(serviceNm, serviceBody, this.receiveListSubmit)
-} else if (this.props.siteId === 'Cloudlet') {
-    const { CloudletName, Operator, Region } = this.props.selected
-    serviceNm = 'DeleteCloudlet'
-    serviceBody = {
-        "token": store.userToken,
-        "params": {
-            "region": Region,
-            "cloudlet": {
-                "key": {
-                    "operator_key": { "name": Operator },
-                    "name": CloudletName
+            //autoclusterbicapp   bictest1129-2
+            service.deleteCompute(serviceNm, serviceBody, this.receiveResult)
+            setTimeout(() => {
+                this.props.handleDeleteReset(true);
+                this.props.refresh(this.props.changeRegion);
+                this.props.handleLoadingSpinner(false);
+            }, 1000)
+        } else if (this.props.siteId === 'User') {
+            let userArr = [];
+            Object.values(this.props.selected).map((item, i) => {
+                userArr.push(item);
+            })
+            serviceNm = 'removeuser'
+            serviceBody = {
+                "token": store ? store.userToken : 'null',
+                "params": {
+                    "org": userArr[1],
+                    "username": userArr[0],
+                    "role": userArr[2]
                 }
             }
-        },
-        "instanceId": Operator + CloudletName
-    }
-    service.deleteCompute(serviceNm, serviceBody, this.receiveResult)
-    setTimeout(() => {
-        this.props.handleDeleteReset(true);
-        this.props.refresh(this.props.changeRegion);
-        this.props.handleLoadingSpinner(false);
-    }, 2000)
-} else if (this.props.siteId === 'App') {
-    const { OrganizationName, AppName, Version, Region, ImagePath, ImageType, Ports, DefaultFlavor, DeploymentType } = this.props.selected
-    serviceNm = 'DeleteApp'
-    serviceBody = {
-        "token": store.userToken,
-        "params": {
-            "region": Region,
-            "app": {
-                "key": {
-                    "developer_key": { "name": OrganizationName },
-                    "name": AppName,
-                    "version": Version
+            service.deleteUser(serviceNm, serviceBody, this.receiveUserSubmit)
+        } else if (this.props.siteId === 'Account') {
+            let userArr = [];
+            Object.values(this.props.selected).map((item, i) => {
+                userArr.push(item);
+            })
+            serviceNm = 'delete'
+            serviceBody = {
+                "token": store ? store.userToken : 'null',
+                "params": {
+                    "name": userArr[0]
                 }
-                // "image_path":ImagePath,
-                // "image_type":Number(ImageType),
-                // "access_ports":Ports,
-                // "default_flavor":{"name":DefaultFlavor},
-                // "deploymentType":DeploymentType
             }
+            service.deleteAccount(serviceNm, serviceBody, this.receiveUserSubmit)
+        } else if (this.props.siteId === 'Organization') {
+            const { Organization, Type, Address, Phone } = this.props.selected
+            serviceNm = 'delete'
+            serviceBody = {
+                "token": store.userToken,
+                "params": {
+                    "name": Organization,
+                    "type": Type,
+                    "address": Address,
+                    "phone": Phone
+                }
+            }
+            service.deleteOrg(serviceNm, serviceBody, this.receiveUserSubmit)
+        } else if (this.props.siteId === 'Flavors') {
+            const { FlavorName, Region } = this.props.selected
+            let data = {
+                "region": Region,
+                "flavor": {
+                    "key": { "name": FlavorName }
+                }
+            }
+            serviceMC.sendRequest({ token: store.userToken, method: serviceMC.DELETE_FLAVOR, data: data }, this.receiveListSubmit)
+        } else if (this.props.siteId === 'Cloudlet') {
+            const { CloudletName, Operator, Region } = this.props.selected
+            serviceNm = 'DeleteCloudlet'
+            serviceBody = {
+                "token": store.userToken,
+                "params": {
+                    "region": Region,
+                    "cloudlet": {
+                        "key": {
+                            "operator_key": { "name": Operator },
+                            "name": CloudletName
+                        }
+                    }
+                },
+                "instanceId": Operator + CloudletName
+            }
+            service.deleteCompute(serviceNm, serviceBody, this.receiveResult)
+            setTimeout(() => {
+                this.props.handleDeleteReset(true);
+                this.props.refresh(this.props.changeRegion);
+                this.props.handleLoadingSpinner(false);
+            }, 2000)
+        } else if (this.props.siteId === 'App') {
+            const { OrganizationName, AppName, Version, Region, ImagePath, ImageType, Ports, DefaultFlavor, DeploymentType } = this.props.selected
+            serviceNm = 'DeleteApp'
+            serviceBody = {
+                "token": store.userToken,
+                "params": {
+                    "region": Region,
+                    "app": {
+                        "key": {
+                            "developer_key": { "name": OrganizationName },
+                            "name": AppName,
+                            "version": Version
+                        }
+                        // "image_path":ImagePath,
+                        // "image_type":Number(ImageType),
+                        // "access_ports":Ports,
+                        // "default_flavor":{"name":DefaultFlavor},
+                        // "deploymentType":DeploymentType
+                    }
+                }
+            }
+            service.deleteCompute(serviceNm, serviceBody, this.receiveListSubmit)
+        }
+
+    }
+
+    /** ************************ **/
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (nextProps.open) {
+            let name = '';
+            this.setState({ showWarning: nextProps.open })
+            if (nextProps.siteId == 'Organization') name = nextProps.selected.Organization
+            else if (nextProps.siteId == 'User') name = nextProps.selected.Username
+            else if (nextProps.siteId == 'Account') name = nextProps.selected.Username
+            else if (nextProps.siteId == 'Cloudlet') name = nextProps.selected.CloudletName
+            else if (nextProps.siteId == 'Flavors') name = nextProps.selected.FlavorName
+            else if (nextProps.siteId == 'ClusterInst') name = nextProps.selected.ClusterName
+            else if (nextProps.siteId == 'App') name = nextProps.selected.AppName
+            else if (nextProps.siteId == 'appinst') name = nextProps.selected.AppName
+            this.setState({ deleteName: name })
+            let orgName = '';
+            if (nextProps.siteId == 'User') orgName = nextProps.selected.Organization
+            this.setState({ deleteOrg: orgName })
+
+
         }
     }
-    service.deleteCompute(serviceNm, serviceBody, this.receiveListSubmit)
-}
-        
-    }
 
-/** ************************ **/
-componentWillReceiveProps(nextProps, nextContext) {
-    if (nextProps.open) {
-        let name = '';
-        this.setState({ showWarning: nextProps.open })
-        if (nextProps.siteId == 'Organization') name = nextProps.selected.Organization
-        else if (nextProps.siteId == 'User') name = nextProps.selected.Username
-        else if (nextProps.siteId == 'Account') name = nextProps.selected.Username
-        else if (nextProps.siteId == 'Cloudlet') name = nextProps.selected.CloudletName
-        else if (nextProps.siteId == 'Flavors') name = nextProps.selected.FlavorName
-        else if (nextProps.siteId == 'ClusterInst') name = nextProps.selected.ClusterName
-        else if (nextProps.siteId == 'App') name = nextProps.selected.AppName
-        else if (nextProps.siteId == 'appinst') name = nextProps.selected.AppName
-        this.setState({ deleteName: name })
-        let orgName = '';
-        if (nextProps.siteId == 'User') orgName = nextProps.selected.Organization
-        this.setState({ deleteOrg: orgName })
-
-
-    }
-}
-
-render() {
-    const { showWarning, closeOnEscape, closeOnDimmerClick } = this.state
-    return (
-        <Modal
-            open={showWarning}
-            closeOnEscape={closeOnEscape}
-            closeOnDimmerClick={closeOnDimmerClick}
-        >
-            <Modal.Header>{(this.props.siteId == 'User') ? `Delete ${this.props.siteId} from Organization` : `Delete ${this.props.siteId}`}</Modal.Header>
-            <Modal.Content>
-                {(this.props.siteId == 'User') ?
-                    <p>{'Are you sure you want to delete '}<b>{this.state.deleteName}</b>{' from '}<b>{this.state.deleteOrg}</b>{'?'}</p>
-                    : <p>{'Are you sure you want to delete '}<b>{this.state.deleteName}</b>{'?'}</p>}
-            </Modal.Content>
-            <Modal.Actions>
-                <Button onClick={() => this.closeDeleteModal('no')} negative>
-                    No
+    render() {
+        const { showWarning, closeOnEscape, closeOnDimmerClick } = this.state
+        return (
+            <Modal
+                open={showWarning}
+                closeOnEscape={closeOnEscape}
+                closeOnDimmerClick={closeOnDimmerClick}
+            >
+                <Modal.Header>{(this.props.siteId == 'User') ? `Delete ${this.props.siteId} from Organization` : `Delete ${this.props.siteId}`}</Modal.Header>
+                <Modal.Content>
+                    {(this.props.siteId == 'User') ?
+                        <p>{'Are you sure you want to delete '}<b>{this.state.deleteName}</b>{' from '}<b>{this.state.deleteOrg}</b>{'?'}</p>
+                        : <p>{'Are you sure you want to delete '}<b>{this.state.deleteName}</b>{'?'}</p>}
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button onClick={() => this.closeDeleteModal('no')} negative>
+                        No
                     </Button>
-                <Button
-                    onClick={() => this.closeDeleteModal('yes')}
-                    positive
-                    labelPosition='right'
-                    icon='checkmark'
-                    content='Yes'
-                />
-            </Modal.Actions>
-        </Modal>
-    )
-}
+                    <Button
+                        onClick={() => this.closeDeleteModal('yes')}
+                        positive
+                        labelPosition='right'
+                        icon='checkmark'
+                        content='Yes'
+                    />
+                </Modal.Actions>
+            </Modal>
+        )
+    }
 }
 
 const mapStateToProps = (state) => {
