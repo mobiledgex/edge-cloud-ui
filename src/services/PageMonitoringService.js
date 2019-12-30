@@ -7,13 +7,27 @@ import FormatComputeInst from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
 import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
-import {Line as ReactChartJs} from 'react-chartjs-2';
+import {Line as ReactChartJs, Bar as Bar2, HorizontalBar} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
 import BubbleChart from "./BubbleChart";
 import PageMonitoring2 from "../sites/PageMonitoring2";
 import type {TypeAppInstance} from "../shared/Types";
-
+import {
+    Bar as RBar,
+    BarChart,
+    BarLabel,
+    BarSeries,
+    Line,
+    LinearXAxis,
+    LinearYAxis,
+    LinearYAxisTickSeries,
+    LineChart,
+    LineSeries,
+    StackedAreaChart,
+    StackedAreaSeries, StackedNormalizedAreaChart,
+    StackedNormalizedAreaSeries
+} from "reaviz";
 
 /**
  * todo: 클라우드렛위에 올라와 있는 인스턴스 리스트를 flitering by pCloudlet.
@@ -350,6 +364,222 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
     );
 
 }
+
+export const renderBar3333 = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
+
+    /* var speedData = {
+         labels: ["0s", "10s", "20s", "30s", "40s", "50s", "60s"],
+         datasets: [{
+             label: "Car Speed",
+             data: [5, 59, 75, 20, 20, 55, 40],
+             backgroundColor: 'red',
+         }]
+     };*/
+
+    let LabelList = [];
+    let DataList = [];
+    for (let index = 0; index < usageList.length; index++) {
+
+        if (index < 5) {
+            let labelOne = usageList[index].instance.AppName.toString().substring(0, 10) + "...";
+            let dataOne = hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage
+            LabelList.push(labelOne)
+            DataList.push(dataOne)
+        }
+
+    }
+
+
+    const data = (canvas) => {
+        const ctx = canvas.getContext("2d");
+
+        let height = 500;
+        let gradientList = []
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+
+        //rgba(255, 0, 10, 0.25)
+        // rgba(255,94,29,0.25)
+        // rgba(227,220,57,0.25)
+        // rgba(18,135,2,0.25)
+        // rgba(28,34,255,0.25)
+        gradient.addColorStop(0, 'rgba(112,0,28,1.0)');
+        gradient.addColorStop(1, 'rgba(112,0,28, 0)');
+
+        const gradient2 = ctx.createLinearGradient(0, 0, 0, height);
+        gradient2.addColorStop(0, 'rgba(255,72,0,1)');
+        gradient2.addColorStop(1, 'rgba(255,72,0,0)');
+
+        const gradient3 = ctx.createLinearGradient(0, 0, 0, height);
+        gradient3.addColorStop(0, 'rgb(237,255,42)');
+        gradient3.addColorStop(1, 'rgba(255,5,0,0)');
+
+        const gradient4 = ctx.createLinearGradient(0, 0, 0, height);
+        gradient4.addColorStop(0, 'rgba(18,135,2,1)');
+        gradient4.addColorStop(1, 'rgba(18,135,2,0)');
+
+        const gradient5 = ctx.createLinearGradient(0, 0, 0, height);
+        gradient5.addColorStop(0, 'rgba(28,34,255,1)');
+        gradient5.addColorStop(1, 'rgba(28,34,255,0)');
+
+        gradientList.push(gradient)
+        gradientList.push(gradient2)
+        gradientList.push(gradient3)
+        gradientList.push(gradient4)
+        gradientList.push(gradient5)
+
+        var speedData = {
+            labels: LabelList,
+            datasets: [{
+                barPercentage: 0.5,
+                barThickness: 48,
+                maxBarThickness: 48,
+                minBarLength: 17,
+                label: "Usage",
+                data: DataList,
+                backgroundColor: gradientList,
+            }]
+        };
+
+
+        return speedData;
+    }
+
+
+    var chartOptions = {
+        legend: {
+            display: false,
+            position: 'right',
+            labels: {
+                boxWidth: 80,
+                fontColor: 'white'
+            }
+        },
+        title: {
+            display: true,
+            position: 'top',
+        },
+        scales: {
+             yAxes: [{
+                 /*scaleLabel: {
+                     display: true,
+                     labelString: 'Y text'
+                 },*/
+                 ticks: {
+                     beginAtZero: true,
+                     fontColor: 'white'
+                 },
+                 gridLines: {
+                     color: "#505050",
+                 },
+             }],
+            xAxes: [{
+               /* scaleLabel: {
+                    display: true,
+                    labelString: 'Usage'
+                },*/
+                ticks: {
+                    beginAtZero: true,
+                    fontColor: 'white'
+                },
+                gridLines: {
+                    color: "#505050",
+                },
+            }],
+        }
+    };
+    return (
+        <div>
+            <HorizontalBar
+                displayTitle={true}
+                DisplayLegend={true}
+                type='verticalBar'
+                width={550}
+                height={325}
+                data={data}
+                options={chartOptions}
+            />
+        </div>
+    )
+
+}
+
+
+export const renderBarGraph002 = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
+
+
+    const data = [
+        {key: "cpu1", data: 14},
+        {key: "cpu12cpu1", data: 5},
+        {key: "cpu13", data: 1},
+        {key: "cpu14", data: 3},
+        {key: "cpu15", data: 7},
+    ]
+
+    let chartDataList = [];
+    for (let index = 0; index < usageList.length; index++) {
+
+        if (index < 5) {
+            let barDataOne = {
+                key: usageList[index].instance.AppName.toString().substring(0, 10) + "...",
+                data: hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage,
+            }
+
+            chartDataList.push(barDataOne);
+        }
+
+        console.log('chartDataList===>', chartDataList);
+
+    }
+
+    chartDataList.sort((a, b) => {
+        return a.data - b.data;
+    });
+
+    return (
+        <div>
+            <BarChart
+
+                width={540}
+                height={340}
+                data={chartDataList}
+                series={
+                    <BarSeries
+                        colorScheme={'cybertron'}
+                        layout={'horizontal'}
+                        bar={
+                            <RBar
+                                tooltip={null}
+                                isCategorical={true}
+                                minHeight={50}
+                                animated={true}
+                                rounded={true}
+                                label={<BarLabel fontSize={20} fill={'white'} position={'center'}/>}
+
+                            />
+                        }
+                    />
+
+                }
+                gridlines={null}
+                center
+                //brush={<ChartBrush/>}
+                //children={"children"}
+                //className="barchart-exmaple"
+                //zoomPan={<ChartZoomPan/>}
+                xAxis={<LinearXAxis type="value"/>}
+                yAxis={
+                    <LinearYAxis
+                        type="category"
+
+                        tickSeries={<LinearYAxisTickSeries tickSize={30}/>}
+                    />
+                }
+            />
+        </div>
+    );
+
+}
+
 
 export const renderBarGraphForInfo = (appInstanceListOnCloudlet: any, _this) => {
 
@@ -1032,7 +1262,6 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
         gradientList.push(gradient4)
 
         let finalSeriesDataSets = [];
-
         for (let i in cpuUsageSetList) {
             //@todo: top5 만을 추린다
             if (i < 5) {
@@ -1138,6 +1367,287 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
             />
         </div>
     );
+
+
+}
+
+
+export const renderLineChart002 = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
+
+
+    console.log('cpuUsageListPerInstanceSortByUsage===>', cpuUsageListPerInstanceSortByUsage);
+
+    let instanceAppName = ''
+    let instanceNameList = [];
+    let cpuOrMemUsageSetList = []
+    for (let i in cpuUsageListPerInstanceSortByUsage) {
+        let seriesValues = cpuUsageListPerInstanceSortByUsage[i].values
+
+        instanceAppName = cpuUsageListPerInstanceSortByUsage[i].instance.AppName
+        let usageListData = [];
+        for (let j in seriesValues) {
+
+            if (j < 5) {
+                let usageOne = 0;
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    usageOne = seriesValues[j]["4"];//CPU USAGE
+                } else {
+                    usageOne = seriesValues[j]["5"];//MEM USAGE
+                }
+                let dateOne = seriesValues[j]["0"];
+                /*dateOne = dateOne.toString().split("T")
+                console.log('dateOne===>', dateOne[1].toString().substring(0,8));
+                let _dateOne= dateOne[1].toString().substring(0,8);*/
+                usageListData.push({
+                    key: new Date(dateOne),
+                    data: usageOne,
+                });
+            }
+
+        }
+
+        instanceNameList.push(instanceAppName)
+        cpuOrMemUsageSetList.push(usageListData);
+
+
+    }
+
+    console.log('11111===>', instanceNameList);
+    console.log('11111===>', cpuOrMemUsageSetList);
+
+    let reverse_cpuOrMemUsageSetList = []
+    for (let i in cpuOrMemUsageSetList) {
+        let tempList = cpuOrMemUsageSetList[i]  //100개임
+
+        console.log('tempList===>', tempList)//100개
+
+        tempList.sort((a, b) => {
+            return a.key - b.key;
+        });
+
+        let tempList2 = []
+        for (let j in tempList) {
+            if (j < 4) {
+
+                let date = new Date(tempList[j].key);
+                tempList[j].key = date;
+                tempList2.push(tempList[j])
+            }
+
+
+        }
+
+        reverse_cpuOrMemUsageSetList.push(tempList)
+    }
+
+    let completeUsageList = []
+    for (let i in instanceNameList) {
+        if (i < 4) {
+            completeUsageList.push({
+                key: instanceNameList[i],
+                data: reverse_cpuOrMemUsageSetList[i],
+            })
+        }
+    }
+
+
+    const multiDateData2 = [
+        {
+            key: "jjj kkk4",
+            data: [
+                {
+                    "key": new Date("2019-10-19T22:45:23.888Z"),
+                    "data": 0.3
+                },
+                {
+                    "key": new Date("2019-10-19T22:45:40.737Z"),
+                    "data": 0.5
+                },
+                {
+                    "key": new Date("2019-10-19T22:45:49.220Z"),
+                    "data": 0.9
+                },
+                {
+                    "key": new Date("2019-10-19T22:45:57.687Z"),
+                    "data": 0.124
+                },
+                {
+                    "key": new Date("2019-10-19T22:46:14.707Z"),
+                    "data": 0.555
+                },
+            ]
+        },
+        {
+            key: "jjj kkk5",
+            data: [
+                {
+                    "key": new Date("2019-10-19T22:45:23.888Z"),
+                    "data": 0.3
+                },
+                {
+                    "key": new Date("2019-10-19T22:45:40.737Z"),
+                    "data": 0.5
+                },
+                {
+                    "key": new Date("2019-10-19T22:45:49.220Z"),
+                    "data": 2.9
+                },
+                {
+                    "key": new Date("2019-10-19T22:45:57.687Z"),
+                    "data": 5.13
+                },
+                {
+                    "key": new Date("2019-10-19T22:46:14.707Z"),
+                    "data": 3.555
+                },
+            ]
+        },
+        {
+            key: "jjj kkk6",
+            data: [
+                {
+                    "key": new Date("2019-10-19T22:45:23.888Z"),
+                    "data": 7.3
+                },
+                {
+                    "key": new Date("2019-10-19T22:45:40.737Z"),
+                    "data": 2.5
+                },
+                {
+                    "key": new Date("2019-10-19T22:45:49.220Z"),
+                    "data": 0.9
+                },
+                {
+                    "key": new Date("2019-10-19T22:45:57.687Z"),
+                    "data": 0.124
+                },
+                {
+                    "key": new Date("2019-10-19T22:46:14.707Z"),
+                    "data": 0.555
+                },
+            ]
+        },
+
+
+    ];
+
+    const multiDateData = [
+        {
+            key: 'Threat Intel',
+            data: [
+                {key: new Date("2019-02-01T06:00:00.000Z"), data: 0},
+                {key: new Date("2019-02-01T06:00:01.030Z"), data: 0},
+                {key: new Date("2019-02-01T06:00:02.000Z"), data: 2.98},
+                {key: new Date("2019-02-01T06:00:03.000Z"), data: 1.78},
+                {key: new Date("2019-02-01T06:00:04.000Z"), data: 0},
+            ]
+        },
+        {
+            key: 'Threat Intel2',
+            data: [
+                {key: new Date("2019-02-01T06:00:00.000Z"), data: 1},
+                {key: new Date("2019-02-01T06:00:01.030Z"), data: 2},
+                {key: new Date("2019-02-01T06:00:02.000Z"), data: 3},
+                {key: new Date("2019-02-01T06:00:03.000Z"), data: 4},
+                {key: new Date("2019-02-01T06:00:04.000Z"), data: 3},
+            ]
+        },
+        {
+            key: 'Threat Intel3',
+            data: [
+                {key: new Date("2019-02-01T06:00:00.000Z"), data: 11},
+                {key: new Date("2019-02-01T06:00:01.030Z"), data: 25},
+                {key: new Date("2019-02-01T06:00:02.000Z"), data: 35},
+                {key: new Date("2019-02-01T06:00:03.000Z"), data: 45},
+                {key: new Date("2019-02-01T06:00:04.000Z"), data: 3},
+            ]
+        },
+
+    ];
+    console.log('completeUsageList2===>', multiDateData);
+    console.log('completeUsageList===>', completeUsageList);
+
+    let complete = [
+        {
+            "key": "zzaaa",
+            "data": [
+                {
+                    "key": new Date("2019-10-22T22:00:34.676Z"),
+                    "data": 11
+                },
+                {
+                    "key": new Date("2019-10-22T22:00:42.722Z"),
+                    "data": 22
+                },
+                {
+                    "key": new Date("2019-10-22T22:00:50.775Z"),
+                    "data": 23
+                },
+                {
+                    "key": new Date("2019-10-22T22:00:58.818Z"),
+                    "data": 1
+                },
+                {
+                    "key": new Date("2019-10-22T22:01:06.868Z"),
+                    "data": 0
+                }
+            ]
+        },
+        {
+            "key": "test111qq",
+            "data": [
+                {
+                    "key": new Date("2019-11-14T15:12:54.639Z"),
+                    "data": 1
+                },
+                {
+                    "key": new Date("2019-11-14T15:13:02.732Z"),
+                    "data": 2
+                },
+                {
+                    "key": new Date("2019-11-14T15:13:10.820Z"),
+                    "data": 33
+                },
+                {
+                    "key": new Date("2019-11-14T15:13:18.903Z"),
+                    "data": 44
+                },
+                {
+                    "key": new Date("2019-11-14T15:13:26.988Z"),
+                    "data": 55
+                }
+            ]
+        },
+
+    ]
+
+    return (
+        <StackedAreaChart
+            data={completeUsageList}
+            //'value' | 'time' | 'category' | 'duration';
+            //xAxis={<LinearXAxis type="duration"/>}
+            /*yAxis={
+                <LinearYAxis
+                    type="value"
+                    tickSeries={<LinearYAxisTickSeries tickSize={30}/>}
+                />
+            }*/
+            width={520}
+            gridlines={null}
+            height={330}
+            series={
+                <StackedAreaSeries
+                    // isZoomed={true}
+                    //animated={true}
+                    type="grouped"
+                    //area={null}
+                    colorScheme={'cybertron'}
+                    line={<Line strokeWidth={3}/>}
+                />
+            }
+
+        />
+    )
 
 
 }
