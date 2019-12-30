@@ -154,12 +154,12 @@ class SiteThree extends React.Component {
             rgn.map((item) => {
                 // All show clusterInst
                 console.log("changeRegionitem", item)
-                serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.SHOW_CLUSTER_INST, data: { region: item } }, _self.receiveResultClusterInst)
+                serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: item } }, _self.receiveResultClusterInst)
             })
         } else {
             rgn.map((item) => {
                 serviceBody = {
-                    "method": serviceMC.SHOW_CLUSTER_INST,
+                    "method": serviceMC.getEP().SHOW_CLUSTER_INST,
                     "token": store ? store.userToken : 'null',
                     "data": {
                         "region": item,

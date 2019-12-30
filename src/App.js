@@ -10,7 +10,6 @@ import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
 //redux
 import { connect } from 'react-redux';
 import * as actions from './actions';
-import * as Service from './services/serviceMC';
 import * as serviceMC from './services/serviceMC';
 // API
 
@@ -86,7 +85,7 @@ const DashboardContainer = ( props, props2) => {
         loaded = true;
         let userInfo = JSON.parse(storeData);
         if(userInfo.userToken) {
-            Service.sendRequest({ token: userInfo.userToken, method: Service.CURRENT_USER }, self.receiveCurrentUser, self)
+            serviceMC.sendRequest({ token: userInfo.userToken, method: serviceMC.getEP().CURRENT_USER }, self.receiveCurrentUser, self)
         }
 
 
@@ -291,7 +290,7 @@ class App extends Component {
         if(localStorage && localStorage.PROJECT_INIT) {
             let store = JSON.parse(localStorage.PROJECT_INIT);
             console.log('20191118 store...', JSON.parse(localStorage.PROJECT_INIT),":",store.userToken)
-            if (store.userToken) serviceMC.sendRequest({ token: store.userToken, method: serviceMC.SHOW_CONTROLLER }, scope.receiveController);
+            if (store.userToken) serviceMC.sendRequest({ token: store.userToken, method: serviceMC.getEP().SHOW_CONTROLLER }, scope.receiveController);
         }
     }
 

@@ -166,7 +166,7 @@ class RegistryFlavorViewer extends React.Component {
                 let submitData = nextProps.submitValues
                 this.setState({ toggleSubmit: true, validateError: error });
                 this.props.handleLoadingSpinner(true);
-                serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.CREATE_FLAVOR, data: submitData }, this.receiveResult)
+                serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_FLAVOR, data: submitData }, this.receiveResult)
             } else {
                 this.setState({ validateError: error, toggleSubmit: true })
             }

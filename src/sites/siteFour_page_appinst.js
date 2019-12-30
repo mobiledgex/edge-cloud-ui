@@ -206,7 +206,7 @@ class SiteFourPageAppInst extends React.Component {
         let token = store ? store.userToken : 'null';
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                serviceMC.sendRequest({token:token,method:serviceMC.SHOW_APP_INST, data : {region: item}}, _self.receiveResult)
+                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP_INST, data : {region: item}}, _self.receiveResult)
             })
         } else {
             rgn.map((item) => {
@@ -221,7 +221,7 @@ class SiteFourPageAppInst extends React.Component {
                         }
                 }
                 // org별 show appInst
-                serviceMC.sendRequest({token:token,method:serviceMC.SHOW_APP_INST, data : data}, _self.receiveResult)
+                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP_INST, data : data}, _self.receiveResult)
             })
         }
     }
@@ -243,7 +243,7 @@ class SiteFourPageAppInst extends React.Component {
         let token = store ? store.userToken : 'null';
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                serviceMC.sendRequest({ token: token, method: serviceMC.SHOW_APP, data: { region: item } }, _self.receiveResultApp)
+                serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_APP, data: { region: item } }, _self.receiveResultApp)
             })
         } else {
             rgn.map((item) => {
@@ -256,7 +256,7 @@ class SiteFourPageAppInst extends React.Component {
                         }
                 }
                 // org별 show app
-                serviceMC.sendRequest({token:token,method:serviceMC.SHOW_APP,data:data}, _self.receiveResultApp)
+                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResultApp)
             })
         }
     }

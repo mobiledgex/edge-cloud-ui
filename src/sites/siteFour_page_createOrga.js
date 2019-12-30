@@ -157,7 +157,7 @@ class SiteFourPageCreateorga extends React.Component {
         _self.props.handleLoadingSpinner(false);
     }
     getDataDeveloper(token) {
-        serviceMC.sendRequest({token:token, method:serviceMC.SHOW_ORG}, _self.receiveResult)
+        serviceMC.sendRequest({token:token, method:serviceMC.getEP().SHOW_ORG}, _self.receiveResult)
     }
     render() {
         const {shouldShowBox, shouldShowCircle, step} = this.state;

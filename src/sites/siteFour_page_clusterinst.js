@@ -229,8 +229,8 @@ class SiteFourPageClusterInst extends React.Component {
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
                 
-                serviceMC.sendRequest({token:token,method : serviceMC.SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
-                serviceMC.sendRequest({token:token,method : serviceMC.SHOW_CLUSTER_INST, data : {region:item}}, _self.receiveResultClusterInst)
+                serviceMC.sendRequest({token:token,method : serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
+                serviceMC.sendRequest({token:token,method : serviceMC.getEP().SHOW_CLUSTER_INST, data : {region:item}}, _self.receiveResultClusterInst)
             })
         } else {
             rgn.map((item) => {
@@ -242,8 +242,8 @@ class SiteFourPageClusterInst extends React.Component {
                             }
                         }
                 }
-                serviceMC.sendRequest({token:token,method : serviceMC.SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
-                serviceMC.sendRequest({token:token,method : serviceMC.SHOW_CLUSTER_INST, data : data}, _self.receiveResultClusterInst)
+                serviceMC.sendRequest({token:token,method : serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
+                serviceMC.sendRequest({token:token,method : serviceMC.getEP().SHOW_CLUSTER_INST, data : data}, _self.receiveResultClusterInst)
             })
         }
 

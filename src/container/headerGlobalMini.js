@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as Service from '../services/serviceMC';
+import * as serviceMC from '../services/serviceMC';
 import './styles.css';
 import PopProfileViewer from '../container/popProfileViewer';
 
@@ -58,7 +58,7 @@ class headerGlobalMini extends React.Component {
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         let token = store ? store.userToken : 'null';
-        Service.sendRequest({ token: token, method: Service.CURRENT_USER }, this.receiveCurrentUser, this);
+        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().CURRENT_USER }, this.receiveCurrentUser, this);
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -86,7 +86,7 @@ class headerGlobalMini extends React.Component {
     profileView() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         let token = store ? store.userToken : 'null';
-        Service.sendRequest({ token: token, method: Service.CURRENT_USER }, this.receiveCurrentUser, this);
+        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().CURRENT_USER }, this.receiveCurrentUser, this);
         this.setState({ openProfile: true })
     }
     // settingsView() {

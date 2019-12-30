@@ -120,7 +120,7 @@ class SiteFourPageClusterFlavorReg extends React.Component {
     }
 
     getDataDeveloper(token, region) {
-        serviceMC.sendRequest({ token: token, method: serviceMC.SHOW_FLAVOR, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
+        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
     }
 
     /*

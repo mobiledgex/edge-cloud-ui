@@ -266,7 +266,7 @@ class RegistryViewer extends React.Component {
         if(localStorage.selectMenu == "Apps") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // clusterFlavor
-            serviceMC.sendRequest({ token: store.userToken, method: serviceMC.SHOW_FLAVOR, data: { region: region } }, _self.receiveF)
+            serviceMC.sendRequest({ token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveF)
         }
     }
 

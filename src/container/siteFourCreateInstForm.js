@@ -371,11 +371,11 @@ class SiteFourCreateInstForm extends React.PureComponent {
         }
 
         rgn.map((item) => {
-            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
-            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.SHOW_FLAVOR, data : {region:item}}, _self.receiveResultFlavor)
+            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
+            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_FLAVOR, data : {region:item}}, _self.receiveResultFlavor)
 
         })
-        serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.SHOW_ORG}, _self.receiveResultOrg, _self)
+        serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_ORG}, _self.receiveResultOrg, _self)
     }
     handleTabChange = (e, { activeIndex }) => {
         this.setState({ activeIndex })

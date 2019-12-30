@@ -77,7 +77,7 @@ class VerifyContent extends Component {
 
     }
     requestVerify(token) {
-        serviceMC.sendRequest({ token: token, method: serviceMC.VERIFY_EMAIL, data: { service: 'verifyemail' } }, this.receiveData, this)
+        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().VERIFY_EMAIL, data: { service: 'verifyemail' } }, this.receiveData, this)
     }
 
 

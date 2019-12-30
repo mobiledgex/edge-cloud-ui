@@ -14,7 +14,7 @@ import './styles.css';
 import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
-import * as services from '../services/serviceMC';
+import * as serviceMC from '../services/serviceMC';
 import Alert from 'react-s-alert';
 
 
@@ -65,7 +65,7 @@ class AccountListView extends React.Component {
     }
 
     getDataDeveloper(token) {
-        services.sendRequest({ token: token, method: services.SHOW_ROLE }, this.receiveResult)
+        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_ROLE }, this.receiveResult)
     }
     receiveResult = (result) => {
         this.setState({orgData:result})
@@ -200,7 +200,7 @@ class AccountListView extends React.Component {
     }
     onLocking(value) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        services.sendRequest({ token: store ? store.userToken : 'null', method: services.SETTING_LOCK, data: { email: value.email, locked: value.lockState } }, this.receiveLockResult)
+        serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SETTING_LOCK, data: { email: value.email, locked: value.lockState } }, this.receiveLockResult)
     }
     compareDate = (date) => {
         let isNew = false;

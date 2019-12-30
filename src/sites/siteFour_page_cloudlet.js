@@ -183,7 +183,7 @@ class SiteFourPageCloudlet extends React.Component {
             rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
         rgn.map(item => {
-            let requestData = {token:store.userToken, method:serviceMC.SHOW_CLOUDLET, data : {region:item}};
+            let requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}};
             serviceMC.sendRequest(requestData, _self.receiveResult)
         })
         this.props.handleLoadingSpinner(true);

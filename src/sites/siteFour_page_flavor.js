@@ -8,7 +8,7 @@ import MaterialIcon from 'material-icons-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
-import * as services from '../services/serviceMC';
+import * as serviceMC from '../services/serviceMC';
 import './siteThree.css';
 import MapWithListView from "./siteFour_page_six";
 import Alert from "react-s-alert";
@@ -131,8 +131,8 @@ class SiteFourPageFlavor extends React.Component {
             rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
         rgn.map((item) => {
-            let requestData = { token: store ? store.userToken : 'null', method: services.SHOW_FLAVOR, data: { region: item } };
-            services.sendRequest(requestData, _self.receiveResult)
+            let requestData = { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_FLAVOR, data: { region: item } };
+            serviceMC.sendRequest(requestData, _self.receiveResult)
         })
     }
     render() {

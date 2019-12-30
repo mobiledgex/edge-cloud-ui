@@ -186,7 +186,7 @@ class SiteFourPageAudits extends React.Component {
 
         let unchecked = result.data.length;
         let checked = localStorage.getItem('auditChecked')
-        if (resource === serviceMC.SHOW_SELF || resource === serviceMC.SHOW_ORG) {
+        if (resource === serviceMC.getEP().SHOW_SELF || resource === serviceMC.getEP().SHOW_ORG) {
             console.log('20191106 audit result..', result, ":", resource, ": unchecked : ", unchecked)
             _self.reduceAuditCount(result.data, checked)
 
@@ -225,7 +225,7 @@ class SiteFourPageAudits extends React.Component {
                     token: store.userToken,
                     params: {"org": this.makeOga(orgName)}
                 })
-                this.receiveResult({response:response, method:serviceMC.SHOW_ORG})
+                this.receiveResult({response:response, method:serviceMC.getEP().SHOW_ORG})
             } catch (e) {
                 //alert(e)
                 this.props.handleLoadingSpinner(false);
@@ -235,7 +235,7 @@ class SiteFourPageAudits extends React.Component {
             }
 
         } else {
-            serviceMC.sendRequest({token: store.userToken, method:serviceMC.SHOW_SELF, data: '{}'}, _self.receiveResult, _self)
+            serviceMC.sendRequest({token: store.userToken, method:serviceMC.getEP().SHOW_SELF, data: '{}'}, _self.receiveResult, _self)
         }
     }
 

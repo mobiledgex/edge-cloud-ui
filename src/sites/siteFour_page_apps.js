@@ -151,7 +151,7 @@ class SiteFourPageApps extends React.Component {
         }
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                serviceMC.sendRequest({token:token,method:serviceMC.SHOW_APP,data:{region:item}}, _self.receiveResult)
+                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP,data:{region:item}}, _self.receiveResult)
             })
         } else {
             rgn.map((item) => {
@@ -164,7 +164,7 @@ class SiteFourPageApps extends React.Component {
                         }
                 }
                 // org별 show app
-                serviceMC.sendRequest({token:token,method:serviceMC.SHOW_APP,data:data}, _self.receiveResult);
+                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResult);
             })
         }
         

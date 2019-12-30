@@ -173,7 +173,7 @@ class DeleteItem extends React.Component {
                     "flavor": { "name": Flavor }
                 }
             }
-            serviceMC.sendWSRequest({ uuid: serviceMC.generateUniqueId(), token: store ? store.userToken : 'null', data: data, method: serviceMC.DELETE_CLUSTER_INST }, this.wsResponse)
+            serviceMC.sendWSRequest({ uuid: serviceMC.generateUniqueId(), token: store ? store.userToken : 'null', data: data, method: serviceMC.getEP().DELETE_CLUSTER_INST }, this.wsResponse)
         } else if (this.props.siteId === 'appinst') {
             const { OrganizationName, AppName, Version, Operator, Cloudlet, ClusterInst, Region } = this.props.selected
             serviceNm = 'DeleteAppInst';
@@ -256,7 +256,7 @@ class DeleteItem extends React.Component {
                     "key": { "name": FlavorName }
                 }
             }
-            serviceMC.sendRequest({ token: store.userToken, method: serviceMC.DELETE_FLAVOR, data: data }, this.receiveListSubmit)
+            serviceMC.sendRequest({ token: store.userToken, method: serviceMC.getEP().DELETE_FLAVOR, data: data }, this.receiveListSubmit)
         } else if (this.props.siteId === 'Cloudlet') {
             const { CloudletName, Operator, Region } = this.props.selected
             serviceNm = 'DeleteCloudlet'

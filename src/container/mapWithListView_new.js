@@ -659,7 +659,7 @@ class MapWithListView extends React.Component {
         }
         if(data)
         { 
-            serviceMC.sendWSRequest({ uuid: _item.uuid, token: store.userToken, method: serviceMC.STREAM_CLUSTER_INST, data: data }, this.requestResponse) 
+            serviceMC.sendWSRequest({ uuid: _item.uuid, token: store.userToken, method: serviceMC.getEP().STREAM_CLUSTER_INST, data: data }, this.requestResponse) 
         }
     }
 

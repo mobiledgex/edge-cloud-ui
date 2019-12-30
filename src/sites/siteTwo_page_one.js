@@ -269,7 +269,7 @@ class SiteTwoPageOne extends React.Component  {
             rgn = [region]
         }
         rgn.map((item, i) => {
-            setTimeout(() => serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.SHOW_CLOUDLET, data: { region: item } }, _self.receiveResult), 500 * i)
+            setTimeout(() => serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResult), 500 * i)
         })
 
 
@@ -287,7 +287,7 @@ class SiteTwoPageOne extends React.Component  {
 
             rgn.map((item) => {
                 // All show appInst
-                serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.SHOW_APP_INST, data: { region: item } }, _self.receiveAppInst)
+                serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_APP_INST, data: { region: item } }, _self.receiveAppInst)
             })
 
     }

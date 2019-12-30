@@ -47,7 +47,7 @@ import SiteFourPageCreateorga from './siteFour_page_createOrga';
 
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import PopLegendViewer from '../container/popLegendViewer';
-import * as services from '../services/serviceMC';
+import * as serviceMC from '../services/serviceMC';
 
 import { organizationTutor, CloudletTutor } from '../tutorial';
 import SiteFourPageAudits from './siteFour_page_audits';
@@ -466,8 +466,8 @@ class SiteFour extends React.Component {
         // App에서 체그하기 때문에 아래 코드 막음.
         //Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
 
-        services.sendRequest({ token: token, method: services.SHOW_CONTROLLER }, this.receiveControllerResult, this);
-        services.sendRequest({ token: token, method: services.SHOW_ROLE }, this.receiveAdminInfo)
+        serviceMC.getEP().sendRequest({ token: token, method: serviceMC.getEP().SHOW_CONTROLLER }, this.receiveControllerResult, this);
+        serviceMC.getEP().sendRequest({ token: token, method: serviceMC.getEP().SHOW_ROLE }, this.receiveAdminInfo)
         //services1.getMCService('Version',{token:token}, this.receiveVersion, this)
     }
     onClickBackBtn =() => {
@@ -864,7 +864,7 @@ class SiteFour extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         _self.loadCount = 0;
-        services.sendRequest({ token: store.userToken, method: services.SHOW_SELF, data: '{}' }, _self.receiveShowSelfResult, _self)
+        serviceMC.sendRequest({ token: store.userToken, method: serviceMC.getEP().SHOW_SELF, data: '{}' }, _self.receiveShowSelfResult, _self)
     }
 
     /** audit ********/

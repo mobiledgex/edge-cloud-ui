@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
-import * as services from '../services/serviceMC';
+import * as serviceMC from '../services/serviceMC';
 import './siteThree.css';
 
 
@@ -96,7 +96,7 @@ class SiteFourPageUser extends React.Component {
     }
     getDataDeveloper(token) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        services.sendRequest({ token: store ? store.userToken : 'null', method: services.SHOW_USERS }, _self.receiveResult)
+        serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_USERS }, _self.receiveResult)
         this.props.handleLoadingSpinner(true);
     }
     render() {

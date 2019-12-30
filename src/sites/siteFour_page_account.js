@@ -110,7 +110,7 @@ class SiteFourPageAccount extends React.Component {
     }
     getDataDeveloper(token) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
-        serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.SHOW_ACCOUNTS }, _self.receiveResult)
+        serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ACCOUNTS }, _self.receiveResult)
         _self.props.handleLoadingSpinner(true)
     }
     render() {

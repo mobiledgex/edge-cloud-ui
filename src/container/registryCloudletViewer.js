@@ -274,7 +274,7 @@ class RegistryCloudletViewer extends React.Component {
                 this.props.handleLoadingSpinner(true);
                 console.log('20191119 create cloudlet....',nextProps.submitValues)
                 //service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit, nextProps.validateValue.Cloudlet)
-                serviceMC.sendWSRequest({ uuid:serviceMC.generateUniqueId(),token: store.userToken, method: serviceMC.CREATE_CLOUDLET, data: nextProps.submitValues }, this.receiveSubmit)
+                serviceMC.sendWSRequest({ uuid:serviceMC.generateUniqueId(),token: store.userToken, method: serviceMC.getEP().CREATE_CLOUDLET, data: nextProps.submitValues }, this.receiveSubmit)
                 setTimeout(() => {
                     this.props.handleLoadingSpinner(false);
                     this.props.gotoUrl();

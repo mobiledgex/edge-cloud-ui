@@ -116,9 +116,9 @@ class RegistryInstViewer extends React.Component {
         //this.props.handleChangeSite(data.children.props.to)
     }
     getDataDeveloper(token,_region) {
-        serviceMC.sendRequest({ token: token, method: serviceMC.SHOW_APP, data: { region: _region } }, this.receiveResultApp)
-        setTimeout(() => serviceMC.sendRequest({ token: token, method: serviceMC.SHOW_CLOUDLET, data: { region: _region } }, this.receiveResultCloudlet), 200);
-        setTimeout(() => serviceMC.sendRequest({ token: token, method: serviceMC.SHOW_CLUSTER_INST, data: { region: _region } }, this.receiveResultClusterInst), 400);
+        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_APP, data: { region: _region } }, this.receiveResultApp)
+        setTimeout(() => serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } }, this.receiveResultCloudlet), 200);
+        setTimeout(() => serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: _region } }, this.receiveResultClusterInst), 400);
 
     }
     receiveResultCloudlet = (mcRequest) => {

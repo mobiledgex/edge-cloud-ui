@@ -146,7 +146,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
         }
         if(this.props.getUserRole == 'AdminManager') {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            serviceMC.sendRequest({token:store.userToken, method:serviceMC.SHOW_ORG}, this.receiveResult)
+            serviceMC.sendRequest({token:store.userToken, method:serviceMC.getEP().SHOW_ORG}, this.receiveResult)
         }
 
 

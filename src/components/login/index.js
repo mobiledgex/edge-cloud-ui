@@ -478,7 +478,7 @@ class Login extends Component {
         setTimeout(()=>self.setState({forgotPass:false, forgotMessage:false, loginMode:'login'}), 1000)
     }
     requestToken(self) {
-        serviceMC.sendRequest({ method: serviceMC.LOGIN, data: { username: self.state.username, password: self.state.password } }, self.receiveToken)
+        serviceMC.sendRequest({ method: serviceMC.getEP().LOGIN, data: { username: self.state.username, password: self.state.password } }, self.receiveToken)
         //self.receiveToken({data:{token:'my test token'}})
     }
     handleClickLogin(mode) {

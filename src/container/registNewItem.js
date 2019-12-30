@@ -426,16 +426,16 @@ class RegistNewItem extends React.Component {
         if(localStorage.selectMenu == "Cluster Instances") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // operator, cloudlet
-            serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
+            serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
             // Flavor
-            setTimeout(() => serviceMC.sendRequest({ token: store.userToken, method: serviceMC.SHOW_FLAVOR, data: { region: region } }, _self.receiveCF), 500);
+            setTimeout(() => serviceMC.sendRequest({ token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveCF), 500);
         }
     }
 
     getOrgData = () => {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // Organization
-            serviceMC.sendRequest({token:store ? store.userToken : 'null', method: serviceMC.SHOW_ORG}, this.receiveOrg)
+            serviceMC.sendRequest({token:store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG}, this.receiveOrg)
         
     }
     
