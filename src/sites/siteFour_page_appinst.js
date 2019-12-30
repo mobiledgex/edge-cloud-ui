@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as serviceMC from '../services/serviceMC';
 import './siteThree.css';
-import MapWithListView from "../container/mapWithListView";
+import MapWithListView from "../container/mapWithListView_new";
 import PageDetailViewer from '../container/pageDetailViewer';
 import * as reducer from '../utils'
 
