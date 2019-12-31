@@ -890,7 +890,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         />
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isReady ? renderPlaceHolder() : renderBar3333(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                                                        {!this.state.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                                                     </div>
                                                 </div>
                                                 {/* cpu___col___3*/}
@@ -978,7 +978,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>*/}
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isReady ? renderPlaceHolder() : renderBar3333(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                                                        {!this.state.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
 
                                                 </div>
