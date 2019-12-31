@@ -48,11 +48,10 @@ import SiteFourPageCreateorga from './siteFour_page_createOrga';
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import PopLegendViewer from '../container/popLegendViewer';
 import * as serviceMC from '../services/serviceMC';
+import MexMessage from '../hoc/mexMessage';
 
 import { organizationTutor, CloudletTutor } from '../tutorial';
 import SiteFourPageAudits from './siteFour_page_audits';
-
-import MexMessage from '../hoc/mexMessage';
 
 import Alert from 'react-s-alert';
 
@@ -466,8 +465,8 @@ class SiteFour extends React.Component {
         // App에서 체그하기 때문에 아래 코드 막음.
         //Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
 
-        serviceMC.getEP().sendRequest({ token: token, method: serviceMC.getEP().SHOW_CONTROLLER }, this.receiveControllerResult, this);
-        serviceMC.getEP().sendRequest({ token: token, method: serviceMC.getEP().SHOW_ROLE }, this.receiveAdminInfo)
+        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_CONTROLLER }, this.receiveControllerResult, this);
+        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_ROLE }, this.receiveAdminInfo)
         //services1.getMCService('Version',{token:token}, this.receiveVersion, this)
     }
     onClickBackBtn =() => {
@@ -572,6 +571,7 @@ class SiteFour extends React.Component {
         if((nextProps.alertInfo !== this.props.alertInfo) && nextProps.alertInfo.mode) {
             Alert.closeAll();
             if(nextProps.alertInfo.mode === 'success') {
+
                 Alert.success(nextProps.alertInfo.msg, {
                     position: 'top-right',
                     effect: 'slide',
@@ -588,6 +588,8 @@ class SiteFour extends React.Component {
                     offset: 100,
                     html:true
                 });
+               //return(<MexMessage open={true} info={{error:400,message:nextProps.alertInfo.msg}}/>)
+                
 
             }
             nextProps.handleAlertInfo('','');

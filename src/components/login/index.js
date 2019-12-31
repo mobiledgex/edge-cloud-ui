@@ -312,7 +312,7 @@ class Login extends Component {
                 //in case user press the button as a submit no matter send params
                 localStorage.setItem('userInfo', JSON.stringify({email:nextProps.values.email, username:nextProps.values.username, date:new Date()}))
                 if(nextProps.loginMode === 'resetPass'){
-                    service.getMCService('passwordreset',{ password:nextProps.values.password, token: store ? store.resetToken : 'null'}, self.resultNewPass, self)
+                    serviceMC.sendRequest({token: store ? store.resetToken : 'null', method:serviceMC.getEP().RESET_PASSWORD, data : {password:nextProps.values.password}}, self.resultNewPass, self)
                 } else {
                     serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email, clientSysInfo:self.clientSysInfo, callbackurl : 'https://'+host+'/verify'}, self.resultCreateUser, self)
                 }
@@ -402,10 +402,8 @@ class Login extends Component {
         self.setState({successMsg:message ? message:self.state.successMsg, signup:false});
         setTimeout(()=>self.props.handleChangeLoginMode('signuped'), 600);
     }
-    resultNewPass(result) {
-
-        let message = (result.data.message)? result.data.message : null;
-
+    resultNewPass(mcRequest) {
+        let result = mcRequest.response;
         if(result.data.error) {
             self.props.handleAlertInfo('error', result.data.error)
         } else {
@@ -413,9 +411,6 @@ class Login extends Component {
             setTimeout(()=>self.props.handleChangeLoginMode('login'), 600);
         }
         self.onProgress(false);
-
-
-
     }
 
     onFocusHandle(value) {

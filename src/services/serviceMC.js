@@ -1,14 +1,6 @@
 import axios from 'axios';
 import uuid from 'uuid';
-import * as EndPoint from './endPointTypes'
-import FormatComputeOrganization from './formatter/formatComputeOrganization';
-import FormatComputeUsers from './formatter/formatComputeUsers';
-import FormatComputeAccounts from './formatter/formatComputeAccounts';
-import FormatComputeCloudlet from './formatter/formatComputeCloudlet';
-import FormatComputeClstInst from './formatter/formatComputeClstInstance';
-import FormatComputeFlavor from './formatter/formatComputeFlavor';
-import FormatComputeApp from './formatter/formatComputeApp';
-import FormatComputeInst from './formatter/formatComputeInstance';
+import * as EP from './endPointTypes'
 
 
 
@@ -16,7 +8,7 @@ let sockets = [];
 
 export function getEP()
 {
-    return EndPoint;
+    return EP;
 }
 export function generateUniqueId() {
     return uuid();
@@ -67,72 +59,8 @@ function responseValid(request, response, callback, self) {
     return parseData;
 }
 
-function formatData(request, response) {
-    switch (request.method) {
-        case getEP().SHOW_ORG:
-            return { data: FormatComputeOrganization(response, request.data) }
-        case getEP().SHOW_USERS:
-            return { data: FormatComputeUsers(response, request.data) }
-        case getEP().SHOW_ACCOUNTS:
-            return { data: FormatComputeAccounts(response, request.data) }
-        case getEP().SHOW_CLOUDLET:
-            return { data: FormatComputeCloudlet(response, request.data) }
-        case getEP().SHOW_CLUSTER_INST:
-            return { data: FormatComputeClstInst(response, request.data) }
-        case getEP().SHOW_FLAVOR:
-            return { data: FormatComputeFlavor(response, request.data) }
-        case getEP().SHOW_APP:
-            return { data: FormatComputeApp(response, request.data) }
-        case getEP().SHOW_APP_INST:
-            return { data: FormatComputeInst(response, request.data) }
-        case getEP().SHOW_SELF:
-            return { response: response, method: request.method };
-        default:
-            return { request: request, response: response };
-    }
-}
-
-function getPath(request) {
-    switch (request.method) {
-        case getEP().SHOW_ORG:
-            return '/api/v1/auth/org/show';
-        case getEP().SHOW_USERS:
-            return '/api/v1/auth/role/showuser';
-        case getEP().SHOW_ACCOUNTS:
-            return '/api/v1/auth/user/show';
-        case getEP().SHOW_ROLE:
-            return '/api/v1/auth/role/assignment/show';
-        case getEP().SHOW_CONTROLLER:
-            return '/api/v1/auth/controller/show';
-        case getEP().SETTING_LOCK:
-            return '/api/v1/auth/restricted/user/update';
-        case getEP().CURRENT_USER:
-            return '/api/v1/auth/user/current';
-        case getEP().SHOW_SELF:
-            return '/api/v1/auth/audit/showself';
-        case getEP().SHOW_CLOUDLET:
-        case getEP().CREATE_CLOUDLET:
-        case getEP().SHOW_CLUSTER_INST:
-        case getEP().CREATE_CLUSTER_INST:
-        case getEP().DELETE_CLUSTER_INST:
-        case getEP().STREAM_CLUSTER_INST:
-        case getEP().SHOW_FLAVOR:
-        case getEP().CREATE_FLAVOR:
-        case getEP().DELETE_FLAVOR:
-        case getEP().SHOW_APP:
-        case getEP().SHOW_APP_INST:
-            return `/api/v1/auth/ctrl/${request.method}`;
-        case getEP().LOGIN:
-            return `/api/v1/${request.method}`
-        case getEP().VERIFY_EMAIL:
-            return `/api/v1/${request.method}`;
-        default:
-            return null;
-    }
-}
-
 export function sendWSRequest(request, callback) {
-    const ws = new WebSocket(`ws://${process.env.REACT_APP_API_ENDPOINT}/ws${getPath(request)}`)
+    const ws = new WebSocket(`ws://${process.env.REACT_APP_API_EP}/ws${EP.getPath(request)}`)
     ws.onopen = () => {
         sockets.push({ uuid: request.uuid, socket: ws, isClosed:false });
         ws.send(`{"token": "${request.token}"}`);
@@ -167,13 +95,13 @@ export function sendWSRequest(request, callback) {
 
 export function sendRequest(request, callback, self) {
 
-    axios.post(getPath(request), request.data,
+    axios.post(EP.getPath(request), request.data,
         {
             headers: getHeader(request)
         })
         .then(function (response) {
             if (responseValid(request, response, callback, self)) {
-                callback(formatData(request, response));
+                callback(EP.formatData(request, response));
             }
         })
         .catch(function (error) {
