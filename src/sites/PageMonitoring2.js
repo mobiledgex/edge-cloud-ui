@@ -253,6 +253,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     });
                 }
             })
+
+            /*sdlkflsdkflksdflklsdkflskdflk
+            sdlkfsldkflsdflksdlkflsdkaf
+            sdlkfsldkflskdflksdlfksdlkf*/
+
+
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             await this.setState({
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
