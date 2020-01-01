@@ -2,20 +2,16 @@ import 'react-hot-loader'
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Header, Image, Modal} from 'semantic-ui-react'
+import {Dropdown, Grid, Modal} from 'semantic-ui-react'
 import FlexBox from "flexbox-react";
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
 import {hot} from "react-hot-loader/root";
-import {Dropdown, Grid,} from "semantic-ui-react";
-import {DatePicker, notification,} from 'antd';
+import {DatePicker,} from 'antd';
 import * as reducer from "../utils";
-import {formatDate, getTodayDate} from "../utils";
 import {
-    fetchAppInstanceList,
-    filterAppInstanceListByAppInst,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
@@ -24,11 +20,10 @@ import {
     filterCpuOrMemUsageByCloudLet,
     filterCpuOrMemUsageByCluster,
     filterCpuOrMemUsageListByRegion,
-    filterInstanceCountOnCloutLetOne, getMetricsUtilization,
+    filterInstanceCountOnCloutLetOne,
+    getMetricsUtilization,
     makeCloudletListSelectBox,
     makeClusterListSelectBox,
-    makeCpuOrMemUsageListPerInstance,
-    makeHardwareUsageListPerInstance, renderBar3333,
     renderBarGraphForCpuMem,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
@@ -37,10 +32,9 @@ import {
     renderPlaceHolder,
     renderPlaceHolder2
 } from "../services/PageMonitoringService";
-import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../shared/Constants";
+import {HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
-import MaterialIcon from "material-icons-react";
 import {cutArrayList} from "../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';

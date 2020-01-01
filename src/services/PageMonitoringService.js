@@ -10,7 +10,7 @@ import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "
 import {Line as ReactChartJs, Bar as Bar2, HorizontalBar} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
-import BubbleChart from "./BubbleChart";
+import BubbleChart from "../components/BubbleChart";
 import PageMonitoring2 from "../sites/PageMonitoring2";
 import type {TypeAppInstance} from "../shared/Types";
 import {
