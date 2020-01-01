@@ -250,11 +250,9 @@ class SiteFourCreateFormDefault extends React.Component {
         const targetKeys = [];
         const mockData = [];
 
-        console.log('20191220 mock data -- ', data, ":")
         this._mockData = data;
         if(data.length) {
             data.map((item, i) => {
-                console.log('20191220 mock selectCloudlet -- ', item['cloudlet'], ":")
 
                 const data = {
                     key: i.toString(),
@@ -269,7 +267,6 @@ class SiteFourCreateFormDefault extends React.Component {
 
             })
         }
-        console.log('20191220 mock data -- ', mockData, ":")
         return mockData;
     };
     getListData = (data) => {
@@ -279,11 +276,10 @@ class SiteFourCreateFormDefault extends React.Component {
             data.map((item, i) => {
                 const data = {
                     value: i,
-                    label: item['cloudlet']+" :||: "+item['region'],
+                    label: item['cloudlet'],
                 };
                 listData.push(data)
             })
-            console.log('20191227 data -- ', data, ":", listData)
         }
 
         return listData;
@@ -302,7 +298,6 @@ class SiteFourCreateFormDefault extends React.Component {
         moveKeys.map((data) => {
             selected.push(this._mockData[parseInt(data)])
         })
-        console.log('20191223 invisibleValue.. ', selected, ": invisible Field == ", document.getElementsByName("invisibleField"))
         /**
         you would dispatch() the change(form:String, field:String, value:String) action creator:
          **/
@@ -339,7 +334,6 @@ class SiteFourCreateFormDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('20191227 nextProps in form default..', nextProps.data)
         if(nextProps.data && nextProps.data.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
@@ -443,7 +437,6 @@ class SiteFourCreateFormDefault extends React.Component {
         if(fieldKeys && fieldKeys.length && ( fieldKeys[0]['poolName'] || fieldKeys[0]['CloudletPool'] )) {
             disableLabel = false;
         }
-        console.log('20191226 pid == ', fieldKeys, ": data =", data)
         return (
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
                 {(disableLabel)?<Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>:null}

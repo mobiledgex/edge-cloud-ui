@@ -57,7 +57,6 @@ class BubbleGroup extends React.Component {
         let formValues = this.props.formValues;
         if(formValues && formValues.NumberOfNode) {
             let tempArray = []
-            console.log('20191204.. vparseInt(formValues.NumberOfNode)  ', parseInt(formValues.NumberOfNode))
             for(let i = 0; i < parseInt(formValues.NumberOfNode)+1; i++){
                 tempArray.push(i)
             }

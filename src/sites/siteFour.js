@@ -555,8 +555,10 @@ class SiteFour extends React.Component {
         } catch (e) {
 
         }
+        if(nextProps.params.subPath === this.state.page){
 
-
+            return;
+        }
         if (nextProps.params && nextProps.params.subPath) {
             let subPaths = nextProps.params.subPath;
             let subPath = '';
@@ -581,6 +583,7 @@ class SiteFour extends React.Component {
         //     this.getIntervalData();
         //     this.setState({toggleState:false})
         // }
+
 
         if (nextProps.viewMode) {
             this.setState({viewMode: nextProps.viewMode})
@@ -645,23 +648,17 @@ class SiteFour extends React.Component {
             //_self.setState({stepsEnabled:false})
         }
         //
-        let enable = true;
-        setTimeout(() => {
-            let elem = document.getElementById('animationWrapper')
-            if (elem) {
-                //_self.makeGhost(elem, _self)
 
-            }
+
+
             console.log('20190822 tutorial=', tutorial)
-            if (enable && !_self.state.learned && !tutorial) {
+            if (_self.state.learned && !tutorial) {
                 _self.enalbeSteps();
                 _self.setState({stepsEnabled: true, learned: true})
                 localStorage.setItem('TUTORIAL', 'done')
             }
 
-        }, 1000)
 
-        let site = this.props.siteName;
         if (!this.props.changeStep || this.props.changeStep === '02') {
             this.setState({enable: true})
         } else {
@@ -692,7 +689,7 @@ class SiteFour extends React.Component {
 
         //set category
         if (nextProps.detailData !== this.props.detailData) {
-            // alert(JSON.stringify(nextProps.detailData))
+
             this.setState({detailData: nextProps.detailData})
         }
 
@@ -1075,7 +1072,6 @@ class SiteFour extends React.Component {
     render() {
         const {shouldShowBox, shouldShowCircle, viewMode} = this.state;
         const {stepsEnabled, initialStep, hintsEnabled, hints, steps} = this.state;
-        console.log('20190821 stepsEnabled..', stepsEnabled)
         return (
             <Grid className='view_body'>
                 <Steps

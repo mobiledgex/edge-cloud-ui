@@ -18,14 +18,12 @@ if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
 
 
 export function getListCloudletPool(resource, body, callback, self) {
-    console.log('20191219 parse data show cloudlet ===>>>>>>>>>> ', resource)
     axios.post(ServerUrl+'/showCloudletPool', qs.stringify({
         service: resource,
         serviceBody:body,
         serviceId: Math.round(Math.random()*10000)
     }))
         .then(function (response) {
-            console.log('20191219 request get response cloudlet pool ===== ', body.region,": -- ", response)
             let parseData = null;
 
             if(response.data) {
@@ -67,14 +65,12 @@ export function getListCloudletPool(resource, body, callback, self) {
         });
 }
 export function getListCloudletPoolMember(resource, body, callback, self) {
-    console.log('20191227 parse data show cloudlet pool member ===>>>>>>>>>> ', resource)
     axios.post(ServerUrl+'/showCloudletPoolMember', qs.stringify({
         service: resource,
         serviceBody:body,
         serviceId: Math.round(Math.random()*10000)
     }))
         .then(function (response) {
-            console.log('20191227 request get response cloudlet pool member ===== ', response)
             let parseData = null;
             let dataArray = null;
             if(response.data) {
@@ -95,7 +91,6 @@ export function getListCloudletPoolMember(resource, body, callback, self) {
                 parseData = response;
             }
 
-            console.log('20191227 paraseData.data type -- ', typeof parseData.data)
 
             switch(resource){
                 case 'ShowCloudletPoolMember': callback(FormatComputeCloudletPoolMember(parseData,body)); break;
@@ -116,14 +111,12 @@ export function getListCloudletPoolMember(resource, body, callback, self) {
 }
 //
 export function createCloudletPool(resource, body, callback, self) {
-    console.log('20191219 parse data create cloudlet pool  ===>>>>>>>>>> ', resource)
     axios.post(ServerUrl+'/createCloudletPool', qs.stringify({
         service: resource,
         serviceBody:body,
         serviceId: Math.round(Math.random()*10000)
     }))
         .then(function (response) {
-            console.log('20191219 request get response result create pool ===== ', response)
             let parseData = null;
 
             if(response.data) {
@@ -165,14 +158,12 @@ export function createCloudletPool(resource, body, callback, self) {
 }
 
 export function createCloudletPoolMember(resource, body, callback, self) {
-    console.log('20191219 parse data create cloudlet pool member ===>>>>>>>>>> ', resource)
     axios.post(ServerUrl+'/CreateCloudletPoolMember', qs.stringify({
         service: resource,
         serviceBody:body,
         serviceId: Math.round(Math.random()*10000)
     }))
         .then(function (response) {
-            console.log('20191219 request get response result create pool member ===== ', response)
             let parseData = null;
 
             if(response.data) {
@@ -217,14 +208,12 @@ export function createCloudletPoolMember(resource, body, callback, self) {
  * '{"cloudletpool":"cloudletPool_bictest_1223-01","org":"bicinkiOper","region":"EU"}'
  **/
 export function createLinkPoolOrg(resource, body, callback, self) {
-    console.log('20191219 link pool to orga ===>>>>>>>>>> ', resource)
     axios.post(ServerUrl+'/CreateCloudletPoolMember', qs.stringify({
         service: resource,
         serviceBody:body,
         serviceId: Math.round(Math.random()*10000)
     }))
         .then(function (response) {
-            console.log('20191219 request get response result create pool member ===== ', response)
             let parseData = null;
 
             if(response.data) {

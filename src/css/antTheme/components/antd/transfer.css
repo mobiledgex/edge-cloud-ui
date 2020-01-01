@@ -21474,14 +21474,8 @@ div.ant-typography-edit-content {
     opacity: 0;
   }
 }
-h2 {
-  color: #FF7F50;
-}
-h3 {
-  color: #804910;
-}
 .four.wide.column.detail_item {
-  color: #804910;
+  color: #dedede;
 }
 .ant-transfer {
   box-sizing: border-box;

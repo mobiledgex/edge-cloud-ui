@@ -170,7 +170,6 @@ class SiteFourPageCloudlet extends React.Component {
 
     countJoin() {
         let cloudlet = this._cloudletDummy;
-        console.log('20191220 ..cloudlet---', cloudlet)
 
         _self.setState({devData:cloudlet,dataSort:false})
         this.props.handleLoadingSpinner(false);

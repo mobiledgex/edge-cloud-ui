@@ -2050,7 +2050,7 @@ exports.CreateCloudletPool = (req, res) => {
         .then(function (response) {
             console.log('success create  pool ', "- : -", response)
             if(response.data && response.statusText === 'OK') {
-                res.json(response.data)
+                res.json({message:'Careated '+poolName+' successfully'})
             } else if(response.statusText === 'OK'){
                 console.log('empty')
                 res.json(null)
@@ -2173,7 +2173,7 @@ exports.CreateLinkPoolOrg = (req, res) => {
         region = req.body.serviceBody.region;
     }
     console.log('show me cloudlet pool member -- ', 'region==',region)
-    axios.post(mcUrl + '/api/v1/auth/ctrl/ShowCloudletPoolMember', qs.stringify({
+    axios.post(mcUrl + '/api/v1/auth/orgcloudletpool/create', qs.stringify({
             region:region
         }),
         {

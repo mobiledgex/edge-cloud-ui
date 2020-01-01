@@ -239,7 +239,6 @@ class RegistryCloudletPoolViewer extends React.Component {
             this.setState({ dimmer:'blurring', open: true })
         }
         if(nextProps.devData.length > 0) {
-            console.log('20191226 props dev data -- ', nextProps.devData)
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         } else {
             this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
@@ -263,14 +262,9 @@ class RegistryCloudletPoolViewer extends React.Component {
             //close tutorial
             this.props.handleStateTutor('done');
 
-            console.log('20191223 create cloudlet pool....',nextProps.submitValues, ": nextProps.formClusterInst.submitSucceeded=", nextProps.formClusterInst,
-                '  : this.pauseRender =',this.pauseRender, ": error= ", error
-                )
-
             if(!this.pauseRender && nextProps.formClusterInst.submitSucceeded && error.length == 0){
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true, selectedCloudlet:nextProps.formClusterInst.value['invisibleField']});
                 this.props.handleLoadingSpinner(true);
-                console.log('20191223 create cloudlet pool....',nextProps.submitValues)
                 servicePool.createCloudletPool('CreateCloudletPool', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
 
                 setTimeout(() => {
@@ -384,7 +378,6 @@ const mapStateToProps = (state) => {
     }
 
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
-        console.log('20191223 state.form.createAppFormDefault == ', state.form.createAppFormDefault)
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
         submitVal = createFormat(enableValue,state.getRegion.region);
         validateValue = state.form.createAppFormDefault.values;

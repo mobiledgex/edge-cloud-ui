@@ -40,7 +40,6 @@ class SiteFourPoolTwo extends React.Component {
         }
 
         if(nextProps.data) {
-            console.log('20191227 data data in step two ', nextProps.data )
             if(nextProps.selectedData && nextProps.selectedData.region && nextProps.selectedData.poolName) {
                 let assObj = Object.assign([], nextProps.data);
                 assObj.data[0].Region = nextProps.selectedData.region;

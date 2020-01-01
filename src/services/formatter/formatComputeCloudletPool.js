@@ -29,7 +29,6 @@ let generateData = (datas,body) => {
     }else {
         toJson = null;
     }
-    console.log("20191220 datasdatasdatasss---",toJson)
     let newRegistKey = ['Region', 'PoolName', 'OperatorName'];
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {

@@ -29,7 +29,6 @@ let generateData = (datas,body) => {
     }else {
         toJson = null;
     }
-    console.log("20191227 formating datasdatasdatasss---",toJson)
     /*
     pool_key: {name: "cloudletPool_bictest_1223-01"}
     cloudlet_key:

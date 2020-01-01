@@ -30,7 +30,7 @@ class SiteFourPageCloudletPoolReg extends React.Component {
             bodyHeight:0,
             activeItem: 'Developers',
             devData:[],
-            cloudlets:[],
+            devDataOrg:[],
             operators:[],
             clustinst:[],
             apps:[],
@@ -41,6 +41,7 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
         this.userToken = null;
+        this.cloudlets = [];
     }
 
     //go to
@@ -59,7 +60,6 @@ class SiteFourPageCloudletPoolReg extends React.Component {
     }
     countJoin() {
         let cloudlet = this._cloudletDummy;
-        console.log('20191223 props dev data countJoin---', cloudlet, ": regions == ", rgn, ":", this.props.region)
         let cloudletList = [];
         cloudlet.map((list) => {
             cloudletList.push({region:list['Region'], cloudlet:list['CloudletName'], orgaName:list['Operator']})
@@ -73,12 +73,32 @@ class SiteFourPageCloudletPoolReg extends React.Component {
             'CloudletPool':'',
             'LinktoOrganization':'',
             'LinkDiagram':''
-
         }]
-        _self.setState({devData:fieldValue, dataSort:false})
+        let cloneObj = Object.assign([], fieldValue);
+        _self.setState({devData:fieldValue})
+        _self.cloudlets = cloneObj;
         _self.forceUpdate();
         _self.props.handleLoadingSpinner(false);
-        console.log('20191220 props dev data countJoin 2 1---', fieldValue, ": state devData == ", this.state.devData)
+    }
+    countJoinOrg(orgs) {
+        let cloudletList = [];
+        orgs.map((list) => {
+            cloudletList.push({cloudlet:list['Name']})
+        })
+        console.log('20191231 cloudletList =-- ', cloudletList)
+        //
+        let fieldValue = [{
+            'Region':rgn,
+            'poolName':'',
+            'AddCloudlet':cloudletList,
+            'invisibleField':'',
+            'CloudletPool':'',
+            'LinktoOrganization':'',
+            'LinkDiagram':''
+        }]
+
+        _self.setState({devData:fieldValue})
+        _self.props.handleLoadingSpinner(false);
     }
 
     receiveResult = (result) => {
@@ -93,7 +113,6 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         }
 
         let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-        console.log('20191220 region group == ', regionGroup, ":", result)
         if(Object.keys(regionGroup)[0]) {
             _self._cloudletDummy = _self._cloudletDummy.concat(result)
         }
@@ -106,7 +125,15 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         _self.props.handleLoadingSpinner(false);
 
     }
-    getDataDeveloper = (region,regionArr) => {
+    receiveResultOrg = (result) => {
+        console.log('20191231 show org result -- ', result)
+
+        if(result.data && result.data.length) {
+            _self.countJoinOrg(result.data)
+        }
+
+    }
+    getDataCloudetList = (region,regionArr) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         this._cloudletDummy = [];
@@ -118,10 +145,15 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         }
 
         rgn.map((item, i) => {
-            //setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 0)
-            services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult)
+            setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 0)
         })
         this.props.handleLoadingSpinner(true);
+    }
+    getDataOrgaList = (region,regionArr) => {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        this.setState({devData:[]})
+        services.getMCService('ShowOrg',{token:store.userToken}, _self.receiveResultOrg)
+
     }
 
     componentWillMount() {
@@ -136,16 +168,47 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         //
         let regions = nextProps.regionInfo.region;
-        console.log("20191220 ..cloudlet 33 region info in page cloudlet", nextProps.changeRegion,":", nextProps.regionInfo.region)
         if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
             //{ key: 1, text: 'All', value: 'All' }
 
             _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
-            this.getDataDeveloper(nextProps.changeRegion,nextProps.regionInfo.region);
+            this.getDataCloudetList(nextProps.changeRegion,nextProps.regionInfo.region);
         }
         if(nextProps.appLaunch) {
-            console.log('20191226 app launch=', nextProps.appLaunch)
         }
+        if(nextProps.changedRegion && this.state.devData && this.state.devData.length) {
+
+            console.log('20191231 changed region = ', nextProps.changedRegion)
+            if(nextProps.changedRegion !== 'All' && this.state.devData) {
+                if(this.state.devData[0]['AddCloudlet'] && this.state.devData[0]['AddCloudlet'].length) {
+                    let tempData = this.cloudlets[0];
+                    let filtered = [];
+                    let newData = Object.assign([], this.state.devData[0]);
+                    if(nextProps.changedRegion) {
+                        /* filtering cloudlet by region */
+                        tempData['AddCloudlet'].map(data => {
+                            if(data['region'] === nextProps.changedRegion) filtered.push(data);
+                        })
+                    }
+                    newData['AddCloudlet'] = filtered;
+                    this.setState({devData: [newData]})
+                }
+
+            } else {
+                //alert('Try again')
+            }
+
+        } else {
+
+        }
+
+        console.log('20191231 change next -- ', nextProps.changeNext)
+        if(nextProps.changeNext !== this.props.changeNext) {
+            if(nextProps.changeNext === 2) {
+                this.getDataOrgaList(nextProps.changeRegion,nextProps.regionInfo.region);
+            }
+        }
+
 
     }
 
@@ -175,6 +238,7 @@ class SiteFourPageCloudletPoolReg extends React.Component {
 
 };
 const mapStateToProps = (state) => {
+
     let region = state.changeRegion
         ? {
             value: state.changeRegion.region
@@ -182,12 +246,16 @@ const mapStateToProps = (state) => {
         : {};
     let regionInfo = (state.regionInfo)?state.regionInfo:null;
     let appLaunch = state.appLaunch;
+    let changeNext = state.changeNext ? state.changeNext.next:null;
+    let _changedRegion = (state.form && state.form.createAppFormDefault && state.form.createAppFormDefault.values) ? state.form.createAppFormDefault.values.Region : null;
     return {
         getRegion : (state.getRegion)?state.getRegion.region:null,
         regionInfo: regionInfo,
         region:region,
         changeRegion : state.changeRegion?state.changeRegion.region:null,
-        appLaunch
+        changedRegion : _changedRegion,
+        appLaunch,
+        changeNext
     }
 };
 
