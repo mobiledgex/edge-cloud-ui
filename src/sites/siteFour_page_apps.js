@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as services from '../services/service_compute_service';
+import * as serviceMC from '../services/serviceMC';
 import './siteThree.css';
 import InsideListView from '../container/insideListView';
 import ListDetailViewer from '../container/listDetailViewer';
@@ -114,8 +114,10 @@ class SiteFourPageApps extends React.Component {
 
         }
     }
-    receiveResult = (result, region) => {
+    
+    receiveResult = (mcRequest) => {
         // @inki if data has expired token
+        let result = mcRequest.data;
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
@@ -149,25 +151,20 @@ class SiteFourPageApps extends React.Component {
         }
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                // All show app
-                services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)
-                // setTimeout(() => {services.getMCService('ShowApps',{token:token, region:item}, _self.receiveResult)}, 0)
+                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP,data:{region:item}}, _self.receiveResult)
             })
         } else {
             rgn.map((item) => {
-                serviceBody = {
-                    "token":token,
-                    "params": {
+                let data = {
                         "region":item,
                         "app":{
                             "key":{
                                 "developer_key":{"name":localStorage.selectOrg},
                             }
                         }
-                    }
                 }
                 // org별 show app
-                services.getMCService('ShowApp',serviceBody, _self.receiveResult)
+                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResult);
             })
         }
         

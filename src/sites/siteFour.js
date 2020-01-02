@@ -19,7 +19,6 @@ import sizeMe from 'react-sizeme';
 
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
-import ContainerDimensions from 'react-container-dimensions'
 import {Motion, spring} from "react-motion";
 import { Steps, Hints } from 'intro.js-react';
 
@@ -27,7 +26,7 @@ import { Steps, Hints } from 'intro.js-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
-import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
+import {GridLoader, ClipLoader} from "react-spinners";
 import HeaderGlobalMini from '../container/headerGlobalMini';
 
 //pages
@@ -48,13 +47,11 @@ import SiteFourPageCreateorga from './siteFour_page_createOrga';
 
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import PopLegendViewer from '../container/popLegendViewer';
-import * as services from '../services/service_audit_api';
-import * as Service from '../services/service_login_api';
-import * as computeService from '../services/service_compute_service';
+import * as serviceMC from '../services/serviceMC';
+import MexMessage from '../hoc/mexMessage';
 
 import { organizationTutor, CloudletTutor } from '../tutorial';
 import SiteFourPageAudits from './siteFour_page_audits';
-import * as utile from '../utils'
 
 import Alert from 'react-s-alert';
 
@@ -253,7 +250,7 @@ class SiteFour extends React.Component {
             this.setState({page:'pg=newOrg'})
             this.gotoUrl('/site4', 'pg=newOrg')
         } else if(localStorage.selectMenu === 'Cloudlets') {
-            this.setState({page: 'pg=createCloudlet'})
+            this.setState({page: 'pg='})
             this.gotoUrl('/site4', 'pg=createCloudlet')
         } else if(localStorage.selectMenu === 'Apps') {
             this.setState({page: 'pg=createApp'})
@@ -282,7 +279,8 @@ class SiteFour extends React.Component {
         }
         _self.props.handleUserInfo(result.data);
     }
-    receiveResult(result) {
+    receiveControllerResult(mcRequest) {
+        let result = mcRequest.response;
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
@@ -294,7 +292,8 @@ class SiteFour extends React.Component {
         _self.props.handleLoadingSpinner();
         _self.controllerOptions(result.data);
     }
-    receiveAdminInfo = (result) => {
+    receiveAdminInfo = (mcRequest) => {
+        let result = mcRequest.response;
         this.props.handleRoleInfo(result.data)
         if(result.error) {
             _self.props.handleAlertInfo('error', result.error)
@@ -303,7 +302,7 @@ class SiteFour extends React.Component {
             result.data.map((item,i) => {
                 if(item.role.indexOf('Admin') > -1){
                     this.setState({adminShow:true});
-                    this.props.handleUserRole(item.role);
+                    //this.props.handleUserRole(item.role);
                     localStorage.setItem('selectRole', item.role)
                 }
             })
@@ -466,9 +465,9 @@ class SiteFour extends React.Component {
         // App에서 체그하기 때문에 아래 코드 막음.
         //Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
 
-        computeService.getMCService('showController', {token:token}, this.receiveResult, this);
-        computeService.getMCService('ShowRole',{token:token}, this.receiveAdminInfo)
-        computeService.getMCService('Version',{token:token}, this.receiveVersion, this)
+        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_CONTROLLER }, this.receiveControllerResult, this);
+        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_ROLE }, this.receiveAdminInfo)
+        //services1.getMCService('Version',{token:token}, this.receiveVersion, this)
     }
     onClickBackBtn =() => {
         this.setState({intoCity:false})
@@ -489,7 +488,6 @@ class SiteFour extends React.Component {
         //get list of customer's info
         // if(store.userToken) {
         //     Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
-        //     computeService.getMCService('showController', {token:store.userToken}, this.receiveResult, this);
         // }
         //if there is no role
         //site1으로 이동할 수 없는 문제로 아래 코드 주석처리 by inki
@@ -572,6 +570,7 @@ class SiteFour extends React.Component {
         if((nextProps.alertInfo !== this.props.alertInfo) && nextProps.alertInfo.mode) {
             Alert.closeAll();
             if(nextProps.alertInfo.mode === 'success') {
+
                 Alert.success(nextProps.alertInfo.msg, {
                     position: 'top-right',
                     effect: 'slide',
@@ -588,6 +587,8 @@ class SiteFour extends React.Component {
                     offset: 100,
                     html:true
                 });
+               //return(<MexMessage open={true} info={{error:400,message:nextProps.alertInfo.msg}}/>)
+                
 
             }
             nextProps.handleAlertInfo('','');
@@ -845,14 +846,16 @@ class SiteFour extends React.Component {
         localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
 
     }
-    receiveResult = (result, resource, self, body) => {
+    
+    receiveResult = (mcRequest) => {
+        let result = mcRequest.response;
+        let resource = mcRequest.method;
         let unchecked = result.data.length;
         let checked = localStorage.getItem('auditChecked')
         if(resource === 'ShowSelf') {
             this.reduceAuditCount(result.data, checked)
         }
         this.props.handleLoadingSpinner(false);
-
     }
     makeOga = (logName) => {
         let lastSub = logName.substring(logName.lastIndexOf('=')+1);
@@ -862,7 +865,7 @@ class SiteFour extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         _self.loadCount = 0;
-        services.showAuditSelf('ShowSelf',{token:store.userToken, params:'{}'}, _self.receiveResult, _self)
+        serviceMC.sendRequest({ token: store.userToken, method: serviceMC.getEP().SHOW_SELF, data: '{}' }, _self.receiveShowSelfResult, _self)
     }
 
     /** audit ********/
@@ -1224,7 +1227,7 @@ const mapDispatchProps = (dispatch) => {
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
         handleAuditCheckCount: (data) => { dispatch(actions.setCheckedAudit(data))},
-        handleResetMap: (data) => { dispatch(actions.resetMap(data))},
+        handleResetMap: (data) => { dispatch(actions.resetMap(data))}
     };
 };
 

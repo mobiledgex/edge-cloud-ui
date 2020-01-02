@@ -4,7 +4,7 @@ import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup
 
 import { Field, reduxForm, initialize, reset, stopSubmit, change } from "redux-form";
 import MaterialIcon from "material-icons-react";
-import * as services from '../services/service_compute_service';
+import * as serviceMC from '../services/serviceMC';
 import './styles.css';
 
 const makeOption =(options)=> {
@@ -146,7 +146,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
         }
         if(this.props.getUserRole == 'AdminManager') {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            services.getMCService('showOrg',{token:store.userToken}, this.receiveResult)
+            serviceMC.sendRequest({token:store.userToken, method:serviceMC.getEP().SHOW_ORG}, this.receiveResult)
         }
 
 
@@ -200,7 +200,8 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
     }
 
 
-    receiveResult = (result) => {
+    receiveResult = (mcRequest) => {
+        let result = mcRequest.data;
         let arr = [];
         result.map((item,i) => {
             arr.push(item.Organization);
