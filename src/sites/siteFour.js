@@ -1,20 +1,5 @@
 import React from 'react';
-import {
-    Button,
-    Container,
-    Dropdown,
-    Grid,
-    Header,
-    Icon,
-    Image,
-    Input,
-    Item,
-    Label,
-    Menu,
-    Modal,
-    Popup,
-    Segment
-} from 'semantic-ui-react';
+import {Button, Container, Dropdown, Grid, Header, Icon, Image, Input, Item, Label, Menu, Modal, Popup, Segment} from 'semantic-ui-react';
 
 import {withRouter} from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
@@ -61,7 +46,6 @@ import '../css/introjs-dark.css';
 //import PageMonitoring from "./PageMonitoring";
 import SiteFourPageMonitoring from "./siteFour_page_monitoring";
 import PageMonitoring2 from "./PageMonitoring2";
-import PageMonitoring3 from "./PageMonitoring3";
 
 let devOptions = [{key: 'af', value: 'af', text: 'SK Telecom'}]
 const locationOptions = [
@@ -172,7 +156,6 @@ class SiteFour extends React.Component {
             {label: 'App Instances', icon: 'storage', pg: 6},
             {label: 'Audit Log', icon: 'check', pg: 'audits'},
             {label: 'Monitoring', icon: 'graphic_eq', pg: 'Monitoring2'},
-            {label: 'Monitoring3', icon: 'graphic_eq', pg: 'Monitoring3'},
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
@@ -710,46 +693,50 @@ class SiteFour extends React.Component {
     }
 
     //compute page menu view
-    menuItemView = (item, i, activeItem) => (
-        <Menu.Item
-            className={'leftMenu_' + item.label}
-            key={i}
-            name={item.label}
-            active={activeItem === item.label}
-            onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
-        >
-            <div className="left_menu_item">
-                <MaterialIcon icon={item.icon}/>
-                <div className='label'>{item.label}</div>
-                {(activeItem === item.label) ?
+    menuItemView = (item, i, activeItem) => {
+        return (
+            <Menu.Item
+                className={'leftMenu_' + item.label}
+                key={i}
+                name={item.label}
+                active={activeItem === item.label}
+                onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
+            >
+                <div className="left_menu_item">
+                    <MaterialIcon icon={item.icon}/>
+                    <div className='label'>{item.label}</div>
+                    {(activeItem === item.label) ?
+                        <div style={{position: 'absolute', right: '12px', top: '12px'}}>
+                            <ClipLoader
+                                size={20}
+                                sizeUnit={'px'}
+                                color={'rgba(136,221,0,.85)'}
+                                loading={this.props.loadingSpinner}
+                                // loading={true}
+                            />
+                            {(item.label === 'Audit Log' && this.props.audit > 0) ?
+                                <Label circular color={'red'} key={'red'}>
+                                    {this.props.audit}
+                                </Label> : null}
+                        </div>
+
+                        : null}
+
+
                     <div style={{position: 'absolute', right: '12px', top: '12px'}}>
-                        <ClipLoader
-                            size={20}
-                            sizeUnit={'px'}
-                            color={'rgba(136,221,0,.85)'}
-                            loading={this.props.loadingSpinner}
-                            // loading={true}
-                        />
                         {(item.label === 'Audit Log' && this.props.audit > 0) ?
                             <Label circular color={'red'} key={'red'}>
                                 {this.props.audit}
                             </Label> : null}
                     </div>
 
-                    : null}
-
-
-                <div style={{position: 'absolute', right: '12px', top: '12px'}}>
-                    {(item.label === 'Audit Log' && this.props.audit > 0) ?
-                        <Label circular color={'red'} key={'red'}>
-                            {this.props.audit}
-                        </Label> : null}
                 </div>
 
-            </div>
+            </Menu.Item>
+        )
 
-        </Menu.Item>
-    )
+    }
+
 
     searchClick = (e) => {
         this.props.handleSearchValue(e.target.value, this.state.searchChangeValue)
@@ -809,7 +796,6 @@ class SiteFour extends React.Component {
                 })
             }
         })
-
 
     }
 
@@ -1275,7 +1261,6 @@ class SiteFour extends React.Component {
                 <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
                     {/*모니터링 페이지인 경우...*/}
                     {(this.state.page === 'pg=Monitoring2') ? <PageMonitoring2/> :
-                        (this.state.page === 'pg=Monitoring3') ? <PageMonitoring3/> :
                             this.renderSiteBody(viewMode)
 
                     }

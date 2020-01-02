@@ -30,12 +30,12 @@ export const getIPAddress = () => {
  * @param paramArrayList
  * @returns {Array}
  */
-export const cutArrayList = (length: number, paramArrayList: any) => {
+export const cutArrayList = (length: number = 5, paramArrayList: any) => {
 
     let newArrayList = [];
-    for (let i in paramArrayList) {
-        if (i < 5) {
-            newArrayList.push(paramArrayList)
+    for (let index in paramArrayList) {
+        if (index < 5) {
+            newArrayList.push(paramArrayList[index])
         }
     }
     return newArrayList;
@@ -73,7 +73,6 @@ export const requestShowAppInst = async () => {
     });
 
 }
-
 
 
 export const getAppInstanceHealth = async (pInstanceOneInfo: string = "") => {
@@ -126,6 +125,20 @@ export const getAppInstanceHealth = async (pInstanceOneInfo: string = "") => {
 
 
 }
+
+
+/**
+ * @todo: 비교 가능하도록 minus를 스플릿된 date를 리턴한다..
+ * @param paramDate
+ * @returns {string}
+ */
+export const covertToComparableDate = (paramDate) => {
+    let arrayDate = paramDate.toString().split("-");
+    let compareableFullDate = arrayDate[0] + arrayDate[1] + arrayDate[2]
+    return compareableFullDate
+
+}
+
 
 export const makeFormForAppInstance = (instanceDataOne, valid = "cpu", token, fetchingDataNo = 20) => {
 

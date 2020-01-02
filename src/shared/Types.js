@@ -1,5 +1,19 @@
 
 
+
+export type TypeUtilization = {
+     "time": string,
+     "cloudlet": string,
+     "diskMax": number,
+     "diskUsed": number,
+     "memMax": number,
+     "memUsed": number,
+     "operator": string,
+     "vCpuMax": number,
+     "vCpuUsed": number,
+}
+
+
 export type TypeAppInstance = {
     "Region": string,
     "OrganizationName": string,
