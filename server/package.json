@@ -9,6 +9,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "start_server": "node -r esm start.js",
+    "start_server_local_MC_API": "node -r esm start.js",
     "start_server_debug": "babel-node $NODE_DEBUG_OPTION start",
     "proxy": "https://127.0.0.1:3030"
   },
