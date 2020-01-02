@@ -1,7 +1,9 @@
 import * as reducer from '../../utils'
+import * as serviceMC from '../../services/serviceMC'
 
 let rgn = [];
-const receiveResultApp = (result) => {
+const receiveResultApp = (mcRequest) => {
+    let result = mcRequest.data;
     if(result.error && result.error.indexOf('Expired') > -1) {
         _self.props.handleAlertInfo('error', result.error);
         setTimeout(() => _self.gotoUrl('/logout'), 4000);
@@ -45,13 +47,14 @@ export const getDataofAppinst = (region,regionArr) => {
     if(localStorage.selectRole == 'AdminManager') {
         rgn.map((item) => {
             // All show appInst
-            services.getMCService('ShowAppInst',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultApp)
+            serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_APP_INST, data: { region: item } }, _self.receiveResultApp)
         })
     } else {
         rgn.map((item) => {
             serviceBody = {
-                "token":store.userToken,
-                "params": {
+                method:serviceMC.getEP().SHOW_APP_INST,
+                token:store.userToken,
+                data: {
                     "region":item,
                     "appinst":{
                         "key":{
@@ -63,7 +66,7 @@ export const getDataofAppinst = (region,regionArr) => {
                 }
             }
             // org별 show appInst
-            services.getMCService('ShowAppInsts',serviceBody, _self.receiveResultApp)
+            serviceMC.sendRequest(serviceBody, _self.receiveResultApp)
         })
     }
 }

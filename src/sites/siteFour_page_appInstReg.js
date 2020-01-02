@@ -1,14 +1,10 @@
 import React from 'react';
-import { Tab } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import './siteThree.css';
-
-import Alert from "react-s-alert";
 import RegistryInstViewer from "../container/registryInstViewer";
 
 
@@ -113,13 +109,7 @@ class SiteFourPageAppInstReg extends React.Component {
             _self.setState({devData:result})
         }
     }
-    // getDataDeveloper(token, region) {
 
-    //     //services.getMCService('ShowApps',{token:token, region:(region === 'All') ? 'US' : region}, _self.receiveResult)
-    // }
-
-    /*
-     */
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state

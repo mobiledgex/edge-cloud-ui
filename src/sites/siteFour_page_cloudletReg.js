@@ -1,17 +1,11 @@
 import React from 'react';
-import { Tab } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as services from '../services/service_compute_service';
 import './siteThree.css';
-
-import Alert from "react-s-alert";
 import RegistryCloudletViewer from "../container/registryCloudletViewer";
-import * as reducer from "../utils";
 
 
 
