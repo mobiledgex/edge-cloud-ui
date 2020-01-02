@@ -248,10 +248,12 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
 
     }
 
+    let boxWidth = (window.innerWidth-340)/3 - 22;
+
     return (
         <Chart
-            width={window.innerWidth * 0.31}
-            height={320}
+            width={boxWidth}
+            height={250}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -298,6 +300,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                          }*/
                     }
                 },
+
                 is3D: false,
                 title: '',
                 titleTextStyle: {
@@ -335,26 +338,27 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                 vAxis: {
                     title: '',
                     titleTextStyle: {
-                        fontSize: 14,
+                        fontSize: 12,
                         fontStyle: "normal",
                         color: 'white'
                     },
                     textStyle: {
                         color: "white",
-                        fontSize: 15,
+                        fontSize: 12,
                     },
 
                 },
                 //colors: ['#FB7A21'],
                 fontColor: 'white',
                 backgroundColor: {
-                    fill: 'black'
+                    fill: '#1e2124'
                 },
                 /* animation: {
                      duration: 300,
                      easing: 'out',
                      startup: true
                  }*/
+
                 //colors: ['green']
             }}
 
@@ -927,13 +931,13 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
         })
     })
 
+    let boxWidth = (window.innerWidth-340)/3 - 22
+
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
-            {/* <div style={{                marginLeft: 1,                marginRight: 1,                width: 80,            }}>                <FlexBox style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>                    {appInstanceList.map((item: TypeAppInstance) => {                        return (                            <FlexBox>                                {item.AppName}                            </FlexBox>                        )                    })}                </FlexBox>            </div>            */}
             <div style={{
                 //backgroundColor: 'blue',
-                backgroundColor: 'black',
-                marginLeft: 0, marginRight: 0, marginBottom: 10,
+                backgroundColor: '#1e2124', margin: '0 0 0 0',
             }}>
                 {/* {_this.state.loading777 &&
                 <div className='loaderDiv'>
@@ -941,39 +945,37 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 </div>
                 }*/}
                 <BubbleChart
-                    className='bubbleChart'
+                    className={'bubbleChart'}
                     graph={{
-                        zoom: appInstanceList.length <= 4 ? 0.80 : 0.98,
-                        offsetX: 0.03,
-                        offsetY: appInstanceList.length <= 4 ? 0.03 : -0.06,
+                        zoom: appInstanceList.length <= 4 ? 0.60 : 0.75,
+                        offsetX: 0.10,
+                        offsetY: appInstanceList.length <= 4 ? 0.05 : -0.02,
                     }}
-                    width={370}
-                    height={315}
+                    width={boxWidth}
+                    height={'100%'}
                     padding={0} // optional value, number that set the padding between bubbles
                     showLegend={false} // optional value, pass false to disable the legend.
                     legendPercentage={30} // number that represent the % of with that legend going to use.
                     legendFont={{
-                        //family: 'Candal',
-                        size: 12,
+                        family: 'Arial',
+                        size: 9,
                         color: 'yellow',
                         weight: 'bold',
                     }}
                     valueFont={{
-                        //family: 'Righteous',
-                        size: 25,
+                        family: 'Arial',
+                        size: 15,
                         color: 'black',
-                        //weight: 'bold',
-                        fontStyle: 'italic',
+                        weight: 'bold',
                     }}
                     labelFont={{
-                        //family: 'Righteous',
-                        size: 10,
-                        color: '#000',
+                        //family: 'Arial',
+                        size: 8,
+                        color: 'black',
                         weight: 'bold',
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
                     bubbleClickFun={(label) => {
-
                         _this.setAppInstanceOne(label);
                     }}
                     //legendClickFun={this.legendClick.bind(this)}
@@ -1746,23 +1748,17 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
             {chunkedArraysOfColSize.map((colSizeArray, index) =>
                 <div className='page_monitoring_grid' key={index.toString()}>
                     {colSizeArray.map((item, index) =>
-                        <div className='page_monitoring_grid_box'
-                             style={{flex: colSizeArray.length === 1 && index === 0 ? .318 : .33}}>
-                            <FlexBox style={{
-                                fontSize: 15,
-                                marginTop: 10,
+                        <div className='page_monitoring_grid_box_layout'>
+                            <div className='page_monitoring_grid_box'>
+                                <div className='page_monitoring_grid_box_name'>
+                                    {item.name}
+                                    {/*{item.name.toString().substring(0, 19) + "..."}*/}
+                                </div>
+                                <div className='page_monitoring_grid_box_num'>
+                                    {item.length}
+                                </div>
 
-                            }}>
-                                {item.name.toString().substring(0, 19) + "..."}
-                            </FlexBox>
-                            <FlexBox style={{
-                                marginTop: 0,
-                                fontSize: 50,
-                                color: '#29a1ff',
-                            }}>
-                                {item.length}
-                            </FlexBox>
-
+                            </div>
                         </div>
                     )}
                 </div>
@@ -1772,24 +1768,9 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
             {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
             {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
             {chunkedArraysOfColSize.length === 1 &&
-            <div className='page_monitoring_grid_box_blank2'>
+            <div className='page_monitoring_grid'>
                 {[1, 2, 3].map((item, index) =>
-                    <div key={index} className='page_monitoring_grid_box_blank2'
-                         style={{backgroundColor: 'transprent'}}>
-                        <FlexBox style={{
-                            fontSize: 15,
-                            color: '#fff',
-                            marginTop: 10,
-                        }}>
-                            {/*blank*/}
-                        </FlexBox>
-                        <FlexBox style={{
-                            marginTop: 0,
-                            fontSize: 50,
-                            color: 'transprent',
-                        }}>
-                            {/*blank*/}
-                        </FlexBox>
+                    <div className='page_monitoring_grid_box_layout'>
 
                     </div>
                 )}
