@@ -1160,7 +1160,7 @@ cpuSumUsageByInstJSON = [
     }
 ]
 
-let startDate=20200101
+let startDate=20180101
 let endDate=20200102
 
 
@@ -1190,9 +1190,11 @@ cpuSumUsageByInstJSON.map((oneInstance, index) => {
         }
     })
 
-    console.log('sumUsage====>',sumUsage.toFixed(2));
+    sumUsage = sumUsage / usageValues.length;
 
-    oneInstance.sumCpuUsage= sumUsage.toFixed(2);
+    console.log('sumUsage====>',sumUsage);
+
+    oneInstance.sumCpuUsage= sumUsage;
 
     cpuUsageListByInstace_new.push(oneInstance)
 

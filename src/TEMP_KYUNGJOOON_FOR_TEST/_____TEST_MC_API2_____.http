@@ -22,17 +22,17 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY3OTA4MTgsImlhdCI6MTU3NjcwNDQxOCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.4a2fmGx-NWBDmyJuRN6Rasbay0An5rZflMmuTuVnlIvNn285cGOtJ4KNaLPx5YyxymV1IgOVDujjOJFwA0okfA
 
 {
-  "region": "EU"
+    "region": "EU"
 }
 
 ###
 
-POST https://mc-dev.mobiledgex.net:9900/api/v1/auth/ctrl/ShowAppInst
+POST https://127.0.0.1:9900/api/v1/auth/ctrl/ShowAppInst
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzcyNDkyMzAsImlhdCI6MTU3NzE2MjgzMCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.mXNokQljXGEWiskwNVC7TRIV64FxkosPMpcmw7cs6aWx1XjxPJvoJ4D3NZKJjnl-WswPUHo2PD4QcAoKyy8J8g
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4NDIsImlhdCI6MTU3NzkyNTQ0MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.EobJeBG1UpoXj7CQ71yjXZnuee7RTGqINB4FCYUMuGhvhltqqwyP3eHJ7kEMZpPTltvVoaSnYssi-lOo6n6zGQ
 
 {
-  "region": "US"
+    "region": "US"
 }
 
 
@@ -43,66 +43,136 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzc0OTg2NTQsImlhdCI6MTU3NzQxMjI1NCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.MoaOnk3I0LOfUtCZybOMsYa2xJh4gI5xHT7vSakcRSCkvpQwMkP0xbLc3w2iMsrYiOI-Zm-8h3E5e7IJHiKLDw
 
 {
-  "region": "EU",
-  "appinst": {
-    "app_key": {
-      "developer_key": {
-        "name": "testaaa"
-      },
-      "name": "jjjkkk",
-      "version": "1.0"
-    },
-    "cluster_inst_key": {
-      "cluster_key": {
-        "name": "kkkkkkk"
-      },
-      "cloudlet_key": {
-        "name": "frankfurt-eu",
-        "operator_key": {
-          "name": "TDG"
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "testaaa"
+            },
+            "name": "jjjkkk",
+            "version": "1.0"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "kkkkkkk"
+            },
+            "cloudlet_key": {
+                "name": "frankfurt-eu",
+                "operator_key": {
+                    "name": "TDG"
+                }
+            }
         }
-      }
-    }
-  },
-  "selector": "network",
-  "last": 3
+    },
+    "selector": "network",
+    "last": 3
 }
 
 ### http --verify=false --auth-type=jwt --auth=$SUPERPASS POST https://127.0.0.1:9900/api/v1/auth/metrics/cloudlet <<< '{"region":"local","cloudlet":{"operator_key":{"name":"mexdev"},"name":"localtest"},"selector":"utilization","last":1}'
 
 POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cloudlet
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzc0OTg2NTQsImlhdCI6MTU3NzQxMjI1NCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.MoaOnk3I0LOfUtCZybOMsYa2xJh4gI5xHT7vSakcRSCkvpQwMkP0xbLc3w2iMsrYiOI-Zm-8h3E5e7IJHiKLDw
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4NDIsImlhdCI6MTU3NzkyNTQ0MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.EobJeBG1UpoXj7CQ71yjXZnuee7RTGqINB4FCYUMuGhvhltqqwyP3eHJ7kEMZpPTltvVoaSnYssi-lOo6n6zGQ
 
 {
-  "region": "EU",
-  "cloudlet": {
-    "operator_key": {
-      "name": "mexdev"
+    "region": "EU",
+    "cloudlet": {
+        "operator_key": {
+            "name": "mexadmin"
+        },
+        "name": "frankfurt-eu"
     },
-    "name": "localtest"
-  },
-  "selector": "utilization",
-  "last": 100
+    "selector": "utilization",
+    "last": 100
 }
+
+### response #
 
 ###
 
 
 POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cloudlet
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzc2Mzg3MzcsImlhdCI6MTU3NzU1MjMzNywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.cWVT4OWK_eEg2gU17KhS5U3s84zu3CpFkHcY0VOcxZutHIfAl65dQI0Zd-A3Yzb00SANfUGTVh-y3w9vTznyXg
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4NDIsImlhdCI6MTU3NzkyNTQ0MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.EobJeBG1UpoXj7CQ71yjXZnuee7RTGqINB4FCYUMuGhvhltqqwyP3eHJ7kEMZpPTltvVoaSnYssi-lOo6n6zGQ
 
 {
-  "region": "EU",
-  "cloudlet": {
-    "operator_key": {
-      "name": "TDG"
+    "region": "EU",
+    "cloudlet": {
+        "operator_key": {
+            "name": "TDG"
+        },
+        "name": "frankfurt-eu"
     },
-    "name": "frankfurt-eu"
-  },
-  "selector": "utilization",
-  "last": 1
+    "selector": "utilization",
+    "last": 1
+}
+
+###
+
+POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4NDIsImlhdCI6MTU3NzkyNTQ0MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.EobJeBG1UpoXj7CQ71yjXZnuee7RTGqINB4FCYUMuGhvhltqqwyP3eHJ7kEMZpPTltvVoaSnYssi-lOo6n6zGQ
+
+{
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "MobiledgeX"
+            },
+            "name": "bicTestApp1112-01",
+            "version": "1.0"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "qqqaaa"
+            },
+            "cloudlet_key": {
+                "operator_key": {
+                    "name": "frankfurt-eu"
+                }
+            }
+        }
+    },
+    "starttime": "2019-06-11T21:26:04Z",
+    "endtime": "2019-12-31T21:26:10Z",
+    "last": 6,
+    "selector": "cpu"
+}
+
+###
+
+https://127.0.0.1:9900/api/v1/login username=mexadmin password=mexadmin123
+
+POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4NDIsImlhdCI6MTU3NzkyNTQ0MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.EobJeBG1UpoXj7CQ71yjXZnuee7RTGqINB4FCYUMuGhvhltqqwyP3eHJ7kEMZpPTltvVoaSnYssi-lOo6n6zGQ
+
+{
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "MobiledgeX"
+            },
+            "name": "bicTestApp1112-01",
+            "version": "1.0"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "qqqaaa"
+            },
+            "cloudlet_key": {
+                "operator_key": {
+                    "name": "frankfurt-eu"
+                }
+            }
+        }
+    },
+    "starttime": "2019-06-11T21:26:04Z",
+    "endtime": "2019-12-31T21:26:10Z",
+    "last": 6,
+    "selector": "cpu"
 }
 
 ###

@@ -12,6 +12,7 @@ import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
 import * as reducer from "../utils";
 import {
+    fetchAppInstanceList,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
@@ -23,7 +24,7 @@ import {
     filterInstanceCountOnCloutLetOne,
     getMetricsUtilization,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox,
+    makeClusterListSelectBox, makeHardwareUsageListPerInstance,
     renderBarGraphForCpuMem,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
@@ -32,7 +33,7 @@ import {
     renderPlaceHolder,
     renderPlaceHolder2, usageListFilteredByDate
 } from "../services/PageMonitoringService";
-import {HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
+import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
 import {cutArrayList} from "../services/SharedService";
@@ -213,7 +214,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
             //todo: REALDATA
             //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
-
             //todo: FAKEJSON FOR TEST
             let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
@@ -263,8 +263,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            /*
-            let usageList = await Promise.all([
+          /*  let usageList = await Promise.all([
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
@@ -272,8 +271,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
              ])
              let cpuUsageListPerOneInstance = usageList[0]
              let memUsageListPerOneInstance = usageList[1]
-             console.log('_result===>', usageList);*/
-
+             console.log('_result===>', usageList);
+*/
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
             //todo: ################################################################
@@ -405,10 +404,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: FLITER By startDate, endDate
             //todo: ##########################################
             if (this.state.startDate !== '' && this.state.endDate !== '') {
-                /*filteredCpuUsageList = usageListFilteredByDate(this.state.startDate, this.state.endDate, filteredCpuUsageList, HARDWARE_TYPE.CPU);
-                filteredMemUsageList = usageListFilteredByDate(this.state.startDate, this.state.endDate, filteredCpuUsageList, HARDWARE_TYPE.MEM);*/
-            }
+            /*    filteredCpuUsageList = usageListFilteredByDate(this.state.startDate, this.state.endDate, filteredCpuUsageList, HARDWARE_TYPE.CPU);
+                filteredMemUsageList = usageListFilteredByDate(this.state.startDate, this.state.endDate, filteredMemUsageList, HARDWARE_TYPE.MEM);
 
+                this.setState({
+                    currentAppInst: '',
+                })*/
+            }
 
             this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
@@ -734,11 +736,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <Column>
                                         {item.AppName}
                                     </Column>
-                                    <Column>
+                                    {/*<Column>
                                         {this.state.allCpuUsageList[index].sumCpuUsage.toFixed(2) + "%"}
-                                    </Column>
+                                    </Column>*/}
                                     <Column>
+                                        {this.state.allCpuUsageList[index].sumCpuUsage}
+                                    </Column>
+                                    {/*<Column>
                                         {this.state.allMemUsageList[index].sumMemUsage.toFixed(0) + ' Byte'}
+                                    </Column>*/}
+                                    <Column>
+                                        {this.state.allMemUsageList[index].sumMemUsage}
                                     </Column>
                                     <Column>
                                         {this.state.allNetworkUsageList[index].sumRecvBytes}
