@@ -250,7 +250,7 @@ class SiteFour extends React.Component {
             this.setState({page:'pg=newOrg'})
             this.gotoUrl('/site4', 'pg=newOrg')
         } else if(localStorage.selectMenu === 'Cloudlets') {
-            this.setState({page: 'pg=createCloudlet'})
+            this.setState({page: 'pg='})
             this.gotoUrl('/site4', 'pg=createCloudlet')
         } else if(localStorage.selectMenu === 'Apps') {
             this.setState({page: 'pg=createApp'})
@@ -488,7 +488,6 @@ class SiteFour extends React.Component {
         //get list of customer's info
         // if(store.userToken) {
         //     Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
-        //     services.getMCService('showController', {token:store.userToken}, this.receiveResult, this);
         // }
         //if there is no role
         //site1으로 이동할 수 없는 문제로 아래 코드 주석처리 by inki

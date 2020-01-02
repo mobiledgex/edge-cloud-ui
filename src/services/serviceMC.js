@@ -60,7 +60,7 @@ function responseValid(request, response, callback, self) {
 }
 
 export function sendWSRequest(request, callback) {
-    const ws = new WebSocket(`ws://${process.env.REACT_APP_API_EP}/ws${EP.getPath(request)}`)
+    const ws = new WebSocket(`ws://${process.env.REACT_APP_API_ENDPOINT}/ws${EP.getPath(request)}`)
     ws.onopen = () => {
         sockets.push({ uuid: request.uuid, socket: ws, isClosed:false });
         ws.send(`{"token": "${request.token}"}`);
@@ -74,6 +74,10 @@ export function sendWSRequest(request, callback) {
             case getEP().CREATE_CLUSTER_INST:
             case getEP().DELETE_CLUSTER_INST:
             case getEP().CREATE_CLOUDLET:
+            case getEP().DELETE_CLOUDLET:
+            //case getEP().CREATE_APP_INST:
+            case getEP().UPDATE_APP_INST:
+            //case getEP().DELETE_APP_INST:
                 clearSockets(request.uuid);
         }
         callback({ request: request, response: response });

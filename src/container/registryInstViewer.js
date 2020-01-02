@@ -9,10 +9,10 @@ import PopAddUserViewer from './popAddUserViewer';
 import './styles.css';
 import _ from "lodash";
 import * as reducer from '../utils'
-import * as services from '../services/service_compute_service';
 import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateFormAppInstDefault from "./siteFourCreateFormAppInstDefault";
 import {withRouter} from "react-router-dom";
+import MexMessageDialog from '../hoc/mexDialogMessage';
 
 
 const headerStyle = {
@@ -49,7 +49,10 @@ class RegistryInstViewer extends React.Component {
         super(props);
         _self = this;
         const layout = this.generateLayout();
+        this.wsRequestCount = 0;
+        this.wsRequestResponse = [];
         this.state = {
+            dialogMessage:[],
             layout,
             open: false,
             openAdd: false,
@@ -183,60 +186,7 @@ class RegistryInstViewer extends React.Component {
         }
     }
 
-    receiveResult = (result, body) => {
-        console.log("20191119 getState resultresultxxresult",result)
-        /* code by inki : block this for not use tempfile.
-        setTimeout(() => {
-            services.errorTempFile(result.data, this.receiveStatusData)
-        }, 3000);
-        */
-
-        //TODO: inki 20191129 : request call streamTemp data from server..
-        
-
-        _self.props.handleLoadingSpinner(false);
-        if(result.data.error) {
-            this.setState({regSuccess:false});
-            this.props.handleAlertInfo('error',result.data.error)
-            return;
-        } else {
-            
-
-
-            // let toArray = result.data.split('\n')
-            // toArray.pop();
-            // let toJson = toArray.map((str)=>(JSON.parse(str)))
-            //
-            // toJson.map((item) => {
-            //     if(item.result && item.result.code == 400){
-            //         this.props.handleAlertInfo('error',item.result.message)
-            //         return
-            //     } else {
-            //         this.props.handleAlertInfo('success','Your application instance created successfully')
-            //     }
-            // })
-
-            if(result.data.message && parseInt(result.data.code) == 400) {
-                this.props.handleAlertInfo('error',result.data.message)
-                setTimeout(() => {
-                    this.gotoUrl('submit', 'error');
-                }, 3000)
-                return;
-            } else {
-                setTimeout(() => {
-                    this.gotoUrl('submit');
-                }, 3000)
-            }
-
-            if(result && result.code == 400){
-                this.props.handleAlertInfo('error',result.message)
-                return
-            } else {
-                //this.props.handleAlertInfo('success','Your application instance created successfully')
-            }
-
-        }
-    }
+    
     
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
@@ -366,20 +316,76 @@ class RegistryInstViewer extends React.Component {
             if(nextProps.formAppInst.submitSucceeded && error.length == 0){
 
                 let submitData = nextProps.submitValues
-                console.log('20191119 filtered cloudlet...', submitData, " state.cloudelts=", this.state.cloudlets)
-                /*
-
-                 */
                 this.props.handleSubmitObject(submitData)
-                this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
+                this.setState({ toggleSubmit: true, validateError: error, regSuccess: true });
                 this.props.handleLoadingSpinner(true);
 
-                services.createNewMultiAppInst('CreateAppInst', {params:submitData, token:store ? store.userToken : 'null'}, _self.receiveResult, nextProps.validateValue, this.state.cloudlets, this.state.autoClusterDisable)
 
+                let serviceBody = {
+                    token: store ? store.userToken : null,
+                    method: serviceMC.getEP().CREATE_APP_INST
+                };
+
+                let multiData = nextProps.validateValue;
+                let filterData = this.state.cloudlets;
+                let vmCheck = this.state.autoClusterDisable;
+
+                console.log('Rahul1234_0', filterData);
+                this.wsRequestCount = 0;
+                this.wsRequestResponse = [];
+                multiData.Cloudlet.map((itemCloudlet) => {
+                    if (vmCheck) multiData.ClusterInst = ['']
+                    if (multiData.AutoClusterInst) {
+                        multiData.ClusterInst = ['autocluster' + multiData.AppName.replace(/(\s*)/g, "")];
+                    }
+                    if (filterData[itemCloudlet] && filterData[itemCloudlet].length > 0) {
+                        filterData[itemCloudlet].map((items) => {
+                            multiData.ClusterInst.map((itemCluster) => {
+                                if (items.ClusterName == itemCluster || itemCluster == '' || itemCluster.indexOf('autocluster') > -1) {
+                                    let data = JSON.parse(JSON.stringify(submitData));
+                                    data.appinst.key.cluster_inst_key.cloudlet_key.name = itemCloudlet;
+                                    data.appinst.key.cluster_inst_key.cluster_key.name = itemCluster;
+                                    serviceBody.data = data;
+
+                                    this.wsRequestCount = this.wsRequestCount + 1;
+                                    serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
+                                }
+                            })
+                            if (String(multiData.ClusterInst[0]).indexOf('autocluster') > -1 || multiData.ClusterInst[0] == "") {
+                                multiData.ClusterInst = [];
+                            }
+                        })
+                    }// hasn't any cluster in selected cloudlets then it should be make the new autocluster.
+                    else if (!filterData[itemCloudlet]) {
+                        multiData.ClusterInst.map((itemCluster) => {
+                            if (itemCluster == '' || itemCluster.indexOf('autocluster') > -1) {
+                                let data = JSON.parse(JSON.stringify(submitData));
+                                data.appinst.key.cluster_inst_key.cloudlet_key.name = itemCloudlet;
+                                data.appinst.key.cluster_inst_key.cluster_key.name = itemCluster;
+                                serviceBody.data = data;
+
+                                this.wsRequestCount = this.wsRequestCount + 1;
+                                serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
+                            }
+                        })
+                        if (String(multiData.ClusterInst[0]).indexOf('autocluster') > -1 || multiData.ClusterInst[0] == "") {
+                            multiData.ClusterInst = [];
+                        }
+                    }
+                    else if (vmCheck) {
+                        multiData.Cloudlet.map((item) => {
+                            let data = JSON.parse(JSON.stringify(submitData));
+                            data.appinst.key.cluster_inst_key.cloudlet_key.name = item;
+                            data.appinst.key.cluster_inst_key.cluster_key.name = '';
+                            serviceBody.data = data;
+                            serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
+                        })
+                    }
+                })
             } else {
-                this.setState({validateError:error,toggleSubmit:true})
+                this.setState({ validateError: error, toggleSubmit: true })
             }
-            
+
         }
 
         /************
@@ -464,6 +470,41 @@ class RegistryInstViewer extends React.Component {
         if(nextProps.editMode) this.setState({editMode:nextProps.editMode})
     }
 
+    receiveResult = (mcRequest) => {
+        this.wsRequestCount = this.wsRequestCount - 1;
+        let messageArray = [];
+        if (mcRequest) {
+            this.wsRequestResponse.push(mcRequest);
+            if (this.wsRequestCount === 0) {
+                let valid = true;
+                this.wsRequestResponse.map(mcRequest => {
+                    let data = mcRequest.response.data
+                    messageArray.push(data.data.message)
+                    if (data.code === 400) {
+                        valid = false;
+                    }
+                })
+                if (valid) {
+                    this.props.handleLoadingSpinner(false);
+                    this.gotoUrl('submit');
+                }
+                else {
+                   this.setState({
+                    dialogMessage : messageArray
+                   })
+                }
+            }
+        }
+    }
+
+    closeDialog = ()=>{
+        this.setState({
+            dialogMessage:[]
+        })
+        this.props.handleLoadingSpinner(false);
+        this.gotoUrl('submit');
+    }
+
     componentWillUnmount() {
         this.props.handleAppLaunch({})
     }
@@ -507,6 +548,7 @@ class RegistryInstViewer extends React.Component {
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
                 <PopAddUserViewer data={this.state.selected} dimmer={false} open={this.state.openAdd} close={this.closeAddUser}></PopAddUserViewer>
+                <MexMessageDialog close={this.closeDialog} message={this.state.dialogMessage}/>
             </div>
 
         );

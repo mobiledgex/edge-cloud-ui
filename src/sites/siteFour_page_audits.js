@@ -4,7 +4,6 @@ import {withRouter} from 'react-router-dom';
 //redux
 import {connect} from 'react-redux';
 import * as actions from '../actions';
-import * as services from '../services/service_audit_api';
 import * as serviceMC from '../services/serviceMC';
 import './siteThree.css';
 import TimelineAuditViewNew from "../container/TimelineAuditViewNew";
@@ -172,7 +171,7 @@ class SiteFourPageAudits extends React.Component {
 
     receiveResult = (mcRequest) => {
         let result  = mcRequest.response;
-        let resource = mcRequest.method;
+        let resource = mcRequest.request.method;
         // @inki if data has expired token
         console.log('20191106 receive result...', result, ":", resource)
         if (result.error && result.error.indexOf('Expired') > -1) {
@@ -219,13 +218,8 @@ class SiteFourPageAudits extends React.Component {
         _self.loadCount = 0;
 
         if (orgName) {
-            //services.showAuditOrg('ShowOrg',{token:store.userToken, params:{"org":_self.makeOga(orgName)}}, _self.receiveResult, _self)
             try {
-                let response = await services.showAuditOrg2('ShowOrg', {
-                    token: store.userToken,
-                    params: {"org": this.makeOga(orgName)}
-                })
-                this.receiveResult({response:response, method:serviceMC.getEP().SHOW_ORG})
+                serviceMC.sendRequest({token:store.userToken, method:serviceMC.getEP().SHOW_AUDIT_ORG, data:{"org": this.makeOga(orgName)}}, this.receiveResult)
             } catch (e) {
                 //alert(e)
                 this.props.handleLoadingSpinner(false);

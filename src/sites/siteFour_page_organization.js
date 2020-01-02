@@ -10,8 +10,6 @@ import * as actions from '../actions';
 
 import * as serviceMC from '../services/serviceMC';
 import './siteThree.css';
-import MapWithListView from "./siteFour_page_six";
-import Alert from "react-s-alert";
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]

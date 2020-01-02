@@ -11,7 +11,6 @@ import PopAddUserViewer from './popAddUserViewer';
 import './styles.css';
 import _ from "lodash";
 import * as reducer from '../utils'
-import * as services from '../services/service_compute_service';
 import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateFormAppDefault from "./siteFourCreateFormAppDefault";
 
@@ -128,11 +127,10 @@ class RegistryViewer extends React.Component {
         this.setState({ dimmer:dim, openAdd: true, selected:data })
     }
 
-    receiveResult = (result, body, resuorce) => {
-        console.log("bodybodybodysresult",result,":::",body,":::",resuorce)
-        let resource = ''
-        if(resuorce == 'CreateApp') resource = 'created'
-        else if(resuorce == 'UpdateApp') resource = 'updated'
+    receiveResult = (mcRequest) => {
+        let result = mcRequest.response;
+        let request= mcRequest.request;
+        let resource = request.method === serviceMC.getEP().CREATE_APP ? 'created' : 'updated'
 
         _self.props.handleLoadingSpinner(false);
         this.setState({toggleSubmit:false})
@@ -141,7 +139,7 @@ class RegistryViewer extends React.Component {
             this.props.handleAlertInfo('error',result.data.error)
         } else {
             //this.props.gotoApp();
-            this.props.handleAlertInfo('success','Your application '+body.params.app.key.name+' '+resource+' successfully')
+            this.props.handleAlertInfo('success','Your application '+request.data.app.key.name+' '+resource+' successfully')
             setTimeout(() => {
                 this.gotoUrl();
             }, 1000)
@@ -357,21 +355,19 @@ class RegistryViewer extends React.Component {
                 }
             })
             if(nextProps.formApps.submitSucceeded && error.length == 0){
-                let serviceBody = {}
-                let serviceResource = 'CreateApp'
+                let method = serviceMC.getEP().CREATE_APP;
                 if(nextProps.editMode){
-                    serviceResource = 'UpdateApp'
+                    method = serviceMC.getEP().UPDATE_APP;
                     nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData,nextProps.submitValues.app)
                 }
                 this.setState({toggleSubmit:true,validateError:error});
                 this.props.handleLoadingSpinner(true);
-                //TODO: // 20190430 add spinner...(loading)
-                serviceBody = {
-                    "token":store ? store.userToken : 'null',
-                    "params": nextProps.submitValues
+                let serviceBody = {
+                    method : method,
+                    token:store ? store.userToken : 'null',
+                    data: nextProps.submitValues
                 }
-
-                services.createNewApp(serviceResource, serviceBody, this.receiveResult)
+                serviceMC.sendRequest(serviceBody, this.receiveResult)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }

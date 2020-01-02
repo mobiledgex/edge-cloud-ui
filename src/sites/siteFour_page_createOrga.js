@@ -9,7 +9,6 @@ import * as actions from '../actions';
 import SiteFourOrgaStepView from '../container/siteFourOrgaStepView';
 import './siteThree.css';
 import * as serviceMC from '../services/serviceMC';
-import * as serviceOrganiz from "../services/service_organiz_api";
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
@@ -86,15 +85,8 @@ class SiteFourPageCreateorga extends React.Component {
         if(nextProps.stepOne && nextProps.stepOne.submitSucceeded && !this.state.toggleSubmit) {
             this.setState({toggleSubmit:true});
             _self.props.handleLoadingSpinner(true);
-            serviceOrganiz.organize('createOrg',
-                {
-                    name:nextProps.stepOne.values.name,
-                    type:nextProps.stepOne.values.type.toLowerCase(),
-                    address:nextProps.stepOne.values.address,
-                    phone:nextProps.stepOne.values.phone,
-                    token:store ? store.userToken : 'null'
-                }, this.resultCreateOrg, this)
-            
+            let data = {name:nextProps.stepOne.values.name, type:nextProps.stepOne.values.type.toLowerCase(), address:nextProps.stepOne.values.address, phone:nextProps.stepOne.values.phone}
+            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().CREATE_ORG, data:data}, this.resultCreateOrg, this)
         }
         /*
         org=bigorg username=worker1 role=DeveloperContributor
@@ -105,35 +97,34 @@ class SiteFourPageCreateorga extends React.Component {
             let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
             let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
             let _role = nextProps.stepTwo.values && nextProps.stepTwo.values.orgType+nextProps.stepTwo.values.selectRole || '';
-            serviceOrganiz.organize('addUserRole',
-                {
-                        username:_username,
-                        org:_org,
-                        role:_role,
-                        token:store ? store.userToken : 'null'
-                }, this.resultGiveToRole, this)
+            let data = { username: _username, org: _org, role: _role };
+            serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().ADD_USER_ROLE, data: data }, this.resultGiveToRole, this)
         }
 
     }
-    resultCreateOrg = (result,resource, self, body) => {
+    resultCreateOrg = (mcRequest) => {
+        let result = mcRequest.response;
+        let request = mcRequest.request;
         this.setState({toggleSubmit:false})
         _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
             this.props.handleAlertInfo('error',String(result.data.error))
         } else {
-            this.props.handleAlertInfo('success','Your organization '+body.name+' created successfully')
+            this.props.handleAlertInfo('success','Your organization '+request.data.name+' created successfully')
             //goto next step
             this.props.handleChangeStep('02')
             this.setState({step:2})
         }
     }
-    resultGiveToRole = (result,resource, self, body) => {
-        this.setState({toggleSubmitTwo:false})
+    resultGiveToRole = (mcRequest) => {
+        let result = mcRequest.response;
+        let request = mcRequest.request;
+        this.setState({ toggleSubmitTwo: false })
         _self.props.handleLoadingSpinner(false);
-        if(result.data.error) {
-            this.props.handleAlertInfo('error',String(result.data.error))
+        if (result.data.error) {
+            this.props.handleAlertInfo('error', String(result.data.error))
         } else {
-            this.props.handleAlertInfo('success','User '+body.username+' added to organization '+body.org+' successfully')
+            this.props.handleAlertInfo('success', 'User ' + request.data.username + ' added to organization ' + request.data.org + ' successfully')
             //goto next step
             //this.setState({step:3})
         }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, Grid, Header, Button, Table, Popup, Icon, Input, Divider, Container} from 'semantic-ui-react';
+import {Header, Button, Table, Popup, Icon, Input} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
@@ -11,11 +11,8 @@ import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import DeleteItem from './deleteItem';
 import './styles.css';
-import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
-import MaterialIcon from "material-icons-react";
-import * as services from '../services/service_compute_service';
 
 const ReactGridLayout = WidthProvider(RGL);
 

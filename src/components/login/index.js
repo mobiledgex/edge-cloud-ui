@@ -14,7 +14,6 @@ import { LOCAL_STRAGE_KEY } from '../utils/Settings'
  import * as serviceMC from '../../services/serviceMC';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
-import * as service from "../../services/service_compute_service";
 import CustomContentAlert from './CustomContentAlert';
 /*
 
@@ -485,29 +484,29 @@ class Login extends Component {
     //     }
     // }
     onSendEmail(mode) {
-        if(mode === 'verify') {
+        if (mode === 'verify') {
             serviceLogin.resendVerify('resendverify',
                 {
-                    email:self.state.email,
-                    callbackurl : 'https://'+host+'/verify'
+                    email: self.state.email,
+                    callbackurl: 'https://' + host + '/verify'
                 }, self.receiveResendVerify)
-        } else if(mode === 'resetPass') {
+        } else if (mode === 'resetPass') {
             let pass = '';
             let strArr = self.props.params.subPath.split('=')
             let token = strArr[1];
-            service.getMCService('ResetPassword',{service:'passwordreset',token:token, password:pass}, this.receiveData, this)
+            serviceMC.sendRequest({ token: token, method: serviceMC.getEP().RESET_PASSWORD, data: { password: pass } }, this.receiveData, this)
 
-        } else if(mode === 'back') {
+        } else if (mode === 'back') {
 
-            self.setState({loginMode:'login'})
+            self.setState({ loginMode: 'login' })
         }
         else {
             serviceLogin.resetPassword('passwordresetrequest',
-                {email:self.state.email,
-                    callbackurl : "https://"+host+"/passwordreset"
+                {
+                    email: self.state.email,
+                    callbackurl: "https://" + host + "/passwordreset"
                 }, self.receiveForgoten)
         }
-
     }
 
     onSubmit() {

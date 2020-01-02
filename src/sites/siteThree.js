@@ -104,12 +104,7 @@ class SiteThree extends React.Component {
     receiveCluster(cloudlet) {
 
     }
-    getClusterInfo() {
-        // 오퍼의 클러스터 정보
-        //service.getComputeService('cloudlet', this.receiveCloudlet)
-    }
-
-
+    
     setCloudletList = (operNm) => {
         let cl = [];
         if(_self.state.cloudletResult && _self.state.cloudletResult[operNm]) {

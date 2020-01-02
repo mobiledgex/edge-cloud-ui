@@ -1,17 +1,13 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 import DeveloperListView from '../container/developerListView';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
 import * as serviceMC from '../services/serviceMC';
 import './siteThree.css';
-import MapWithListView from "./siteFour_page_six";
-import Alert from "react-s-alert";
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]

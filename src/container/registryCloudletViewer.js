@@ -1,5 +1,5 @@
 import React from 'react';
-import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
+import {Tab} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -8,14 +8,11 @@ import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import './styles.css';
-import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
 
 import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateInstForm from "./siteFourCreateInstForm";
-import Alert from "react-s-alert";
-import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -273,7 +270,6 @@ class RegistryCloudletViewer extends React.Component {
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
                 console.log('20191119 create cloudlet....',nextProps.submitValues)
-                //service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit, nextProps.validateValue.Cloudlet)
                 serviceMC.sendWSRequest({ uuid:serviceMC.generateUniqueId(),token: store.userToken, method: serviceMC.getEP().CREATE_CLOUDLET, data: nextProps.submitValues }, this.receiveSubmit)
                 setTimeout(() => {
                     this.props.handleLoadingSpinner(false);

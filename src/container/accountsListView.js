@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Divider, Container } from 'semantic-ui-react';
+import { Button, Table, Icon} from 'semantic-ui-react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as moment from 'moment';
