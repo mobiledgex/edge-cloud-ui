@@ -5,7 +5,7 @@ import axios from "axios";
 import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
-import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
+import {getAppInstanceHealth, makeFormForAppInstance, covertToComparableDate} from "./SharedService";
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
 import {Line as ReactChartJs, Bar as Bar2, HorizontalBar} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
@@ -365,6 +365,62 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
 
 }
 
+
+/**
+ * @todo : Filter cpu / mem usage by date.
+ * @todo : 날짜에 의해서 cpu/mem 사용량을 필터링 처리.
+ * @param startDate
+ * @param endDate
+ * @param usageList
+ * @param hardwareType
+ * @returns {[]}
+ */
+export const usageListFilteredByDate = (startDate: number, endDate: number, usageList: Array, hardwareType: string) => {
+    /*let startDate=20191113
+    let endDate=20191130*/
+
+    startDate = covertToComparableDate(startDate);
+    endDate = covertToComparableDate(endDate);
+
+    let newCpuOrMemUageListByInstace = [];
+    usageList.map((oneInstance, index) => {
+
+        //console.log(`${index}====>`, oneInstance.values);
+
+        let usageValues = oneInstance.values;
+
+        let sumUsage = 0;
+        usageValues.map(item => {
+            let date = item[0]
+            let usage = 0;
+            if (hardwareType === HARDWARE_TYPE.CPU) {
+                usage = item[4]//cpuUsage
+            } else {
+                usage = item[5]//memUsage
+            }
+
+            //console.log('date====>', date.toString().split('T')[0]);
+            let preDate = date.toString().split('T')[0];
+            preDate = covertToComparableDate(preDate)
+
+            if (preDate >= startDate && preDate <= endDate) {
+                sumUsage += usage;
+            }
+        })
+
+        // console.log('sumUsage====>',sumUsage.toFixed(2));
+
+        oneInstance.sumCpuUsage = sumUsage.toFixed(2);
+
+        newCpuOrMemUageListByInstace.push(oneInstance)
+
+    })
+
+    return newCpuOrMemUageListByInstace;
+
+}
+
+
 export const renderBar3333 = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
 
     /* var speedData = {
@@ -459,24 +515,24 @@ export const renderBar3333 = (usageList: any, hardwareType: string = HARDWARE_TY
             position: 'top',
         },
         scales: {
-             yAxes: [{
-                 /*scaleLabel: {
-                     display: true,
-                     labelString: 'Y text'
-                 },*/
-                 ticks: {
-                     beginAtZero: true,
-                     fontColor: 'white'
-                 },
-                 gridLines: {
-                     color: "#505050",
-                 },
-             }],
-            xAxes: [{
-               /* scaleLabel: {
+            yAxes: [{
+                /*scaleLabel: {
                     display: true,
-                    labelString: 'Usage'
+                    labelString: 'Y text'
                 },*/
+                ticks: {
+                    beginAtZero: true,
+                    fontColor: 'white'
+                },
+                gridLines: {
+                    color: "#505050",
+                },
+            }],
+            xAxes: [{
+                /* scaleLabel: {
+                     display: true,
+                     labelString: 'Usage'
+                 },*/
                 ticks: {
                     beginAtZero: true,
                     fontColor: 'white'

@@ -30,7 +30,7 @@ import {
     renderLineChart,
     renderPieChart2AndAppStatus,
     renderPlaceHolder,
-    renderPlaceHolder2
+    renderPlaceHolder2, usageListFilteredByDate
 } from "../services/PageMonitoringService";
 import {HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
@@ -249,7 +249,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
 
-
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             await this.setState({
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
@@ -406,7 +405,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: FLITER By startDate, endDate
             //todo: ##########################################
             if (this.state.startDate !== '' && this.state.endDate !== '') {
-                //alert(this.state.startDate)
+                /*filteredCpuUsageList = usageListFilteredByDate(this.state.startDate, this.state.endDate, filteredCpuUsageList, HARDWARE_TYPE.CPU);
+                filteredMemUsageList = usageListFilteredByDate(this.state.startDate, this.state.endDate, filteredCpuUsageList, HARDWARE_TYPE.MEM);*/
             }
 
 
@@ -929,7 +929,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             {/*todo:#########################################****/}
                                                             {!this.state.isShowUtilizationArea ?
                                                                 <FlexBox
-                                                                    style={{backgroundColor: 'black', width: 180, height: 320, alignItem: 'center', alignSelf: "center", justifyContent: "center"}}>
+                                                                    style={{
+                                                                        backgroundColor: 'black',
+                                                                        width: 180,
+                                                                        height: 320,
+                                                                        alignItem: 'center',
+                                                                        alignSelf: "center",
+                                                                        justifyContent: "center"
+                                                                    }}>
                                                                     {this.state.loading777 ?
                                                                         <Lottie
                                                                             options={{

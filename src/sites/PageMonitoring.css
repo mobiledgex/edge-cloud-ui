@@ -16604,6 +16604,7 @@ span.ant-radio + * {
 
 .ant-calendar-range-right .ant-calendar-date-input-wrap {
     margin-left: -90px;
+    background-color: black;
 }
 
 .ant-calendar-range.ant-calendar-time .ant-calendar-range-middle {
@@ -16615,7 +16616,7 @@ span.ant-radio + * {
 
 .ant-calendar-range .ant-calendar-today :not(.ant-calendar-disabled-cell) :not(.ant-calendar-last-month-cell) :not(.ant-calendar-next-month-btn-day) .ant-calendar-date {
     color: #128702;
-    background: #bae7ff;
+    background: black;
     border-color: #128702;
 }
 
@@ -16657,10 +16658,10 @@ span.ant-radio + * {
     width: 100%;
     height: 32px;
     padding: 4px 11px;
-    color: rgba(0, 0, 0, 0.65);
+    color: white;
     font-size: 14px;
     line-height: 1.5;
-    background-color: #fff;
+    background-color: black;
     background-image: none;
     border: 1px solid #d9d9d9;
     border-radius: 4px;
@@ -16698,7 +16699,7 @@ span.ant-radio + * {
 
 .ant-calendar-range .ant-calendar-input:hover,
 .ant-calendar-range .ant-calendar-time-picker-input:hover {
-    border-color: #7AC113;
+    border-color: #aff415;
     border-right-width: 1px !important;
 }
 
