@@ -459,24 +459,24 @@ export const renderBar3333 = (usageList: any, hardwareType: string = HARDWARE_TY
             position: 'top',
         },
         scales: {
-             yAxes: [{
-                 /*scaleLabel: {
-                     display: true,
-                     labelString: 'Y text'
-                 },*/
-                 ticks: {
-                     beginAtZero: true,
-                     fontColor: 'white'
-                 },
-                 gridLines: {
-                     color: "#505050",
-                 },
-             }],
-            xAxes: [{
-               /* scaleLabel: {
+            yAxes: [{
+                /*scaleLabel: {
                     display: true,
-                    labelString: 'Usage'
+                    labelString: 'Y text'
                 },*/
+                ticks: {
+                    beginAtZero: true,
+                    fontColor: 'white'
+                },
+                gridLines: {
+                    color: "#505050",
+                },
+            }],
+            xAxes: [{
+                /* scaleLabel: {
+                     display: true,
+                     labelString: 'Usage'
+                 },*/
                 ticks: {
                     beginAtZero: true,
                     fontColor: 'white'
@@ -535,6 +535,11 @@ export const renderBarGraph002 = (usageList: any, hardwareType: string = HARDWAR
         return a.data - b.data;
     });
 
+
+    let colorCodes = ['rgba(112,0,28,1)', 'rgba(255,72,0,1)', 'rgb(237,255,42)', 'rgba(18,135,2,1)', 'rgba(28,34,255,1)']
+
+    colorCodes.reverse()
+
     return (
         <div>
             <BarChart
@@ -544,7 +549,7 @@ export const renderBarGraph002 = (usageList: any, hardwareType: string = HARDWAR
                 data={chartDataList}
                 series={
                     <BarSeries
-                        colorScheme={'cybertron'}
+                        colorScheme={colorCodes}
                         layout={'horizontal'}
                         bar={
                             <RBar
@@ -1260,6 +1265,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
         gradientList.push(gradient2)
         gradientList.push(gradient3)
         gradientList.push(gradient4)
+        gradientList.push(gradient5)
 
         let finalSeriesDataSets = [];
         for (let i in cpuUsageSetList) {
