@@ -60,7 +60,9 @@ function responseValid(request, response, callback, self) {
 }
 
 export function sendWSRequest(request, callback) {
-    const ws = new WebSocket(`ws://${process.env.REACT_APP_API_ENDPOINT}/ws${EP.getPath(request)}`)
+    let url = process.env.REACT_APP_API_ENDPOINT;
+    url = url.replace('http','ws');
+    const ws = new WebSocket(`${url}/ws${EP.getPath(request)}`)
     ws.onopen = () => {
         sockets.push({ uuid: request.uuid, socket: ws, isClosed:false });
         ws.send(`{"token": "${request.token}"}`);
