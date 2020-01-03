@@ -171,9 +171,8 @@ class SiteFourPageAudits extends React.Component {
 
     receiveResult = (mcRequest) => {
         let result  = mcRequest.response;
-        let resource = mcRequest.request.method;
+        let request = mcRequest.request;
         // @inki if data has expired token
-        console.log('20191106 receive result...', result, ":", resource)
         if (result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
@@ -183,10 +182,8 @@ class SiteFourPageAudits extends React.Component {
             _self.props.handleAlertInfo('error', result.error);
         }
 
-        let unchecked = result.data.length;
         let checked = localStorage.getItem('auditChecked')
-        if (resource === serviceMC.getEP().SHOW_SELF || resource === serviceMC.getEP().SHOW_ORG) {
-            console.log('20191106 audit result..', result, ":", resource, ": unchecked : ", unchecked)
+        if (request.method === serviceMC.getEP().SHOW_SELF || request.method === serviceMC.getEP().SHOW_AUDIT_ORG) {
             _self.reduceAuditCount(result.data, checked)
 
         }
