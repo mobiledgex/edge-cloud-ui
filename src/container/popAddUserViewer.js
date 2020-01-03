@@ -1,12 +1,11 @@
 import React from 'react';
-import {Button, Divider, Modal, Grid, Input, TextArea, Dropdown, Image} from "semantic-ui-react";
+import { Button, Modal, Grid } from "semantic-ui-react";
 import SiteFourOrgaAddUser from "./siteFourOrgaAdduser";
-import * as serviceOrganiz from "../services/service_organiz_api";
-import Alert from 'react-s-alert';
+import * as serviceMC from "../services/serviceMC";
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import {GridLoader} from "react-spinners";
+import { GridLoader } from "react-spinners";
 import './styles.css';
 
 let _self = null;
@@ -14,16 +13,16 @@ class PopAddUserViewer extends React.Component {
     constructor() {
         super();
         this.state = {
-            open:false,
-            dimmer:'',
-            cloudletResult:null,
-            listOfDetail:null,
-            userImage:null,
-            userName:null,
-            typeOperator:'',
-            organization:'',
-            successReset:false,
-            toggleSubmit:false
+            open: false,
+            dimmer: '',
+            cloudletResult: null,
+            listOfDetail: null,
+            userImage: null,
+            userName: null,
+            typeOperator: '',
+            organization: '',
+            successReset: false,
+            toggleSubmit: false
         }
         _self = this;
     }
@@ -33,48 +32,51 @@ class PopAddUserViewer extends React.Component {
     }
     componentWillReceiveProps(nextProps, nextContext) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(nextProps.open) {
-            this.setState({open:nextProps.open, dimmer:nextProps.dimmer, typeOperator:(nextProps.data['Type'].substring(0,1).toUpperCase() + nextProps.data['Type'].substring(1)), organization:nextProps.data['Organization']});
+        if (nextProps.open) {
+            this.setState({ open: nextProps.open, dimmer: nextProps.dimmer, typeOperator: (nextProps.data['Type'].substring(0, 1).toUpperCase() + nextProps.data['Type'].substring(1)), organization: nextProps.data['Organization'] });
         }
-        if(nextProps.stepTwo && nextProps.stepTwo.submitSucceeded && !this.state.toggleSubmit) {
+        if (nextProps.stepTwo && nextProps.stepTwo.submitSucceeded && !this.state.toggleSubmit) {
             this.props.handleLoadingSpinner(true);
-            this.setState({toggleSubmit:true});
+            this.setState({ toggleSubmit: true });
             //{username: "inkikim", orgName: "bicinkiOrg", orgType: "Developer", selectRole: "Manager"}
             let _username = nextProps.stepTwo.values && nextProps.stepTwo.values.username || '';
             let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
-            let _role = nextProps.stepTwo.values && nextProps.stepTwo.values.orgType+nextProps.stepTwo.values.selectRole || '';
-            serviceOrganiz.organize('addUserRole',
-                {
-                        username:_username,
-                        org:_org,
-                        role:_role,
-                        token:store ? store.userToken : 'null'
-                }, this.resultGiveToRole, this)
-            
+            let _role = nextProps.stepTwo.values && nextProps.stepTwo.values.orgType + nextProps.stepTwo.values.selectRole || '';
+            let requestBody = {
+                token: store ? store.userToken : 'null',
+                method: serviceMC.getEP().ADD_USER_ROLE,
+                data: {
+                    username: _username,
+                    org: _org,
+                    role: _role
+                }
+            }
+            serviceMC.sendRequest(requestBody, this.resultGiveToRole, this)
+
         }
     }
 
-    resultGiveToRole = (result,resource, self, body) => {
+    resultGiveToRole = (mcRequest) => {
+        let result = mcRequest.response;
+        let request = mcRequest.request;
         _self.props.handleLoadingSpinner(false);
-        this.setState({toggleSubmit:false})
-        if(result.data.error) {
-            this.props.handleAlertInfo('error',String(result.data.error))
-            this.setState({successReset:true});
-            //setTimeout(()=>_self.gotoPreview('/logout'), 2000)
+        this.setState({ toggleSubmit: false })
+        if (result.data.error) {
+            this.props.handleAlertInfo('error', String(result.data.error))
+            this.setState({ successReset: true });
         } else {
-            this.props.handleAlertInfo('success','User '+body.username+' added to organization '+body.org+' successfully')
-            //popup close
+            this.props.handleAlertInfo('success', 'User ' + request.data.username + ' added to organization ' + request.data.org + ' successfully')
         }
     }
 
     setCloudletList = (operNm) => {
         let cl = [];
         _self.state.cloudletResult[operNm].map((oper, i) => {
-            if(i === 0) _self.setState({dropdownValueThree: oper.CloudletName})
+            if (i === 0) _self.setState({ dropdownValueThree: oper.CloudletName })
             cl.push({ key: i, value: oper.CloudletName, text: oper.CloudletName })
         })
 
-        _self.setState({devOptionsThree: cl})
+        _self.setState({ devOptionsThree: cl })
     }
 
     setForms = () => (
@@ -102,20 +104,20 @@ class PopAddUserViewer extends React.Component {
                         {/*</Grid.Row>*/}
                         {this.setForms()}
                     </Grid>
-                    {(this.props.loadingSpinner==true)?
-                    <div className="loadingBox" style={{zIndex:99999}}>
-                        <GridLoader
-                            sizeUnit={"px"}
-                            size={30}
-                            color={'#70b2bc'}
-                            loading={this.props.loadingSpinner}
+                    {(this.props.loadingSpinner == true) ?
+                        <div className="loadingBox" style={{ zIndex: 99999 }}>
+                            <GridLoader
+                                sizeUnit={"px"}
+                                size={30}
+                                color={'#70b2bc'}
+                                loading={this.props.loadingSpinner}
                             //loading={true}
-                        />
-                        <span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>
-                    </div>:null}
+                            />
+                            <span className={this.props.loadingSpinner ? '' : 'loading'} style={{ fontSize: '22px', color: '#70b2bc' }}>Loading...</span>
+                        </div> : null}
                 </Modal.Content>
                 <Modal.Actions>
-                {/*<Modal.Actions  className='adduser-close'>*/}
+                    {/*<Modal.Actions  className='adduser-close'>*/}
                     <Button onClick={() => this.close()} style={{}}>
                         Close
                     </Button>
@@ -126,22 +128,22 @@ class PopAddUserViewer extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    let formStepAdduser= state.form.orgaStepAddUser
-    ? {
-        values: state.form.orgaStepAddUser.values,
-        submitSucceeded: state.form.orgaStepAddUser.submitSucceeded
-    }
-    : {};
+    let formStepAdduser = state.form.orgaStepAddUser
+        ? {
+            values: state.form.orgaStepAddUser.values,
+            submitSucceeded: state.form.orgaStepAddUser.submitSucceeded
+        }
+        : {};
     return {
-        stepTwo:formStepAdduser,
-        loadingSpinner : state.loadingSpinner.loading?state.loadingSpinner.loading:null,
+        stepTwo: formStepAdduser,
+        loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
     }
 };
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 

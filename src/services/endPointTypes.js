@@ -40,7 +40,8 @@ export const SHOW_SELF = "showself";
 export const LOGIN = "login";
 export const SETTING_LOCK = "SettingLock";
 export const CURRENT_USER = "current";
-export const VERIFY_EMAIL = "verifyemail"
+export const VERIFY_EMAIL = "verifyemail";
+export const RESEND_VERIFY = "resendverify";
 export const RESET_PASSWORD = "passwordreset";
 export const CREATE_USER = "createUser";
 export const CREATE_ORG = "createOrg";
@@ -102,11 +103,9 @@ export function getPath(request) {
         case STREAM_APP_INST:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
-            return `/api/v1/${request.method}`
+        case RESEND_VERIFY:
         case VERIFY_EMAIL:
-            return `/api/v1/${request.method}`;
         case RESET_PASSWORD:
-            return `/api/v1/${request.method}`;
         case CREATE_USER:
             return `/api/v1/${request.method}`;
         default:

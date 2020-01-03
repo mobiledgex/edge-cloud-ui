@@ -145,20 +145,6 @@ class EntranceGlobe extends Component {
         self.setState({loading:false})
     }
 
-    // dead code Where are we using this
-    // getInfoSuperuser(service) {
-    //     //static token : test token
-    //     //self.spuserToken = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTM0Njk3MjIsImlhdCI6MTU1MzM4MzMyMiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImtpZCI6M30.Ytg1JWV_iPXCcRfWtWtlVgp3JAKsDro6IqKWqngvf_iF06mLzTkHfCSb4a8E5jd0rWFrrXvfByKZPTjo44-ycQ'
-
-    //     if(self.spuserToken) {
-    //         self.setState({loading:true})
-    //         serviceLogin.getCurrentUserInfo(service, {superuser:self.spuserToken}, self.receiveUser)
-    //     } else {
-    //         //self.logoutRequest()
-    //         alert('Can not find token, Trying to minute later')
-    //     }
-    // }
-
     logoutRequest = () => {
 
         const { user } = this.props
