@@ -48,7 +48,6 @@ import SiteFourPageCreateorga from './siteFour_page_createOrga';
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import PopLegendViewer from '../container/popLegendViewer';
 import * as serviceMC from '../services/serviceMC';
-import MexMessage from '../hoc/mexMessage';
 
 import { organizationTutor, CloudletTutor } from '../tutorial';
 import SiteFourPageAudits from './siteFour_page_audits';
@@ -309,9 +308,7 @@ class SiteFour extends React.Component {
         }
 
     }
-    receiveVersion(result) {
-        _self.setState({currentVersion:result.data.version})
-    }
+   
 
     controllerOptions(option){
         let arr = []
@@ -462,12 +459,9 @@ class SiteFour extends React.Component {
 
     }
     getAdminInfo(token) {
-        // App에서 체그하기 때문에 아래 코드 막음.
-        //Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
-
         serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_CONTROLLER }, this.receiveControllerResult, this);
         serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_ROLE }, this.receiveAdminInfo)
-        //services1.getMCService('Version',{token:token}, this.receiveVersion, this)
+        _self.setState({currentVersion:process.env.REACT_APP_BUILD_VERSION ?  process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'})
     }
     onClickBackBtn =() => {
         this.setState({intoCity:false})
@@ -541,32 +535,15 @@ class SiteFour extends React.Component {
                 subParam = paths[1];
             }
             this.setState({page:subPath, OrganizationName:subParam})
-            //console.log('20191018 nextProps.par....', subPath, "  :  ", subParam)
 
         }
-
-        // if(localStorage.selectRole && this.state.menuClick) {
-        //     this.disableBtn();
-        //     this.setState({menuClick:false})
-        // }
-
-
-
-        // if(nextProps.creatingSpinner && this.state.toggleState) {
-        //     this.getIntervalData();
-        //     this.setState({toggleState:false})
-        // }
 
         if(nextProps.viewMode){
             this.setState({viewMode:nextProps.viewMode})
         } else {
             this.setState({viewMode:'listView'})
         }
-        // if(nextProps.params.subPath && this.state.viewMode == 'detailView') {
-        //     this.setState({viewMode:'listView'})
-        // }
-
-        //Redux Alert
+    
         if((nextProps.alertInfo !== this.props.alertInfo) && nextProps.alertInfo.mode) {
             Alert.closeAll();
             if(nextProps.alertInfo.mode === 'success') {

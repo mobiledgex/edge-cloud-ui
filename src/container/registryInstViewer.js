@@ -330,7 +330,6 @@ class RegistryInstViewer extends React.Component {
                 let filterData = this.state.cloudlets;
                 let vmCheck = this.state.autoClusterDisable;
 
-                console.log('Rahul1234_0', filterData);
                 this.wsRequestCount = 0;
                 this.wsRequestResponse = [];
                 multiData.Cloudlet.map((itemCloudlet) => {
