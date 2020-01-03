@@ -423,6 +423,7 @@ class SiteFourCreateFormDefault extends React.Component {
         e.preventDefault();
         let siteNum = 0;
         console.log("cancelClickddd",e,":::",this.props)
+
         if(localStorage.selectMenu == 'Cloudlets') siteNum = 2
         else if(localStorage.selectMenu == 'Cluster Instances') siteNum = 4
         else if(localStorage.selectMenu == 'Cloudlet Pool') siteNum = 7
@@ -430,7 +431,7 @@ class SiteFourCreateFormDefault extends React.Component {
     }
     
     render (){
-        const {  dimmer, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat } = this.props;
+        const {  dimmer, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat, step } = this.props;
         const { data, regKeys, fieldKeys, available, selected } = this.state;
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         let disableLabel = true;
@@ -586,11 +587,17 @@ class SiteFourCreateFormDefault extends React.Component {
                         </Form.Group>
                         <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
                             <Form.Group inline>
-                                {/*<Button onClick={()=>this.onHandleReset()}>Reset</Button>*/}
                                 <span style={{marginRight:'1em'}}>
-                                    <Button onClick={this.cancelClick}>
-                                        Cancel
-                                    </Button>
+                                    {(this.props.changeNext === 2)?
+                                        <Button>
+                                            Skip
+                                        </Button>
+                                        :
+                                        <Button onClick={this.cancelClick}>
+                                            Cancel
+                                        </Button>
+                                    }
+
                                 </span>
                                 <Button
                                     primary

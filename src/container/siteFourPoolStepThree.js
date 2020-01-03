@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
-import {Button, Form, Header, Message, List, Grid, Card} from "semantic-ui-react";
+import {Button, Form, Header, Message, List, Grid, Table} from "semantic-ui-react";
 import { Field, reduxForm } from "redux-form";
-import MaterialIcon from "../sites/siteFour_page_createOrga";
-import SiteFourLinkOrganizeForm from "./siteFourLinkOrganizeForm";
+import InsideListView from "../container/insideListView";
+import * as servicePool from '../services/service_cloudlet_pool';
 import './styles.css';
 
 const validate = values => {
@@ -127,21 +127,83 @@ class SiteFourPoolThree extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            
+            devData:[],
         };
-       
+        this.headerLayout = [1,1,1];
+        this.hiddenKeys = [];
     }
     changeOrg = () => {
         this.props.changeOrg()
     }
 
+    receiveResultShow = (result) => {
+        console.log('20191231 result .. ', result.data)
+        let createdState = [];
+        if(result.data && result.data.length) {
+            result.data.map((item) => {
+                console.log('20191231 devdata -- ', item, ":", this.props.selectedData)
+                if(item.Region === this.props.selectedData.region && item.CloudletPool === this.props.selectedData.poolName) {
+                    createdState.push({region:item.Region, org:item.Org, pool:item.CloudletPool})
+                }
+            })
+        }
+        this.setState({devData:createdState})
+    }
+
+    componentDidMount(): void {
+        console.log('20191231 props info --', this.props.selectedData)
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        this.setState({devData:[]})
+        servicePool.showOrgCloudletPool('showOrgCloudletPool',{token:store.userToken, params:null}, this.receiveResultShow)
+    }
+    makeTable = (data) => (
+        data.map((item) =>(
+            <Table.Row>
+                <Table.Cell>{item.region}</Table.Cell>
+                <Table.Cell>{item.org}</Table.Cell>
+                <Table.Cell>{item.pool}</Table.Cell>
+            </Table.Row>
+        ))
+
+    )
+
     render (){
         const { handleSubmit, reset, org, type } = this.props;
+        const { devData } = this.state;
+        console.log('20191231 devdata -- ', devData)
         return (
             <Fragment>
                 <Grid>
-                    <Grid.Column>
-                        <SiteFourLinkOrganizeForm data={this.props.data}  validError={this.props.error || []}></SiteFourLinkOrganizeForm>
+                    <Grid.Column width={11}>
+                            <Header className="newOrg3-1">{`Cloudlet Pool "`+ this.props.selectedData.poolName + `" has been created.`}</Header>
+
+                                <Grid>
+                                    <Grid.Row>
+                                        {
+                                            (type === 'Developer')?
+                                                <Grid.Column>
+                                                        <Table compact>
+                                                            <Table.Header>
+                                                                <Table.Row>
+                                                                    <Table.HeaderCell>Region</Table.HeaderCell>
+                                                                    <Table.HeaderCell>Linked Orgnization</Table.HeaderCell>
+                                                                    <Table.HeaderCell>Cloudlet Pool</Table.HeaderCell>
+                                                                </Table.Row>
+                                                            </Table.Header>
+
+                                                            <Table.Body>
+                                                                {this.makeTable(devData)}
+                                                            </Table.Body>
+                                                        </Table>
+
+                                                </Grid.Column>
+                                                :
+                                                <Grid.Column></Grid.Column>
+                                        }
+
+                                    </Grid.Row>
+                                </Grid>
+                                <Button className="newOrg3-4" onClick={this.changeOrg} type='submit' positive style={{width:'100%'}}>Check your Cloudlet Pool</Button>
                     </Grid.Column>
                 </Grid>
             </Fragment>

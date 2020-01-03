@@ -80,26 +80,7 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         _self.forceUpdate();
         _self.props.handleLoadingSpinner(false);
     }
-    countJoinOrg(orgs) {
-        let cloudletList = [];
-        orgs.map((list) => {
-            cloudletList.push({cloudlet:list['Name']})
-        })
-        console.log('20191231 cloudletList =-- ', cloudletList)
-        //
-        let fieldValue = [{
-            'Region':rgn,
-            'poolName':'',
-            'AddCloudlet':cloudletList,
-            'invisibleField':'',
-            'CloudletPool':'',
-            'LinktoOrganization':'',
-            'LinkDiagram':''
-        }]
 
-        _self.setState({devData:fieldValue})
-        _self.props.handleLoadingSpinner(false);
-    }
 
     receiveResult = (result) => {
 
@@ -125,14 +106,7 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         _self.props.handleLoadingSpinner(false);
 
     }
-    receiveResultOrg = (result) => {
-        console.log('20191231 show org result -- ', result)
 
-        if(result.data && result.data.length) {
-            _self.countJoinOrg(result.data)
-        }
-
-    }
     getDataCloudetList = (region,regionArr) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
@@ -149,12 +123,7 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         })
         this.props.handleLoadingSpinner(true);
     }
-    getDataOrgaList = (region,regionArr) => {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.setState({devData:[]})
-        services.getMCService('ShowOrg',{token:store.userToken}, _self.receiveResultOrg)
 
-    }
 
     componentWillMount() {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -202,12 +171,6 @@ class SiteFourPageCloudletPoolReg extends React.Component {
 
         }
 
-        console.log('20191231 change next -- ', nextProps.changeNext)
-        if(nextProps.changeNext !== this.props.changeNext) {
-            if(nextProps.changeNext === 2) {
-                this.getDataOrgaList(nextProps.changeRegion,nextProps.regionInfo.region);
-            }
-        }
 
 
     }

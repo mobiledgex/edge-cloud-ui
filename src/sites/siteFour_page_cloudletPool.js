@@ -142,7 +142,7 @@ class SiteFourPageCloudletPool extends React.Component {
             _self.props.handleLoadingSpinner(false);
             return;
         }
-
+        console.log('20200103 result show pool - ', result)
         let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
         if(Object.keys(regionGroup)[0]) {
             _self._cloudletDummy = _self._cloudletDummy.concat(result)
@@ -167,6 +167,8 @@ class SiteFourPageCloudletPool extends React.Component {
             return;
         }
 
+        console.log('20200103 result show member - ', result)
+
         let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
         if(Object.keys(regionGroup)[0]) {
             _self._memberDummy = _self._memberDummy.concat(result)
@@ -183,7 +185,7 @@ class SiteFourPageCloudletPool extends React.Component {
 
     countJoin() {
         let cloudlet = this._cloudletDummy;
-        console.log('20191119 ..cloudlet---', cloudlet)
+        console.log('20200103 ..cloudlet---', cloudlet)
         _self.setState({devData:cloudlet,dataSort:false})
         this.props.handleLoadingSpinner(false);
     }
@@ -221,9 +223,8 @@ class SiteFourPageCloudletPool extends React.Component {
         _self.props.handleComputeRefresh(false);
     }
     render() {
-        const {shouldShowBox, shouldShowCircle, devData} = this.state;
-        const { activeItem, viewMode } = this.state;
-        let randomValue = Math.round(Math.random() * 100);
+        const {devData, viewMode} = this.state;
+
         return (
             (viewMode === 'listView')?
                 <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet Pool'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>

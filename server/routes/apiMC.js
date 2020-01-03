@@ -130,7 +130,7 @@ exports.currentUser = (req, res) => {
         serviceBody = req.body.serviceBody;
         superpass = req.body.serviceBody.token;
     }
-    console.log('current user.. ', mcUrl)
+    console.log('current user.. ', mcUrl, ":", superpass)
     axios.post(mcUrl + '/api/v1/auth/user/current', qs.stringify({
 
         }),
@@ -2168,21 +2168,18 @@ exports.CreateLinkPoolOrg = (req, res) => {
     let superpass = '';
     let region = 'local'
     if(req.body.serviceBody){
-        serviceBody = req.body.serviceBody;
+        serviceBody = req.body.serviceBody.params;
         superpass = req.body.serviceBody.token;
-        region = req.body.serviceBody.region;
     }
-    console.log('show me cloudlet pool member -- ', 'region==',region)
-    axios.post(mcUrl + '/api/v1/auth/orgcloudletpool/create', qs.stringify({
-            region:region
-        }),
+    console.log('show me link org to pool -- ', 'param==',serviceBody)
+    axios.post(mcUrl + '/api/v1/auth/orgcloudletpool/create', qs.stringify(serviceBody),
         {
             headers: {
                 'Authorization':`Bearer ${superpass}`}
         }
     )
         .then(function (response) {
-            console.log('success show cloudlet member -- ', "- : -",response.data)
+            console.log('success link org to pool -- ', "- : -",response.data)
             if(response.data && response.statusText === 'OK') {
                 res.json(response.data)
             } else if(response.statusText === 'OK'){
@@ -2194,7 +2191,49 @@ exports.CreateLinkPoolOrg = (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log('error show ShowCloudlet pool member ..', String(error));
+            console.log('error link org to pool ..', String(error));
+            res.json({error:'Execution Of Request Failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
+        });
+}
+
+/**
+ * https://mc-stage.mobiledgex.net:9900/api/v1/auth/orgcloudletpool/show
+ * @param req
+ * @param res
+ * @constructor
+ */
+exports.ShowOrgCloudletpool = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+    }
+    console.log('show me link org cloudlet pool -- ', 'param==',serviceBody)
+    axios.post(mcUrl + '/api/v1/auth/orgcloudletpool/show', {},
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success show org cloudlet pool -- ', "- : -",response.data)
+            if(response.data && response.statusText === 'OK') {
+                res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+            console.log('error show org cloudlet pool ..', String(error));
             res.json({error:'Execution Of Request Failed'})
             //res.json({error:'Login Timeout Expired. Please login again'})
         });

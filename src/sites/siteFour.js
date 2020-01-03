@@ -935,7 +935,7 @@ class SiteFour extends React.Component {
                                         viewMode: 'listView'
                                     })}>Close Details</Button>
                                     <div>
-                                        {this.state.detailData.Region + " > "}
+                                        {this.state.detailData ? this.state.detailData.Region + " > ":null}
                                         {(this.state.headerTitle === "Cloudlets") ? this.state.detailData.CloudletName : null}
                                         {(this.state.headerTitle === 'Cluster Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterName : null}
                                         {(this.state.headerTitle === 'App Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterInst + " > " + this.state.detailData.AppName : null}

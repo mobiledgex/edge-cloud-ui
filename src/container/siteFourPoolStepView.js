@@ -34,11 +34,11 @@ const stepData = [
     },
     {
         step:"Step 2",
-        description:"Add cloudlet"
+        description:"Link the organization to the cloudlet pool"
     },
     {
         step:"Step 3",
-        description:"Link the organization to the cloudlet pool"
+        description:""
     },
 ]
 const createFormat = (data) => (
@@ -59,6 +59,7 @@ const keys = [
         'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
         'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
         'LinktoOrganization':{label:'Add Cloudlet to Pool', type:'RenderDualListBox', necessary:true, tip:'Select a cloudlet in left side', active:true},
+        'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
     },
     {
         'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
@@ -183,9 +184,9 @@ class SiteFourPoolStepView extends React.Component {
                 }
             </Step.Group>
             {
-                (this.state.step ==1) ? <SiteFourPoolOne onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} toggleSubmit={this.props.toggleSubmit} data={data}></SiteFourPoolOne> :
-                    (this.state.step ==2) ? <SiteFourPoolTwo onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} data={data} selectedData={{region:this.state.selectedRegion, poolName:this.state.gavePoolName}}></SiteFourPoolTwo> :
-                        (this.state.step ==3) ? <SiteFourPoolThree onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName} data={data}></SiteFourPoolThree> : null
+                (this.state.step ==1) ? <SiteFourPoolOne onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} toggleSubmit={this.props.toggleSubmit} data={data} changeOrg={this.changeOrg}></SiteFourPoolOne> :
+                    (this.state.step ==2) ? <SiteFourPoolTwo onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:this.state.selectedRegion, poolName:this.state.gavePoolName}} changeOrg={this.changeOrg}></SiteFourPoolTwo> :
+                        (this.state.step ==3) ? <SiteFourPoolThree onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName} data={data} selectedData={{region:this.state.selectedRegion, poolName:this.state.gavePoolName}} changeOrg={this.changeOrg}></SiteFourPoolThree> : null
             }
         </Item>
     )
@@ -223,6 +224,24 @@ class SiteFourPoolStepView extends React.Component {
     onLayoutChange(layout) {
         //this.props.onLayoutChange(layout);
     }
+    createPoolMember= () => {
+        /**
+         * '{"cloudletpoolmember":{"cloudlet_key":{"name":"frankfurt-eu","operator_key":{"name":"TDG"}},"pool_key":{"name":"TEST1223"}},"region":"EU"}'
+         * @type {{pool: *, cloudlet: *, region: *, operator: *}}
+         * @private
+         */
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let _params = {};
+        let selectedNumber = JSON.parse(this.props.formClusterInst.values.invisibleField)
+        if(selectedNumber.length) {
+            let cloudlet = ''
+            selectedNumber.map((no) => {
+                cloudlet = this.props.formClusterInst.values.AddCloudlet[no];
+                _params = {"cloudletpoolmember":{"cloudlet_key":{"name":cloudlet.cloudlet,"operator_key":{"name":cloudlet.orgaName}},"pool_key":{"name":this.props.formClusterInst.values.poolName}},"region":cloudlet.region}
+                servicePool.createCloudletPoolMember('CreateCloudletPoolMember',{token:store.userToken, params:_params}, _self.receiveResultCreateMember)
+            })
+        }
+    }
     receiveSubmit = (result, body) => {
         console.log("20191119 cloudlet paseDatapaseDatapaseData",result, ": this.props.changeRegion=", this.props.changeRegion,": region = ", this.props.region, ":", this.props.regionInfo, ":", this.props.getRegion)
 
@@ -234,9 +253,39 @@ class SiteFourPoolStepView extends React.Component {
             if(result.error == 'Key already exists'){
 
             } else {
-                /** test --- test ---- send props to next step **/
                 this.setState({selectedRegion:this.state.submitValues.Region, gavePoolName:this.state.submitValues.poolName})
                 this.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
+                this.props.handleAlertInfo('error','Request Failed')
+            }
+        } else {
+            if (result.data.error) {
+                this.props.handleAlertInfo('error', result.data.error)
+            } else {
+                this.props.handleAlertInfo('success',result.data.message)
+                /** send props to next step **/
+                this.setState({selectedRegion:this.state.submitValues.Region, gavePoolName:this.state.submitValues.poolName})
+                this.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
+            }
+        }
+        this.pauseRender = true;
+
+    }
+    receiveResultCreateMember = (result) => {
+        alert('result -- '+JSON.stringify(result))
+    }
+    receiveResultLinkOrg = (result) => {
+        console.log('20191231 result -- ',JSON.stringify(result))
+        if(this.pauseRender) return;
+
+        if(result.error) {
+            //this.setState({clusterInstCreate:false})
+            this.props.handleLoadingSpinner(false);
+            if(result.error == 'Key already exists'){
+
+            } else {
+                /** test --- test ---- send props to next step **/
+                this.setState({selectedRegion:this.state.submitValues.Region, gavePoolName:this.state.submitValues.poolName})
+                this.setState({step:3, validateError:null, keysData:[keys[2]], fakeData:[fakes[2]]})
                 /** **/
 
                 this.props.handleAlertInfo('error','Request Failed')
@@ -246,28 +295,17 @@ class SiteFourPoolStepView extends React.Component {
                 this.props.handleAlertInfo('error', result.data.error)
             } else {
                 this.props.handleAlertInfo('success',result.data.message)
-                /** input data to organization list **/
-                services.getComputeService('showOrg', this.receiveResultShowOrg)
+
 
                 /** send props to next step **/
 
                 this.setState({selectedRegion:this.state.submitValues.Region, gavePoolName:this.state.submitValues.poolName})
-                this.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
+                this.setState({step:3, validateError:null, keysData:[keys[2]], fakeData:[fakes[2]]})
             }
         }
         this.pauseRender = true;
+    }
 
-
-    }
-    receiveResultCreateMember = (result) => {
-        alert('result -- '+JSON.stringify(result))
-    }
-    receiveResultLinkOrg = (result) => {
-        alert('result -- '+JSON.stringify(result))
-    }
-    receiveResultShowOrg = (result) => {
-        alert('result -- '+JSON.stringify(result))
-    }
 
     setFildData(devData) {
         //
@@ -297,6 +335,11 @@ class SiteFourPoolStepView extends React.Component {
             let assObj = Object.assign([], this.state.keysData);
             assObj[0].Region.items = nextProps.regionInfo.region;
         }
+        if(nextProps.formClusterInst) {
+            console.log('20191231 if click skip... ', nextProps.formClusterInst)
+        }
+        if(nextProps.formClusterInst.values === this.state.submitValues) return;
+
 
 
         if(nextProps.formClusterInst && nextProps.formClusterInst.submitSucceeded){
@@ -305,7 +348,7 @@ class SiteFourPoolStepView extends React.Component {
             this.setState({submitValues: nextProps.formClusterInst.values})
 
             if(this.state.step === 1) {
-                //servicePool.createCloudletPool('CreateCloudletPool', {params:nextProps.formClusterInst.values, token:store.userToken}, this.receiveSubmit)
+                servicePool.createCloudletPool('CreateCloudletPool', {params:nextProps.formClusterInst.values, token:store.userToken}, this.receiveSubmit)
 
                 // TEST 20191231 go to next step 2
                 let self = this;
@@ -318,23 +361,25 @@ class SiteFourPoolStepView extends React.Component {
 
             } else if(this.state.step === 2) {
 
-
                 /**
-                 * '{"cloudletpoolmember":{"cloudlet_key":{"name":"frankfurt-eu","operator_key":{"name":"TDG"}},"pool_key":{"name":"TEST1223"}},"region":"EU"}'
-                 * @type {{pool: *, cloudlet: *, region: *, operator: *}}
+                 * $ http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/orgcloudletpool/create <<<
+                 * '{"cloudletpool":"cloudletPool_bictest_1223-01","org":"bicinkiOper","region":"EU"}'
+                 * @type {{}}
                  * @private
                  */
+                console.log('21091231 create link pool org.. ')
                 let _params = {};
-                let selectedNumber = JSON.parse(nextProps.formClusterInst.values.invisibleField)
+                let selectedNumber = JSON.parse(nextProps.formClusterInst.values.invisibleField);
+                let cloudletPool = nextProps.formClusterInst.values.poolName;
+                let region = nextProps.formClusterInst.values.Region;
                 if(selectedNumber.length) {
-                    let cloudlet = ''
+                    let organiz = ''
                     selectedNumber.map((no) => {
-                        cloudlet = nextProps.formClusterInst.values.AddCloudlet[no];
-                        _params = {"cloudletpoolmember":{"cloudlet_key":{"name":cloudlet.cloudlet,"operator_key":{"name":cloudlet.orgaName}},"pool_key":{"name":nextProps.formClusterInst.values.poolName}},"region":cloudlet.region}
-                        //servicePool.createCloudletPoolMember('CreateCloudletPoolMember',{token:store.userToken, params:_params}, _self.receiveResultCreateMember)
+                        organiz = nextProps.formClusterInst.values.LinktoOrganization[no];
+                        _params = {"cloudletpool":cloudletPool,"org":organiz['cloudlet'],"region":region}
+                        //servicePool.createLinkPoolOrg('CreateLinkPoolOrg',{token:store.userToken, params:_params}, _self.receiveResultLinkOrg)
                     })
                 }
-
 
                 //TEST goto step 3
                 let self = this;
@@ -345,6 +390,7 @@ class SiteFourPoolStepView extends React.Component {
 
             } else if(this.state.step === 3) {
                 //servicePool.createLinkPoolOrg('CreateLinkPoolOrg', {}, _self.receiveResultLinkOrg)
+                console.log('20191231 submit link org to pool == ', JSON.parse(nextProps.formClusterInst.values))
             }
 
             //TODO: 20191227 step 2에 선택된 region과 pool이름 넘기기

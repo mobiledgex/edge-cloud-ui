@@ -2,9 +2,20 @@ import React, { Fragment } from "react";
 import {Button, Form, Item, Message, List, Grid, Card, Header, Image, Input} from "semantic-ui-react";
 import {Field, reduxForm, initialize, reset, stopSubmit} from "redux-form";
 import SiteFourCreatePoolForm  from './siteFourCreatePoolForm';
+import * as services from '../services/service_compute_service';
 import './styles.css';
 
 let _self = null;
+const keys = [
+
+    {
+        'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
+        'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
+        'LinktoOrganization':{label:'Link an Organization to Pool', type:'RenderDualListBox', necessary:true, tip:'Select an orgization in left side', active:true},
+        'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true}
+    }
+    ]
+
 class SiteFourPoolTwo extends React.Component {
     constructor(props) {
         super(props);
@@ -27,9 +38,45 @@ class SiteFourPoolTwo extends React.Component {
         this.props.initialize(initData);
     }
 
+    receiveResultOrg = (result) => {
+        console.log('20191231 show org result -- ', result)
+
+        if(result.data && result.data.length) {
+            _self.countJoinOrg(result.data)
+        }
+
+    }
+    getDataOrgaList = () => {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        this.setState({devData:[]})
+        services.getMCService('ShowOrg',{token:store.userToken}, _self.receiveResultOrg)
+
+    }
+    countJoinOrg(orgs) {
+        let orgList = [];
+        orgs.map((list) => {
+            orgList.push({'cloudlet':list['Name']})
+        })
+        console.log('20191231 orgList =-- ', orgList)
+        //
+        let fieldValue = [{
+            'Region':this.state.selectedData['region'] || '',
+            'poolName':this.state.selectedData['poolName'] || '',
+            'LinktoOrganization':orgList,
+            'invisibleField':'',
+            'CloudletPool':'',
+            'LinkDiagram':''
+        }]
+        //
+        let panelParams = {data:fieldValue, keys:keys, region:''}
+        _self.setState({devData:panelParams})
+        _self.props.handleLoadingSpinner(false);
+    }
+
     componentDidMount() {
         //this.handleInitialize();
-        //let panelParams = {data:data, keys:keysData, region:region,
+
+        this.getDataOrgaList();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -39,16 +86,10 @@ class SiteFourPoolTwo extends React.Component {
             this.props.dispatch(stopSubmit('orgaStepOne',{}))
         }
 
-        if(nextProps.data) {
-            if(nextProps.selectedData && nextProps.selectedData.region && nextProps.selectedData.poolName) {
-                let assObj = Object.assign([], nextProps.data);
-                assObj.data[0].Region = nextProps.selectedData.region;
-                assObj.data[0].poolName = nextProps.selectedData.poolName;
-            }
-
-            this.setState({propsData:nextProps.data})
+        if(nextProps.selectedData && nextProps.selectedData.region && nextProps.selectedData.poolName) {
+            let assObj = Object.assign([], nextProps.data);
+            this.setState({selectedData: nextProps.selectedData})
         }
-
     }
 
     //data:data, keys:keysData, region:region
@@ -59,7 +100,7 @@ class SiteFourPoolTwo extends React.Component {
             <Fragment>
                 <Grid>
                     <Grid.Column>
-                        <div><SiteFourCreatePoolForm data={this.state.propsData}  pId={0} getUserRole={this.props.userrole} gotoUrl={this.props.gotoUrl} toggleSubmit={this.props.toggleSubmit} validError={this.props.error || []} onSubmit={() => console.log('submit form')}/></div>
+                        <div><SiteFourCreatePoolForm data={this.state.devData}  pId={2} getUserRole={this.props.userrole} gotoUrl={this.props.gotoUrl} toggleSubmit={this.props.toggleSubmit} validError={this.props.error || []} onSubmit={() => console.log('submit form')}/></div>
                     </Grid.Column>
                 </Grid>
             </Fragment>

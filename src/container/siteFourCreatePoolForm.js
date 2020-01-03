@@ -410,6 +410,9 @@ class SiteFourCreatePoolForm extends React.Component {
     }
 
     gotoUrl(num) {
+        if(num === 'skip') {
+            return;
+        }
         _self.props.history.push({
             pathname: '/site4',
             search: 'pg='+num
@@ -487,7 +490,8 @@ class SiteFourCreatePoolForm extends React.Component {
 
     render() {
         const { activeIndex, clusterName } = this.state;
-        let {data, dimmer, selected} = this.props;
+        let {data, dimmer, changeNext} = this.props;
+        console.log('20191231 props data in Form -- ', this.props.data)
         let randomState = Math.random()*100;
         return (
             <Grid>
@@ -501,7 +505,7 @@ class SiteFourCreatePoolForm extends React.Component {
                                                    onSubmit={() => console.log('submit form')}
                                                    selected={this.props.selectedRegion}
                                                    regionInfo={this.state.regionInfo}
-                                                   dimmer={dimmer}
+                                                   dimmer={dimmer} changeNext={changeNext}
                                                    handleChangeLat={this.handleChangeLat}
                                                    handleChangeLong={this.handleChangeLong}
                                                    onChangeState={this.onChangeFormState}
@@ -533,6 +537,7 @@ const mapStateToProps = (state) => {
     let nodeNumber = null;
     let getRegion = (state.getRegion)?state.getRegion.region:null
     let regionInfo = (state.regionInfo)?state.regionInfo:null;
+    let changeNext = state.changeNext ? state.changeNext.next:null;
     if(state.form.createAppFormDefault) {
         formValues = state.form.createAppFormDefault.values;
         if(state.form.createAppFormDefault.values.Region !== "") {
@@ -559,7 +564,7 @@ const mapStateToProps = (state) => {
 
     return {
         selectedRegion, selectedOperator, clusterName, formValues, selectedFlavor, masterNumber, nodeNumber, getRegion,
-        regionInfo: regionInfo
+        regionInfo: regionInfo, changeNext
     }
 };
 const mapDispatchProps = (dispatch) => {
@@ -568,6 +573,7 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleGetRegion: (data) => { dispatch(actions.getRegion(data)) },
+        handleChangeNext: (data) => { dispatch(actions.changeNext(data)) },
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
