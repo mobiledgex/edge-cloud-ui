@@ -488,11 +488,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <CircularProgress
                         style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
                     }*/}
-                    <div className='page_monitoring_select_row' style={{alignItems: 'center', justifyContent: 'flex-end', width: '100%', alignSelf: 'center', marginRight: 300, }}>
+                    <div className='page_monitoring_select_row' style={{alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300, }}>
                         <div className='page_monitoring_select_area' style={{marginLeft: 0,}}>
                             <div style={{
                                 display: 'flex',
-                                width: 220,
+                                width: 145,
                                 //backgroundColor: 'red',
                                 justifyContent: 'center',
                                 alignItems: 'center',
@@ -516,8 +516,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         marginBottom: 5,
                                         color: 'white',
                                         fontSize: 15,
-                                        marginLeft: 10,
-                                        marginRight: 10,
+                                        marginLeft: -10,
+                                        marginRight: 0,
 
                                     }}
 
@@ -605,9 +605,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             />
 
 
-                            <div className=''>
-                                {/*todo:DatePicker startDate*/}
-                                {/*todo:DatePicker endDate*/}
+                            <div style={{marginTop:-8}}>
                                 <RangePicker
                                     showTime={{format: 'HH:mm'}}
                                     format="YYYY-MM-DD HH:mm"
@@ -625,7 +623,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     style={{width:300}}
                                 />
                             </div>
-
 
                         </div>
                     </div>

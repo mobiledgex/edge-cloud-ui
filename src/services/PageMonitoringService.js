@@ -539,22 +539,22 @@ export const renderBarGraph002 = (usageList: any, hardwareType: string = HARDWAR
     colorCodes.reverse()
 
 
-/*
+    /*
 
-    function renderColorCode() {
-        let colorCodes2 = ['rgba(222,0,0,1)', 'rgba(255,150,0,1)', 'rgba(255,246,0,1)', 'rgba(91,203,0,1)', 'rgba(0,150,255,1)'];
+        function renderColorCode() {
+            let colorCodes2 = ['rgba(222,0,0,1)', 'rgba(255,150,0,1)', 'rgba(255,246,0,1)', 'rgba(91,203,0,1)', 'rgba(0,150,255,1)'];
 
-        if (chartDataList === 1) {
-            colorCodes2 = ['rgba(222,0,0,1)'];
-        }else{
+            if (chartDataList === 1) {
+                colorCodes2 = ['rgba(222,0,0,1)'];
+            }else{
 
 
+            }
+            return (
+                colorCodes2
+            )
         }
-        return (
-            colorCodes2
-        )
-    }
-*/
+    */
 
     return (
         <div>
@@ -906,7 +906,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 <BubbleChart
                     className='bubbleChart'
                     graph={{
-                        zoom: appInstanceList.length <= 4 ? 0.80 : 0.50,
+                        zoom: appInstanceList.length <= 4 ? 0.45 : 0.50,
                         offsetX: 0.25,
                         offsetY: appInstanceList.length <= 4 ? 0.03 : -0.02,
                     }}
@@ -1300,29 +1300,25 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
         let gradientList = []
         const gradient = ctx.createLinearGradient(0, 0, 0, height);
 
-        //rgba(255, 0, 10, 0.25)
-        // rgba(255,94,29,0.25)
-        // rgba(227,220,57,0.25)
-        // rgba(18,135,2,0.25)
-        // rgba(28,34,255,0.25)
-        gradient.addColorStop(0, 'rgba(112,0,28,1)');
-        gradient.addColorStop(1, 'rgba(112,0,28, 0)');
+        //'rgb(222,0,0)', 'rgb(255,150,0)', 'rgb(255,246,0)', 'rgb(91,203,0)', 'rgb(0,150,255)'
+        gradient.addColorStop(0, 'rgb(222,0,0)');
+        gradient.addColorStop(1, 'rgba(222,0,0, 0)');
 
         const gradient2 = ctx.createLinearGradient(0, 0, 0, height);
-        gradient2.addColorStop(0, 'rgba(255,72,0,1)');
-        gradient2.addColorStop(1, 'rgba(255,72,0,0)');
+        gradient2.addColorStop(0, 'rgb(255,150,0)');
+        gradient2.addColorStop(1, 'rgba(55,150,0,0)');
 
         const gradient3 = ctx.createLinearGradient(0, 0, 0, height);
-        gradient3.addColorStop(0, 'rgb(237,255,42)');
-        gradient3.addColorStop(1, 'rgba(255,5,0,0)');
+        gradient3.addColorStop(0, 'rgb(255,246,0)');
+        gradient3.addColorStop(1, 'rgba(255,246,0,0)');
 
         const gradient4 = ctx.createLinearGradient(0, 0, 0, height);
-        gradient4.addColorStop(0, 'rgba(18,135,2,1)');
-        gradient4.addColorStop(1, 'rgba(18,135,2,0)');
+        gradient4.addColorStop(0, 'rgb(91,203,0)');
+        gradient4.addColorStop(1, 'rgba(91,203,0,0)');
 
         const gradient5 = ctx.createLinearGradient(0, 0, 0, height);
-        gradient5.addColorStop(0, 'rgba(28,34,255,1)');
-        gradient5.addColorStop(1, 'rgba(28,34,255,0)');
+        gradient5.addColorStop(0, 'rgb(0,150,255)');
+        gradient5.addColorStop(1, 'rgba(0,150,255,0)');
 
         gradientList.push(gradient)
         gradientList.push(gradient2)
