@@ -237,7 +237,6 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
     let chartDataList = [];
     chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
     for (let index = 0; index < usageList.length; index++) {
-
         if (index < 5) {
             let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
                 hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage,
@@ -877,8 +876,7 @@ export const filterAppInstOnCloudlet = (CloudLetOneList: Array, pCluster: string
 export const renderBubbleChart = (_this: PageMonitoring2) => {
     let appInstanceList = _this.state.appInstanceList
 
-
-    //console.log('appInstanceList2222====>', appInstanceList)
+    console.log('appInstanceList2222====>', appInstanceList)
 
     let chartData = [];
     appInstanceList.map((item: TypeAppInstance) => {
@@ -908,11 +906,11 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 <BubbleChart
                     className='bubbleChart'
                     graph={{
-                        zoom: appInstanceList.length <= 4 ? 0.80 : 0.98,
-                        offsetX: 0.03,
-                        offsetY: appInstanceList.length <= 4 ? 0.03 : -0.06,
+                        zoom: appInstanceList.length <= 4 ? 0.80 : 0.50,
+                        offsetX: 0.25,
+                        offsetY: appInstanceList.length <= 4 ? 0.03 : -0.02,
                     }}
-                    width={370}
+                    width={680}
                     height={315}
                     padding={0} // optional value, number that set the padding between bubbles
                     showLegend={false} // optional value, pass false to disable the legend.
@@ -937,9 +935,9 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                         weight: 'bold',
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
-                    bubbleClickFun={(label) => {
+                    bubbleClickFun={async (label) => {
 
-                        _this.setAppInstanceOne(label);
+                        await _this.setAppInstanceOne(label);
                     }}
                     //legendClickFun={this.legendClick.bind(this)}
                     data={chartData}
@@ -1154,7 +1152,56 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
 }
 
 
-export const getMetricsUtilization = async (appInstanceOne: TypeAppInstance) => {
+export const getMetricsUtilizationAtAppLevel = async (appInstanceOne: TypeAppInstance) => {
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+    console.log('appInstanceOne====>', appInstanceOne);
+    let responseRslt = await axios({
+        url: '/api/v1/auth/metrics/app',
+        method: 'post',
+        data: {
+            "region": "EU",
+            "appinst": {
+                "app_key": {
+                    "developer_key": {
+                        "name": "MobiledgeX"
+                    },
+                    "name": "bicTestApp1112-01",
+                    "version": "1.0"
+                },
+                "cluster_inst_key": {
+                    "cluster_key": {
+                        "name": "qqqaaa"
+                    },
+                    "cloudlet_key": {
+                        "operator_key": {
+                            "name": ""
+                        }
+                    }
+                }
+            },
+            "starttime": "2019-09-11T21:26:04Z",
+            "endtime": "2020-01-02T21:26:10Z",
+            "last": 1,
+            "selector": "cpu"
+        },
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + store.userToken
+
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        throw new Error(e)
+    })
+
+    return responseRslt;
+
+}
+
+
+export const getMetricsUtilizationAtAtClusterLevel = async (appInstanceOne: TypeAppInstance) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
     console.log('appInstanceOne====>', appInstanceOne);

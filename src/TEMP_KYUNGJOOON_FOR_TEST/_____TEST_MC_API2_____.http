@@ -72,7 +72,7 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzc0OTg2N
 
 POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cloudlet
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4NDIsImlhdCI6MTU3NzkyNTQ0MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.EobJeBG1UpoXj7CQ71yjXZnuee7RTGqINB4FCYUMuGhvhltqqwyP3eHJ7kEMZpPTltvVoaSnYssi-lOo6n6zGQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgxMjY4NTEsImlhdCI6MTU3ODA0MDQ1MSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.xzNfGtWMnhj2Uzeau6id4TLAyOALvqV1Lm74mM8hMRIhw7ae0RHUpronqVGAlYxNVJSOSZsykeY-jCKWmWBCUw
 
 {
     "region": "EU",
@@ -86,10 +86,68 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4N
     "last": 100
 }
 
-### response #
+### metrics/app_level
+### Region: "EU"
+### OrganizationName: "MobiledgeX" //developer_key
+### AppName: "bicTestApp1112-01"
+### Version: "1.0"
+### Operator: "TDG"
+### Cloudlet: "frankfurt-eu"
+### ClusterInst: "qqqaaa"
+
+POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgxMjY4NTEsImlhdCI6MTU3ODA0MDQ1MSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.xzNfGtWMnhj2Uzeau6id4TLAyOALvqV1Lm74mM8hMRIhw7ae0RHUpronqVGAlYxNVJSOSZsykeY-jCKWmWBCUw
+
+{
+    "region": "EU",
+    "appinst": {
+        "app_key": {
+            "developer_key": {
+                "name": "MobiledgeX"
+            },
+            "name": "bicTestApp1112-01",
+            "version": "1.0"
+        },
+        "cluster_inst_key": {
+            "cluster_key": {
+                "name": "qqqaaa"
+            },
+            "cloudlet_key": {
+                "operator_key": {
+                    "name": ""
+                }
+            }
+        }
+    },
+    "starttime": "2019-09-11T21:26:04Z",
+    "endtime": "2020-01-02T21:26:10Z",
+    "last": 10,
+    "selector": "cpu"
+}
+
+
+
+### http --verify=false --auth-type=jwt --auth=$SUPERPASS POST https://127.0.0.1:9900/api/v1/auth/metrics/cloudlet <<< '{"region":"local","cloudlet":{"operator_key":{"name":"mexdev"},"name":"localtest"},"selector":"utilization","last":1}'
+
+POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cloudlet
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgxMjY4NTEsImlhdCI6MTU3ODA0MDQ1MSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.xzNfGtWMnhj2Uzeau6id4TLAyOALvqV1Lm74mM8hMRIhw7ae0RHUpronqVGAlYxNVJSOSZsykeY-jCKWmWBCUw
+
+{
+    "region": "EU",
+    "cloudlet": {
+        "operator_key": {
+            "name": "mexadmin"
+        },
+        "name": "frankfurt-eu"
+    },
+    "selector": "utilization",
+    "last": 1
+}
+
 
 ###
-
 
 POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/cloudlet
 Content-Type: application/json
@@ -140,9 +198,8 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4N
     "selector": "cpu"
 }
 
-###
+### https://127.0.0.1:9900/api/v1/login username=mexadmin password=mexadmin123
 
-https://127.0.0.1:9900/api/v1/login username=mexadmin password=mexadmin123
 
 POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/metrics/app
 Content-Type: application/json

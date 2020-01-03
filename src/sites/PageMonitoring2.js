@@ -21,7 +21,7 @@ import {
     filterCpuOrMemUsageByCluster,
     filterCpuOrMemUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
-    getMetricsUtilization,
+    getMetricsUtilizationAtAppLevel,
     makeCloudletListSelectBox,
     makeClusterListSelectBox, renderBarGraph002,
     renderBarGraphForCpuMem,
@@ -667,7 +667,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             let appInstanceUtilizationOne = ''
             try {
-                appInstanceUtilizationOne = await getMetricsUtilization(appInstanceOne);
+                appInstanceUtilizationOne = await getMetricsUtilizationAtAppLevel(appInstanceOne);
                 console.log('__rslt__rslt__rslt====>', appInstanceUtilizationOne.data[0].Series[0].columns);
                 console.log('__rslt__rslt__rslt====>', appInstanceUtilizationOne.data[0].Series[0].values[0]);
                 let appInstanceCurrentUtilization = appInstanceUtilizationOne.data[0].Series[0].values[0]
@@ -953,7 +953,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             {/*todo:#########################################****/}
                                                             {/*todo: RENDER Donut Chart N App Status          */}
                                                             {/*todo:#########################################****/}
-                                                            {!this.state.isShowUtilizationArea ?
+                                                           {/* {!this.state.isShowUtilizationArea ?
                                                                 <FlexBox
                                                                     style={{
                                                                         backgroundColor: 'black',
@@ -982,7 +982,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                         : <div></div>}
                                                                 </FlexBox>
 
-                                                                : renderPieChart2AndAppStatus(this.state.appInstanceOne, this)}
+                                                                : renderPieChart2AndAppStatus(this.state.appInstanceOne, this)}*/}
                                                         </div>
                                                     </FlexBox>
 
