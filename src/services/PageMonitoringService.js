@@ -28,6 +28,7 @@ import {
     StackedAreaSeries, StackedNormalizedAreaChart,
     StackedNormalizedAreaSeries
 } from "reaviz";
+import {notification} from "antd";
 
 /**
  * todo: 클라우드렛위에 올라와 있는 인스턴스 리스트를 flitering by pCloudlet.
@@ -912,9 +913,9 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     }}
                     width={690}
                     height={315}
-                    padding={0} // optional value, number that set the padding between bubbles
+                    padding={-5} // optional value, number that set the padding between bubbles
                     showLegend={true} // optional value, pass false to disable the legend.
-                    legendPercentage={30} // number that represent the % of with that legend going to use.
+                    legendPercentage={35} // number that represent the % of with that legend going to use.
                     legendFont={{
                         //family: 'Candal',
                         size: 12,
@@ -923,15 +924,15 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     }}
                     valueFont={{
                         //family: 'Righteous',
-                        size: 25,
-                        color: 'black',
+                        size: 8,
+                        color: '#404040',
                         //weight: 'bold',
                         fontStyle: 'italic',
                     }}
                     labelFont={{
                         //family: 'Righteous',
-                        size: 10,
-                        color: '#000',
+                        size: 12,
+                        color: 'black',
                         weight: 'bold',
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
@@ -939,7 +940,15 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
 
                         await _this.setAppInstanceOne(label);
                     }}
-                    //legendClickFun={this.legendClick.bind(this)}
+
+                    legendClickFun={(label) => {
+
+                        notification.success({
+                            duration: 1.5,
+                            message: label.toString()
+                        })
+
+                    }}
                     data={chartData}
                 />
 

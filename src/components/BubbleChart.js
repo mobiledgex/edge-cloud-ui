@@ -68,7 +68,7 @@ export default class BubbleChart extends Component {
             })
             .each((d) => {
                 if (d.data.label) {
-                    d.label = '' + d.data.label; //라벨 셋팅 부분..
+                    d.label = '' + d.data.label; //todo:라벨 셋팅 부분..
                     d.id = d.data.label.toLowerCase().replace(/ |\//g, "-");
                     d.favor = d.data.favor;
                 }
@@ -164,7 +164,8 @@ export default class BubbleChart extends Component {
             .text((d) => {
                 //@todo:value를 랜더링 하는 부분..
                 //@todo:value를 랜더링 하는 부분..
-                return d.value; //@todo:value를 랜더링 하는 부분..
+                return d.favor; //@todo:value를 랜더링 하는 부분..
+
             });
 
         node.append("text")
@@ -213,13 +214,14 @@ export default class BubbleChart extends Component {
         d3.selectAll(".value-text").attr("x", function (d) {
             const self = d3.select(this);
             const width = self.node().getBBox().width;
+            const height = self.node().getBBox().height;
             return -(width / 2);
         })
             .attr("y", function (d) {
                 if (d.hideLabel) {
-                    return valueFont.size / 3;
+                    return valueFont.size / 2;
                 } else {
-                    return -valueFont.size * 0.5;
+                    return -valueFont.size * 1.2;
                 }
             });
 
@@ -242,7 +244,7 @@ export default class BubbleChart extends Component {
             .attr("transform", function () {
                 return `translate(${offset},${(bubbleHeight) * 0.18})`;
             })
-            .attr("class", "legend").style("margin-bottom", `-50px`)
+            .attr("class", "legend")//.style("margin-bottom", `-50px`)
 
 
         let textOffset = 0;
@@ -263,8 +265,8 @@ export default class BubbleChart extends Component {
                   d3.select('#' + d.id).attr("r", r);*/
             })
             .on("click", function (d) {
-                //legendClickFun(d.label);
-                alert('sdlfksldkf')
+                legendClickFun(d.label);
+                //alert('sdlfksldkf')
             });
         ;
 
