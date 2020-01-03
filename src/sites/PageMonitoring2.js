@@ -604,27 +604,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             />
 
-                            {/*todo:APPINSTANCE selectbox*/}
-                            {/*todo:APPINSTANCE selectbox*/}
-                            {/*todo:APPINSTANCE selectbox*/}
-                            <div>
-                                <Dropdown
-                                    clearable={this.state.appInstSelectBoxClearable}
-                                    value={this.state.currentAppInst}
-                                    placeholder='Select App Instance'
-                                    selection
-                                    options={this.state.appInstaceListForSelectBoxForCpu}
-                                    style={{width: 250}}
-                                    onChange={async (e, {value}) => {
-
-                                        await this.setState({
-                                            currentAppInst: value,
-                                        })
-                                        await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
-                                    }}
-
-                                />
-                            </div>
 
                             <div className=''>
                                 {/*todo:DatePicker startDate*/}
@@ -911,9 +890,30 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             Top 5 of CPU Usage
                                                         </div>
+                                                        {/*todo:APPINSTANCE selectbox*/}
+                                                        {/*todo:APPINSTANCE selectbox*/}
+                                                        {/*todo:APPINSTANCE selectbox*/}
+                                                        <div>
+                                                            <Dropdown
+                                                                clearable={this.state.appInstSelectBoxClearable}
+                                                                value={this.state.currentAppInst}
+                                                                placeholder='Select App Instance'
+                                                                selection
+                                                                options={this.state.appInstaceListForSelectBoxForCpu}
+                                                                style={{width: 250}}
+                                                                onChange={async (e, {value}) => {
+
+                                                                    await this.setState({
+                                                                        currentAppInst: value,
+                                                                    })
+                                                                    await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                                                }}
+
+                                                            />
+                                                        </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isReady ? renderPlaceHolder() : renderBarGraph002(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                                                        {!this.state.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                                                     </div>
                                                 </div>
                                                 {/* cpu___col___3*/}
@@ -1009,7 +1009,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     </div>
 
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isReady ? renderPlaceHolder() : renderBarGraph002(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                                                        {!this.state.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                                                     </div>
 
                                                 </div>
