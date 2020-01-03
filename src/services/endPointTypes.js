@@ -133,8 +133,6 @@ export function formatData(request, response) {
             return { data: FormatComputeApp(response, request.data) }
         case SHOW_APP_INST:
             return { data: FormatComputeInst(response, request.data) }
-        case SHOW_SELF:
-            return { response: response, method: request.method };
         default:
             return { request: request, response: response };
     }
