@@ -11,43 +11,7 @@ class SiteFourPoolOne extends React.Component {
         _self = this;
         this.state = {
             typeValue:'',
-            keysData:[
-                {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
-                    'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
-                    'selectCloudlet':{label:'Into the pool', type:'RenderDualListBox', necessary:false, tip:'select a cloudlet', active:true},
-                    'invisibleField':{label:'Invisible', type:'InvisibleField', necessary:false, tip:'invisible field', active:true}
-                },
-                {
 
-                }
-            ],
-            fakeData:[
-                {
-                    'Region':'',
-                    'poolName':'',
-                    'selectCloudlet':'',
-                    'invisibleField':''
-                }
-            ],
-            keysDataLink:[
-                {
-                    'CloudletPool':{label:'Cloudlet Pool', type:'RenderDropDown', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
-                    'LinktoOrganization':{label:'Into the pool', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
-                    'LinkDiagram':{label:'Linked Status', type:'RenderLinkedDiagram', necessary:false, tip:'linked the cloudlet pool with the organization', active:true},
-                },
-                {
-
-                }
-            ],
-            fakeDataLink:[
-                {
-                    'CloudletPool':'',
-                    'LinktoOrganization':'',
-                    'LinkDiagram':''
-                }
-            ],
-            devData: []
         };
 
     }
@@ -68,26 +32,29 @@ class SiteFourPoolOne extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        let regions = [];
+        let fieldValue = [];
         if(this.props.toggleSubmit) {
             this.props.dispatch(stopSubmit('orgaStepOne',{}))
         }
-        
-        this.setState({devData:{data:this.state.fakeData, keys:this.state.keysData}})
+        if(nextProps.data) {
+            console.log('20191226 data data --- ', nextProps.data )
+        }
+
+
     }
 
-
+//data:data, keys:keysData, region:region
+    // data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}
     render (){
         const { handleSubmit, reset, org, type } = this.props;
         return (
             <Fragment>
                 <Grid>
-                    <Grid.Column width={11}>
-                        <div><SiteFourCreatePoolForm data={this.state.devData}/></div>
-                    </Grid.Column>
-                    <Grid.Column width={5}>
+                    <Grid.Column>
+                        <div><SiteFourCreatePoolForm data={this.props.data}  pId={0} getUserRole={this.props.userrole} gotoUrl={this.props.gotoUrl} toggleSubmit={this.props.toggleSubmit} validError={this.props.error || []} onSubmit={() => console.log('submit form')}/></div>
                     </Grid.Column>
                 </Grid>
-
             </Fragment>
         )
 

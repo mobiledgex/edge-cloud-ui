@@ -267,6 +267,7 @@ class SiteFour extends React.Component {
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
+        this.props.handleAppLaunch(null)
         this.props.handleChangeClickCity([])
         this.setState({intoCity: false})
     }
@@ -537,8 +538,10 @@ class SiteFour extends React.Component {
         } catch (e) {
 
         }
+        if(nextProps.params.subPath === this.state.page){
 
-
+            return;
+        }
         if (nextProps.params && nextProps.params.subPath) {
             let subPaths = nextProps.params.subPath;
             let subPath = '';
@@ -563,6 +566,7 @@ class SiteFour extends React.Component {
         //     this.getIntervalData();
         //     this.setState({toggleState:false})
         // }
+
 
         if (nextProps.viewMode) {
             this.setState({viewMode: nextProps.viewMode})
@@ -627,23 +631,17 @@ class SiteFour extends React.Component {
             //_self.setState({stepsEnabled:false})
         }
         //
-        let enable = true;
-        setTimeout(() => {
-            let elem = document.getElementById('animationWrapper')
-            if (elem) {
-                //_self.makeGhost(elem, _self)
 
-            }
+
+
             console.log('20190822 tutorial=', tutorial)
-            if (enable && !_self.state.learned && !tutorial) {
+            if (_self.state.learned && !tutorial) {
                 _self.enalbeSteps();
                 _self.setState({stepsEnabled: true, learned: true})
                 localStorage.setItem('TUTORIAL', 'done')
             }
 
-        }, 1000)
 
-        let site = this.props.siteName;
         if (!this.props.changeStep || this.props.changeStep === '02') {
             this.setState({enable: true})
         } else {
@@ -674,7 +672,7 @@ class SiteFour extends React.Component {
 
         //set category
         if (nextProps.detailData !== this.props.detailData) {
-            // alert(JSON.stringify(nextProps.detailData))
+
             this.setState({detailData: nextProps.detailData})
         }
 
@@ -847,10 +845,8 @@ class SiteFour extends React.Component {
         let savedArray = localStorage.getItem('auditUnChecked');
         let checkedArray = localStorage.getItem('auditChecked');
         let checked = [];
-        console.log('20191022 item is -- ', all, "  :  ", savedArray, typeof savedArray)
         all.map((item, i) => {
             if (savedArray && JSON.parse(savedArray).length) {
-                console.log('20191022 item is -- ', JSON.parse(savedArray).findIndex(k => k == item.traceid))
                 //이전에 없던 데이터 이면 추가하기
                 if (JSON.parse(savedArray).findIndex(k => k == item.traceid) === -1) addArray.push(item.traceid)
             } else {
@@ -859,7 +855,6 @@ class SiteFour extends React.Component {
         })
 
         if (addArray.length) {
-            console.log('20191022 if has new data ... ', addArray)
             JSON.parse(savedArray).concat(addArray);
         }
 
@@ -874,7 +869,6 @@ class SiteFour extends React.Component {
         }
 
         checked = (checkedArray) ? JSON.parse(checkedArray) : [];
-        console.log('20191022  unchecked... is -- ', checkResult.length, ":", checked.length, " - ", (checkResult.length - checked.length))
         this.props.handleAuditCheckCount(checkResult.length - checked.length)
         localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
 
@@ -927,7 +921,7 @@ class SiteFour extends React.Component {
                                         viewMode: 'listView'
                                     })}>Close Details</Button>
                                     <div>
-                                        {this.state.detailData.Region + " > "}
+                                        {this.state.detailData ? this.state.detailData.Region + " > ":null}
                                         {(this.state.headerTitle === "Cloudlets") ? this.state.detailData.CloudletName : null}
                                         {(this.state.headerTitle === 'Cluster Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterName : null}
                                         {(this.state.headerTitle === 'App Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterInst + " > " + this.state.detailData.AppName : null}
@@ -1064,7 +1058,6 @@ class SiteFour extends React.Component {
     render() {
         const {shouldShowBox, shouldShowCircle, viewMode} = this.state;
         const {stepsEnabled, initialStep, hintsEnabled, hints, steps} = this.state;
-        console.log('20190821 stepsEnabled..', stepsEnabled)
         return (
             <Grid className='view_body'>
                 <Steps
@@ -1381,6 +1374,9 @@ const mapDispatchProps = (dispatch) => {
         handleResetMap: (data) => {
             dispatch(actions.resetMap(data))
         },
+        handleAppLaunch: (data) => {
+            dispatch(actions.appLaunch(data))
+        }
     };
 };
 
