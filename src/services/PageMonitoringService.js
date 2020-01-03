@@ -906,14 +906,14 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                 <BubbleChart
                     className='bubbleChart'
                     graph={{
-                        zoom: appInstanceList.length <= 4 ? 0.45 : 0.50,
-                        offsetX: 0.25,
+                        zoom: appInstanceList.length <= 4 ? 0.45 : 0.70,
+                        offsetX: 0.15,
                         offsetY: appInstanceList.length <= 4 ? 0.03 : -0.02,
                     }}
-                    width={680}
+                    width={690}
                     height={315}
                     padding={0} // optional value, number that set the padding between bubbles
-                    showLegend={false} // optional value, pass false to disable the legend.
+                    showLegend={true} // optional value, pass false to disable the legend.
                     legendPercentage={30} // number that represent the % of with that legend going to use.
                     legendFont={{
                         //family: 'Candal',

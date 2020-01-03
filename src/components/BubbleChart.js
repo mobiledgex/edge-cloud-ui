@@ -189,7 +189,7 @@ export default class BubbleChart extends Component {
                 return labelFont.lineWeight ? labelFont.lineWeight : 0;
             })
             .text(function (d) {
-                return   d.label ;//Label그리는 부분..
+                return d.label;//Label그리는 부분..
             });
 
 
@@ -240,9 +240,10 @@ export default class BubbleChart extends Component {
 
         const legend = d3.select(this.svg).append("g")
             .attr("transform", function () {
-                return `translate(${offset},${(bubbleHeight) * 0.05})`;
+                return `translate(${offset},${(bubbleHeight) * 0.18})`;
             })
-            .attr("class", "legend");
+            .attr("class", "legend").style("margin-bottom", `-50px`)
+
 
         let textOffset = 0;
         const texts = legend.selectAll(".legend-text")
@@ -255,14 +256,15 @@ export default class BubbleChart extends Component {
                 return `translate(0,${offset})`;
             })
             .on('mouseover', function (d) {
-                d3.select('#' + d.id).attr("r", d.r * 1.04);
+                // d3.select('#' + d.id).attr("r", d.r * 1.04);
             })
             .on('mouseout', function (d) {
-                const r = d.r - (d.r * 0.04);
-                d3.select('#' + d.id).attr("r", r);
+                /*  const r = d.r - (d.r * 0.04);
+                  d3.select('#' + d.id).attr("r", r);*/
             })
             .on("click", function (d) {
-                legendClickFun(d.label);
+                //legendClickFun(d.label);
+                alert('sdlfksldkf')
             });
         ;
 
@@ -283,13 +285,18 @@ export default class BubbleChart extends Component {
             });
 
         texts.append("text")
-            .style("font-size", `${legendFont.size}px`)
-            .style("font-weight", (d) => {
-                return legendFont.weight ? legendFont.weight : 600;
-            })
-            .style("font-family", legendFont.family)
-            .style("fill", () => {
+            //.style("font-size", `${legendFont.size}px`)
+            .style("font-size", `17px`)
+            /*.style("font-weight", (d) => {
+                return legendFont.weight ? legendFont.weight : 50;
+            })*/
+            //.style("font-family", legendFont.family)
+            .style("font-family", 'Righteous')
+            /*.style("fill", () => {
                 return legendFont.color ? legendFont.color : '#000';
+            })*/
+            .style("fill", () => {
+                return 'white';
             })
             .style("stroke", () => {
                 return legendFont.lineColor ? legendFont.lineColor : '#000';

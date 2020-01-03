@@ -488,7 +488,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <CircularProgress
                         style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
                     }*/}
-                    <div className='page_monitoring_select_row' style={{alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300, }}>
+                    <div className='page_monitoring_select_row'
+                         style={{alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,}}>
                         <div className='page_monitoring_select_area' style={{marginLeft: 0,}}>
                             <div style={{
                                 display: 'flex',
@@ -538,6 +539,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:REGION Dropdown*/}
                             {/*todo:REGION Dropdown*/}
                             {/*todo:REGION Dropdown*/}
+                            <div style={{color: 'white', backgroundColor:'#77BD25', height:35, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-10, width:100}}>
+                                Region
+                            </div>
                             <Dropdown
                                 clearable={this.state.regionSelectBoxClearable}
                                 placeholder='REGION'
@@ -559,6 +563,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:CloudLet selectbox*/}
                             {/*todo:CloudLet selectbox*/}
                             {/*todo:CloudLet selectbox*/}
+                            <div style={{color: 'white', backgroundColor:'#77BD25', height:35, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-10, width:100}}>
+                                CloudLet
+                            </div>
                             <Dropdown
                                 value={this.state.currentCloudLet}
                                 clearable={this.state.cloudLetSelectBoxClearable}
@@ -584,6 +591,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:Cluster selectbox*/}
                             {/*todo:Cluster selectbox*/}
                             {/*todo:Cluster selectbox*/}
+                            <div style={{color: 'white', backgroundColor:'#77BD25', height:35, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-10, width:100}}>
+                                Cluster
+                            </div>
                             <Dropdown
                                 value={this.state.currentCluster}
                                 clearable={this.state.clusterSelectBoxClearable}
@@ -605,7 +615,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             />
 
 
-                            <div style={{marginTop:-8}}>
+                            {/*todo:RangePicker*/}
+                            {/*todo:RangePicker*/}
+                            {/*todo:RangePicker*/}
+                            <div style={{color: 'white', backgroundColor:'#77BD25', height:35, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-10, width:100}}>
+                                TimeRange
+                            </div>
+                            <div style={{marginTop: -8}}>
                                 <RangePicker
                                     showTime={{format: 'HH:mm'}}
                                     format="YYYY-MM-DD HH:mm"
@@ -617,10 +633,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             startDate: startDate,
                                             endDate: endDate,
                                         })
-
                                         //await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
                                     }}
-                                    style={{width:300}}
+                                    style={{width: 300}}
                                 />
                             </div>
 
@@ -950,7 +965,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             {/*todo:#########################################****/}
                                                             {/*todo: RENDER Donut Chart N App Status          */}
                                                             {/*todo:#########################################****/}
-                                                           {/* {!this.state.isShowUtilizationArea ?
+                                                            {/* {!this.state.isShowUtilizationArea ?
                                                                 <FlexBox
                                                                     style={{
                                                                         backgroundColor: 'black',

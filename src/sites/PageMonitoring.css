@@ -15517,6 +15517,12 @@ span.ant-radio + * {
 /* stylelint-disable no-duplicate-selectors */
 /* stylelint-disable */
 /* stylelint-disable declaration-bang-space-before,no-duplicate-selectors,string-no-newline */
+
+
+.legend{
+    margin-top: 50px;
+}
+
 .ant-calendar-picker-container {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
