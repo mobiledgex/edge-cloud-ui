@@ -113,7 +113,7 @@ class DeleteItem extends React.Component {
 
     onHandleDelete() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let serviceBody = { uuid: serviceMC.generateUniqueId(), token: store ? store.userToken : null }
+        let serviceBody = { token: store ? store.userToken : null }
         this.props.handleLoadingSpinner(true);
         if (this.props.siteId === 'ClusterInst' || this.props.siteId === 'appinst' || this.props.siteId === 'Cloudlet') {
             this.wsRequest(this.props.siteId, serviceBody)
@@ -191,6 +191,7 @@ class DeleteItem extends React.Component {
 
     wsRequest = (requestType, serviceBody) => {
         let data = this.props.selected;
+        serviceBody.uuid =  data.uuid; 
         switch (requestType) {
             case 'Cloudlet':
                 serviceBody.method = serviceMC.getEP().DELETE_CLOUDLET;

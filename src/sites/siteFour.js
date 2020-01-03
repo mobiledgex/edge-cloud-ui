@@ -479,17 +479,7 @@ class SiteFour extends React.Component {
     componentDidMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
         this.setState({activeItem: (localStorage.selectMenu)?localStorage.selectMenu:'Organizations', headerTitle:(localStorage.selectMenu)?localStorage.selectMenu:'Organizations'})
-        //get list of customer's info
-        // if(store.userToken) {
-        //     Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
-        // }
-        //if there is no role
-        //site1으로 이동할 수 없는 문제로 아래 코드 주석처리 by inki
-        //show you create the organization view
-        //this.setState({page:'pg=0'})
-        //this.gotoUrl('/site4', 'pg=0')
-        //this.gotoPreview('/site4');
-        //this.props.history.location.search = "pg=0";
+       
         this.disableBtn();
 
         if(store){

@@ -246,11 +246,6 @@ class MapWithListView extends React.Component {
         ))
 
     }
-    /*
-    <div className="round_panel" key={i} style={{display:'flex'}}>
-                {this.TableExampleVeryBasic()}
-            </div>
-     */
 
     generateLayout() {
         const p = this.props;
@@ -380,13 +375,7 @@ class MapWithListView extends React.Component {
         })
     }
 
-    autoClusterAlert = (_data) => {
-        console.log('20191119 auto cluster alert', _data, ":", this.props.submitObj)
-        if (this.props.submitObj) {
-            _data['OrganizationName'] = this.props.submitObj['appinst'].key.app_key.developer_key.name;
-        }
-        this.showProgress(_data, this.props.siteId, 'auto');
-    }
+    
 
     makeUTC = (time) => (
         moment.unix(time.replace('seconds : ', '')).utc().format('YYYY-MM-DD HH:mm:ss')
@@ -531,9 +520,6 @@ class MapWithListView extends React.Component {
 
     componentDidMount() {
         window.addEventListener("resize", this.updateDimensions);
-        if (this.props.location && this.props.location.pgname == 'appinst') {
-            this.autoClusterAlert(this.props.location.pgnameData)
-        }
         if (this.props.viewMode !== this.state.viewMode) {
             this.setState({ dummyData: this.props.devData })
             this.forceUpdate();
