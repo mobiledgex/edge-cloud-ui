@@ -24,5 +24,6 @@ RUN sed -i "s/protocol: 'ws'/protocol: 'wss'/" /edge-cloud-ui/node_modules/react
 
 ARG TAG
 ENV BUILD_VERSION=$TAG
+ENV REACT_APP_BUILD_VERSION=$TAG
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
