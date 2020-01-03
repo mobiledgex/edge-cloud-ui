@@ -2,14 +2,14 @@ import 'react-hot-loader'
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Dropdown, Grid, Modal} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal} from 'semantic-ui-react'
 import FlexBox from "flexbox-react";
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker,} from 'antd';
+import {DatePicker, TimePicker,} from 'antd';
 import * as reducer from "../utils";
 import {
     filterAppInstanceListByCloudLet,
@@ -38,6 +38,7 @@ import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
 import {cutArrayList} from "../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
+import moment from "moment";
 
 const FA = require('react-fontawesome')
 const {Column, Row} = Grid;
@@ -247,7 +248,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     });
                 }
             })
-
 
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
@@ -476,7 +476,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderHeader = () => {
             return (
-                <FlexBox className='' style={{}}>
+                <FlexBox className='' style={{alignItem: 'flex-end'}}>
                     <Grid.Column className=''
                                  style={{lineHeight: '36px', fontSize: 30}}>Monitoring</Grid.Column>
                     <div style={{marginLeft: '10px'}}>
@@ -488,37 +488,49 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <CircularProgress
                         style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
                     }*/}
-                    <div className='page_monitoring_select_row' style={{}}>
-                        <div className='page_monitoring_select_area' style={{marginLeft: 200,}}>
+                    <div className='page_monitoring_select_row' style={{alignItems: 'center', justifyContent: 'flex-end', width: '100%', alignSelf: 'center', marginRight: 300, }}>
+                        <div className='page_monitoring_select_area' style={{marginLeft: 0,}}>
                             <div style={{
                                 display: 'flex',
-                                width: 129,
+                                width: 220,
                                 //backgroundColor: 'red',
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 marginBottom: 5,
 
                             }}>
-                                <FA name="list" style={{fontSize: 30,}} onClick={() => {
+
+
+                                {/* <FA name="list" style={{fontSize: 30,}} onClick={() => {
                                     this.setState({
                                         isModalOpened: !this.state.isModalOpened
                                     })
-                                }}/>
-                                <div style={{
-                                    display: 'flex',
-                                    width: 129,
-                                    //backgroundColor: 'red',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    marginBottom: 5,
+                                }}/>*/}
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        width: 150,
+                                        //backgroundColor: 'red',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        marginBottom: 5,
+                                        color: 'white',
+                                        fontSize: 15,
+                                        marginLeft: 10,
+                                        marginRight: 10,
 
-                                }}>
-                                    <FA name="refresh" style={{fontSize: 30,}} onClick={async () => {
+                                    }}
 
+                                >
+
+                                    <Button style={{backgroundColor: 'white'}} onClick={async () => {
 
                                         this.resetAllData();
 
-                                    }}/>
+                                    }}>
+                                        Reset All
+
+                                    </Button>
                                 </div>
 
 
@@ -592,23 +604,49 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             />
 
+                            {/*todo:APPINSTANCE selectbox*/}
+                            {/*todo:APPINSTANCE selectbox*/}
+                            {/*todo:APPINSTANCE selectbox*/}
+                            <div>
+                                <Dropdown
+                                    clearable={this.state.appInstSelectBoxClearable}
+                                    value={this.state.currentAppInst}
+                                    placeholder='Select App Instance'
+                                    selection
+                                    options={this.state.appInstaceListForSelectBoxForCpu}
+                                    style={{width: 250}}
+                                    onChange={async (e, {value}) => {
 
-                            <div className='page_monitoring_datepicker_area'>
+                                        await this.setState({
+                                            currentAppInst: value,
+                                        })
+                                        await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                    }}
+
+                                />
+                            </div>
+
+                            <div className=''>
                                 {/*todo:DatePicker startDate*/}
                                 {/*todo:DatePicker endDate*/}
-                                <RangePicker onChange={async (date, dateString) => {
-                                    let startDate = dateString[0]
-                                    let endDate = dateString[1]
-                                    await this.setState({
-                                        startDate: startDate,
-                                        endDate: endDate,
-                                    })
+                                <RangePicker
+                                    showTime={{format: 'HH:mm'}}
+                                    format="YYYY-MM-DD HH:mm"
+                                    placeholder={['Start Time', 'End Time']}
+                                    onChange={async (date, dateString) => {
+                                        let startDate = dateString[0]
+                                        let endDate = dateString[1]
+                                        await this.setState({
+                                            startDate: startDate,
+                                            endDate: endDate,
+                                        })
 
-                                    await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
-
-
-                                }}/>
+                                        //await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
+                                    }}
+                                    style={{width:300}}
+                                />
                             </div>
+
 
                         </div>
                     </div>
@@ -686,11 +724,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderAppInstanceGrid() {
             return (
-                <div style={{marginTop: 10}}>
-                    <Grid columns={7} padded={true}>
-                        {/*todo:ROW HEADER*/}
-                        {/*todo:ROW HEADER*/}
-                        {/*todo:ROW HEADER*/}
+                <div>
+                    <Grid columns={7} padded={true} style={{height: 50}}>
                         <Row>
                             <Column color={'grey'}>
                                 NAME
@@ -714,50 +749,58 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 Start
                             </Column>
                         </Row>
-                        {!this.state.isReady && <Row columns={1}>
-                            <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
-                                <CircularProgress
-                                    style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
-                            </Column>
-                        </Row>}
-                        {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
-                            /*   sumCpuUsage: sumCpuUsage,
-                               sumMemUsage: sumMemUsage,
-                               sumDiskUsage: sumDiskUsage,
-                               sumRecvBytes: sumRecvBytes,
-                               sumSendBytes: sumSendBytes,*/
-
-                            return (
-                                <Row onClick={() => {
-                                    //this.props.history.push('PageMonitoringDetail')
-                                }}>
-                                    <Column>
-                                        {item.AppName}
-                                    </Column>
-                                    <Column>
-                                        {this.state.allCpuUsageList[index].sumCpuUsage.toFixed(2) + "%"}
-                                    </Column>
-                                    <Column>
-                                        {this.state.allMemUsageList[index].sumMemUsage.toFixed(0) + ' Byte'}
-                                    </Column>
-                                    <Column>
-                                        {this.state.allNetworkUsageList[index].sumRecvBytes}
-                                    </Column>
-                                    <Column>
-                                        {this.state.allNetworkUsageList[index].sumSendBytes}
-                                    </Column>
-                                    <Column>
-                                        Status_NULL
-                                    </Column>
-                                    <Column>
-                                        Start_NULL
-                                    </Column>
-                                </Row>
-
-                            )
-                        })}
                     </Grid>
+                    <div className='grid00001'>
+                        <Grid columns={7} padded={true}>
+                            {/*todo:ROW HEADER*/}
+                            {/*todo:ROW HEADER*/}
+                            {/*todo:ROW HEADER*/}
+                            {!this.state.isReady && <Row columns={1}>
+                                <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
+                                    <CircularProgress
+                                        style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
+                                </Column>
+                            </Row>}
+                            {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
+                                /*   sumCpuUsage: sumCpuUsage,
+                                   sumMemUsage: sumMemUsage,
+                                   sumDiskUsage: sumDiskUsage,
+                                   sumRecvBytes: sumRecvBytes,
+                                   sumSendBytes: sumSendBytes,*/
+
+                                return (
+                                    <Row onClick={() => {
+                                        //this.props.history.push('PageMonitoringDetail')
+                                    }}>
+                                        <Column>
+                                            {item.AppName}
+                                        </Column>
+                                        <Column>
+                                            {this.state.allCpuUsageList[index].sumCpuUsage.toFixed(2) + "%"}
+                                        </Column>
+                                        <Column>
+                                            {this.state.allMemUsageList[index].sumMemUsage.toFixed(0) + ' Byte'}
+                                        </Column>
+                                        <Column>
+                                            {this.state.allNetworkUsageList[index].sumRecvBytes}
+                                        </Column>
+                                        <Column>
+                                            {this.state.allNetworkUsageList[index].sumSendBytes}
+                                        </Column>
+                                        <Column>
+                                            Status_NULL
+                                        </Column>
+                                        <Column>
+                                            Start_NULL
+                                        </Column>
+                                    </Row>
+
+                                )
+                            })}
+                        </Grid>
+                    </div>
                 </div>
+
             )
         }
 
@@ -868,23 +911,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             Top 5 of CPU Usage
                                                         </div>
-
-                                                        <Dropdown
-                                                            clearable={this.state.appInstSelectBoxClearable}
-                                                            value={this.state.currentAppInst}
-                                                            placeholder='Select App Instance'
-                                                            selection
-                                                            options={this.state.appInstaceListForSelectBoxForCpu}
-                                                            style={{width: 250}}
-                                                            onChange={async (e, {value}) => {
-
-                                                                await this.setState({
-                                                                    currentAppInst: value,
-                                                                })
-                                                                await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
-                                                            }}
-
-                                                        />
                                                     </div>
                                                     <div className='page_monitoring_container'>
                                                         {!this.state.isReady ? renderPlaceHolder() : renderBarGraph002(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
@@ -929,7 +955,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             {/*todo:#########################################****/}
                                                             {!this.state.isShowUtilizationArea ?
                                                                 <FlexBox
-                                                                    style={{backgroundColor: 'black', width: 180, height: 320, alignItem: 'center', alignSelf: "center", justifyContent: "center"}}>
+                                                                    style={{
+                                                                        backgroundColor: 'black',
+                                                                        width: 180,
+                                                                        height: 320,
+                                                                        alignItem: 'center',
+                                                                        alignSelf: "center",
+                                                                        justifyContent: "center"
+                                                                    }}>
                                                                     {this.state.loading777 ?
                                                                         <Lottie
                                                                             options={{
@@ -994,6 +1027,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div className='page_monitoring_row'>
+                                                <div className='page_monitoring_column_for_grid'>
+                                                    {this.renderAppInstanceGrid()}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -1001,6 +1039,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </div>
                             </Grid.Column>
                         </Grid.Row>
+
                     </Grid.Column>
 
                 </Grid.Row>

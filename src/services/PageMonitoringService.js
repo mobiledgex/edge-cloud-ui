@@ -537,13 +537,29 @@ export const renderBarGraph002 = (usageList: any, hardwareType: string = HARDWAR
 
 
     let colorCodes = ['rgba(112,0,28,1)', 'rgba(255,72,0,1)', 'rgb(237,255,42)', 'rgba(18,135,2,1)', 'rgba(28,34,255,1)']
-
     colorCodes.reverse()
+
+
+/*
+
+    function renderColorCode() {
+        let colorCodes2 = ['rgba(222,0,0,1)', 'rgba(255,150,0,1)', 'rgba(255,246,0,1)', 'rgba(91,203,0,1)', 'rgba(0,150,255,1)'];
+
+        if (chartDataList === 1) {
+            colorCodes2 = ['rgba(222,0,0,1)'];
+        }else{
+
+
+        }
+        return (
+            colorCodes2
+        )
+    }
+*/
 
     return (
         <div>
             <BarChart
-
                 width={540}
                 height={340}
                 data={chartDataList}
@@ -1274,7 +1290,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
                 let datasetsOne = {
                     label: instanceNameList[i],
                     backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '', // Put the gradient here as a fill color
-                    borderColor: gradientList[i],
+                    //borderColor: gradientList[i],
                     borderWidth: 2,
                     pointColor: "#fff",
                     pointStrokeColor: 'white',

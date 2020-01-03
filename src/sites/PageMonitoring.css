@@ -19,8 +19,31 @@
     background: #1e2124;
     justify-content: center;
     align-items: center;
+
+
 }
 
+.grid00001 {
+    marginTop: 10;
+    overflow-y: auto;
+    height: 200px;
+}
+
+.page_monitoring_column_for_grid {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex-grow: 1;
+    overflow: hidden;
+    border: 1px solid #4b4d52;
+    border-radius: 5px;
+    padding: 10px;
+    margin-right: 20px;
+    height: 200px;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-bottom: -10px;
+}
 
 .ui.tabular.menu .item {
     color: #9c9c9c;
@@ -15508,6 +15531,7 @@ span.ant-radio + * {
     font-feature-settings: 'tnum';
     position: absolute;
     z-index: 1050;
+    width:300px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
@@ -15558,6 +15582,7 @@ span.ant-radio + * {
     cursor: text;
     -webkit-transition: opacity 0.3s;
     transition: opacity 0.3s;
+    width: 250px;
 }
 
 .ant-calendar-picker-input {
@@ -15566,7 +15591,7 @@ span.ant-radio + * {
     color: white;
     cursor: pointer;
     height: 39px;
-    width: 250px;
+    width: 300px;
 }
 
 .ant-calendar-picker-input.ant-input {
@@ -15675,8 +15700,8 @@ span.ant-radio + * {
 .ant-calendar-input {
     width: 100%;
     height: 22px;
-    color: white;
-    background-color: black;
+    color: black;
+    background-color: white;
     border: 0;
     outline: 0;
     cursor: auto;
@@ -16538,6 +16563,7 @@ span.ant-radio + * {
 
 .ant-calendar-range-right .ant-calendar-date-input-wrap {
     margin-left: -90px;
+    background-color: black;
 }
 
 .ant-calendar-range.ant-calendar-time .ant-calendar-range-middle {
@@ -16577,6 +16603,7 @@ span.ant-radio + * {
 
 .ant-calendar-range.ant-calendar-time .ant-calendar-range-right .ant-calendar-date-input-wrap {
     margin-left: 0;
+    background-color: black;
 }
 
 .ant-calendar-range .ant-calendar-input-wrap {
@@ -16594,7 +16621,8 @@ span.ant-radio + * {
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     line-height: 1.5;
-    background-color: #fff;
+    background-color: black;
+    color: white;
     background-image: none;
     border: 1px solid #d9d9d9;
     border-radius: 4px;
@@ -16807,10 +16835,12 @@ div.ant-calendar-range-quick-selector > a {
 
 .ant-calendar-range.ant-calendar-time .ant-calendar-time-picker-select {
     height: 100%;
+    background-color: black;
 }
 
 .ant-calendar-range.ant-calendar-time .ant-calendar-time-picker-select ul {
     max-height: 100%;
+    background-color: black;
 }
 
 .ant-calendar-range.ant-calendar-time .ant-calendar-footer .ant-calendar-time-picker-btn {
@@ -16927,16 +16957,18 @@ div.ant-calendar-range-quick-selector > a {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    background-color: #414141;
 }
 
 .ant-calendar-time-picker-select li:last-child::after {
     display: block;
     height: 202px;
     content: '';
+
 }
 
 .ant-calendar-time-picker-select li:hover {
-    background: #e6f7ff;
+    background: grey;
 }
 
 .ant-calendar-time-picker-select li:focus {
@@ -16947,7 +16979,7 @@ div.ant-calendar-range-quick-selector > a {
 
 li.ant-calendar-time-picker-select-option-selected {
     font-weight: 600;
-    background: #f5f5f5;
+    background: black;
 }
 
 li.ant-calendar-time-picker-select-option-disabled {
@@ -16987,7 +17019,9 @@ li.ant-calendar-time-picker-select-option-disabled:hover {
 }
 
 .ant-calendar-time .ant-calendar-footer .ant-calendar-time-picker-btn-disabled {
-    color: rgba(0, 0, 0, 0.25);
+    color: grey;
+
+
 }
 
 .ant-calendar-month-panel {
@@ -19861,6 +19895,8 @@ form .ant-input-group-wrapper {
     outline: 0;
     -webkit-box-shadow: 0 0 0 2px rgba(245, 34, 45, 0.2);
     box-shadow: 0 0 0 2px rgba(245, 34, 45, 0.2);
+    width: 550px;
+
 }
 
 .has-error .ant-input-affix-wrapper .ant-input,
@@ -28758,6 +28794,10 @@ div.ant-typography-edit-content {
         padding: 0;
         opacity: 0;
     }
+}
+
+span .ant-calendar-picker{
+    width: 300px;
 }
 
 

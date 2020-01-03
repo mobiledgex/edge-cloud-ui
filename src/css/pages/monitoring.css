@@ -29,7 +29,7 @@
     display: flex;
     flexDirection: row;
     /*min-width: 190px;*/
-    min-width: 374px;
+    min-width: 420px;
     margin-bottom: 10px;
 }
 
@@ -128,6 +128,7 @@
     margin-left: 20px;
     margin-bottom: -10px;
 }
+
 
 .page_monitoring_column:last-child {
     margin-right: 0px;
