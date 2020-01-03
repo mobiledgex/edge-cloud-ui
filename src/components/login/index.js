@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import { Container, Button, Checkbox, Form, Label, Grid, Input } from 'semantic-ui-react'
+import { Container, Button, Label, Grid, Input } from 'semantic-ui-react'
 import { Redirect } from 'react-router';
 import * as moment from 'moment';
 import UAParser from 'ua-parser-js';
@@ -10,11 +10,11 @@ import * as actions from '../../actions';
 import Alert from 'react-s-alert';
 // API
 import { LOCAL_STRAGE_KEY } from '../utils/Settings'
- import * as serviceLogin from '../../services/service_login_api';
  import * as serviceMC from '../../services/serviceMC';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
 import CustomContentAlert from './CustomContentAlert';
+import PublicIP from 'public-ip';
 /*
 
  */
@@ -295,9 +295,10 @@ class Login extends Component {
 
         // by default it takes ua string from current browser's window.navigator.userAgent
         let resultPs = parser.getResult();
-        this.clientSysInfo = {os:resultPs.os, browser:resultPs.browser};
-
-        serviceLogin.getCurrentUserInfo('clientIP',{}, this.receiveClientIp, this)
+        this.clientSysInfo = { os: resultPs.os, browser: resultPs.browser };
+        (async () => {
+            this.receiveClientIp(await PublicIP.v4());
+        })();
 
     }
 
@@ -377,10 +378,9 @@ class Login extends Component {
 
     }
 
-
-    receiveClientIp(result) {
-        if(result && result.data) {
-            self.clientSysInfo['clientIP'] = result.data.clientIp;
+    receiveClientIp(IPAddress) {
+        if(IPAddress) {
+            self.clientSysInfo['clientIP'] = IPAddress;
         } else {
             self.clientSysInfo['clientIP'] = '127.0.0.1';
         }

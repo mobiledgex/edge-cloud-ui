@@ -1,7 +1,7 @@
 import { generateUniqueId } from '../serviceMC';
 
 
-export const key = (data) => {
+export const getKey = (data) => {
   const { OrganizationName, AppName, Version, Operator, Cloudlet, ClusterInst, Region } = data
   return ({
     region: Region,
@@ -65,7 +65,7 @@ export const key = (data) => {
 }
  */
 
-let generateData = (datas, body) => {
+export const formatData = (datas, body) => {
   let result = datas;
   let values = [];
   let toArray = null;
@@ -196,9 +196,3 @@ let generateData = (datas, body) => {
   return values
 
 }
-
-const FormatComputeInst = (props, body) => (
-  generateData(props, body)
-)
-
-export default FormatComputeInst;

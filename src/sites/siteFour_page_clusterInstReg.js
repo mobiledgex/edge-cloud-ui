@@ -87,11 +87,11 @@ class SiteFourPageClusterInstReg extends React.Component {
 
     }
     receiveResult(mcRequest) {
-        let result = mcRequest.data;
-        if(result.error) {
-            this.props.handleAlertInfo('error',result.error)
+        let result = mcRequest.response;
+        if(result.data.error) {
+            this.props.handleAlertInfo('error',result.data.error)
         } else {
-            _self.props.handleInjectFlavor(result)
+            _self.props.handleInjectFlavor(result.data)
         }
     }
 

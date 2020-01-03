@@ -3,17 +3,17 @@ import * as serviceMC from '../../services/serviceMC'
 
 let rgn = [];
 const receiveResultApp = (mcRequest) => {
-    let result = mcRequest.data;
-    if(result.error && result.error.indexOf('Expired') > -1) {
-        _self.props.handleAlertInfo('error', result.error);
+    let result = mcRequest.response;
+    if(result.data.error && result.data.error.indexOf('Expired') > -1) {
+        _self.props.handleAlertInfo('error', result.data.error);
         setTimeout(() => _self.gotoUrl('/logout'), 4000);
         _self.props.handleLoadingSpinner(false);
         return;
     }
 
-    let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
+    let regionGroup = (!result.data.error) ? reducer.groupBy(result.data, 'Region'):{};
     if(Object.keys(regionGroup)[0]) {
-        _self._AppInstDummy = _self._AppInstDummy.concat(result)
+        _self._AppInstDummy = _self._AppInstDummy.concat(result.data)
     }
     _self.loadCount ++;
     if(rgn.length == _self.loadCount){

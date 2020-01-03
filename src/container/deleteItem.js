@@ -4,9 +4,6 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { withRouter } from 'react-router-dom';
 import * as serviceMC from "../services/serviceMC";
-import * as FormatComputeClouldlet from "../services/formatter/formatComputeCloudlet";
-import * as FormatClusterInstance from "../services/formatter/formatComputeClstInstance";
-import * as FormatAppInstance from "../services/formatter/formatComputeInstance";
 
 let _self = null;
 class DeleteItem extends React.Component {
@@ -31,76 +28,6 @@ class DeleteItem extends React.Component {
         _self = this;
     }
 
-    /***************************
-     * delete selected item
-     * @param result
-     ***************************/
-    receiveSubmitResult = (result, body) => {
-        if (result.data.error) {
-            this.props.handleAlertInfo('error', result.data.error)
-        } else {
-            console.log('20191119 receive submit result is success..', result, ":", result.data)
-            this.props.handleAlertInfo('success', result.data.message)
-        }
-        if (this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1) {
-            setTimeout(() => {
-                _self.props.refresh(this.props.changeRegion);
-            }, 3000);
-        }
-    }
-
-
-    receiveListSubmit = (mcRequest) => {
-        let result = mcRequest.response;
-        let data = mcRequest.request.data;
-        let msg = '';
-        if (this.props.siteId == 'Cloudlet') msg = 'Cloudlet ' + data.cloudlet.key.name
-        else if (this.props.siteId == 'Flavors') msg = 'Flavor ' + data.flavor.key.name
-        else if (this.props.siteId == 'App') msg = 'Your application ' + data.app.key.name
-
-        this.props.handleLoadingSpinner(false);
-        this.props.refresh(this.props.changeRegion)
-
-        if (result.data.error) {
-            if (result.data.error.indexOf('Flavor in use by Cluster') > -1) {
-                this.props.handleAlertInfo('error', 'Error deleting ' + data.flavor.key.name + '. Flavor is in use by a Cluster Instance.')
-            } else {
-                this.props.handleAlertInfo('error', result.data.error)
-            }
-
-        } else if (result.data.message) {
-            this.props.handleAlertInfo('success', msg + ' deleted successfully.')
-        }
-    }
-
-    receiveUserSubmit = (mcRequest) => {
-
-        let result = mcRequest.response;
-        let request = mcRequest.request;
-        let msg = '';
-        if (this.props.siteId === 'Organization') {
-            msg = 'Your organization ' + request.data.name + ' deleted successfully'
-        } else if (this.props.siteId === 'User') {
-            msg = 'User ' + request.data.username + ' removed from organization ' + request.data.org
-        } else if (this.props.siteId === 'Account') {
-            msg = 'User ' + _self.state.deleteName + ' removed from console '
-        }
-
-        this.props.handleLoadingSpinner(false);
-        if (result.data.message) {
-            this.props.handleAlertInfo('success', msg)
-        } else if (result.data.error) {
-            this.props.handleAlertInfo('error', result.data.error)
-        }
-        if (this.props.siteId === 'Organization' && request.data.name == localStorage.selectOrg) {
-            localStorage.setItem('selectRole', '')
-            localStorage.setItem('selectOrg', '')
-            this.props.handleSelectOrg('-')
-            this.props.handleUserRole('')
-        }
-        _self.props.refresh('All');
-    }
-
     closeDeleteModal(confirm) {
         _self.setState({ showWarning: false })
         _self.props.close()
@@ -109,72 +36,54 @@ class DeleteItem extends React.Component {
         }
     }
 
+    httpResponse = (mcRequest) => {
+        let result = mcRequest.response;
+        console.log('Rahul1234', result);
+        let data = mcRequest.request.data;
+        let msg = '';
 
+        let siteId = this.props.siteId;
 
-    onHandleDelete() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let serviceBody = { token: store ? store.userToken : null }
-        this.props.handleLoadingSpinner(true);
-        if (this.props.siteId === 'ClusterInst' || this.props.siteId === 'appinst' || this.props.siteId === 'Cloudlet') {
-            this.wsRequest(this.props.siteId, serviceBody)
-        } else if (this.props.siteId === 'User') {
-            let userArr = [];
-            Object.values(this.props.selected).map((item) => {
-                userArr.push(item);
-            })
-            serviceBody.method = serviceMC.getEP().DELETE_USER;
-            serviceBody.data = {
-                org: userArr[1],
-                username: userArr[0],
-                role: userArr[2]
-            }
-            serviceMC.sendRequest(serviceBody, this.receiveUserSubmit)
-        } else if (this.props.siteId === 'Account') {
-            let userArr = [];
-            Object.values(this.props.selected).map((item, i) => {
-                userArr.push(item);
-            })
-            serviceBody.method = serviceMC.getEP().DELETE_ACCOUNT;
-            serviceBody.data = {
-                name: userArr[0]
-            }
-            serviceMC.sendRequest(serviceBody, this.receiveUserSubmit)
-        } else if (this.props.siteId === 'Organization') {
-            const { Organization, Type, Address, Phone } = this.props.selected
-            serviceBody.method = serviceMC.getEP().DELETE_ORG;
-            serviceBody.data = {
-                name: Organization,
-                type: Type,
-                address: Address,
-                phone: Phone
-            }
-            serviceMC.sendRequest(serviceBody, this.receiveUserSubmit)
-        } else if (this.props.siteId === 'Flavors') {
-            const { FlavorName, Region } = this.props.selected
-            serviceBody.method = serviceMC.getEP().DELETE_FLAVOR;
-            serviceBody.data = {
-                region: Region,
-                flavor: {
-                    key: { name: FlavorName }
-                }
-            }
-            serviceMC.sendRequest(serviceBody, this.receiveListSubmit)
-        } else if (this.props.siteId === 'App') {
-            const { OrganizationName, AppName, Version, Region } = this.props.selected
-            serviceBody.method = serviceMC.getEP().DELETE_APP;
-            serviceBody.data = {
-                region: Region,
-                app: {
-                    key: {
-                        developer_key: { name: OrganizationName },
-                        name: AppName,
-                        version: Version
-                    }
-                }
-            }
-            serviceMC.sendRequest(serviceBody, this.receiveListSubmit)
+        switch (siteId) {
+            case 'Organization':
+                msg = 'Your organization ' + data.name + ' deleted successfully'
+                break;
+            case 'User':
+                msg = 'User ' + data.username + ' removed from organization ' + data.org
+                break;
+            case 'Account':
+                msg = 'User ' + _self.state.deleteName + ' removed from console '
+                break;
+            case 'Flavors':
+                msg = 'Flavor ' + data.flavor.key.name + ' deleted successfully'
+                break;
+            case 'App':
+                msg = 'Your application ' + data.app.key.name + ' deleted successfully'
+                break;
         }
 
+        this.props.handleLoadingSpinner(false);
+        this.props.refresh(this.props.changeRegion)
+
+
+        if (result.data.message) {
+            this.props.handleAlertInfo('success', msg)
+        } else if (result.data.error) {
+            if (result.data.error.indexOf('Flavor in use by Cluster') > -1) {
+                this.props.handleAlertInfo('error', 'Error deleting ' + data.flavor.key.name + '. Flavor is in use by a Cluster Instance.')
+            }
+            else {
+                this.props.handleAlertInfo('error', result.data.error)
+            }
+        }
+
+        if (siteId === 'Organization' && data.name == localStorage.selectOrg) {
+            localStorage.setItem('selectRole', '')
+            localStorage.setItem('selectOrg', '')
+            this.props.handleSelectOrg('-')
+            this.props.handleUserRole('')
+        }
+        _self.props.refresh('All');
     }
 
     wsResponse = (mcRequest) => {
@@ -188,28 +97,27 @@ class DeleteItem extends React.Component {
         this.props.handleLoadingSpinner(false);
     }
 
-
-    wsRequest = (requestType, serviceBody) => {
-        let data = this.props.selected;
-        serviceBody.uuid =  data.uuid; 
-        switch (requestType) {
-            case 'Cloudlet':
-                serviceBody.method = serviceMC.getEP().DELETE_CLOUDLET;
-                serviceBody.data = FormatComputeClouldlet.key(data)
-                break;
-
-            case 'ClusterInst':
-                serviceBody.method = serviceMC.getEP().DELETE_CLUSTER_INST;
-                serviceBody.data = FormatClusterInstance.key(data)
-                break;
-
-            case 'appinst':
-                serviceBody.method = serviceMC.getEP().DELETE_APP_INST;
-                serviceBody.data = FormatAppInstance.key(data)
-                break;
+    onHandleDelete() {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let method = serviceMC.getEP().getDeleteMethod(this.props.siteId);
+        let data = serviceMC.getEP().getKey(this.props.siteId, this.props.selected);
+        if (method && data) {
+            let serviceBody = {
+                token: store ? store.userToken : null,
+                method: method,
+                data: data
+            }
+            this.props.handleLoadingSpinner(true);
+            if (this.props.siteId === 'ClusterInst' || this.props.siteId === 'appinst' || this.props.siteId === 'Cloudlet') {
+                serviceBody.uuid = this.props.selected.uuid;
+                serviceMC.sendWSRequest(serviceBody, this.wsResponse)
+            } else {
+                serviceMC.sendRequest(serviceBody, this.httpResponse)
+            }
         }
-        serviceMC.sendWSRequest(serviceBody, this.wsResponse)
     }
+
+
 
     /** ************************ **/
     componentWillReceiveProps(nextProps, nextContext) {

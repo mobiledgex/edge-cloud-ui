@@ -209,17 +209,17 @@ class SiteTwoPageOne extends React.Component  {
     }
 
     receiveAppInst(mcRequest) {
-        let result = mcRequest.data;
-        if(result.length){
+        let result = mcRequest.response;
+        if(result.data.length){
             let join = null;
-            if(result[0]['Edit']) {
-                join = _self.state.devGroup.concat(result);
+            if(result.data[0]['Edit']) {
+                join = _self.state.devGroup.concat(result.data);
             } else {
                 join = _self.state.devGroup;
             }
 
-            if(result.error) {
-                this.props.handleAlertInfo('error',result.error)
+            if(result.data.error) {
+                this.props.handleAlertInfo('error',result.data.error)
             } else {
                 _self.setState({devGroup:join})
 
@@ -235,18 +235,18 @@ class SiteTwoPageOne extends React.Component  {
         _self.props.handleInjectData({methodCall:result})
     }
     receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
-        if(result.length){
+        let result = mcRequest.response;
+        if(result.data.length){
             let join = null;
-            if(result[0]['Edit']) {
-                join = _self.state.developerData.concat(result);
+            if(result.data[0]['Edit']) {
+                join = _self.state.developerData.concat(result.data);
             } else {
                 join = _self.state.developerData;
             }
 
 
-            if(result.error) {
-                this.props.handleAlertInfo('error',result.error)
+            if(result.data.error) {
+                this.props.handleAlertInfo('error',result.data.error)
             } else {
                 _self.setState({developerData:join})
                 _self.receiveCloudlet(join);

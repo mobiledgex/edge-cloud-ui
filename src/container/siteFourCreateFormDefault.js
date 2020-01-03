@@ -264,9 +264,9 @@ class SiteFourCreateFormDefault extends React.Component {
         this.setState({portArray:arr}); 
     }
     receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         let arr = [];
-        result.map((item,i) => {
+        result.data.map((item,i) => {
             if((localStorage.selectMenu == 'Cluster Instances' && item.Type === 'developer') || (localStorage.selectMenu == 'Cloudlets' && item.Type === 'operator')){
                 arr.push(item.Organization);
             }

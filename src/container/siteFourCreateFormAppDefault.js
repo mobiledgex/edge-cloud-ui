@@ -321,9 +321,9 @@ class SiteFourCreateFormAppDefault extends React.Component {
         this.setState({portArray:arr});
     }
     receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         let arr = [];
-        result.map((item,i) => {
+        result.data.map((item,i) => {
             if(item.Type === 'developer'){
                 arr.push(item.Organization);
             }

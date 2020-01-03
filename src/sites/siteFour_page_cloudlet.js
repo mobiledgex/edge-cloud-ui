@@ -127,19 +127,19 @@ class SiteFourPageCloudlet extends React.Component {
 
     }
     receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
+        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
+            _self.props.handleAlertInfo('error', result.data.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
             _self.props.handleComputeRefresh(false);
             _self.props.handleLoadingSpinner(false);
             return;
         }
 
-        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
+        let regionGroup = (!result.data.error) ? reducer.groupBy(result.data, 'Region'):{};
         if(Object.keys(regionGroup)[0]) {
-            _self._cloudletDummy = _self._cloudletDummy.concat(result)
+            _self._cloudletDummy = _self._cloudletDummy.concat(result.data)
         }
 
         this.loadCount ++;

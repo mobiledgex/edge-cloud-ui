@@ -89,28 +89,28 @@ class SiteFourPageFlavor extends React.Component {
         
     }
     receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
+        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
+            _self.props.handleAlertInfo('error', result.data.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
             _self.props.handleLoadingSpinner(false);
             return;
-        } else if(result.error && result.error.indexOf('failed') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
+        } else if(result.data.error && result.data.error.indexOf('failed') > -1) {
+            _self.props.handleAlertInfo('error', result.data.error);
             _self.props.handleLoadingSpinner(false);
             return;
         }
 
         let join = null;
-        if(result[0]['Edit']) {
-            join = _self.state.devData.concat(result);
+        if(result.data[0]['Edit']) {
+            join = _self.state.devData.concat(result.data);
         } else {
             join = _self.state.devData;
         }
 
-        if(result.error) {
-            _self.props.handleAlertInfo('error',result.error)
+        if(result.data.error) {
+            _self.props.handleAlertInfo('error',result.data.error)
         } else {
             _self.setState({devData:join})
 

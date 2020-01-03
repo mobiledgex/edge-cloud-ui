@@ -125,15 +125,15 @@ class RegistryInstViewer extends React.Component {
 
     }
     receiveResultCloudlet = (mcRequest) => {
-        let result = mcRequest.data;
-        if(result.error){
+        let result = mcRequest.response;
+        if(result.data.error){
 
         } else {
-            let operatorGroup = reducer.groupBy(result, 'Operator')
+            let operatorGroup = reducer.groupBy(result.data, 'Operator')
             //let cloudletGroup = reducer.groupBy(result, 'CloudletName')
             let keys = Object.keys(operatorGroup);
             let assObj = Object.assign([], this.state.keysData);
-            if(result[0].Operator){
+            if(result.data[0].Operator){
                 assObj[0].Operator.items = keys;
             } else{
                 assObj[0].Operator.items = [];
@@ -151,11 +151,11 @@ class RegistryInstViewer extends React.Component {
 
     }
     receiveResultApp = (mcRequest) => {
-        let result = mcRequest.data;
-        if(result.error) {
-            this.props.handleAlertInfo('error',String(result.error))
+        let result = mcRequest.response;
+        if(result.data.error) {
+            this.props.handleAlertInfo('error',String(result.data.error))
         } else {
-            let appGroup = reducer.groupBy(result, 'OrganizationName')
+            let appGroup = reducer.groupBy(result.data, 'OrganizationName')
             let keys = Object.keys(appGroup);
             let assObj = Object.assign([], this.state.keysData);
             assObj[0].DeveloperName.items = keys;
@@ -164,17 +164,12 @@ class RegistryInstViewer extends React.Component {
         }
     }
     receiveResultClusterInst = (mcRequest) => {
-        let result = mcRequest.data;
-        if(result.error) {
-            this.props.handleAlertInfo('error',String(result.error))
+        let result = mcRequest.response;
+        if(result.data.error) {
+            this.props.handleAlertInfo('error',String(result.data.error))
         } else {
-            console.log('20191119 cluster result..', result)
-            let clinstGroup = reducer.groupBy(result, 'ClusterName')
-            let cloudletGroup = reducer.groupBy(result, 'Cloudlet')
-            //let operatorGroup = reducer.groupBy(result, 'Operator')
-            //let keys = Object.keys(operatorGroup);
-            //let assObj = Object.assign([], this.state.keysData);
-            //assObj[0].Operator.items = keys;
+            let clinstGroup = reducer.groupBy(result.data, 'ClusterName')
+            let cloudletGroup = reducer.groupBy(result.data, 'Cloudlet')
             this.setState({ clustinst:clinstGroup, cloudlets:cloudletGroup})
         }
 

@@ -118,8 +118,8 @@ class SiteThree extends React.Component {
 
 
     receiveResultClusterInst(mcRequest) {
-        let result = mcRequest.data;
-        if(result.length)_self.groupJoin(result,'clusterInst')
+        let result = mcRequest.response;
+        if(result.data.length)_self.groupJoin(result.data,'clusterInst')
     }
 
 

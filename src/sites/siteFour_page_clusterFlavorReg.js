@@ -98,23 +98,23 @@ class SiteFourPageClusterFlavorReg extends React.Component {
 
     }
     receiveResult(mcRequest) {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
+        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
+            _self.props.handleAlertInfo('error', result.data.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
             _self.props.handleLoadingSpinner(false);
             return;
         }
-        console.log("clusterFlavorReg receive == ", result)
-        if(result.error) {
-            Alert.error(result.error, {
+        console.log("clusterFlavorReg receive == ", result.data)
+        if(result.data.error) {
+            Alert.error(result.data.error, {
                 position: 'top-right',
                 effect: 'slide',
                 timeout: 5000
             });
         } else {
-            _self.props.handleInjectFlavor(result)
+            _self.props.handleInjectFlavor(result.data)
         }
         _self.props.handleLoadingSpinner(false);
     }

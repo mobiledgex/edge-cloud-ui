@@ -269,9 +269,9 @@ class RegistryViewer extends React.Component {
     }
 
     receiveF(mcRequest) {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         let arr = []
-        result.map((item,i) => {
+        result.data.map((item,i) => {
             arr.push(item.FlavorName)
         })
         _self.setState({devoptionsf: arr});

@@ -135,38 +135,24 @@ class SiteFourPageAppInst extends React.Component {
 
     }
     receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
+        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
+            _self.props.handleAlertInfo('error', result.data.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
             _self.props.handleLoadingSpinner(false);
             return;
         }
 
-        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
+        let regionGroup = (!result.data.error) ? reducer.groupBy(result.data, 'Region'):{};
         if(Object.keys(regionGroup)[0]) {
-            _self._AppInstDummy = _self._AppInstDummy.concat(result)
+            _self._AppInstDummy = _self._AppInstDummy.concat(result.data)
         }
         _self.loadCount ++;
         if(rgn.length == _self.loadCount){
             _self.countJoin()
         }
         _self.props.handleLoadingSpinner(false);
-        // console.log("appinstresult",result)
-        // let join = null;
-        // if(!result.error && result[0]['Edit']) {
-        //     join = this.state.devData.concat(result);
-        // } else {
-        //     join = this.state.devData;
-        // }
-        // this.loadCount ++;
-        // this.setState({devData:join})
-        // this.props.handleLoadingSpinner(false);
-        // console.log("rgn.lengthrgn.length",rgn.length,":::",this.loadCount)
-        // if(rgn.length == this.loadCount-1){
-        //     return
-        // }
     }
     countJoin() {
         let AppInst = this._AppInstDummy;
@@ -175,10 +161,10 @@ class SiteFourPageAppInst extends React.Component {
         this.getUpdateData(this.props.changeRegion);
     }
     receiveResultApp = (mcRequest) => {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         this._diffRev = [];
-        if(!result.error){
-            result.map((item) => {
+        if(!result.data.error){
+            result.data.map((item) => {
                 this.state.devData.map((_data) => {
                     if(item.Region == _data.Region && item.AppName == _data.AppName && item.OrganizationName == _data.OrganizationName && item.Revision != _data.Revision){
                         this._diffRev.push(_data)

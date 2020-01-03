@@ -201,9 +201,9 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
 
 
     receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         let arr = [];
-        result.map((item,i) => {
+        result.data.map((item,i) => {
             arr.push(item.Organization);
         })
         this.setState({orgArr:arr});

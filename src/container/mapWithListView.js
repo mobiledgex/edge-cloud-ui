@@ -649,7 +649,6 @@ class MapWithListView extends React.Component {
     sendWSRequest = (_item) =>
     {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        console.log('Rahul1234', this.props.siteId)
         let data = null;
         let method = null;
         switch(this.props.siteId)
@@ -664,12 +663,10 @@ class MapWithListView extends React.Component {
             case 'appinst':
                 data = {"region":"EU","appinst":{"key":{"app_key":{"developer_key":{"name":"MobiledgeX"},"name":"Face Detection Demo","version":"1.0"},"cluster_inst_key":{"cluster_key":{"name":"autoclusterFaceDetectionDemo"},"cloudlet_key":{"operator_key":{"name":"TDG"},"name":"ashish-munich1"}}}}}//this.getAppInstKey(_item);
                 method = serviceMC.getEP().STREAM_APP_INST;
-                console.log('Rahul123456', data)
                 break; 
         }
         if(data)
         {
-            console.log('Rahul123456111', _item) 
             serviceMC.sendWSRequest({ uuid: _item.uuid, token: store.userToken, method: method, data: data }, this.requestResponse) 
         }
     }

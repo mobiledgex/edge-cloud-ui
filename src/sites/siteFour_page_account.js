@@ -96,15 +96,15 @@ class SiteFourPageAccount extends React.Component {
         }
     }
     receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
+        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
+            _self.props.handleAlertInfo('error', result.data.error);
             setTimeout(() => _self.gotoUrl('/logout'), 2000);
             _self.props.handleLoadingSpinner(false);
             return;
         }
-        let reverseResult = result.reverse();
+        let reverseResult = result.data.reverse();
         _self.setState({devData:reverseResult})
         _self.props.handleLoadingSpinner(false);
     }

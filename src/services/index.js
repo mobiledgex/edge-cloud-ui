@@ -1,6 +1,5 @@
 
 import axios from 'axios-jsonp-pro';
-import Influx from 'influx';
 
 import FormatCPUMEMUsage from './formatter/formatCPUMEMUsage';
 import FormatNetworkIO from './formatter/formatNetworkIO';

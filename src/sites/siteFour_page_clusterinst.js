@@ -133,42 +133,30 @@ class SiteFourPageClusterInst extends React.Component {
     }
 
     receiveResultClusterInst(mcRequest) {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         _self.props.handleLoadingSpinner();
         // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
+        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
+            _self.props.handleAlertInfo('error', result.data.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
             _self.props.handleLoadingSpinner(false);
             return;
         }
-
-        //_self.countObject[result[0]['Region']].push(result[0]['Region'])
-        // console.log('20191004 ', result)
-        // if(result.length) {
-        //     if(result[0]['Region'] === "") {
-        //         _self.props.handleLoadingSpinner(false);
-        //         //_self.props.handleAlertInfo('error', 'There is no data to display')
-        //     } else {
-
-        //     }
-        //     _self.groupJoin(result,'clusterInst', result[0]['Region'])
-        // }
         _self.props.handleLoadingSpinner(false);
-        _self.groupJoin(result,'clusterInst')
+        _self.groupJoin(result.data,'clusterInst')
     }
     receiveResultCloudlet(mcRequest) {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
+        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
+            _self.props.handleAlertInfo('error', result.data.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
             _self.props.handleLoadingSpinner();
             return;
         }
         //_self.countObject[result[0]['Region']].push(result[0]['Region'])
         _self.props.handleLoadingSpinner();
-        _self.groupJoin(result,'cloudlet')
+        _self.groupJoin(result.data,'cloudlet')
     }
 
     groupJoin(result,cmpt){

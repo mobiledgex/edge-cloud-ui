@@ -1,7 +1,7 @@
 import {generateUniqueId} from '../serviceMC';
 
 
-const formatData = (datas,body) => {
+export const formatData = (datas,body) => {
     let values = [];
     let toArray = null;
     let toJson = [];
@@ -59,11 +59,8 @@ const formatData = (datas,body) => {
     return values
 }
 
-const FormatComputeClouldlet = (props,body) => (
-    formatData(props,body)
-)
 
-export const key = (data)=>
+export const getKey = (data)=>
 {
     const { CloudletName, Operator, Region } = data
     return ({
@@ -76,5 +73,3 @@ export const key = (data)=>
         }
     })
 }
-
-export default FormatComputeClouldlet;

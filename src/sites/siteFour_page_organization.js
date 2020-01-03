@@ -91,25 +91,25 @@ class SiteFourPageOrganization extends React.Component {
 
     }
     receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         console.log("resultresultresultresult",result)
 
         // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired')> -1) {
-            _self.props.handleAlertInfo('error', result.error);
+        if(result.data.error && result.data.error.indexOf('Expired')> -1) {
+            _self.props.handleAlertInfo('error', result.data.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
             _self.props.handleLoadingSpinner(false);
             return;
         }
 
-        if(result.length == 0) {
+        if(result.data.length == 0) {
             _self.setState({devData:[]})
             _self.props.handleDataExist(false)
             _self.props.handleAlertInfo('error','There is no data')
             //setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
             // _self.gotoUrl('/site4', 'pg=newOrg')  /* CreatOrg 자동 연결... */
         } else {
-            _self.setState({devData:result})
+            _self.setState({devData:result.data})
             _self.props.handleDataExist(true)
             // if(result.length === 0) {
             //     _self.gotoUrl('/site4', 'pg=newOrg')

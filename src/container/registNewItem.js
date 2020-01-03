@@ -240,14 +240,14 @@ class RegistNewItem extends React.Component {
     }
     //Show Option Operator(19.04.25)
     receiveOper(mcRequest) {
-        let result = mcRequest.data;
+        let result = mcRequest.response;
         let operArr = [];
-        result.map((item) => {
+        result.data.map((item) => {
             operArr.push(item.Operator)
         })
         _self.setState({devOptionsOperator: [...new Set(operArr)].map((item, i) => (
             { key: i, value: item, text: item }
-        )),operList:result})
+        )),operList:result.data})
         
     }
     //Show Option Organization(19.04.25)
@@ -259,8 +259,8 @@ class RegistNewItem extends React.Component {
 
     //Show Option clusterFlavor(19.04.25)
     receiveCF(mcRequest) {
-        let result = mcRequest.data;
-        _self.setState({devOptionsCF: result.map((item, i) => (
+        let result = mcRequest.response;
+        _self.setState({devOptionsCF: result.data.map((item, i) => (
             { key: i, value: item.FlavorName, text: item.FlavorName }
         ))})
     }
@@ -274,8 +274,8 @@ class RegistNewItem extends React.Component {
         _self.setState({appResult:groupByOper})
     }
     receiveOrg(mcRequest) {
-        let result = mcRequest.data;
-        _self.setState({devOptionsDeveloper: result.map((item, i) => (
+        let result = mcRequest.response;
+        _self.setState({devOptionsDeveloper: result.data.map((item, i) => (
             { key: i, value: item.Organization, text: item.Organization }
         ))})
     }

@@ -111,27 +111,27 @@ class SiteFourCreateInstForm extends React.PureComponent {
     }
 
     receiveResultOrg(mcRequest) {
-        let result = mcRequest.data;
-        if(result.error) {
-            this.props.handleAlertInfo('error',result.error)
+        let result = mcRequest.response;
+        if(result.data.error) {
+            this.props.handleAlertInfo('error',result.data.error)
         } else {
             _self.groupJoin(result,'organization')
         }
     }
     receiveResultCloudlet(mcRequest) {
-        let result = mcRequest.data;
-        if(result.error) {
-            this.props.handleAlertInfo('error',result.error)
+        let result = mcRequest.response;
+        if(result.data.error) {
+            this.props.handleAlertInfo('error',result.data.error)
         } else {
-            _self.groupJoin(result,'cloudlet')
+            _self.groupJoin(result.data,'cloudlet')
         }
     }
     receiveResultFlavor(mcRequest) {
-        let result = mcRequest.data;
-        if(result.error) {
-            this.props.handleAlertInfo('error',result.error)
+        let result = mcRequest.response;
+        if(result.data.error) {
+            this.props.handleAlertInfo('error',result.data.error)
         } else {
-            _self.groupJoin(result,'flavor')
+            _self.groupJoin(result.data,'flavor')
         }
     }
 
