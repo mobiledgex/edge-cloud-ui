@@ -91,7 +91,11 @@ const VerticalStepper = (props) => {
         if(props.stepsArray && props.stepsArray && props.uuid && props.uuid !== 0)
         {
             props.stepsArray.map(item=>{
-                steps = item.steps
+                if(item.uuid === props.uuid)
+                {
+                    steps = item.steps
+                    return;
+                }
             })
         }
     }
