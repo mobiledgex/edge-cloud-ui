@@ -144,7 +144,7 @@ const options = [
 
 const renderDualListInput = (self,data) => (
     <DualListBox
-        style={{width:500}}
+        // style={{width:500}}
         canFilter
         options={self.getListData(data)}
         selected={self.state.selected}

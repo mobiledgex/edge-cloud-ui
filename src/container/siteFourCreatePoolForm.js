@@ -494,9 +494,9 @@ class SiteFourCreatePoolForm extends React.Component {
         console.log('20191231 props data in Form -- ', this.props.data)
         let randomState = Math.random()*100;
         return (
-            <Grid>
-                <Grid.Row className="grid_map_container">
-                    <Grid.Column className="left">
+            <Grid.Column width={12}>
+                {/*<Grid.Row className="grid_map_container">*/}
+                {/*    <Grid.Column className="left">*/}
                         <SiteFourCreateFormDefault data={data} pId={0} getUserRole={this.props.getUserRole}
                                                    gotoUrl={this.gotoUrl} clusterHide={this.clusterHide}
                                                    randomState = {randomState}
@@ -513,9 +513,9 @@ class SiteFourCreatePoolForm extends React.Component {
                                                    longError={this.state.longerror}>
 
                         </SiteFourCreateFormDefault>
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+                {/*    </Grid.Column>*/}
+                {/*</Grid.Row>*/}
+            </Grid.Column>
         )
     }
 }
