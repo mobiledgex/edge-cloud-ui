@@ -75,9 +75,7 @@ const DashboardContainer = ( props, props2) => {
     const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
     if(self.routed){
         self.profileView();
-    } else {
-        //if(storage_data) Service.getCurrentUserInfo('currentUser', {}, self.receiveCurrentUser, self)
-    }
+    } 
     let storeData= localStorage.getItem('PROJECT_INIT')
 
 
