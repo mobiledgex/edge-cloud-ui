@@ -37,12 +37,14 @@ class SiteFourPageCloudletPool extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips','Status','Physical_name','Platform_type'];
+        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips','Status','Physical_name','Platform_type', 'cloudletGroup'];
         this.headerLayout = [1,3,3,3,2,2,2];
         this.userToken = null;
         this._devData = [];
         this.loadCount = 0;
+        this.loadCountM = 0;
         this._cloudletDummy = [];
+        this._memberDummy = [];
     }
     gotoUrl(site, subPath) {
         let mainPath = site;
@@ -152,13 +154,13 @@ class SiteFourPageCloudletPool extends React.Component {
         if(rgn.length == this.loadCount){
             _self.countJoin()
         }
-        _self.props.handleLoadingSpinner(false);
 
     }
 
     receiveResultCreate = (result) => {
     }
     receiveResultMember = (result) => {
+        console.log('20200103 result show - ', result)
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
@@ -166,27 +168,55 @@ class SiteFourPageCloudletPool extends React.Component {
             _self.props.handleLoadingSpinner(false);
             return;
         }
-
-        console.log('20200103 result show member - ', result)
-
-        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-        if(Object.keys(regionGroup)[0]) {
-            _self._memberDummy = _self._memberDummy.concat(result)
+        let poolGroup = (!result.error) ? reducer.groupBy(result, 'PoolName'):{};
+        if(Object.keys(poolGroup)[0]) {
+            _self._memberDummy = _self._memberDummy.concat(poolGroup)
         }
-
-        this.loadCount ++;
-        if(rgn.length == this.loadCount){
-
+        console.log('20200103 result show member - ', _self._memberDummy)
+        this.loadCountM ++;
+        if(rgn.length == this.loadCountM){
+            _self.countJoin();
         }
-        _self.props.handleLoadingSpinner(false);
     }
     receiveResultCreateMember = (result) => {
     }
 
     countJoin() {
-        let cloudlet = this._cloudletDummy;
-        console.log('20200103 ..cloudlet---', cloudlet)
-        _self.setState({devData:cloudlet,dataSort:false})
+
+        if(this.loadCount == rgn.length && this.loadCountM == rgn.length) {
+            this.countAllJoin();
+        }
+    }
+
+    countAllJoin() {
+        this.loadCount = 0;
+        this.loadCountM = 0;
+        let cloudlet = Object.assign([], this._memberDummy);
+        /** cloudlet pool join member data */
+        let cloneData = Object.assign([], this._cloudletDummy);
+        console.log('20200103 ..cloudlet member count---', cloneData, ":", cloudlet)
+
+        cloneData.map((data, i) => {
+            console.log('20200103 data - ', data['PoolName'])
+            cloudlet.map(member => {
+
+                if(member[data['PoolName']]){
+                    data['cloudletGroup'] = []
+                    member[data['PoolName']].map((pn)=> {
+                        console.log("20200103 member", pn, ":", pn['Region'])
+                        if(pn['Region'] === data['Region']) {
+                            data['Cloudlets'] += 1
+                            data['cloudletGroup'].push(pn)
+                        }
+                    })
+                }
+            })
+        })
+
+        console.log('20200103 ..cloudlet member count join---', cloneData)
+        this.setState({devData:cloneData})
+        this._memberDummy = [];
+        this._cloudletDummy = [];
         this.props.handleLoadingSpinner(false);
     }
 
@@ -209,10 +239,7 @@ class SiteFourPageCloudletPool extends React.Component {
         this.props.handleLoadingSpinner(true);
 
     }
-    createCloudletPool = (_region, _poolName) => {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        services.createCloudletPool('CreateCloudletPool',{token:store.userToken, region:_region, name:_poolName}, _self.receiveResultCreate)
-    }
+
     /*
        example : region=EU operator=TDG cloudlet=deleteme pool=DeletemePool
      */
@@ -240,7 +267,7 @@ SiteFourPageCloudletPool.defaultProps = {
 
 
 const mapStateToProps = (state) => {
-    console.log("20191119 regionssInfo",state.regionInfo,":", state.changeRegion)
+    console.log("20200103 state.changeViewMode.mode.viewMode--",state.changeViewMode)
     let viewMode = null;
     let detailData = null;
 

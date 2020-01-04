@@ -14,7 +14,7 @@ import * as reducer from '../utils'
 
 import * as service from '../services/service_compute_service';
 import * as servicePool from '../services/service_cloudlet_pool';
-import SiteFourCreatePoolForm from "./siteFourCreatePoolForm";
+import SiteFourPoolOne from "./siteFourPoolStepOne";
 import Alert from "react-s-alert";
 import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";
 const ReactGridLayout = WidthProvider(RGL);
@@ -31,7 +31,7 @@ var layout = [
 let _self = null;
 
 const panes = [
-    { menuItem: 'CloudletPool Registry', render: (props) => <Tab.Pane attached={false}><SiteFourCreatePoolForm data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'CloudletPool Registry', render: (props) => <Tab.Pane attached={false}><SiteFourPoolOne data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
@@ -77,20 +77,17 @@ class RegistryCloudletPoolViewer extends React.Component {
             selectedCloudlet:[],
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RegionSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
                     'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
-                    'selectCloudlet':{label:'Into the pool', type:'RenderDualListBox', necessary:false, tip:'select a cloudlet', active:true},
-                    'invisibleField':{label:'Invisible', type:'InvisibleField', necessary:false, tip:'invisible field', active:true}
-                },
-                {
-
+                    'AddCloudlet':{label:'Add cloudlet', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
+                    'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
                 }
             ],
             fakeData:[
                 {
                     'Region':'',
                     'poolName':'',
-                    'selectCloudlet':'',
+                    'AddCloudlet':'',
                     'invisibleField':''
                 }
             ],
@@ -98,10 +95,7 @@ class RegistryCloudletPoolViewer extends React.Component {
                 {
                     'CloudletPool':{label:'Cloudlet Pool', type:'RenderDropDown', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
                     'LinktoOrganization':{label:'Into the pool', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
-                    'LinkDiagram':{label:'Linked Status', type:'RenderLinkedDiagram', necessary:false, tip:'linked the cloudlet pool with the organization', active:true},
-                },
-                {
-
+                    'LinkDiagram':{label:'Linked Status', type:'RenderLinkedDiagram', necessary:false, tip:'linked the cloudlet pool with the organization', active:true}
                 }
             ],
             fakeDataLink:[

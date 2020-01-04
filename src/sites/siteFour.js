@@ -510,18 +510,7 @@ class SiteFour extends React.Component {
             activeItem: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations',
             headerTitle: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations'
         })
-        //get list of customer's info
-        // if(store.userToken) {
-        //     Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
-        //     computeService.getMCService('showController', {token:store.userToken}, this.receiveResult, this);
-        // }
-        //if there is no role
-        //site1으로 이동할 수 없는 문제로 아래 코드 주석처리 by inki
-        //show you create the organization view
-        //this.setState({page:'pg=0'})
-        //this.gotoUrl('/site4', 'pg=0')
-        //this.gotoPreview('/site4');
-        //this.props.history.location.search = "pg=0";
+
         this.disableBtn();
 
         if (store) {
@@ -529,14 +518,7 @@ class SiteFour extends React.Component {
         } else {
             this.gotoUrl('/logout')
         }
-        setTimeout(() => {
-            let elem = document.getElementById('animationWrapper')
-            if (elem) {
-                //_self.makeGhost(elem, _self)
 
-
-            }
-        }, 4000)
 
         this.setState({steps: orgaSteps.stepsZero, intoCity: false});
         //
@@ -555,10 +537,14 @@ class SiteFour extends React.Component {
         } catch (e) {
 
         }
-        if(nextProps.params.subPath === this.state.page){
 
-            return;
+        console.log('20200103 next viewMode - ', nextProps.viewMode)
+        if (nextProps.viewMode) {
+            this.setState({viewMode: nextProps.viewMode})
+        } else {
+            this.setState({viewMode: 'listView'})
         }
+
         if (nextProps.params && nextProps.params.subPath) {
             let subPaths = nextProps.params.subPath;
             let subPath = '';
@@ -569,30 +555,9 @@ class SiteFour extends React.Component {
                 subParam = paths[1];
             }
             this.setState({page: subPath, OrganizationName: subParam})
-            //console.log('20191018 nextProps.par....', subPath, "  :  ", subParam)
 
         }
 
-        // if(localStorage.selectRole && this.state.menuClick) {
-        //     this.disableBtn();
-        //     this.setState({menuClick:false})
-        // }
-
-
-        // if(nextProps.creatingSpinner && this.state.toggleState) {
-        //     this.getIntervalData();
-        //     this.setState({toggleState:false})
-        // }
-
-
-        if (nextProps.viewMode) {
-            this.setState({viewMode: nextProps.viewMode})
-        } else {
-            this.setState({viewMode: 'listView'})
-        }
-        // if(nextProps.params.subPath && this.state.viewMode == 'detailView') {
-        //     this.setState({viewMode:'listView'})
-        // }
 
         //Redux Alert
         if ((nextProps.alertInfo !== this.props.alertInfo) && nextProps.alertInfo.mode) {

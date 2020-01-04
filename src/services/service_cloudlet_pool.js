@@ -298,3 +298,48 @@ export function showOrgCloudletPool(resource, body, callback, self) {
             }
         });
 }
+
+export function deleteCloudletPool(resource, body, callback, self) {
+    axios.post(ServerUrl+'/deleteCloudletPool', qs.stringify({
+        service: resource,
+        serviceBody:body,
+        serviceId: Math.round(Math.random()*10000)
+    }))
+        .then(function (response) {
+            let parseData = null;
+
+            if(response.data) {
+                if(response.data.error) {
+                    if(response.data.error.indexOf('Expired') > -1) {
+                        localStorage.setItem('userInfo', null)
+                        localStorage.setItem('sessionData', null)
+                        callback({error:'Login Timeout Expired.<br/>Please login again'}, resource, self);
+                        return;
+                    } else {
+                        callback({error:response.data.error}, resource, self);
+                        return;
+                    }
+                } else {
+                    parseData = JSON.parse(JSON.stringify(response));
+                }
+            } else {
+                parseData = response;
+            }
+            if(parseData){
+                switch(resource){
+                    default : callback(parseData);
+                }
+            }
+        })
+        .catch(function (error) {
+            try {
+                if(String(error).indexOf('Network Error') > -1){
+                    console.log("NETWORK ERROR@@@@@");
+                } else {
+                    callback({error:error}, resource, self);
+                }
+            } catch(e) {
+                console.log('any error ??? ')
+            }
+        });
+}

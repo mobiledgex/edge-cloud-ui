@@ -540,6 +540,7 @@ app.post('/showCloudletPoolMember', apiMC.ShowCloudletPoolMember)
 app.post('/createCloudletPoolMember', apiMC.CreateCloudletPoolMember)
 app.post('/createLinkPoolOrg', apiMC.CreateLinkPoolOrg)
 app.post('/showOrgCloudletPool', apiMC.ShowOrgCloudletpool)
+app.post('/deleteCloudletPool', apiMC.DeleteCloudletpool)
 
 // http
 
