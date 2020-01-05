@@ -539,7 +539,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:REGION Dropdown*/}
                             {/*todo:REGION Dropdown*/}
                             {/*todo:REGION Dropdown*/}
-                            <div style={{color: 'white', backgroundColor:'#21370c', height:35, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-10, width:100}}>
+                            <div style={{color: 'white', backgroundColor:'#393939', height:39, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-8, width:100}}>
                                 Region
                             </div>
                             <Dropdown
@@ -563,7 +563,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:CloudLet selectbox*/}
                             {/*todo:CloudLet selectbox*/}
                             {/*todo:CloudLet selectbox*/}
-                            <div style={{color: 'white', backgroundColor:'#21370c', height:35, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-10, width:100}}>
+                            <div style={{color: 'white', backgroundColor:'#393939', height:39, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-8, width:100}}>
                                 CloudLet
                             </div>
                             <Dropdown
@@ -590,7 +590,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:Cluster selectbox*/}
                             {/*todo:Cluster selectbox*/}
                             {/*todo:Cluster selectbox*/}
-                            <div style={{color: 'white', backgroundColor:'#21370c', height:35, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-10, width:100}}>
+                            <div style={{color: 'white', backgroundColor:'#393939', height:39, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-8, width:100}}>
                                 Cluster
                             </div>
                             <Dropdown
@@ -617,7 +617,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:RangePicker*/}
                             {/*todo:RangePicker*/}
                             {/*todo:RangePicker*/}
-                            <div style={{color: 'white', backgroundColor:'#21370c', height:35, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-10, width:100}}>
+                            <div style={{color: 'white', backgroundColor:'#393939', height:39, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-8, width:100}}>
                                 TimeRange
                             </div>
                             <div style={{marginTop: -8}}>
