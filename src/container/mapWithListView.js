@@ -646,33 +646,16 @@ class MapWithListView extends React.Component {
         })
     }
 
-    sendWSRequest = (_item) =>
+    sendWSRequest = (data) =>
     {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let data = null;
-        let method = null;
-        switch(this.props.siteId)
-        {
-            case 'Cloudlet':
-                data = serviceMC.getEP().getKey(this.props.siteId, _item);//{ region: _item.Region, cloudlet: { key: { operator_key: { name: _item.Operator }, name: _item.CloudletName } } }
-                method = serviceMC.getEP().STREAM_CLOUDLET;
-                break;
-            case 'ClusterInst':
-                data = { region: _item.Region, clusterinst: { key: { cluster_key: { name: _item.ClusterName }, cloudlet_key: { operator_key: { name: _item.Operator }, name: _item.Cloudlet }, developer: _item.OrganizationName } } }
-                method = serviceMC.getEP().STREAM_CLUSTER_INST;
-                break;
-            case 'appinst':
-                data = {"region":"EU","appinst":{"key":{"app_key":{"developer_key":{"name":"MobiledgeX"},"name":"Face Detection Demo","version":"1.0"},"cluster_inst_key":{"cluster_key":{"name":"autoclusterFaceDetectionDemo"},"cloudlet_key":{"operator_key":{"name":"TDG"},"name":"ashish-munich1"}}}}}//this.getAppInstKey(_item);
-                method = serviceMC.getEP().STREAM_APP_INST;
-                break; 
-        }
+        let requestData = serviceMC.getEP().getKey(this.props.siteId, data);
+        let method = serviceMC.getEP().getStreamMethod(this.props.siteId);
         if(data)
         {
-            serviceMC.sendWSRequest({ uuid: _item.uuid, token: store.userToken, method: method, data: data }, this.requestResponse) 
+            serviceMC.sendWSRequest({ uuid: data.uuid, token: store.userToken, method: method, data: requestData }, this.requestResponse) 
         }
     }
-
-
 
     render() {
         const { open, dimmer, dummyData, resize, _resetMap } = this.state;

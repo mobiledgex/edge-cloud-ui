@@ -64,12 +64,5 @@ export const formatData = (datas) => {
     } else {
         console.log('there is no result')
     }
-
-    //ascending or descending
-
-    //values.sort(numberDes);
-    //values.reverse();
-
     return values
-
 }

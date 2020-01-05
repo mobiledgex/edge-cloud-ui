@@ -43,9 +43,6 @@ export const formatData = (datas,body) => {
             }
 
         })
-    } else {
-        let newRegistKey = ['Region', 'FlavorName', 'RAM', 'vCPUs', 'Disk'];
-        //values.push({Region:'', FlavorName:'', RAM:'', vCPUs:'', Disk:'', Edit:newRegistKey})
     }
     return values
 }

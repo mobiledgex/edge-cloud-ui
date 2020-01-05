@@ -1,6 +1,5 @@
 import { generateUniqueId } from '../serviceMC';
 
-
 export const getKey = (data) => {
   const { OrganizationName, AppName, Version, Operator, Cloudlet, ClusterInst, Region } = data
   return ({

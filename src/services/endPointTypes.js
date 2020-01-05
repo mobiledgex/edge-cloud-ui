@@ -7,7 +7,7 @@ import * as FormatComputeClstInst from './formatter/formatComputeClstInstance';
 import * as FormatComputeFlavor from './formatter/formatComputeFlavor';
 import * as FormatComputeApp from './formatter/formatComputeApp';
 import * as FormatComputeInst from './formatter/formatComputeInstance';
-import FormatComputeCluster from './formatter/formatComputeCluster';
+import * as FormatComputeCluster from './formatter/formatComputeCluster';
 
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
@@ -135,7 +135,7 @@ export function formatData(request, response) {
             data = FormatComputeFlavor.formatData(response, request.data)
             break;
         case SHOW_CLUSTER_FLAVOR:
-            data = FormatComputeCluster(response, request.data)
+            data = FormatComputeCluster.formatData(response, request.data)
             break;
         case SHOW_APP:
             data = FormatComputeApp.formatData(response, request.data)
@@ -195,5 +195,16 @@ export function getDeleteMethod(keyId) {
             return DELETE_ACCOUNT;
         default:
             return null;
+    }
+}
+
+export function getStreamMethod(keyId) {
+    switch (keyId) {
+        case 'Cloudlet':
+            return STREAM_CLOUDLET;
+        case 'ClusterInst':
+            return STREAM_CLUSTER_INST;
+        case 'appinst':
+            return STREAM_APP_INST;
     }
 }
