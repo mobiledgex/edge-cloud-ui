@@ -4,11 +4,11 @@ import { withRouter } from 'react-router-dom';
 
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
+import * as actions from '../../../actions';
 
-import SiteFourOrgaStepView from '../../container/siteFourOrgaStepView';
-import '../siteThree.css';
-import * as serviceMC from '../../services/serviceMC';
+import SiteFourOrgaStepView from '../../../container/siteFourOrgaStepView';
+import '../../siteThree.css';
+import * as serviceMC from '../../../services/serviceMC';
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]

@@ -1,14 +1,14 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import PageDetailViewer from '../../container/pageDetailViewer';
+import PageDetailViewer from '../../../container/pageDetailViewer';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
-import * as serviceMC from '../../services/serviceMC';
-import '../siteThree.css';
-import MapWithListView from "../../container/mapWithListView";
-import * as reducer from '../../utils'
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
+import MapWithListView from "../../../container/mapWithListView";
+import * as reducer from '../../../utils'
 
 
 let _self = null;

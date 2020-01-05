@@ -3,9 +3,9 @@ import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
-import '../siteThree.css';
-import RegistryInstViewer from "../../container/registryInstViewer";
+import * as actions from '../../../actions';
+import '../../siteThree.css';
+import RegistryInstViewer from "../../../container/registryInstViewer";
 
 
 

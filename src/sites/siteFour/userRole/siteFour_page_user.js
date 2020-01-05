@@ -1,11 +1,11 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
-import DeveloperListView from '../../container/developerListView';
+import DeveloperListView from '../../../container/developerListView';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
-import * as serviceMC from '../../services/serviceMC';
-import '../siteThree.css';
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
 
 let _self = null;
 class SiteFourPageUser extends React.Component {
