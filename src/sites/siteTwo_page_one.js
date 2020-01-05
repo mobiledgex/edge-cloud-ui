@@ -209,53 +209,45 @@ class SiteTwoPageOne extends React.Component  {
     }
 
     receiveAppInst(mcRequest) {
-        let result = mcRequest.response;
-        if(result.data.length){
-            let join = null;
-            if(result.data[0]['Edit']) {
-                join = _self.state.devGroup.concat(result.data);
-            } else {
-                join = _self.state.devGroup;
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                if (response.data.length) {
+                    let join = null;
+                    if (response.data[0]['Edit']) {
+                        join = _self.state.devGroup.concat(response.data);
+                    } else {
+                        join = _self.state.devGroup;
+                    }
+                    _self.setState({ devGroup: join })
+                }
             }
-
-            if(result.data.error) {
-                this.props.handleAlertInfo('error',result.data.error)
-            } else {
-                _self.setState({devGroup:join})
-
-            }
-            _self.props.handleLoadingSpinner(false);
-        } else {
-            //alert('Loading Fail')
         }
-
+        _self.props.handleLoadingSpinner(false);
     }
+
     receiveMehodData(result) {
         //TODO: counts call method from the developers
         _self.props.handleInjectData({methodCall:result})
     }
+    
     receiveResult = (mcRequest) => {
-        let result = mcRequest.response;
-        if(result.data.length){
-            let join = null;
-            if(result.data[0]['Edit']) {
-                join = _self.state.developerData.concat(result.data);
-            } else {
-                join = _self.state.developerData;
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                if (response.data.length) {
+                    let join = null;
+                    if (response.data[0]['Edit']) {
+                        join = _self.state.developerData.concat(response.data);
+                    } else {
+                        join = _self.state.developerData;
+                    }
+                    _self.setState({ developerData: join })
+                    _self.receiveCloudlet(join);
+                }
             }
-
-
-            if(result.data.error) {
-                this.props.handleAlertInfo('error',result.data.error)
-            } else {
-                _self.setState({developerData:join})
-                _self.receiveCloudlet(join);
-            }
-            _self.props.handleLoadingSpinner(false);
-        } else {
-            //alert('Loading Fail')
         }
-
+        _self.props.handleLoadingSpinner(false);
     }
 
     getInfoCloudlet = (region) => {
@@ -269,7 +261,7 @@ class SiteTwoPageOne extends React.Component  {
             rgn = [region]
         }
         rgn.map((item, i) => {
-            setTimeout(() => serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResult), 500 * i)
+            setTimeout(() => serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResult), 500 * i)
         })
 
 
@@ -286,8 +278,7 @@ class SiteTwoPageOne extends React.Component  {
         }
 
             rgn.map((item) => {
-                // All show appInst
-                serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_APP_INST, data: { region: item } }, _self.receiveAppInst)
+                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_APP_INST, data: { region: item } }, _self.receiveAppInst)
             })
 
     }

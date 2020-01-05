@@ -51,22 +51,23 @@ class PopAddUserViewer extends React.Component {
                     role: _role
                 }
             }
-            serviceMC.sendRequest(requestBody, this.resultGiveToRole, this)
+            serviceMC.sendRequest(_self, requestBody, this.resultGiveToRole)
 
         }
     }
 
     resultGiveToRole = (mcRequest) => {
-        let result = mcRequest.response;
-        let request = mcRequest.request;
-        _self.props.handleLoadingSpinner(false);
-        this.setState({ toggleSubmit: false })
-        if (result.data.error) {
-            this.props.handleAlertInfo('error', String(result.data.error))
-            this.setState({ successReset: true });
-        } else {
-            this.props.handleAlertInfo('success', 'User ' + request.data.username + ' added to organization ' + request.data.org + ' successfully')
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let request = mcRequest.request;
+                this.setState({ toggleSubmit: false })
+                this.props.handleAlertInfo('success', 'User ' + request.data.username + ' added to organization ' + request.data.org + ' successfully')
+            }
         }
+        else {
+            this.setState({ successReset: true });
+        }
+        _self.props.handleLoadingSpinner(false);
     }
 
     setCloudletList = (operNm) => {

@@ -56,28 +56,20 @@ class VerifyContent extends Component {
 
     }
     receiveData(mcRequest) {
-        let result = mcRequest.response;
-        console.log('receive result...', result.data)
-        if(result.data.error) {
-            Alert.error(result.data.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-        } else {
-            Alert.success(result.data.message, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-
-            setTimeout(() => _self.goToNext('/site1'),3000)
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                Alert.success(response.data.message, {
+                    position: 'top-right',
+                    effect: 'slide',
+                    timeout: 5000
+                });
+                setTimeout(() => _self.goToNext('/site1'), 3000)
+            }
         }
-
-
     }
     requestVerify(token) {
-        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().VERIFY_EMAIL, data: { service: 'verifyemail' } }, this.receiveData, this)
+        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().VERIFY_EMAIL, data: { service: 'verifyemail' } }, this.receiveData)
     }
 
 

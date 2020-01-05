@@ -182,7 +182,7 @@ class SiteFourCreateFormDefault extends React.Component {
         }
         if(this.props.getUserRole == 'AdminManager') {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_ORG}, this.receiveResult)
+            serviceMC.sendRequest(this,{token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_ORG}, this.receiveResult)
         }
     }
 
@@ -264,14 +264,18 @@ class SiteFourCreateFormDefault extends React.Component {
         this.setState({portArray:arr}); 
     }
     receiveResult = (mcRequest) => {
-        let result = mcRequest.response;
-        let arr = [];
-        result.data.map((item,i) => {
-            if((localStorage.selectMenu == 'Cluster Instances' && item.Type === 'developer') || (localStorage.selectMenu == 'Cloudlets' && item.Type === 'operator')){
-                arr.push(item.Organization);
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let arr = [];
+                response.data.map((item, i) => {
+                    if ((localStorage.selectMenu == 'Cluster Instances' && item.Type === 'developer') || (localStorage.selectMenu == 'Cloudlets' && item.Type === 'operator')) {
+                        arr.push(item.Organization);
+                    }
+                })
+                this.setState({ orgArr: arr });
             }
-        })
-        this.setState({orgArr:arr});
+        }
     }
 
     cancelClick = (e) => {

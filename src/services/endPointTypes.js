@@ -143,16 +143,13 @@ export function formatData(request, response) {
         case SHOW_APP_INST:
             data = FormatComputeInst.formatData(response, request.data)
             break;
-        case SHOW_SELF:
-            return {  request: request, response: response };
         default:
-            return { request: request, response: response };
+            data = undefined;
     }
-
     if (data) {
         response.data = data;
-        return { request: request, response: response }
     }
+    return { request: request, response: response }
 }
 
 export function getKey(keyId, data) {

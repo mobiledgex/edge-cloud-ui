@@ -1,16 +1,11 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
-import DeveloperListView from '../container/developerListView';
+import DeveloperListView from '../../container/developerListView';
 import { withRouter } from 'react-router-dom';
-//redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-
-import * as serviceMC from '../services/serviceMC';
-import './siteThree.css';
-
-
-let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
+import * as actions from '../../actions';
+import * as serviceMC from '../../services/serviceMC';
+import '../siteThree.css';
 
 let _self = null;
 class SiteFourPageUser extends React.Component {
@@ -82,30 +77,24 @@ class SiteFourPageUser extends React.Component {
     }
 
     receiveResult = (mcRequest) => {
-        // @inki if data has expired token
-        let result = mcRequest.response;
-        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.data.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let reverseResult = response.data.reverse();
+                _self.setState({ devData: reverseResult })
+                _self.props.handleLoadingSpinner(false);
+            }
         }
-        let reverseResult = result.data.reverse();
-        _self.setState({devData:reverseResult})
         _self.props.handleLoadingSpinner(false);
     }
     getDataDeveloper(token) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_USERS }, _self.receiveResult)
+        serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_USERS }, _self.receiveResult)
         this.props.handleLoadingSpinner(true);
     }
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem } = this.state
         return (
-
             <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'User'} dataRefresh={this.getDataDeveloper}></DeveloperListView>
-
         );
     }
 

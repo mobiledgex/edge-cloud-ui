@@ -44,11 +44,7 @@ export const getKey = (data) => {
 export const formatData = (datas) => {
     let result = datas;
     let values = [];
-    //20190409 transition string to json
-    //let toArray = result.data.split('\n')
-
     let toJson = result.data;
-
     if (toJson) {
         toJson.map((dataResult, i) => {
             if (dataResult.message) {

@@ -210,7 +210,7 @@ class RegistryClusterFlavorViewer extends React.Component {
                 }
             }
             this.props.handleLoadingSpinner(true);
-            serviceMC.sendRequest(serviceBody, this.receiveSubmit)
+            serviceMC.sendRequest(_self, serviceBody, this.receiveSubmit)
         }
 
         /************

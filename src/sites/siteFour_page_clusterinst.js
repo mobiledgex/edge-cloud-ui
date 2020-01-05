@@ -133,30 +133,24 @@ class SiteFourPageClusterInst extends React.Component {
     }
 
     receiveResultClusterInst(mcRequest) {
-        let result = mcRequest.response;
-        _self.props.handleLoadingSpinner();
-        // @inki if data has expired token
-        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.data.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.props.handleLoadingSpinner();
+                _self.props.handleLoadingSpinner(false);
+                _self.groupJoin(response.data, 'clusterInst')
+            }
         }
-        _self.props.handleLoadingSpinner(false);
-        _self.groupJoin(result.data,'clusterInst')
     }
+
     receiveResultCloudlet(mcRequest) {
-        let result = mcRequest.response;
-        // @inki if data has expired token
-        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.data.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner();
-            return;
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.props.handleLoadingSpinner();
+                _self.groupJoin(response.data, 'cloudlet')
+            }
         }
-        //_self.countObject[result[0]['Region']].push(result[0]['Region'])
-        _self.props.handleLoadingSpinner();
-        _self.groupJoin(result.data,'cloudlet')
     }
 
     groupJoin(result,cmpt){
@@ -213,24 +207,23 @@ class SiteFourPageClusterInst extends React.Component {
         }
         
         let token = store ? store.userToken : 'null';
-        if(localStorage.selectRole == 'AdminManager') {
+        if (localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                
-                serviceMC.sendRequest({token:token,method : serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
-                serviceMC.sendRequest({token:token,method : serviceMC.getEP().SHOW_CLUSTER_INST, data : {region:item}}, _self.receiveResultClusterInst)
+                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
+                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: item } }, _self.receiveResultClusterInst)
             })
         } else {
             rgn.map((item) => {
                 let data = {
-                        "region":item,
-                        "clusterinst":{
-                            "key":{
-                                "developer": localStorage.selectOrg
-                            }
+                    region: item,
+                    clusterinst: {
+                        key: {
+                            developer: localStorage.selectOrg
                         }
+                    }
                 }
-                serviceMC.sendRequest({token:token,method : serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
-                serviceMC.sendRequest({token:token,method : serviceMC.getEP().SHOW_CLUSTER_INST, data : data}, _self.receiveResultClusterInst)
+                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
+                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: data }, _self.receiveResultClusterInst)
             })
         }
 

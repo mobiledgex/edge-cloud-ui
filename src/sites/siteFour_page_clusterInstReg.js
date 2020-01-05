@@ -86,12 +86,13 @@ class SiteFourPageClusterInstReg extends React.Component {
 
 
     }
+
     receiveResult(mcRequest) {
-        let result = mcRequest.response;
-        if(result.data.error) {
-            this.props.handleAlertInfo('error',result.data.error)
-        } else {
-            _self.props.handleInjectFlavor(result.data)
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.props.handleInjectFlavor(response.data)
+            }
         }
     }
 
@@ -106,7 +107,7 @@ class SiteFourPageClusterInstReg extends React.Component {
 
     getDataDeveloper(token, region) {
 
-        serviceMC.sendRequest({token:token, method:serviceMC.getEP().SHOW_FLAVOR, data:{region:(region === 'All') ? 'US' : region}}, _self.receiveResult)
+        serviceMC.sendRequest(_self, {token:token, method:serviceMC.getEP().SHOW_FLAVOR, data:{region:(region === 'All') ? 'US' : region}}, _self.receiveResult)
     }
 
     /*

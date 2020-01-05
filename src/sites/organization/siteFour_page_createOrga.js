@@ -4,11 +4,11 @@ import { withRouter } from 'react-router-dom';
 
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../../actions';
 
-import SiteFourOrgaStepView from '../container/siteFourOrgaStepView';
-import './siteThree.css';
-import * as serviceMC from '../services/serviceMC';
+import SiteFourOrgaStepView from '../../container/siteFourOrgaStepView';
+import '../siteThree.css';
+import * as serviceMC from '../../services/serviceMC';
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
@@ -86,7 +86,7 @@ class SiteFourPageCreateorga extends React.Component {
             this.setState({toggleSubmit:true});
             _self.props.handleLoadingSpinner(true);
             let data = {name:nextProps.stepOne.values.name, type:nextProps.stepOne.values.type.toLowerCase(), address:nextProps.stepOne.values.address, phone:nextProps.stepOne.values.phone}
-            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().CREATE_ORG, data:data}, this.resultCreateOrg, this)
+            serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().CREATE_ORG, data:data}, this.resultCreateOrg, this)
         }
         /*
         org=bigorg username=worker1 role=DeveloperContributor
@@ -98,61 +98,46 @@ class SiteFourPageCreateorga extends React.Component {
             let _org = nextProps.stepTwo.values && nextProps.stepTwo.values.orgName || '';
             let _role = nextProps.stepTwo.values && nextProps.stepTwo.values.orgType+nextProps.stepTwo.values.selectRole || '';
             let data = { username: _username, org: _org, role: _role };
-            serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().ADD_USER_ROLE, data: data }, this.resultGiveToRole, this)
+            serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().ADD_USER_ROLE, data: data }, this.resultGiveToRole, this)
         }
 
     }
     resultCreateOrg = (mcRequest) => {
-        let result = mcRequest.response;
-        let request = mcRequest.request;
-        this.setState({toggleSubmit:false})
-        _self.props.handleLoadingSpinner(false);
-        if(result.data.error) {
-            this.props.handleAlertInfo('error',String(result.data.error))
-        } else {
-            this.props.handleAlertInfo('success','Your organization '+request.data.name+' created successfully')
-            //goto next step
-            this.props.handleChangeStep('02')
-            this.setState({step:2})
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let request = mcRequest.request;
+                this.setState({ toggleSubmit: false })
+                this.props.handleAlertInfo('success', 'Your organization ' + request.data.name + ' created successfully')
+                this.props.handleChangeStep('02')
+                this.setState({ step: 2 })
+            }
         }
+        _self.props.handleLoadingSpinner(false);
     }
     resultGiveToRole = (mcRequest) => {
-        let result = mcRequest.response;
-        let request = mcRequest.request;
-        this.setState({ toggleSubmitTwo: false })
-        _self.props.handleLoadingSpinner(false);
-        if (result.data.error) {
-            this.props.handleAlertInfo('error', String(result.data.error))
-        } else {
-            this.props.handleAlertInfo('success', 'User ' + request.data.username + ' added to organization ' + request.data.org + ' successfully')
-            //goto next step
-            //this.setState({step:3})
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let request = mcRequest.request;
+                this.setState({ toggleSubmitTwo: false })
+                this.props.handleAlertInfo('success', 'User ' + request.data.username + ' added to organization ' + request.data.org + ' successfully')
+            }
         }
+        _self.props.handleLoadingSpinner(false);
     }
     receiveResult(mcRequest) {
-        let result = mcRequest.response;
-        // @inki if data has expired token
-        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.data.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
-
-        if(result.data.error) {
-
-        } else {
-            _self.setState({devData:result.data})
-
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.setState({ devData: response.data })
+            }
         }
         _self.props.handleLoadingSpinner(false);
     }
+
     getDataDeveloper(token) {
-        serviceMC.sendRequest({token:token, method:serviceMC.getEP().SHOW_ORG}, _self.receiveResult)
+        serviceMC.sendRequest(_self, {token:token, method:serviceMC.getEP().SHOW_ORG}, _self.receiveResult)
     }
     render() {
-        const {shouldShowBox, shouldShowCircle, step} = this.state;
-        const { activeItem } = this.state
         return (
             <SiteFourOrgaStepView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader} stepMove={this.state.step} toggleSubmit={this.state.toggleSubmit} toggleSubmitTwo={this.state.toggleSubmitTwo}></SiteFourOrgaStepView>
         );

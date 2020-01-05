@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {
     Grid,
     Image,
@@ -31,8 +31,8 @@ import HeaderGlobalMini from '../container/headerGlobalMini';
 
 //pages
 import SiteFourPageFlavor from './siteFour_page_flavor';
-import SiteFourPageUser from './siteFour_page_user';
-import SiteFourPageAccount from './siteFour_page_account';
+import SiteFourPageUser from './userRole/siteFour_page_user';
+import SiteFourPageAccount from './accounts/siteFour_page_account';
 
 import SiteFourPageApps from './siteFour_page_apps';
 import SiteFourPageAppInst from './siteFour_page_appinst';
@@ -40,10 +40,10 @@ import SiteFourPageClusterInst from './siteFour_page_clusterinst';
 import SiteFourPageCloudlet from './siteFour_page_cloudlet';
 import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
 import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
-import SiteFourPageOrganization from './siteFour_page_organization';
+import SiteFourPageOrganization from './organization/siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
 import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
-import SiteFourPageCreateorga from './siteFour_page_createOrga';
+import SiteFourPageCreateorga from './organization/siteFour_page_createOrga';
 
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import PopLegendViewer from '../container/popLegendViewer';
@@ -138,16 +138,7 @@ class SiteFour extends React.Component {
             camBtnStat:'leave',
             regionToggle:false,
             intoCity:false
-            // hintsEnabled: true,
-            // hints: [
-            //     {
-            //         element: '.selector3',
-            //         hint: 'Hello hint',
-            //         hintPosition: 'middle-right',
-            //     }
-            // ]
         };
-        //this.controllerOptions({controllerRegions})
         this.headerH = 70;
         this.menuW = 240;
         this.hgap = 0;
@@ -272,43 +263,33 @@ class SiteFour extends React.Component {
         this.props.handleChangeClickCity([])
         this.setState({intoCity:false})
     }
-    receiveCurrentUser(result) {
-        if(result && result.data) {
 
-        }
-        _self.props.handleUserInfo(result.data);
-    }
     receiveControllerResult(mcRequest) {
-        let result = mcRequest.response;
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner();
-            return;
-        } else if(result.error) {
-            _self.props.handleAlertInfo('error', result.error);
+        if (mcRequest) {
+            if(mcRequest.response)
+            {
+                let response = mcRequest.response;
+                _self.props.handleLoadingSpinner();
+                _self.controllerOptions(response.data);
+            }    
         }
-        _self.props.handleLoadingSpinner();
-        _self.controllerOptions(result.data);
     }
-    receiveAdminInfo = (mcRequest) => {
-        let result = mcRequest.response;
-        this.props.handleRoleInfo(result.data)
-        if(result.error) {
-            _self.props.handleAlertInfo('error', result.error)
-            setTimeout(() => _self.gotoUrl('/logout',''), 2500);
-        } else {
-            result.data.map((item,i) => {
-                if(item.role.indexOf('Admin') > -1){
-                    this.setState({adminShow:true});
-                    //this.props.handleUserRole(item.role);
-                    localStorage.setItem('selectRole', item.role)
-                }
-            })
-        }
 
+    receiveAdminInfo = (mcRequest) => {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                this.props.handleRoleInfo(response.data)
+                response.data.map((item, i) => {
+                    if (item.role.indexOf('Admin') > -1) {
+                        this.setState({ adminShow: true });
+                        localStorage.setItem('selectRole', item.role)
+                    }
+                })
+            }
+        }
     }
-   
+
 
     controllerOptions(option){
         let arr = []
@@ -459,8 +440,8 @@ class SiteFour extends React.Component {
 
     }
     getAdminInfo(token) {
-        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_CONTROLLER }, this.receiveControllerResult, this);
-        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_ROLE }, this.receiveAdminInfo)
+        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CONTROLLER }, this.receiveControllerResult);
+        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_ROLE }, this.receiveAdminInfo)
         _self.setState({currentVersion:process.env.REACT_APP_BUILD_VERSION ?  process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'})
     }
     onClickBackBtn =() => {
@@ -470,10 +451,6 @@ class SiteFour extends React.Component {
 
     }
     componentWillMount() {
-        //this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        //this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
-        //this.setState({contWidth:(window.innerWidth-this.menuW)})
-        //this.selectedfilters = [];
 
     }
     componentDidMount() {
@@ -490,9 +467,6 @@ class SiteFour extends React.Component {
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
             if(elem){
-                //_self.makeGhost(elem, _self)
-
-
             }
         }, 4000)
 
@@ -815,12 +789,15 @@ class SiteFour extends React.Component {
     }
     
     receiveResult = (mcRequest) => {
-        let result = mcRequest.response;
-        let resource = mcRequest.method;
-        let unchecked = result.data.length;
-        let checked = localStorage.getItem('auditChecked')
-        if(resource === 'ShowSelf') {
-            this.reduceAuditCount(result.data, checked)
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let request = mcRequest.request;
+                let checked = localStorage.getItem('auditChecked')
+                if (request.method === serviceMC.getEP().SHOW_SELF) {
+                    this.reduceAuditCount(response.data, checked)
+                }
+            }
         }
         this.props.handleLoadingSpinner(false);
     }
@@ -832,7 +809,7 @@ class SiteFour extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         _self.loadCount = 0;
-        serviceMC.sendRequest({ token: store.userToken, method: serviceMC.getEP().SHOW_SELF, data: '{}' }, _self.receiveShowSelfResult, _self)
+        serviceMC.sendRequest(_self, { token: store.userToken, method: serviceMC.getEP().SHOW_SELF, data: '{}' }, _self.receiveResult)
     }
 
     /** audit ********/

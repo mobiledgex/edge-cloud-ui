@@ -103,37 +103,24 @@ class SiteFourPageCluster extends React.Component {
             this.getDataDeveloper(nextProps.changeRegion);
         }
     }
+    
     receiveResult = (mcRequest) => {
-        let result = mcRequest.response;
-        // @inki if data has expired token
-        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.data.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
-
-        let join = null;
-        if(result.data[0]['Edit']) {
-            join = _self.state.devData.concat(result.data);
-        } else {
-            join = _self.state.devData;
-        }
-        _self.props.handleLoadingSpinner(false);
-        console.log("receive cluster== ", result.data)
-        if(result.data.error) {
-            Alert.error(result.data.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-
-        } else {
-            _self.setState({devData:join})
-
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let join = null;
+                if (response.data[0]['Edit']) {
+                    join = _self.state.devData.concat(response.data);
+                } else {
+                    join = _self.state.devData;
+                }
+                _self.props.handleLoadingSpinner(false);
+                _self.setState({ devData: join })
+            }
         }
         _self.props.handleLoadingSpinner(false);
     }
+
     getDataDeveloper(region) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let rgn = ['US','EU'];
@@ -143,7 +130,7 @@ class SiteFourPageCluster extends React.Component {
             rgn = [region]
         }
         rgn.map((item) => {
-            serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLUSTER_FLAVOR, data: { region: item } }, _self.receiveResult)
+            serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLUSTER_FLAVOR, data: { region: item } }, _self.receiveResult)
         })
     }
     render() {

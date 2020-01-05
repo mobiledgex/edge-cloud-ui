@@ -37,53 +37,47 @@ class DeleteItem extends React.Component {
     }
 
     httpResponse = (mcRequest) => {
-        let result = mcRequest.response;
-        console.log('Rahul1234', result);
-        let data = mcRequest.request.data;
-        let msg = '';
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let data = mcRequest.request.data;
+                let msg = '';
 
-        let siteId = this.props.siteId;
+                let siteId = this.props.siteId;
+                switch (siteId) {
+                    case 'Organization':
+                        msg = 'Your organization ' + data.name + ' deleted successfully'
+                        break;
+                    case 'User':
+                        msg = 'User ' + data.username + ' removed from organization ' + data.org
+                        break;
+                    case 'Account':
+                        msg = 'User ' + _self.state.deleteName + ' removed from console '
+                        break;
+                    case 'Flavors':
+                        msg = 'Flavor ' + data.flavor.key.name + ' deleted successfully'
+                        break;
+                    case 'App':
+                        msg = 'Your application ' + data.app.key.name + ' deleted successfully'
+                        break;
+                }
 
-        switch (siteId) {
-            case 'Organization':
-                msg = 'Your organization ' + data.name + ' deleted successfully'
-                break;
-            case 'User':
-                msg = 'User ' + data.username + ' removed from organization ' + data.org
-                break;
-            case 'Account':
-                msg = 'User ' + _self.state.deleteName + ' removed from console '
-                break;
-            case 'Flavors':
-                msg = 'Flavor ' + data.flavor.key.name + ' deleted successfully'
-                break;
-            case 'App':
-                msg = 'Your application ' + data.app.key.name + ' deleted successfully'
-                break;
+                this.props.refresh(this.props.changeRegion)
+
+                if (response.data.message) {
+                    this.props.handleAlertInfo('success', msg)
+                }
+
+                if (siteId === 'Organization' && data.name == localStorage.selectOrg) {
+                    localStorage.setItem('selectRole', '')
+                    localStorage.setItem('selectOrg', '')
+                    this.props.handleSelectOrg('-')
+                    this.props.handleUserRole('')
+                }
+                _self.props.refresh('All');
+            }
         }
-
         this.props.handleLoadingSpinner(false);
-        this.props.refresh(this.props.changeRegion)
-
-
-        if (result.data.message) {
-            this.props.handleAlertInfo('success', msg)
-        } else if (result.data.error) {
-            if (result.data.error.indexOf('Flavor in use by Cluster') > -1) {
-                this.props.handleAlertInfo('error', 'Error deleting ' + data.flavor.key.name + '. Flavor is in use by a Cluster Instance.')
-            }
-            else {
-                this.props.handleAlertInfo('error', result.data.error)
-            }
-        }
-
-        if (siteId === 'Organization' && data.name == localStorage.selectOrg) {
-            localStorage.setItem('selectRole', '')
-            localStorage.setItem('selectOrg', '')
-            this.props.handleSelectOrg('-')
-            this.props.handleUserRole('')
-        }
-        _self.props.refresh('All');
     }
 
     wsResponse = (mcRequest) => {
@@ -112,7 +106,7 @@ class DeleteItem extends React.Component {
                 serviceBody.uuid = this.props.selected.uuid;
                 serviceMC.sendWSRequest(serviceBody, this.wsResponse)
             } else {
-                serviceMC.sendRequest(serviceBody, this.httpResponse)
+                serviceMC.sendRequest(_self, serviceBody, this.httpResponse)
             }
         }
     }

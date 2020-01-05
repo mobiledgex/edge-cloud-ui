@@ -97,30 +97,19 @@ class SiteFourPageClusterFlavorReg extends React.Component {
 
 
     }
+
     receiveResult(mcRequest) {
-        let result = mcRequest.response;
-        // @inki if data has expired token
-        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.data.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
-        console.log("clusterFlavorReg receive == ", result.data)
-        if(result.data.error) {
-            Alert.error(result.data.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-        } else {
-            _self.props.handleInjectFlavor(result.data)
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.props.handleInjectFlavor(response.data)
+            }
         }
         _self.props.handleLoadingSpinner(false);
     }
 
     getDataDeveloper(token, region) {
-        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
+        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
     }
 
     /*

@@ -83,7 +83,7 @@ const DashboardContainer = ( props, props2) => {
         loaded = true;
         let userInfo = JSON.parse(storeData);
         if(userInfo.userToken) {
-            serviceMC.sendRequest({ token: userInfo.userToken, method: serviceMC.getEP().CURRENT_USER }, self.receiveCurrentUser, self)
+            serviceMC.sendRequest(self,{ token: userInfo.userToken, method: serviceMC.getEP().CURRENT_USER }, self.receiveCurrentUser)
         }
 
 
@@ -232,46 +232,41 @@ class App extends Component {
         self.props.handleChangeLoginMode('logout');
     }
 
-    receiveCurrentUser(result) {
-        if(result.data && result.data.message) {
+    receiveCurrentUser(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.error) {
+                if (mcRequest.error.message.indexOf('Expired') > -1) {
 
-            if(result.data.message.indexOf('Expired') > -1) {
+                    setTimeout(() => self.goToNext('/logout', ''), 4000);
 
-                setTimeout(() => self.goToNext('/logout',''),4000);
+                    Alert.error('Login timeout expired.<br/>Please login again', {
+                        position: 'top-right',
+                        effect: 'slide',
+                        timeout: 50000,
+                        html: true,
 
-                Alert.error('Login timeout expired.<br/>Please login again', {
-                     position: 'top-right',
-                     effect: 'slide',
-                     timeout: 50000,
-                     html:true,
-
-                });
-            } else {
-
-                // Alert.error(result.data.message, {
-                //     position: 'top-right',
-                //     effect: 'slide',
-                //     timeout: 5000
-                // });
+                    });
+                }
+                setTimeout(() => loaded = false)
             }
-
-            setTimeout(() => loaded = false)
         }
     }
+    
     receiveController = (mcRequest) => {
-        let result = mcRequest.response;
-        let regions = [];
-        if(result) {
-            if(result.data) {
-                result.data.map((data) => {
-                    regions.push(data.Region)
-                })
-            } else {
-
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let regions = [];
+                if(response) {
+                    if(response.data) {
+                        response.data.map((data) => {
+                            regions.push(data.Region)
+                        })
+                    }
+                    localStorage.setItem('regions', regions)
+                    self.props.handleRegionInfo(regions)
+                }
             }
-
-            localStorage.setItem('regions', regions)
-            self.props.handleRegionInfo(regions)
         }
     }
 
@@ -288,7 +283,7 @@ class App extends Component {
         if(localStorage && localStorage.PROJECT_INIT) {
             let store = JSON.parse(localStorage.PROJECT_INIT);
             console.log('20191118 store...', JSON.parse(localStorage.PROJECT_INIT),":",store.userToken)
-            if (store.userToken) serviceMC.sendRequest({ token: store.userToken, method: serviceMC.getEP().SHOW_CONTROLLER }, scope.receiveController);
+            if (store.userToken) serviceMC.sendRequest(self, { token: store.userToken, method: serviceMC.getEP().SHOW_CONTROLLER }, scope.receiveController);
         }
     }
 

@@ -116,27 +116,23 @@ class SiteFourPageApps extends React.Component {
     }
     
     receiveResult = (mcRequest) => {
-        // @inki if data has expired token
-        let result = mcRequest.response;
-        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.data.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
-
-        let join = null;
-        if(result.data[0]['Edit']) {
-            join = _self.state.devData.concat(result.data);
-        } else {
-            join = _self.state.devData;
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let join = null;
+                if (response.data[0]['Edit']) {
+                    join = _self.state.devData.concat(response.data);
+                } else {
+                    join = _self.state.devData;
+                }
+                _self.setState({ devData: join })
+                _self.loadCount++;
+                if (rgn.length == _self.loadCount) {
+                    return
+                }
+            }
         }
         _self.props.handleLoadingSpinner(false);
-        _self.setState({devData:join})
-        _self.loadCount ++;
-        if(rgn.length == _self.loadCount){
-            return
-        }
     }
 
     getDataDeveloper = (token, region, regionArr) => {
@@ -151,7 +147,7 @@ class SiteFourPageApps extends React.Component {
         }
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP,data:{region:item}}, _self.receiveResult)
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP,data:{region:item}}, _self.receiveResult)
             })
         } else {
             rgn.map((item) => {
@@ -164,7 +160,7 @@ class SiteFourPageApps extends React.Component {
                         }
                 }
                 // org별 show app
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResult);
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResult);
             })
         }
         

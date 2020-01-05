@@ -119,65 +119,67 @@ class RegistryInstViewer extends React.Component {
         //this.props.handleChangeSite(data.children.props.to)
     }
     getDataDeveloper(token,_region) {
-        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_APP, data: { region: _region } }, this.receiveResultApp)
-        setTimeout(() => serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } }, this.receiveResultCloudlet), 200);
-        setTimeout(() => serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: _region } }, this.receiveResultClusterInst), 400);
+        serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_APP, data: { region: _region } }, this.receiveResultApp)
+        setTimeout(() => serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } }, this.receiveResultCloudlet), 200);
+        setTimeout(() => serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: _region } }, this.receiveResultClusterInst), 400);
 
     }
     receiveResultCloudlet = (mcRequest) => {
-        let result = mcRequest.response;
-        if(result.data.error){
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let operatorGroup = reducer.groupBy(response.data, 'Operator')
+                //let cloudletGroup = reducer.groupBy(result, 'CloudletName')
+                let keys = Object.keys(operatorGroup);
+                let assObj = Object.assign([], this.state.keysData);
+                if (response.data[0].Operator) {
+                    assObj[0].Operator.items = keys;
+                } else {
+                    assObj[0].Operator.items = [];
+                }
+                this.setState({ keysData: assObj, operators: operatorGroup })
 
-        } else {
-            let operatorGroup = reducer.groupBy(result.data, 'Operator')
-            //let cloudletGroup = reducer.groupBy(result, 'CloudletName')
-            let keys = Object.keys(operatorGroup);
-            let assObj = Object.assign([], this.state.keysData);
-            if(result.data[0].Operator){
-                assObj[0].Operator.items = keys;
-            } else{
-                assObj[0].Operator.items = [];
+
+                // set list of operators
+                if (this.props.devData.length > 0) {
+                    this.setState({ dummyData: this.props.devData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData })
+                } else {
+                    this.setState({ dummyData: this.state.fakeData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData })
+                }
+                this.props.handleLoadingSpinner(false);
             }
-            this.setState({keysData:assObj, operators:operatorGroup})
-            
         }
-        // set list of operators
-        if(this.props.devData.length > 0) {
-            this.setState({dummyData:this.props.devData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
-        } else {
-            this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
-        }
-        this.props.handleLoadingSpinner(false);
-
     }
     receiveResultApp = (mcRequest) => {
-        let result = mcRequest.response;
-        if(result.data.error) {
-            this.props.handleAlertInfo('error',String(result.data.error))
-        } else {
-            let appGroup = reducer.groupBy(result.data, 'OrganizationName')
-            let keys = Object.keys(appGroup);
-            let assObj = Object.assign([], this.state.keysData);
-            assObj[0].DeveloperName.items = keys;
-            this.setState({keysData:assObj, apps:appGroup})
-            this.props.handleLoadingSpinner(false);
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let appGroup = reducer.groupBy(response.data, 'OrganizationName')
+                let keys = Object.keys(appGroup);
+                let assObj = Object.assign([], this.state.keysData);
+                assObj[0].DeveloperName.items = keys;
+                this.setState({ keysData: assObj, apps: appGroup })
+                this.props.handleLoadingSpinner(false);
+                
+            }
         }
     }
     receiveResultClusterInst = (mcRequest) => {
-        let result = mcRequest.response;
-        if(result.data.error) {
-            this.props.handleAlertInfo('error',String(result.data.error))
-        } else {
-            let clinstGroup = reducer.groupBy(result.data, 'ClusterName')
-            let cloudletGroup = reducer.groupBy(result.data, 'Cloudlet')
-            this.setState({ clustinst:clinstGroup, cloudlets:cloudletGroup})
-        }
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
 
-        // set list of operators
-        if(this.props.devData.length > 0) {
-            this.setState({dummyData:this.props.devData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
-        } else {
-            this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?this.props.devData:this.state.resultData})
+                let clinstGroup = reducer.groupBy(response.data, 'ClusterName')
+                let cloudletGroup = reducer.groupBy(response.data, 'Cloudlet')
+                this.setState({ clustinst: clinstGroup, cloudlets: cloudletGroup })
+
+                // set list of operators
+                if (this.props.devData.length > 0) {
+                    this.setState({ dummyData: this.props.devData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData })
+                } else {
+                    this.setState({ dummyData: this.state.fakeData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData })
+                }
+            }
         }
     }
 
@@ -501,27 +503,6 @@ class RegistryInstViewer extends React.Component {
 
     componentWillUnmount() {
         this.props.handleAppLaunch({})
-    }
-
-    receiveStatusData = (result) => {
-        console.log("20191119 resultresultss",result)
-        let toArray = null;
-        let toJson = null;
-        toArray = result.data.split('\n')
-        toArray.pop();
-        toJson = toArray.map((str)=>(JSON.parse(str)))
-        console.log("toJsontoJson",toJson)
-        this.props.handleLoadingSpinner(false);
-        toJson.map((item) => {
-            if(item.result && item.result.code == 400){
-                console.log("item.result",item.result.message)
-                this.setState({regSuccess:false});
-                this.props.handleAlertInfo('error',item.result.message)
-            }
-        })
-        if(this.state.regSuccess) {
-            this.gotoUrl('submit');
-        }
     }
 
     render() {

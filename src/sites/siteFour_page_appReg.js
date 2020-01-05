@@ -91,23 +91,18 @@ class SiteFourPageAppReg extends React.Component {
 
 
     }
-    receiveResult(mcRequest) {
-        let result = mcRequest.response;
-        // @inki if data has expired token
-        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            return;
-        }
 
-        if(result.data.error) {
-            _self.props.handleAlertInfo('error',result.data.error.message)
-        } else {
-            _self.setState({devData:result})
+    receiveResult(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.setState({ devData: response })
+            }
         }
     }
+
     getDataDeveloper(token, region) {
-        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_APP, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
+        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
     }
 
     /*

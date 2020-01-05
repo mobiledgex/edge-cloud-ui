@@ -118,8 +118,12 @@ class SiteThree extends React.Component {
 
 
     receiveResultClusterInst(mcRequest) {
-        let result = mcRequest.response;
-        if(result.data.length)_self.groupJoin(result.data,'clusterInst')
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                if (response.data.length) _self.groupJoin(response.data, 'clusterInst')
+            }
+        }
     }
 
 
@@ -149,7 +153,7 @@ class SiteThree extends React.Component {
             rgn.map((item) => {
                 // All show clusterInst
                 console.log("changeRegionitem", item)
-                serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: item } }, _self.receiveResultClusterInst)
+                serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: item } }, _self.receiveResultClusterInst)
             })
         } else {
             rgn.map((item) => {
@@ -166,7 +170,7 @@ class SiteThree extends React.Component {
                     }
                 }
                 // org별 show clusterInst
-                serviceMC.sendRequest(serviceBody, _self.receiveResultClusterInst)
+                serviceMC.sendRequest(_self, serviceBody, _self.receiveResultClusterInst)
             })
         }
 

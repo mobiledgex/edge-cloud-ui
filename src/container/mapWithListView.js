@@ -348,8 +348,8 @@ class MapWithListView extends React.Component {
         }
 
         if (mcRequest.response) {
-            let result = mcRequest.response.data
-            let step = { code: result.code, message: result.data.message }
+            let response = mcRequest.response.data
+            let step = { code: response.code, message: response.data.message }
             if (responseData === null) {
                 responseData = { uuid: request.uuid, steps: [step] }
                 this.setState(prevState => ({
@@ -654,8 +654,9 @@ class MapWithListView extends React.Component {
         switch(this.props.siteId)
         {
             case 'Cloudlet':
-                data = { region: _item.Region, cloudlet: { key: { operator_key: { name: _item.Operator }, name: _item.CloudletName } } }
+                data = serviceMC.getEP().getKey(this.props.siteId, _item);//{ region: _item.Region, cloudlet: { key: { operator_key: { name: _item.Operator }, name: _item.CloudletName } } }
                 method = serviceMC.getEP().STREAM_CLOUDLET;
+                break;
             case 'ClusterInst':
                 data = { region: _item.Region, clusterinst: { key: { cluster_key: { name: _item.ClusterName }, cloudlet_key: { operator_key: { name: _item.Operator }, name: _item.Cloudlet }, developer: _item.OrganizationName } } }
                 method = serviceMC.getEP().STREAM_CLUSTER_INST;

@@ -240,99 +240,79 @@ class RegistNewItem extends React.Component {
     }
     //Show Option Operator(19.04.25)
     receiveOper(mcRequest) {
-        let result = mcRequest.response;
-        let operArr = [];
-        result.data.map((item) => {
-            operArr.push(item.Operator)
-        })
-        _self.setState({devOptionsOperator: [...new Set(operArr)].map((item, i) => (
-            { key: i, value: item, text: item }
-        )),operList:result.data})
-        
-    }
-    //Show Option Organization(19.04.25)
-    // receiveDev(result) {
-    //     _self.setState({devOptionsDeveloper: result.map((item, i) => (
-//             { key: i, value: item.Organization, text: item.Organization }
-//         ))})
-    // }
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let operArr = [];
+                response.data.map((item) => {
+                    operArr.push(item.Operator)
+                })
+                _self.setState({
+                    devOptionsOperator: [...new Set(operArr)].map((item, i) => (
+                        { key: i, value: item, text: item }
+                    )), operList: response.data
+                })
+            }
 
+        } 
+    }
+    
     //Show Option clusterFlavor(19.04.25)
     receiveCF(mcRequest) {
-        let result = mcRequest.response;
-        _self.setState({devOptionsCF: result.data.map((item, i) => (
-            { key: i, value: item.FlavorName, text: item.FlavorName }
-        ))})
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.setState({
+                    devOptionsCF: response.data.map((item, i) => (
+                        { key: i, value: item.FlavorName, text: item.FlavorName }
+                    ))
+                })
+            }
+        }
+
     }
 
-    receiveCloudlet(result) {
-        let groupByOper = aggregate.groupBy(result, 'Operator')
-        _self.setState({cloudletResult:groupByOper})
+    receiveCloudlet(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let result = mcRequest
+                let groupByOper = aggregate.groupBy(result, 'Operator')
+                _self.setState({ cloudletResult: groupByOper })
+            }
+        }
+
     }
-    receiveApp(result) {
-        let groupByOper = aggregate.groupBy(result, 'DeveloperName')
-        _self.setState({appResult:groupByOper})
+
+    receiveApp(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let result = mcRequest
+                let groupByOper = aggregate.groupBy(result, 'DeveloperName')
+                _self.setState({ appResult: groupByOper })
+            }
+        }
     }
     receiveOrg(mcRequest) {
-        let result = mcRequest.response;
-        _self.setState({devOptionsDeveloper: result.data.map((item, i) => (
-            { key: i, value: item.Organization, text: item.Organization }
-        ))})
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.setState({
+                    devOptionsDeveloper: response.data.map((item, i) => (
+                        { key: i, value: item.Organization, text: item.Organization }
+                    ))
+                })
+            }
+        }
     }
-    receiveSubmit(result) {
-        // if(result.data.error) {
-        //     // _self.props.handleCreatingSpinner(false);
-        //     Alert.error(result.data.error, {
-        //         position: 'top-right',
-        //         effect: 'slide',
-        //         onShow: function () {
-        //             console.log('error!')
-        //         },
-        //         beep: true,
-        //         timeout: 5000,
-        //         offset: 100
-        //     });
-        //     return;
-        // }
-        //_self.props.handleLoadingSpinner(false);
-        //_self.props.refresh()
-        //데모용 잠시 막아놓음_190513
-        // if(result.data.error) {
-        //     Alert.error(result.data.error, {
-        //         position: 'top-right',
-        //         effect: 'slide',
-        //         onShow: function () {
-        //             console.log('error!')
-        //         },
-        //         beep: true,
-        //         timeout: 5000,
-        //         offset: 100
-        //     });
-        //     return;
-        // } else {
-        //     Alert.success('SUCCESS', {
-        //         position: 'top-right',
-        //         effect: 'slide',
-        //         onShow: function () {
-        //             console.log('aye!')
-        //         },
-        //         beep: true,
-        //         timeout: 5000,
-        //         offset: 100
-        //     });
-        // }
+    receiveSubmit(mcRequest) {
+        
     }
 
     receiveSubmitCloudlet = (mcRequest) => {
         if (mcRequest) {
-            let result = mcRequest.response;
-            let request = mcRequest.request
-            console.log('20191119 cloudlet receive submit cloudlet...', result.data)
-            this.props.refresh('All')
-            if (result.data.error) {
-                this.props.handleAlertInfo('error', result.data.error)
-                return;
-            } else {
+            if (mcRequest.response) {
+                let request = mcRequest.request
+                this.props.refresh('All')
                 this.props.handleAlertInfo('success', 'Cloudlet ' + request.data.cloudlet.key.name + ' created successfully')
             }
         }
@@ -428,16 +408,16 @@ class RegistNewItem extends React.Component {
         if(localStorage.selectMenu === "Cluster Instances") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // operator, cloudlet
-            serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
+            serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
             // Flavor
-            setTimeout(() => serviceMC.sendRequest({ token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveCF), 500);
+            setTimeout(() => serviceMC.sendRequest(_self,{ token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveCF), 500);
         }
     }
 
     getOrgData = () => {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // Organization
-            serviceMC.sendRequest({token:store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG}, this.receiveOrg)
+            serviceMC.sendRequest(_self,{token:store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG}, this.receiveOrg)
         
     }
     

@@ -1,16 +1,11 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
-import AccountListView from '../container/accountsListView';
+import AccountListView from '../../container/accountsListView';
 import { withRouter } from 'react-router-dom';
-//redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-
-import * as serviceMC from '../services/serviceMC';
-import './siteThree.css';
-
-
-let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
+import * as actions from '../../actions';
+import * as serviceMC from '../../services/serviceMC';
+import '../siteThree.css';
 /*
 { Name: 'bickhcho1',
        Email: 'whrjsgml111@naver.com',
@@ -96,30 +91,25 @@ class SiteFourPageAccount extends React.Component {
         }
     }
     receiveResult = (mcRequest) => {
-        let result = mcRequest.response;
-        // @inki if data has expired token
-        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.data.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 2000);
-            _self.props.handleLoadingSpinner(false);
-            return;
+        if(mcRequest)
+        {
+            if(mcRequest.response)
+            {
+                let response = mcRequest.response; 
+                let reverseResult = response.data.reverse();
+                _self.setState({devData:reverseResult})
+            }
         }
-        let reverseResult = result.data.reverse();
-        _self.setState({devData:reverseResult})
         _self.props.handleLoadingSpinner(false);
     }
     getDataDeveloper(token) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
-        serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ACCOUNTS }, _self.receiveResult)
+        serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ACCOUNTS }, _self.receiveResult)
         _self.props.handleLoadingSpinner(true)
     }
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem } = this.state
         return (
-
             <AccountListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'Account'} dataRefresh={this.getDataDeveloper} hiddenKeys={this.hiddenKeys}></AccountListView>
-
         );
     }
 

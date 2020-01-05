@@ -65,12 +65,18 @@ class AccountListView extends React.Component {
     }
 
     getDataDeveloper(token) {
-        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_ROLE }, this.receiveResult)
+        serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_ROLE }, this.receiveResult)
     }
-    receiveResult = (result) => {
-        this.setState({orgData:result})
+    
+    receiveResult = (mcRequest) => {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                this.setState({ orgData: response })
+            }
+        }
     }
-    receiveLockResult = (result) => {
+    receiveLockResult = (mcRequest) => {
         _self.props.handleComputeRefresh(true);
     }
     
@@ -200,7 +206,7 @@ class AccountListView extends React.Component {
     }
     onLocking(value) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SETTING_LOCK, data: { email: value.email, locked: value.lockState } }, this.receiveLockResult)
+        serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SETTING_LOCK, data: { email: value.email, locked: value.lockState } }, this.receiveLockResult)
     }
     compareDate = (date) => {
         let isNew = false;

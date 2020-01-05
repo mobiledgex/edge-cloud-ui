@@ -88,32 +88,19 @@ class SiteFourPageFlavor extends React.Component {
         }
         
     }
+
     receiveResult = (mcRequest) => {
-        let result = mcRequest.response;
-        // @inki if data has expired token
-        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.data.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        } else if(result.data.error && result.data.error.indexOf('failed') > -1) {
-            _self.props.handleAlertInfo('error', result.data.error);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
-
-        let join = null;
-        if(result.data[0]['Edit']) {
-            join = _self.state.devData.concat(result.data);
-        } else {
-            join = _self.state.devData;
-        }
-
-        if(result.data.error) {
-            _self.props.handleAlertInfo('error',result.data.error)
-        } else {
-            _self.setState({devData:join})
-
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let join = null;
+                if (response.data[0]['Edit']) {
+                    join = _self.state.devData.concat(response.data);
+                } else {
+                    join = _self.state.devData;
+                }
+                _self.setState({ devData: join })
+            }
         }
         _self.props.handleLoadingSpinner(false);
     }
@@ -128,16 +115,12 @@ class SiteFourPageFlavor extends React.Component {
         }
         rgn.map((item) => {
             let requestData = { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_FLAVOR, data: { region: item } };
-            serviceMC.sendRequest(requestData, _self.receiveResult)
+            serviceMC.sendRequest(_self, requestData, _self.receiveResult)
         })
     }
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem } = this.state
         return (
-
             <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'Flavors'} dataRefresh={this.getDataDeveloper}></DeveloperListView>
-
         );
     }
 

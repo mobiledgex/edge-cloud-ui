@@ -134,23 +134,21 @@ class SiteFourPageAppInst extends React.Component {
         setTimeout(() => this.forceUpdate(), 1000)
 
     }
-    receiveResult = (mcRequest) => {
-        let result = mcRequest.response;
-        // @inki if data has expired token
-        if(result.data.error && result.data.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.data.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
 
-        let regionGroup = (!result.data.error) ? reducer.groupBy(result.data, 'Region'):{};
-        if(Object.keys(regionGroup)[0]) {
-            _self._AppInstDummy = _self._AppInstDummy.concat(result.data)
-        }
-        _self.loadCount ++;
-        if(rgn.length == _self.loadCount){
-            _self.countJoin()
+    receiveResult = (mcRequest) => {
+        let regionGroup = {};
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                regionGroup = reducer.groupBy(response.data, 'Region');
+                if (Object.keys(regionGroup)[0]) {
+                    _self._AppInstDummy = _self._AppInstDummy.concat(response.data)
+                }
+                _self.loadCount++;
+                if (rgn.length == _self.loadCount) {
+                    _self.countJoin()
+                }
+            }
         }
         _self.props.handleLoadingSpinner(false);
     }
@@ -160,20 +158,22 @@ class SiteFourPageAppInst extends React.Component {
         this.props.handleLoadingSpinner(false);
         this.getUpdateData(this.props.changeRegion);
     }
+
     receiveResultApp = (mcRequest) => {
-        let result = mcRequest.response;
-        this._diffRev = [];
-        if(!result.data.error){
-            result.data.map((item) => {
-                this.state.devData.map((_data) => {
-                    if(item.Region == _data.Region && item.AppName == _data.AppName && item.OrganizationName == _data.OrganizationName && item.Revision != _data.Revision){
-                        this._diffRev.push(_data)
-                    }
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                this._diffRev = [];
+                response.data.map((item) => {
+                    this.state.devData.map((_data) => {
+                        if (item.Region == _data.Region && item.AppName == _data.AppName && item.OrganizationName == _data.OrganizationName && item.Revision != _data.Revision) {
+                            this._diffRev.push(_data)
+                        }
+                    })
                 })
-            })
-            this.forceUpdate();
+                this.forceUpdate();
+            }
         }
-        
     }
 
     getDataDeveloper = (region,regionArr) => {
@@ -192,7 +192,7 @@ class SiteFourPageAppInst extends React.Component {
         let token = store ? store.userToken : 'null';
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP_INST, data : {region: item}}, _self.receiveResult)
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP_INST, data : {region: item}}, _self.receiveResult)
             })
         } else {
             rgn.map((item) => {
@@ -207,7 +207,7 @@ class SiteFourPageAppInst extends React.Component {
                         }
                 }
                 // org별 show appInst
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP_INST, data : data}, _self.receiveResult)
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP_INST, data : data}, _self.receiveResult)
             })
         }
     }
@@ -229,7 +229,7 @@ class SiteFourPageAppInst extends React.Component {
         let token = store ? store.userToken : 'null';
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_APP, data: { region: item } }, _self.receiveResultApp)
+                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP, data: { region: item } }, _self.receiveResultApp)
             })
         } else {
             rgn.map((item) => {
@@ -242,7 +242,7 @@ class SiteFourPageAppInst extends React.Component {
                         }
                 }
                 // org별 show app
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResultApp)
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResultApp)
             })
         }
     }
