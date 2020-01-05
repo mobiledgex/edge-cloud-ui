@@ -2094,7 +2094,8 @@ exports.CreateCloudletPoolMember = (req, res) => {
         .then(function (response) {
             console.log('success create pool member ', "- : -", response.data)
             if(response.data && response.statusText === 'OK') {
-                res.json(response.data)
+                //res.json(response.data)
+                res.json({message:'Added successfully'})
             } else if(response.statusText === 'OK'){
                 console.log('empty')
                 res.json(null)

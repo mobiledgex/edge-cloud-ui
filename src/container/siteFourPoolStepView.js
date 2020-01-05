@@ -230,14 +230,30 @@ class SiteFourPoolStepView extends React.Component {
          * @type {{pool: *, cloudlet: *, region: *, operator: *}}
          * @private
          */
+        let cloudletTest = this.state.dummyData[0].AddCloudlet[0];
+        console.log('20200104 cloudlet == ', cloudletTest)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let _params = {};
         let selectedNumber = JSON.parse(this.props.formClusterInst.values.invisibleField)
         if(selectedNumber.length) {
             let cloudlet = ''
             selectedNumber.map((no) => {
-                cloudlet = this.props.formClusterInst.values.AddCloudlet[no];
-                _params = {"cloudletpoolmember":{"cloudlet_key":{"name":cloudlet.cloudlet,"operator_key":{"name":cloudlet.orgaName}},"pool_key":{"name":this.props.formClusterInst.values.poolName}},"region":cloudlet.region}
+                cloudlet = this.state.dummyData[0].AddCloudlet[parseInt(no)];
+                console.log('20200104 cloudlet--- ', cloudlet)
+                _params = {
+                    "cloudletpoolmember":{
+                        "cloudlet_key":{
+                            "name":cloudlet.cloudlet,
+                            "operator_key":{
+                                "name":cloudlet.orgaName
+                            }
+                        },
+                        "pool_key":{
+                            "name":this.props.formClusterInst.values.poolName
+                        }
+                    },
+                    "region":cloudlet.region
+                }
                 servicePool.createCloudletPoolMember('CreateCloudletPoolMember',{token:store.userToken, params:_params}, _self.receiveResultCreateMember)
             })
         }
@@ -253,8 +269,34 @@ class SiteFourPoolStepView extends React.Component {
             if(result.error == 'Key already exists'){
 
             } else {
-                this.setState({selectedRegion:this.state.submitValues.Region, gavePoolName:this.state.submitValues.poolName})
-                this.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
+
+                this.props.handleAlertInfo('error','Request Failed')
+            }
+            // TEST : Although already exist pool add a cloudlets in to pool <-- later delete code
+            this.createPoolMember();
+        } else {
+            if (result.data.error) {
+                this.props.handleAlertInfo('error', result.data.error)
+            } else {
+                this.props.handleAlertInfo('success',result.data.message)
+                /** send props to next step **/
+                //this.setState({selectedRegion:this.state.submitValues.Region, gavePoolName:this.state.submitValues.poolName})
+                //this.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
+
+                this.createPoolMember();
+            }
+        }
+        this.pauseRender = true;
+
+    }
+    receiveResultCreateMember = (result) => {
+        alert('result -- '+JSON.stringify(result))
+        if(result.error) {
+            //this.setState({clusterInstCreate:false})
+            this.props.handleLoadingSpinner(false);
+            if(result.error == 'Key already exists'){
+                //
+            } else {
                 this.props.handleAlertInfo('error','Request Failed')
             }
         } else {
@@ -267,11 +309,9 @@ class SiteFourPoolStepView extends React.Component {
                 this.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
             }
         }
-        this.pauseRender = true;
 
-    }
-    receiveResultCreateMember = (result) => {
-        alert('result -- '+JSON.stringify(result))
+
+
     }
     receiveResultLinkOrg = (result) => {
         console.log('20191231 result -- ',JSON.stringify(result))
@@ -323,8 +363,7 @@ class SiteFourPoolStepView extends React.Component {
 
 
     componentWillReceiveProps(nextProps, nextContext) {
-        /* like registryCloudletPoolViewer..*/
-        this.setFildData(nextProps.devData);
+
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
@@ -341,6 +380,10 @@ class SiteFourPoolStepView extends React.Component {
         if(nextProps.formClusterInst.values === this.state.submitValues) return;
 
 
+        if(nextProps.devData){
+            /* like registryCloudletPoolViewer..*/
+            this.setFildData(nextProps.devData);
+        }
 
         if(nextProps.formClusterInst && nextProps.formClusterInst.submitSucceeded){
             //
@@ -351,12 +394,12 @@ class SiteFourPoolStepView extends React.Component {
                 servicePool.createCloudletPool('CreateCloudletPool', {params:nextProps.formClusterInst.values, token:store.userToken}, this.receiveSubmit)
 
                 // TEST 20191231 go to next step 2
-                let self = this;
-                setTimeout(() => {
-                    self.setState({selectedRegion:self.state.submitValues.Region, gavePoolName:self.state.submitValues.poolName})
-                    self.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
-                    self.props.handleChangeNext(2)
-                }, 2000)
+                // let self = this;
+                // setTimeout(() => {
+                //     self.setState({selectedRegion:self.state.submitValues.Region, gavePoolName:self.state.submitValues.poolName})
+                //     self.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
+                //     self.props.handleChangeNext(2)
+                // }, 2000)
 
 
             } else if(this.state.step === 2) {
@@ -377,7 +420,7 @@ class SiteFourPoolStepView extends React.Component {
                     selectedNumber.map((no) => {
                         organiz = nextProps.formClusterInst.values.LinktoOrganization[no];
                         _params = {"cloudletpool":cloudletPool,"org":organiz['cloudlet'],"region":region}
-                        //servicePool.createLinkPoolOrg('CreateLinkPoolOrg',{token:store.userToken, params:_params}, _self.receiveResultLinkOrg)
+                        servicePool.createLinkPoolOrg('CreateLinkPoolOrg',{token:store.userToken, params:_params}, _self.receiveResultLinkOrg)
                     })
                 }
 
@@ -389,12 +432,10 @@ class SiteFourPoolStepView extends React.Component {
                 }, 2000)
 
             } else if(this.state.step === 3) {
-                //servicePool.createLinkPoolOrg('CreateLinkPoolOrg', {}, _self.receiveResultLinkOrg)
+
                 console.log('20191231 submit link org to pool == ', JSON.parse(nextProps.formClusterInst.values))
             }
 
-            //TODO: 20191227 step 2에 선택된 region과 pool이름 넘기기
-            this.forceUpdate();
         }
 
 

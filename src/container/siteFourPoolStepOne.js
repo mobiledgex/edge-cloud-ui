@@ -11,7 +11,7 @@ class SiteFourPoolOne extends React.Component {
         _self = this;
         this.state = {
             typeValue:'',
-
+            data:null
         };
 
     }
@@ -37,8 +37,10 @@ class SiteFourPoolOne extends React.Component {
         if(this.props.toggleSubmit) {
             this.props.dispatch(stopSubmit('orgaStepOne',{}))
         }
-        if(nextProps.data) {
-            console.log('20200104 data data in siteFour pool step one --- ', nextProps.data )
+        if(nextProps.data !== this.state.data) {
+            console.log('20200104 data data in siteFour pool step one --- ', nextProps )
+            this.setState({data:nextProps.data})
+
         }
 
 
@@ -52,7 +54,7 @@ class SiteFourPoolOne extends React.Component {
             <Fragment>
                 <Grid>
                     <Grid.Column>
-                        <div><SiteFourCreatePoolForm data={this.props.data}  pId={0} getUserRole={this.props.userrole} gotoUrl={this.props.gotoUrl} toggleSubmit={this.props.toggleSubmit} validError={this.props.error || []} onSubmit={() => console.log('submit form')}/></div>
+                        <div><SiteFourCreatePoolForm data={this.state.data}  pId={0} toggleSubmit={this.props.toggleSubmit} validError={this.props.error || []} onSubmit={() => console.log('submit form')}/></div>
                     </Grid.Column>
                 </Grid>
             </Fragment>

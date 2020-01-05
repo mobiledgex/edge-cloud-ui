@@ -158,7 +158,7 @@ export function createCloudletPool(resource, body, callback, self) {
 }
 
 export function createCloudletPoolMember(resource, body, callback, self) {
-    axios.post(ServerUrl+'/CreateCloudletPoolMember', qs.stringify({
+    axios.post(ServerUrl+'/createCloudletPoolMember', qs.stringify({
         service: resource,
         serviceBody:body,
         serviceId: Math.round(Math.random()*10000)

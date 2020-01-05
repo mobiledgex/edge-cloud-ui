@@ -133,21 +133,18 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
+        console.log('20200104 cloudletPoolReg props props props = ', nextProps)
         //
-        let regions = nextProps.regionInfo.region;
         if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
             //{ key: 1, text: 'All', value: 'All' }
 
             _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
             this.getDataCloudetList(nextProps.changeRegion,nextProps.regionInfo.region);
         }
-        if(nextProps.appLaunch) {
-        }
+
         if(nextProps.changedRegion && this.state.devData && this.state.devData.length) {
 
-            console.log('20191231 changed region = ', nextProps.changedRegion)
+            console.log('20200104 changed region = ', nextProps.changedRegion)
             if(nextProps.changedRegion !== 'All' && this.state.devData) {
                 if(this.state.devData[0]['AddCloudlet'] && this.state.devData[0]['AddCloudlet'].length) {
                     let tempData = this.cloudlets[0];
