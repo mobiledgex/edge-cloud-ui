@@ -119,6 +119,7 @@
     "socket.io-client": "^2.3.0",
     "speak-tts": "^2.0.6",
     "streamedian": "^0.3.13",
+    "svg": "^0.1.0",
     "three": "^0.99.0",
     "three-orbitcontrols": "^2.99.1",
     "topojson": "^3.0.2",

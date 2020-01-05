@@ -888,6 +888,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
             label: item.AppName.toString().substring(0, 10) + "...",
             value: instanceFlavorToPerformanceValue(item.Flavor),
             favor: item.Flavor,
+            fullLabel : item.AppName.toString(),
         })
     })
 
@@ -909,7 +910,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                     graph={{
                         zoom: appInstanceList.length <= 4 ? 0.45 : 0.70,
                         offsetX: 0.15,
-                        offsetY: appInstanceList.length <= 4 ? 0.03 : -0.02,
+                        offsetY: appInstanceList.length <= 4 ? 0.03 : -0.00,
                     }}
                     width={690}
                     height={315}
@@ -1733,7 +1734,7 @@ export const renderLineChart002 = (cpuUsageListPerInstanceSortByUsage, hardwareT
  * @param appInstanceListSortByCloudlet
  * @returns {*}
  */
-export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any) => {
+export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any, _this: PageMonitoring2) => {
     // let boxWidth = window.innerWidth / 10 * 2.55;
 
     let cloudletCountList = []
@@ -1765,7 +1766,17 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any)
                 <div className='page_monitoring_grid' key={index.toString()}>
                     {colSizeArray.map((item, index) =>
                         <div className='page_monitoring_grid_box'
-                             style={{flex: colSizeArray.length === 1 && index === 0 ? .318 : .33}}>
+                             style={{flex: colSizeArray.length === 1 && index === 0 ? .318 : .33}}
+                            /* onClick={async () => {
+                                 //alert(item.name)
+                                 await _this.handleSelectBoxChanges(_this.state.currentRegion, item.name)
+                                 setTimeout(() => {
+                                     _this.setState({
+                                         clusterSelectBoxPlaceholder: 'Select Cluster'
+                                     })
+                                 }, 1000)
+                             }}*/
+                        >
                             <FlexBox style={{
                                 fontSize: 15,
                                 marginTop: 10,

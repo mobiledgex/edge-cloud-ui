@@ -71,6 +71,7 @@ export default class BubbleChart extends Component {
                     d.label = '' + d.data.label; //todo:라벨 셋팅 부분..
                     d.id = d.data.label.toLowerCase().replace(/ |\//g, "-");
                     d.favor = d.data.favor;
+                    d.fullLabel= d.data.fullLabel;
                 }
             });
 
@@ -110,7 +111,7 @@ export default class BubbleChart extends Component {
             })
             .on("click", function (d) {
                 bubbleClickFun(d.label);
-            });
+            })
 
         node.append("circle")
             .attr("id", function (d) {
@@ -225,12 +226,24 @@ export default class BubbleChart extends Component {
                 }
             });
 
+
+
         node.append("title")
             .text(function (d) {
                 return d.label;
             });
     }
 
+
+    /**
+     * @todo: renderLegend
+     * @todo: renderLegend
+     * @param width
+     * @param height
+     * @param offset
+     * @param nodes
+     * @param color
+     */
     renderLegend(width, height, offset, nodes, color) {
         const {
             data,
@@ -244,7 +257,7 @@ export default class BubbleChart extends Component {
             .attr("transform", function () {
                 return `translate(${offset},${(bubbleHeight) * 0.18})`;
             })
-            .attr("class", "legend")//.style("margin-bottom", `-50px`)
+            .attr("class", "legend")//.style("marginLeft", `-100px`)
 
 
         let textOffset = 0;
@@ -255,7 +268,8 @@ export default class BubbleChart extends Component {
             .attr("transform", (d, i) => {
                 const offset = textOffset;
                 textOffset += legendFont.size + 10;
-                return `translate(0,${offset})`;
+                //todo: first param is x-axis
+                return `translate(-40,${offset})`;
             })
             .on('mouseover', function (d) {
                 // d3.select('#' + d.id).attr("r", d.r * 1.04);
@@ -311,7 +325,7 @@ export default class BubbleChart extends Component {
             })
             .attr("y", 0)
             .text((d) => {
-                return d.label
+                return d.fullLabel
             });
     }
 }

@@ -578,7 +578,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
                                     await this.handleSelectBoxChanges(this.state.currentRegion, value)
-
                                     setTimeout(() => {
                                         this.setState({
                                             clusterSelectBoxPlaceholder: 'Select Cluster'
@@ -891,7 +890,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet)}
+                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
                                                     </div>
                                                 </div>
                                                 {/* cpu___col___2*/}
