@@ -651,7 +651,7 @@ class MapWithListView extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let requestData = serviceMC.getEP().getKey(this.props.siteId, data);
         let method = serviceMC.getEP().getStreamMethod(this.props.siteId);
-        if(data)
+        if(requestData)
         {
             serviceMC.sendWSRequest({ uuid: data.uuid, token: store.userToken, method: method, data: requestData }, this.requestResponse) 
         }
