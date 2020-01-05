@@ -18,7 +18,7 @@ import { LOCAL_STRAGE_KEY } from './components/utils/Settings'
 import EntranceGlob from './sites/entranceGlob';
 import SiteTwo from "./sites/siteTwo";
 import SiteThree from "./sites/siteThree";
-import SiteFour from "./sites/siteFour";
+import SiteFour from "./sites//siteFour/siteFour";
 import CreateAccount from './components/login/CreateAccont';
 import history from './history';
 import VerifyContent from './container/verifyContent';

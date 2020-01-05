@@ -3,11 +3,11 @@ import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
-import './siteThree.css';
-import InsideListView from '../container/insideListView';
-import ListDetailViewer from '../container/listDetailViewer';
+import * as actions from '../../actions';
+import * as serviceMC from '../../services/serviceMC';
+import '../siteThree.css';
+import InsideListView from '../../container/insideListView';
+import ListDetailViewer from '../../container/listDetailViewer';
 
 let _self = null;
 let rgn = [];

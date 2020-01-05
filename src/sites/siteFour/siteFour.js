@@ -24,38 +24,38 @@ import { Steps, Hints } from 'intro.js-react';
 
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../../actions';
 
 import {GridLoader, ClipLoader} from "react-spinners";
-import HeaderGlobalMini from '../container/headerGlobalMini';
+import HeaderGlobalMini from '../../container/headerGlobalMini';
 
 //pages
-import SiteFourPageFlavor from './siteFour_page_flavor';
-import SiteFourPageUser from './userRole/siteFour_page_user';
-import SiteFourPageAccount from './accounts/siteFour_page_account';
+import SiteFourPageFlavor from '../flavors/siteFour_page_flavor';
+import SiteFourPageUser from '../userRole/siteFour_page_user';
+import SiteFourPageAccount from '../accounts/siteFour_page_account';
 
-import SiteFourPageApps from './siteFour_page_apps';
-import SiteFourPageAppInst from './siteFour_page_appinst';
-import SiteFourPageClusterInst from './siteFour_page_clusterinst';
-import SiteFourPageCloudlet from './siteFour_page_cloudlet';
-import SiteFourPageCloudletReg from './siteFour_page_cloudletReg';
-import SiteFourPageFlavorReg from './siteFour_page_flavorReg';
-import SiteFourPageOrganization from './organization/siteFour_page_organization';
-import SiteFourPageAppReg from './siteFour_page_appReg';
-import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
-import SiteFourPageCreateorga from './organization/siteFour_page_createOrga';
+import SiteFourPageApps from '../apps/siteFour_page_apps';
+import SiteFourPageAppInst from '../appInst/siteFour_page_appinst';
+import SiteFourPageClusterInst from '../clusterInst/siteFour_page_clusterinst';
+import SiteFourPageCloudlet from '../cloudlets/siteFour_page_cloudlet';
+import SiteFourPageCloudletReg from '../cloudlets/siteFour_page_cloudletReg';
+import SiteFourPageFlavorReg from '../flavors/siteFour_page_flavorReg';
+import SiteFourPageOrganization from '../organization/siteFour_page_organization';
+import SiteFourPageAppReg from '../apps/siteFour_page_appReg';
+import SiteFourPageAppInstReg from '../appInst/siteFour_page_appInstReg';
+import SiteFourPageCreateorga from '../organization/siteFour_page_createOrga';
 
-import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
-import PopLegendViewer from '../container/popLegendViewer';
-import * as serviceMC from '../services/serviceMC';
+import SiteFourPageClusterInstReg from '../clusterInst/siteFour_page_clusterInstReg';
+import PopLegendViewer from '../../container/popLegendViewer';
+import * as serviceMC from '../../services/serviceMC';
 
-import { organizationTutor, CloudletTutor } from '../tutorial';
-import SiteFourPageAudits from './siteFour_page_audits';
+import { organizationTutor, CloudletTutor } from '../../tutorial';
+import SiteFourPageAudits from '../audits/siteFour_page_audits';
 
 import Alert from 'react-s-alert';
 
-import '../css/introjs.css';
-import '../css/introjs-dark.css';
+import '../../css/introjs.css';
+import '../../css/introjs-dark.css';
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 const locationOptions = [
