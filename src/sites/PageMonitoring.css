@@ -41,29 +41,29 @@
 }
 
 
-.popupTop {
-    /*position: fixed;*/
-    width: 180px;
-    height: 126px;
-    top: -8%;
-    left: -19%;
-    right: 10%;
-    bottom: -55%;
-    margin: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-}
+/*.popupTop {*/
+/*    !*position: fixed;*!*/
+/*    width: 180px;*/
+/*    height: 126px;*/
+/*    top: -8%;*/
+/*    left: -19%;*/
+/*    right: 10%;*/
+/*    bottom: -55%;*/
+/*    margin: auto;*/
+/*    background-color: rgba(0, 0, 0, 0.5);*/
+/*}*/
 
-.popup {
-    /*position: fixed;*/
-    width: 180px;
-    height: 195px;
-    top: 0%;
-    /*left: -19%;*/
-    margin: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-}
+/*.popup {*/
+/*    !*position: fixed;*!*/
+/*    width: 180px;*/
+/*    height: 195px;*/
+/*    top: 0%;*/
+/*    !*left: -19%;*!*/
+/*    margin: auto;*/
+/*    background-color: rgba(0, 0, 0, 0.5);*/
+/*}*/
 
-.popup_inner {
+/*.popup_inner {*/
     /* position: absolute;
      left: 25%;
      right: 25%;
@@ -72,7 +72,7 @@
      margin: auto;
      border-radius: 20px;
      background: white;*/
-}
+/*}*/
 
 .page_monitoring_grid_box {
     display: flex;

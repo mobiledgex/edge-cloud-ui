@@ -37,7 +37,7 @@ import Lottie from "react-lottie";
 import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
 import {cutArrayList} from "../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import './PageMonitoring.css';
+// import './PageMonitoring.css';
 
 const FA = require('react-fontawesome')
 const {Column, Row} = Grid;
