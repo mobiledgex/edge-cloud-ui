@@ -251,7 +251,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
     return (
         <Chart
             width={window.innerWidth * 0.31}
-            height={320}
+            height={330}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -298,17 +298,20 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                          }*/
                     }
                 },
-                is3D: false,
-                title: '',
+                //is3D: true,
+                title: hardwareType === HARDWARE_TYPE.CPU ? ' Top 5 of CPU Usage' : ' Top 5 of MEM Usage',
                 titleTextStyle: {
-                    color: 'red'
+                    color: '#fff',
+                    fontSize: 20,
+                    italic: true,
+                    bold: true,
                     /*fontName: <string>, // i.e. 'Times New Roman'
                     fontSize: <number>, // 12, 18 whatever you want (don't specify px)
                      bold: <boolean>,    // true or false
-                    italic: <boolean>   // true of false*/
+                      // true of false*/
                 },
-                titlePosition: 'out',
-                chartArea: {left: 100, right: 150, top: 20, width: "50%", height: "80%"},
+                //titlePosition: 'out',
+                chartArea: {left: 100, right: 150, top: 50, bottom: 25, width: "50%", height: "100%",},
                 legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
                 //xAxis
                 hAxis: {
@@ -335,7 +338,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                 vAxis: {
                     title: '',
                     titleTextStyle: {
-                        fontSize: 14,
+                        fontSize: 20,
                         fontStyle: "normal",
                         color: 'white'
                     },
@@ -1399,7 +1402,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
     console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsage);
 
     let width = window.innerWidth * 0.255
-    let height = 500 + 50;
+    let height = 500 + 100;
 
     let options = {
         maintainAspectRatio: true,
@@ -1474,7 +1477,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
         <div>
             <ReactChartJs
                 width={width}
-                height={300}
+                height={330}
                 data={data}
                 options={options}
             />

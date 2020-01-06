@@ -119,6 +119,7 @@ type State = {
     appInstSelectBoxClearable: boolean,
     isShowUtilizationArea: boolean,
     currentGridIndex: number,
+    currentTabIndex: number,
 }
 
 
@@ -169,6 +170,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             appInstSelectBoxClearable: false,
             isShowUtilizationArea: false,
             currentGridIndex: -1,
+            currentTabIndex: 0,
         };
 
         intervalHandle = null;
@@ -541,9 +543,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                     <div style={{marginLeft: 10,}}>
                                         <Button secondary={true} style={{backgroundColor: 'red', marginLeft: 10,}} onClick={async () => {
-
                                             await this.setState({
                                                 currentGridIndex: -1,
+                                                currentTabIndex: 0,
                                             })
                                             await this.handleSelectBoxChanges('ALL', '', '', '')
                                         }}>
@@ -653,7 +655,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 onChange={async (e, {value}) => {
                                     await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, value)
 
-
                                     setTimeout(() => {
                                         this.setState({
                                             appInstSelectBoxPlaceholder: "Select App Instance"
@@ -695,8 +696,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     }}
                                     ranges={{
                                         Today: [moment(), moment()],
-                                        'Last 7 Days': [ moment().subtract(7,'d'), moment().subtract(1,'d')],
-                                        'Last 30 Days': [ moment().subtract(30,'d'), moment().subtract(1,'d')],
+                                        'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(1, 'd')],
+                                        'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
                                         'This Month': [moment().startOf('month'), moment().endOf('month')],
                                         'Last Month': [moment().date(-30), moment().date(-1)],
                                     }}
@@ -974,32 +975,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1111111111*/}
                     {/*1111111111*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Top 5 of CPU Usage
-                            </div>
-                            {/*todo:APPINSTANCE selectbox*/}
-                            {/*todo:APPINSTANCE selectbox*/}
-                            {/*todo:APPINSTANCE selectbox*/}
-                            <div>
-                                <Dropdown
-                                    clearable={this.state.appInstSelectBoxClearable}
-                                    value={this.state.currentAppInst}
-                                    placeholder='Select App Instance'
-                                    selection
-                                    options={this.state.appInstaceListForSelectBoxForCpu}
-                                    style={{width: 250}}
-                                    onChange={async (e, {value}) => {
-
-                                        await this.setState({
-                                            currentAppInst: value,
-                                        })
-                                        await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
-                                    }}
-
-                                />
-                            </div>
-                        </div>
                         <div className='page_monitoring_container'>
                             {renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
@@ -1008,11 +983,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1111111111*/}
                     {/*1111111111*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                        <div className='page_monitoring_title_area'>
+                      {/*  <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 Transition Of CPU Usage
                             </div>
-                        </div>
+                        </div>*/}
                         <div className='page_monitoring_container'>
                             {renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
@@ -1028,12 +1003,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1111111111*/}
                     {/*1111111111*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Top 5 of MEM Usage
-                            </div>
-                        </div>
-
                         <div className='page_monitoring_container'>
                             {renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
@@ -1042,11 +1011,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1111111111*/}
                     {/*1111111111*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Transition Of Mem Usage
-                            </div>
-                        </div>
                         <div className='page_monitoring_container'>
                             {renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
@@ -1163,12 +1127,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     <Tab
                                                         //style={{marginTop:-5}}
                                                         panes={this.MONITORING_TABS}
-                                                        activeIndex={this.state.activeTabIndex}
+                                                        activeIndex={this.state.currentTabIndex}
                                                         onTabChange={(e, {activeIndex}) => {
                                                             this.setState({
-                                                                activeTabIndex: activeIndex,
+                                                                currentTabIndex: activeIndex,
                                                             })
                                                         }}
+                                                        defaultActiveIndex={this.state.currentTabIndex}
+
                                                     />
                                                 </div>
                                             </div>
