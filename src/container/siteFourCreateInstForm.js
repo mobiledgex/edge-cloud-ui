@@ -1,16 +1,13 @@
 import React, {Fragment} from 'react';
-import {Form, Input, Grid, Tab, Button} from 'semantic-ui-react';
+import {Grid, Tab} from 'semantic-ui-react';
 import SiteFourCreateFormDefault from './siteFourCreateFormDefault';
 import BubbleGroup from '../charts/bubbleGroup';
 import EditMap from '../libs/simpleMaps/with-react-motion/editMap';
 import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
-import * as services from "../services/service_compute_service";
+import * as serviceMC from "../services/serviceMC";
 import * as aggregate from "../utils";
-import Alert from "react-s-alert";
 import * as actions from "../actions";
 import {connect} from "react-redux";
-import {scaleLinear} from "d3-scale";
-import {Field} from "redux-form";
 import './styles.css';
 import {withRouter} from "react-router-dom";
 
@@ -19,30 +16,6 @@ const panes = [
     { menuItem: 'Select Region', render: (props) => <Tab.Pane>{cloudletMap(props, 'cloudlets')}</Tab.Pane> }
 
 ]
-
-const renderLocationInput = field => (
-    <div>
-        <Form.Field
-            {...field.input}
-            type={field.type}
-            placeholder={field.placeholder}
-            //value={field.value}
-        >
-            <Input fluid type="number"
-                   onChange={field.change}
-                   placeholder={field.placeholder}></Input>
-        </Form.Field>
-        {/*<Form.Input*/}
-        {/*    {...field.input}*/}
-        {/*    type={field.type}*/}
-        {/*    placeholder={field.placeholder}*/}
-        {/*    onChange={field.change}*/}
-        {/*    //value={field.value}*/}
-        {/*    fluid*/}
-        {/*/>*/}
-    </div>
-
-);
 
 const clusterNode = (props) => (
     <Fragment>
@@ -136,28 +109,25 @@ class SiteFourCreateInstForm extends React.PureComponent {
     resetLoc = () => {
         this.setState({ locationLat: null,locationLong:null,toggle:false })
     }
-    receiveResultOper(result) {
-        let operArr = [];
-        let CloudArr = [];
 
-
-    }
-
-    receiveResultOrg(result) {
+    receiveResultOrg(mcRequest) {
+        let result = mcRequest.data;
         if(result.error) {
             this.props.handleAlertInfo('error',result.error)
         } else {
             _self.groupJoin(result,'organization')
         }
     }
-    receiveResultCloudlet(result) {
+    receiveResultCloudlet(mcRequest) {
+        let result = mcRequest.data;
         if(result.error) {
             this.props.handleAlertInfo('error',result.error)
         } else {
             _self.groupJoin(result,'cloudlet')
         }
     }
-    receiveResultFlavor(result) {
+    receiveResultFlavor(mcRequest) {
+        let result = mcRequest.data;
         if(result.error) {
             this.props.handleAlertInfo('error',result.error)
         } else {
@@ -173,17 +143,17 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
         this.props.data.handleLoadingSpinner(false);
 
-        if(cmpt == 'organization'){
+        if(cmpt === 'organization'){
             this.setState({organizeData : this.state.organizeData.concat(result)});
         }
-        else if(cmpt == 'cloudlet') {
+        else if(cmpt === 'cloudlet') {
 
             let cloudletDataReady = this.state.cloudletData.filter((item) => {return item.State === 5});
             this.setState({cloudletData : cloudletDataReady.concat(result)});
             
             // this.setState({cloudletData : this.state.cloudletData.concat(result)});
         }
-        else if(cmpt == 'flavor') {
+        else if(cmpt === 'flavor') {
             this.setState({flavorData : this.state.flavorData.concat(result)});
         }
 
@@ -194,7 +164,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
             let arr =[]
             clusterInst.map((itemCinst,i) => {
                 cloudlet.map((itemClet,j) => {
-                    if(itemCinst.Cloudlet == itemClet.CloudletName) {
+                    if(itemCinst.Cloudlet === itemClet.CloudletName) {
                         itemCinst.CloudletLocation = itemClet.CloudletLocation;
                     }
                 })
@@ -305,12 +275,12 @@ class SiteFourCreateInstForm extends React.PureComponent {
             this.state.cloudletData.map((item) => {
                 if(item.Region === this.props.selectedRegion && item.Operator === this.props.selectedOperator){
                     value.map((_item) => {
-                        if(_item == item.CloudletName){
+                        if(_item === item.CloudletName){
                             let location = {region:'',name:'', lat:String(item.CloudletLocation.latitude), long:String(item.CloudletLocation.longitude)};
                             this.props.handleGetRegion(location);
                         }
                     })
-                    if(value.length == 0) this.setState({locData:[]})
+                    if(value.length === 0) this.setState({locData:[]})
                 }
             })
         } else if(state === 'PlatformType')
@@ -372,12 +342,11 @@ class SiteFourCreateInstForm extends React.PureComponent {
         }
 
         rgn.map((item) => {
-            services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
-            services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultFlavor)
+            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
+            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_FLAVOR, data : {region:item}}, _self.receiveResultFlavor)
 
         })
-
-        services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, _self.receiveResultOrg, _self)
+        serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_ORG}, _self.receiveResultOrg, _self)
     }
     handleTabChange = (e, { activeIndex }) => {
         this.setState({ activeIndex })
@@ -392,7 +361,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
     componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
             _self.setState({regionToggle:true})
-            if(localStorage.selectMenu == 'Cluster Instances'){
+            if(localStorage.selectMenu === 'Cluster Instances'){
                 _self.setState({clusterShow: false});
                 this.getDataDeveloper(nextProps.data.region,nextProps.regionInfo.region)
             }
@@ -409,7 +378,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
             let data = {CloudletLocation: {latitude: Number(nextProps.getRegion.lat), longitude: Number(nextProps.getRegion.long)}};
             this.setState({
                 regionInfo:nextProps.getRegion,
-                locData:(localStorage.selectMenu == 'Cluster Instances')?this.state.locData.concat(data):[data],
+                locData:(localStorage.selectMenu === 'Cluster Instances')?this.state.locData.concat(data):[data],
                 locationLat:nextProps.getRegion.lat,
                 locationLong:nextProps.getRegion.long
             })
@@ -431,11 +400,11 @@ class SiteFourCreateInstForm extends React.PureComponent {
     }
 
     clusterHide = (value) => {
-        if(value === 'Docker' && panes.length == 2) {
+        if(value === 'Docker' && panes.length === 2) {
             panes.pop();
             this.setState({clusterShow:false})
         }
-        if(value === 'Kubernetes' && panes.length == 1){
+        if(value === 'Kubernetes' && panes.length === 1){
             panes.push({ menuItem: 'Show Cluster', render: (props) => <Tab.Pane>{clusterNode(props)}</Tab.Pane> });
             this.setState({clusterShow:true})
         } 
@@ -456,7 +425,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
             return
         }
 
-        if(onlyNum != 0) {
+        if(onlyNum !== 0) {
             onlyNum = onlyNum.replace(/(^0+)/, "")
         } 
 
@@ -475,7 +444,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
             return
         }
         
-        if(onlyNum != 0) {
+        if(onlyNum !== 0) {
             onlyNum = onlyNum.replace(/(^0+)/, "")
         } 
         this.setState({ locationLat: onlyNum, laterror:'' })
@@ -499,7 +468,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
 
     render() {
         const { activeIndex, clusterName } = this.state;
-        let {data, dimmer, selected} = this.props;
+        let {dimmer} = this.props;
         let randomState = Math.random()*100;
         return (
             <Grid>
@@ -532,16 +501,9 @@ class SiteFourCreateInstForm extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => {
-    let account = state.registryAccount.account;
-    let dimm =  state.btnMnmt;
-    let accountInfo = account ? account + Math.random()*10000 : null;
-    let dimmInfo = dimm ? dimm : null;
-    let submitVal = null;
     let selectedRegion = null;
-    let selectedCloudlet = null;
     let selectedOperator = null;
     let selectedFlavor = null;
-    let flavors = null;
     let formValues = null;
     let clusterName = null;
     let masterNumber = null;
@@ -553,9 +515,6 @@ const mapStateToProps = (state) => {
         if(state.form.createAppFormDefault.values.Region !== "") {
             selectedRegion = state.form.createAppFormDefault.values.Region;
             //하위 오퍼레이터 리스트 아이템 변경
-        }
-        if(state.form.createAppFormDefault.values.Cloudlet !== "") {
-            selectedCloudlet = state.form.createAppFormDefault.values.Cloudlet;
         }
         if(state.form.createAppFormDefault.values.Operator !== "") {
             selectedOperator = state.form.createAppFormDefault.values.Operator;

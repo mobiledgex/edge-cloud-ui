@@ -1,16 +1,10 @@
 // https://material-ui.com/components/steppers/
 
 import React from 'react';
-import * as computeService from '../../services/service_compute_service';
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import { Progress } from 'semantic-ui-react';
 
 let failFlag = false;
 let deleteFlag = false;
@@ -78,60 +72,7 @@ class VerticalLinearStepper extends React.Component {
         
     }
 
-    receiveStatusData = (result, _item) => {
-        console.log("receiveStatusAuto222",result,":::",_item)
-        let toArray = null;
-        let toJson = null;
-        let stepData = [];
-        let count = 0;
-        toArray = result.data.split('\n')
-        toArray.pop();
-        toJson = toArray.map((str)=>(JSON.parse(str)))
-        toJson.map((item,i) => {
-            if(item.data) {
-                stepData.push(item.data.message) //Created ClusterInst successfully
-                //console.log("successfullyzxxx222",item.data.message,":::",item.data.message.toLowerCase().indexOf('created successfully'))
-                if(item.data.message.toLowerCase().indexOf('created') > -1 && item.data.message.toLowerCase().indexOf('successfully') > -1 && !deleteFlag){
-                    deleteFlag = true;
-                    console.log("Created successfullyCreated successfully")
-                    count++;
-                    if(_item.ClusterInst && _item.ClusterInst.indexOf('autocluster') > -1 && count < 2){
-                        deleteFlag = false;
-                        return;
-                    };
-                    setTimeout(() => {
-                        this.props.alertRefresh();
-                        computeService.deleteTempFile(this.props.item, this.props.site)
-                    }, 2000);
-                } else if(item.data.message.toLowerCase().indexOf('deleted cloudlet successfully') > -1){
-                    deleteFlag = true;
-                    console.log("Delete successfullyCreated successfully")
-                    setTimeout(() => {
-                        this.props.failRefresh('Deleted cloudlet successfully');
-                        computeService.deleteTempFile(this.props.item, this.props.site)
-                    }, 2000);
-                } else if(item.data.message.toLowerCase().indexOf('completed') > -1 && item.data.message.toLowerCase().indexOf('updated') > -1 && !deleteFlag){
-                    deleteFlag = true;
-                    console.log("Updated AppInst")
-                    setTimeout(() => {
-                        this.props.alertRefresh();
-                        computeService.deleteTempFile(this.props.item, this.props.site)
-                    }, 2000);
-                }
-            } else if(item.result && item.result.code == 400 && !failFlag){
-                console.log("failRefreshfailRefreshfailRefresh")
-                failFlag = true;
-                stepData.push(item.result.message)
-                setTimeout(() => {
-                    this.props.failRefresh(item.result.message);
-                    computeService.deleteTempFile(this.props.item, this.props.site)
-                }, 3000);
-            }
-        })
-        console.log("toArraytoArray",stepData)
-        this.setState({steps:stepData, activeStep:stepData.length-1})
-
-    }
+    
 
     receiveStatusAuto = (result, _item) => {
         let toArray = null;

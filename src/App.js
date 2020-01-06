@@ -148,13 +148,15 @@ const DashboardContainer = (props, props2) => {
     }
 
 
+
+
     if (!storage_data && props.mainPath !== '/createAccount' && props.mainPath !== '/verify' && props.mainPath !== '/passwordreset') {
         let mainPath = '/site1';
         let subPath = 'pg=1';
         history.push({
             pathname: mainPath,
             search: subPath,
-            state: {some: 'state'}
+            state: { some: 'state' }
         });
         history.location.search = subPath;
         props.mainPath = '/site1'

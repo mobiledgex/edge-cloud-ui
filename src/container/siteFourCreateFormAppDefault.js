@@ -1,10 +1,9 @@
 import React, { Fragment } from "react";
 
-import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup, Icon, Input, Checkbox} from "semantic-ui-react";
+import {Button, Form, Grid, Header, Item, Popup, Icon} from "semantic-ui-react";
 
-import { Field, reduxForm, initialize, reset, stopSubmit, change } from "redux-form";
-import MaterialIcon from "material-icons-react";
-import * as services from '../services/service_compute_service';
+import { Field, reduxForm, stopSubmit, change } from "redux-form";
+import * as serviceMC from '../services/serviceMC';
 import './styles.css';
 
 let portNum = 0;
@@ -23,7 +22,7 @@ const makeOption =(options)=> {
     return (
 
         newOptions.map((value) => (
-            {key:value, text:(value == 'tcp' || value == 'udp')? value.toUpperCase() : value, value:value}
+            {key:value, text:(value === 'tcp' || value === 'udp')? value.toUpperCase() : value, value:value}
         ))
 
     )
@@ -146,7 +145,7 @@ const renderInputApp = field => (
             placeholder={'Please use numbers and English letters only'}
             onChange={(e, { value }) => {
                 const reg = /^[0-9a-zA-Z_][-0-9a-zA-Z_]*/;
-                if(reg.test(value) || value == ''){
+                if(reg.test(value) || value === ''){
                     field.input.onChange(value)
                 }
             }}
@@ -200,15 +199,15 @@ class SiteFourCreateFormAppDefault extends React.Component {
         let _portArr = [];
         let _statePort = [];
         if(edit && _data){
-            (_data.DeploymentType == 'docker')?_data.DeploymentType = 'Docker':
-                (_data.DeploymentType == 'kubernetes')?_data.DeploymentType = 'Kubernetes':
+            (_data.DeploymentType === 'docker')?_data.DeploymentType = 'Docker':
+                (_data.DeploymentType === 'kubernetes')?_data.DeploymentType = 'Kubernetes':
                     _data.DeploymentType = 'VM'
             this.onHandleChange('DeploymentType',_data.DeploymentType);
             if(_data.Ports && _data.Ports != '-'){
                 _portArr = _data.Ports.split(',')
                 _portArr.map((item,i) => {
                     _data['Ports_'+i] = item.split(':')[1];
-                    _data['Portsselect_'+i] = (item.split(':')[0].toLowerCase() =='tcp')?'TCP':'UDP';
+                    _data['Portsselect_'+i] = (item.split(':')[0].toLowerCase() ==='tcp')?'TCP':'UDP';
                     _statePort.push({
                         num:i,
                         name:'single'
@@ -218,7 +217,7 @@ class SiteFourCreateFormAppDefault extends React.Component {
                 this.setState({portArray:_statePort});
             }
             Object.keys(_data).map((item) => {
-                if(_data[item] == '-'){
+                if(_data[item] === '-'){
                     _data[item] = '';
                 }
             })
@@ -241,9 +240,9 @@ class SiteFourCreateFormAppDefault extends React.Component {
                 this.setState({dataInit:true})
             }
         }
-        if(this.props.getUserRole == 'AdminManager') {
+        if(this.props.getUserRole === 'AdminManager') {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, this.receiveResult)
+            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_ORG}, this.receiveResult)
         }
     }
 
@@ -326,7 +325,8 @@ class SiteFourCreateFormAppDefault extends React.Component {
         }
         this.setState({portArray:arr});
     }
-    receiveResult = (result) => {
+    receiveResult = (mcRequest) => {
+        let result = mcRequest.data;
         let arr = [];
         result.map((item,i) => {
             if(item.Type === 'developer'){
@@ -343,13 +343,13 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
     onHandleChange(key,value){
         if(key === 'DeploymentType') {
-            if(value == 'VM') {
+            if(value === 'VM') {
                 this.setState({deployAPK:true})
             } else {
                 this.setState({deployAPK:false})
             }
 
-            if(value == 'Kubernetes') {
+            if(value === 'Kubernetes') {
                 this.setState({deploymentType:false})
             } else {
                 this.setState({deploymentType:true})
@@ -652,6 +652,4 @@ class SiteFourCreateFormAppDefault extends React.Component {
 
 export default reduxForm({
     form: "createAppFormDefault",
-    // validate
-    // enableReinitialize: true
 })(SiteFourCreateFormAppDefault);

@@ -15,7 +15,6 @@ import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
 import MaterialIcon from "material-icons-react";
-import * as services from '../services/service_compute_service';
 const ReactGridLayout = WidthProvider(RGL);
 
 const appssEdit = [

@@ -1,16 +1,11 @@
-import React, {Fragment} from 'react';
-import {Button, Grid, Image, Popup} from 'semantic-ui-react';
-
-import MaterialIcon, {colorPalette} from 'material-icons-react';
+import React, { Fragment } from 'react';
+import { Button, Image, Popup } from 'semantic-ui-react';
 import { withRouter } from 'react-router-dom';
-import Alert from 'react-s-alert';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as Service from '../services/service_login_api';
+import * as serviceMC from '../services/serviceMC';
 import './styles.css';
-import PopSettingViewer from '../container/popSettingViewer';
-// import PopProfileViewer from "./popProfileViewer";
 import PopProfileViewer from '../container/popProfileViewer';
 
 
@@ -23,18 +18,18 @@ class headerGlobalMini extends React.Component {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.state = {
             email: store ? store.email : 'Administrator',
-            openProfile:false,
+            openProfile: false,
             // openSettings:false,
-            userInfo:{info:[]}
+            userInfo: { info: [] }
         }
     }
 
-    onHandleClick = function(e, data) {
+    onHandleClick = function (e, data) {
         this.props.handleChangeSite(data.children.props.to)
     }
     gotoPreview(value) {
-        if(value == '/logout') {
-            try{
+        if (value == '/logout') {
+            try {
                 localStorage.removeItem('selectOrg');
                 localStorage.removeItem('selectRole')
                 localStorage.removeItem('selectMenu')
@@ -50,10 +45,10 @@ class headerGlobalMini extends React.Component {
             pathname: mainPath,
             search: subPath,
             state: { some: 'state' },
-            userInfo:{info:null}
+            userInfo: { info: null }
         });
         this.props.history.location.search = subPath;
-        this.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        this.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
 
     }
     loginState() {
@@ -63,48 +58,47 @@ class headerGlobalMini extends React.Component {
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         let token = store ? store.userToken : 'null';
-        Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
+        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().CURRENT_USER }, this.receiveCurrentUser, this);
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
 
-        if(nextProps.user) {
-            this.setState({email:nextProps.user.email})
+        if (nextProps.user) {
+            this.setState({ email: nextProps.user.email })
         }
-        if(nextProps.userInfo) {
-            this.setState({userInfo:nextProps.userInfo})
+        if (nextProps.userInfo) {
+            this.setState({ userInfo: nextProps.userInfo })
         }
     }
 
     receiveCurrentUser(result) {
-        if(result.data && result.data.message) {
-            _self.setState({tokenState:'expired'})
-            this.props.handleAlertInfo('error',result.data.message)
-            setTimeout(() => _self.gotoPreview('/logout'),2000);
+        if (result.data && result.data.message) {
+            _self.setState({ tokenState: 'expired' })
+            this.props.handleAlertInfo('error', result.data.message)
+            setTimeout(() => _self.gotoPreview('/logout'), 2000);
         } else {
-            _self.setState({tokenState:'live'})
-            _self.setState({userInfo: result.data})
+            _self.setState({ tokenState: 'live' })
+            _self.setState({ userInfo: result.data })
         }
     }
 
 
     profileView() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT):null;
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         let token = store ? store.userToken : 'null';
-        Service.getCurrentUserInfo('currentUser', {token:token}, this.receiveCurrentUser, this);
-
-        this.setState({openProfile:true})
+        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().CURRENT_USER }, this.receiveCurrentUser, this);
+        this.setState({ openProfile: true })
     }
     // settingsView() {
     //     this.setState({openProfile:false, openSettings:true})
     // }
     closeProfile = (mode) => {
-        if(mode === 'verify') {
+        if (mode === 'verify') {
             _self.props.handleClickLogin(mode)
         } else {
 
         }
-        this.setState({ openProfile:false})
+        this.setState({ openProfile: false })
     }
     // closeSettings = () => {
     //     this.setState({openSettings:false})
@@ -120,7 +114,7 @@ class headerGlobalMini extends React.Component {
         <Button.Group vertical>
             <Button onClick={() => this.profileView()} >Your profile</Button>
             {/*<Button style={{color:'#333333'}} onClick={() => this.settingsView(true)} >Settings</Button>*/}
-            <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{(this.props.location.pathname === "/site4")? this.props.email : this.state.userInfo['Name']}</div><div>Logout</div></Button>
+            <Button style={{}} onClick={() => this.gotoPreview('/logout')}><div>{(this.props.location.pathname === "/site4") ? this.props.email : this.state.email}</div><div>Logout</div></Button>
         </Button.Group>
 
     )
@@ -136,10 +130,10 @@ class headerGlobalMini extends React.Component {
             <Fragment>
                 <Popup
                     trigger={
-                        <div style={{cursor:'pointer'}}>
+                        <div style={{ cursor: 'pointer' }}>
                             <Image src='/assets/avatar/avatar_default.svg' avatar />
                             <span>
-                                {(this.props.location.pathname === "/site4")? this.props.email :this.state.userInfo['Name']}
+                                {(this.props.location.pathname === "/site4") ? this.props.email : this.state.email}
                             </span>
                         </div>}
                     content={
@@ -150,27 +144,25 @@ class headerGlobalMini extends React.Component {
                     className='gnb_logout'
                 />
                 {/*<PopSettingViewer data={{"Set URL":""}} dimmer={false} open={this.state.openSettings} close={this.closeSettings} onSubmit={()=>console.log('submit user set')} usrUrl={this.props.userURL}></PopSettingViewer>*/}
-                <PopProfileViewer data={this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile}></PopProfileViewer>
+                <PopProfileViewer data={this.state.userInfo} dimmer={false} open={this.state.openProfile} close={this.closeProfile} ></PopProfileViewer>
             </Fragment>
         )
     }
 }
 
-function mapStateToProps ( state ) {
+function mapStateToProps(state) {
     return {
-        user:state.user,
-        userInfo : state.userInfo?state.userInfo:null,
+        user: state.user,
+        userInfo: state.userInfo ? state.userInfo : null,
     }
 }
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
+        handleInjectData: (data) => { dispatch(actions.injectData(data)) },
+        handleChangeLoginMode: (data) => { dispatch(actions.changeLoginMode(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchProps)(headerGlobalMini));
-
-///////
