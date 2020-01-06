@@ -18,7 +18,7 @@ import {
 
 import {withRouter} from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
-import {Motion, spring} from "react-motion";
+import {spring} from "react-motion";
 import {Hints, Steps} from 'intro.js-react';
 //redux
 import {connect} from 'react-redux';
@@ -718,39 +718,6 @@ class SiteFour extends React.Component {
         this.props.handleSearchValue(e.target.value, this.state.searchChangeValue)
     }
 
-    makeGhost(elem, self) {
-
-        let child = document.createElement('div')
-        child.style.cssText = 'position:absolute; width:100px; height:30px; line-height:30px; text-align:center; opacity:0.8; left:0px; z-index:100; background:#aaaaaa; border-radius:5px';
-        child.innerHTML = '<div>Cloudlet Name</div>'
-        elem.appendChild(child);
-        //
-        let nextPosX = 15
-        let nextPosY = 90;
-        setTimeout(() => self.setState({
-            setMotion: {
-                left: spring(nextPosX, self.speed),
-                top: spring(nextPosY, self.speed),
-                position: 'absolute',
-                opacity: 0
-            }
-        }), 200);
-    }
-
-    resetMotion() {
-        let self = _self;
-        this.setState({setMotion: defaultMotion})
-        let nextPosX = 15
-        let nextPosY = 180;
-        setTimeout(() => self.setState({
-            setMotion: {
-                left: spring(nextPosX, self.speed),
-                top: spring(nextPosY, self.speed),
-                position: 'absolute',
-                opacity: spring(0, self.speedOpacity)
-            }
-        }), 500);
-    }
 
     onChangeRegion = (e, {value}) => {
 
@@ -1241,9 +1208,7 @@ class SiteFour extends React.Component {
 
                 <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend}
                                  close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
-                <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
-                    {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
-                </Motion>
+
             </Grid>
         );
     }

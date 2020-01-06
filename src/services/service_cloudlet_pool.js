@@ -254,7 +254,7 @@ export function createLinkPoolOrg(resource, body, callback, self) {
 }
 
 export function showOrgCloudletPool(resource, body, callback, self) {
-    axios.post(ServerUrl+"/"+resource, qs.stringify({
+    axios.post(ServerUrl+"/showOrgCloudletPool", qs.stringify({
         service: resource,
         serviceBody:body,
         serviceId: Math.round(Math.random()*10000)

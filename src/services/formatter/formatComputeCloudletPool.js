@@ -37,6 +37,7 @@ let generateData = (datas,body) => {
                     Region:'',
                     PoolName:'',
                     Cloudlets:'',
+                    Organizations:'',
                     Edit:null
                 })
             } else {
@@ -44,8 +45,9 @@ let generateData = (datas,body) => {
                 let Region = body.region || '-';
                 let PoolName = dataResult.data.key.name || '-';
                 let Cloudlets = dataResult.data.state || 0;
+                let Organizations =  0;
 
-                values.push({Region:Region,  PoolName:PoolName, Cloudlets:Cloudlets,  Edit:newRegistKey})
+                values.push({Region:Region,  PoolName:PoolName, Cloudlets:Cloudlets, Organizations:Organizations,  Edit:newRegistKey})
             }
 
         })
