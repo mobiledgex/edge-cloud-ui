@@ -880,11 +880,12 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
     console.log('appInstanceList2222====>', appInstanceList)
 
     let chartData = [];
-    appInstanceList.map((item: TypeAppInstance) => {
+    appInstanceList.map((item: TypeAppInstance, index) => {
 
         //console.log('Flavor222====>', item.Flavor);
         chartData.push({
             //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+            index: index,
             label: item.AppName.toString().substring(0, 10) + "...",
             value: instanceFlavorToPerformanceValue(item.Flavor),
             favor: item.Flavor,
@@ -937,17 +938,45 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                         weight: 'bold',
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
-                    bubbleClickFun={async (label) => {
+                    bubbleClickFun={async (label, index) => {
 
-                        await _this.setAppInstanceOne(label);
+                        await _this.setState({
+                            currentAppInst: label,
+                            currentGridIndex: index,
+                        })
+                        await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
+
+                        if (index >= 0 && index < 4) {
+                            setTimeout(() => {
+                                _this.scrollToUp()
+                            }, 250)
+                        } else {
+                            setTimeout(() => {
+                                _this.scrollToBottom()
+                            }, 250)
+                        }
+
+
                     }}
 
-                    legendClickFun={(label) => {
+                    legendClickFun={async (label, index) => {
 
-                        notification.success({
-                            duration: 1.5,
-                            message: label.toString()
+                        await _this.setState({
+                            currentAppInst: label,
+                            currentGridIndex: index,
                         })
+                        await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
+
+                        if (index >= 0 && index < 4) {
+                            setTimeout(() => {
+                                _this.scrollToUp()
+                            }, 250)
+                        } else {
+                            setTimeout(() => {
+                                _this.scrollToBottom()
+                            }, 250)
+                        }
+
 
                     }}
                     data={chartData}

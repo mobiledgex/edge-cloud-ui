@@ -11,6 +11,7 @@ import * as actions from '../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, TimePicker,} from 'antd';
 import * as reducer from "../utils";
+import Ripples from 'react-ripples'
 import {
     fetchAppInstanceList,
     filterAppInstanceListByCloudLet,
@@ -40,6 +41,8 @@ import {cutArrayList} from "../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
 import moment from "moment";
+
+import {Button as Button2} from '@material-ui/core'
 
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
@@ -114,7 +117,8 @@ type State = {
     cloudLetSelectBoxClearable: boolean,
     clusterSelectBoxClearable: boolean,
     appInstSelectBoxClearable: boolean,
-    isShowUtilizationArea: boolean
+    isShowUtilizationArea: boolean,
+    currentGridIndex: number,
 }
 
 
@@ -164,6 +168,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clusterSelectBoxClearable: false,
             appInstSelectBoxClearable: false,
             isShowUtilizationArea: false,
+            currentGridIndex: -1,
         };
 
         intervalHandle = null;
@@ -451,7 +456,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         dropdownCloudlet = null;
 
-        async resetAllData() {
+        async refreshAllData() {
             toast({
                 type: 'success',
                 //icon: 'smile',
@@ -495,7 +500,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div className='page_monitoring_select_area' style={{marginLeft: 0,}}>
                             <div style={{
                                 display: 'flex',
-                                width: 145,
+                                width: 270,
                                 //backgroundColor: 'red',
                                 justifyContent: 'center',
                                 alignItems: 'center',
@@ -512,7 +517,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 <div
                                     style={{
                                         display: 'flex',
-                                        width: 150,
+                                        width: 270,
                                         //backgroundColor: 'red',
                                         justifyContent: 'center',
                                         alignItems: 'center',
@@ -528,12 +533,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                     <Button style={{backgroundColor: 'white'}} onClick={async () => {
 
-                                        this.resetAllData();
+                                        this.refreshAllData();
 
                                     }}>
-                                        Reset All
-
+                                        RELOAD
                                     </Button>
+
+                                    <div style={{marginLeft: 10,}}>
+                                        <Button secondary={true} style={{backgroundColor: 'red', marginLeft: 10,}} onClick={async () => {
+
+                                            await this.setState({
+                                                currentGridIndex: -1,
+                                            })
+                                            await this.handleSelectBoxChanges('ALL', '', '', '')
+                                        }}>
+                                            RESET_ALL
+
+                                        </Button>
+                                    </div>
                                 </div>
 
 
@@ -676,6 +693,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         })
                                         //await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
                                     }}
+                                    ranges={{
+                                        Today: [moment(), moment()],
+                                        'Last 7 Days': [ moment().subtract(7,'d'), moment().subtract(1,'d')],
+                                        'Last 30 Days': [ moment().subtract(30,'d'), moment().subtract(1,'d')],
+                                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                        'Last Month': [moment().date(-30), moment().date(-1)],
+                                    }}
                                     style={{width: 300}}
                                 />
                             </div>
@@ -754,11 +778,25 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
+        scrollToBottom() {
+            const scrollHeight = this.messageList.scrollHeight;
+            const height = this.messageList.clientHeight;
+            const maxScrollTop = scrollHeight - height;
+            this.messageList.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+        }
+
+        scrollToUp() {
+            this.messageList.scrollTo(0, 0);
+        }
+
         renderAppInstanceGrid() {
             return (
                 <div>
-                    <Grid columns={7} padded={true} style={{height: 50}}>
+                    <Grid columns={8} padded={true} style={{height: 50}}>
                         <Row>
+                            <Column color={'grey'}>
+                                index
+                            </Column>
                             <Column color={'grey'}>
                                 NAME
                             </Column>
@@ -782,8 +820,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </Column>
                         </Row>
                     </Grid>
-                    <div className='grid00001'>
-                        <Grid columns={7} padded={true}>
+                    <div className='grid00001'
+                         ref={(div) => {
+                             this.messageList = div;
+                         }}
+                    >
+                        <Grid columns={8} padded={true}>
                             {/*todo:ROW HEADER*/}
                             {/*todo:ROW HEADER*/}
                             {/*todo:ROW HEADER*/}
@@ -801,10 +843,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                    sumSendBytes: sumSendBytes,*/
 
                                 return (
-                                    <Row onClick={() => {
-                                        //this.props.history.push('PageMonitoringDetail')
-                                    }}>
-                                        <Column>
+                                    <Row
+                                        className='gridRow'
+                                        style={{
+                                            color: index === this.state.currentGridIndex ? 'white' : 'white',
+                                            backgroundColor: index === this.state.currentGridIndex && '#4fd1ff'
+                                        }}
+                                        onClick={async () => {
+                                            //alert(item.AppName)
+                                            await this.setState({
+                                                currentAppInst: item.AppName,
+                                                currentGridIndex: index,
+                                            })
+                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.AppName)
+                                        }}
+                                    >
+                                        <Column
+
+                                        >
+                                            {index}
+                                        </Column>
+                                        <Column
+
+                                        >
                                             {item.AppName}
                                         </Column>
                                         <Column>
@@ -865,7 +926,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'DISK', render: () => {
                     return (
                         <Pane>
-                            {this.renderMemArea()}
+                            <div>
+                                DISK
+                            </div>
+                            <div>
+                                DISK
+                            </div>
+                            <div>
+                                DISK
+                            </div>
+                            <div>
+                                DISK
+                            </div>
                         </Pane>
                     )
                 }
@@ -874,7 +946,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'NETWORK', render: () => {
                     return (
                         <Pane>
-                            {this.renderMemArea()}
+                            <div>
+                                NETWORK
+                            </div>
+                            <div>
+                                NETWORK
+                            </div>
+                            <div>
+                                NETWORK
+                            </div>
+                            <div>
+                                NETWORK
+                            </div>
                         </Pane>
                     )
                 }
@@ -883,9 +966,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         ]
 
-        renderCpuArea(){
+        renderCpuArea() {
             return (
-                <div style={{display: 'flex', flexDirection: 'row', height:380,}}>
+                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
 
                     {/*1111111111*/}
                     {/*1111111111*/}
@@ -938,7 +1021,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderMemArea(){
+        renderMemArea() {
             return (
                 <div style={{display: 'flex', flexDirection: 'row'}}>
                     {/*1111111111*/}
@@ -1062,17 +1145,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
-                                                <div className='page_monitoring_column_kj002' >
+                                                <div className='page_monitoring_column_kj002'>
                                                     <div className=''>
                                                         <div className='page_monitoring_title'>
                                                             Status of Launched App Instances on Cloudlet
                                                         </div>
                                                     </div>
-                                                    <div className='page_monitoring_container' style={{width:800}}>
+                                                    <div className='page_monitoring_container' style={{width: 800}}>
                                                         {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
                                                     </div>
                                                 </div>
-                                                <div className='page_monitoring_column_kj003' style={{marginLeft:0}}>
+                                                <div className='page_monitoring_column_kj003' style={{marginLeft: 0}}>
 
                                                     {/*todo: RENDER TAB*/}
                                                     {/*todo: RENDER TAB*/}

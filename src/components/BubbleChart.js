@@ -72,6 +72,7 @@ export default class BubbleChart extends Component {
                     d.id = d.data.label.toLowerCase().replace(/ |\//g, "-");
                     d.favor = d.data.favor;
                     d.fullLabel= d.data.fullLabel;
+                    d.index= d.data.index;
                 }
             });
 
@@ -110,7 +111,7 @@ export default class BubbleChart extends Component {
                 return "translate(" + d.x + "," + d.y + ")";
             })
             .on("click", function (d) {
-                bubbleClickFun(d.label);
+                bubbleClickFun(d.fullLabel, d.index);
             })
 
         node.append("circle")
@@ -279,8 +280,7 @@ export default class BubbleChart extends Component {
                   d3.select('#' + d.id).attr("r", r);*/
             })
             .on("click", function (d) {
-                legendClickFun(d.label);
-                //alert('sdlfksldkf')
+                legendClickFun(d.fullLabel, d.index);
             });
         ;
 
@@ -389,10 +389,10 @@ BubbleChart.defaultProps = {
         color: '#fff',
         weight: 'normal',
     },
-    bubbleClickFun: (label) => {
+    bubbleClickFun: (label, index) => {
         console.log(`Bubble ${label} is clicked ...`)
     },
-    legendClickFun: (label) => {
+    legendClickFun: (label, index) => {
         console.log(`Legend ${label} is clicked ...`)
     }
 }

@@ -33,10 +33,21 @@
     align-items: center;
 }
 
+.gridRow {
+    color: #808080;
+
+}
+
+.gridRow:hover {
+    background-color: #919191;
+
+}
+
+
 .grid00001 {
     marginTop: 10;
     overflow-y: scroll;
-    height: 300px;
+    height: 270px;
 }
 
 .page_monitoring_column_for_grid {
@@ -15529,7 +15540,7 @@ span.ant-radio + * {
 /* stylelint-disable declaration-bang-space-before,no-duplicate-selectors,string-no-newline */
 
 
-.legend{
+.legend {
     margin-top: 50px;
 }
 
@@ -15547,7 +15558,7 @@ span.ant-radio + * {
     font-feature-settings: 'tnum';
     position: absolute;
     z-index: 1050;
-    width:300px;
+    width: 300px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
@@ -15775,6 +15786,7 @@ span.ant-radio + * {
     margin-left: 20px;
     margin-bottom: -10px;
 }
+
 .page_monitoring_column_kj005 {
     display: flex;
     flex-direction: column;
@@ -28860,7 +28872,7 @@ div.ant-typography-edit-content {
     }
 }
 
-span .ant-calendar-picker{
+span .ant-calendar-picker {
     width: 300px;
 }
 
