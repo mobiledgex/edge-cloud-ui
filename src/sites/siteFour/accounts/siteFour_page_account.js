@@ -1,19 +1,29 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
-import DeveloperListView from '../container/developerListView';
+import AccountListView from '../../../container/accountsListView';
 import { withRouter } from 'react-router-dom';
-//redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
+/*
+{ Name: 'bickhcho1',
+       Email: 'whrjsgml111@naver.com',
+       EmailVerified: true,
+       Passhash: '',
+       Salt: '',
+       Iter: 0,
+       FamilyName: '',
+       GivenName: '',
+       Picture: '',
+       Nickname: '',
+       CreatedAt: '2019-05-23T06:29:01.794715Z',
+       UpdatedAt: '2019-05-23T06:30:42.082077Z',
+       Locked: false }
 
-import * as serviceMC from '../services/serviceMC';
-import './siteThree.css';
-
-
-let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
-
+ */
 let _self = null;
-class SiteFourPageUser extends React.Component {
+class SiteFourPageAccount extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -29,8 +39,18 @@ class SiteFourPageUser extends React.Component {
         this.headerH = 70;
         this.hgap = 0;
         this.headerLayout = [4,4,4,3]
+        this.hiddenKeys = ['Passhash', 'Salt', 'Iter','FamilyName','GivenName','Picture','Nickname','CreatedAt','UpdatedAt']
     }
+    gotoUrl(site, subPath) {
+        let mainPath = site;
+        _self.props.history.push({
+            pathname: site,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
+    }
     //go to
     gotoPreview(site) {
         //브라우져 입력창에 주소 기록
@@ -70,42 +90,26 @@ class SiteFourPageUser extends React.Component {
             this.props.handleComputeRefresh(false);
         }
     }
-    gotoUrl(site, subPath) {
-        let mainPath = site;
-        _self.props.history.push({
-            pathname: site,
-            search: subPath
-        });
-        _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
-        _self.setState({ page:subPath})
-    }
-
     receiveResult = (mcRequest) => {
-        // @inki if data has expired token
-        let result = mcRequest.data;
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
+        if(mcRequest)
+        {
+            if(mcRequest.response)
+            {
+                let response = mcRequest.response; 
+                let reverseResult = response.data.reverse();
+                _self.setState({devData:reverseResult})
+            }
         }
-        let reverseResult = result.reverse();
-        _self.setState({devData:reverseResult})
         _self.props.handleLoadingSpinner(false);
     }
     getDataDeveloper(token) {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_USERS }, _self.receiveResult)
-        this.props.handleLoadingSpinner(true);
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+        serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ACCOUNTS }, _self.receiveResult)
+        _self.props.handleLoadingSpinner(true)
     }
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem } = this.state
         return (
-
-            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'User'} dataRefresh={this.getDataDeveloper}></DeveloperListView>
-
+            <AccountListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'Account'} dataRefresh={this.getDataDeveloper} hiddenKeys={this.hiddenKeys}></AccountListView>
         );
     }
 
@@ -128,4 +132,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageUser)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageAccount)));

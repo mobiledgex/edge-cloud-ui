@@ -151,15 +151,12 @@ class RegistNewListItem extends React.Component {
         _self.setState({appResult:groupByOper})
     }
     receiveSubmit = (mcRequest) => {
-        let result = mcRequest.response;
-        let request = mcRequest.request;
-        this.props.refresh('All')
-        let paseData = result.data;
-        if(paseData.error) {
-            this.props.handleAlertInfo('error',paseData.error)
-            return
-        } else {
-            this.props.handleAlertInfo('success','Flavor '+request.data.flavor.key.name+' created successfully')
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let request = mcRequest.request;
+                this.props.refresh('All')
+                this.props.handleAlertInfo('success', 'Flavor ' + request.data.flavor.key.name + ' created successfully')
+            }
         }
         this.props.handleLoadingSpinner(false);
     }
@@ -200,7 +197,7 @@ class RegistNewListItem extends React.Component {
             if(error.length === 0) {
                 this.close();
                 this.props.handleLoadingSpinner(true);
-                serviceMC.sendRequest(serviceBody, this.receiveSubmit)
+                serviceMC.sendRequest(_self, serviceBody, this.receiveSubmit)
             }
             this.setState({validateError:error})
         }

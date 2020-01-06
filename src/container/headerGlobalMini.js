@@ -58,7 +58,7 @@ class headerGlobalMini extends React.Component {
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         let token = store ? store.userToken : 'null';
-        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().CURRENT_USER }, this.receiveCurrentUser, this);
+        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().CURRENT_USER }, this.receiveCurrentUser);
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -71,14 +71,13 @@ class headerGlobalMini extends React.Component {
         }
     }
 
-    receiveCurrentUser(result) {
-        if (result.data && result.data.message) {
-            _self.setState({ tokenState: 'expired' })
-            this.props.handleAlertInfo('error', result.data.message)
-            setTimeout(() => _self.gotoPreview('/logout'), 2000);
-        } else {
-            _self.setState({ tokenState: 'live' })
-            _self.setState({ userInfo: result.data })
+    receiveCurrentUser(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.setState({ tokenState: 'live' })
+                _self.setState({ userInfo: response.data })
+            }
         }
     }
 
@@ -86,7 +85,7 @@ class headerGlobalMini extends React.Component {
     profileView() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
         let token = store ? store.userToken : 'null';
-        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().CURRENT_USER }, this.receiveCurrentUser, this);
+        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().CURRENT_USER }, this.receiveCurrentUser);
         this.setState({ openProfile: true })
     }
     // settingsView() {

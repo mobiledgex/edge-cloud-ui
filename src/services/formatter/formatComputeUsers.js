@@ -1,3 +1,12 @@
+export const getKey = (data) => {
+    let userArr = [];
+    Object.values(data).map((item) => { userArr.push(item); })
+    return ({ 
+        org: userArr[1], 
+        username: userArr[0], 
+        role: userArr[2] 
+    })
+}
 /*
 {
             "result": {
@@ -32,29 +41,13 @@
  */
 
 
-import * as moment from 'moment';
-let trimData = (datas) => {
-    let newData = datas.splice(0,1);
-    return datas ;
-}
-const week_kr = ["월","화","수","목","금","토","일"]
-let week = moment().format('E');
-let getWeek = week_kr[(week-1)];
-const numberDes =(a,b)=> (
-    b-a
-)
-
-let generateData = (datas) => {
+export const formatData = (datas) => {
     let result = datas;
     let values = [];
-    //20190409 transition string to json
-    //let toArray = result.data.split('\n')
-
     let toJson = result.data;
-
-    if(toJson){
+    if (toJson) {
         toJson.map((dataResult, i) => {
-            if(dataResult.message) {
+            if (dataResult.message) {
 
             } else {
                 let Index = i;
@@ -64,34 +57,12 @@ let generateData = (datas) => {
                 //let Email = dataResult.email || '-';
                 let newRegistKey = ['Organization', 'Username', 'Role Type'];
 
-                values.push({Username:Username, Organization:Organization, 'Role Type':RoleType, Edit:newRegistKey})
+                values.push({ Username: Username, Organization: Organization, 'Role Type': RoleType, Edit: newRegistKey })
             }
 
         })
     } else {
         console.log('there is no result')
     }
-
-    //ascending or descending
-
-    //values.sort(numberDes);
-    //values.reverse();
-
     return values
-
 }
-const retunDate = (str) => {
-    var year = str.substring(0, 4);
-    var month = str.substring(4, 6);
-    var day = str.substring(6, 8);
-    var hour = str.substring(8, 10);
-    var minute = str.substring(10, 12);
-    //var second = str.substring(12, 14);
-    var date = new Date(year, month-1, day, hour, minute);
-    return moment(date).format('hh:mm');
-}
-const FormatComputeUsers = (props) => (
-    generateData(props)
-)
-
-export default FormatComputeUsers;

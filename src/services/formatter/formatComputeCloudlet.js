@@ -1,7 +1,21 @@
 import {generateUniqueId} from '../serviceMC';
 
+export const getKey = (data)=>
+{
+    const { CloudletName, Operator, Region } = data
+    return ({
+        region: Region,
+        cloudlet: {
+            key: {
+                operator_key: { name: Operator },
+                name: CloudletName
+            }
+        }
+    })
+}
 
-const formatData = (datas,body) => {
+
+export const formatData = (datas,body) => {
     let values = [];
     let toArray = null;
     let toJson = [];
@@ -20,7 +34,6 @@ const formatData = (datas,body) => {
     }else {
         toJson = null;
     }
-    console.log("datasdatasdatasss",toJson)
     let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
     if(toJson && toJson.length){
         toJson.map((dataResult) => {
@@ -59,22 +72,4 @@ const formatData = (datas,body) => {
     return values
 }
 
-const FormatComputeClouldlet = (props,body) => (
-    formatData(props,body)
-)
 
-export const key = (data)=>
-{
-    const { CloudletName, Operator, Region } = data
-    return ({
-        region: Region,
-        cloudlet: {
-            key: {
-                operator_key: { name: Operator },
-                name: CloudletName
-            }
-        }
-    })
-}
-
-export default FormatComputeClouldlet;

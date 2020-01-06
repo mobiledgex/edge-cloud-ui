@@ -1,15 +1,13 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
-import DeveloperListView from '../container/developerListView';
+import DeveloperListView from '../../../container/developerListView';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../../../actions';
 
-import * as serviceMC from '../services/serviceMC';
-import './siteThree.css';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
@@ -90,58 +88,51 @@ class SiteFourPageOrganization extends React.Component {
         }
 
     }
-    receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
-        console.log("resultresultresultresult",result)
 
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired')> -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
-
-        if(result.length == 0) {
-            _self.setState({devData:[]})
-            _self.props.handleDataExist(false)
-            _self.props.handleAlertInfo('error','There is no data')
-            //setTimeout(()=>_self.gotoPreview('/site4', 'pg=newOrg'), 2000)
-            // _self.gotoUrl('/site4', 'pg=newOrg')  /* CreatOrg 자동 연결... */
-        } else {
-            _self.setState({devData:result})
-            _self.props.handleDataExist(true)
-            // if(result.length === 0) {
-            //     _self.gotoUrl('/site4', 'pg=newOrg')
-            // } else {
-            //     _self.setState({devData:result})
-            // }
-
-        }
+    receiveOrganisationResult = (mcRequest) => {
+        if(mcRequest)
+        {
+            if(mcRequest.response)
+            {
+                let response = mcRequest.response;
+                if (response.data.length == 0) {
+                    _self.setState({ devData: [] })
+                    _self.props.handleDataExist(false)
+                    _self.props.handleAlertInfo('error', 'There is no data')
+                } else {
+                    _self.setState({ devData: response.data })
+                    _self.props.handleDataExist(true)
+                }
+            }
+        }      
         _self.props.handleLoadingSpinner(false);
     }
+
+    receiveUserRoleResult = (mcRequest) => {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                this.props.handleRoleInfo(response.data)
+                response.data.map((item, i) => {
+                    if (item.role.indexOf('Admin') > -1) {
+                        this.props.handleUserRole(item.role);
+                        localStorage.setItem('selectRole', item.role)
+                    }
+                })
+            }
+        }
+    }
+
     getDataDeveloper(token) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG }, _self.receiveResult)
-        serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ROLE }, _self.receiveAdminInfo)
+        serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG }, _self.receiveOrganisationResult)
+        serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ROLE }, _self.receiveUserRoleResult)
         _self.props.handleLoadingSpinner(true);
     }
-    receiveAdminInfo = (mcRequest) => {
-        let result = mcRequest.response;
-        this.props.handleRoleInfo(result.data)
-        result.data.map((item, i) => {
-            if (item.role.indexOf('Admin') > -1) {
-                this.props.handleUserRole(item.role);
-                localStorage.setItem('selectRole', item.role)
-            }
-        })
-    }
+
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem } = this.state
         return (
             <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} hideHeader={this.hideHeader} siteId={"Organization"} dataRefresh={this.getDataDeveloper}></DeveloperListView>
-            // <DeveloperListView headerLayout={this.headerLayout}></DeveloperListView>
         );
     }
 

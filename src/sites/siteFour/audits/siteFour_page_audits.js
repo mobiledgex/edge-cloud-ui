@@ -3,10 +3,10 @@ import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 //redux
 import {connect} from 'react-redux';
-import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
-import './siteThree.css';
-import TimelineAuditViewNew from "../container/TimelineAuditViewNew";
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
+import TimelineAuditViewNew from "../../../container/TimelineAuditViewNew";
 
 
 let _self = null;
@@ -170,30 +170,21 @@ class SiteFourPageAudits extends React.Component {
     }
 
     receiveResult = (mcRequest) => {
-        let result  = mcRequest.response;
-        let request = mcRequest.request;
-        // @inki if data has expired token
-        if (result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        } else if (result.error) {
-            _self.props.handleAlertInfo('error', result.error);
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let request = mcRequest.request;
+                let checked = localStorage.getItem('auditChecked')
+                if (request.method === serviceMC.getEP().SHOW_SELF || request.method === serviceMC.getEP().SHOW_AUDIT_ORG) {
+                    _self.reduceAuditCount(response.data, checked)
+                }
+                _self.setState({ devData: response, auditMounted: true })
+                if (rgn.length == this.loadCount - 1) {
+                    return
+                }
+            }
         }
-
-        let checked = localStorage.getItem('auditChecked')
-        if (request.method === serviceMC.getEP().SHOW_SELF || request.method === serviceMC.getEP().SHOW_AUDIT_ORG) {
-            _self.reduceAuditCount(result.data, checked)
-
-        }
-        _self.setState({devData: result, auditMounted: true})
         _self.props.handleLoadingSpinner(false);
-        if (rgn.length == this.loadCount - 1) {
-            return
-        }
-
-
     }
 
     countJoin() {
@@ -216,7 +207,7 @@ class SiteFourPageAudits extends React.Component {
 
         if (orgName) {
             try {
-                serviceMC.sendRequest({token:store.userToken, method:serviceMC.getEP().SHOW_AUDIT_ORG, data:{"org": this.makeOga(orgName)}}, this.receiveResult)
+                serviceMC.sendRequest(_self, {token:store.userToken, method:serviceMC.getEP().SHOW_AUDIT_ORG, data:{"org": this.makeOga(orgName)}}, this.receiveResult)
             } catch (e) {
                 //alert(e)
                 this.props.handleLoadingSpinner(false);
@@ -226,7 +217,7 @@ class SiteFourPageAudits extends React.Component {
             }
 
         } else {
-            serviceMC.sendRequest({token: store.userToken, method:serviceMC.getEP().SHOW_SELF, data: '{}'}, _self.receiveResult, _self)
+            serviceMC.sendRequest(_self, {token: store.userToken, method:serviceMC.getEP().SHOW_SELF, data: '{}'}, _self.receiveResult)
         }
     }
 

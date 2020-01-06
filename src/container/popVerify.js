@@ -39,7 +39,7 @@ class PopVerify extends React.Component {
         let requestBody = {
             data: { method: serviceMC.getEP().RESEND_VERIFY, data: { username: _self.props.userName, email: _self.props.email, callbackurl: `https://${host}/verify` } }
         }
-        serviceMC.sendRequest(requestBody, _self.props.receiveResendVerify)
+        serviceMC.sendRequest(_self, requestBody, _self.props.receiveResendVerify)
     }
 
     /** ************************ **/

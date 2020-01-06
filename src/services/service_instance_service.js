@@ -1,8 +1,8 @@
 
 import axios from 'axios-jsonp-pro';
-import FormatMonitorCloudlet from "./formatter/formatMonitorCloudlet";
-import FormatMonitorCluster from "./formatter/formatMonitorCluster";
-import FormatMonitorApp from "./formatter/formatMonitorApp";
+import * as FormatMonitorCloudlet from "./formatter/formatMonitorCloudlet";
+import * as FormatMonitorCluster from "./formatter/formatMonitorCluster";
+import * as FormatMonitorApp from "./formatter/formatMonitorApp";
 
 
 let hostname = window.location.hostname;
@@ -33,7 +33,7 @@ export function getAppinstHealth(resource, callback) {
                 serviceId: Math.round(Math.random()*10000)
             })
                 .then(function (response) {
-                    resResults = resResults.concat(FormatMonitorApp(response))
+                    resResults = resResults.concat(FormatMonitorApp.formatData(response))
 
                 })
                 .catch(function (error) {
@@ -70,7 +70,7 @@ export function getClusterHealth(resource, callback) {
                 serviceId: Math.round(Math.random()*10000)
             })
                 .then(function (response) {
-                    resResults = resResults.concat(FormatMonitorCluster(response))
+                    resResults = resResults.concat(FormatMonitorCluster.formatData(response))
 
                 })
                 .catch(function (error) {
@@ -103,7 +103,7 @@ export function getCloudletHealth(resource, callback) {
                 serviceId: Math.round(Math.random()*10000)
             })
                 .then(function (response) {
-                    resResults = resResults.concat(FormatMonitorCloudlet(response))
+                    resResults = resResults.concat(FormatMonitorCloudlet.formatData(response))
                     console.log('20190930 formated cloudlet result === ', resResults)
                 })
                 .catch(function (error) {

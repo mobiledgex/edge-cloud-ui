@@ -73,15 +73,13 @@ class RegistryFlavorViewer extends React.Component {
 
     
     receiveResult = (mcRequest) => {
-        let result = mcRequest.response;
-        let request = mcRequest.request;
-        _self.props.handleLoadingSpinner(false);
-        if(result.data.error) {
-            this.props.handleAlertInfo('error',result.data.error)
-            return;
-        } else {
-            this.props.handleAlertInfo('success','Flavor '+request.data.flavor.key.name+' created successfully.')
-            this.gotoUrl('submit');
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let request = mcRequest.request;
+                _self.props.handleLoadingSpinner(false);
+                this.props.handleAlertInfo('success', 'Flavor ' + request.data.flavor.key.name + ' created successfully.')
+                this.gotoUrl('submit');
+            }
         }
     }
 
@@ -166,7 +164,7 @@ class RegistryFlavorViewer extends React.Component {
                 let submitData = nextProps.submitValues
                 this.setState({ toggleSubmit: true, validateError: error });
                 this.props.handleLoadingSpinner(true);
-                serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_FLAVOR, data: submitData }, this.receiveResult)
+                serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_FLAVOR, data: submitData }, this.receiveResult)
             } else {
                 this.setState({ validateError: error, toggleSubmit: true })
             }
@@ -176,21 +174,6 @@ class RegistryFlavorViewer extends React.Component {
     }
 
     componentWillUnmount() {
-    }
-
-    receiveStatusData = (result) => {
-        let toArray = null;
-        let toJson = null;
-        toArray = result.data.split('\n')
-        toArray.pop();
-        toJson = toArray.map((str)=>(JSON.parse(str)))
-        console.log("toJsontoJson",toJson)
-        toJson.map((item) => {
-            if(item.result && item.result.code == 400){
-                console.log("item.result",item.result.message)
-                this.props.handleAlertInfo('error',item.result.message)
-            }
-        })
     }
 
     render() {

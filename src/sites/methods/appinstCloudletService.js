@@ -2,22 +2,21 @@ import * as reducer from '../../utils'
 import * as serviceMC from '../../services/serviceMC'
 
 let rgn = [];
-const receiveResultApp = (mcRequest) => {
-    let result = mcRequest.data;
-    if(result.error && result.error.indexOf('Expired') > -1) {
-        _self.props.handleAlertInfo('error', result.error);
-        setTimeout(() => _self.gotoUrl('/logout'), 4000);
-        _self.props.handleLoadingSpinner(false);
-        return;
-    }
 
-    let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-    if(Object.keys(regionGroup)[0]) {
-        _self._AppInstDummy = _self._AppInstDummy.concat(result)
-    }
-    _self.loadCount ++;
-    if(rgn.length == _self.loadCount){
-        _self.countJoin()
+const receiveResultApp = (mcRequest) => {
+    let regionGroup = {};
+    if (mcRequest) {
+        if (mcRequest.response) {
+            let response = mcRequest.response;
+            regionGroup = reducer.groupBy(response.data, 'Region');
+            if (Object.keys(regionGroup)[0]) {
+                _self._AppInstDummy = _self._AppInstDummy.concat(response.data)
+            }
+            _self.loadCount++;
+            if (rgn.length == _self.loadCount) {
+                countJoin()
+            }
+        }
     }
     _self.props.handleLoadingSpinner(false);
 
@@ -25,7 +24,6 @@ const receiveResultApp = (mcRequest) => {
 const countJoin = () => {
     let AppInst = this._AppInstDummy;
     _self.setState({devData:AppInst,dataSort:false})
-    this.props.handleLoadingSpinner(false);
 
 }
 export const setRegion =(rgn) => {
@@ -47,7 +45,7 @@ export const getDataofAppinst = (region,regionArr) => {
     if(localStorage.selectRole == 'AdminManager') {
         rgn.map((item) => {
             // All show appInst
-            serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_APP_INST, data: { region: item } }, _self.receiveResultApp)
+            serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_APP_INST, data: { region: item } }, receiveResultApp)
         })
     } else {
         rgn.map((item) => {
@@ -66,7 +64,7 @@ export const getDataofAppinst = (region,regionArr) => {
                 }
             }
             // org별 show appInst
-            serviceMC.sendRequest(serviceBody, _self.receiveResultApp)
+            serviceMC.sendRequest(_self, serviceBody, receiveResultApp)
         })
     }
 }

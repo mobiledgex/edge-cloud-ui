@@ -173,51 +173,19 @@ class RegistryCloudletViewer extends React.Component {
         }
     }
     receiveSubmit = (mcRequest) => {
-        let result = mcRequest.response.data
-
-        if(result.code === 200)
-        {
-            _self.props.handleLoadingSpinner(false);
-            _self.props.gotoUrl();
-            _self.setState({ errorClose: true }) 
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response.data
+                if (response.code === 200) {
+                    _self.props.handleLoadingSpinner(false);
+                    _self.props.gotoUrl();
+                    _self.setState({ errorClose: true })
+                }
+                else {
+                    this.props.handleAlertInfo('error', response.data.message)
+                }
+            }
         }
-        else
-        {
-            this.props.handleAlertInfo('error',result.data.message)
-        }
-        // console.log("20191119 cloudlet paseDatapaseDatapaseData",result, ": this.props.changeRegion=", this.props.changeRegion,": region = ", this.props.region, ":", this.props.regionInfo, ":", this.props.getRegion)
-        // this.pauseRender = false;
-        // let paseData = result.data;
-        // if(paseData.error && !this.state.errorClose) {
-        //     //this.setState({clusterInstCreate:false})
-        //     this.props.handleLoadingSpinner(false);
-        //     if(paseData.error == 'Key already exists'){
-                
-        //     } else {
-        //         this.props.handleAlertInfo('error',paseData.error)
-        //     }
-        // } else {
-        //     if (result.data.error) {
-        //         this.props.handleAlertInfo('error', result.data.error)
-        //     } else {
-        //         console.log('20191119 receive submit result is success..', result,":", result.data)
-        //         this.props.handleAlertInfo('success',result.data.message)
-        //     }
-        //     if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
-
-        //     }
-        // }
-        // setTimeout(() => {
-        //     console.log('20191119 props refresh...', this.props.refresh, ": this.props.changeRegion=", this.props.changeRegion,": region = ", this.props.region, ":", this.props.regionInfo, ":", this.props.getRegion)
-        //     if(_self.props.refresh){
-        //         _self.props.refresh(this.props.changeRegion ? this.props.changeRegion : 'All');
-        //     } else {
-        //         //_self.props.handleChangeRegion(this.props.changeRegion ? this.props.changeRegion : 'All');
-        //         //_self.props.handleComputeRefresh(true);
-        //         _self.gotoUrl();
-        //     }
-
-        // }, 3000);
     }
 
     componentDidMount() {

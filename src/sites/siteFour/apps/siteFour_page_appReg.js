@@ -3,10 +3,10 @@ import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
-import './siteThree.css';
-import RegistryViewer from "../container/registryViewer";
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
+import RegistryViewer from "../../../container/registryViewer";
 
 
 
@@ -91,23 +91,18 @@ class SiteFourPageAppReg extends React.Component {
 
 
     }
-    receiveResult(mcRequest) {
-        let result = mcRequest.data;
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            return;
-        }
 
-        if(result.error) {
-            _self.props.handleAlertInfo('error',result.error.message)
-        } else {
-            _self.setState({devData:result})
+    receiveResult(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.setState({ devData: response })
+            }
         }
     }
+
     getDataDeveloper(token, region) {
-        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_APP, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
+        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
     }
 
     /*

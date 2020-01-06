@@ -1,7 +1,7 @@
 import {generateUniqueId} from '../serviceMC';
 
 /*Used as delete and streaming request parameters*/
-export const key = (data) => {
+export const getKey = (data) => {
     const { Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region } = data;  
     return ({
         region: Region,
@@ -16,7 +16,7 @@ export const key = (data) => {
     })
 }
 
-let formatData = (datas,body) => {
+export const formatData = (datas,body) => {
     let values = [];
     let toArray = null;
     let toJson = [];
@@ -76,9 +76,3 @@ let formatData = (datas,body) => {
     }
     return values
 }
-
-const FormatComputeClstInst = (props,body) => (
-    formatData(props,body)
-)
-
-export default FormatComputeClstInst;

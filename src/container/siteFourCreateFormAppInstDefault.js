@@ -146,7 +146,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
         }
         if(this.props.getUserRole == 'AdminManager') {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            serviceMC.sendRequest({token:store.userToken, method:serviceMC.getEP().SHOW_ORG}, this.receiveResult)
+            serviceMC.sendRequest(this, {token:store.userToken, method:serviceMC.getEP().SHOW_ORG}, this.receiveResult)
         }
 
 
@@ -201,12 +201,16 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
 
 
     receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
-        let arr = [];
-        result.map((item,i) => {
-            arr.push(item.Organization);
-        })
-        this.setState({orgArr:arr});
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let arr = [];
+                response.data.map((item, i) => {
+                    arr.push(item.Organization);
+                })
+                this.setState({ orgArr: arr });
+            }
+        }
     }
 
     cancelClick = (e) => {

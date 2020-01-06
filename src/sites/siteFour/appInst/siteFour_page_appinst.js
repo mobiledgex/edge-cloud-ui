@@ -3,12 +3,12 @@ import { withRouter } from 'react-router-dom';
 import sizeMe from 'react-sizeme';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
-import './siteThree.css';
-import MapWithListView from "../container/mapWithListView";
-import PageDetailViewer from '../container/pageDetailViewer';
-import * as reducer from '../utils'
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
+import MapWithListView from "../../../container/mapWithListView";
+import PageDetailViewer from '../../../container/pageDetailViewer';
+import * as reducer from '../../../utils'
 
 let _self = null;
 let rgn = [];
@@ -134,39 +134,23 @@ class SiteFourPageAppInst extends React.Component {
         setTimeout(() => this.forceUpdate(), 1000)
 
     }
-    receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
 
-        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-        if(Object.keys(regionGroup)[0]) {
-            _self._AppInstDummy = _self._AppInstDummy.concat(result)
-        }
-        _self.loadCount ++;
-        if(rgn.length == _self.loadCount){
-            _self.countJoin()
+    receiveResult = (mcRequest) => {
+        let regionGroup = {};
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                regionGroup = reducer.groupBy(response.data, 'Region');
+                if (Object.keys(regionGroup)[0]) {
+                    _self._AppInstDummy = _self._AppInstDummy.concat(response.data)
+                }
+                _self.loadCount++;
+                if (rgn.length == _self.loadCount) {
+                    _self.countJoin()
+                }
+            }
         }
         _self.props.handleLoadingSpinner(false);
-        // console.log("appinstresult",result)
-        // let join = null;
-        // if(!result.error && result[0]['Edit']) {
-        //     join = this.state.devData.concat(result);
-        // } else {
-        //     join = this.state.devData;
-        // }
-        // this.loadCount ++;
-        // this.setState({devData:join})
-        // this.props.handleLoadingSpinner(false);
-        // console.log("rgn.lengthrgn.length",rgn.length,":::",this.loadCount)
-        // if(rgn.length == this.loadCount-1){
-        //     return
-        // }
     }
     countJoin() {
         let AppInst = this._AppInstDummy;
@@ -174,20 +158,22 @@ class SiteFourPageAppInst extends React.Component {
         this.props.handleLoadingSpinner(false);
         this.getUpdateData(this.props.changeRegion);
     }
+
     receiveResultApp = (mcRequest) => {
-        let result = mcRequest.data;
-        this._diffRev = [];
-        if(!result.error){
-            result.map((item) => {
-                this.state.devData.map((_data) => {
-                    if(item.Region == _data.Region && item.AppName == _data.AppName && item.OrganizationName == _data.OrganizationName && item.Revision != _data.Revision){
-                        this._diffRev.push(_data)
-                    }
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                this._diffRev = [];
+                response.data.map((item) => {
+                    this.state.devData.map((_data) => {
+                        if (item.Region == _data.Region && item.AppName == _data.AppName && item.OrganizationName == _data.OrganizationName && item.Revision != _data.Revision) {
+                            this._diffRev.push(_data)
+                        }
+                    })
                 })
-            })
-            this.forceUpdate();
+                this.forceUpdate();
+            }
         }
-        
     }
 
     getDataDeveloper = (region,regionArr) => {
@@ -206,7 +192,7 @@ class SiteFourPageAppInst extends React.Component {
         let token = store ? store.userToken : 'null';
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP_INST, data : {region: item}}, _self.receiveResult)
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP_INST, data : {region: item}}, _self.receiveResult)
             })
         } else {
             rgn.map((item) => {
@@ -221,7 +207,7 @@ class SiteFourPageAppInst extends React.Component {
                         }
                 }
                 // org별 show appInst
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP_INST, data : data}, _self.receiveResult)
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP_INST, data : data}, _self.receiveResult)
             })
         }
     }
@@ -243,7 +229,7 @@ class SiteFourPageAppInst extends React.Component {
         let token = store ? store.userToken : 'null';
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_APP, data: { region: item } }, _self.receiveResultApp)
+                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP, data: { region: item } }, _self.receiveResultApp)
             })
         } else {
             rgn.map((item) => {
@@ -256,7 +242,7 @@ class SiteFourPageAppInst extends React.Component {
                         }
                 }
                 // org별 show app
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResultApp)
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResultApp)
             })
         }
     }

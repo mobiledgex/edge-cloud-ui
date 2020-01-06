@@ -1,6 +1,7 @@
 import axios from 'axios';
 import uuid from 'uuid';
 import * as EP from './endPointTypes'
+import Alert from 'react-s-alert';
 
 
 
@@ -25,29 +26,52 @@ function getHeader(request) {
     return headers;
 }
 
-function responseError(request, error, callback, self) {
-    try {
-        if (String(error).indexOf('Network Error') > -1) {
-            console.log("NETWORK ERROR");
-        } else {
-            callback({ error: error }, request.method, self);
-        }
-    } catch (e) {
-        console.log('any error ??? ')
+const showError = (message) =>
+{
+    Alert.error(message, {
+        position: 'top-right',
+        effect: 'slide',
+        beep: true,
+        timeout: 'none',
+        offset: 100,
+        html:true
+    });
+}
+
+const checkExpiry = (self, message) => {
+    if (message.indexOf('Expired') > -1 && self.gotoUrl) {
+        setTimeout(() => self.gotoUrl('/logout'), 4000);
     }
 }
 
-function responseValid(request, response, callback, self) {
+function responseError(self, request, response, callback) {
+    try{
+            let message = 'UnKnown';
+            let code = response.status;
+            if(response.data && response.data.message)
+            {
+                message = response.data.message
+                showError(message);
+                checkExpiry(self, message);
+            }
+            callback({request:request, error:{code:code, message:message}})
+    }
+    catch{
+        alert('check')
+    }
+}
+
+function responseValid(request, response, callback) {
     let parseData = null;
     if (response.data) {
         if (response.data.error) {
             if (response.data.error.indexOf('Expired') > -1) {
                 localStorage.setItem('userInfo', null)
                 localStorage.setItem('sessionData', null)
-                callback({ error: 'Login Timeout Expired.<br/>Please login again' }, request.method, self);
+                callback({ error: 'Login Timeout Expired.<br/>Please login again' }, request.method);
                 return;
             } else {
-                callback({ error: response.data.error }, request.method, self);
+                callback({ error: response.data.error }, request.method);
                 return;
             }
         } else {
@@ -77,9 +101,9 @@ export function sendWSRequest(request, callback) {
             case getEP().DELETE_CLUSTER_INST:
             case getEP().CREATE_CLOUDLET:
             case getEP().DELETE_CLOUDLET:
-            //case getEP().CREATE_APP_INST:
+            case getEP().CREATE_APP_INST:
             case getEP().UPDATE_APP_INST:
-            //case getEP().DELETE_APP_INST:
+            case getEP().DELETE_APP_INST:
                 clearSockets(request.uuid);
         }
         callback({ request: request, response: response });
@@ -99,19 +123,22 @@ export function sendWSRequest(request, callback) {
     }
 }
 
-export function sendRequest(request, callback, self) {
+export function sendRequest(self, request, callback) {
 
     axios.post(EP.getPath(request), request.data,
         {
             headers: getHeader(request)
         })
         .then(function (response) {
-            if (responseValid(request, response, callback, self)) {
+            if (responseValid(request, response, callback)) {
                 callback(EP.formatData(request, response));
             }
         })
         .catch(function (error) {
-            responseError(request, error, callback)
+            if(error.response)
+            {
+                responseError(self, request, error.response, callback)
+            }
         })
 }
 
