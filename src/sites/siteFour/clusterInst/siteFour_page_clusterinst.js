@@ -1,4 +1,5 @@
 import React from 'react';
+import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 import PageDetailViewer from '../../../container/pageDetailViewer';
 //redux
@@ -72,12 +73,7 @@ class SiteFourPageClusterInst extends React.Component {
             this.countObject[region] = []
         })
     }
-    componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store && store.userToken) {
-            this.getDataDeveloper(this.props.changeRegion);
-        }
-    }
+
     componentWillUnmount() {
         this.clusterInstDummy = [];
         this.cloudletDummy = [];
@@ -276,5 +272,4 @@ const mapDispatchProps = (dispatch) => {
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
-
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageClusterInst));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInst)));
