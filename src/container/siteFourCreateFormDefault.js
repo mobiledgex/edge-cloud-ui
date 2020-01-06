@@ -144,7 +144,7 @@ const options = [
 
 const renderDualListInput = (self,data) => (
     <DualListBox
-        style={{width:500}}
+        // style={{width:500}}
         canFilter
         options={self.getListData(data)}
         selected={self.state.selected}
@@ -452,6 +452,19 @@ class SiteFourCreateFormDefault extends React.Component {
                                         regKeys.map((key, i) => (
 
                                             (this.getLabel(key, pId))?
+
+                                                (fieldKeys[pId][key]['type'] === 'InvisibleField') ?
+
+                                                    <div style={ {opacity:0, position:'absolute', left:-9999, zIndex:-999}}>
+                                                        <Field
+                                                            component={renderInputInvisible}
+                                                            value={this.state.invisibleValue}
+                                                            initialValue={this.state.invisibleValue}
+                                                            placeholder={this.state.invisibleValue}
+                                                            name={key}
+                                                        />
+                                                    </div>
+                                                :
                                                 (!this.state.deployTypeDocker || (key !== 'NumberOfMaster' && key !== 'NumberOfNode')) ?
                                                 <Grid.Row columns={3} key={i} className={'cloudletReg'+i}>
 
@@ -556,13 +569,15 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             />
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'InvisibleField') ?
-                                                                <Field
-                                                                    component={renderInputInvisible}
-                                                                    value={this.state.invisibleValue}
-                                                                    initialValue={this.state.invisibleValue}
-                                                                    placeholder={this.state.invisibleValue}
-                                                                    name={key}
-                                                                />
+                                                                <div style={ {opacity:0, position:'absolute', left:-9999, zIndex:-999}}>
+                                                                    <Field
+                                                                        component={renderInputInvisible}
+                                                                        value={this.state.invisibleValue}
+                                                                        initialValue={this.state.invisibleValue}
+                                                                        placeholder={this.state.invisibleValue}
+                                                                        name={key}
+                                                                    />
+                                                                </div>
                                                             :
                                                             <Field
                                                                 component={renderInput}
