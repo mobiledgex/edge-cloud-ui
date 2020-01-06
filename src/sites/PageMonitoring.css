@@ -15752,7 +15752,7 @@ span.ant-radio + * {
     height: 40px;
     line-height: 40px;
     text-align: center;
-    border-bottom: 1px solid #e8e8e8;
+    border-bottom: 1px solid #000c17;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;

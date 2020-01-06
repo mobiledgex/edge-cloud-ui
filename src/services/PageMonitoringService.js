@@ -5,7 +5,7 @@ import axios from "axios";
 import qs from "qs";
 import FormatComputeInst from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
-import {getAppInstanceHealth, makeFormForAppInstance} from "./SharedService";
+import {getAppInstanceHealth, makeFormForAppInstance, numberWithCommas} from "./SharedService";
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
 import {Line as ReactChartJs, Bar as Bar2, HorizontalBar} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
@@ -242,7 +242,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
             let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
                 hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage,
                 CHART_COLOR_LIST[index],
-                hardwareType === 'cpu' ? usageList[index].sumCpuUsage.toFixed(2) + " %" : usageList[index].sumMemUsage + " Byte"]
+                hardwareType === 'cpu' ? usageList[index].sumCpuUsage.toFixed(2) + " %" : numberWithCommas(usageList[index].sumMemUsage) + " Byte"]
             chartDataList.push(barDataOne);
         }
 
@@ -310,7 +310,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                 titlePosition: 'out',
                 chartArea: {left: 100, right: 150, top: 20, width: "50%", height: "80%"},
                 legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
-                //xc춧
+                //xAxis
                 hAxis: {
                     textPosition: 'none',//HIDE xAxis
                     title: '',
@@ -327,7 +327,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                     gridlines: {
                         color: "none"
                     },
-                    format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '#\' byte\'',
+                    format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '0.##\' byte\'',
                     baselineColor: 'grey',
                     //out', 'in', 'none'.
                 },
@@ -888,7 +888,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
             label: item.AppName.toString().substring(0, 10) + "...",
             value: instanceFlavorToPerformanceValue(item.Flavor),
             favor: item.Flavor,
-            fullLabel : item.AppName.toString(),
+            fullLabel: item.AppName.toString(),
         })
     })
 
@@ -1294,7 +1294,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
         if (i < RECENT_DATA_LIMIT_COUNT) {
             let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
             let timeOne = splitDateTimeArrayList[0].replace("T", "T");
-            newDateTimeList.push(timeOne.toString().substring(3, timeOne.length))
+            newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
         }
 
     }
@@ -1342,14 +1342,15 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
             if (i < 5) {
                 let datasetsOne = {
                     label: instanceNameList[i],
-                    backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '', // Put the gradient here as a fill color
-                    //borderColor: gradientList[i],
+                    backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '',
+                    borderColor: gradientList[i],
                     borderWidth: 2,
                     pointColor: "#fff",
                     pointStrokeColor: 'white',
                     pointHighlightFill: "#fff",
                     pointHighlightStroke: 'white',
                     data: cpuUsageSetList[i],
+                    radius: 0,
                     //pointRadius: 1,
                 }
 
@@ -1372,7 +1373,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
     let height = 500 + 50;
 
     let options = {
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
         responsive: true,
         datasetStrokeWidth: 3,
         pointDotStrokeWidth: 4,
@@ -1395,11 +1396,16 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
             yAxes: [{
                 ticks: {
                     beginAtZero: true,
-                    fontColor: 'white'
+                    fontColor: 'white',
+                    callback(value, index, label) {
+                        return numberWithCommas(value);
+
+                    },
                 },
                 gridLines: {
                     color: "#505050",
                 },
+                //stacked: true
 
             }],
             xAxes: [{
@@ -1412,15 +1418,18 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
                 ticks: {
                     fontSize: 14,
                     fontColor: 'white',
-                    maxRotation: 0.01,
+                    //maxRotation: 0.05,
+                    //autoSkip: true,
+                    maxRotation: 45,
+                    minRotation: 45,
                     padding: 10,
                     labelOffset: 0,
-                    /* callback(value, index) {
-                         if (index % 2 == 0) return '';
-                         return value;
-                     },*/
+                    callback(value, index, label) {
+                        return value;
+
+                    },
                 },
-                beginAtZero: true,
+                beginAtZero: false,
                 /* gridLines: {
                      drawTicks: true,
                  },*/
