@@ -51,8 +51,9 @@ let generateData = (datas,body) => {
                 let Operator = dataResult.data.cloudlet_key.operator_key.name || '-';
                 let PoolName = dataResult.data.pool_key.name || '-';
                 let Cloudlet = dataResult.data.cloudlet_key.name || '-';
+                let Region = body.region || '-';
 
-                values.push({Operator:Operator,  PoolName:PoolName, Cloudlet:Cloudlet})
+                values.push({Region:Region, Operator:Operator,  PoolName:PoolName, Cloudlet:Cloudlet})
             }
 
         })

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { withRouter } from 'react-router-dom';
 import * as service from "../services/service_compute_service";
+import * as servicePool from '../services/service_cloudlet_pool';
 import * as aggregate from "../utils";
 import Alert from "react-s-alert";
 
@@ -135,6 +136,10 @@ class DeleteItem extends React.Component {
             this.props.handleSelectOrg('-')
             this.props.handleUserRole('')
         }
+        _self.props.refresh('All');
+    }
+    receiveDeletePool = (result, body) => {
+        alert('delete..'+JSON.stringify(result))
         _self.props.refresh('All');
     }
 
@@ -308,6 +313,30 @@ class DeleteItem extends React.Component {
                 }
             }
             service.deleteCompute(serviceNm, serviceBody, this.receiveListSubmit)
+        } else if(this.props.siteId === 'Cloudlet Pool'){
+            const {Region, PoolName} = this.props.selected;
+            serviceNm = 'DeleteCloudletPool';
+            /*
+            mcctl --addr https://mc-stage.mobiledgex.net:9900 region DeleteCloudletPool
+            region=EU
+            name=DeletemePool
+
+            $ http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/DeleteCloudletPool <<<
+            '{"region":"EU", "cloudletpool": {"key": {"name": "pop"}}}'
+             */
+
+            serviceBody = {
+                "token": store.userToken,
+                "params": {
+                    "region": Region,
+                    "cloudletpool":{
+                        "key":{"name":PoolName}
+                    }
+                }
+            }
+
+            servicePool.deleteCloudletPool(serviceNm, serviceBody, this.receiveDeletePool)
+            this.props.handleLoadingSpinner(false);
         }
         
     }
@@ -329,8 +358,6 @@ class DeleteItem extends React.Component {
             let orgName = '';
             if(nextProps.siteId == 'User') orgName = nextProps.selected.Organization
             this.setState({deleteOrg:orgName})
-
-
         }
     }
 

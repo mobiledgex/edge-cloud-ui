@@ -36,12 +36,12 @@ const detailViewer = (props, type) => (
                 </Grid.Row>
                 <Grid.Row>
                     <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
-                                <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
-                            </Table.Row>
-                        </Table.Header>
+                        {/*<Table.Header>*/}
+                            {/*<Table.Row>*/}
+                                {/*<Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>*/}
+                                {/*<Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>*/}
+                            {/*</Table.Row>*/}
+                        {/*</Table.Header>*/}
                         <Table.Body>
                             {
                                 props.data ? Object.keys(props.data).map((item, i) => makeCloudletTable(props.data, item, i)) : null
@@ -49,21 +49,21 @@ const detailViewer = (props, type) => (
                         </Table.Body>
                     </Table>
                 </Grid.Row>
-                <Grid.Row>
-                    <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
-                                <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
-                            </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {
-                                props.data ? Object.keys(props.data).map((item, i) => makeLinkTable(props.data, item, i)) : null
-                            }
-                        </Table.Body>
-                    </Table>
-                </Grid.Row>
+                {/*<Grid.Row>*/}
+                    {/*<Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>*/}
+                        {/*<Table.Header>*/}
+                            {/*<Table.Row>*/}
+                                {/*<Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>*/}
+                                {/*<Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>*/}
+                            {/*</Table.Row>*/}
+                        {/*</Table.Header>*/}
+                        {/*<Table.Body>*/}
+                            {/*{*/}
+                                {/*props.data ? Object.keys(props.data).map((item, i) => makeLinkTable(props.data, item, i)) : null*/}
+                            {/*}*/}
+                        {/*</Table.Body>*/}
+                    {/*</Table>*/}
+                {/*</Grid.Row>*/}
             </Grid>
 
             :

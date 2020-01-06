@@ -336,6 +336,7 @@ class SiteFourCreateFormDefault extends React.Component {
     componentWillReceiveProps(nextProps) {
         if(nextProps.data && nextProps.data.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
+            console.log('20200104 props data in formDefault -- ', nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
             // submitSucceeded 초기화
             if(this.props.toggleSubmit) {
@@ -438,6 +439,7 @@ class SiteFourCreateFormDefault extends React.Component {
         if(fieldKeys && fieldKeys.length && ( fieldKeys[0]['poolName'] || fieldKeys[0]['CloudletPool'] )) {
             disableLabel = false;
         }
+
         return (
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
                 {(disableLabel)?<Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>:null}

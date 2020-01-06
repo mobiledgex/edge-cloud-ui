@@ -3,7 +3,7 @@ import {Button, Container, Dropdown, Grid, Header, Icon, Image, Input, Item, Lab
 
 import {withRouter} from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
-import {Motion, spring} from "react-motion";
+import {spring} from "react-motion";
 import {Hints, Steps} from 'intro.js-react';
 //redux
 import {connect} from 'react-redux';
@@ -493,18 +493,7 @@ class SiteFour extends React.Component {
             activeItem: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations',
             headerTitle: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations'
         })
-        //get list of customer's info
-        // if(store.userToken) {
-        //     Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
-        //     computeService.getMCService('showController', {token:store.userToken}, this.receiveResult, this);
-        // }
-        //if there is no role
-        //site1으로 이동할 수 없는 문제로 아래 코드 주석처리 by inki
-        //show you create the organization view
-        //this.setState({page:'pg=0'})
-        //this.gotoUrl('/site4', 'pg=0')
-        //this.gotoPreview('/site4');
-        //this.props.history.location.search = "pg=0";
+
         this.disableBtn();
 
         if (store) {
@@ -512,14 +501,7 @@ class SiteFour extends React.Component {
         } else {
             this.gotoUrl('/logout')
         }
-        setTimeout(() => {
-            let elem = document.getElementById('animationWrapper')
-            if (elem) {
-                //_self.makeGhost(elem, _self)
 
-
-            }
-        }, 4000)
 
         this.setState({steps: orgaSteps.stepsZero, intoCity: false});
         //
@@ -538,10 +520,14 @@ class SiteFour extends React.Component {
         } catch (e) {
 
         }
-        if(nextProps.params.subPath === this.state.page){
 
-            return;
+        console.log('20200103 next viewMode - ', nextProps.viewMode)
+        if (nextProps.viewMode) {
+            this.setState({viewMode: nextProps.viewMode})
+        } else {
+            this.setState({viewMode: 'listView'})
         }
+
         if (nextProps.params && nextProps.params.subPath) {
             let subPaths = nextProps.params.subPath;
             let subPath = '';
@@ -552,30 +538,9 @@ class SiteFour extends React.Component {
                 subParam = paths[1];
             }
             this.setState({page: subPath, OrganizationName: subParam})
-            //console.log('20191018 nextProps.par....', subPath, "  :  ", subParam)
 
         }
 
-        // if(localStorage.selectRole && this.state.menuClick) {
-        //     this.disableBtn();
-        //     this.setState({menuClick:false})
-        // }
-
-
-        // if(nextProps.creatingSpinner && this.state.toggleState) {
-        //     this.getIntervalData();
-        //     this.setState({toggleState:false})
-        // }
-
-
-        if (nextProps.viewMode) {
-            this.setState({viewMode: nextProps.viewMode})
-        } else {
-            this.setState({viewMode: 'listView'})
-        }
-        // if(nextProps.params.subPath && this.state.viewMode == 'detailView') {
-        //     this.setState({viewMode:'listView'})
-        // }
 
         //Redux Alert
         if ((nextProps.alertInfo !== this.props.alertInfo) && nextProps.alertInfo.mode) {
@@ -740,39 +705,6 @@ class SiteFour extends React.Component {
         this.props.handleSearchValue(e.target.value, this.state.searchChangeValue)
     }
 
-    makeGhost(elem, self) {
-
-        let child = document.createElement('div')
-        child.style.cssText = 'position:absolute; width:100px; height:30px; line-height:30px; text-align:center; opacity:0.8; left:0px; z-index:100; background:#aaaaaa; border-radius:5px';
-        child.innerHTML = '<div>Cloudlet Name</div>'
-        elem.appendChild(child);
-        //
-        let nextPosX = 15
-        let nextPosY = 90;
-        setTimeout(() => self.setState({
-            setMotion: {
-                left: spring(nextPosX, self.speed),
-                top: spring(nextPosY, self.speed),
-                position: 'absolute',
-                opacity: 0
-            }
-        }), 200);
-    }
-
-    resetMotion() {
-        let self = _self;
-        this.setState({setMotion: defaultMotion})
-        let nextPosX = 15
-        let nextPosY = 180;
-        setTimeout(() => self.setState({
-            setMotion: {
-                left: spring(nextPosX, self.speed),
-                top: spring(nextPosY, self.speed),
-                position: 'absolute',
-                opacity: spring(0, self.speedOpacity)
-            }
-        }), 500);
-    }
 
     onChangeRegion = (e, {value}) => {
 
@@ -1261,9 +1193,7 @@ class SiteFour extends React.Component {
 
                 <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend}
                                  close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
-                <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
-                    {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
-                </Motion>
+
             </Grid>
         );
     }

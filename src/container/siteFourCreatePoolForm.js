@@ -491,7 +491,7 @@ class SiteFourCreatePoolForm extends React.Component {
     render() {
         const { activeIndex, clusterName } = this.state;
         let {data, dimmer, changeNext} = this.props;
-        console.log('20191231 props data in Form -- ', this.props.data)
+        console.log('20200104 props data in Form -- ', this.props.data)
         let randomState = Math.random()*100;
         return (
             <Grid.Column>

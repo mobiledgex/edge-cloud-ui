@@ -57,7 +57,7 @@ class SiteFourPoolTwo extends React.Component {
         orgs.map((list) => {
             orgList.push({'cloudlet':list['Name']})
         })
-        console.log('20191231 orgList =-- ', orgList)
+
         //
         let fieldValue = [{
             'Region':this.state.selectedData['region'] || '',
@@ -67,10 +67,12 @@ class SiteFourPoolTwo extends React.Component {
             'CloudletPool':'',
             'LinkDiagram':''
         }]
+
+        console.log('20200104 props appLaunch .. orgList =-- ', fieldValue)
         //
         let panelParams = {data:fieldValue, keys:keys, region:''}
         _self.setState({devData:panelParams})
-        _self.props.handleLoadingSpinner(false);
+
     }
 
     componentDidMount() {
