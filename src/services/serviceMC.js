@@ -26,22 +26,27 @@ function getHeader(request) {
     return headers;
 }
 
-const showError = (message) =>
+const showError = (request, message) =>
 {
-    Alert.error(message, {
-        position: 'top-right',
-        effect: 'slide',
-        beep: true,
-        timeout: 'none',
-        offset: 100,
-        html:true
-    });
+    let showMessage = request.showMessage === undefined ? true : request.showMessage;
+    if (showMessage) {
+        Alert.error(message, {
+            position: 'top-right',
+            effect: 'slide',
+            beep: true,
+            timeout: 3000,
+            offset: 100,
+            html: true
+        });
+    }
 }
 
 const checkExpiry = (self, message) => {
-    if (message.indexOf('Expired') > -1 && self.gotoUrl) {
-        setTimeout(() => self.gotoUrl('/logout'), 4000);
+    let isExpired  = message.indexOf('expired') > -1
+    if (isExpired && self.gotoUrl) {
+        setTimeout(() => self.gotoUrl('/logout'), 2000);
     }
+    return !isExpired;
 }
 
 function responseError(self, request, response, callback) {
@@ -51,8 +56,10 @@ function responseError(self, request, response, callback) {
             if(response.data && response.data.message)
             {
                 message = response.data.message
-                showError(message);
-                checkExpiry(self, message);
+                if(checkExpiry(self, message))
+                {
+                    showError(request, message);
+                }
             }
             callback({request:request, error:{code:code, message:message}})
     }
