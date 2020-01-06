@@ -1770,7 +1770,7 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any,
     //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
 
     return (
-        <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+        <div style={{display: 'flex', flexDirection: 'column', width: '90%'}}>
             {chunkedArraysOfColSize.map((colSizeArray, index) =>
                 <div className='page_monitoring_grid' key={index.toString()}>
                     {colSizeArray.map((item, index) =>
