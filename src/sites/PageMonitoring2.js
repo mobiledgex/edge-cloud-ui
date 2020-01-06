@@ -202,16 +202,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return newArrList;
         }
 
-
-        /*ㄴ이란이ㅏ린아리ㅏㄴ아린ㅇ라flksdflkslakf*/
-        /*ㄴ이란이ㅏ린아리ㅏㄴ아린ㅇ라flksdflkslakf*/
-        /*ㄴ이란이ㅏ린아리ㅏㄴ아린ㅇ라flksdflkslakf*/
-        /*ㄴ이란이ㅏ린아리ㅏㄴ아린ㅇ라flksdflkslakf*/
-        /*ㄴ이란이ㅏ린아리ㅏㄴ아린ㅇ라flksdflkslakf*/
-        /*ㄴ이란이ㅏ린아리ㅏㄴ아린ㅇ라flksdflkslakf*/
-        /*ㄴ이란이ㅏ린아리ㅏㄴ아린ㅇ라flksdflkslakf*/
-        /*ㄴ이란이ㅏ린아리ㅏㄴ아린ㅇ라flksdflkslakf*/
-
         componentDidMount = async () => {
             this.loadInitData();
         }
