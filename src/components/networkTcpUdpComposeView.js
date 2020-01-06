@@ -1,9 +1,12 @@
 import React from 'react';
-import { Grid } from 'semantic-ui-react'
+import { Grid, Dropdown } from 'semantic-ui-react'
+
 import TimeSeries from '../charts/plotly/timeseries';
 import sizeMe from 'react-sizeme'
 import SelectRangeTcpudp from '../components/selectRangeTcpudp';
+
 import {connect} from "react-redux";
+import * as utils from '../utils';
 import * as serviceCluster from "../services/service_instance_service";
 
 let customMargin = {

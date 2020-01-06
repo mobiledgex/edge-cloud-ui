@@ -1,6 +1,20 @@
 
 import axios from 'axios-jsonp-pro';
 import qs from 'qs';
+import request from 'request';
+import * as ServiceSocket from './service_webSocket';
+
+import FormatComputeFlavor from './formatter/formatComputeFlavor';
+import FormatComputeCluster from './formatter/formatComputeCluster';
+import FormatComputeDev from './formatter/formatComputeDeveloper';
+import FormatComputeCloudlet from './formatter/formatComputeCloudlet';
+import FormatComputeApp from './formatter/formatComputeApp';
+import FormatComputeOper from './formatter/formatComputeOperator';
+import FormatComputeInst from './formatter/formatComputeInstance';
+import FormatComputeClstInst from './formatter/formatComputeClstInstance';
+import FormatComputeOrganization from './formatter/formatComputeOrganization';
+import formatComputeUsers from './formatter/formatComputeUsers';
+import formatComputeAccounts from './formatter/formatComputeAccounts';
 
 const hostname = window.location.hostname;
 let serviceDomain = 'https://mc.mobiledgex.net:9900';
@@ -12,9 +26,160 @@ if(process.env.REACT_APP_API_USE_SERVER_SUFFIX === 'true') {
 
 
 
+export function setDomain(domain) {
+    console.log('reset service domain ---- ', domain)
+    serviceDomain = domain;
+}
+export function getOperator(resource, callback) {
+    fetch('https://'+hostname+':3030')
+        .then(response => response.json())
+        .then(data => {
+            console.log('infux data == ', data)
+
+        });
+
+}
+
+//curl -X POST "https://mexdemo.ctrl.mobiledgex.net:36001/show/cloudlet" -H "accept: application/json" -H "Content-Type: application/json" --cacert mex-ca.crt --key mex-client.key --cert mex-client.crt
+export function getDevelopersInfo(resource, callback) {
+    axios.get('/dummyData/db_developer.json')
+        .then(function (response) {
+            callback(FormatComputeDev(response))
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function getCloudletInfo(resource, callback) {
+    axios.get('/dummyData/db_cloudlet.json')
+        .then(function (response) {
+            callback(FormatComputeCloudlet(response))
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function getAppInfo(resource, callback) {
+    axios.get('/dummyData/db_app.json')
+        .then(function (response) {
+            console.log('response  -',response);
+            callback(FormatComputeApp(response))
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function getOperatorInfo(resource, callback) {
+    axios.get('/dummyData/db_operator.json')
+        .then(function (response) {
+            console.log('response  -',response);
+            callback(FormatComputeOper(response))
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function getComputeService(resource, callback) {
+    const orgDummy = [
+        {
+            result:{
+                type:'Developer',
+                username:'kunhee',
+                role:'viewer',
+                email:'khcho@naver.com',
+                organization:'BIC',
+                phone:'010-0000-0000'
+            }
+        },
+        {
+            result:{
+                type:'Developer',
+                username:'user1',
+                role:'contributor',
+                email:'user1@naver.com',
+                organization:'BIC',
+                phone:'010-1111-1111'
+            }
+        },
+        {
+            result:{
+                type:'Developer',
+                username:'user2',
+                role:'viewer',
+                email:'user2@naver.com',
+                organization:'BIC',
+                phone:'010-2222-2222'
+            }
+        },
+    ]
+    axios.get(ServerUrl+'/compute?service='+resource)
+        .then(function (response) {
+            let paseData = JSON.parse(JSON.stringify(response.data));
+            let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
+            console.log('response paseData  =-=-=-=-=-=-=-=-=-=--',resource, splitData );
+            console.log(splitData);
+            console.log(orgDummy);
+            switch(resource){
+                case 'flavor': callback(FormatComputeFlavor(splitData)); break;
+                case 'cluster': callback(FormatComputeCluster(splitData)); break;
+                case 'operator': callback(FormatComputeOper(splitData)); break;
+                case 'developer': callback(FormatComputeDev(splitData)); break;
+                case 'cloudlet': callback(FormatComputeCloudlet(splitData)); break;
+                case 'app': callback(FormatComputeApp(splitData)); break;
+                case 'appinst': callback(FormatComputeInst(splitData)); break;
+                case 'clusterinst': callback(FormatComputeClstInst(splitData)); break;
+                case 'organization': callback(FormatComputeOrganization(orgDummy)); break;
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+}
 
 
-
+export function saveNewCompute(resource, body, callback) {
+    axios.post(ServerUrl+'/create',{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('response  registry new obj result-',response);
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function createNewApp(resource, body, callback) {
+    axios.post(ServerUrl+'/'+resource,{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('response  registry new obj result-',response);
+            callback(response, body, resource)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function createNewAppInst(resource, body, callback) {
+    axios.post(ServerUrl+'/CreateAppInst',qs.stringify({
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    }))
+        .then(function (response) {
+            console.log('response  registry new obj result-',response);
+            callback(response, body)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
 //Multi Create
 export function createNewMultiAppInst(resource, body, callback, multiData, filterData, vmCheck) {
     console.log("20191119 bodybodybodydd",multiData,":::",filterData, ": vmCheck=",vmCheck)
@@ -25,6 +190,8 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
         if(multiData.AutoClusterInst) {
             multiData.ClusterInst = ['autocluster' + multiData.AppName.replace(/(\s*)/g, "")];
         }
+        console.log('20191119...filterData =', filterData)
+        console.log('20191119...',":itemCloudlet : ",itemCloudlet,":", filterData[itemCloudlet], ": multiData.ClusterInst=",multiData.ClusterInst)
         if(filterData[itemCloudlet] && filterData[itemCloudlet].length > 0) {
             filterData[itemCloudlet].map((items) => {
                 multiData.ClusterInst.map((itemCluster) => {
@@ -103,10 +270,183 @@ export function createNewMultiAppInst(resource, body, callback, multiData, filte
 
 
     }))
+    //1개 밖에 못받아서, socket 통신으로 푸시를 받음
+    ServiceSocket.serviceStreaming('streamTemp', callback, body);
+
+}
+export function deleteCompute(resource, body, callback) {
+    axios.post(ServerUrl+'/deleteService',{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('response  registry new obj result-',response);
+            callback(response, body)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    //1개 밖에 못받아서, socket 통신으로 푸시를 받음
+    ServiceSocket.serviceStreaming('streamTemp', callback, body);
+}
+export function deleteUser(resource, body, callback) {
+    axios.post(ServerUrl+'/deleteUser',{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('response  registry new obj result-',response);
+            callback(response, body)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function deleteAccount(resource, body, callback) {
+    axios.post(ServerUrl+'/deleteAccount',{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('response  registry new obj result-',response);
+            callback(response, body)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function deleteOrg(resource, body, callback) {
+    axios.post(ServerUrl+'/deleteOrg',{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('response  registry new obj result-',response);
+            callback(response,body)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+export function createNewClusterInst(resource, body, callback) {
+    axios.post(ServerUrl+'/CreateClusterInst',{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('20190820 response clusterInst result-',response);
+            callback(response, body)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+//Multi Create
+export function createNewMultiClusterInst(resource, body, callback, multiData) {
+
+    axios.defaults.timeout = 100000000;
+    axios.all(multiData.map((item) => {
+        console.log("20190820 clusterCreate@111",item)
+        return axios.post(ServerUrl+'/CreateClusterInst',{
+            service: resource,
+            serviceBody:body,
+            serviceDomain:serviceDomain,
+            multiData:item
+        })
+            .then(function (response) {
+                console.log('20190820 multi response clusterInst result-',response);
+                callback(response, body)
+            })
+            .catch(function (error) {
+                console.log("error1",error);
+            });
+    }))
+
+}
+
+// 20191201 blocked : change saving the tempfile to stream
+/*
+export function creteTempFile(_item, _site, callback) {
+    console.log("_item_item",_item)
+    axios.post(ServerUrl+'/CreteTempFile',{
+        item: _item,
+        site: _site
+    })
+        .then(function (response) {
+            console.log('20190820 result read status progress cluster inst...',response.data);
+            //if(response.data.indexOf('successfully') > -1) clearInterval(readInterval)
+            callback(response, _item)
+        })
+        .catch(function (error) {
+            console.log("error2",error);
+        });
+}
+*/
+export function deleteTempFile(_item, _site) {
+
+    axios.post(ServerUrl+'/DeleteTempFile',{
+        item: _item,
+        site: _site
+    })
+        .then(function (response) {
+            console.log('20190820 result read status progress cluster inst...',response);
+
+        })
+        .catch(function (error) {
+            console.log("error2",error);
+        });
+}
+
+export function errorTempFile(_item, callback) {
+    axios.post(ServerUrl+'/ErrorTempFile',{
+        item: _item,
+    })
+        .then(function (response) {
+            console.log('20190820 result read status progress ErrorTempFile',response.data);
+            //if(response.data.indexOf('successfully') > -1) clearInterval(readInterval)
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log("error2",error);
+        });
 }
 
 
 
+export function createNewFlavor(resource, body, callback) {
+    axios.post(ServerUrl+'/CreateFlavor',{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('response flavor result-',response);
+            callback(response, body)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+export function createNewClusterFlavor(resource, body, callback) {
+    axios.post(ServerUrl+'/CreateClusterFlavor',{
+        service: resource,
+        serviceBody:body,
+        serviceDomain:serviceDomain
+    })
+        .then(function (response) {
+            console.log('response clusterFlavor result-',response);
+            callback(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
 export function getStacksData(resource, body, callback) {
     axios.defaults.timeout = 10000000;
     axios.post(ServerUrl+'/GetStatStream',{

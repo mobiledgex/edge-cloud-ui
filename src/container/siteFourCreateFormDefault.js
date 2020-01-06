@@ -1,16 +1,21 @@
 import React, { Fragment } from "react";
 
-import {Button, Form, Grid, Header, Item, Popup, Icon, Input} from "semantic-ui-react";
+import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup, Icon, Input, Dropdown} from "semantic-ui-react";
 
-import { Field, reduxForm, stopSubmit } from "redux-form";
-import * as serviceMC from '../services/serviceMC';
+import { Field, reduxForm, initialize, reset, change, stopSubmit } from "redux-form";
+import MaterialIcon from "material-icons-react";
+import { Transfer } from 'antd';
+import * as services from '../services/service_compute_service';
+import SankeyDiagram from '../charts/plotly/SankeyDiagram';
 import './styles.css';
+import Duallist from 'react-duallist';
+import './react_dualist.css'
 
+import "../css/antTheme/components/antd/transfer.css";
 
 const makeOption =(options)=> {
 
     let newOptions = options.sort(
-
         function(a, b) {
             if (a.toLowerCase() < b.toLowerCase()) return -1;
             if (a.toLowerCase() > b.toLowerCase()) return 1;
@@ -19,11 +24,9 @@ const makeOption =(options)=> {
     );
 
     return (
-
         newOptions.map((value) => (
             {key: value, text: value, value: value}
         ))
-
     )
 
 };
@@ -102,7 +105,6 @@ const renderTextArea = field => (
     </div>
 );
 
-
 const renderDropDown = field => (
     <div>
         <Form.Dropdown
@@ -132,6 +134,50 @@ const renderLocationInput = ({ input, placeholder, change, type, error, initialV
     </div>
 
 );
+const options = [
+    {label:'One', value: 1},
+    {label:'Two', value: 2},
+    {label:'Three', value: 3}
+]
+
+
+const renderDualListInput = ({ input, placeholder, change, type, error, initialValue }) => (
+    <div>
+        <Form.Field
+            {...input}
+            type={type}
+        >
+
+        </Form.Field>
+    </div>
+
+);
+const renderDualListBox = (self, data) => (
+    <Transfer
+        dataSource={self.getMock(data)}
+        showSearch
+        filterOption={self.filterOption}
+        targetKeys={self.state.targetKeys}
+        onSelectChange={self.handleSelectChange}
+        onChange={self.handleChange}
+        onSearch={self.handleSearch}
+        render={item => item.title}
+    />
+)
+const renderLinkedDiagram = (self, data) => (
+    <SankeyDiagram size={{width:800, height:500}}></SankeyDiagram>
+)
+//<div style={{display:'none', visible:'hidden'}}>
+const renderInputInvisible = field => (
+    <div>
+        <Form.Input
+            {...field.input}
+            type={field.type}
+            label={field.label}
+            placeholder={field.placeholder}
+        />
+    </div>
+);
 
 const style = {
     borderRadius: 0,
@@ -151,11 +197,33 @@ class SiteFourCreateFormDefault extends React.Component {
             portArray:['item'],
             orgArr:[],
             ipAccessValue:[],
-            deployTypeDocker:false
+            deployTypeDocker:false,
+            available: [
+                {label: 'Alabama', value: 'AL'},
+                {label: 'Alaska', value: 'AK'},
+                {label: 'Arizona', value: 'AZ'},
+                {label: 'Arkansas', value: 'AR'},
+                {label: 'California', value: 'CA'},
+                {label: 'Colorado', value: 'CO'},
+                {label: 'Connecticut', value: 'CT'},
+                {label: 'Delaware', value: 'DE'},
+                {label: 'Florida', value: 'FL'},
+                {label: 'Georgia', value: 'GA'},
+            ],
+            selected: ['AL', 'CA'],
+            _mockData: [],
+            targetKeys: [],
+            invisibleValue:[]
         };
 
     }
+    onMove = (selected) => {
+        this.setState({selected});
+    }
 
+    onSelectTab = (activeTab) => {
+        this.setState({activeTab});
+    }
     // data.map((dt) => {
     handleInitialize(data) {
         const initData = [];
@@ -169,7 +237,73 @@ class SiteFourCreateFormDefault extends React.Component {
         }
 
     }
+    onChange = (selectedValues) => {
+        alert(selectedValues)
+    }
+    /**
+     * code by @inki 20191220
+     * add dual list box use ANT
+     * **/
+    getMock = (data) => {
 
+        const targetKeys = [];
+        const mockData = [];
+
+        console.log('20191220 mock data -- ', data, ":")
+        this._mockData = data;
+        if(data.length) {
+            data.map((item, i) => {
+                console.log('20191220 mock selectCloudlet -- ', item['cloudlet'], ":")
+
+                const data = {
+                    key: i.toString(),
+                    title: item['cloudlet'],
+                    description: item['cloudlet'],
+                    chosen: 0,
+                };
+                if (data.chosen) {
+                    targetKeys.push(data.key);
+                }
+                mockData.push(data)
+
+            })
+        }
+        console.log('20191220 mock data -- ', mockData, ":")
+        return mockData;
+    };
+
+    filterOption = (inputValue, option) => option.description.indexOf(inputValue) > -1;
+
+
+    handleChange = (nextTargetKeys, direction, moveKeys) => {
+        this.setState({ targetKeys: nextTargetKeys });
+
+        console.log('targetKeys: ', nextTargetKeys);
+        console.log('direction: ', direction);
+        console.log('moveKeys: ', moveKeys);
+        let selected = [];
+        moveKeys.map((data) => {
+            selected.push(this._mockData[parseInt(data)])
+        })
+        console.log('20191223 invisibleValue.. ', selected, ": invisible Field == ", document.getElementsByName("invisibleField"))
+        /**
+        you would dispatch() the change(form:String, field:String, value:String) action creator:
+         **/
+        this.props.dispatch(change('createAppFormDefault', 'invisibleField', JSON.stringify(selected)));
+    };
+
+    handleSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
+        this.setState({ selectedKeys: [...sourceSelectedKeys, ...targetSelectedKeys] });
+
+        console.log('sourceSelectedKeys: ', sourceSelectedKeys);
+        console.log('targetSelectedKeys: ', targetSelectedKeys);
+    };
+
+    handleSearch = (dir, value) => {
+        console.log('search:', dir, value);
+    };
+
+    /** end ANT **/
 
     componentDidMount() {
         if(this.props.data && this.props.data.data && this.props.data.data.length){
@@ -182,7 +316,7 @@ class SiteFourCreateFormDefault extends React.Component {
         }
         if(this.props.getUserRole == 'AdminManager') {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_ORG}, this.receiveResult)
+            services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, this.receiveResult)
         }
 
     }
@@ -262,10 +396,9 @@ class SiteFourCreateFormDefault extends React.Component {
         if(arr.length > 1) {
             arr.pop()
         }
-        this.setState({portArray:arr});
+        this.setState({portArray:arr}); 
     }
-    receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
+    receiveResult = (result) => {
         let arr = [];
         result.map((item,i) => {
             if((localStorage.selectMenu == 'Cluster Instances' && item.Type === 'developer') || (localStorage.selectMenu == 'Cloudlets' && item.Type === 'operator')){
@@ -284,7 +417,7 @@ class SiteFourCreateFormDefault extends React.Component {
         else if(localStorage.selectMenu == 'Cloudlet Pool') siteNum = 7
         this.props.gotoUrl(siteNum)
     }
-
+    
     render (){
         const {  dimmer, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat } = this.props;
         const { data, regKeys, fieldKeys, available, selected } = this.state;
@@ -461,7 +594,7 @@ class SiteFourCreateFormDefault extends React.Component {
                 </Fragment>
             </Item>
         )
-
+        
     }
 };
 

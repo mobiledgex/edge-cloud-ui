@@ -1,6 +1,7 @@
 import React from 'react';
-import {Button, Divider, Modal, Grid, Table} from "semantic-ui-react";
+import {Button, Divider, Modal, Grid, Table, Menu, Label, Icon} from "semantic-ui-react";
 import TextareaAutosize from "react-textarea-autosize";
+import * as moment from 'moment';
 
 
 const roles =
@@ -112,31 +113,31 @@ export default class PopLegendViewer extends React.Component {
                         <Grid.Column width={5} className='detail_item'>
                             <div>
                                 {(key === 'FlavorName')?'Flavor Name'
-                                 :(key === 'RAM')?'RAM Size'
-                                 :(key === 'vCPUs')?'Number of vCPUs'
-                                 :(key === 'Disk')?'Disk Space' /* 여기까지 Flavors*/
-                                 :(key === 'OrganizationName')?'Organization Name'
-                                 :(key === 'AppName')?'App Name'
-                                 :(key === 'DeploymentType')?'Deployment Type'
-                                 :(key === 'ImageType')?'Image Type'
-                                 :(key === 'ImagePath')?'Image Path'
-                                 :(key === 'DefaultFlavor')?'Default Flavor'
-                                 :(key === 'DeploymentMF')?'Deployment Manifest' /* 여기까지 Apps*/
-                                 :(key === 'AuthPublicKey')?'Auth Public Key'
+                                 :(key == 'RAM')?'RAM Size'
+                                 :(key == 'vCPUs')?'Number of vCPUs'
+                                 :(key == 'Disk')?'Disk Space' /* 여기까지 Flavors*/
+                                 :(key == 'OrganizationName')?'Organization Name'
+                                 :(key == 'AppName')?'App Name'
+                                 :(key == 'DeploymentType')?'Deployment Type'
+                                 :(key == 'ImageType')?'Image Type'
+                                 :(key == 'ImagePath')?'Image Path'
+                                 :(key == 'DefaultFlavor')?'Default Flavor'
+                                 :(key == 'DeploymentMF')?'Deployment Manifest' /* 여기까지 Apps*/
+                                 :(key == 'AuthPublicKey')?'Auth Public Key'
                                  :key}
                             </div>
                         </Grid.Column>
                         <Grid.Column width={11}>
                             <div style={{wordWrap: 'break-word'}} style={{overflowY:'auto'}}>
-                                {(key === 'DeploymentType' && String(nextProps.data[key]) === 'docker')?"Docker"
-                                :(key === 'DeploymentType' && String(nextProps.data[key]) === 'vm')?"VM"
-                                :(key === 'DeploymentType' && String(nextProps.data[key]) === 'kubernetes')?"Kubernetes"
-                                :(key === 'DeploymentType' && String(nextProps.data[key]) === 'helm')?"Helm"
-                                :(key === 'Ports')?String(nextProps.data[key]).toUpperCase()
-                                :(key === 'DeploymentMF')? this.makeTextBox(nextProps.data[key])
-                                :(key === 'ImageType' && String(nextProps.data[key]) === '1')?"Docker"
-                                :(key === 'ImageType' && String(nextProps.data[key]) === '2')?"Qcow" /* 여기까지 Apps*/
-                                :(key === 'Created')? String("time is ==  "+nextProps.data[key])
+                                {(key == 'DeploymentType' && String(nextProps.data[key]) === 'docker')?"Docker"
+                                :(key == 'DeploymentType' && String(nextProps.data[key]) === 'vm')?"VM"
+                                :(key == 'DeploymentType' && String(nextProps.data[key]) === 'kubernetes')?"Kubernetes"
+                                :(key == 'DeploymentType' && String(nextProps.data[key]) === 'helm')?"Helm"
+                                :(key == 'Ports')?String(nextProps.data[key]).toUpperCase()
+                                :(key == 'DeploymentMF')? this.makeTextBox(nextProps.data[key])
+                                :(key == 'ImageType' && String(nextProps.data[key]) === '1')?"Docker"
+                                :(key == 'ImageType' && String(nextProps.data[key]) === '2')?"Qcow" /* 여기까지 Apps*/
+                                :(key == 'Created')? String("time is ==  "+nextProps.data[key])
                                 :(typeof nextProps.data[key] === 'object')? JSON.stringify(nextProps.data[key])
                                 :String(nextProps.data[key])}
                             </div>

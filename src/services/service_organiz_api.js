@@ -1,5 +1,7 @@
 
 import axios from 'axios-jsonp-pro';
+
+import FormatDmeMethod from "./formatter/formatDmeMethod";
 import qs from "qs";
 
 let hostname = window.location.hostname;

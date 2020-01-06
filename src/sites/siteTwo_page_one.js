@@ -3,14 +3,14 @@
 //tab 클릭 이벤트 발생하면 페이지 넘기, 페이지 넘김 애니메이션 적용
 
 import React from 'react';
-import { Dropdown } from 'semantic-ui-react'
+import { Grid,Dropdown } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom';
 import Alert from 'react-s-alert';
 //
 import AnimatedMap from '../libs/simpleMaps/with-react-motion';
 import DeveloperSideInfo from '../container/developerSideInfo'
 //service
-import * as serviceMC from '../services/serviceMC';
+import * as services from '../services/service_compute_service';
 //
 import * as aggregation from '../utils';
 //redux
@@ -24,7 +24,7 @@ const ContainerOne = (props) => (
     <AnimatedMap parentProps={props}/>
 
 );
-let rgn = ['US','EU'];
+let rgn = ['US','KR','EU'];
 class SiteTwoPageOne extends React.Component  {
     constructor(props){
         super(props)
@@ -208,8 +208,8 @@ class SiteTwoPageOne extends React.Component  {
         return locationData;
     }
 
-    receiveAppInst(mcRequest) {
-        let result = mcRequest.data;
+    receiveAppInst(result) {
+
         if(result.length){
             let join = null;
             if(result[0]['Edit']) {
@@ -234,8 +234,7 @@ class SiteTwoPageOne extends React.Component  {
         //TODO: counts call method from the developers
         _self.props.handleInjectData({methodCall:result})
     }
-    receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
+    receiveResult = (result) => {
         if(result.length){
             let join = null;
             if(result[0]['Edit']) {
@@ -269,7 +268,7 @@ class SiteTwoPageOne extends React.Component  {
             rgn = [region]
         }
         rgn.map((item, i) => {
-            setTimeout(() => serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResult), 500 * i)
+            setTimeout(() => services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult), 500 * i)
         })
 
 
@@ -282,12 +281,12 @@ class SiteTwoPageOne extends React.Component  {
         if(region !== 'All'){
             rgn = [region]
         } else {
-            rgn = ['US','EU'];
+            rgn = ['US','KR','EU'];
         }
 
             rgn.map((item) => {
                 // All show appInst
-                serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_APP_INST, data: { region: item } }, _self.receiveAppInst)
+                services.getMCService('ShowAppInst',{token:store ? store.userToken : 'null', region:item}, _self.receiveAppInst)
             })
 
     }
@@ -326,6 +325,7 @@ class SiteTwoPageOne extends React.Component  {
         }
 
 
+        //ComputeService.getMCService('ShowCloudlet',{token:store.userToken, region:'US'}, _self.receiveCloudlet)
         /********************************
          * ---- new connection MC ----
          * 2019 07 17 start monitoring console

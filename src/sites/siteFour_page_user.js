@@ -1,13 +1,16 @@
 import React from 'react';
+import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 import DeveloperListView from '../container/developerListView';
 import { withRouter } from 'react-router-dom';
+import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
-import * as serviceMC from '../services/serviceMC';
+import * as services from '../services/service_compute_service';
 import './siteThree.css';
+import MapWithListView from "./siteFour_page_six";
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
@@ -80,10 +83,8 @@ class SiteFourPageUser extends React.Component {
         _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
         _self.setState({ page:subPath})
     }
-
-    receiveResult = (mcRequest) => {
+    receiveResult = (result) => {
         // @inki if data has expired token
-        let result = mcRequest.data;
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
@@ -96,7 +97,7 @@ class SiteFourPageUser extends React.Component {
     }
     getDataDeveloper(token) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_USERS }, _self.receiveResult)
+        services.getMCService('ShowUsers',{token:store ? store.userToken : 'null'}, _self.receiveResult)
         this.props.handleLoadingSpinner(true);
     }
     render() {

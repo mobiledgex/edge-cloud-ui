@@ -12,6 +12,7 @@ import {hot} from "react-hot-loader/root";
 import {DatePicker, TimePicker,} from 'antd';
 import * as reducer from "../utils";
 import {
+    fetchAppInstanceList,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
@@ -23,7 +24,7 @@ import {
     filterInstanceCountOnCloutLetOne,
     getMetricsUtilizationAtAppLevel,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, renderBarGraph002,
+    makeClusterListSelectBox, makeHardwareUsageListPerInstance, renderBarGraph002,
     renderBarGraphForCpuMem,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
@@ -32,7 +33,7 @@ import {
     renderPlaceHolder,
     renderPlaceHolder2
 } from "../services/PageMonitoringService";
-import {HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
+import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
 import {cutArrayList} from "../services/SharedService";
@@ -213,7 +214,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isReady: false,
             })
             //todo: REALDATA
-            //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
+           // let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
             //todo: FAKEJSON FOR TEST
             let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
@@ -264,16 +265,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            /*
-            let usageList = await Promise.all([
+          /*  let usageList = await Promise.all([
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
              ])
              let cpuUsageListPerOneInstance = usageList[0]
-             let memUsageListPerOneInstance = usageList[1]
-             console.log('_result===>', usageList);*/
+             let memUsageListPerOneInstance = usageList[1]*/
+             console.log('_result===>', usageList);
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST

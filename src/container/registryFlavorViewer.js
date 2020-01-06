@@ -1,11 +1,11 @@
 import React from 'react';
-import {Tab} from 'semantic-ui-react';
+import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import './styles.css';
 import _ from "lodash";
 import * as reducer from '../utils'
-import * as serviceMC from '../services/serviceMC';
+import * as services from '../services/service_compute_service';
 import SiteFourCreateFormFlavorDefault from "./siteFourCreateFormFlavorDefault";
 import {withRouter} from "react-router-dom";
 
@@ -72,15 +72,13 @@ class RegistryFlavorViewer extends React.Component {
     }
 
     
-    receiveResult = (mcRequest) => {
-        let result = mcRequest.response;
-        let request = mcRequest.request;
+    receiveResult = (result, body) => {
         _self.props.handleLoadingSpinner(false);
         if(result.data.error) {
             this.props.handleAlertInfo('error',result.data.error)
             return;
         } else {
-            this.props.handleAlertInfo('success','Flavor '+request.data.flavor.key.name+' created successfully.')
+            this.props.handleAlertInfo('success','Flavor '+body.params.flavor.key.name+' created successfully.')
             this.gotoUrl('submit');
         }
     }
@@ -162,15 +160,15 @@ class RegistryFlavorViewer extends React.Component {
                 }
             })
 
-            if (nextProps.formAppInst.submitSucceeded && error.length == 0) {
+            if(nextProps.formAppInst.submitSucceeded && error.length == 0){
                 let submitData = nextProps.submitValues
-                this.setState({ toggleSubmit: true, validateError: error });
+                this.setState({toggleSubmit:true,validateError:error});
                 this.props.handleLoadingSpinner(true);
-                serviceMC.sendRequest({ token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_FLAVOR, data: submitData }, this.receiveResult)
+                services.createNewFlavor('CreateFlavor',{params:submitData, token:store ? store.userToken : 'null'}, this.receiveResult)
             } else {
-                this.setState({ validateError: error, toggleSubmit: true })
+                this.setState({validateError:error,toggleSubmit:true})
             }
-
+            
         }
 
     }

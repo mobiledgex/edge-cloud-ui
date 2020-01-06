@@ -1,13 +1,17 @@
 import React from 'react';
+
+
 import { withRouter } from 'react-router-dom';
 import sizeMe from 'react-sizeme';
+import Alert from "react-s-alert";
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
+import * as services from '../services/service_compute_service';
 import './siteThree.css';
 import MapWithListView from "../container/mapWithListView";
 import PageDetailViewer from '../container/pageDetailViewer';
+import DeveloperListView from "../container/developerListView";
 import * as reducer from '../utils'
 
 let _self = null;
@@ -91,6 +95,7 @@ class SiteFourPageAppInst extends React.Component {
         //     // this.getUpdateData(this.props.changeRegion);
         // }
         this._devData = [];
+
     }
     componentWillUnmount() {
         this._AppInstDummy = []
@@ -134,13 +139,13 @@ class SiteFourPageAppInst extends React.Component {
         setTimeout(() => this.forceUpdate(), 1000)
 
     }
-    receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
+    receiveResult = (result) => {
+        _self.props.handleLoadingSpinner(false);
         // @inki if data has expired token
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
+
             return;
         }
 
@@ -152,7 +157,7 @@ class SiteFourPageAppInst extends React.Component {
         if(rgn.length == _self.loadCount){
             _self.countJoin()
         }
-        _self.props.handleLoadingSpinner(false);
+ 
         // console.log("appinstresult",result)
         // let join = null;
         // if(!result.error && result[0]['Edit']) {
@@ -174,8 +179,8 @@ class SiteFourPageAppInst extends React.Component {
         this.props.handleLoadingSpinner(false);
         this.getUpdateData(this.props.changeRegion);
     }
-    receiveResultApp = (mcRequest) => {
-        let result = mcRequest.data;
+    receiveResultApp = (result) => {
+        let diff = []
         this._diffRev = [];
         if(!result.error){
             result.map((item) => {
@@ -187,7 +192,8 @@ class SiteFourPageAppInst extends React.Component {
             })
             this.forceUpdate();
         }
-
+        _self.props.handleLoadingSpinner(false);
+        
     }
 
     getDataDeveloper = (region,regionArr) => {
@@ -202,15 +208,17 @@ class SiteFourPageAppInst extends React.Component {
         } else {
             rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
-
-        let token = store ? store.userToken : 'null';
+ 
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP_INST, data : {region: item}}, _self.receiveResult)
+                // All show appInst
+                services.getMCService('ShowAppInst',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult)
             })
         } else {
             rgn.map((item) => {
-                let data = {
+                serviceBody = {
+                    "token":store.userToken,
+                    "params": {
                         "region":item,
                         "appinst":{
                             "key":{
@@ -219,9 +227,10 @@ class SiteFourPageAppInst extends React.Component {
                                 }
                             }
                         }
+                    }
                 }
                 // org별 show appInst
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP_INST, data : data}, _self.receiveResult)
+                services.getMCService('ShowAppInsts',serviceBody, _self.receiveResult)
             })
         }
     }
@@ -240,23 +249,26 @@ class SiteFourPageAppInst extends React.Component {
             rgn = this.props.regionInfo.region;
         }
 
-        let token = store ? store.userToken : 'null';
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_APP, data: { region: item } }, _self.receiveResultApp)
+                // All show app
+                services.getMCService('ShowApps',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultApp)
             })
         } else {
             rgn.map((item) => {
-                let data = {
+                serviceBody = {
+                    "token":store ? store.userToken : 'null',
+                    "params": {
                         "region":item,
                         "app":{
                             "key":{
                                 "developer_key":{"name":localStorage.selectOrg},
                             }
                         }
+                    }
                 }
                 // org별 show app
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResultApp)
+                services.getMCService('ShowApp',serviceBody, _self.receiveResultApp)
             })
         }
     }

@@ -2,10 +2,15 @@ import React from 'react';
 import { Grid, Header, Segment, Container } from "semantic-ui-react";
 import TimeSeries from '../charts/plotly/timeseries';
 import EnvironmentStatus from '../container/envrmentStatus'
+import UsageMaxColumn from '../charts/plotly/usageMaxColumn';
+//import MethodCallChart from "../charts/plotly/methodCallChart";
 import * as d3 from 'd3';
 import './styles.css'
 
+const formatInt = d3.format(".0f");
+const formatComma = d3.format(",");
 const formatFloat = d3.format(".2f");
+const formatPercent = d3.format(".1f",".1f");
 
 export default class MonitoringViewer extends React.Component {
     state = {

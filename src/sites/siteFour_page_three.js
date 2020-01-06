@@ -1,23 +1,22 @@
 import React from 'react';
-import { Tab } from 'semantic-ui-react';
+import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
+import DeveloperListView from '../container/developerListView';
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
+
 import * as services from '../services/service_compute_service';
 import './siteThree.css';
-
-import Alert from "react-s-alert";
-import RegistryCloudletViewer from "../container/registryCloudletViewer";
-import * as reducer from "../utils";
+import MapWithListView from "./siteFour_page_six";
 
 
+let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
 
 let _self = null;
-
-class SiteFourPageClusterInstReg extends React.Component {
+class SiteFourPageThree extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -28,15 +27,11 @@ class SiteFourPageClusterInstReg extends React.Component {
             contWidth:0,
             bodyHeight:0,
             activeItem: 'Developers',
-            devData:[],
-            cloudlets:[],
-            operators:[],
-            clustinst:[],
-            apps:[],
+            devData:[]
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.userToken = null;
+        this.headerLayout = [5,2]
     }
 
     //go to
@@ -53,53 +48,42 @@ class SiteFourPageClusterInstReg extends React.Component {
         _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
+    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
+    onHandleRegistry() {
+        this.props.handleInjectDeveloper('userInfo');
+    }
     componentWillMount() {
+        console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
-        
+        console.log('info.. ', this.childFirst, this.childSecond)
+        this.getDataDeveloper();
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
-
     }
-
-    gotoUrl() {
-        _self.props.history.push({
-            pathname: '/site4',
-            search: 'pg=2'
-        });
-        _self.props.history.location.search = 'pg=2';
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=2'})
+    receiveResult(result) {
+        console.log("receive == ", result)
+        _self.setState({devData:result})
     }
-
-
-    /*
-     */
+    getDataDeveloper() {
+        services.getComputeService('developer', this.receiveResult)
+    }
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem } = this.state
         return (
 
-            <RegistryCloudletViewer devData={this.state.devData} gotoUrl={this.gotoUrl}/>
+            <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
+
         );
     }
 
-};
-const mapStateToProps = (state) => {
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-    return {
-
-        region:region
-    }
 };
 
 
@@ -107,10 +91,8 @@ const mapDispatchProps = (dispatch) => {
     return {
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleInjectFlavor: (data) => { dispatch(actions.showFlavor(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))}
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInstReg)));
+export default withRouter(connect(null, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageThree)));

@@ -1,13 +1,17 @@
 import React from 'react';
+import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 import DeveloperListView from '../container/developerListView';
 import { withRouter } from 'react-router-dom';
+import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
-import * as serviceMC from '../services/serviceMC';
+import * as services from '../services/service_compute_service';
 import './siteThree.css';
+import MapWithListView from "./siteFour_page_six";
+import Alert from "react-s-alert";
 
 
 let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
@@ -88,8 +92,7 @@ class SiteFourPageFlavor extends React.Component {
         }
         
     }
-    receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
+    receiveResult = (result) => {
         // @inki if data has expired token
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
@@ -127,8 +130,8 @@ class SiteFourPageFlavor extends React.Component {
             rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
         rgn.map((item) => {
-            let requestData = { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_FLAVOR, data: { region: item } };
-            serviceMC.sendRequest(requestData, _self.receiveResult)
+            
+            services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult)
         })
     }
     render() {

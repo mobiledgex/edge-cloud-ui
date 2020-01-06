@@ -5,13 +5,13 @@ import {withRouter} from 'react-router-dom';
 //redux
 import {connect} from 'react-redux';
 import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
+import * as services from '../services/service_audit_api';
 import './siteThree.css';
 import TimelineAuditViewNew from "../container/TimelineAuditViewNew";
 
 
 let _self = null;
-let rgn = ['US', 'EU'];
+let rgn = ['US', 'KR', 'EU'];
 
 class SiteFourPageAudits extends React.Component {
     constructor(props) {
@@ -170,9 +170,7 @@ class SiteFourPageAudits extends React.Component {
 
     }
 
-    receiveResult = (mcRequest) => {
-        let result  = mcRequest.response;
-        let resource = mcRequest.request.method;
+    receiveResult = (result, resource, self, body) => {
         // @inki if data has expired token
         console.log('20191106 receive result...', result, ":", resource)
         if (result.error && result.error.indexOf('Expired') > -1) {
@@ -186,7 +184,7 @@ class SiteFourPageAudits extends React.Component {
 
         let unchecked = result.data.length;
         let checked = localStorage.getItem('auditChecked')
-        if (resource === serviceMC.getEP().SHOW_SELF || resource === serviceMC.getEP().SHOW_ORG) {
+        if (resource === 'ShowSelf' || resource === 'ShowOrg') {
             console.log('20191106 audit result..', result, ":", resource, ": unchecked : ", unchecked)
             _self.reduceAuditCount(result.data, checked)
 
@@ -219,8 +217,13 @@ class SiteFourPageAudits extends React.Component {
         _self.loadCount = 0;
 
         if (orgName) {
+            //services.showAuditOrg('ShowOrg',{token:store.userToken, params:{"org":_self.makeOga(orgName)}}, _self.receiveResult, _self)
             try {
-                serviceMC.sendRequest({token:store.userToken, method:serviceMC.getEP().SHOW_AUDIT_ORG, data:{"org": this.makeOga(orgName)}}, this.receiveResult)
+                let response = await services.showAuditOrg2('ShowOrg', {
+                    token: store.userToken,
+                    params: {"org": this.makeOga(orgName)}
+                })
+                this.receiveResult(response, 'ShowOrg')
             } catch (e) {
                 //alert(e)
                 this.props.handleLoadingSpinner(false);
@@ -230,7 +233,7 @@ class SiteFourPageAudits extends React.Component {
             }
 
         } else {
-            serviceMC.sendRequest({token: store.userToken, method:serviceMC.getEP().SHOW_SELF, data: '{}'}, _self.receiveResult, _self)
+            services.showAuditSelf('ShowSelf', {token: store.userToken, params: '{}'}, _self.receiveResult, _self)
         }
     }
 

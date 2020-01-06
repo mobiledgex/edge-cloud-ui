@@ -39,6 +39,7 @@ export function getMethodCall(resource, body, callback, self) {
 }
 
 export function getCurrentUserInfo(resource, body, callback, self) {
+
     axios.post(ServerUrl+'/'+resource, qs.stringify({
         service: resource,
         serviceBody:body,
