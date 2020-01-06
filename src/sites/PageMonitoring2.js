@@ -2,7 +2,7 @@ import 'react-hot-loader'
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
 import FlexBox from "flexbox-react";
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
@@ -42,8 +42,10 @@ import './PageMonitoring.css';
 import moment from "moment";
 
 const FA = require('react-fontawesome')
-const {Column, Row} = Grid;
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
+const {Column, Row} = Grid;
+const {Pane} = Tab
+
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
@@ -214,7 +216,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isReady: false,
             })
             //todo: REALDATA
-           // let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
+            // let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
             //todo: FAKEJSON FOR TEST
             let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
@@ -265,15 +267,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-          /*  let usageList = await Promise.all([
-                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
-                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
-                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
-                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
-             ])
-             let cpuUsageListPerOneInstance = usageList[0]
-             let memUsageListPerOneInstance = usageList[1]*/
-             console.log('_result===>', usageList);
+            /*  let usageList = await Promise.all([
+                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
+                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
+                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
+                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
+               ])
+               let cpuUsageListPerOneInstance = usageList[0]
+               let memUsageListPerOneInstance = usageList[1]*/
+            console.log('_result===>', usageList);
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
@@ -539,7 +541,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:REGION Dropdown*/}
                             {/*todo:REGION Dropdown*/}
                             {/*todo:REGION Dropdown*/}
-                            <div style={{color: 'white', backgroundColor:'#393939', height:39, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-8, width:100}}>
+                            <div style={{
+                                color: 'white',
+                                backgroundColor: '#393939',
+                                height: 39,
+                                alignItems: 'center',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                display: 'flex',
+                                marginTop: -8,
+                                width: 100
+                            }}>
                                 Region
                             </div>
                             <Dropdown
@@ -563,7 +575,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:CloudLet selectbox*/}
                             {/*todo:CloudLet selectbox*/}
                             {/*todo:CloudLet selectbox*/}
-                            <div style={{color: 'white', backgroundColor:'#393939', height:39, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-8, width:100}}>
+                            <div style={{
+                                color: 'white',
+                                backgroundColor: '#393939',
+                                height: 39,
+                                alignItems: 'center',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                display: 'flex',
+                                marginTop: -8,
+                                width: 100
+                            }}>
                                 CloudLet
                             </div>
                             <Dropdown
@@ -590,7 +612,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:Cluster selectbox*/}
                             {/*todo:Cluster selectbox*/}
                             {/*todo:Cluster selectbox*/}
-                            <div style={{color: 'white', backgroundColor:'#393939', height:39, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-8, width:100}}>
+                            <div style={{
+                                color: 'white',
+                                backgroundColor: '#393939',
+                                height: 39,
+                                alignItems: 'center',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                display: 'flex',
+                                marginTop: -8,
+                                width: 100
+                            }}>
                                 Cluster
                             </div>
                             <Dropdown
@@ -617,7 +649,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:RangePicker*/}
                             {/*todo:RangePicker*/}
                             {/*todo:RangePicker*/}
-                            <div style={{color: 'white', backgroundColor:'#393939', height:39, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-8, width:100}}>
+                            <div style={{
+                                color: 'white',
+                                backgroundColor: '#393939',
+                                height: 39,
+                                alignItems: 'center',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                display: 'flex',
+                                marginTop: -8,
+                                width: 100
+                            }}>
                                 TimeRange
                             </div>
                             <div style={{marginTop: -8}}>
@@ -794,6 +836,103 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        /**###############################
+         * * MONITORINGTABS
+         * * MONITORINGTABS
+         * * MONITORINGTABS
+         ##################################*/
+        monitoringTabs = [
+
+            {
+                menuItem: 'CPU', render: () => {
+                    return (
+                        <Pane>
+                           <div style={{display:'flex', flexDirection:'row'}}>
+                               <div className=''>
+                                   <div className='page_monitoring_title_area'>
+                                       <div className='page_monitoring_title'>
+                                           Top 5 of CPU Usage
+                                       </div>
+                                       {/*todo:APPINSTANCE selectbox*/}
+                                       {/*todo:APPINSTANCE selectbox*/}
+                                       {/*todo:APPINSTANCE selectbox*/}
+                                       <div>
+                                           <Dropdown
+                                               clearable={this.state.appInstSelectBoxClearable}
+                                               value={this.state.currentAppInst}
+                                               placeholder='Select App Instance'
+                                               selection
+                                               options={this.state.appInstaceListForSelectBoxForCpu}
+                                               style={{width: 250}}
+                                               onChange={async (e, {value}) => {
+
+                                                   await this.setState({
+                                                       currentAppInst: value,
+                                                   })
+                                                   await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                               }}
+
+                                           />
+                                       </div>
+                                   </div>
+                                   <div className='page_monitoring_container'>
+                                       {!this.state.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                                   </div>
+                               </div>
+                               <div className=''>
+                                   <div className='page_monitoring_title_area'>
+                                       <div className='page_monitoring_title'>
+                                           Transition Of CPU Usage
+                                       </div>
+                                   </div>
+                                   <div className='page_monitoring_container'>
+                                       {!this.state.isReady ? renderPlaceHolder() : renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                                   </div>
+                               </div>
+                           </div>
+
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'MEM', render: () => {
+                    return (
+                        <Pane>
+                            <div className='page_monitoring_column_kj'>
+                                <div className='page_monitoring_title_area'>
+                                    <div className='page_monitoring_title'>
+                                        Top 5 of MEM Usage
+                                    </div>
+                                </div>
+
+                                <div className='page_monitoring_container'>
+                                    {!this.state.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                                </div>
+
+                            </div>
+                            {/* mem___col___6*/}
+                            {/* mem___col___6*/}
+                            {/* mem___col___6*/}
+                            <div className='page_monitoring_column_kj'>
+                                <div className='page_monitoring_title_area'>
+                                    <div className='page_monitoring_title'>
+                                        Transition Of Mem Usage
+                                    </div>
+                                </div>
+                                <div className='page_monitoring_container'>
+                                    {!this.state.isReady ? renderPlaceHolder() : renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                                </div>
+                            </div>
+
+                        </Pane>
+                    )
+                }
+            },
+
+
+        ]
+
 
         render() {
             //todo:####################################################################
@@ -947,7 +1086,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___4*/}
                                                 {/* ___col___4*/}
                                                 {/* ___col___4*/}
-                                                <div className='page_monitoring_column_kj'>
+                                                <div className='page_monitoring_column_kj002'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Engine Performance State Of App instance
@@ -1001,42 +1140,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* mem___col___5*/}
                                                 {/* mem___col___5*/}
                                                 {/* mem___col___5 */}
-                                                <div className='page_monitoring_column_kj'>
-                                                    <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title'>
-                                                            Top 5 of MEM Usage
-                                                        </div>
-                                                        {/* <div className='page_monitoring_column_kj_select'>
-                                                            <Dropdown
-                                                                placeholder='Select App Instance'
-                                                                selection
-                                                                options={this.state.appInstaceListForSelectBoxForMem}
-                                                                style={{width: 250}}
-                                                                onChange={async (e, {value}) => {
-                                                                    await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
-                                                                }}
-                                                            />
-                                                        </div>*/}
-                                                    </div>
-
-                                                    <div className='page_monitoring_container'>
-                                                        {!this.state.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
-                                                    </div>
-
+                                                <div className='page_monitoring_column_kj003'>
+                                                    <Tab
+                                                        panes={this.monitoringTabs}
+                                                        activeIndex={this.state.activeTabIndex}
+                                                        onTabChange={(e, {activeIndex}) => {
+                                                            this.setState({
+                                                                activeTabIndex: activeIndex,
+                                                            })
+                                                        }}
+                                                    />
                                                 </div>
-                                                {/* mem___col___6*/}
-                                                {/* mem___col___6*/}
-                                                {/* mem___col___6*/}
-                                                <div className='page_monitoring_column_kj'>
-                                                    <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title'>
-                                                            Transition Of Mem Usage
-                                                        </div>
-                                                    </div>
-                                                    <div className='page_monitoring_container'>
-                                                        {!this.state.isReady ? renderPlaceHolder() : renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
-                                                    </div>
-                                                </div>
+
+
                                             </div>
                                             <div className='page_monitoring_row'>
                                                 <div className='page_monitoring_column_for_grid'>
