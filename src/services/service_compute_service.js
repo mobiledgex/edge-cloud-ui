@@ -8,6 +8,7 @@ import FormatComputeFlavor from './formatter/formatComputeFlavor';
 import FormatComputeCluster from './formatter/formatComputeCluster';
 import FormatComputeDev from './formatter/formatComputeDeveloper';
 import FormatComputeCloudlet from './formatter/formatComputeCloudlet';
+import FormatOrgCloudlet from './formatter/formatOrgCloudlet';
 import FormatComputeApp from './formatter/formatComputeApp';
 import FormatComputeOper from './formatter/formatComputeOperator';
 import FormatComputeInst from './formatter/formatComputeInstance';
@@ -537,6 +538,7 @@ export function getMCService(resource, body, callback, self) {
                     case 'ShowUsers': callback(formatComputeUsers(parseData)); break;
                     case 'ShowAccounts': callback(formatComputeAccounts(parseData)); break;
                     case 'ShowCloudlet': callback(FormatComputeCloudlet(parseData,body)); break;
+                    case 'showOrgCloudlet': callback(FormatOrgCloudlet(parseData,body.params)); break;
                     case 'ShowClusterInst': callback(FormatComputeClstInst(parseData,body)); break;
                     case 'ShowClusterInsts': callback(FormatComputeClstInst(parseData,body)); break;
                     case 'ShowApps': callback(FormatComputeApp(parseData,body)); break;

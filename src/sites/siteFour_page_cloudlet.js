@@ -147,7 +147,7 @@ class SiteFourPageCloudlet extends React.Component {
         }
 
         this.loadCount ++;
-        console.log("20191119 ..cloudlet EditEditEdit",rgn.length,":::",this.loadCount)
+
         if(rgn.length == this.loadCount){
             _self.countJoin()            
         }
@@ -170,7 +170,7 @@ class SiteFourPageCloudlet extends React.Component {
 
     countJoin() {
         let cloudlet = this._cloudletDummy;
-
+        console.log("20200106 ..cloudlet in page cloudlet == ",cloudlet)
         _self.setState({devData:cloudlet,dataSort:false})
         this.props.handleLoadingSpinner(false);
     }
@@ -188,8 +188,13 @@ class SiteFourPageCloudlet extends React.Component {
         }
 
         rgn.map((item, i) => {
-            //setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 0)
-            services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult)
+            //
+            let organization = localStorage.getItem('selectOrg')
+            if(organization) {
+                services.getMCService('showOrgCloudlet',{token:store ? store.userToken : 'null',params:{region:item, org:organization}}, _self.receiveResult)
+            } else {
+                services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult)
+            }
         })
         this.props.handleLoadingSpinner(true);
     }

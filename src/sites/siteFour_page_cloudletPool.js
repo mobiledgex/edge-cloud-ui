@@ -95,13 +95,9 @@ class SiteFourPageCloudletPool extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         console.log("20200106 ..page cloudlet pool -",nextProps.viewMode)
-
-        //this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        //this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
         if(nextProps.viewMode) {
             if(nextProps.viewMode === 'listView') {
-                alert('viewmode..'+nextProps.viewMode)
-                //this.getDataDeveloper(this.props.changeRegion)
+                this.getDataDeveloper(this.props.changeRegion, this.state.regions)
                 this.setState({viewMode:nextProps.viewMode})
             } else {
                 this.setState({viewMode:nextProps.viewMode})
