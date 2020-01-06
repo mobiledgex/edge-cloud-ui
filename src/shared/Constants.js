@@ -11,10 +11,10 @@ export const HARDWARE_TYPE = {
 }
 //rgb(255,0,10)
 
-export const BORDER_CHART_COLOR_LIST = ["rgb(255,0,10)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
-export const CHART_COLOR_LIST = ["rgb(255,0,10)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
+export const BORDER_CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
+export const CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
 
-export const CHART_COLOR_LIST2 = ["rgba(255, 0, 10, 0.25)", "rgba(255,94,29,0.25)", "rgba(227,220,57,0.25)", "rgba(18,135,2,0.25)", "rgba(28,34,255,0.25)"]
+export const CHART_COLOR_LIST2 = ["rgba(112,0,28, 0.25)", "rgba(255,94,29,0.25)", "rgba(227,220,57,0.25)", "rgba(18,135,2,0.25)", "rgba(28,34,255,0.25)"]
 
 export const GRAPH_HEIGHT = 300
 
@@ -47,4 +47,17 @@ export const REGIONS_OPTIONS = [
     {value: 'US', text: 'US'},
 
 ]
+
+/*"AppName": "MEXPrometheusAppName",
+    "Cloudlet": "frankfurt-eu",
+    "ClusterInst": "kkkkkkk",*/
+export const MOINTORING_FILTER_ITEM_TYPE = {
+    REGION : "Region",
+    APP_INST: "AppName",
+    CLOUDLET: "Cloudlet",
+    CLUSTERINST: "ClusterInst",
+}
+
+export const SELECT_TYPE_ENUM = "Region"| "AppName" | "Cloudlet" | "ClusterInst"
+
 

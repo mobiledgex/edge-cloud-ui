@@ -66,6 +66,9 @@ class VerifyContent extends Component {
                 effect: 'slide',
                 timeout: 5000
             });
+
+            setTimeout(() => _self.goToNext('/site1'),3000)
+
         } else {
             Alert.success(result.data.message, {
                 position: 'top-right',

@@ -1819,16 +1819,15 @@ exports.UpdateVerify = (req, res) => {
     axios.post(mcUrl + '/api/v1/'+serviceName, serviceBody)
         .then(function (response) {
 
-            console.log('success verify email ')
 
             if(response.statusText === 'OK') {
-                res.json({message:response.data.message})
+                //res.json({message:response.data.message})
+                response.data == '' ? res.json({error:'No user'}) : res.json({message:response.data.message})
             } else {
                 res.json({error:'Retry'})
             }
         })
         .catch(function (error) {
-
             responseLoginError(res, error)
         });
 }

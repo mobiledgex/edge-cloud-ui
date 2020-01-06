@@ -1,8 +1,6 @@
 import * as React from 'react';
-
-var CanvasJSReact = require('./canvasjs.react');
-var CanvasJS = CanvasJSReact.CanvasJS;
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+import FlexBox from "flexbox-react";
+import {Progress} from "antd";
 
 
 export default class Test002 extends React.Component {
@@ -57,10 +55,59 @@ export default class Test002 extends React.Component {
             }]
         }
         return (
-            <div>
-                <CanvasJSChart options={options}
-                    /* onRef={ref => this.chart = ref} */
+            <div style={{width:350}}>
+                <Progress
+                    strokeColor={{
+                        '0%': '#108ee9',
+                        '100%': '#87d068',
+                    }}
+                    percent={99.9}
                 />
+                <Progress
+                    strokeColor={{
+                        '0%': 'red',
+                        '100%': 'pink',
+                    }}
+                    percent={99.9}
+                    strokeWidth={50}
+                    style={{height:80}}
+                    width={450}
+                    strokeLinecap={'square'}
+                    percent={80}
+                />
+                <Progress
+                    strokeColor={{
+                        from: '#108ee9',
+                        to: '#87d068',
+                    }}
+                    strokeWidth={50}
+                    style={{height:80}}
+                    width={450}
+                    strokeLinecap={0}
+                    percent={80}
+                    showInfo={true}
+                    format={percent => percent + '%'}
+                />
+                <Progress
+                    strokeColor={{
+                        from: 'blue',
+                        to: 'black',
+                    }}
+                    strokeWidth={50}
+                    style={{height:80}}
+                    width={450}
+                    strokeLinecap={0}
+                    percent={80}
+                    showInfo={true}
+                    format={percent => percent + '%'}
+                />
+                <FlexBox style={{display: 'flex', justifyContent: 'center', marginTop: 50,}}>
+                    <FlexBox style={{width: 450, height: 30}}>
+
+                    </FlexBox>
+
+
+                </FlexBox>
             </div>
         );
     }
