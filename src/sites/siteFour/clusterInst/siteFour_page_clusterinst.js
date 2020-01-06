@@ -1,13 +1,14 @@
 import React from 'react';
+import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import PageDetailViewer from '../container/pageDetailViewer';
+import PageDetailViewer from '../../../container/pageDetailViewer';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
-import './siteThree.css';
-import MapWithListView from "../container/mapWithListView";
-import * as reducer from '../utils'
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
+import MapWithListView from "../../../container/mapWithListView";
+import * as reducer from '../../../utils'
 
 let _self = null;
 let rgn = [];
@@ -72,12 +73,7 @@ class SiteFourPageClusterInst extends React.Component {
             this.countObject[region] = []
         })
     }
-    componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store && store.userToken) {
-            this.getDataDeveloper(this.props.changeRegion);
-        }
-    }
+
     componentWillUnmount() {
         this.clusterInstDummy = [];
         this.cloudletDummy = [];
@@ -133,42 +129,24 @@ class SiteFourPageClusterInst extends React.Component {
     }
 
     receiveResultClusterInst(mcRequest) {
-        let result = mcRequest.data;
-        _self.props.handleLoadingSpinner();
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.props.handleLoadingSpinner();
+                _self.props.handleLoadingSpinner(false);
+                _self.groupJoin(response.data, 'clusterInst')
+            }
         }
-
-        //_self.countObject[result[0]['Region']].push(result[0]['Region'])
-        // console.log('20191004 ', result)
-        // if(result.length) {
-        //     if(result[0]['Region'] === "") {
-        //         _self.props.handleLoadingSpinner(false);
-        //         //_self.props.handleAlertInfo('error', 'There is no data to display')
-        //     } else {
-
-        //     }
-        //     _self.groupJoin(result,'clusterInst', result[0]['Region'])
-        // }
-        _self.props.handleLoadingSpinner(false);
-        _self.groupJoin(result,'clusterInst')
     }
+
     receiveResultCloudlet(mcRequest) {
-        let result = mcRequest.data;
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner();
-            return;
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.props.handleLoadingSpinner();
+                _self.groupJoin(response.data, 'cloudlet')
+            }
         }
-        //_self.countObject[result[0]['Region']].push(result[0]['Region'])
-        _self.props.handleLoadingSpinner();
-        _self.groupJoin(result,'cloudlet')
     }
 
     groupJoin(result,cmpt){
@@ -225,24 +203,23 @@ class SiteFourPageClusterInst extends React.Component {
         }
         
         let token = store ? store.userToken : 'null';
-        if(localStorage.selectRole == 'AdminManager') {
+        if (localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                
-                serviceMC.sendRequest({token:token,method : serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
-                serviceMC.sendRequest({token:token,method : serviceMC.getEP().SHOW_CLUSTER_INST, data : {region:item}}, _self.receiveResultClusterInst)
+                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
+                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: item } }, _self.receiveResultClusterInst)
             })
         } else {
             rgn.map((item) => {
                 let data = {
-                        "region":item,
-                        "clusterinst":{
-                            "key":{
-                                "developer": localStorage.selectOrg
-                            }
+                    region: item,
+                    clusterinst: {
+                        key: {
+                            developer: localStorage.selectOrg
                         }
+                    }
                 }
-                serviceMC.sendRequest({token:token,method : serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
-                serviceMC.sendRequest({token:token,method : serviceMC.getEP().SHOW_CLUSTER_INST, data : data}, _self.receiveResultClusterInst)
+                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
+                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: data }, _self.receiveResultClusterInst)
             })
         }
 
@@ -295,5 +272,4 @@ const mapDispatchProps = (dispatch) => {
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
-
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageClusterInst));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInst)));

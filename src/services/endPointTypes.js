@@ -1,15 +1,16 @@
 
-import FormatComputeOrganization from './formatter/formatComputeOrganization';
-import FormatComputeUsers from './formatter/formatComputeUsers';
-import FormatComputeAccounts from './formatter/formatComputeAccounts';
-import FormatComputeCloudlet from './formatter/formatComputeCloudlet';
-import FormatComputeClstInst from './formatter/formatComputeClstInstance';
-import FormatComputeFlavor from './formatter/formatComputeFlavor';
-import FormatComputeApp from './formatter/formatComputeApp';
-import FormatComputeInst from './formatter/formatComputeInstance';
-import FormatComputeCluster from './formatter/formatComputeCluster';
+import * as FormatComputeOrganization from './formatter/formatComputeOrganization';
+import * as FormatComputeUsers from './formatter/formatComputeUsers';
+import * as FormatComputeAccounts from './formatter/formatComputeAccounts';
+import * as FormatComputeCloudlet from './formatter/formatComputeCloudlet';
+import * as FormatComputeClstInst from './formatter/formatComputeClstInstance';
+import * as FormatComputeFlavor from './formatter/formatComputeFlavor';
+import * as FormatComputeApp from './formatter/formatComputeApp';
+import * as FormatComputeInst from './formatter/formatComputeInstance';
+import * as FormatComputeCluster from './formatter/formatComputeCluster';
 
 export const SHOW_ORG = "showOrg";
+export const CREATE_ORG = "createOrg";
 export const DELETE_ORG = "deleteOrg";
 export const SHOW_AUDIT_ORG = "Auditshoworg";
 export const SHOW_USERS = "ShowUsers";
@@ -44,7 +45,6 @@ export const VERIFY_EMAIL = "verifyemail";
 export const RESEND_VERIFY = "resendverify";
 export const RESET_PASSWORD = "passwordreset";
 export const CREATE_USER = "createUser";
-export const CREATE_ORG = "createOrg";
 export const ADD_USER_ROLE = "addUserRole";
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
 export const STREAM_CLOUDLET = "StreamCloudlet";
@@ -55,7 +55,7 @@ export function getPath(request) {
         case SHOW_ORG:
             return '/api/v1/auth/org/show';
         case DELETE_ORG:
-            return '/api/v1/auth/org/delete';    
+            return '/api/v1/auth/org/delete';
         case SHOW_AUDIT_ORG:
             return '/api/v1/auth/audit/showorg';
         case SHOW_USERS:
@@ -114,26 +114,97 @@ export function getPath(request) {
 }
 
 export function formatData(request, response) {
+    let data = undefined;
     switch (request.method) {
         case SHOW_ORG:
-            return { data: FormatComputeOrganization(response, request.data) }
+            data = FormatComputeOrganization.formatData(response, request.data)
+            break;
         case SHOW_USERS:
-            return { data: FormatComputeUsers(response, request.data) }
+            data = FormatComputeUsers.formatData(response, request.data)
+            break;
         case SHOW_ACCOUNTS:
-            return { data: FormatComputeAccounts(response, request.data) }
+            data = FormatComputeAccounts.formatData(response, request.data)
+            break;
         case SHOW_CLOUDLET:
-            return { data: FormatComputeCloudlet(response, request.data) }
+            data = FormatComputeCloudlet.formatData(response, request.data)
+            break;
         case SHOW_CLUSTER_INST:
-            return { data: FormatComputeClstInst(response, request.data) }
+            data = FormatComputeClstInst.formatData(response, request.data)
+            break;
         case SHOW_FLAVOR:
-            return { data: FormatComputeFlavor(response, request.data) }
+            data = FormatComputeFlavor.formatData(response, request.data)
+            break;
         case SHOW_CLUSTER_FLAVOR:
-            return { data: FormatComputeCluster(response, request.data)}
+            data = FormatComputeCluster.formatData(response, request.data)
+            break;
         case SHOW_APP:
-            return { data: FormatComputeApp(response, request.data) }
+            data = FormatComputeApp.formatData(response, request.data)
+            break;
         case SHOW_APP_INST:
-            return { data: FormatComputeInst(response, request.data) }
+            data = FormatComputeInst.formatData(response, request.data)
+            break;
         default:
-            return { request: request, response: response };
+            data = undefined;
+    }
+    if (data) {
+        response.data = data;
+    }
+    return { request: request, response: response }
+}
+
+export function getKey(keyId, data) {
+    switch (keyId) {
+        case 'Cloudlet':
+            return FormatComputeCloudlet.getKey(data)
+        case 'ClusterInst':
+            return FormatComputeClstInst.getKey(data)
+        case 'appinst':
+            return FormatComputeInst.getKey(data)
+        case 'Organization':
+            return FormatComputeOrganization.getKey(data)
+        case 'Flavors':
+            return FormatComputeFlavor.getKey(data)
+        case 'App':
+            return FormatComputeApp.getKey(data)
+        case 'User':
+            return FormatComputeUsers.getKey(data)
+        case 'Account':
+            return FormatComputeAccounts.getKey(data)
+        default:
+            return null;
+    }
+}
+
+export function getDeleteMethod(keyId) {
+    switch (keyId) {
+        case 'Cloudlet':
+            return DELETE_CLOUDLET;
+        case 'ClusterInst':
+            return DELETE_CLUSTER_INST;
+        case 'appinst':
+            return DELETE_APP_INST;
+        case 'Organization':
+            return DELETE_ORG;
+        case 'Flavors':
+            return DELETE_FLAVOR;
+        case 'App':
+            return DELETE_APP;
+        case 'User':
+            return DELETE_USER;
+        case 'Account':
+            return DELETE_ACCOUNT;
+        default:
+            return null;
+    }
+}
+
+export function getStreamMethod(keyId) {
+    switch (keyId) {
+        case 'Cloudlet':
+            return STREAM_CLOUDLET;
+        case 'ClusterInst':
+            return STREAM_CLUSTER_INST;
+        case 'appinst':
+            return STREAM_APP_INST;
     }
 }

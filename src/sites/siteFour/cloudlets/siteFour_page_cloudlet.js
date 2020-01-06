@@ -1,14 +1,14 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import PageDetailViewer from '../container/pageDetailViewer';
+import PageDetailViewer from '../../../container/pageDetailViewer';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
-import './siteThree.css';
-import MapWithListView from "../container/mapWithListView";
-import * as reducer from '../utils'
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
+import MapWithListView from "../../../container/mapWithListView";
+import * as reducer from '../../../utils'
 
 
 let _self = null;
@@ -126,42 +126,29 @@ class SiteFourPageCloudlet extends React.Component {
 
 
     }
+    
     receiveResult = (mcRequest) => {
-        let result = mcRequest.data;
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleComputeRefresh(false);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
-
-        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-        if(Object.keys(regionGroup)[0]) {
-            _self._cloudletDummy = _self._cloudletDummy.concat(result)
-        }
-
-        this.loadCount ++;
-        console.log("20191119 ..cloudlet EditEditEdit",rgn.length,":::",this.loadCount)
-        if(rgn.length == this.loadCount){
-            _self.countJoin()            
+        if(mcRequest)
+        {
+            let regionGroup = {};
+            if(mcRequest.response)
+            {
+                let response = mcRequest.response;
+                regionGroup = reducer.groupBy(response.data, 'Region');
+                if(Object.keys(regionGroup)[0]) {
+                    _self._cloudletDummy = _self._cloudletDummy.concat(response.data)
+                }
+                this.loadCount ++;
+                if(rgn.length == this.loadCount){
+                    _self.countJoin()            
+                }
+            }
+            else
+            {
+                _self.props.handleComputeRefresh(false);
+            }
         }
         _self.props.handleLoadingSpinner(false);
-
-        // let join = null;
-        // if(result[0]['Edit']) {
-        //     join = this.state.devData.concat(result);
-        // } else {
-        //     join = this.state.devData;
-        // }
-        // this.loadCount ++;
-        // this.setState({devData:join})
-        // this.props.handleLoadingSpinner(false);
-        // if(rgn.length == this.loadCount-1){
-        //     return
-        // }
-
     }
 
     countJoin() {
@@ -184,7 +171,7 @@ class SiteFourPageCloudlet extends React.Component {
         }
         rgn.map(item => {
             let requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}};
-            serviceMC.sendRequest(requestData, _self.receiveResult)
+            serviceMC.sendRequest(_self, requestData, _self.receiveResult)
         })
         this.props.handleLoadingSpinner(true);
     }

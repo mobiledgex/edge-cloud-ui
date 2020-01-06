@@ -133,17 +133,6 @@ class EntranceGlobe extends Component {
         this.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
-    receiveUser(result, resource, self) {
-
-        if(result) {
-            // make Export usperpass
-
-
-        } else {
-            //Alert()
-        }
-        self.setState({loading:false})
-    }
 
     logoutRequest = () => {
 

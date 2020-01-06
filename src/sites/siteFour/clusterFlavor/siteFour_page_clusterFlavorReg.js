@@ -3,12 +3,12 @@ import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
-import './siteThree.css';
+import * as actions from '../../actions';
+import * as serviceMC from '../../services/serviceMC';
+import '../siteThree.css';
 
 import Alert from "react-s-alert";
-import RegistryClusterFlavorViewer from "../container/registryClusterFlavorViewer";
+import RegistryClusterFlavorViewer from "../../container/registryClusterFlavorViewer";
 
 
 
@@ -97,30 +97,19 @@ class SiteFourPageClusterFlavorReg extends React.Component {
 
 
     }
+
     receiveResult(mcRequest) {
-        let result = mcRequest.data;
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
-        console.log("clusterFlavorReg receive == ", result)
-        if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-        } else {
-            _self.props.handleInjectFlavor(result)
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.props.handleInjectFlavor(response.data)
+            }
         }
         _self.props.handleLoadingSpinner(false);
     }
 
     getDataDeveloper(token, region) {
-        serviceMC.sendRequest({ token: token, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
+        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
     }
 
     /*

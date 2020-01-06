@@ -3,11 +3,11 @@ import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import * as serviceMC from '../services/serviceMC';
-import './siteThree.css';
-import InsideListView from '../container/insideListView';
-import ListDetailViewer from '../container/listDetailViewer';
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
+import InsideListView from '../../../container/insideListView';
+import ListDetailViewer from '../../../container/listDetailViewer';
 
 let _self = null;
 let rgn = [];
@@ -116,27 +116,23 @@ class SiteFourPageApps extends React.Component {
     }
     
     receiveResult = (mcRequest) => {
-        // @inki if data has expired token
-        let result = mcRequest.data;
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
-
-        let join = null;
-        if(result[0]['Edit']) {
-            join = _self.state.devData.concat(result);
-        } else {
-            join = _self.state.devData;
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let join = null;
+                if (response.data[0]['Edit']) {
+                    join = _self.state.devData.concat(response.data);
+                } else {
+                    join = _self.state.devData;
+                }
+                _self.setState({ devData: join })
+                _self.loadCount++;
+                if (rgn.length == _self.loadCount) {
+                    return
+                }
+            }
         }
         _self.props.handleLoadingSpinner(false);
-        _self.setState({devData:join})
-        _self.loadCount ++;
-        if(rgn.length == _self.loadCount){
-            return
-        }
     }
 
     getDataDeveloper = (token, region, regionArr) => {
@@ -151,7 +147,7 @@ class SiteFourPageApps extends React.Component {
         }
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP,data:{region:item}}, _self.receiveResult)
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP,data:{region:item}}, _self.receiveResult)
             })
         } else {
             rgn.map((item) => {
@@ -164,7 +160,7 @@ class SiteFourPageApps extends React.Component {
                         }
                 }
                 // org별 show app
-                serviceMC.sendRequest({token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResult);
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResult);
             })
         }
         

@@ -111,27 +111,27 @@ class SiteFourCreateInstForm extends React.PureComponent {
     }
 
     receiveResultOrg(mcRequest) {
-        let result = mcRequest.data;
-        if(result.error) {
-            this.props.handleAlertInfo('error',result.error)
-        } else {
-            _self.groupJoin(result,'organization')
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let result = mcRequest.response;
+                _self.groupJoin(result, 'organization')
+            }
         }
     }
     receiveResultCloudlet(mcRequest) {
-        let result = mcRequest.data;
-        if(result.error) {
-            this.props.handleAlertInfo('error',result.error)
-        } else {
-            _self.groupJoin(result,'cloudlet')
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.groupJoin(response.data, 'cloudlet')
+            }
         }
     }
     receiveResultFlavor(mcRequest) {
-        let result = mcRequest.data;
-        if(result.error) {
-            this.props.handleAlertInfo('error',result.error)
-        } else {
-            _self.groupJoin(result,'flavor')
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.groupJoin(response.data, 'flavor')
+            }
         }
     }
 
@@ -341,11 +341,10 @@ class SiteFourCreateInstForm extends React.PureComponent {
         }
 
         rgn.map((item) => {
-            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
-            serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_FLAVOR, data : {region:item}}, _self.receiveResultFlavor)
-
+            serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
+            serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_FLAVOR, data : {region:item}}, _self.receiveResultFlavor)
         })
-        serviceMC.sendRequest({token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_ORG}, _self.receiveResultOrg, _self)
+        serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_ORG}, _self.receiveResultOrg, _self)
     }
     handleTabChange = (e, { activeIndex }) => {
         this.setState({ activeIndex })

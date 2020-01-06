@@ -128,23 +128,24 @@ class RegistryViewer extends React.Component {
     }
 
     receiveResult = (mcRequest) => {
-        let result = mcRequest.response;
-        let request= mcRequest.request;
-        let resource = request.method === serviceMC.getEP().CREATE_APP ? 'created' : 'updated'
-
-        _self.props.handleLoadingSpinner(false);
-        this.setState({toggleSubmit:false})
-        if(result.data.error) {
-            if(result.data.error == 'Key already exists') result.data.error = 'App already exists';
-            this.props.handleAlertInfo('error',result.data.error)
-        } else {
-            //this.props.gotoApp();
-            this.props.handleAlertInfo('success','Your application '+request.data.app.key.name+' '+resource+' successfully')
-            setTimeout(() => {
-                this.gotoUrl();
-            }, 1000)
-            //this.gotoUrl();
-            //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=6'})
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let result = mcRequest.response;
+                let request = mcRequest.request;
+                let resource = request.method === serviceMC.getEP().CREATE_APP ? 'created' : 'updated'
+                _self.props.handleLoadingSpinner(false);
+                this.setState({ toggleSubmit: false })
+                this.props.handleAlertInfo('success', 'Your application ' + request.data.app.key.name + ' ' + resource + ' successfully')
+                setTimeout(() => {
+                    this.gotoUrl();
+                }, 1000)
+            }
+            else if(mcRequest.error)
+            {
+                let error = mcRequest.error;
+                if(error.message == 'Key already exists') error.message = 'App already exists';
+                this.props.handleAlertInfo('error',error.message)
+            }
         }
     }
 
@@ -264,17 +265,21 @@ class RegistryViewer extends React.Component {
         if(localStorage.selectMenu == "Apps") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // clusterFlavor
-            serviceMC.sendRequest({ token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveF)
+            serviceMC.sendRequest(_self, { token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveF)
         }
     }
 
     receiveF(mcRequest) {
-        let result = mcRequest.data;
-        let arr = []
-        result.map((item,i) => {
-            arr.push(item.FlavorName)
-        })
-        _self.setState({devoptionsf: arr});
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let arr = []
+                response.data.map((item, i) => {
+                    arr.push(item.FlavorName)
+                })
+                _self.setState({ devoptionsf: arr });
+            }
+        }
     }
 
     updateFields(initData,updateData){
@@ -367,7 +372,7 @@ class RegistryViewer extends React.Component {
                     token:store ? store.userToken : 'null',
                     data: nextProps.submitValues
                 }
-                serviceMC.sendRequest(serviceBody, this.receiveResult)
+                serviceMC.sendRequest(_self, serviceBody, this.receiveResult)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }

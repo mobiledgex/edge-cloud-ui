@@ -1,10 +1,9 @@
 
 import axios from 'axios-jsonp-pro';
-import Influx from 'influx';
 
-import FormatCPUMEMUsage from './formatter/formatCPUMEMUsage';
-import FormatNetworkIO from './formatter/formatNetworkIO';
-import FormatFILEUsage from './formatter/formatFILEUsage';
+import * as FormatCPUMEMUsage from './formatter/formatCPUMEMUsage';
+import * as FormatNetworkIO from './formatter/formatNetworkIO';
+import * as FormatFILEUsage from './formatter/formatFILEUsage';
 
 let gUrl = 'http://dashboard.mobiledgex.net:9090/api/v1/query?query=';
 
@@ -77,7 +76,7 @@ export function getStatusCPU(callback, every, stop) {
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                responseData = FormatCPUMEMUsage(data)
+                responseData = FormatCPUMEMUsage.formatData(data)
                 callback(responseData);
             });
     }
@@ -87,7 +86,7 @@ export function getStatusCPU(callback, every, stop) {
     axios.jsonp(url)
         .then(response => response.json())
         .then(function (response) {
-            responseData = FormatCPUMEMUsage(response)
+            responseData = FormatCPUMEMUsage.formatData(response)
             callback(response)
         })
         .catch(function (error) {
@@ -103,7 +102,7 @@ export function getStatusMEM(callback, every, stop) {
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                responseData = FormatCPUMEMUsage(data)
+                responseData = FormatCPUMEMUsage.formatData(data)
                 callback(responseData);
             });
     }
@@ -112,7 +111,7 @@ export function getStatusMEM(callback, every, stop) {
     axios.jsonp(url)
         .then(response => response.json())
         .then(function (response) {
-            responseData = FormatCPUMEMUsage(response)
+            responseData = FormatCPUMEMUsage.formatData(response)
             callback(response)
         })
         .catch(function (error) {
@@ -133,7 +132,7 @@ export function getStatusNET(callback, every, stop) {
         fetch(url1)
             .then(response => response.json())
             .then(data1 => {
-                responseData1 = FormatNetworkIO(data1)
+                responseData1 = FormatNetworkIO.formatData(data1)
                 if(responseData1 && responseData2){
                     //console.log('res data 1-- '+responseData1)
                     callback(responseData1, responseData2);
@@ -143,7 +142,7 @@ export function getStatusNET(callback, every, stop) {
         fetch(url2)
             .then(response => response.json())
             .then(data2 => {
-                responseData2 = FormatNetworkIO(data2)
+                responseData2 = FormatNetworkIO.formatData(data2)
                 if(responseData1 && responseData2){
                     //console.log('res data 2-- '+responseData2)
                     callback(responseData1, responseData2);
@@ -161,7 +160,7 @@ export function getStatusFilesys(callback, every, stop) {
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                responseData = FormatFILEUsage(data)
+                responseData = FormatFILEUsage.formatData(data)
                 callback(responseData);
             });
     }
@@ -170,7 +169,7 @@ export function getStatusFilesys(callback, every, stop) {
     axios.jsonp(url)
         .then(response => response.json())
         .then(function (response) {
-            responseData = FormatFILEUsage(response)
+            responseData = FormatFILEUsage.formatData(response)
             callback(response)
         })
         .catch(function (error) {
