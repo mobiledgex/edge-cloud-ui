@@ -67,24 +67,6 @@ class SiteFourPageAppInstReg extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-
-
-        // if(store.userToken) {
-        //     if(this.props.region.value) {
-        //         this.getDataDeveloper(store.userToken, this.props.region.value)
-        //     }
-        //     this.userToken = store.userToken;
-        // } else {
-        //     Alert.error('Invalid or expired token', {
-        //         position: 'top-right',
-        //         effect: 'slide',
-        //         timeout: 5000
-        //     });
-        //     setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
-        // }
-
-
-
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
@@ -95,20 +77,7 @@ class SiteFourPageAppInstReg extends React.Component {
         }
 
     }
-    receiveResult(result) {
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            return;
-        }
-
-        if(result.error) {
-            _self.props.handleAlertInfo('error',result.error)
-        } else {
-            _self.setState({devData:result})
-        }
-    }
+   
 
     render() {
         const {shouldShowBox, shouldShowCircle} = this.state;
@@ -127,7 +96,6 @@ const mapStateToProps = (state) => {
         }
         : {};
     let editObj = state.editInstance.data;
-    //if(editObj) alert('eidtObj..'+JSON.stringify(editObj))
     return {
         editObj:editObj,
         region:region

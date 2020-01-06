@@ -476,7 +476,7 @@ class RegistryInstViewer extends React.Component {
                 this.wsRequestResponse.map(mcRequest => {
                     let data = mcRequest.response.data
                     messageArray.push(data.data.message)
-                    if (data.code === 400) {
+                    if (data.code !== 200) {
                         valid = false;
                     }
                 })
@@ -643,12 +643,6 @@ const mapStateToProps = (state) => {
         editData : state.editInstance.data,
         regionInfo: regionInfo
     }
-    
-    // return (dimm) ? {
-    //     dimmInfo : dimm
-    // } : (account)? {
-    //     accountInfo: account + Math.random()*10000
-    // } : null;
 };
 const mapDispatchProps = (dispatch) => {
     return {
