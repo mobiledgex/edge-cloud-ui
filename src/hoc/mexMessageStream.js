@@ -9,7 +9,6 @@ export const CODE_FINISH = 100;
 export const CODE_SUCCESS = 200;
 export const CODE_FAILED = 400;
 
-let steps = [];
 
 const useStyles = makeStyles(theme => ({
 
@@ -65,70 +64,58 @@ const useStyles = makeStyles(theme => ({
 
 
 
-
 const VerticalStepper = (props) => {
     const classes = useStyles();
-
-    const IconSelector = (stepperProps) => {
-        const { completed } = stepperProps;
-        return (
-            <div className={classes.root}>
-                {
-                    completed ?
-                        steps[stepperProps.icon - 1].code === CODE_FAILED ?
-                            <ErrorIcon className={classes.error} /> :
-                            <Check className={classes.success} /> :
-                        <div className={classes.wrapper}>
-                            <p className={classes.iconLabel}>{stepperProps.icon}</p>
-                            <CircularProgress className={classes.progress} size={25} thickness={3} />
-                        </div>
-                }
-            </div>
-        );
-    }
-
-    const loadData = () => {
-        if(props.stepsArray && props.stepsArray && props.uuid && props.uuid !== 0)
-        {
-            props.stepsArray.map(item=>{
-                if(item.uuid === props.uuid)
-                {
-                    steps = item.steps
-                    return;
-                }
-            })
-        }
-    }
-
-    loadData()
-
-
     return (
-        (steps && steps.length > 0) ?
+        (props.uuid && props.uuid !== 0 && props.stepsArray && props.stepsArray.length > 0) ?
             <div>
-                <Popover style={{ width: 400, maxHeight: 400 }}
-                    anchorReference="anchorPosition"
-                    anchorPosition={{ top: 0, left: window.innerWidth }}
-                    onClose={() => { props.onClose() }}
-                    open={props.uuid !== 0}
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                    }}>
-                    <Stepper className={classes.stepper} activeStep={steps[steps.length - 1].code === CODE_FINISH ? steps.length : steps.length - 1} orientation="vertical">
-                        {steps.map((step, index) => (
-                            step.message ?
-                                <Step key={index}>
-                                    <StepLabel StepIconComponent={IconSelector}><p className={classes.label}>{step.message}</p></StepLabel>
-                                </Step>
-                                : null
-                        ))}
-                    </Stepper>
-                </Popover>
+                {props.stepsArray.map(item => {
+                    return (
+                        props.uuid === item.uuid ?
+                            <Popover style={{ width: 400, maxHeight: 400 }}
+                                anchorReference="anchorPosition"
+                                anchorPosition={{ top: 0, left: window.innerWidth }}
+                                onClose={() => { props.onClose() }}
+                                open={props.uuid !== 0}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                }}>
+                                <Stepper className={classes.stepper} activeStep={item.steps[item.steps.length - 1].code === CODE_FINISH ? item.steps.length : item.steps.length - 1} orientation="vertical">
+                                    {item.steps.map((step, index) => {
+                                        return (
+                                            step.message ?
+                                                <Step key={index}>
+                                                    <StepLabel StepIconComponent={(stepperProps) => {
+                                                        return (<div className={classes.root}>
+                                                            {
+                                                                stepperProps.completed ?
+                                                                    item.steps[stepperProps.icon - 1].code === CODE_FAILED ?
+                                                                        <ErrorIcon className={classes.error} /> :
+                                                                        <Check className={classes.success} /> :
+                                                                    <div className={classes.wrapper}>
+                                                                        <p className={classes.iconLabel}>{stepperProps.icon}</p>
+                                                                        <CircularProgress className={classes.progress} size={25} thickness={3} />
+                                                                    </div>
+                                                            }
+                                                        </div>)
+
+                                                    }}><p className={classes.label}>{step.message}</p></StepLabel>
+                                                </Step>
+                                                :
+                                                null
+                                        )
+                                    })}
+                                </Stepper>
+                            </Popover>
+                            :
+                            null
+                    )
+                })}
             </div>
             :
             null
@@ -136,3 +123,4 @@ const VerticalStepper = (props) => {
 }
 
 export default VerticalStepper;
+

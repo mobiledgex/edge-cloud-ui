@@ -351,13 +351,20 @@ class MapWithListView extends React.Component {
             let response = mcRequest.response.data
             let step = { code: response.code, message: response.data.message }
             if (responseData === null) {
-                responseData = { uuid: request.uuid, steps: [step] }
                 this.setState(prevState => ({
-                    stepsArray: [...prevState.stepsArray, responseData]
+                    stepsArray: [...prevState.stepsArray, { uuid: request.uuid, steps: [step] }]
                 }))
             }
             else {
-                responseData.steps = [...responseData.steps, step];
+                let stepsArray = this.state.stepsArray;
+                stepsArray.map((item, i) => {
+                    if (request.uuid === item.uuid) {
+                        item.steps.push(step)
+                    }
+                })
+                this.setState({
+                    stepsArray : stepsArray
+                })
             }
         }
     }

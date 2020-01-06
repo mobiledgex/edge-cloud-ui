@@ -157,11 +157,12 @@ class RegistryClusterInstViewer extends React.Component {
             if (this.wsRequestCount === 0) {
                 let valid = true;
                 this.wsRequestResponse.map(mcRequest => {
+                    let method = mcRequest.request.method;
                     let data = mcRequest.response.data
-                    messageArray.push(data.data.message)
-                    if (data.code === 400) {
+                    messageArray.push(method + ':' + data.data.message)
+                    if (data.code !== 200) {
                         valid = false;
-                    }
+                    }   
                 })
                 if (valid) {
                     this.props.handleLoadingSpinner(false);
