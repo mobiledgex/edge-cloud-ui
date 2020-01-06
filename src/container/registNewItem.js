@@ -428,8 +428,16 @@ class RegistNewItem extends React.Component {
     getOptionData = (region) => {
         if(localStorage.selectMenu == "Cluster Instances") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            // operator, cloudlet
-            service.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null',region:region}, _self.receiveOper)
+
+            /** org show for cloudlet pool **/
+            let organization = localStorage.getItem('selectOrg')
+            if(organization) {
+                alert('org='+organization)
+                service.getMCService('showOrgCloudlet',{token:store ? store.userToken : 'null',params:{region:region, org:organization}}, _self.receiveOper)
+            } else {
+                service.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null',region:region}, _self.receiveOper)
+            }
+
             // Flavor
             setTimeout(() => service.getMCService('ShowFlavor',{token:store.userToken,region:region}, _self.receiveCF), 500);
         }
