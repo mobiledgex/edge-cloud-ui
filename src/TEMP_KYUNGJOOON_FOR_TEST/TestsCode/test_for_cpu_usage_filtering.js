@@ -1,4 +1,4 @@
-let appInstaceList = require('../jsons/appInstanceList.json')
+let appInstaceList = require('../Jsons/appInstanceList.json')
 
 
 let filteredAppInstanceList = appInstaceList.filter((item) => {

@@ -215,7 +215,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
            // let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
             //todo: FAKEJSON FOR TEST
-            let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/jsons/appInstanceList')
+            let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({
@@ -276,9 +276,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
             //todo: ################################################################
-            let usageList = require('../TEMP_KYUNGJOOON_FOR_TEST/jsons/allUsageList_50')
-            let cpuUsageListPerOneInstance = require('../TEMP_KYUNGJOOON_FOR_TEST/jsons/cpuUsage_100Count')
-            let memUsageListPerOneInstance = require('../TEMP_KYUNGJOOON_FOR_TEST/jsons/memUsage_100Count')
+            let usageList = require('../TEMP_KYUNGJOOON_FOR_TEST/Jsons/allUsageList_50')
+            let cpuUsageListPerOneInstance = require('../TEMP_KYUNGJOOON_FOR_TEST/Jsons/cpuUsage_100Count')
+            let memUsageListPerOneInstance = require('../TEMP_KYUNGJOOON_FOR_TEST/Jsons/memUsage_100Count')
 
 
             //todo: MAKE SELECTBOX.
