@@ -38,7 +38,7 @@ import Alert from 'react-s-alert';
 
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
-import PageMonitoring2 from "../PageMonitoring2";
+import PageMonitoring from "../PageMonitoring";
 
 let devOptions = [{key: 'af', value: 'af', text: 'SK Telecom'}]
 const locationOptions = [
@@ -138,7 +138,7 @@ class SiteFour extends React.Component {
             {label: 'Apps', icon: 'apps', pg: 5},
             {label: 'App Instances', icon: 'storage', pg: 6},
             {label: 'Audit Log', icon: 'check', pg: 'audits'},
-            {label: 'Monitoring', icon: 'tv', pg: 'Monitoring2'},
+            {label: 'Monitoring', icon: 'tv', pg: 'Monitoring'},
 
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
@@ -950,8 +950,8 @@ class SiteFour extends React.Component {
                                                                                                     <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
                                                                                                     (this.state.page === 'pg=audits') ?
                                                                                                         <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                        (this.state.page === 'pg=Monitoring2') ?
-                                                                                                            <PageMonitoring2></PageMonitoring2> :
+                                                                                                        (this.state.page === 'pg=Monitoring') ?
+                                                                                                            <PageMonitoring></PageMonitoring> :
                                                                                                             <div></div>
                                 }
                             </div>
@@ -1155,7 +1155,7 @@ class SiteFour extends React.Component {
                 {/*#############################*/}
                 <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
                     {/*모니터링 페이지인 경우...*/}
-                    {(this.state.page === 'pg=Monitoring2') ? <PageMonitoring2/> :
+                    {(this.state.page === 'pg=Monitoring2') ? <PageMonitoring/> :
                         this.renderSiteBody(viewMode)
 
                     }
