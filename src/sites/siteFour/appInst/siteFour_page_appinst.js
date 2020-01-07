@@ -1,18 +1,14 @@
 import React from 'react';
-
-
 import { withRouter } from 'react-router-dom';
 import sizeMe from 'react-sizeme';
-import Alert from "react-s-alert";
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import * as services from '../services/service_compute_service';
-import './siteThree.css';
-import MapWithListView from "../container/mapWithListView";
-import PageDetailViewer from '../container/pageDetailViewer';
-import DeveloperListView from "../container/developerListView";
-import * as reducer from '../utils'
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
+import MapWithListView from "../../../container/mapWithListView";
+import PageDetailViewer from '../../../container/pageDetailViewer';
+import * as reducer from '../../../utils'
 
 let _self = null;
 let rgn = [];
@@ -27,7 +23,7 @@ class SiteFourPageAppInst extends React.Component {
             devData:[],
             viewMode:'listView',
             detailData:null,
-            hiddenKeys:['Error','URI', 'Mapped_port', 'Runtime', 'Created', 'Liveness','Flavor','Status','Revision','ClusterDeveloper'],
+            hiddenKeys:['Error','URI', 'Mapped_port', 'Runtime', 'Created', 'Liveness','Flavor','Status','Revision'],
             AppRevision:[],
             regionToggle:false,
             dataSort:false
@@ -95,7 +91,6 @@ class SiteFourPageAppInst extends React.Component {
         //     // this.getUpdateData(this.props.changeRegion);
         // }
         this._devData = [];
-
     }
     componentWillUnmount() {
         this._AppInstDummy = []
@@ -139,39 +134,23 @@ class SiteFourPageAppInst extends React.Component {
         setTimeout(() => this.forceUpdate(), 1000)
 
     }
-    receiveResult = (result) => {
+
+    receiveResult = (mcRequest) => {
+        let regionGroup = {};
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                regionGroup = reducer.groupBy(response.data, 'Region');
+                if (Object.keys(regionGroup)[0]) {
+                    _self._AppInstDummy = _self._AppInstDummy.concat(response.data)
+                }
+                _self.loadCount++;
+                if (rgn.length == _self.loadCount) {
+                    _self.countJoin()
+                }
+            }
+        }
         _self.props.handleLoadingSpinner(false);
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-
-            return;
-        }
-
-        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-        if(Object.keys(regionGroup)[0]) {
-            _self._AppInstDummy = _self._AppInstDummy.concat(result)
-        }
-        _self.loadCount ++;
-        if(rgn.length == _self.loadCount){
-            _self.countJoin()
-        }
- 
-        // console.log("appinstresult",result)
-        // let join = null;
-        // if(!result.error && result[0]['Edit']) {
-        //     join = this.state.devData.concat(result);
-        // } else {
-        //     join = this.state.devData;
-        // }
-        // this.loadCount ++;
-        // this.setState({devData:join})
-        // this.props.handleLoadingSpinner(false);
-        // console.log("rgn.lengthrgn.length",rgn.length,":::",this.loadCount)
-        // if(rgn.length == this.loadCount-1){
-        //     return
-        // }
     }
     countJoin() {
         let AppInst = this._AppInstDummy;
@@ -179,21 +158,22 @@ class SiteFourPageAppInst extends React.Component {
         this.props.handleLoadingSpinner(false);
         this.getUpdateData(this.props.changeRegion);
     }
-    receiveResultApp = (result) => {
-        let diff = []
-        this._diffRev = [];
-        if(!result.error){
-            result.map((item) => {
-                this.state.devData.map((_data) => {
-                    if(item.Region == _data.Region && item.AppName == _data.AppName && item.OrganizationName == _data.OrganizationName && item.Revision != _data.Revision){
-                        this._diffRev.push(_data)
-                    }
+
+    receiveResultApp = (mcRequest) => {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                this._diffRev = [];
+                response.data.map((item) => {
+                    this.state.devData.map((_data) => {
+                        if (item.Region == _data.Region && item.AppName == _data.AppName && item.OrganizationName == _data.OrganizationName && item.Revision != _data.Revision) {
+                            this._diffRev.push(_data)
+                        }
+                    })
                 })
-            })
-            this.forceUpdate();
+                this.forceUpdate();
+            }
         }
-        _self.props.handleLoadingSpinner(false);
-        
     }
 
     getDataDeveloper = (region,regionArr) => {
@@ -209,16 +189,14 @@ class SiteFourPageAppInst extends React.Component {
             rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
  
+        let token = store ? store.userToken : 'null';
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                // All show appInst
-                services.getMCService('ShowAppInst',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult)
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP_INST, data : {region: item}}, _self.receiveResult)
             })
         } else {
             rgn.map((item) => {
-                serviceBody = {
-                    "token":store.userToken,
-                    "params": {
+                let data = {
                         "region":item,
                         "appinst":{
                             "key":{
@@ -227,10 +205,9 @@ class SiteFourPageAppInst extends React.Component {
                                 }
                             }
                         }
-                    }
                 }
                 // org별 show appInst
-                services.getMCService('ShowAppInsts',serviceBody, _self.receiveResult)
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP_INST, data : data}, _self.receiveResult)
             })
         }
     }
@@ -249,26 +226,23 @@ class SiteFourPageAppInst extends React.Component {
             rgn = this.props.regionInfo.region;
         }
 
+        let token = store ? store.userToken : 'null';
         if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                // All show app
-                services.getMCService('ShowApps',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultApp)
+                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP, data: { region: item } }, _self.receiveResultApp)
             })
         } else {
             rgn.map((item) => {
-                serviceBody = {
-                    "token":store ? store.userToken : 'null',
-                    "params": {
+                let data = {
                         "region":item,
                         "app":{
                             "key":{
                                 "developer_key":{"name":localStorage.selectOrg},
                             }
                         }
-                    }
                 }
                 // org별 show app
-                services.getMCService('ShowApp',serviceBody, _self.receiveResultApp)
+                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResultApp)
             })
         }
     }

@@ -3,14 +3,14 @@
 //tab 클릭 이벤트 발생하면 페이지 넘기, 페이지 넘김 애니메이션 적용
 
 import React from 'react';
-import { Grid,Dropdown } from 'semantic-ui-react'
+import { Dropdown } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom';
 import Alert from 'react-s-alert';
 //
 import AnimatedMap from '../libs/simpleMaps/with-react-motion';
 import DeveloperSideInfo from '../container/developerSideInfo'
 //service
-import * as services from '../services/service_compute_service';
+import * as serviceMC from '../services/serviceMC';
 //
 import * as aggregation from '../utils';
 //redux
@@ -24,7 +24,7 @@ const ContainerOne = (props) => (
     <AnimatedMap parentProps={props}/>
 
 );
-let rgn = ['US','KR','EU'];
+let rgn = ['US','EU'];
 class SiteTwoPageOne extends React.Component  {
     constructor(props){
         super(props)
@@ -208,53 +208,46 @@ class SiteTwoPageOne extends React.Component  {
         return locationData;
     }
 
-    receiveAppInst(result) {
-
-        if(result.length){
-            let join = null;
-            if(result[0]['Edit']) {
-                join = _self.state.devGroup.concat(result);
-            } else {
-                join = _self.state.devGroup;
+    receiveAppInst(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                if (response.data.length) {
+                    let join = null;
+                    if (response.data[0]['Edit']) {
+                        join = _self.state.devGroup.concat(response.data);
+                    } else {
+                        join = _self.state.devGroup;
+                    }
+                    _self.setState({ devGroup: join })
+                }
             }
-
-            if(result.error) {
-                this.props.handleAlertInfo('error',result.error)
-            } else {
-                _self.setState({devGroup:join})
-
-            }
-            _self.props.handleLoadingSpinner(false);
-        } else {
-            //alert('Loading Fail')
         }
-
+        _self.props.handleLoadingSpinner(false);
     }
+
     receiveMehodData(result) {
         //TODO: counts call method from the developers
         _self.props.handleInjectData({methodCall:result})
     }
-    receiveResult = (result) => {
-        if(result.length){
-            let join = null;
-            if(result[0]['Edit']) {
-                join = _self.state.developerData.concat(result);
-            } else {
-                join = _self.state.developerData;
+    
+    receiveResult = (mcRequest) => {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                if (response.data.length) {
+                    let join = null;
+                    if (response.data[0]['Edit']) {
+                        join = _self.state.developerData.concat(response.data);
+                    } else {
+                        join = _self.state.developerData;
+                    }
+                    _self.setState({ developerData: join })
+                    _self.receiveCloudlet(join);
+                }
             }
-
-
-            if(result.error) {
-                this.props.handleAlertInfo('error',result.error)
-            } else {
-                _self.setState({developerData:join})
-                _self.receiveCloudlet(join);
-            }
-            _self.props.handleLoadingSpinner(false);
-        } else {
-            //alert('Loading Fail')
         }
-
+        _self.props.handleLoadingSpinner(false);
     }
 
     getInfoCloudlet = (region) => {
@@ -268,7 +261,7 @@ class SiteTwoPageOne extends React.Component  {
             rgn = [region]
         }
         rgn.map((item, i) => {
-            setTimeout(() => services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult), 500 * i)
+            setTimeout(() => serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResult), 500 * i)
         })
 
 
@@ -281,12 +274,11 @@ class SiteTwoPageOne extends React.Component  {
         if(region !== 'All'){
             rgn = [region]
         } else {
-            rgn = ['US','KR','EU'];
+            rgn = ['US','EU'];
         }
 
             rgn.map((item) => {
-                // All show appInst
-                services.getMCService('ShowAppInst',{token:store ? store.userToken : 'null', region:item}, _self.receiveAppInst)
+                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_APP_INST, data: { region: item } }, _self.receiveAppInst)
             })
 
     }
@@ -325,7 +317,6 @@ class SiteTwoPageOne extends React.Component  {
         }
 
 
-        //ComputeService.getMCService('ShowCloudlet',{token:store.userToken, region:'US'}, _self.receiveCloudlet)
         /********************************
          * ---- new connection MC ----
          * 2019 07 17 start monitoring console

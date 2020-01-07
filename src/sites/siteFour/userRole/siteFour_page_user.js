@@ -1,19 +1,11 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
-import DeveloperListView from '../container/developerListView';
+import DeveloperListView from '../../../container/developerListView';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
-//redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-
-import * as services from '../services/service_compute_service';
-import './siteThree.css';
-import MapWithListView from "./siteFour_page_six";
-
-
-let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
 
 let _self = null;
 class SiteFourPageUser extends React.Component {
@@ -83,30 +75,26 @@ class SiteFourPageUser extends React.Component {
         _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
         _self.setState({ page:subPath})
     }
-    receiveResult = (result) => {
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
+
+    receiveResult = (mcRequest) => {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let reverseResult = response.data.reverse();
+                _self.setState({ devData: reverseResult })
+                _self.props.handleLoadingSpinner(false);
+            }
         }
-        let reverseResult = result.reverse();
-        _self.setState({devData:reverseResult})
         _self.props.handleLoadingSpinner(false);
     }
     getDataDeveloper(token) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        services.getMCService('ShowUsers',{token:store ? store.userToken : 'null'}, _self.receiveResult)
+        serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_USERS }, _self.receiveResult)
         this.props.handleLoadingSpinner(true);
     }
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem } = this.state
         return (
-
             <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'User'} dataRefresh={this.getDataDeveloper}></DeveloperListView>
-
         );
     }
 

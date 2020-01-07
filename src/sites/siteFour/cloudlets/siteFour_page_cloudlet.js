@@ -1,18 +1,14 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
-import InstanceListView from '../container/instanceListView';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
-import PageDetailViewer from '../container/pageDetailViewer';
+import PageDetailViewer from '../../../container/pageDetailViewer';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import * as services from '../services/service_compute_service';
-import './siteThree.css';
-import MapWithListView from "../container/mapWithListView";
-import Alert from "react-s-alert";
-import * as reducer from '../utils'
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
+import MapWithListView from "../../../container/mapWithListView";
+import * as reducer from '../../../utils'
 
 
 let _self = null;
@@ -130,47 +126,34 @@ class SiteFourPageCloudlet extends React.Component {
 
 
     }
-    receiveResult = (result) => {
-
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleComputeRefresh(false);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
-
-        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-        if(Object.keys(regionGroup)[0]) {
-            _self._cloudletDummy = _self._cloudletDummy.concat(result)
-        }
-
-        this.loadCount ++;
-        console.log("20191119 ..cloudlet EditEditEdit",rgn.length,":::",this.loadCount)
-        if(rgn.length == this.loadCount){
-            _self.countJoin()            
+    
+    receiveResult = (mcRequest) => {
+        if(mcRequest)
+        {
+            let regionGroup = {};
+            if(mcRequest.response)
+            {
+                let response = mcRequest.response;
+                regionGroup = reducer.groupBy(response.data, 'Region');
+                if(Object.keys(regionGroup)[0]) {
+                    _self._cloudletDummy = _self._cloudletDummy.concat(response.data)
+                }
+                this.loadCount ++;
+                if(rgn.length == this.loadCount){
+                    _self.countJoin()            
+                }
+            }
+            else
+            {
+                _self.props.handleComputeRefresh(false);
+            }
         }
         _self.props.handleLoadingSpinner(false);
-
-        // let join = null;
-        // if(result[0]['Edit']) {
-        //     join = this.state.devData.concat(result);
-        // } else {
-        //     join = this.state.devData;
-        // }
-        // this.loadCount ++;
-        // this.setState({devData:join})
-        // this.props.handleLoadingSpinner(false);
-        // if(rgn.length == this.loadCount-1){
-        //     return
-        // }
-
     }
 
     countJoin() {
         let cloudlet = this._cloudletDummy;
-
+        console.log('20191119 ..cloudlet---', cloudlet)
         _self.setState({devData:cloudlet,dataSort:false})
         this.props.handleLoadingSpinner(false);
     }
@@ -186,10 +169,9 @@ class SiteFourPageCloudlet extends React.Component {
         } else {
             rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
-
-        rgn.map((item, i) => {
-            //setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 0)
-            services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult)
+        rgn.map(item => {
+            let requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}};
+            serviceMC.sendRequest(_self, requestData, _self.receiveResult)
         })
         this.props.handleLoadingSpinner(true);
     }

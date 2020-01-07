@@ -1,23 +1,19 @@
 import React from 'react';
-import { Tab } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import * as services from '../services/service_compute_service';
-import './siteThree.css';
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
 
-import Alert from "react-s-alert";
-import RegistryClusterFlavorViewer from "../container/registryClusterFlavorViewer";
-import * as reducer from "../utils";
+import RegistryClusterInstViewer from "../../../container/registryClusterInstViewer";
 
 
 
 let _self = null;
 
-class SiteFourPageClusterFlavorReg extends React.Component {
+class SiteFourPageClusterInstReg extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -41,13 +37,11 @@ class SiteFourPageClusterFlavorReg extends React.Component {
         this.userToken = null;
     }
     gotoUrl(site, subPath) {
-        let mainPath = site;
         _self.props.history.push({
             pathname: site,
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
     //go to
@@ -70,15 +64,11 @@ class SiteFourPageClusterFlavorReg extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        console.log('info..will mount ', this.columnLeft)
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
     }
     componentDidMount() {
-        console.log('info.. ', this.childFirst, this.childSecond)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // console.log('info.. store == ', store)
-
 
         if(store && store.userToken) {
             if(this.props.region.value) {
@@ -86,11 +76,7 @@ class SiteFourPageClusterFlavorReg extends React.Component {
             }
             this.userToken = store.userToken;
         } else {
-            Alert.error('Invalid or expired token', {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
+            this.props.handleAlertInfo('error','Invalid or expired token')
             setTimeout(()=>_self.gotoPreview('/logout'), 2000)
         }
     }
@@ -100,30 +86,28 @@ class SiteFourPageClusterFlavorReg extends React.Component {
 
 
     }
-    receiveResult(result) {
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
+
+    receiveResult(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.props.handleInjectFlavor(response.data)
+            }
         }
-        console.log("clusterFlavorReg receive == ", result)
-        if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-        } else {
-            _self.props.handleInjectFlavor(result)
-        }
-        _self.props.handleLoadingSpinner(false);
+    }
+
+    gotoUrl() {
+        _self.props.history.push({
+            pathname: '/site4',
+            search: 'pg=4'
+        });
+        _self.props.history.location.search = 'pg=4';
+        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=4'})
     }
 
     getDataDeveloper(token, region) {
 
-        services.getMCService('ShowFlavor',{token:token, region:(region === 'All') ? 'US' : region}, _self.receiveResult)
+        serviceMC.sendRequest(_self, {token:token, method:serviceMC.getEP().SHOW_FLAVOR, data:{region:(region === 'All') ? 'US' : region}}, _self.receiveResult)
     }
 
     /*
@@ -133,13 +117,12 @@ class SiteFourPageClusterFlavorReg extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <RegistryClusterFlavorViewer devData={this.state.devData}/>
+            <RegistryClusterInstViewer devData={this.state.devData} gotoUrl={this.gotoUrl}/>
         );
     }
 
 };
 const mapStateToProps = (state) => {
-    console.log('props in region === ', state.changeRegion)
     let region = state.changeRegion
         ? {
             value: state.changeRegion.region
@@ -158,8 +141,8 @@ const mapDispatchProps = (dispatch) => {
         handleInjectData: (data) => { dispatch(actions.injectData(data))},
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleInjectFlavor: (data) => { dispatch(actions.showFlavor(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterFlavorReg)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInstReg)));

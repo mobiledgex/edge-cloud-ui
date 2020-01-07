@@ -1,21 +1,18 @@
 import React from 'react';
-import { Tab } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
-import './siteThree.css';
-
-import Alert from "react-s-alert";
-import RegistryInstViewer from "../container/registryInstViewer";
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
+import RegistryViewer from "../../../container/registryViewer";
 
 
 
 let _self = null;
 
-class SiteFourPageAppInstReg extends React.Component {
+class SiteFourPageAppReg extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -31,8 +28,6 @@ class SiteFourPageAppInstReg extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [2,2,1,3,2,1,1,2,2];
-        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType']
         this.userToken = null;
     }
     gotoUrl(site, subPath) {
@@ -43,8 +38,17 @@ class SiteFourPageAppInstReg extends React.Component {
         });
         _self.props.history.location.search = subPath;
         _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
-        _self.setState({ page:subPath})
 
+    }
+    gotoApp() {
+        let mainPath = '/site4';
+        let subPath = 'pg=6';
+        _self.props.history.push({
+            pathname: mainPath,
+            search: subPath
+        });
+        _self.props.history.location.search = subPath;
+        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
     }
     //go to
     gotoPreview(site) {
@@ -68,55 +72,38 @@ class SiteFourPageAppInstReg extends React.Component {
     componentWillMount() {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+
+        if(this.props.editable) {
+            this.setState({edit:this.props.editable})
+        }
+    }
+    componentWillUnmount() {
+        
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
-
-        // if(store.userToken) {
-        //     if(this.props.region.value) {
-        //         this.getDataDeveloper(store.userToken, this.props.region.value)
-        //     }
-        //     this.userToken = store.userToken;
-        // } else {
-        //     Alert.error('Invalid or expired token', {
-        //         position: 'top-right',
-        //         effect: 'slide',
-        //         timeout: 5000
-        //     });
-        //     setTimeout(()=>_self.gotoPreview('/Logout'), 2000)
-        // }
-
-
-
+        this.getDataDeveloper(store ? store.userToken : 'null', this.props.region.value)
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})
         this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
 
-        if(this.props.editable) {
-            this.setState({edit:this.props.editable})
-        }
 
     }
-    receiveResult(result) {
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            return;
-        }
 
-        if(result.error) {
-            _self.props.handleAlertInfo('error',result.error)
-        } else {
-            _self.setState({devData:result})
+    receiveResult(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.setState({ devData: response })
+            }
         }
     }
-    // getDataDeveloper(token, region) {
 
-    //     //services.getMCService('ShowApps',{token:token, region:(region === 'All') ? 'US' : region}, _self.receiveResult)
-    // }
+    getDataDeveloper(token, region) {
+        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP, data: { region: (region === 'All') ? 'US' : region } }, _self.receiveResult)
+    }
 
     /*
      */
@@ -125,7 +112,7 @@ class SiteFourPageAppInstReg extends React.Component {
         const { activeItem } = this.state
         return (
 
-            <RegistryInstViewer devData={this.state.devData} editMode={this.state.edit}/>
+            <RegistryViewer devData={this.state.devData} gotoApp={this.gotoApp} editMode={this.state.edit}/>
         );
     }
 
@@ -136,10 +123,8 @@ const mapStateToProps = (state) => {
             value: state.changeRegion.region
         }
         : {};
-    let editObj = state.editInstance.data;
-    //if(editObj) alert('eidtObj..'+JSON.stringify(editObj))
     return {
-        editObj:editObj,
+
         region:region
     }
 };
@@ -154,4 +139,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageAppInstReg)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageAppReg)));

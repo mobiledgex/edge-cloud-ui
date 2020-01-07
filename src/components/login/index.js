@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import { Container, Button, Checkbox, Form, Label, Grid, Input } from 'semantic-ui-react'
+import { Container, Button, Label, Grid, Input } from 'semantic-ui-react'
 import { Redirect } from 'react-router';
 import * as moment from 'moment';
 import UAParser from 'ua-parser-js';
@@ -10,12 +10,11 @@ import * as actions from '../../actions';
 import Alert from 'react-s-alert';
 // API
 import { LOCAL_STRAGE_KEY } from '../utils/Settings'
-import * as serviceLogin from '../../services/service_login_api';
+ import * as serviceMC from '../../services/serviceMC';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
 import RegistryResetForm from '../reduxForm/registryResetForm';
-import * as service from "../../services/service_compute_service";
-import * as ServiceLogin from '../../services/service_login_api';
 import CustomContentAlert from './CustomContentAlert';
+import PublicIP from 'public-ip';
 /*
 
  */
@@ -296,9 +295,10 @@ class Login extends Component {
 
         // by default it takes ua string from current browser's window.navigator.userAgent
         let resultPs = parser.getResult();
-        this.clientSysInfo = {os:resultPs.os, browser:resultPs.browser};
-
-        serviceLogin.getCurrentUserInfo('clientIP',{}, this.receiveClientIp, this)
+        this.clientSysInfo = { os: resultPs.os, browser: resultPs.browser };
+        (async () => {
+            this.receiveClientIp(await PublicIP.v4());
+        })();
 
     }
 
@@ -312,9 +312,19 @@ class Login extends Component {
                 //in case user press the button as a submit no matter send params
                 localStorage.setItem('userInfo', JSON.stringify({email:nextProps.values.email, username:nextProps.values.username, date:new Date()}))
                 if(nextProps.loginMode === 'resetPass'){
-                    service.getMCService('passwordreset',{ password:nextProps.values.password, token: store ? store.resetToken : 'null'}, self.resultNewPass, self)
+                    serviceMC.sendRequest(self, {token: store ? store.resetToken : 'null', method:serviceMC.getEP().RESET_PASSWORD, data : {password:nextProps.values.password}}, self.resultNewPass)
                 } else {
-                    serviceLogin.createUser('createUser',{name:nextProps.values.username, password:nextProps.values.password, email:nextProps.values.email, clientSysInfo:self.clientSysInfo, callbackurl : 'https://'+host+'/verify'}, self.resultCreateUser, self)
+                    let requestBody ={
+                        method:serviceMC.getEP().CREATE_USER, 
+                        data : {
+                            name:nextProps.values.username, 
+                            password:nextProps.values.password, 
+                            email:nextProps.values.email, 
+                            clientSysInfo:self.clientSysInfo, 
+                            callbackurl : 'https://'+host+'/verify'
+                        }
+                    }
+                    serviceMC.sendRequest(self, requestBody, self.resultCreateUser)
                 }
                 this.onProgress(true);
             }
@@ -368,54 +378,55 @@ class Login extends Component {
 
     }
 
-
-    receiveClientIp(result) {
-        if(result && result.data) {
-            self.clientSysInfo['clientIP'] = result.data.clientIp;
+    receiveClientIp(IPAddress) {
+        if(IPAddress) {
+            self.clientSysInfo['clientIP'] = IPAddress;
         } else {
             self.clientSysInfo['clientIP'] = '127.0.0.1';
         }
 
     }
 
-    resultCreateUser(result, resource) {
-        let message = (result.data.message)? result.data.message : null;
-        self.onProgress(false)
+    resultCreateUser(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let request = mcRequest.request;
 
-        if(message.indexOf('created') > -1) {
+                if (typeof response.data === 'string' && response.data.indexOf("}{") > 0) {
+                    response.data.replace("}{", "},{")
+                    response.data = JSON.parse(response.data)
+                }
+                let message = (response.data.message) ? response.data.message : null;
+                self.onProgress(false)
 
+                if (message.indexOf('created') > -1) {
+                    let msg = `User ${request.data.name} created successfully`
+                    self.setState({ successCreate: true, loginMode: 'signuped', signup: false })
+                    self.props.handleAlertInfo('success', msg)
+                    self.props.handleCreateAccount({ success: true, info: request.data })
+                } else {
+                    self.setState({ successCreate: false, errorCreate: false, signup: false })
+                    self.forceUpdate();
+                    self.props.handleCreateAccount({ success: false, info: request.data })
+                    self.props.handleAlertInfo('error', message)
 
-            //self.showAlert(resource)
-            let msg = `User ${resource.name} created successfully`
-            self.setState({successCreate:true, loginMode:'signuped', signup:false})
-            self.props.handleAlertInfo('success', msg)
-            self.props.handleCreateAccount({success:true, info:resource})
-        } else {
-            self.setState({successCreate:false, errorCreate:false, signup:false})
-            self.forceUpdate();
-            self.props.handleCreateAccount({success:false, info:resource})
-            self.props.handleAlertInfo('error', message)
-
+                }
+                self.setState({ successMsg: message ? message : self.state.successMsg, signup: false });
+                setTimeout(() => self.props.handleChangeLoginMode('signuped'), 600);
+            }
         }
-
-
-        self.setState({successMsg:message ? message:self.state.successMsg, signup:false});
-        setTimeout(()=>self.props.handleChangeLoginMode('signuped'), 600);
     }
-    resultNewPass(result) {
 
-        let message = (result.data.message)? result.data.message : null;
-
-        if(result.data.error) {
-            self.props.handleAlertInfo('error', result.data.error)
-        } else {
-            self.props.handleAlertInfo('success', result.data.message)
-            setTimeout(()=>self.props.handleChangeLoginMode('login'), 600);
+    resultNewPass(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                self.props.handleAlertInfo('success', response.data.message)
+                setTimeout(() => self.props.handleChangeLoginMode('login'), 600);
+                self.onProgress(false);
+            }
         }
-        self.onProgress(false);
-
-
-
     }
 
     onFocusHandle(value) {
@@ -440,36 +451,35 @@ class Login extends Component {
      * 로그인이 성공했을 때 토큰을 저장한다.
      * @param result
      */
-    receiveToken(result) {
+    receiveToken(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                if (response.data.token) {
+                    self.params['userToken'] = response.data.token
+                    localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
+                    self.props.mapDispatchToLoginWithPassword(self.params)
 
-        if(result.data.token) {
-            self.params['userToken'] = result.data.token
-            localStorage.setItem(LOCAL_STRAGE_KEY, JSON.stringify(self.params))
-            self.props.mapDispatchToLoginWithPassword(self.params)
-
-            self.props.handleChangeLoginMode('login')
-        } else {
-            //display error message
-            if(Alert){
-                self.props.handleAlertInfo('error', result.data.message)
-                //goto reqeuset verify email ....
-                if(result.data.message.indexOf('not verified') > -1) {
-                    self.setState({loginMode: 'verify'})
+                    self.props.handleChangeLoginMode('login')
+                } else {
+                    //display error message
+                    if (Alert) {
+                        self.props.handleAlertInfo('error', response.data.message)
+                        //goto reqeuset verify email ....
+                        if (response.data.message.indexOf('not verified') > -1) {
+                            self.setState({ loginMode: 'verify' })
+                        }
+                    }
                 }
-            } else {
-                alert(result.data.message)
             }
-
         }
     }
 
-    receiveForgoten(result) {
-
+    receiveForgoten(mcRequest) {
         self.props.handleAlertInfo('success', 'Success')
         self.setState({loginMode:'forgotMessage', forgotMessage: true})
     }
-    receiveResendVerify(result) {
-
+    receiveResendVerify(mcRequest) {
         self.props.handleAlertInfo('success', 'Success')
         self.setState({loginMode:'signup', forgotMessage: true})
     }
@@ -478,41 +488,31 @@ class Login extends Component {
         setTimeout(()=>self.setState({forgotPass:false, forgotMessage:false, loginMode:'login'}), 1000)
     }
     requestToken(self) {
-        serviceLogin.getMethodCall('requestToken', {username:self.state.username, password:self.state.password}, self.receiveToken)
-        //self.receiveToken({data:{token:'my test token'}})
+        serviceMC.sendRequest(self,{ method: serviceMC.getEP().LOGIN, data: { username: self.state.username, password: self.state.password } }, self.receiveToken)
     }
     handleClickLogin(mode) {
         self.setState({loginMode:mode})
     }
-    // onKeyPress = (e) => {
-    //     if(e.key === 'Enter') {
-    //         this.onSubmit()
-    //     }
-    // }
+   
     onSendEmail(mode) {
-        if(mode === 'verify') {
-            serviceLogin.resendVerify('resendverify',
-                {
-                    email:self.state.email,
-                    callbackurl : 'https://'+host+'/verify'
-                }, self.receiveResendVerify)
-        } else if(mode === 'resetPass') {
+        if (mode === 'verify') {
+            let requestBody = {method:serviceMC.getEP().RESEND_VERIFY, data:{email: self.state.email, callbackurl: `https://${host}/verify`}}
+            serviceMC.sendRequest(self, requestBody, self.receiveResendVerify)
+        } else if (mode === 'resetPass') 
+        {
             let pass = '';
             let strArr = self.props.params.subPath.split('=')
             let token = strArr[1];
-            service.getMCService('ResetPassword',{service:'passwordreset',token:token, password:pass}, this.receiveData, this)
+            serviceMC.sendRequest(self, { token: token, method: serviceMC.getEP().RESET_PASSWORD, data: { password: pass } }, this.receiveData, this)
 
-        } else if(mode === 'back') {
+        } else if (mode === 'back') {
 
-            self.setState({loginMode:'login'})
+            self.setState({ loginMode: 'login' })
         }
-        else {
-            serviceLogin.resetPassword('passwordresetrequest',
-                {email:self.state.email,
-                    callbackurl : "https://"+host+"/passwordreset"
-                }, self.receiveForgoten)
+        else 
+        {
+            serviceMC.sendRequest(self, {method: serviceMC.getEP().RESET_PASSWORD, data: { email: self.state.email } }, this.receiveForgoten, this)
         }
-
     }
 
     onSubmit() {

@@ -1,17 +1,16 @@
-
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 //redux
 import {connect} from 'react-redux';
-import * as actions from '../actions';
-import * as services from '../services/service_audit_api';
-import './siteThree.css';
-import TimelineAuditViewNew from "../container/TimelineAuditViewNew";
+import * as actions from '../../../actions';
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
+import TimelineAuditViewNew from "../../../container/TimelineAuditViewNew";
 
 
 let _self = null;
-let rgn = ['US', 'KR', 'EU'];
+let rgn = ['US', 'EU'];
 
 class SiteFourPageAudits extends React.Component {
     constructor(props) {
@@ -170,32 +169,29 @@ class SiteFourPageAudits extends React.Component {
 
     }
 
-    receiveResult = (result, resource, self, body) => {
-        // @inki if data has expired token
-        console.log('20191106 receive result...', result, ":", resource)
-        if (result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        } else if (result.error) {
-            _self.props.handleAlertInfo('error', result.error);
-        }
+    receiveResult = (mcRequest) => {
+        if (mcRequest) {
 
-        let unchecked = result.data.length;
-        let checked = localStorage.getItem('auditChecked')
-        if (resource === 'ShowSelf' || resource === 'ShowOrg') {
-            console.log('20191106 audit result..', result, ":", resource, ": unchecked : ", unchecked)
-            _self.reduceAuditCount(result.data, checked)
-
+            if (mcRequest.response) {
+                if (mcRequest.response.data.length > 0) {
+                    let response = mcRequest.response;
+                    let request = mcRequest.request;
+                    let checked = localStorage.getItem('auditChecked')
+                    if (request.method === serviceMC.getEP().SHOW_SELF || request.method === serviceMC.getEP().SHOW_AUDIT_ORG) {
+                        _self.reduceAuditCount(response.data, checked)
+                    }
+                    _self.setState({ devData: response, auditMounted: true })
+                    if (rgn.length == this.loadCount - 1) {
+                        return
+                    }
+                }
+                else{
+                    this.props.handleAlertInfo('error',"Data Not Present")
+                }
+            }
         }
-        _self.setState({devData: result, auditMounted: true})
+        _self.props.toggleLoading(false);
         _self.props.handleLoadingSpinner(false);
-        if (rgn.length == this.loadCount - 1) {
-            return
-        }
-
-
     }
 
     countJoin() {
@@ -217,23 +213,9 @@ class SiteFourPageAudits extends React.Component {
         _self.loadCount = 0;
 
         if (orgName) {
-            //services.showAuditOrg('ShowOrg',{token:store.userToken, params:{"org":_self.makeOga(orgName)}}, _self.receiveResult, _self)
-            try {
-                let response = await services.showAuditOrg2('ShowOrg', {
-                    token: store.userToken,
-                    params: {"org": this.makeOga(orgName)}
-                })
-                this.receiveResult(response, 'ShowOrg')
-            } catch (e) {
-                //alert(e)
-                this.props.handleLoadingSpinner(false);
-                this.props.toggleLoading(false);
-            } finally {
-                this.props.toggleLoading(false);
-            }
-
+            serviceMC.sendRequest(_self, {token:store.userToken, method:serviceMC.getEP().SHOW_AUDIT_ORG, data:{"org": this.makeOga(orgName)}}, this.receiveResult)
         } else {
-            services.showAuditSelf('ShowSelf', {token: store.userToken, params: '{}'}, _self.receiveResult, _self)
+            serviceMC.sendRequest(_self, {token: store.userToken, method:serviceMC.getEP().SHOW_SELF, data: '{}'}, _self.receiveResult)
         }
     }
 

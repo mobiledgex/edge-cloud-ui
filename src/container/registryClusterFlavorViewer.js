@@ -12,7 +12,7 @@ import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
 
-import * as service from '../services/service_compute_service';
+import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateFlavorForm from "./siteFourCreateFlavorForm";
 import Alert from "react-s-alert";
 const ReactGridLayout = WidthProvider(RGL);
@@ -72,7 +72,7 @@ class RegistryClusterFlavorViewer extends React.Component {
             apps:[],
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US','KR', 'EU']},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Allows developer to upload app info to different controllers', active:true, items:['US', 'EU']},
                     'ClusterFlavor':{label:'Cluster Flaver', type:'RenderInput', necessary:true, tip:null, active:true},
                     'MasterFlavor':{label:'MasterFlavor', type:'RenderSelect', necessary:true, tip:null, active:true, items:[null]},
                     'NumberOfMasterNode':{label:'NumberOfMasterNode', type:'RenderInput', necessary:true, tip:null, active:true, items:[null]},
@@ -195,23 +195,22 @@ class RegistryClusterFlavorViewer extends React.Component {
         let serviceBody = {};
 
         if(nextProps.submitValues) {
-            console.log('submit on...', nextProps.submitValues)
-            console.log("submitData@@",nextProps.submitData)
             const {FlavorName,RAM,vCPUs,Disk,Region} = this.propsnextProps.submitData.registNewListInput.values
             serviceBody = {
-                "token":store ? store.userToken : 'null',
-                "params": {
-                    "region":Region,
-                    "flavor":{
-                        "key":{"name":FlavorName},
-                        "ram":Number(RAM),
-                        "vcpus":Number(vCPUs),
-                        "disk":Number(Disk)
+                method: serviceMC.getEP().CREATE_FLAVOR,
+                token: store ? store.userToken : 'null',
+                data: {
+                    region: Region,
+                    flavor: {
+                        key: { name: FlavorName },
+                        ram: Number(RAM),
+                        vcpus: Number(vCPUs),
+                        disk: Number(Disk)
                     }
                 }
             }
             this.props.handleLoadingSpinner(true);
-            service.createNewFlavor('CreateFlavor',serviceBody, this.receiveSubmit)
+            serviceMC.sendRequest(_self, serviceBody, this.receiveSubmit)
         }
 
         /************

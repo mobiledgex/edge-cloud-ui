@@ -1,16 +1,13 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
-import DeveloperListView from '../container/developerListView';
+import DeveloperListView from '../../container/developerListView';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 //redux
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../../../actions';
 
-import * as services from '../services/service_compute_service';
-import './siteThree.css';
-import MapWithListView from "./siteFour_page_six";
+import * as serviceMC from '../../../services/serviceMC';
+import '../../siteThree.css';
 import Alert from "react-s-alert";
 
 
@@ -106,52 +103,37 @@ class SiteFourPageCluster extends React.Component {
             this.getDataDeveloper(nextProps.changeRegion);
         }
     }
-    receiveResult = (result) => {
-
-        // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
-            _self.props.handleAlertInfo('error', result.error);
-            setTimeout(() => _self.gotoUrl('/logout'), 4000);
-            _self.props.handleLoadingSpinner(false);
-            return;
-        }
-
-        let join = null;
-        if(result[0]['Edit']) {
-            join = _self.state.devData.concat(result);
-        } else {
-            join = _self.state.devData;
-        }
-        _self.props.handleLoadingSpinner(false);
-        console.log("receive cluster== ", result)
-        if(result.error) {
-            Alert.error(result.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-
-        } else {
-            _self.setState({devData:join})
-
+    
+    receiveResult = (mcRequest) => {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let join = null;
+                if (response.data[0]['Edit']) {
+                    join = _self.state.devData.concat(response.data);
+                } else {
+                    join = _self.state.devData;
+                }
+                _self.props.handleLoadingSpinner(false);
+                _self.setState({ devData: join })
+            }
         }
         _self.props.handleLoadingSpinner(false);
     }
+
     getDataDeveloper(region) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let rgn = ['US','KR','EU'];
+        let rgn = ['US','EU'];
         this.setState({devData:[]})
         console.log("changeRegion###@@",_self.props.changeRegion)
         if(region !== 'All'){
             rgn = [region]
         }
         rgn.map((item) => {
-            services.getMCService('ShowClusterFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResult)
+            serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLUSTER_FLAVOR, data: { region: item } }, _self.receiveResult)
         })
     }
     render() {
-        const {shouldShowBox, shouldShowCircle} = this.state;
-        const { activeItem } = this.state
         return (
 
             <DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout} siteId={'ClusterFlavors'} dataRefresh={this.getDataDeveloper}></DeveloperListView>

@@ -1,22 +1,16 @@
 import React, { Fragment } from "react";
 
-import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup, Icon, Input, Dropdown} from "semantic-ui-react";
+import {Button, Form, Grid, Header, Item, Popup, Icon, Input} from "semantic-ui-react";
 
-import { Field, reduxForm, initialize, reset, change, stopSubmit } from "redux-form";
-import MaterialIcon from "material-icons-react";
-import { Transfer } from 'antd';
-import * as services from '../services/service_compute_service';
-import SankeyDiagram from '../charts/plotly/SankeyDiagram';
+import { Field, reduxForm, stopSubmit } from "redux-form";
+import * as serviceMC from '../services/serviceMC';
 import './styles.css';
-import DualListBox from 'react-dual-listbox';
-import './react_dualist.css'
-import '../css/components/dualListbox/react-dual-listbox.css';
-import "../css/antTheme/components/antd/transfer.css";
 
 
 const makeOption =(options)=> {
 
     let newOptions = options.sort(
+
         function(a, b) {
             if (a.toLowerCase() < b.toLowerCase()) return -1;
             if (a.toLowerCase() > b.toLowerCase()) return 1;
@@ -25,9 +19,11 @@ const makeOption =(options)=> {
     );
 
     return (
+
         newOptions.map((value) => (
             {key: value, text: value, value: value}
         ))
+
     )
 
 };
@@ -62,7 +58,6 @@ const renderInput = field => (
             {...field.input}
             type={field.type}
             label={field.label}
-            readOnly={field.readOnly}
             // placeholder={field.placeholder}
         />
         {field.error && <span className="text-danger">{field.error}</span>}
@@ -107,6 +102,7 @@ const renderTextArea = field => (
     </div>
 );
 
+
 const renderDropDown = field => (
     <div>
         <Form.Dropdown
@@ -136,48 +132,6 @@ const renderLocationInput = ({ input, placeholder, change, type, error, initialV
     </div>
 
 );
-const options = [
-    { value: 'one', label: 'Option One' },
-    { value: 'two', label: 'Option Two' },
-];
-
-
-const renderDualListInput = (self,data) => (
-    <DualListBox
-        // style={{width:500}}
-        canFilter
-        options={self.getListData(data)}
-        selected={self.state.selected}
-        onChange={self.onChangeDualList}
-    />
-
-);
-const renderDualListBox = (self, data) => (
-    <Transfer
-        dataSource={self.getMock(data)}
-        showSearch
-        filterOption={self.filterOption}
-        targetKeys={self.state.targetKeys}
-        onSelectChange={self.handleSelectChange}
-        onChange={self.handleChange}
-        onSearch={self.handleSearch}
-        render={item => item.title}
-    />
-)
-const renderLinkedDiagram = (self, data) => (
-    <SankeyDiagram size={{width:800, height:500}}></SankeyDiagram>
-)
-//<div style={{display:'none', visible:'hidden'}}>
-const renderInputInvisible = field => (
-    <div>
-        <Form.Input
-            {...field.input}
-            type={field.type}
-            label={field.label}
-            placeholder={field.placeholder}
-        />
-    </div>
-);
 
 const style = {
     borderRadius: 0,
@@ -197,33 +151,11 @@ class SiteFourCreateFormDefault extends React.Component {
             portArray:['item'],
             orgArr:[],
             ipAccessValue:[],
-            deployTypeDocker:false,
-            available: [
-                {label: 'Alabama', value: 'AL'},
-                {label: 'Alaska', value: 'AK'},
-                {label: 'Arizona', value: 'AZ'},
-                {label: 'Arkansas', value: 'AR'},
-                {label: 'California', value: 'CA'},
-                {label: 'Colorado', value: 'CO'},
-                {label: 'Connecticut', value: 'CT'},
-                {label: 'Delaware', value: 'DE'},
-                {label: 'Florida', value: 'FL'},
-                {label: 'Georgia', value: 'GA'},
-            ],
-            selected: [],
-            _mockData: [],
-            targetKeys: [],
-            invisibleValue:[]
+            deployTypeDocker:false
         };
 
     }
-    onMove = (selected) => {
-        this.setState({selected});
-    }
 
-    onSelectTab = (activeTab) => {
-        this.setState({activeTab});
-    }
     // data.map((dt) => {
     handleInitialize(data) {
         const initData = [];
@@ -237,88 +169,10 @@ class SiteFourCreateFormDefault extends React.Component {
         }
 
     }
-    onChangeDualList = (selected) => {
-        this.setState({ selected });
-        this.props.dispatch(change('createAppFormDefault', 'invisibleField', JSON.stringify(selected)));
-    }
-    /**
-     * code by @inki 20191220
-     * add dual list box use ANT
-     * **/
-    getMock = (data) => {
 
-        const targetKeys = [];
-        const mockData = [];
-
-        this._mockData = data;
-        if(data.length) {
-            data.map((item, i) => {
-
-                const data = {
-                    key: i.toString(),
-                    title: item['cloudlet'],
-                    description: item['cloudlet'],
-                    chosen: 0,
-                };
-                if (data.chosen) {
-                    targetKeys.push(data.key);
-                }
-                mockData.push(data)
-
-            })
-        }
-        return mockData;
-    };
-    getListData = (data) => {
-        const listData = [];
-
-        if(data.length) {
-            data.map((item, i) => {
-                const data = {
-                    value: i,
-                    label: item['cloudlet'],
-                };
-                listData.push(data)
-            })
-        }
-
-        return listData;
-    }
-
-    filterOption = (inputValue, option) => option.description.indexOf(inputValue) > -1;
-
-
-    handleChange = (nextTargetKeys, direction, moveKeys) => {
-        this.setState({ targetKeys: nextTargetKeys });
-
-        console.log('targetKeys: ', nextTargetKeys);
-        console.log('direction: ', direction);
-        console.log('moveKeys: ', moveKeys);
-        let selected = [];
-        moveKeys.map((data) => {
-            selected.push(this._mockData[parseInt(data)])
-        })
-        /**
-        you would dispatch() the change(form:String, field:String, value:String) action creator:
-         **/
-        this.props.dispatch(change('createAppFormDefault', 'invisibleField', JSON.stringify(selected)));
-    };
-
-    handleSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
-        this.setState({ selectedKeys: [...sourceSelectedKeys, ...targetSelectedKeys] });
-
-        console.log('sourceSelectedKeys: ', sourceSelectedKeys);
-        console.log('targetSelectedKeys: ', targetSelectedKeys);
-    };
-
-    handleSearch = (dir, value) => {
-        console.log('search:', dir, value);
-    };
-
-    /** end ANT **/
 
     componentDidMount() {
-        if(this.props.data && this.props.data.data && this.props.data.data.length){
+        if(this.props.data && this.props.data.data.length){
             let keys = Object.keys(this.props.data.data[0])
             this.setState({data:this.props.data.data[0], regKeys:keys, fieldKeys:this.props.data.keys, pId:this.props.pId})
             if(!this.state.dataInit){
@@ -328,13 +182,12 @@ class SiteFourCreateFormDefault extends React.Component {
         }
         if(this.props.getUserRole == 'AdminManager') {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, this.receiveResult)
+            serviceMC.sendRequest(this,{token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_ORG}, this.receiveResult)
         }
-
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.data && nextProps.data.data && nextProps.data.data.length){
+        if(nextProps.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
             // submitSucceeded 초기화
@@ -346,7 +199,8 @@ class SiteFourCreateFormDefault extends React.Component {
                 this.setState({dataInit:true})
             }
         }
-
+        
+        
     }
 
     getLabel (key, pId) {
@@ -409,38 +263,37 @@ class SiteFourCreateFormDefault extends React.Component {
         }
         this.setState({portArray:arr}); 
     }
-    receiveResult = (result) => {
-        let arr = [];
-        result.map((item,i) => {
-            if((localStorage.selectMenu == 'Cluster Instances' && item.Type === 'developer') || (localStorage.selectMenu == 'Cloudlets' && item.Type === 'operator')){
-                arr.push(item.Organization);
+    receiveResult = (mcRequest) => {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let arr = [];
+                response.data.map((item, i) => {
+                    if ((localStorage.selectMenu == 'Cluster Instances' && item.Type === 'developer') || (localStorage.selectMenu == 'Cloudlets' && item.Type === 'operator')) {
+                        arr.push(item.Organization);
+                    }
+                })
+                this.setState({ orgArr: arr });
             }
-        })
-        this.setState({orgArr:arr});
+        }
     }
 
     cancelClick = (e) => {
         e.preventDefault();
         let siteNum = 0;
         console.log("cancelClickddd",e,":::",this.props)
-
         if(localStorage.selectMenu == 'Cloudlets') siteNum = 2
         else if(localStorage.selectMenu == 'Cluster Instances') siteNum = 4
-        else if(localStorage.selectMenu == 'Cloudlet Pool') siteNum = 7
         this.props.gotoUrl(siteNum)
     }
     
     render (){
-        const {  dimmer, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat, step } = this.props;
-        const { data, regKeys, fieldKeys, available, selected } = this.state;
+        const {  dimmer, selected, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat } = this.props;
+        const { data, regKeys, fieldKeys } = this.state;
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
-        let disableLabel = true;
-        if(fieldKeys && fieldKeys.length && ( fieldKeys[0]['poolName'] || fieldKeys[0]['CloudletPool'] )) {
-            disableLabel = false;
-        }
         return (
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
-                {(disableLabel)?<Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>:null}
+                <Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>
                 <Fragment >
                     <Form onSubmit={this.onHandleSubmit} getFormState={this.onFormState} className={"fieldForm"} >
                         <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
@@ -529,22 +382,6 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 </Grid.Row>
                                                             </Grid>
                                                             :
-
-
-                                                            (fieldKeys[pId][key]['type'] === 'RenderDualListBox') ?
-                                                            <Grid>
-                                                                <Grid.Row className={'renderDualListBox'}>
-                                                                    {renderDualListInput(this, data[key])}
-                                                                </Grid.Row>
-                                                            </Grid>
-                                                            :
-                                                            (fieldKeys[pId][key]['type'] === 'RenderLinkedDiagram') ?
-                                                                <Grid>
-                                                                    <Grid.Row className={'RenderLinkedDiagram'}>
-                                                                        {renderLinkedDiagram(this, data[key])}
-                                                                    </Grid.Row>
-                                                                </Grid>
-                                                            :
                                                             (fieldKeys[pId][key]['type'] === 'RenderTextArea') ?
                                                             <Field
                                                                 component={renderTextArea}
@@ -553,21 +390,10 @@ class SiteFourCreateFormDefault extends React.Component {
                                                                 name={key}
                                                             />
                                                             :
-                                                            (fieldKeys[pId][key]['type'] === 'InvisibleField') ?
-                                                                <Field
-                                                                    component={renderInputInvisible}
-                                                                    value={this.state.invisibleValue}
-                                                                    initialValue={this.state.invisibleValue}
-                                                                    placeholder={this.state.invisibleValue}
-                                                                    name={key}
-                                                                />
-                                                            :
                                                             <Field
                                                                 component={renderInput}
                                                                 type="input"
-                                                                value={data[key]}
                                                                 name={key}
-                                                                readOnly={fieldKeys[pId][key]['readOnly']}
                                                                 onChange={(e)=>this.onHandleChange(key,e.target.value)}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                         }
@@ -587,17 +413,11 @@ class SiteFourCreateFormDefault extends React.Component {
                         </Form.Group>
                         <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
                             <Form.Group inline>
+                                {/*<Button onClick={()=>this.onHandleReset()}>Reset</Button>*/}
                                 <span style={{marginRight:'1em'}}>
-                                    {(this.props.changeNext === 2)?
-                                        <Button>
-                                            Skip
-                                        </Button>
-                                        :
-                                        <Button onClick={this.cancelClick}>
-                                            Cancel
-                                        </Button>
-                                    }
-
+                                    <Button onClick={this.cancelClick}>
+                                        Cancel
+                                    </Button>
                                 </span>
                                 <Button
                                     primary
