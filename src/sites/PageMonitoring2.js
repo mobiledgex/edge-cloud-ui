@@ -208,6 +208,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return newArrList;
         }
 
+
+        /*asdkflsdkflkasdlfksaldkf
+        sadflkslflaskd
+        saldkflsakflksadlfkasldflaskfd*/
+
+
         makeSelectBoxList2(arrList, keyName) {
             let newArrList = [];
             for (let i in arrList) {
