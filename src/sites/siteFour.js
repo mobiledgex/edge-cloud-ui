@@ -847,17 +847,20 @@ class SiteFour extends React.Component {
                         }
                         {
                             (viewMode === 'detailView') ?
-                                <Grid.Column className='title_align' style={{marginLeft: 20}}>
-                                    <Button onClick={() => this.props.handleDetail({
-                                        data: null,
-                                        viewMode: 'listView'
-                                    })}>Close Details</Button>
-                                    <div>
-                                        {this.state.detailData ? this.state.detailData.Region + " > ":null}
-                                        {(this.state.headerTitle === "Cloudlets") ? this.state.detailData.CloudletName : null}
-                                        {(this.state.headerTitle === 'Cluster Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterName : null}
-                                        {(this.state.headerTitle === 'App Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterInst + " > " + this.state.detailData.AppName : null}
-
+                                <Grid.Column className='title_align'>
+                                    <Item className={'stepOrg2'} style={{marginLeft: 20, marginRight:20}}>
+                                        <Button onClick={() => this.props.handleDetail({
+                                            data: null,
+                                            viewMode: 'listView'
+                                        })}>Close Details</Button>
+                                    </Item>
+                                    <div style={{fontSize:16, verticalAlign: "bottom"}}>
+                                        {"["}
+                                        {this.state.detailData.Region}
+                                        {(this.state.headerTitle === "Cloudlets") ? " / " + this.state.detailData.CloudletName: null}
+                                        {(this.state.headerTitle === 'Cluster Instances') ? " / " + this.state.detailData.OrganizationName + " / " +  this.state.detailData.Cloudlet + " / " + this.state.detailData.ClusterName : null}
+                                        {(this.state.headerTitle === 'App Instances') ? " / " + this.state.detailData.OrganizationName + " / " + this.state.detailData.Cloudlet + " / " + this.state.detailData.ClusterInst + " / " + this.state.detailData.AppName : null}
+                                        {"]"}
                                     </div>
                                 </Grid.Column>
                                 : null
