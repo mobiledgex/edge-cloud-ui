@@ -92,7 +92,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 </Grid.Row>
             )
         }
-
+l
 
 
         render() {
