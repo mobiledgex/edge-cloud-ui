@@ -75,17 +75,17 @@ const clusterNode = (props) => (
 const cloudletMap = (props, type) => (
     <Fragment>
         {(type === 'cloudlets')?
-        <div className='panel_worldmap' style={{width:'100%'}}>
-            <ClustersMap parentProps={{locData:props.locData, reg:'cloudletAndClusterMap', zoomIn:()=>console.log('zoomin'), zoomOut:()=>console.log('zoomout'), resetMap:()=>console.log('resetmap') }} icon={'cloudlet'} zoomControl={{center:[0, 0], zoom:1.5} }></ClustersMap>
-        </div>
+            <div className='panel_worldmap' style={{width:'100%'}}>
+                <ClustersMap parentProps={{locData:props.locData, reg:'cloudletAndClusterMap', zoomIn:()=>console.log('zoomin'), zoomOut:()=>console.log('zoomout'), resetMap:()=>console.log('resetmap') }} icon={'cloudlet'} zoomControl={{center:[0, 0], zoom:1.5} }></ClustersMap>
+            </div>
 
-        :
-        <EditMap parentProps={{devData:props.cloudletData}}></EditMap>}
+            :
+            <EditMap parentProps={{devData:props.cloudletData}}></EditMap>}
 
     </Fragment>
 )
 let _self = null;
-class SiteFourCreatePoolForm extends React.Component {
+class SiteFourCreateMemberForm extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -179,7 +179,7 @@ class SiteFourCreatePoolForm extends React.Component {
 
             let cloudletDataReady = this.state.cloudletData.filter((item) => {return item.State === 5});
             this.setState({cloudletData : cloudletDataReady.concat(result)});
-            
+
             // this.setState({cloudletData : this.state.cloudletData.concat(result)});
         }
         else if(cmpt == 'flavor') {
@@ -410,9 +410,6 @@ class SiteFourCreatePoolForm extends React.Component {
     }
 
     gotoUrl(num) {
-        if(num === 'skip') {
-            return;
-        }
         _self.props.history.push({
             pathname: '/site4',
             search: 'pg='+num
@@ -429,7 +426,7 @@ class SiteFourCreatePoolForm extends React.Component {
         if(value === 'Kubernetes' && panes.length == 1){
             panes.push({ menuItem: 'Show Cluster', render: (props) => <Tab.Pane>{clusterNode(props)}</Tab.Pane> });
             this.setState({clusterShow:true})
-        } 
+        }
     }
     handleChangeLong = (e, {value}) => {
         // if(value == '-') {
@@ -449,7 +446,7 @@ class SiteFourCreatePoolForm extends React.Component {
 
         if(onlyNum != 0) {
             onlyNum = onlyNum.replace(/(^0+)/, "")
-        } 
+        }
 
         this.setState({ locationLong: onlyNum, longerror:'' })
         this.locationValue(onlyNum,this.state.locationLat)
@@ -465,10 +462,10 @@ class SiteFourCreatePoolForm extends React.Component {
             e.target.value=null;
             return
         }
-        
+
         if(onlyNum != 0) {
             onlyNum = onlyNum.replace(/(^0+)/, "")
-        } 
+        }
         this.setState({ locationLat: onlyNum, laterror:'' })
         this.locationValue(this.state.locationLong,onlyNum)
     }
@@ -490,13 +487,12 @@ class SiteFourCreatePoolForm extends React.Component {
 
     render() {
         const { activeIndex, clusterName } = this.state;
-        let {data, dimmer, changeNext} = this.props;
-        console.log('20191231 props data in Form -- ', this.props.data)
+        let {data, dimmer, selected} = this.props;
         let randomState = Math.random()*100;
         return (
-            <Grid.Column>
-                {/*<Grid.Row className="grid_map_container">*/}
-                {/*    <Grid.Column className="left">*/}
+            <Grid>
+                <Grid.Row className="grid_map_container">
+                    <Grid.Column className="left">
                         <SiteFourCreateFormDefault data={data} pId={0} getUserRole={this.props.getUserRole}
                                                    gotoUrl={this.gotoUrl} clusterHide={this.clusterHide}
                                                    randomState = {randomState}
@@ -505,7 +501,7 @@ class SiteFourCreatePoolForm extends React.Component {
                                                    onSubmit={() => console.log('submit form')}
                                                    selected={this.props.selectedRegion}
                                                    regionInfo={this.state.regionInfo}
-                                                   dimmer={dimmer} changeNext={changeNext}
+                                                   dimmer={dimmer}
                                                    handleChangeLat={this.handleChangeLat}
                                                    handleChangeLong={this.handleChangeLong}
                                                    onChangeState={this.onChangeFormState}
@@ -513,9 +509,9 @@ class SiteFourCreatePoolForm extends React.Component {
                                                    longError={this.state.longerror}>
 
                         </SiteFourCreateFormDefault>
-                {/*    </Grid.Column>*/}
-                {/*</Grid.Row>*/}
-            </Grid.Column>
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
         )
     }
 }
@@ -537,7 +533,6 @@ const mapStateToProps = (state) => {
     let nodeNumber = null;
     let getRegion = (state.getRegion)?state.getRegion.region:null
     let regionInfo = (state.regionInfo)?state.regionInfo:null;
-    let changeNext = state.changeNext ? state.changeNext.next:null;
     if(state.form.createAppFormDefault) {
         formValues = state.form.createAppFormDefault.values;
         if(state.form.createAppFormDefault.values.Region !== "") {
@@ -564,7 +559,7 @@ const mapStateToProps = (state) => {
 
     return {
         selectedRegion, selectedOperator, clusterName, formValues, selectedFlavor, masterNumber, nodeNumber, getRegion,
-        regionInfo: regionInfo, changeNext
+        regionInfo: regionInfo
     }
 };
 const mapDispatchProps = (dispatch) => {
@@ -573,9 +568,8 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleGetRegion: (data) => { dispatch(actions.getRegion(data)) },
-        handleChangeNext: (data) => { dispatch(actions.changeNext(data)) },
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourCreatePoolForm));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourCreateMemberForm));

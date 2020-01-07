@@ -133,8 +133,7 @@ class SiteFourPageCloudletPool extends React.Component {
 
 
     }
-    receiveResult = (result) => {
-        console.log('20191220 receive result cloudlet pool...', JSON.stringify(result));
+    receiveResultShow = (result) => {
         // @inki if data has expired token
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
@@ -143,50 +142,50 @@ class SiteFourPageCloudletPool extends React.Component {
             _self.props.handleLoadingSpinner(false);
             return;
         }
-
+        console.log('20200103 result show pool - ', result)
         let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
         if(Object.keys(regionGroup)[0]) {
             _self._cloudletDummy = _self._cloudletDummy.concat(result)
         }
 
         this.loadCount ++;
-        console.log("20191220 ..cloudlet EditEditEdit",rgn.length,":::",this.loadCount)
         if(rgn.length == this.loadCount){
-            _self.countJoin()            
+            _self.countJoin()
         }
         _self.props.handleLoadingSpinner(false);
 
-        // let join = null;
-        // if(result[0]['Edit']) {
-        //     join = this.state.devData.concat(result);
-        // } else {
-        //     join = this.state.devData;
-        // }
-        // this.loadCount ++;
-        // this.setState({devData:join})
-        // this.props.handleLoadingSpinner(false);
-        // if(rgn.length == this.loadCount-1){
-        //     return
-        // }
-
     }
 
-    // receiveResult = (result) => {
-    //     console.log('20191220 receive result cloudlet pool...', JSON.stringify(result));
-    // }
     receiveResultCreate = (result) => {
-        console.log('20191220 receive result cloudlet pool create ...', JSON.stringify(result));
     }
     receiveResultMember = (result) => {
-        console.log('20191220 receive result cloudlet pool member  ...', JSON.stringify(result));
+        if(result.error && result.error.indexOf('Expired') > -1) {
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleComputeRefresh(false);
+            _self.props.handleLoadingSpinner(false);
+            return;
+        }
+
+        console.log('20200103 result show member - ', result)
+
+        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
+        if(Object.keys(regionGroup)[0]) {
+            _self._memberDummy = _self._memberDummy.concat(result)
+        }
+
+        this.loadCount ++;
+        if(rgn.length == this.loadCount){
+
+        }
+        _self.props.handleLoadingSpinner(false);
     }
     receiveResultCreateMember = (result) => {
-        console.log('20191220 receive result cloudlet pool create member  ...', JSON.stringify(result));
     }
 
     countJoin() {
         let cloudlet = this._cloudletDummy;
-        console.log('20191119 ..cloudlet---', cloudlet)
+        console.log('20200103 ..cloudlet---', cloudlet)
         _self.setState({devData:cloudlet,dataSort:false})
         this.props.handleLoadingSpinner(false);
     }
@@ -204,8 +203,8 @@ class SiteFourPageCloudletPool extends React.Component {
         }
 
         rgn.map((item, i) => {
-            services.getListCloudletPool('ShowCloudletPool',{token:store.userToken, region:item}, _self.receiveResult)
-            //services.getListCloudletPoolMember('ShowCloudletPoolMember',{token:store.userToken, region:item}, _self.receiveResultMember)
+            services.getListCloudletPool('ShowCloudletPool',{token:store.userToken, region:item}, _self.receiveResultShow)
+            services.getListCloudletPoolMember('ShowCloudletPoolMember',{token:store.userToken, region:item}, _self.receiveResultMember)
         })
         this.props.handleLoadingSpinner(true);
 
@@ -224,9 +223,8 @@ class SiteFourPageCloudletPool extends React.Component {
         _self.props.handleComputeRefresh(false);
     }
     render() {
-        const {shouldShowBox, shouldShowCircle, devData} = this.state;
-        const { activeItem, viewMode } = this.state;
-        let randomValue = Math.round(Math.random() * 100);
+        const {devData, viewMode} = this.state;
+
         return (
             (viewMode === 'listView')?
                 <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet Pool'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>

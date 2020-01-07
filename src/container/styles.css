@@ -92,6 +92,11 @@
     margin: 0 0 .28571429rem 0;
 }
 
+.create-org.item .ui.form .ui.grid .five.wide.column{
+    color: #dedede !important;
+}
+
+
 /* Form */
 .ui.grid .column .ui.form .fields,
 .ui.grid .column .ui.form .field{

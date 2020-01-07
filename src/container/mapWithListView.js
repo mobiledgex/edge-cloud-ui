@@ -373,7 +373,6 @@ class MapWithListView extends React.Component {
         let has = false;
         if(item && item.length) {
             item.map((itm) => {
-                console.log('20191215 - item ==', itm)
                 if(itm.message.indexOf('successfully') > -1) {
                     this.stackSuccess.map(iN => {
                         if(iN === item.iN) {
