@@ -1149,10 +1149,9 @@ class SiteFour extends React.Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Container>
-                {/*#############################*/}
-                {/*PAGE BODY RENDERING PART     */}
-                {/*페이지의 BODY부분을 렌더링 하는 부분*/}
-                {/*#############################*/}
+                {/*todo:#############################*/}
+                {/*todo:PAGE BODY RENDERING PART     */}
+                {/*todo#############################*/}
                 <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
                     {/*모니터링 페이지인 경우...*/}
                     {(this.state.page === 'pg=Monitoring') ? <PageMonitoring/> :
