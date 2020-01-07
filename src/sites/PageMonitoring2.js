@@ -39,10 +39,10 @@ import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
 import {cutArrayList} from "../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
+import '../css/pages/monitoring_kj.css';
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {ComposableMap, Geographies, Geography, Graticule, ZoomableGroup} from "react-simple-maps";
-
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
 const {Column, Row} = Grid;
