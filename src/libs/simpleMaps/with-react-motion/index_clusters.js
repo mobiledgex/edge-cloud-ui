@@ -464,15 +464,15 @@ class ClustersMap extends Component {
                             toggle = true;
                         }
                     })
-                                        
+
                 }
                 toggle = false;
-            })   
+            })
             if(clickMarker.length){
                 this.setState({clickCities:clickMarker});
             } else {
                 this.setState({clickCities:[]});
-            }          
+            }
         } else {
             this.setState({clickCities:this.state.saveMarker});
         }
@@ -481,7 +481,7 @@ class ClustersMap extends Component {
             if(nextProps.parentProps.resetMap === 'back') {
                 this.setState({
                     center: this.state.center,
-                    zoom: 3,
+                    zoozoomm: 3,
                     detailMode:false
                 })
                 this.props.handleResetMap('deep')

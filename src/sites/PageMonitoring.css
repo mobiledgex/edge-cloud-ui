@@ -43,6 +43,11 @@
 
 }
 
+.bottomGridArea {
+    opacity: 1.0!important;
+    z-index: 99999999999999;
+}
+
 
 .grid00001 {
     marginTop: 10;
@@ -106,6 +111,7 @@
     /*padding: 10px;*/
     z-index: 99999999;
     height: 600px;
+    padding:3px;
     /*margin-top: 20px;
     margin-left: -10px;
     margin-right: 20px;

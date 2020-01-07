@@ -99,7 +99,9 @@ export default class BubbleChart extends Component {
         const bubbleChart = d3.select(this.svg).append("g")
             .attr("class", "bubble-chart")
             .attr("transform", function (d) {
-                return "translate(" + (width * graph.offsetX) + "," + (width * graph.offsetY) + ")";
+                //todo: Bubble chart location setting...
+                //todo: Bubble chart location setting...
+                return "translate(" + (280) + "," + (width * graph.offsetY) + ")";
             });
         ;
 
@@ -269,8 +271,9 @@ export default class BubbleChart extends Component {
             .attr("transform", (d, i) => {
                 const offset = textOffset;
                 textOffset += legendFont.size + 10;
-                //todo: first param is x-axis
-                return `translate(-40,${offset})`;
+                //todo: first param is x-axis .renderLegend
+                //todo: first param is x-axis .renderLegend
+                return `translate(-430,${offset})`;
             })
             .on('mouseover', function (d) {
                 // d3.select('#' + d.id).attr("r", d.r * 1.04);

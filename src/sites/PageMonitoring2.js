@@ -1,8 +1,9 @@
 import 'react-hot-loader'
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
+import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
 import FlexBox from "flexbox-react";
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
@@ -40,6 +41,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
+import {ComposableMap, Geographies, Geography, Graticule, ZoomableGroup} from "react-simple-maps";
 
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
@@ -119,7 +121,9 @@ type State = {
     isShowUtilizationArea: boolean,
     currentGridIndex: number,
     currentTabIndex: number,
-    show: boolean,
+    isShowBottomGrid: boolean,
+    isShowBottomGridForMap: boolean,
+    mapZoomLevel: number,
 }
 
 
@@ -145,7 +149,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             appInstanceList: [],
             allAppInstanceList: [],
             appInstanceOne: {},
-
             allCpuUsageList: [],
             allMemUsageList: [],
             allDiskUsageList: [],
@@ -173,7 +176,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isShowUtilizationArea: false,
             currentGridIndex: -1,
             currentTabIndex: 0,
-            show: false,
+            isShowBottomGrid: false,
+            isShowBottomGridForMap: false,
+            mapZoomLevel: 0,
         };
 
         intervalHandle = null;
@@ -997,6 +1002,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         render() {
+
+            const geoUrl =
+                "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
+
             //todo:####################################################################
             //todo: Components showing when the loading of graph data is not completed.
             //todo:####################################################################
@@ -1065,7 +1074,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header part      */}
                         {this.renderHeader()}
 
-                        <Grid.Row className='site_content_body' style={{marginTop: 0}}>
+                        <Grid.Row className='site_content_body' style={{marginTop: 0,}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
@@ -1078,7 +1087,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
-                                            <div className='page_monitoring_row'>
+                                            <div className='page_monitoring_row' style={{opacity: !this.state.isShowBottomGrid ? 1.0 : 0.5}}>
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
@@ -1137,21 +1146,35 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* todo:NETWORK LIST 그리드 부분____4nd_col*/}
                                                 {/* todo:NETWORK LIST 그리드 부분____4nd_col*/}
                                                 <div className='page_monitoring_column_kj003'>
-                                                    <div style={{flexDirection:'row', display:'flex'}}>
+                                                    <div style={{flexDirection: 'row', display: 'flex'}}>
                                                         <div style={{fontSize: 20, display: 'flex', alignItems: 'center', marginLeft: 10,}}>
                                                             NETWORK TOP 5 LIST
                                                         </div>
-                                                        <div className="ui radio checkbox" style={{marginLeft:25,marginTop:5,}}>
-                                                            <input type="radio" className="hidden"  tabIndex="0"/>
-                                                            <label style={{color:'white'}}>Make my profile visible</label>
-                                                        </div>
-                                                        <div className="ui radio checkbox" style={{marginLeft:25,}}>
-                                                            <input type="radio" className="hidden"  tabIndex="0"/>
-                                                            <label style={{color:'white'}}>Make my profile 222</label>
-                                                        </div>
-                                                        <div className="ui radio checkbox" style={{marginLeft:25,}}>
-                                                            <input type="radio" className="hidden"  tabIndex="0"/>
-                                                            <label style={{color:'white'}}>Make my profile 33</label>
+
+                                                        <div style={{marginLeft: 25,}}>
+                                                            <Dropdown
+                                                                clearable={this.state.regionSelectBoxClearable}
+                                                                placeholder='SELECT OPTIONS'
+                                                                selection
+                                                                options={[
+                                                                    {value: 'RCV_BTYE', text: 'RCV_BTYE'},
+                                                                    {value: 'SND_BYTE', text: 'SND_BYTE'},
+                                                                    {value: 'TCP', text: 'TCP'},
+                                                                    {value: 'UDP', text: 'UDP'},
+
+                                                                ]}
+                                                                defaultValue={'RVCV_BTYE'}
+                                                                onChange={async (e, {value}) => {
+                                                                    /* await this.handleSelectBoxChanges(value)
+                                                                     setTimeout(() => {
+                                                                         this.setState({
+                                                                             cloudLetSelectBoxPlaceholder: 'Select CloudLet'
+                                                                         })
+                                                                     }, 1000)*/
+                                                                }}
+                                                                value={'RVCV_BTYE'}
+                                                                style={{width: 250}}
+                                                            />
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_column_for_grid'>
@@ -1176,45 +1199,58 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             <p
                                                 onClick={() => {
                                                     this.setState({
-                                                        show: !this.state.show,
+                                                        isShowBottomGrid: !this.state.isShowBottomGrid,
                                                     })
-
                                                 }}
 
-                                                style={{display: 'flex', width: '100%', backgroundColor: 'transparent', alignItems: 'center', justifyContent: 'center'}}
+                                                style={{
+                                                    display: 'flex',
+                                                    width: '98.0%', backgroundColor: '#2f2f2f', alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    alignSelf: 'center',
+                                                    height: 30,
+                                                    borderRadius: 10,
+                                                }}
                                             >
-                                                <button style={{color: 'black'}}>SHOW APP INSTANCE LIST
-                                                </button>
+                                                <div style={{color: 'white', backgroundColor: 'transparent'}}>SHOW APP INSTANCE LIST
+                                                </div>
                                                 <div style={{marginLeft: 15}}>
                                                     <FA name="chevron-up" style={{fontSize: 15, color: 'white'}}/>
                                                 </div>
                                             </p>
 
-
-                                            {/*todo: 하단 그리드 AREA____SHOW_UP AREA*/}
-                                            {/*todo: 하단 그리드 AREA____SHOW_UP AREA*/}
-                                            {/*todo: 하단 그리드 AREA____SHOW_UP AREA*/}
-                                            <div className="App">
-                                                <ToggleDisplay if={this.state.show} tag="section">
+                                            {/*todo: BOTTOM_GRID_AREA____SHOW_UP__AREA*/}
+                                            {/*todo: BOTTOM_GRID_AREA____SHOW_UP__AREA*/}
+                                            {/*todo: BOTTOM_GRID_AREA____SHOW_UP__AREA*/}
+                                            <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
+                                                <OutsideClickHandler
+                                                    onOutsideClick={() => {
+                                                         this.setState({
+                                                             isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                         })
+                                                    }}
+                                                >
                                                     <div
                                                         style={{
-                                                            backgroundColor: '#494949',
+                                                            backgroundColor: '#2f2f2f', opacity: 3.0, borderTopRightRadius: 20, borderTopLeftRadius: 20,
                                                             position: 'absolute', zIndex: 999999, bottom: 50, height: 700, width: '96%', left: 48
                                                         }}
                                                     >
                                                         <p
+                                                            style={{display: 'flex', width: '100%', backgroundColor: 'transparent', alignItems: 'center', justifyContent: 'center', marginTop: 20}}
                                                             onClick={() => {
 
                                                                 this.setState({
-                                                                    show: !this.state.show,
+                                                                    isShowBottomGrid: !this.state.isShowBottomGrid,
                                                                 })
 
                                                             }}
 
-                                                            style={{display: 'flex', width: '100%', backgroundColor: 'transparent', alignItems: 'center', justifyContent: 'center'}}
+
                                                         >
-                                                            <button style={{color: 'black'}}>HIDE APP INSTANCE LIST
-                                                            </button>
+                                                            <div style={{color: 'white'}}>
+                                                                HIDE APP INSTANCE LIST
+                                                            </div>
                                                             <div style={{marginLeft: 15}}>
                                                                 <FA name="chevron-down" style={{fontSize: 15, color: 'white'}}/>
                                                             </div>
@@ -1222,15 +1258,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:renderAppInstanceGrid*/}
                                                         {/*todo:renderAppInstanceGrid*/}
                                                         {/*todo:renderAppInstanceGrid*/}
-                                                        <div style={{fontSize: 20, display: 'flex', alignItems: 'center', marginLeft: 10,}}>
+                                                        <div style={{fontSize: 22, display: 'flex', alignItems: 'center', marginLeft: 10, color: 'white', fontWeight: 'bold'}}>
                                                             App Instance List
                                                         </div>
+                                                        <div style={{height: 7}}/>
                                                         <div className='page_monitoring_column_for_grid2'>
                                                             {this.renderAppInstanceGrid()}
                                                         </div>
                                                     </div>
-                                                </ToggleDisplay>
-                                            </div>
+                                                </OutsideClickHandler>
+                                            </ToggleDisplay>
 
                                         </div>
                                     </div>
