@@ -59,18 +59,18 @@ const mapDispatchProps = (dispatch) => {
 };
 
 
-type Props = {
-    handleLoadingSpinner: Function,
-    toggleLoading: Function,
-    history: any,
-    onSubmit: any,
-    sendingContent: any,
-    loading: boolean,
-    isLoading: boolean,
-}
+// type Props = {
+//     handleLoadingSpinner: Function,
+//     toggleLoading: Function,
+//     history: any,
+//     onSubmit: any,
+//     sendingContent: any,
+//     loading: boolean,
+//     isLoading: boolean,
+// }
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
-    class TimelineAuditViewNew extends React.Component<Props, any> {
+    class TimelineAuditViewNew extends React.Component {
         state = {
             value: 0,
             previous: 0,
@@ -125,14 +125,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             iconStyle: "triangle"
         }
 
-        constructor(props: Props) {
+        constructor(props) {
             super(props);
             _self = this;
             this.sameTime = '0';
             this.addCount = 0;
         }
 
-        componentWillMount(): void {
+        componentWillMount() {
             console.log('111.props===>', this.props);
             if (this.props.history.location.search === 'pg=audits') {
                 this.setState({
@@ -154,7 +154,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
         componentWillReceiveProps = async (nextProps, nextContext) => {
-
             let dummys = [];
             let dummyConts = [];
             /*"pg=audits&org=org1574180880"
@@ -227,9 +226,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             //submit form
             if (nextProps.onSubmit) {
                 console.log('20191030 send mail contents == ', nextProps.sendingContent)
-                // services.sendEmailAudit('SendMail',
-                //     {fromEmail:'support@mobiledgex.com', toEmail:'', traceId:tId, message:msg, title: title},
-                //     _self.resultReceive, _self)
             }
 
         };
@@ -280,6 +276,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             setTimeout(() => {
                 this.setState({
                     rawViewData: timelineDataOne,
+                    requestData:JSON.parse(timelineDataOne.request ? timelineDataOne.request : '{}'),
+                    responseData:JSON.parse(timelineDataOne.response ? timelineDataOne.response : '{}'),
                     isLoading2: false,
                 })
             }, 251)

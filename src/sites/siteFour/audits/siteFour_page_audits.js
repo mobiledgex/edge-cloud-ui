@@ -171,19 +171,26 @@ class SiteFourPageAudits extends React.Component {
 
     receiveResult = (mcRequest) => {
         if (mcRequest) {
+
             if (mcRequest.response) {
-                let response = mcRequest.response;
-                let request = mcRequest.request;
-                let checked = localStorage.getItem('auditChecked')
-                if (request.method === serviceMC.getEP().SHOW_SELF || request.method === serviceMC.getEP().SHOW_AUDIT_ORG) {
-                    _self.reduceAuditCount(response.data, checked)
+                if (mcRequest.response.data.length > 0) {
+                    let response = mcRequest.response;
+                    let request = mcRequest.request;
+                    let checked = localStorage.getItem('auditChecked')
+                    if (request.method === serviceMC.getEP().SHOW_SELF || request.method === serviceMC.getEP().SHOW_AUDIT_ORG) {
+                        _self.reduceAuditCount(response.data, checked)
+                    }
+                    _self.setState({ devData: response, auditMounted: true })
+                    if (rgn.length == this.loadCount - 1) {
+                        return
+                    }
                 }
-                _self.setState({ devData: response, auditMounted: true })
-                if (rgn.length == this.loadCount - 1) {
-                    return
+                else{
+                    this.props.handleAlertInfo('error',"Data Not Present")
                 }
             }
         }
+        _self.props.toggleLoading(false);
         _self.props.handleLoadingSpinner(false);
     }
 
@@ -206,16 +213,7 @@ class SiteFourPageAudits extends React.Component {
         _self.loadCount = 0;
 
         if (orgName) {
-            try {
-                serviceMC.sendRequest(_self, {token:store.userToken, method:serviceMC.getEP().SHOW_AUDIT_ORG, data:{"org": this.makeOga(orgName)}}, this.receiveResult)
-            } catch (e) {
-                //alert(e)
-                this.props.handleLoadingSpinner(false);
-                this.props.toggleLoading(false);
-            } finally {
-                this.props.toggleLoading(false);
-            }
-
+            serviceMC.sendRequest(_self, {token:store.userToken, method:serviceMC.getEP().SHOW_AUDIT_ORG, data:{"org": this.makeOga(orgName)}}, this.receiveResult)
         } else {
             serviceMC.sendRequest(_self, {token: store.userToken, method:serviceMC.getEP().SHOW_SELF, data: '{}'}, _self.receiveResult)
         }
