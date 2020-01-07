@@ -6,10 +6,9 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 
 import * as servicePool from '../services/service_cloudlet_pool';
-import SiteFourPoolTwo from "../container/siteFourPoolStepTwo";
+import SiteFourPoolUpdateView from "../container/siteFourPoolUpdateView";
 import * as reducer from '../utils'
 import './siteThree.css';
-import SiteFourPoolUpdateView from "../container/siteFourPoolUpdateView";
 
 const createFormat = (data) => (
     {
@@ -17,19 +16,24 @@ const createFormat = (data) => (
         "cloudletpool":{"key": {"name":data['poolName']}}
     }
 )
-let _self = null;
-
 const keys = [
 
+    // {
+    //     'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
+    //     'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
+    //     'LinktoOrganization':{label:'Link an Organization to Pool', type:'RenderDualListBox', necessary:true, tip:'Select an orgization in left side', active:true},
+    //     'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true}
+    // }
     {
-        'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
-        'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
-        'LinktoOrganization':{label:'Link an Organization to Pool', type:'RenderDualListBox', necessary:true, tip:'Select an orgization in left side', active:true},
-        'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true}
+        'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
+        'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
+        'AddCloudlet':{label:'Add cloudlet', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
+        'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
     }
 ]
+let _self = null;
 
-class SiteFourPageLinkOrganizeReg extends React.Component {
+class SiteFourPageCloudletPoolUpdate extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -47,7 +51,7 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
             apps:[],
             selectedRegion:null,
             typeOperator:'Developer',
-            updateType: 'organization',
+            updateType: 'cloudlet',
             orgaName:'',
             gavePoolName:'',
             keys: keys
@@ -103,7 +107,6 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
         //TODO: 편집 기능 - 오거나이제이션 링크된것과 새로 등록할 오거나이를 좌, 우측 리스트박스에 넣기
     }
     componentWillReceiveProps(nextProps) {
-
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
         this.setState({submitValues: nextProps.formClusterInst.values})
@@ -163,7 +166,7 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
         return (
             <div className="round_panel">
                 <div className="grid_table" style={{overflow:'auto'}}>
-                    <SiteFourPoolTwo onSubmit={() => console.log('Form was submitted')} type={typeOperator} org={orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:selectedRegion, poolName:gavePoolName}} changeOrg={this.changeOrg} keys={this.state.keys} updateType={this.state.updateType}></SiteFourPoolTwo>
+                    <SiteFourPoolUpdateView onSubmit={() => console.log('Form was submitted')} type={typeOperator} org={orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:this.props.appLaunch.data.Region, poolName:gavePoolName}} changeOrg={this.changeOrg} keys={this.state.keys} updateType={this.state.updateType}></SiteFourPoolUpdateView>
                 </div>
             </div>
 
@@ -214,4 +217,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageLinkOrganizeReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageCloudletPoolUpdate));

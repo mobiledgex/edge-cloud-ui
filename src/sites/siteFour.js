@@ -29,6 +29,7 @@ import SiteFourPageOrganization from './siteFour_page_organization';
 import SiteFourPageAppReg from './siteFour_page_appReg';
 import SiteFourPageAppInstReg from './siteFour_page_appInstReg';
 import SiteFourPageCreateorga from './siteFour_page_createOrga';
+import SiteFourPageCloudletPoolUpdate from './siteFour_page_cloudletPoolUpdate';
 
 import SiteFourPageClusterInstReg from './siteFour_page_clusterInstReg';
 import PopLegendViewer from '../container/popLegendViewer';
