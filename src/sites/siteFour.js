@@ -958,7 +958,7 @@ class SiteFour extends React.Component {
                                                                             <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
 
                                                                             (this.state.page === 'pg=updateCloudletPool')?
-                                                                            <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
+                                                                            <SiteFourPageCloudletPoolUpdate></SiteFourPageCloudletPoolUpdate> :
 
                                                                             (this.state.page === 'pg=linkOrganize')?
                                                                             <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
