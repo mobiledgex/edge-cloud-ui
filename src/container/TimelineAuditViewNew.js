@@ -63,7 +63,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         state = {
             value: 0,
             previous: 0,
-            // timelineConfig
             minEventPadding: 20,
             maxEventPadding: 100,
             linePadding: 50,
@@ -122,7 +121,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         }
 
         componentWillMount() {
-            console.log('111.props===>', this.props);
             if (this.props.history.location.search === 'pg=audits') {
                 this.setState({
                     isLoading: true,
@@ -145,10 +143,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         componentWillReceiveProps = async (nextProps, nextContext) => {
             let dummys = [];
             let dummyConts = [];
-            /*"pg=audits&org=org1574180880"
-            "pg=audits&org=org1574180880"*/
             if (nextProps.data !== this.props.data) {
-                //this.props.handleLoadingSpinner(true);
                 this.props.toggleLoading(true);
                 this.setState({
                     timesList: [],
@@ -258,15 +253,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 isLoading2: true,
             })
             let selectedIndex = value.value;
-
             let timelineDataOne = this.state.rawAllData[selectedIndex]
-
-            console.log('timelineDataOne===>', timelineDataOne);
+            
             setTimeout(() => {
+                this.setRequestView(timelineDataOne)
+                this.setResponseView(timelineDataOne)
                 this.setState({
                     rawViewData: timelineDataOne,
-                    requestData:JSON.parse(timelineDataOne.request ? timelineDataOne.request : '{}'),
-                    responseData:JSON.parse(timelineDataOne.response ? timelineDataOne.response : '{}'),
                     isLoading2: false,
                 })
             }, 251)
@@ -306,7 +299,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 let dataLenght = dummyConts['response'].split('{"data":').length;
                 if (dataLenght > 1) {
                     this.setState({responseData: {"data": dummyConts['response'].split('{"data":')}})
-                    //this.setState({responseData:{"data":"test2222"}})
                 } else {
                     this.setState({responseData: JSON.parse((dummyConts['response'] !== "") ? dummyConts['response'] : {})})
                 }
