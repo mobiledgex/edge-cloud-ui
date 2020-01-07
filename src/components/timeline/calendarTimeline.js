@@ -1,36 +1,10 @@
 import React, { Component } from "react";
 import moment from "moment";
 
-import Timeline from "react-calendar-timeline";
+import Timeline,{TimelineHeaders, SidebarHeader, DateHeader, CustomHeader} from "react-calendar-timeline";
 import 'react-calendar-timeline/lib/Timeline.css'
-import generateFakeData from "./generate-fake-data";
+import randomColor from "randomcolor";
 
-
-const groups = [{ id: 1, title: 'group 1' }, { id: 2, title: 'group 2' }]
-
-const items = [
-    {
-        id: 1,
-        group: 1,
-        title: 'item 1',
-        start_time: moment(),
-        end_time: moment().add(1, 'hour')
-    },
-    {
-        id: 2,
-        group: 2,
-        title: 'item 2',
-        start_time: moment().add(-0.5, 'hour'),
-        end_time: moment().add(0.5, 'hour')
-    },
-    {
-        id: 3,
-        group: 1,
-        title: 'item 3',
-        start_time: moment().add(2, 'hour'),
-        end_time: moment().add(3, 'hour')
-    }
-]
 
 var keys = {
     groupIdKey: "id",
@@ -49,7 +23,7 @@ export default class CalendarTimeline extends Component {
     constructor(props) {
         super(props);
 
-        const { groups, items } = generateFakeData();
+        const { groups, items } = this.generateData();
         const defaultTimeStart = moment()
             .startOf("day")
             .toDate();
@@ -58,61 +32,103 @@ export default class CalendarTimeline extends Component {
             .add(1, "day")
             .toDate();
 
-        // convert every 2 groups out of 3 to nodes, leaving the first as the root
-        const newGroups = groups.map(group => {
-            const isRoot = (parseInt(group.id) - 1) % 3 === 0;
-            const parent = isRoot ? null : Math.floor((parseInt(group.id) - 1) / 3) * 3 + 1;
-
-            return Object.assign({}, group, {
-                root: isRoot,
-                parent: parent
-            });
-        });
-
         this.state = {
-            groups: newGroups,
+            groups: groups,
             items,
             defaultTimeStart,
-            defaultTimeEnd,
-            openGroups: {}
+            defaultTimeEnd
         };
     }
 
-    toggleGroup = id => {
-        const { openGroups } = this.state;
-        this.setState({
-            openGroups: {
-                ...openGroups,
-                [id]: !openGroups[id]
+    handleItemSelect = (itemId, _, time) => {
+        console.log('Selected: ' + itemId, moment(time).format())
+    }
+
+    generateData = (groupCount = 30, itemCount = 1000, daysInPast = 30) => {
+        let randomSeed = Math.floor(Math.random() * 1000)
+        let groups = []
+        let items = []
+        this.props.tasksList.map( (tValue, tIndex) => {
+            if(tIndex === 0){
+                groups.push({
+                    id: (tIndex+1),
+                    title: tValue,
+                    rightTitle: "bb",
+                    bgColor: randomColor({luminosity: 'light', seed: randomSeed + tIndex})
+                })
+
+                this.props.timesList.map( (item, index) =>{
+                    const startDate = Date.parse(item)
+                    const startValue = Math.floor(moment(startDate).valueOf() / 10000000) * 10000000
+                    const endValue = moment(startDate + 10 * 60 * 1000).valueOf()
+
+                    if(index === 0){
+                        items.push({
+                            id: index + '',
+                            group: groups[tIndex].id + '',
+                            title: item,
+                            start: startDate,
+                            end: endValue,
+                            onItemSelect: this.handleItemSelect,
+                            canMove: startValue > new Date().getTime(),
+                            canResize: startValue > new Date().getTime() ? (endValue > new Date().getTime() ? 'both' : 'left') : (endValue > new Date().getTime() ? 'right' : false),
+                            className: (moment(startDate).day() === 6 || moment(startDate).day() === 0) ? 'item-weekend' : '',
+                        })
+                    }
+                })
+            } else {
+                let a = 0
+                for(let i=0; i < (this.props.tasksList.length-1) ; i++){
+                    if(groups[i] !== undefined){
+                        if(groups[i].title === tValue){
+                            a = 1
+                            this.props.timesList.map( (item, index) =>{
+                                const startDate = Date.parse(item)
+                                const startValue = Math.floor(moment(startDate).valueOf() / 10000000) * 10000000
+                                const endValue = moment(startDate + 10 * 60 * 1000).valueOf()
+                                if(tIndex === index){
+                                    items.push({
+                                        id: index + '',
+                                        group: groups[i].id + '',
+                                        title: item,
+                                        start: startDate,
+                                        end: endValue,
+                                        canMove: startValue > new Date().getTime(),
+                                        canResize: startValue > new Date().getTime() ? (endValue > new Date().getTime() ? 'both' : 'left') : (endValue > new Date().getTime() ? 'right' : false),
+                                        className: (moment(startDate).day() === 6 || moment(startDate).day() === 0) ? 'item-weekend' : '',
+                                    })
+                                }
+                            })
+                        }
+                    }
+                }
+                if(a !== 1){
+                    groups.push({
+                        id: (tIndex+1),
+                        title: tValue,
+                        rightTitle: "bb",
+                        bgColor: randomColor({luminosity: 'light', seed: randomSeed + tIndex})
+                    })
+                }
             }
-        });
-    };
+        })
+        console.log("20200106 " + JSON.stringify(items))
+
+        items = items.sort((a, b) => b - a)
+
+        return { groups, items }
+    }
 
     render() {
         const { groups, items, defaultTimeStart, defaultTimeEnd, openGroups } = this.state;
 
-        // hide (filter) the groups that are closed, for the rest, patch their "title" and add some callbacks or padding
-        const newGroups = groups
-            .filter(g => g.root || openGroups[g.parent])
-            .map(group => {
-                return Object.assign({}, group, {
-                    title: group.root ? (
-                        <div onClick={() => this.toggleGroup(parseInt(group.id))} style={{ cursor: "pointer" }}>
-                            {openGroups[parseInt(group.id)] ? "[-]" : "[+]"} {group.title}
-                        </div>
-                    ) : (
-                        <div style={{ paddingLeft: 20 }}>{group.title}</div>
-                    )
-                });
-            });
-
         return (
             <Timeline
-                groups={newGroups}
+                groups={groups}
                 items={items}
                 keys={keys}
-                sidebarWidth={150}
-                canMove
+                sidebarWidth={500}
+                // canMove
                 canResize="right"
                 canSelect
                 itemsSorted
@@ -120,9 +136,19 @@ export default class CalendarTimeline extends Component {
                 stackItems
                 itemHeightRatio={0.75}
                 showCursorLine
+                onItemSelect={this.handleItemSelect}
                 defaultTimeStart={defaultTimeStart}
                 defaultTimeEnd={defaultTimeEnd}
-            />
+            >
+                <TimelineHeaders className="sticky">
+                    <SidebarHeader>
+                        {({ getRootProps }) => {
+                            return <div {...getRootProps()}></div>;
+                        }}
+                    </SidebarHeader>
+                    <DateHeader unit="primaryHeader" />
+                </TimelineHeaders>
+            </Timeline>
         );
     }
 }
