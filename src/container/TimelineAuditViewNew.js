@@ -58,17 +58,6 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-
-// type Props = {
-//     handleLoadingSpinner: Function,
-//     toggleLoading: Function,
-//     history: any,
-//     onSubmit: any,
-//     sendingContent: any,
-//     loading: boolean,
-//     isLoading: boolean,
-// }
-
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
     class TimelineAuditViewNew extends React.Component {
         state = {
