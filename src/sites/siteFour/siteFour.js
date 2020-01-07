@@ -1155,7 +1155,7 @@ class SiteFour extends React.Component {
                 {/*#############################*/}
                 <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
                     {/*모니터링 페이지인 경우...*/}
-                    {(this.state.page === 'pg=Monitoring2') ? <PageMonitoring/> :
+                    {(this.state.page === 'pg=Monitoring') ? <PageMonitoring/> :
                         this.renderSiteBody(viewMode)
 
                     }
