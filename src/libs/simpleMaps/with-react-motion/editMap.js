@@ -6,7 +6,7 @@ import {
     Geographies,
     Geography,
     Markers,
-    Marker
+    Marker, Annotations, Annotation
 } from "react-simple-maps"
 import { Button, Icon } from 'semantic-ui-react';
 import ContainerDimensions from 'react-container-dimensions'
@@ -14,11 +14,14 @@ import ContainerDimensions from 'react-container-dimensions'
 import { Motion, spring } from "react-motion"
 import * as d3 from 'd3';
 import { scaleLinear } from "d3-scale"
+import request from "axios"
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 
 import RadialGradientSVG from '../../../../src/chartGauge/radialGradientSVG';
+
+import * as aggregation from '../../../utils';
 
 //style
 import styles from '../../../css/worldMapStyles';

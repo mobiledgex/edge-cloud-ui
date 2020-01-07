@@ -13,6 +13,7 @@ import NetworkTcpUdpComposeView from '../components/networkTcpUdpComposeView';
 import SelectFromTo from '../components/selectFromTo';
 
 import * as serviceCluster from '../services/service_instance_service';
+import * as serviceCompute from '../services/service_compute_service';
 
 import './styles.css';
 

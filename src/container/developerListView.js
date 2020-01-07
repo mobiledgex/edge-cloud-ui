@@ -1,5 +1,5 @@
 import React from 'react';
-import {Header, Button, Table, Popup, Icon, Input} from 'semantic-ui-react';
+import {Modal, Grid, Header, Button, Table, Popup, Icon, Input, Divider, Container} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
@@ -11,8 +11,11 @@ import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import DeleteItem from './deleteItem';
 import './styles.css';
+import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
+import MaterialIcon from "material-icons-react";
+import * as services from '../services/service_compute_service';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -430,6 +433,16 @@ class DeveloperListView extends React.Component {
         </Button.Group>
     )
 
+
+    makeActionButtonView = (item, j, i) => (
+        <Button.Group vertical className="table_actions_popup_group">
+                    <Button ref={btn => this.actionButton = btn} onClick={this.onHandlePopMenu}
+                            className="table_actions_popup_group_button">
+                        Audit
+                    </Button>
+        </Button.Group>
+    )
+
     //@desc: #############################################################
     //@desc: Organizations ---> actions contextButton
     //@desc: #############################################################
@@ -658,7 +671,9 @@ class DeveloperListView extends React.Component {
                 </div>
                 <Popup
                     inverted
-                    content={this.makeActionButton(this[this.state.actionContextRef])}
+                    content={
+                        (localStorage.selectRole == 'OperatorContributor' || localStorage.selectRole == 'OperatorViewer' || localStorage.selectRole == 'DeveloperContributor' || localStorage.selectRole == 'DeveloperViewer') ? this.makeActionButtonView(this[this.state.actionContextRef])
+                            : this.makeActionButton(this[this.state.actionContextRef])}
                     on='click'
                     open={this.state.isOpen}
                     onClose={this.handleClose}

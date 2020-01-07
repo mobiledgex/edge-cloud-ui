@@ -13,13 +13,14 @@ import View from "react-flexbox";
 import FlexBox from "flexbox-react";
 import HorizontalTimelineKJ from "../components/horizontal_timeline_kj/Components/HorizontalTimeline";
 import {hot} from "react-hot-loader/root";
+import {API_ENDPOINT_PREFIX} from "../shared/Constants";
 
 const countryOptions = [
-    {key: '24', value: '24', flag: '24', text: 'Last 24hours'},
-    {key: '18', value: '18', flag: '18', text: 'Last 18hours'},
-    {key: '12', value: '12', flag: '12', text: 'Last 12hours'},
-    {key: '6', value: '6', flag: '6', text: 'Last 6hours'},
-    {key: '1', value: '1', flag: '1', text: 'Last an hour'},
+    {key: '24', value: '24', flag: '24', text: 'Last 24 hours'},
+    {key: '18', value: '18', flag: '18', text: 'Last 18 hours'},
+    {key: '12', value: '12', flag: '12', text: 'Last 12 hours'},
+    {key: '6', value: '6', flag: '6', text: 'Last 6 hours'},
+    {key: '1', value: '1', flag: '1', text: 'Last hour'},
 
 ]
 let timesList = [];
@@ -184,7 +185,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                         timesList.push('timeline-dot-' + composit);
                     })
 
-                    this.setState({
+                    await this.setState({
                         dates: dummys,
                         rawAllData: dummyConts,
                         auditCount: nextProps.data.data.length,
@@ -201,7 +202,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                     //todo: Extract only the TaskName to display at the top of the timeline.
                     for (let i in auditList) {
                         let operName = auditList[i].operationname;
-                        tasksList.push(this.makeOper(operName));
+                        tasksList.push(this.makeOper2(operName));
                     }
 
                     let newTimesList = []
@@ -210,13 +211,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             newTimesList.push(timesList[i].toString().replace('timeline-dot-', ''))
                         }
                     }
+
+                    //@fixme:하단 로우 뷰 0번째 data를 셋팅하는 부분......
+                    let timelineDataOne = this.state.rawAllData[0]
+
+
                     await this.setState({
                         timesList: newTimesList,//@:todo: TimesList to display above the timeline Dot
                         tasksList: tasksList,//@:todo: 타임라인 Dot 위쪽에 표시해줄 tasksList
                         currentTask: tasksList[0],
                         currentTaskTime: timesList[0],
                         isLoading: false,
+                        rawViewData: timelineDataOne,
                     })
+
                     this.props.handleLoadingSpinner(false);
                     this.props.toggleLoading(false);
 
@@ -261,9 +269,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             _self.sameTime = makeTime;
             return makeTime;
         }
-        makeOper = (logName) => {
-            let lastSub = logName.substring(logName.lastIndexOf('/') + 1);
-            return lastSub
+
+
+        makeOper2 = (fullOpertationName: string) => {
+            fullOpertationName = fullOpertationName.toString().replace(API_ENDPOINT_PREFIX, '')
+            return fullOpertationName
         }
 
 
@@ -284,9 +294,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 })
             }, 251)
         }
-
-
-
 
 
         setAllView(dummyConts, sId) {
@@ -325,6 +332,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                 }
 
             }
+
+            
 
         }
 
@@ -371,55 +380,25 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                 }}
                             >
 
-                                {/*@todo:jkjkjkjkjkhjkhjkhjkhjkhjkhjk*/}
-                                {/*@todo:11111*/}
-
+                                {/*@todo:#########################*/}
+                                {/*@todo:CircularProgress(topLeft)*/}
+                                {/*@todo:#########################*/}
                                 {this.props.isLoading &&
-                                <FlexBox style={{position: 'absolute', top: '5%', zIndex: 9999999}}>
+                                <FlexBox style={{position: 'absolute', top: '9%', left: '2%', zIndex: 9999999}}>
                                     <CircularProgress style={{color: '#77BD25', zIndex: 9999999, fontSize: 10}}
                                                       size={20}/>
+
                                 </FlexBox>
                                 }
-                                {/* <Button onClick={() => {
-                                    this.props.toggleLoading(false)
-                                }}>
-                                    false
-                                </Button>
-
-                                <Button onClick={() => {
-                                    this.props.toggleLoading(true)
-                                }}>
-                                    true
-                                </Button>*/}
-                                {/*#######################################*/}
-                                {/*desc: Timeline Status (topLeft)        */}
-                                {/*#######################################*/}
-                                {/*  {!this.state.isLoading && <div style={{
-                                    top: -5,
-                                    color: '#f8f8f8',
-                                    borderWidth: 10,
-                                    borderColor: 'grey',
-                                    backgroundColor: 'blue',
-                                    height: 70,
-
-                                }}>
-                                    <div style={{color: 'orange'}}>{this.state.currentTask.toString()}</div>
-                                    <FlexBox style={{width: 10}}/>
-                                    <div>  {this.state.currentTaskTime.replace('timeline-dot-', '')}</div>
-                                </div>
-                                }*/}
-
-                                {/*#######################################*/}
-                                {/*#######################################*/}
                                 {/*#######################################*/}
                                 {/*todo: Timeline display part            */}
                                 {/*#######################################*/}
                                 {!this.state.isLoading && this.state.timesList.length !== 0 &&
                                 <HorizontalTimelineKJ
-                                    labelWidth={200}
+                                    labelWidth={300}
                                     getLabel={(date, task, index) => {
                                         return (
-                                            <View column={true}>
+                                            <View key={index} column={true}>
                                                 <div
                                                     style={{
                                                         height: 15,
@@ -485,7 +464,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     Raw Viewer
                                 </div>
                                 {this.state.isLoading2 &&
-                                <FlexBox style={{position: 'absolute', bottom: '54%', left: '5%', zIndex: 9999999}}>
+                                <FlexBox style={{position: 'absolute', bottom: '50%', left: '5%', zIndex: 9999999}}>
                                     <CircularProgress style={{color: '#1cecff', zIndex: 9999999, fontSize: 10}}
                                                       size={20}/>
                                 </FlexBox>

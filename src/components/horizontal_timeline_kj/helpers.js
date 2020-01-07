@@ -63,7 +63,7 @@ export const cummulativeSeperation = (dates, labelWidth, minEventPadding, maxEve
     return distances;
 };
 
-export const return100 = (number) => {
+export const return100 = (count: number) => {
 
 
     return 100;

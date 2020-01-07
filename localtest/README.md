@@ -6,8 +6,8 @@ The vault role ID and secret needs to be set in the environment before running
 any of the following commands:
 
 ```
-export VAULT_ROLE_ID=...
-export VAULT_SECRET_ID=...
+export VAULT_ROLE_ID="3feb0290-0f10-1091-4c79-c293ab55f7e0"
+export VAULT_SECRET_ID="4ba2a9a7-8ebd-f96f-ab36-4de032f39b24"
 ```
 
 ## Run
