@@ -240,7 +240,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
             //todo: FAKEJSON FOR TEST
-            let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
+            let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/jsons/appInstanceList')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({
@@ -300,7 +300,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
             //let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
             //todo: ################################################################
-            let usageList = require('../jsons/allUsageList_50')
+            let usageList = require('../TEMP_KYUNGJOOON_FOR_TEST/jsons/allUsageList_50')
 
 
             //todo: MAKE SELECTBOX.
