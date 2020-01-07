@@ -237,6 +237,9 @@ class SiteFourPageClusterInst extends React.Component {
             })
         } else {
             rgn.map((item) => {
+
+                let organization = localStorage.getItem('selectOrg')
+
                 serviceBody = {
                     "token":store ? store.userToken : 'null',
                     "params": {
@@ -249,7 +252,11 @@ class SiteFourPageClusterInst extends React.Component {
                     }
                 }
                 // org별 show clusterInst
-                services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
+                if(organization) {
+                    services.getMCService('showOrgCloudlet',{token:store ? store.userToken : 'null', params: {region:item,org:organization}}, _self.receiveResultCloudlet)
+                } else {
+                    services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
+                }
                 services.getMCService('ShowClusterInsts',serviceBody, _self.receiveResultClusterInst)
                 //setTimeout(()=>services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResultCloudlet), 0);
             })

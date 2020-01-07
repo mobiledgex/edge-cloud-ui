@@ -358,7 +358,13 @@ class SiteFourLinkOrganizeForm extends React.PureComponent {
         }
 
         rgn.map((item) => {
-            services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
+            let organization = localStorage.getItem('selectOrg')
+            if(organization) {
+                services.getMCService('showOrgCloudlet',{token:store ? store.userToken : 'null', params: {region:item,org:organization}}, _self.receiveResultCloudlet)
+            } else {
+                services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
+            }
+
             services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultFlavor)
 
         })

@@ -119,7 +119,12 @@ class SiteFourPageCloudletPoolReg extends React.Component {
         }
 
         rgn.map((item, i) => {
-            setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 0)
+            let organization = localStorage.getItem('selectOrg');
+            if(organization) {
+                setTimeout(() => services.getMCService('showOrgCloudlet',{token:store.userToken, params:{region:item, org:organization}}, _self.receiveResult), 0)
+            } else {
+                setTimeout(() => services.getMCService('ShowCloudlet',{token:store.userToken, region:item}, _self.receiveResult), 0)
+            }
         })
         this.props.handleLoadingSpinner(true);
     }

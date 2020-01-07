@@ -120,8 +120,14 @@ class RegistryInstViewer extends React.Component {
         //this.props.handleChangeSite(data.children.props.to)
     }
     getDataDeveloper(token,_region) {
+        let organization = localStorage.getItem('selectOrg');
         services.getMCService('ShowApps',{token:token,region:_region}, this.receiveResultApp)
-        setTimeout(() => services.getMCService('ShowCloudlet',{token:token,region:_region}, this.receiveResultCloudlet), 200);
+        if(organization) {
+            setTimeout(() => services.getMCService('showOrgCloudlet',{token:token, params:{region:_region, org:organization}}, this.receiveResultCloudlet), 200);
+        } else {
+            setTimeout(() => services.getMCService('ShowCloudlet',{token:token,region:_region}, this.receiveResultCloudlet), 200);
+        }
+
         setTimeout(() => services.getMCService('ShowClusterInst',{token:token,region:_region}, this.receiveResultClusterInst), 400);
         
     }
