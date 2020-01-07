@@ -491,7 +491,7 @@ class SiteFourCreatePoolForm extends React.Component {
     render() {
         const { activeIndex, clusterName } = this.state;
         let {data, dimmer, changeNext} = this.props;
-        console.log('20200104 props data in Form -- ', this.props.data)
+        console.log('20200106 props data in Form -- ', this.props.data)
         let randomState = Math.random()*100;
         return (
             <Grid.Column>
@@ -505,7 +505,8 @@ class SiteFourCreatePoolForm extends React.Component {
                                                    onSubmit={() => console.log('submit form')}
                                                    selected={this.props.selectedRegion}
                                                    regionInfo={this.state.regionInfo}
-                                                   dimmer={dimmer} changeNext={changeNext}
+                                                   dimmer={dimmer}
+                                                   changeNext={changeNext}
                                                    handleChangeLat={this.handleChangeLat}
                                                    handleChangeLong={this.handleChangeLong}
                                                    onChangeState={this.onChangeFormState}

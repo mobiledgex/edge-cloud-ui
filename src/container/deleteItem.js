@@ -139,7 +139,7 @@ class DeleteItem extends React.Component {
         _self.props.refresh('All');
     }
     receiveDeletePool = (result, body) => {
-        alert('delete..'+JSON.stringify(result))
+
         _self.props.refresh('All');
     }
 

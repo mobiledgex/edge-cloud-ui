@@ -63,7 +63,7 @@ const renderInput = field => (
             type={field.type}
             label={field.label}
             readOnly={field.readOnly}
-            // placeholder={field.placeholder}
+            placeholder={field.placeholder}
         />
         {field.error && <span className="text-danger">{field.error}</span>}
     </div>
@@ -346,6 +346,10 @@ class SiteFourCreateFormDefault extends React.Component {
                 this.handleInitialize(nextProps.data.data[0]);
                 this.setState({dataInit:true})
             }
+            let self = this;
+            setTimeout(() => {
+                self.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
+            }, 5000)
         }
 
     }
@@ -434,6 +438,7 @@ class SiteFourCreateFormDefault extends React.Component {
     render (){
         const {  dimmer, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat, step } = this.props;
         const { data, regKeys, fieldKeys, available, selected } = this.state;
+        console.log('20200106 data ...in form default = ', data, ": keys = ", fieldKeys)
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         let disableLabel = true;
         if(fieldKeys && fieldKeys.length && ( fieldKeys[0]['poolName'] || fieldKeys[0]['CloudletPool'] )) {
@@ -616,13 +621,23 @@ class SiteFourCreateFormDefault extends React.Component {
                                     }
 
                                 </span>
-                                <Button
-                                    primary
-                                    positive
-                                    icon='checkmark'
-                                    labelPosition='right'
-                                    content="Create"
-                                />
+                                {
+                                    (parseInt(this.props.changeNext) === 201) ?
+                                        <Button
+                                            primary
+                                            positive
+                                            icon='checkmark'
+                                            labelPosition='right'
+                                            content="Submit"
+                                        /> :
+                                        <Button
+                                            primary
+                                            positive
+                                            icon='checkmark'
+                                            labelPosition='right'
+                                            content="Create"
+                                        />
+                                }
                             </Form.Group>
 
                         </Form.Group>

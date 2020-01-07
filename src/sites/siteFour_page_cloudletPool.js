@@ -84,7 +84,7 @@ class SiteFourPageCloudletPool extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // this.getDataDeveloper(this.props.changeRegion);
+        this.getDataDeveloper(this.props.changeRegion);
         this.userToken = store.userToken;
 
     }

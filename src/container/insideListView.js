@@ -368,7 +368,7 @@ class InsideListView extends React.Component {
         }
         if(b.children === 'Add Cloudlet') {
             this.addCloudlet(this.state.item)
-        } else if(b.children === 'Link') {
+        } else if(b.children === 'Link Organization') {
             this.linkOrganize(this.state.item)
         }
 

@@ -123,6 +123,8 @@ const DashboardContainer = (props, props2) => {
                         (_params.subPath === 'pg=3') ? 3 :
                             (_params.subPath === 'pg=4') ? 4 :
                                 (_params.subPath === 'pg=5') ? 5 :
+                                    (_params.subPath === 'pg=4') ? 6 :
+                                        (_params.subPath === 'pg=5') ? 7 :
                                     0
         )
 

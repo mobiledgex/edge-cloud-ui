@@ -393,13 +393,13 @@ class SiteFourPoolStepView extends React.Component {
             if(this.state.step === 1) {
                 servicePool.createCloudletPool('CreateCloudletPool', {params:nextProps.formClusterInst.values, token:store.userToken}, this.receiveSubmit)
 
-                // TEST 20191231 go to next step 2
-                // let self = this;
-                // setTimeout(() => {
-                //     self.setState({selectedRegion:self.state.submitValues.Region, gavePoolName:self.state.submitValues.poolName})
-                //     self.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
-                //     self.props.handleChangeNext(2)
-                // }, 2000)
+                /** TEST 20191231 go to next step 2 **/
+                let self = this;
+                setTimeout(() => {
+                    self.setState({selectedRegion:self.state.submitValues.Region, gavePoolName:self.state.submitValues.poolName})
+                    self.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
+                    self.props.handleChangeNext(2)
+                }, 2000)
 
 
             } else if(this.state.step === 2) {

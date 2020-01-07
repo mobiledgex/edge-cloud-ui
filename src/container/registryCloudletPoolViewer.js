@@ -262,11 +262,27 @@ class RegistryCloudletPoolViewer extends React.Component {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-        if(nextProps.devData.length > 0) {
-            this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+        if(nextProps.appLaunch) {
+            let cloneData = Object.assign([], nextProps.devData);
+            let newData = cloneData;
+            console.log('20200106 props appLaunch .. ',cloneData, ": this.state.devData =", newData)
+            if(cloneData.length) {
+                newData[0]['Region'] = nextProps.appLaunch.data['Region'];
+                newData[0]['poolName'] = nextProps.appLaunch.data['PoolName'];
+                console.log('20200106 props appLaunch .. ',newData, ": props appLaunch =", nextProps.appLaunch)
+
+                this.setState({dummyData:newData, keysData:this.state.keysDataUpdate})
+            }
+            return;
         } else {
-            this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+            if(nextProps.devData.length > 0) {
+                this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+            } else {
+                this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+            }
         }
+
+
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
@@ -302,18 +318,7 @@ class RegistryCloudletPoolViewer extends React.Component {
             }
 
         }
-        if(nextProps.appLaunch) {
-            let cloneData = Object.assign([], nextProps.devData);
-            let newData = cloneData;
-            if(cloneData.length) {
-                console.log('20200104 props appLaunch .. ',cloneData, ": this.state.devData =", newData)
-                newData[0]['Region'] = nextProps.appLaunch.data['Region'];
-                newData[0]['poolName'] = nextProps.appLaunch.data['PoolName'];
-                console.log('20200104 props appLaunch .. ',newData, ": props appLaunch =", nextProps.appLaunch)
 
-                this.setState({dummyData:newData, keysData:this.state.keysDataUpdate})
-            }
-        }
     }
 
     render() {

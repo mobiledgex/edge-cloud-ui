@@ -2274,7 +2274,7 @@ exports.DeleteCloudletpool = (req, res) => {
                 res.json(null)
 
             } else {
-
+                res.json({message:`Deleted ${serviceBody.cloudletpool.key.name} successfully`})
             }
         })
         .catch(function (error) {
