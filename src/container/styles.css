@@ -92,6 +92,11 @@
     margin: 0 0 .28571429rem 0;
 }
 
+.create-org.item .ui.form .ui.grid .five.wide.column{
+    color: #dedede !important;
+}
+
+
 /* Form */
 .ui.grid .column .ui.form .fields,
 .ui.grid .column .ui.form .field{
@@ -543,10 +548,74 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
     color: #ffffff;
 }
 
+/* cloudlet monitoring */
+
 .wrapperPercentage.cloudlet .childPercentage {
     flex-shrink: 1;
     flex-basis: 0;
     min-width: 480px;
+    /*margin: 0 !important;*/
 }
 
 
+@media screen and (min-width: 2840px) {
+    .wrapperPercentage.cloudlet .childPercentage {
+        max-width: 20%;
+    }
+}
+
+@media screen and (max-width: 2839px) {
+    .wrapperPercentage.cloudlet .childPercentage {
+        max-width: 25%;
+    }
+
+    .wrapperPercentage.cloudlet .childPercentage:last-child {
+        max-width: calc(25% - 20px);
+    }
+}
+
+
+@media screen and (max-width: 2339px) {
+    .wrapperPercentage.cloudlet .childPercentage {
+        max-width: 33.333333%;
+    }
+
+    .wrapperPercentage.cloudlet .childPercentage:nth-child(4) {
+        max-width: calc(33.333333% - 20px);
+    }
+
+    .wrapperPercentage.cloudlet .childPercentage:last-child {
+        max-width: calc(33.333333% - 20px);
+    }
+}
+
+
+@media screen and (max-width: 1839px) {
+    .wrapperPercentage.cloudlet .childPercentage {
+        max-width: 50%;
+    }
+
+    .wrapperPercentage.cloudlet .childPercentage:nth-child(4) {
+        max-width: 50%;
+    }
+
+    .wrapperPercentage.cloudlet .childPercentage:last-child {
+        max-width: calc(50% - 20px);
+    }
+}
+
+
+
+@media screen and (max-width: 1339px) {
+    .wrapperPercentage.cloudlet .childPercentage {
+        max-width: 100%;
+    }
+
+    .wrapperPercentage.cloudlet .childPercentage:nth-child(4) {
+        max-width: 100%;
+    }
+
+    .wrapperPercentage.cloudlet .childPercentage:last-child {
+        max-width: 100%;
+    }
+}

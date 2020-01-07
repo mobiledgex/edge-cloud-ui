@@ -8,6 +8,7 @@ import FormatComputeFlavor from './formatter/formatComputeFlavor';
 import FormatComputeCluster from './formatter/formatComputeCluster';
 import FormatComputeDev from './formatter/formatComputeDeveloper';
 import FormatComputeCloudlet from './formatter/formatComputeCloudlet';
+import FormatOrgCloudlet from './formatter/formatOrgCloudlet';
 import FormatComputeApp from './formatter/formatComputeApp';
 import FormatComputeOper from './formatter/formatComputeOperator';
 import FormatComputeInst from './formatter/formatComputeInstance';
@@ -513,18 +514,25 @@ export function getMCService(resource, body, callback, self) {
 
 
             if(response.data) {
+
                 if(response.data.error) {
                     if(response.data.error.indexOf('Expired') > -1) {
                         localStorage.setItem('userInfo', null)
                         localStorage.setItem('sessionData', null)
                         callback({error:'Login Timeout Expired.<br/>Please login again'}, resource, self);
                         return;
+                    } else if (response.data.error == 'No user') {
+
+                        parseData = JSON.parse(JSON.stringify(response));
+
                     } else {
                         callback({error:response.data.error}, resource, self);
                         return;
                     }
                 } else {
                     parseData = JSON.parse(JSON.stringify(response));
+
+
                 }
             } else {
                 parseData = response;
@@ -537,6 +545,7 @@ export function getMCService(resource, body, callback, self) {
                     case 'ShowUsers': callback(formatComputeUsers(parseData)); break;
                     case 'ShowAccounts': callback(formatComputeAccounts(parseData)); break;
                     case 'ShowCloudlet': callback(FormatComputeCloudlet(parseData,body)); break;
+                    case 'showOrgCloudlet': callback(FormatOrgCloudlet(parseData,body.params)); break;
                     case 'ShowClusterInst': callback(FormatComputeClstInst(parseData,body)); break;
                     case 'ShowClusterInsts': callback(FormatComputeClstInst(parseData,body)); break;
                     case 'ShowApps': callback(FormatComputeApp(parseData,body)); break;

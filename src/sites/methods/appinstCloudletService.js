@@ -36,7 +36,6 @@ const receiveResultApp = (result) => {
 }
 const countJoin = (_AppInstDummy) => {
     let appInst = [];
-    console.log('20191219 _AppInstDummy == ', _AppInstDummy)
     appInst = reducer.groupBy(_AppInstDummy, 'Cloudlet')
     returnData(appInst)
     props.handleLoadingSpinner(false);

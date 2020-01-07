@@ -8,10 +8,11 @@ import { Transfer } from 'antd';
 import * as services from '../services/service_compute_service';
 import SankeyDiagram from '../charts/plotly/SankeyDiagram';
 import './styles.css';
-import Duallist from 'react-duallist';
+import DualListBox from 'react-dual-listbox';
 import './react_dualist.css'
-import "antd/dist/antd.css";
-import stylesheetUrl from "../css/components/antd/css/transfer.css";
+import '../css/components/dualListbox/react-dual-listbox.css';
+import "../css/antTheme/components/antd/transfer.css";
+
 
 const makeOption =(options)=> {
 
@@ -61,7 +62,8 @@ const renderInput = field => (
             {...field.input}
             type={field.type}
             label={field.label}
-            // placeholder={field.placeholder}
+            readOnly={field.readOnly}
+            placeholder={field.placeholder}
         />
         {field.error && <span className="text-danger">{field.error}</span>}
     </div>
@@ -135,21 +137,19 @@ const renderLocationInput = ({ input, placeholder, change, type, error, initialV
 
 );
 const options = [
-    {label:'One', value: 1},
-    {label:'Two', value: 2},
-    {label:'Three', value: 3}
-]
+    { value: 'one', label: 'Option One' },
+    { value: 'two', label: 'Option Two' },
+];
 
 
-const renderDualListInput = ({ input, placeholder, change, type, error, initialValue }) => (
-    <div>
-        <Form.Field
-            {...input}
-            type={type}
-        >
-
-        </Form.Field>
-    </div>
+const renderDualListInput = (self,data) => (
+    <DualListBox
+        // style={{width:500}}
+        canFilter
+        options={self.getListData(data)}
+        selected={self.state.selected}
+        onChange={self.onChangeDualList}
+    />
 
 );
 const renderDualListBox = (self, data) => (
@@ -210,7 +210,7 @@ class SiteFourCreateFormDefault extends React.Component {
                 {label: 'Florida', value: 'FL'},
                 {label: 'Georgia', value: 'GA'},
             ],
-            selected: ['AL', 'CA'],
+            selected: [],
             _mockData: [],
             targetKeys: [],
             invisibleValue:[]
@@ -237,8 +237,9 @@ class SiteFourCreateFormDefault extends React.Component {
         }
 
     }
-    onChange = (selectedValues) => {
-        alert(selectedValues)
+    onChangeDualList = (selected) => {
+        this.setState({ selected });
+        this.props.dispatch(change('createAppFormDefault', 'invisibleField', JSON.stringify(selected)));
     }
     /**
      * code by @inki 20191220
@@ -249,11 +250,9 @@ class SiteFourCreateFormDefault extends React.Component {
         const targetKeys = [];
         const mockData = [];
 
-        console.log('20191220 mock data -- ', data, ":")
         this._mockData = data;
         if(data.length) {
             data.map((item, i) => {
-                console.log('20191220 mock selectCloudlet -- ', item['cloudlet'], ":")
 
                 const data = {
                     key: i.toString(),
@@ -268,9 +267,23 @@ class SiteFourCreateFormDefault extends React.Component {
 
             })
         }
-        console.log('20191220 mock data -- ', mockData, ":")
         return mockData;
     };
+    getListData = (data) => {
+        const listData = [];
+
+        if(data.length) {
+            data.map((item, i) => {
+                const data = {
+                    value: i,
+                    label: item['cloudlet'],
+                };
+                listData.push(data)
+            })
+        }
+
+        return listData;
+    }
 
     filterOption = (inputValue, option) => option.description.indexOf(inputValue) > -1;
 
@@ -285,7 +298,6 @@ class SiteFourCreateFormDefault extends React.Component {
         moveKeys.map((data) => {
             selected.push(this._mockData[parseInt(data)])
         })
-        console.log('20191223 invisibleValue.. ', selected, ": invisible Field == ", document.getElementsByName("invisibleField"))
         /**
         you would dispatch() the change(form:String, field:String, value:String) action creator:
          **/
@@ -306,7 +318,7 @@ class SiteFourCreateFormDefault extends React.Component {
     /** end ANT **/
 
     componentDidMount() {
-        if(this.props.data && this.props.data.data.length){
+        if(this.props.data && this.props.data.data && this.props.data.data.length){
             let keys = Object.keys(this.props.data.data[0])
             this.setState({data:this.props.data.data[0], regKeys:keys, fieldKeys:this.props.data.keys, pId:this.props.pId})
             if(!this.state.dataInit){
@@ -322,9 +334,9 @@ class SiteFourCreateFormDefault extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('20191220 nextProps in form default..', nextProps.data)
-        if(nextProps.data && nextProps.data.data.length){
+        if(nextProps.data && nextProps.data.data && nextProps.data.data.length){
             let keys = Object.keys(nextProps.data.data[0])
+            console.log('20200104 props data in formDefault -- ', nextProps.data.data[0])
             this.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
             // submitSucceeded 초기화
             if(this.props.toggleSubmit) {
@@ -334,6 +346,10 @@ class SiteFourCreateFormDefault extends React.Component {
                 this.handleInitialize(nextProps.data.data[0]);
                 this.setState({dataInit:true})
             }
+            let self = this;
+            setTimeout(() => {
+                self.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
+            }, 5000)
         }
 
     }
@@ -412,6 +428,7 @@ class SiteFourCreateFormDefault extends React.Component {
         e.preventDefault();
         let siteNum = 0;
         console.log("cancelClickddd",e,":::",this.props)
+
         if(localStorage.selectMenu == 'Cloudlets') siteNum = 2
         else if(localStorage.selectMenu == 'Cluster Instances') siteNum = 4
         else if(localStorage.selectMenu == 'Cloudlet Pool') siteNum = 7
@@ -419,14 +436,15 @@ class SiteFourCreateFormDefault extends React.Component {
     }
     
     render (){
-        const {  dimmer, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat } = this.props;
+        const {  dimmer, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat, step } = this.props;
         const { data, regKeys, fieldKeys, available, selected } = this.state;
+        console.log('20200106 data ...in form default = ', data, ": keys = ", fieldKeys)
         let cType = (type)?type.substring(0,1).toUpperCase() + type.substring(1):'';
         let disableLabel = true;
         if(fieldKeys && fieldKeys.length && ( fieldKeys[0]['poolName'] || fieldKeys[0]['CloudletPool'] )) {
             disableLabel = false;
         }
-        console.log('20191219 pid == ', fieldKeys, ": data =", data)
+
         return (
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
                 {(disableLabel)?<Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>:null}
@@ -439,6 +457,19 @@ class SiteFourCreateFormDefault extends React.Component {
                                         regKeys.map((key, i) => (
 
                                             (this.getLabel(key, pId))?
+
+                                                (fieldKeys[pId][key]['type'] === 'InvisibleField') ?
+
+                                                    <div style={ {opacity:0, position:'absolute', left:-9999, zIndex:-999}}>
+                                                        <Field
+                                                            component={renderInputInvisible}
+                                                            value={this.state.invisibleValue}
+                                                            initialValue={this.state.invisibleValue}
+                                                            placeholder={this.state.invisibleValue}
+                                                            name={key}
+                                                        />
+                                                    </div>
+                                                :
                                                 (!this.state.deployTypeDocker || (key !== 'NumberOfMaster' && key !== 'NumberOfNode')) ?
                                                 <Grid.Row columns={3} key={i} className={'cloudletReg'+i}>
 
@@ -523,7 +554,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             (fieldKeys[pId][key]['type'] === 'RenderDualListBox') ?
                                                             <Grid>
                                                                 <Grid.Row className={'renderDualListBox'}>
-                                                                    {renderDualListBox(this, data[key])}
+                                                                    {renderDualListInput(this, data[key])}
                                                                 </Grid.Row>
                                                             </Grid>
                                                             :
@@ -543,18 +574,22 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             />
                                                             :
                                                             (fieldKeys[pId][key]['type'] === 'InvisibleField') ?
-                                                                <Field
-                                                                    component={renderInputInvisible}
-                                                                    value={this.state.invisibleValue}
-                                                                    initialValue={this.state.invisibleValue}
-                                                                    placeholder={this.state.invisibleValue}
-                                                                    name={key}
-                                                                />
+                                                                <div style={ {opacity:0, position:'absolute', left:-9999, zIndex:-999}}>
+                                                                    <Field
+                                                                        component={renderInputInvisible}
+                                                                        value={this.state.invisibleValue}
+                                                                        initialValue={this.state.invisibleValue}
+                                                                        placeholder={this.state.invisibleValue}
+                                                                        name={key}
+                                                                    />
+                                                                </div>
                                                             :
                                                             <Field
                                                                 component={renderInput}
                                                                 type="input"
+                                                                value={data[key]}
                                                                 name={key}
+                                                                readOnly={fieldKeys[pId][key]['readOnly']}
                                                                 onChange={(e)=>this.onHandleChange(key,e.target.value)}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}/>
                                                         }
@@ -574,19 +609,35 @@ class SiteFourCreateFormDefault extends React.Component {
                         </Form.Group>
                         <Form.Group className={"submitButtonGroup orgButton"} id={"submitButtonGroup"} inline style={{flexDirection:'row', marginLeft:10, marginRight:10}}>
                             <Form.Group inline>
-                                {/*<Button onClick={()=>this.onHandleReset()}>Reset</Button>*/}
                                 <span style={{marginRight:'1em'}}>
-                                    <Button onClick={this.cancelClick}>
-                                        Cancel
-                                    </Button>
+                                    {(this.props.changeNext === 2)?
+                                        <Button>
+                                            Skip
+                                        </Button>
+                                        :
+                                        <Button onClick={this.cancelClick}>
+                                            Cancel
+                                        </Button>
+                                    }
+
                                 </span>
-                                <Button
-                                    primary
-                                    positive
-                                    icon='checkmark'
-                                    labelPosition='right'
-                                    content="Create"
-                                />
+                                {
+                                    (parseInt(this.props.changeNext) === 201) ?
+                                        <Button
+                                            primary
+                                            positive
+                                            icon='checkmark'
+                                            labelPosition='right'
+                                            content="Submit"
+                                        /> :
+                                        <Button
+                                            primary
+                                            positive
+                                            icon='checkmark'
+                                            labelPosition='right'
+                                            content="Create"
+                                        />
+                                }
                             </Form.Group>
 
                         </Form.Group>

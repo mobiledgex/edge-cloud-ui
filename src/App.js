@@ -26,6 +26,9 @@ import './css/pages/audit.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import BubbleChartScreen from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/BubbleChartScreen";
+import {Test001} from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
+import Test002 from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test002";
+import Test003 from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test003";
 // API
 
 let self = null;
@@ -120,6 +123,8 @@ const DashboardContainer = (props, props2) => {
                         (_params.subPath === 'pg=3') ? 3 :
                             (_params.subPath === 'pg=4') ? 4 :
                                 (_params.subPath === 'pg=5') ? 5 :
+                                    (_params.subPath === 'pg=4') ? 6 :
+                                        (_params.subPath === 'pg=5') ? 7 :
                                     0
         )
 
@@ -364,12 +369,13 @@ class App extends Component {
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath: '/verify'})}/>
 
                     <Route exact path='/BubbleChartScreen' component={BubbleChartScreen} />
+                    <Route exact path='/Test002' component={Test002} />
+                    <Route exact path='/Test003' component={Test003} />
                 </div>
             </Router>
         );
     }
 }
-
 //export default App;
 
 App.defaultProps = {}

@@ -141,29 +141,6 @@ class SiteFourOrgaStepView extends React.Component {
     )
 
 
-    generateDOM(open, dimmer, hideHeader) {
-
-        return layout.map((item, i) => (
-
-            (i === 0)?
-                <div className="round_panel" key={i}>
-                    <div className="grid_table" style={{overflow:'auto'}}>
-                        {this.makeSteps()}
-
-                    </div>
-                </div>
-                :
-                <div className="round_panel" key={i}>
-                    <div>
-                        Map viewer
-                    </div>
-                </div>
-
-
-        ))
-    }
-
-
     generateLayout() {
         const p = this.props;
 
@@ -189,12 +166,10 @@ class SiteFourOrgaStepView extends React.Component {
             this.setState({orgaName:(nextProps.stateForm.values) ? nextProps.stateForm.values.name:this.state.orgaName})
         }
 
-        this.setState({step:nextProps.stepMove})
     }
 
     render() {
-        const { open, dimmer } = this.state;
-        const { hideHeader } = this.props;
+
         return (
             <div className="regis_container">
                 <RegistNewItem data={this.state.dummyData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>
@@ -205,7 +180,7 @@ class SiteFourOrgaStepView extends React.Component {
                     {...this.props}
                     useCSSTransforms={false}
                 >
-                    {this.generateDOM(open, dimmer, hideHeader)}
+                    {this.makeSteps()}
                 </div>
                 <PopDetailViewer data={this.state.detailViewData} dimmer={false} open={this.state.openDetail} close={this.closeDetail}></PopDetailViewer>
                 <PopUserViewer data={this.state.detailViewData} dimmer={false} open={this.state.openUser} close={this.closeUser}></PopUserViewer>
@@ -236,11 +211,6 @@ const mapStateToProps = (state) => {
         stateForm
     }
 
-    // return (dimm) ? {
-    //     dimmInfo : dimm
-    // } : (account)? {
-    //     accountInfo: account + Math.random()*10000
-    // } : null;
 };
 const mapDispatchProps = (dispatch) => {
     return {

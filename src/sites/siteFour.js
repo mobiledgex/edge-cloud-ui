@@ -1,24 +1,9 @@
 import React from 'react';
-import {
-    Button,
-    Container,
-    Dropdown,
-    Grid,
-    Header,
-    Icon,
-    Image,
-    Input,
-    Item,
-    Label,
-    Menu,
-    Modal,
-    Popup,
-    Segment
-} from 'semantic-ui-react';
+import {Button, Container, Dropdown, Grid, Header, Icon, Image, Input, Item, Label, Menu, Modal, Popup, Segment} from 'semantic-ui-react';
 
 import {withRouter} from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
-import {Motion, spring} from "react-motion";
+import {spring} from "react-motion";
 import {Hints, Steps} from 'intro.js-react';
 //redux
 import {connect} from 'react-redux';
@@ -61,7 +46,6 @@ import '../css/introjs-dark.css';
 //import PageMonitoring from "./PageMonitoring";
 import SiteFourPageMonitoring from "./siteFour_page_monitoring";
 import PageMonitoring2 from "./PageMonitoring2";
-import PageMonitoring3 from "./PageMonitoring3";
 
 let devOptions = [{key: 'af', value: 'af', text: 'SK Telecom'}]
 const locationOptions = [
@@ -172,7 +156,6 @@ class SiteFour extends React.Component {
             {label: 'App Instances', icon: 'storage', pg: 6},
             {label: 'Audit Log', icon: 'check', pg: 'audits'},
             {label: 'Monitoring', icon: 'graphic_eq', pg: 'Monitoring2'},
-            {label: 'Monitoring3', icon: 'graphic_eq', pg: 'Monitoring3'},
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
@@ -284,6 +267,7 @@ class SiteFour extends React.Component {
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
+        this.props.handleAppLaunch(null)
         this.props.handleChangeClickCity([])
         this.setState({intoCity: false})
     }
@@ -509,18 +493,7 @@ class SiteFour extends React.Component {
             activeItem: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations',
             headerTitle: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations'
         })
-        //get list of customer's info
-        // if(store.userToken) {
-        //     Service.getCurrentUserInfo('currentUser', {token:store.userToken}, this.receiveCurrentUser, this);
-        //     computeService.getMCService('showController', {token:store.userToken}, this.receiveResult, this);
-        // }
-        //if there is no role
-        //site1으로 이동할 수 없는 문제로 아래 코드 주석처리 by inki
-        //show you create the organization view
-        //this.setState({page:'pg=0'})
-        //this.gotoUrl('/site4', 'pg=0')
-        //this.gotoPreview('/site4');
-        //this.props.history.location.search = "pg=0";
+
         this.disableBtn();
 
         if (store) {
@@ -528,14 +501,7 @@ class SiteFour extends React.Component {
         } else {
             this.gotoUrl('/logout')
         }
-        setTimeout(() => {
-            let elem = document.getElementById('animationWrapper')
-            if (elem) {
-                //_self.makeGhost(elem, _self)
 
-
-            }
-        }, 4000)
 
         this.setState({steps: orgaSteps.stepsZero, intoCity: false});
         //
@@ -555,6 +521,12 @@ class SiteFour extends React.Component {
 
         }
 
+        console.log('20200103 next viewMode - ', nextProps.viewMode)
+        if (nextProps.viewMode) {
+            this.setState({viewMode: nextProps.viewMode})
+        } else {
+            this.setState({viewMode: 'listView'})
+        }
 
         if (nextProps.params && nextProps.params.subPath) {
             let subPaths = nextProps.params.subPath;
@@ -566,29 +538,9 @@ class SiteFour extends React.Component {
                 subParam = paths[1];
             }
             this.setState({page: subPath, OrganizationName: subParam})
-            //console.log('20191018 nextProps.par....', subPath, "  :  ", subParam)
 
         }
 
-        // if(localStorage.selectRole && this.state.menuClick) {
-        //     this.disableBtn();
-        //     this.setState({menuClick:false})
-        // }
-
-
-        // if(nextProps.creatingSpinner && this.state.toggleState) {
-        //     this.getIntervalData();
-        //     this.setState({toggleState:false})
-        // }
-
-        if (nextProps.viewMode) {
-            this.setState({viewMode: nextProps.viewMode})
-        } else {
-            this.setState({viewMode: 'listView'})
-        }
-        // if(nextProps.params.subPath && this.state.viewMode == 'detailView') {
-        //     this.setState({viewMode:'listView'})
-        // }
 
         //Redux Alert
         if ((nextProps.alertInfo !== this.props.alertInfo) && nextProps.alertInfo.mode) {
@@ -644,23 +596,17 @@ class SiteFour extends React.Component {
             //_self.setState({stepsEnabled:false})
         }
         //
-        let enable = true;
-        setTimeout(() => {
-            let elem = document.getElementById('animationWrapper')
-            if (elem) {
-                //_self.makeGhost(elem, _self)
 
-            }
+
+
             console.log('20190822 tutorial=', tutorial)
-            if (enable && !_self.state.learned && !tutorial) {
+            if (_self.state.learned && !tutorial) {
                 _self.enalbeSteps();
                 _self.setState({stepsEnabled: true, learned: true})
                 localStorage.setItem('TUTORIAL', 'done')
             }
 
-        }, 1000)
 
-        let site = this.props.siteName;
         if (!this.props.changeStep || this.props.changeStep === '02') {
             this.setState({enable: true})
         } else {
@@ -691,7 +637,7 @@ class SiteFour extends React.Component {
 
         //set category
         if (nextProps.detailData !== this.props.detailData) {
-            // alert(JSON.stringify(nextProps.detailData))
+
             this.setState({detailData: nextProps.detailData})
         }
 
@@ -710,84 +656,55 @@ class SiteFour extends React.Component {
     }
 
     //compute page menu view
-    menuItemView = (item, i, activeItem) => (
-        <Menu.Item
-            className={'leftMenu_' + item.label}
-            key={i}
-            name={item.label}
-            active={activeItem === item.label}
-            onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
-        >
-            <div className="left_menu_item">
-                <MaterialIcon icon={item.icon}/>
-                <div className='label'>{item.label}</div>
-                {(activeItem === item.label) ?
+    menuItemView = (item, i, activeItem) => {
+        return (
+            <Menu.Item
+                className={'leftMenu_' + item.label}
+                key={i}
+                name={item.label}
+                active={activeItem === item.label}
+                onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
+            >
+                <div className="left_menu_item">
+                    <MaterialIcon icon={item.icon}/>
+                    <div className='label'>{item.label}</div>
+                    {(activeItem === item.label) ?
+                        <div style={{position: 'absolute', right: '12px', top: '12px'}}>
+                            <ClipLoader
+                                size={20}
+                                sizeUnit={'px'}
+                                color={'rgba(136,221,0,.85)'}
+                                loading={this.props.loadingSpinner}
+                                // loading={true}
+                            />
+                            {(item.label === 'Audit Log' && this.props.audit > 0) ?
+                                <Label circular color={'red'} key={'red'}>
+                                    {this.props.audit}
+                                </Label> : null}
+                        </div>
+
+                        : null}
+
+
                     <div style={{position: 'absolute', right: '12px', top: '12px'}}>
-                        <ClipLoader
-                            size={20}
-                            sizeUnit={'px'}
-                            color={'rgba(136,221,0,.85)'}
-                            loading={this.props.loadingSpinner}
-                            // loading={true}
-                        />
                         {(item.label === 'Audit Log' && this.props.audit > 0) ?
                             <Label circular color={'red'} key={'red'}>
                                 {this.props.audit}
                             </Label> : null}
                     </div>
 
-                    : null}
-
-
-                <div style={{position: 'absolute', right: '12px', top: '12px'}}>
-                    {(item.label === 'Audit Log' && this.props.audit > 0) ?
-                        <Label circular color={'red'} key={'red'}>
-                            {this.props.audit}
-                        </Label> : null}
                 </div>
 
-            </div>
+            </Menu.Item>
+        )
 
-        </Menu.Item>
-    )
+    }
+
 
     searchClick = (e) => {
         this.props.handleSearchValue(e.target.value, this.state.searchChangeValue)
     }
 
-    makeGhost(elem, self) {
-
-        let child = document.createElement('div')
-        child.style.cssText = 'position:absolute; width:100px; height:30px; line-height:30px; text-align:center; opacity:0.8; left:0px; z-index:100; background:#aaaaaa; border-radius:5px';
-        child.innerHTML = '<div>Cloudlet Name</div>'
-        elem.appendChild(child);
-        //
-        let nextPosX = 15
-        let nextPosY = 90;
-        setTimeout(() => self.setState({
-            setMotion: {
-                left: spring(nextPosX, self.speed),
-                top: spring(nextPosY, self.speed),
-                position: 'absolute',
-                opacity: 0
-            }
-        }), 200);
-    }
-
-    resetMotion() {
-        let self = _self;
-        this.setState({setMotion: defaultMotion})
-        let nextPosX = 15
-        let nextPosY = 180;
-        setTimeout(() => self.setState({
-            setMotion: {
-                left: spring(nextPosX, self.speed),
-                top: spring(nextPosY, self.speed),
-                position: 'absolute',
-                opacity: spring(0, self.speedOpacity)
-            }
-        }), 500);
-    }
 
     onChangeRegion = (e, {value}) => {
 
@@ -809,7 +726,6 @@ class SiteFour extends React.Component {
                 })
             }
         })
-
 
     }
 
@@ -861,10 +777,8 @@ class SiteFour extends React.Component {
         let savedArray = localStorage.getItem('auditUnChecked');
         let checkedArray = localStorage.getItem('auditChecked');
         let checked = [];
-        console.log('20191022 item is -- ', all, "  :  ", savedArray, typeof savedArray)
         all.map((item, i) => {
             if (savedArray && JSON.parse(savedArray).length) {
-                console.log('20191022 item is -- ', JSON.parse(savedArray).findIndex(k => k == item.traceid))
                 //이전에 없던 데이터 이면 추가하기
                 if (JSON.parse(savedArray).findIndex(k => k == item.traceid) === -1) addArray.push(item.traceid)
             } else {
@@ -873,7 +787,6 @@ class SiteFour extends React.Component {
         })
 
         if (addArray.length) {
-            console.log('20191022 if has new data ... ', addArray)
             JSON.parse(savedArray).concat(addArray);
         }
 
@@ -888,7 +801,6 @@ class SiteFour extends React.Component {
         }
 
         checked = (checkedArray) ? JSON.parse(checkedArray) : [];
-        console.log('20191022  unchecked... is -- ', checkResult.length, ":", checked.length, " - ", (checkResult.length - checked.length))
         this.props.handleAuditCheckCount(checkResult.length - checked.length)
         localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
 
@@ -941,7 +853,7 @@ class SiteFour extends React.Component {
                                         viewMode: 'listView'
                                     })}>Close Details</Button>
                                     <div>
-                                        {this.state.detailData.Region + " > "}
+                                        {this.state.detailData ? this.state.detailData.Region + " > ":null}
                                         {(this.state.headerTitle === "Cloudlets") ? this.state.detailData.CloudletName : null}
                                         {(this.state.headerTitle === 'Cluster Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterName : null}
                                         {(this.state.headerTitle === 'App Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterInst + " > " + this.state.detailData.AppName : null}
@@ -1045,6 +957,9 @@ class SiteFour extends React.Component {
                                                                             (this.state.page === 'pg=createCloudletPool')?
                                                                             <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
 
+                                                                            (this.state.page === 'pg=updateCloudletPool')?
+                                                                            <SiteFourPageCloudletPoolUpdate></SiteFourPageCloudletPoolUpdate> :
+
                                                                             (this.state.page === 'pg=linkOrganize')?
                                                                             <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
 
@@ -1078,7 +993,6 @@ class SiteFour extends React.Component {
     render() {
         const {shouldShowBox, shouldShowCircle, viewMode} = this.state;
         const {stepsEnabled, initialStep, hintsEnabled, hints, steps} = this.state;
-        console.log('20190821 stepsEnabled..', stepsEnabled)
         return (
             <Grid className='view_body'>
                 <Steps
@@ -1275,7 +1189,6 @@ class SiteFour extends React.Component {
                 <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
                     {/*모니터링 페이지인 경우...*/}
                     {(this.state.page === 'pg=Monitoring2') ? <PageMonitoring2/> :
-                        (this.state.page === 'pg=Monitoring3') ? <PageMonitoring3/> :
                             this.renderSiteBody(viewMode)
 
                     }
@@ -1283,9 +1196,7 @@ class SiteFour extends React.Component {
 
                 <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend}
                                  close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
-                <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
-                    {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
-                </Motion>
+
             </Grid>
         );
     }
@@ -1396,6 +1307,9 @@ const mapDispatchProps = (dispatch) => {
         handleResetMap: (data) => {
             dispatch(actions.resetMap(data))
         },
+        handleAppLaunch: (data) => {
+            dispatch(actions.appLaunch(data))
+        }
     };
 };
 
