@@ -39,7 +39,7 @@ import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
 import {cutArrayList} from "../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
-import '../css/pages/monitoring_kj.css';
+import '../css/pages/monitoring.css';
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {ComposableMap, Geographies, Geography, Graticule, ZoomableGroup} from "react-simple-maps";
@@ -1129,9 +1129,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                             <div className='page_monitoring_row'>
 
-                                                {/* ___col___4*/}
-                                                {/* ___col___4*/}
-                                                {/* ___col___4*/}
+                                                {/* ___col___3*/}
+                                                {/* ___col___3*/}
+                                                {/* ___col___3*/}
                                                 <div className='page_monitoring_column_kj002'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
