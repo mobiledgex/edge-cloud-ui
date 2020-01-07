@@ -2,16 +2,15 @@ import 'react-hot-loader'
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
+import {Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
 import FlexBox from "flexbox-react";
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker, TimePicker,} from 'antd';
+import {DatePicker,} from 'antd';
 import * as reducer from "../utils";
-import Ripples from 'react-ripples'
 import {
     fetchAppInstanceList,
     filterAppInstanceListByCloudLet,
@@ -25,24 +24,22 @@ import {
     filterInstanceCountOnCloutLetOne,
     getMetricsUtilizationAtAppLevel,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, makeHardwareUsageListPerInstance, renderBarGraph002,
-    renderBarGraphForCpuMem,
+    makeClusterListSelectBox,
+    renderBarGraph,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
     renderLineChart,
-    renderPieChart2AndAppStatus,
     renderPlaceHolder,
     renderPlaceHolder2
 } from "../services/PageMonitoringService";
-import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../shared/Constants";
+import {HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
 import {cutArrayList} from "../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
 import moment from "moment";
-
-import {Button as Button2} from '@material-ui/core'
+import ToggleDisplay from 'react-toggle-display';
 
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
@@ -89,6 +86,8 @@ type State = {
     clusterList: any,
     filteredCpuUsageList: any,
     filteredMemUsageList: any,
+    filteredDiskUsageList: any,
+    filteredNetworkUsageList: any,
     counter: number,
     appInstanceList: Array<TypeAppInstance>,
     allAppInstanceList: Array<TypeAppInstance>,
@@ -120,6 +119,7 @@ type State = {
     isShowUtilizationArea: boolean,
     currentGridIndex: number,
     currentTabIndex: number,
+    show: boolean,
 }
 
 
@@ -138,6 +138,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clusterList: [],
             filteredCpuUsageList: [],
             filteredMemUsageList: [],
+            filteredDiskUsageList: [],
+            filteredNetworkUsageList: [],
             isReady: false,
             counter: 0,
             appInstanceList: [],
@@ -171,6 +173,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isShowUtilizationArea: false,
             currentGridIndex: -1,
             currentTabIndex: 0,
+            show: false,
         };
 
         intervalHandle = null;
@@ -223,7 +226,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isReady: false,
             })
             //todo: REALDATA
-            // let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
+            //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
             //todo: FAKEJSON FOR TEST
             let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/appInstanceList')
@@ -274,22 +277,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            /*  let usageList = await Promise.all([
-                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
-                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
-                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
-                   makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
-               ])
-               let cpuUsageListPerOneInstance = usageList[0]
-               let memUsageListPerOneInstance = usageList[1]*/
-            console.log('_result===>', usageList);
+            /* let usageList = await Promise.all([
+                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
+                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
+                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
+                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
+             ])*/
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
+            //let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
+            //let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
             //todo: ################################################################
             let usageList = require('../jsons/allUsageList_50')
-            let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
-            let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
 
 
             //todo: MAKE SELECTBOX.
@@ -301,12 +301,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 allCpuUsageList: usageList[0],
                 allMemUsageList: usageList[1],
-                allDiskUsageList: usageList[2],
-                allNetworkUsageList: usageList[3],
+                allDiskUsageList: usageList[2],//diskUsage
+                allNetworkUsageList: usageList[3],//networkUsage
                 cloudletList: cloudletList,
                 clusterList: clusterList,
-                filteredCpuUsageList: cpuUsageListPerOneInstance,
-                filteredMemUsageList: memUsageListPerOneInstance,
+                filteredCpuUsageList: usageList[0],
+                filteredMemUsageList: usageList[1],
+                filteredDiskUsageList: usageList[2],
+                filteredNetworkUsageList: usageList[3],
             });
 
 
@@ -533,44 +535,31 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                 >
 
-                                    <Button style={{backgroundColor: 'white'}} onClick={async () => {
+                                    <div style={{backgroundColor: 'transparent', width: 50, marginBottom: -3}} onClick={async () => {
 
                                         this.refreshAllData();
 
                                     }}>
-                                        RELOAD
-                                    </Button>
+                                        <FA name="refresh" style={{fontSize: 30}}/>
+                                    </div>
 
-                                    <div style={{marginLeft: 10,}}>
-                                        <Button secondary={true} style={{backgroundColor: 'red', marginLeft: 10,}} onClick={async () => {
-                                            await this.setState({
-                                                currentGridIndex: -1,
-                                                currentTabIndex: 0,
-                                            })
-                                            await this.handleSelectBoxChanges('ALL', '', '', '')
-                                        }}>
-                                            RESET_ALL
-
-                                        </Button>
+                                    <div style={{marginLeft: 10,}}
+                                         onClick={async () => {
+                                             await this.setState({
+                                                 currentGridIndex: -1,
+                                                 currentTabIndex: 0,
+                                             })
+                                             await this.handleSelectBoxChanges('ALL', '', '', '')
+                                         }}
+                                    >
+                                        <div>RESET_ALL</div>
                                     </div>
                                 </div>
-
-
                             </div>
                             {/*todo:REGION Dropdown*/}
                             {/*todo:REGION Dropdown*/}
                             {/*todo:REGION Dropdown*/}
-                            <div style={{
-                                color: 'white',
-                                backgroundColor: '#393939',
-                                height: 39,
-                                alignItems: 'center',
-                                alignSelf: 'center',
-                                justifyContent: 'center',
-                                display: 'flex',
-                                marginTop: -8,
-                                width: 100
-                            }}>
+                            <div style={Styles.selectHeader}>
                                 Region
                             </div>
                             <Dropdown
@@ -594,17 +583,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:CloudLet selectbox*/}
                             {/*todo:CloudLet selectbox*/}
                             {/*todo:CloudLet selectbox*/}
-                            <div style={{
-                                color: 'white',
-                                backgroundColor: '#393939',
-                                height: 39,
-                                alignItems: 'center',
-                                alignSelf: 'center',
-                                justifyContent: 'center',
-                                display: 'flex',
-                                marginTop: -8,
-                                width: 100
-                            }}>
+                            <div style={Styles.selectHeader}>
                                 CloudLet
                             </div>
                             <Dropdown
@@ -631,17 +610,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:Cluster selectbox*/}
                             {/*todo:Cluster selectbox*/}
                             {/*todo:Cluster selectbox*/}
-                            <div style={{
-                                color: 'white',
-                                backgroundColor: '#393939',
-                                height: 39,
-                                alignItems: 'center',
-                                alignSelf: 'center',
-                                justifyContent: 'center',
-                                display: 'flex',
-                                marginTop: -8,
-                                width: 100
-                            }}>
+                            <div style={Styles.selectHeader}>
                                 Cluster
                             </div>
                             <Dropdown
@@ -663,21 +632,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             />
 
-
-                            {/*todo:RangePicker*/}
-                            {/*todo:RangePicker*/}
-                            {/*todo:RangePicker*/}
-                            <div style={{
-                                color: 'white',
-                                backgroundColor: '#393939',
-                                height: 39,
-                                alignItems: 'center',
-                                alignSelf: 'center',
-                                justifyContent: 'center',
-                                display: 'flex',
-                                marginTop: -8,
-                                width: 100
-                            }}>
+                            {/*todo:TimeRange*/}
+                            {/*todo:TimeRange*/}
+                            <div style={Styles.selectHeader}>
                                 TimeRange
                             </div>
                             <div style={{marginTop: -8}}>
@@ -700,6 +657,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
                                         'This Month': [moment().startOf('month'), moment().endOf('month')],
                                         'Last Month': [moment().date(-30), moment().date(-1)],
+                                        /* 'Last Month2': [moment().date(-30), moment().date(-1)],
+                                         'Last Month3': [moment().date(-30), moment().date(-1)],
+                                         'Last Month4': [moment().date(-30), moment().date(-1)],
+                                         'Last Month5': [moment().date(-30), moment().date(-1)],
+                                         'Last Month6': [moment().date(-30), moment().date(-1)],
+                                         'Last Month7': [moment().date(-30), moment().date(-1)],
+                                         'Last Month8': [moment().date(-30), moment().date(-1)],
+                                         'Last Month9': [moment().date(-30), moment().date(-1)],*/
                                     }}
                                     style={{width: 300}}
                                 />
@@ -821,12 +786,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </Column>
                         </Row>
                     </Grid>
-                    <div className='grid00001'
+                    <div style={{
+                        marginTop: 10,
+                        //overflowY: 'scroll',
+                        //height: 525,
+                    }}
                          ref={(div) => {
                              this.messageList = div;
                          }}
                     >
-                        <Grid columns={8} padded={true}>
+                        <Grid columns={8} padded={true}
+
+                              style={{
+                                  marginTop: 10,
+                                  overflowY: 'auto',//@todo: 스크롤 처리 부분...
+                                  height: this.state.appInstanceList.length * 35 + 110,
+                              }}
+                        >
                             {/*todo:ROW HEADER*/}
                             {/*todo:ROW HEADER*/}
                             {/*todo:ROW HEADER*/}
@@ -845,10 +821,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                 return (
                                     <Row
-                                        className='gridRow'
+
                                         style={{
                                             color: index === this.state.currentGridIndex ? 'white' : 'white',
-                                            backgroundColor: index === this.state.currentGridIndex && '#4fd1ff'
+                                            backgroundColor: index === this.state.currentGridIndex && '#4fd1ff',
+                                            height: 50
                                         }}
                                         onClick={async () => {
                                             //alert(item.AppName)
@@ -927,38 +904,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'DISK', render: () => {
                     return (
                         <Pane>
-                            <div>
-                                DISK
-                            </div>
-                            <div>
-                                DISK
-                            </div>
-                            <div>
-                                DISK
-                            </div>
-                            <div>
-                                DISK
-                            </div>
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'NETWORK', render: () => {
-                    return (
-                        <Pane>
-                            <div>
-                                NETWORK
-                            </div>
-                            <div>
-                                NETWORK
-                            </div>
-                            <div>
-                                NETWORK
-                            </div>
-                            <div>
-                                NETWORK
-                            </div>
+                            {this.renderDiskArea()}
                         </Pane>
                     )
                 }
@@ -971,19 +917,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
 
-                    {/*1111111111*/}
-                    {/*1111111111*/}
-                    {/*1111111111*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
                         <div className='page_monitoring_container'>
-                            {renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {renderBarGraph(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
-                    {/*1111111111*/}
-                    {/*1111111111*/}
-                    {/*1111111111*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                      {/*  <div className='page_monitoring_title_area'>
+                        {/*  <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 Transition Of CPU Usage
                             </div>
@@ -1004,7 +950,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1111111111*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
                         <div className='page_monitoring_container'>
-                            {renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {renderBarGraph(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
                     {/*1111111111*/}
@@ -1016,6 +962,35 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                     </div>
 
+                </div>
+            )
+        }
+
+        renderDiskArea() {
+            return (
+                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
+
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_container'>
+                            {renderBarGraph(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                        </div>
+                    </div>
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        {/*  <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Transition Of CPU Usage
+                            </div>
+                        </div>*/}
+                        <div className='page_monitoring_container'>
+                            {renderLineChart(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                        </div>
+                    </div>
                 </div>
             )
         }
@@ -1087,9 +1062,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </Modal>
                     <SemanticToastContainer/>
                     <Grid.Column className='contents_body'>
-                        {/*todo:####################*/}
                         {/*todo:Content Header part      */}
-                        {/*todo:####################*/}
                         {this.renderHeader()}
 
                         <Grid.Row className='site_content_body' style={{marginTop: 0}}>
@@ -1160,19 +1133,103 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     </FlexBox>
 
                                                 </div>
-                                                {/* todo:인스턴트 리스트 그리드 부분*/}
-                                                {/* todo:인스턴트 리스트 그리드 부분*/}
-                                                {/* todo:renderAppInstanceGrid*/}
+                                                {/* todo:NETWORK LIST 그리드 부분____4nd_col*/}
+                                                {/* todo:NETWORK LIST 그리드 부분____4nd_col*/}
+                                                {/* todo:NETWORK LIST 그리드 부분____4nd_col*/}
                                                 <div className='page_monitoring_column_kj003'>
-                                                    <div style={{fontSize: 20, display: 'flex', alignItems: 'center', marginLeft: 10,}}>
-                                                        App Instance List
+                                                    <div style={{flexDirection:'row', display:'flex'}}>
+                                                        <div style={{fontSize: 20, display: 'flex', alignItems: 'center', marginLeft: 10,}}>
+                                                            NETWORK TOP 5 LIST
+                                                        </div>
+                                                        <div className="ui radio checkbox" style={{marginLeft:25,marginTop:5,}}>
+                                                            <input type="radio" className="hidden"  tabIndex="0"/>
+                                                            <label style={{color:'white'}}>Make my profile visible</label>
+                                                        </div>
+                                                        <div className="ui radio checkbox" style={{marginLeft:25,}}>
+                                                            <input type="radio" className="hidden"  tabIndex="0"/>
+                                                            <label style={{color:'white'}}>Make my profile 222</label>
+                                                        </div>
+                                                        <div className="ui radio checkbox" style={{marginLeft:25,}}>
+                                                            <input type="radio" className="hidden"  tabIndex="0"/>
+                                                            <label style={{color:'white'}}>Make my profile 33</label>
+                                                        </div>
                                                     </div>
                                                     <div className='page_monitoring_column_for_grid'>
-                                                        {this.renderAppInstanceGrid()}
+                                                        <div>
+                                                            sdlkflsdkflksdf
+                                                        </div>
+                                                        <div>
+                                                            sdlkflsdkflksdf
+                                                        </div>
+                                                        <div>
+                                                            sdlkflsdkflksdf
+                                                        </div>
                                                     </div>
                                                 </div>
 
 
+                                            </div>
+
+                                            {/*todo: 하단 그리드 area____toggle Up Button*/}
+                                            {/*todo: 하단 그리드 area____toggle Up Button*/}
+                                            {/*todo: 하단 그리드 area____toggle Up Button*/}
+                                            <p
+                                                onClick={() => {
+                                                    this.setState({
+                                                        show: !this.state.show,
+                                                    })
+
+                                                }}
+
+                                                style={{display: 'flex', width: '100%', backgroundColor: 'transparent', alignItems: 'center', justifyContent: 'center'}}
+                                            >
+                                                <button style={{color: 'black'}}>SHOW APP INSTANCE LIST
+                                                </button>
+                                                <div style={{marginLeft: 15}}>
+                                                    <FA name="chevron-up" style={{fontSize: 15, color: 'white'}}/>
+                                                </div>
+                                            </p>
+
+
+                                            {/*todo: 하단 그리드 AREA____SHOW_UP AREA*/}
+                                            {/*todo: 하단 그리드 AREA____SHOW_UP AREA*/}
+                                            {/*todo: 하단 그리드 AREA____SHOW_UP AREA*/}
+                                            <div className="App">
+                                                <ToggleDisplay if={this.state.show} tag="section">
+                                                    <div
+                                                        style={{
+                                                            backgroundColor: '#494949',
+                                                            position: 'absolute', zIndex: 999999, bottom: 50, height: 700, width: '96%', left: 48
+                                                        }}
+                                                    >
+                                                        <p
+                                                            onClick={() => {
+
+                                                                this.setState({
+                                                                    show: !this.state.show,
+                                                                })
+
+                                                            }}
+
+                                                            style={{display: 'flex', width: '100%', backgroundColor: 'transparent', alignItems: 'center', justifyContent: 'center'}}
+                                                        >
+                                                            <button style={{color: 'black'}}>HIDE APP INSTANCE LIST
+                                                            </button>
+                                                            <div style={{marginLeft: 15}}>
+                                                                <FA name="chevron-down" style={{fontSize: 15, color: 'white'}}/>
+                                                            </div>
+                                                        </p>
+                                                        {/*todo:renderAppInstanceGrid*/}
+                                                        {/*todo:renderAppInstanceGrid*/}
+                                                        {/*todo:renderAppInstanceGrid*/}
+                                                        <div style={{fontSize: 20, display: 'flex', alignItems: 'center', marginLeft: 10,}}>
+                                                            App Instance List
+                                                        </div>
+                                                        <div className='page_monitoring_column_for_grid2'>
+                                                            {this.renderAppInstanceGrid()}
+                                                        </div>
+                                                    </div>
+                                                </ToggleDisplay>
                                             </div>
 
                                         </div>
@@ -1193,3 +1250,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
     }
 ))));
+
+const Styles = {
+    selectHeader: {
+        color: 'white',
+        backgroundColor: 'transparent',
+        height: 39,
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        display: 'flex',
+        marginTop: -8,
+        width: 100
+    },
+
+    div001: {
+        fontSize: 25,
+        color: 'white',
+    }
+}

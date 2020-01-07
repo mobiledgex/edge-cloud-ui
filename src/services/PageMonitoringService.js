@@ -233,19 +233,62 @@ export const makeCloudletListSelectBox = (appInstanceList: Array) => {
  * @param hardwareType
  * @returns {*}
  */
-export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
+export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
+
+    function renderUsageByType(usageOne, hardwareType) {
+
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            return usageOne.sumCpuUsage
+        }
+
+        if (hardwareType === HARDWARE_TYPE.MEM) {
+            return usageOne.sumMemUsage
+        }
+
+        if (hardwareType === HARDWARE_TYPE.DISK) {
+            return usageOne.sumDiskUsage
+        }
+    }
+
+    function renderUsageLabelByType(usageOne, hardwareType) {
+
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            return usageOne.sumCpuUsage.toFixed(2) + " %"
+        }
+
+        if (hardwareType === HARDWARE_TYPE.MEM) {
+            return numberWithCommas(usageOne.sumMemUsage) + " Byte"
+        }
+
+        if (hardwareType === HARDWARE_TYPE.DISK) {
+            return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
+        }
+    }
+
+    function renderTitle(hardwareType) {
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            return ' Top 5 of CPU Usage'
+        }
+
+        if (hardwareType === HARDWARE_TYPE.MEM) {
+            return ' Top 5 of MEM Usage'
+        }
+
+        if (hardwareType === HARDWARE_TYPE.DISK) {
+            return ' Top 5 of DISK Usage'
+        }
+    }
 
     let chartDataList = [];
     chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
     for (let index = 0; index < usageList.length; index++) {
         if (index < 5) {
             let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
-                hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage,
+                renderUsageByType(usageList[index], hardwareType),
                 CHART_COLOR_LIST[index],
-                hardwareType === 'cpu' ? usageList[index].sumCpuUsage.toFixed(2) + " %" : numberWithCommas(usageList[index].sumMemUsage) + " Byte"]
+                renderUsageLabelByType(usageList[index], hardwareType)]
             chartDataList.push(barDataOne);
         }
-
     }
 
     return (
@@ -298,8 +341,9 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                          }*/
                     }
                 },
-                //is3D: true,
-                title: hardwareType === HARDWARE_TYPE.CPU ? ' Top 5 of CPU Usage' : ' Top 5 of MEM Usage',
+
+                is3D: true,
+                title: '',
                 titleTextStyle: {
                     color: '#fff',
                     fontSize: 20,
