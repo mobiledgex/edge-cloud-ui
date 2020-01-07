@@ -161,7 +161,7 @@
     border-radius: 5px;
     padding: 10px;
     width: 100%;
-    height: calc(50% - 10px);
+    height: 200px;
 }
 .page_audit_code_request_title {
     display: flex;
@@ -188,7 +188,7 @@
     margin: 20px 0 0 0;
     padding: 10px;
     width: 100%;
-    height: calc(50% - 10px);
+    height: 200px;
 }
 .page_audit_code_response_title {
     display: flex;
