@@ -1,6 +1,6 @@
 
 
-let memUsageListPerOneInstance = require('../jsons/memUsage')
+let memUsageListPerOneInstance = require('../Json/memUsage')
 
 
 

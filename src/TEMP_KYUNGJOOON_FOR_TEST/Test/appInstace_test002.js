@@ -1,6 +1,6 @@
 
 
-let appinstanceListByRegions = require('../jsons/appinstanceListByRegionsUS')
+let appinstanceListByRegions = require('../Json/appinstanceListByRegionsUS')
 
 
 let cloudletList=[]
