@@ -1093,7 +1093,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
-                                            <div className='page_monitoring_row' style={{opacity: !this.state.isShowBottomGrid ? 1.0 : 0.5}}>
+                                            <div className='page_monitoring_row' style={{opacity: !this.state.isShowBottomGrid ? 1.0 : 0.4}}>
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
@@ -1159,8 +1159,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                         <div style={{marginLeft: 25,}}>
                                                             <Dropdown
-                                                                clearable={this.state.regionSelectBoxClearable}
-                                                                placeholder='SELECT OPTIONS'
+                                                                //clearable={this.state.regionSelectBoxClearable}
+                                                                placeholder='SELECT NETWORK OPTIONS'
                                                                 selection
                                                                 options={[
                                                                     {value: 'RCV_BTYE', text: 'RCV_BTYE'},
@@ -1178,7 +1178,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                          })
                                                                      }, 1000)*/
                                                                 }}
-                                                                value={'RVCV_BTYE'}
+                                                                //value={'RVCV_BTYE'}
                                                                 style={{width: 250}}
                                                             />
                                                         </div>
