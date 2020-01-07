@@ -9,10 +9,9 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker, TimePicker,} from 'antd';
+import {DatePicker,} from 'antd';
 import * as reducer from "../utils";
 import {
-    fetchAppInstanceList,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
@@ -24,22 +23,22 @@ import {
     filterInstanceCountOnCloutLetOne,
     getMetricsUtilizationAtAppLevel,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, makeHardwareUsageListPerInstance, renderBarGraph002,
+    makeClusterListSelectBox,
     renderBarGraphForCpuMem,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
     renderLineChart,
-    renderPieChart2AndAppStatus,
     renderPlaceHolder,
     renderPlaceHolder2
 } from "../services/PageMonitoringService";
-import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../shared/Constants";
+import {HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
 import {cutArrayList} from "../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
-import moment from "moment";
+import '../css/pages/monitoring_kj.css';
+
 
 const FA = require('react-fontawesome')
 const {Column, Row} = Grid;
@@ -66,7 +65,6 @@ type Props = {
     sendingContent: any,
     loading: boolean,
     isLoading: boolean,
-    toggleLoading: Function,
 }
 
 type State = {

@@ -3,31 +3,17 @@ import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 import qs from "qs";
-import FormatComputeInst from "./formatter/formatComputeInstance";
+import {formatData} from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
 import {getAppInstanceHealth, makeFormForAppInstance, numberWithCommas} from "./SharedService";
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
-import {Line as ReactChartJs, Bar as Bar2, HorizontalBar} from 'react-chartjs-2';
+import {HorizontalBar, Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
 import BubbleChart from "../components/BubbleChart";
 import PageMonitoring2 from "../sites/PageMonitoring2";
 import type {TypeAppInstance} from "../shared/Types";
-import {
-    Bar as RBar,
-    BarChart,
-    BarLabel,
-    BarSeries,
-    Line,
-    LinearXAxis,
-    LinearYAxis,
-    LinearYAxisTickSeries,
-    LineChart,
-    LineSeries,
-    StackedAreaChart,
-    StackedAreaSeries, StackedNormalizedAreaChart,
-    StackedNormalizedAreaSeries
-} from "reaviz";
+import {Bar as RBar, BarChart, BarLabel, BarSeries, Line, LinearXAxis, LinearYAxis, LinearYAxisTickSeries, StackedAreaChart, StackedAreaSeries} from "reaviz";
 import {notification} from "antd";
 
 /**
@@ -1928,7 +1914,7 @@ export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'U
         })).then((response) => {
 
             let parseData = JSON.parse(JSON.stringify(response));
-            let finalizedJSON = FormatComputeInst(parseData, serviceBody)
+            let finalizedJSON = formatData(parseData, serviceBody)
             console.log('finalizedJSON===>', finalizedJSON);
             return finalizedJSON;
         })

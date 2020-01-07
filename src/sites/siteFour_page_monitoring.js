@@ -1,5 +1,4 @@
 import React from 'react';
-import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {Grid} from 'semantic-ui-react';
 //redux
@@ -14,10 +13,6 @@ import CPUChart from '../container/monitoring/cpuChart';
 import MemoryGraph from '../container/monitoring/memoryGraph';
 import MemoryChart from '../container/monitoring/memoryChart';
 import PerformanceOfAppTable from '../container/monitoring/performanceOfAppTable';
-//
-import * as services from '../services/service_compute_service';
-import * as reducer from '../utils'
-//
 import * as AppinstCloudletService from './methods/appinstCloudletService'
 
 let _self = null;
@@ -78,7 +73,7 @@ class SiteFourPageMonitoring extends React.Component {
 
     componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.regionInfo.region.length) {
-            AppinstCloudletService.setProps(nextProps.regionInfo.region, nextProps, this.receiveCloudletData);
+            //AppinstCloudletService.setProps(nextProps.regionInfo.region, nextProps, this.receiveCloudletData);
             AppinstCloudletService.getDataofAppinst(nextProps.changeRegion,nextProps.regionInfo.region);
         }
     }

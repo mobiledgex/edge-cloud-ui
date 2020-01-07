@@ -1,19 +1,14 @@
 import React from 'react';
-import { Dropdown, Button, Header, Tab } from 'semantic-ui-react';
-import { connect } from 'react-redux';
+import {Button, Header} from 'semantic-ui-react';
+import {connect} from 'react-redux';
 import sizeMe from 'react-sizeme';
-import ResizeSensor from './ResizeSensor';
 import * as actions from '../actions';
-import RGL, { WidthProvider } from "react-grid-layout";
+import RGL, {WidthProvider} from "react-grid-layout";
 import CPUMEMListView from './usage/cpumemoryListView';
 import ApplicationView from '../components/applicationView';
-import DailyReportView from '../components/dailyReportView';
-import NetworkTcpUdpView from '../components/networkTcpUdpView';
 import NetworkTcpUdpComposeView from '../components/networkTcpUdpComposeView';
-import SelectFromTo from '../components/selectFromTo';
 
 import * as serviceCluster from '../services/service_instance_service';
-import * as serviceCompute from '../services/service_compute_service';
 
 import './styles.css';
 

@@ -1,17 +1,14 @@
-import React, { Component } from 'react';
-import { Container, Button, Checkbox, Form, Label, Grid, Input } from 'semantic-ui-react'
-import { Redirect } from 'react-router';
+import React, {Component} from 'react';
+import {Button, Container, Grid, Input, Label} from 'semantic-ui-react'
+import {Redirect} from 'react-router';
 //redux
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from '../../actions';
 // alert
-import Alert from 'react-s-alert';
 // API
-import * as MyAPI from '../utils/MyAPI'
-import { LOCAL_STRAGE_KEY } from '../utils/Settings'
+import {LOCAL_STRAGE_KEY} from '../utils/Settings'
 import * as serviceLogin from '../../services/service_login_api';
 import RegistryUserForm from '../reduxForm/RegistryUserForm';
-import * as computeService from "../../services/service_compute_service";
 /*
 
  */
