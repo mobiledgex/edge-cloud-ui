@@ -18,10 +18,10 @@ import {
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
     filterAppInstOnCloudlet,
-    filterCpuOrMemUsageByAppInst,
-    filterCpuOrMemUsageByCloudLet,
-    filterCpuOrMemUsageByCluster,
-    filterCpuOrMemUsageListByRegion,
+    filterUsageByAppInst,
+    filterUsageByCloudLet,
+    filterUsageByCluster,
+    filterUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
     getMetricsUtilizationAtAppLevel,
     makeCloudletListSelectBox,
@@ -384,8 +384,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
             let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
-            let filteredCpuUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allCpuUsageList);
-            let filteredMemUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allMemUsageList);
+            let filteredCpuUsageList = filterUsageListByRegion(pRegion, this.state.allCpuUsageList);
+            let filteredMemUsageList = filterUsageListByRegion(pRegion, this.state.allMemUsageList);
 
 
             //todo: ##########################################
@@ -396,8 +396,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                 appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
                 clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
-                filteredCpuUsageList = filterCpuOrMemUsageByCloudLet(filteredCpuUsageList, pCloudLet);
-                filteredMemUsageList = filterCpuOrMemUsageByCloudLet(filteredMemUsageList, pCloudLet);
+                filteredCpuUsageList = filterUsageByCloudLet(filteredCpuUsageList, pCloudLet);
+                filteredMemUsageList = filterUsageByCloudLet(filteredMemUsageList, pCloudLet);
 
             }
 
@@ -409,8 +409,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
                 //todo:app instalce list를 필터링
                 appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
-                filteredCpuUsageList = filterCpuOrMemUsageByCluster(filteredCpuUsageList, pCluster);
-                filteredMemUsageList = filterCpuOrMemUsageByCluster(filteredMemUsageList, pCluster);
+                filteredCpuUsageList = filterUsageByCluster(filteredCpuUsageList, pCluster);
+                filteredMemUsageList = filterUsageByCluster(filteredMemUsageList, pCluster);
             }
 
             //todo: ##########################################
@@ -419,8 +419,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (pAppInstance !== '') {
                 //todo:app instalce list를 필터링
                 //appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
-                filteredCpuUsageList = filterCpuOrMemUsageByAppInst(filteredCpuUsageList, pAppInstance);
-                filteredMemUsageList = filterCpuOrMemUsageByAppInst(filteredMemUsageList, pAppInstance);
+                filteredCpuUsageList = filterUsageByAppInst(filteredCpuUsageList, pAppInstance);
+                filteredMemUsageList = filterUsageByAppInst(filteredMemUsageList, pAppInstance);
             }
 
 
