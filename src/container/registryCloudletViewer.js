@@ -1,5 +1,5 @@
 import React from 'react';
-import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
+import {Tab} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -8,14 +8,11 @@ import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import './styles.css';
-import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
 
-import * as service from '../services/service_compute_service';
+import * as serviceMC from '../services/serviceMC';
 import SiteFourCreateInstForm from "./siteFourCreateInstForm";
-import Alert from "react-s-alert";
-import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -175,71 +172,20 @@ class RegistryCloudletViewer extends React.Component {
             _self.setState({dummyData:_self.state.fakeData, resultData:(!_self.state.resultData)?_self.props.devData:_self.state.resultData})
         }
     }
-    receiveSubmit = (result, body) => {
-        console.log("20191119 cloudlet paseDatapaseDatapaseData",result, ": this.props.changeRegion=", this.props.changeRegion,": region = ", this.props.region, ":", this.props.regionInfo, ":", this.props.getRegion)
-        this.pauseRender = false;
-        let paseData = result.data;
-        if(paseData.error && !this.state.errorClose) {
-            //this.setState({clusterInstCreate:false})
-            this.props.handleLoadingSpinner(false);
-            if(paseData.error == 'Key already exists'){
-                
-            } else {
-                this.props.handleAlertInfo('error',paseData.error)
-            }
-        } else {
-            if (result.data.error) {
-                this.props.handleAlertInfo('error', result.data.error)
-            } else {
-                console.log('20191119 receive submit result is success..', result,":", result.data)
-                this.props.handleAlertInfo('success',result.data.message)
-            }
-            if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
-
+    receiveSubmit = (mcRequest) => {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response.data
+                if (response.code === 200) {
+                    _self.props.handleLoadingSpinner(false);
+                    _self.props.gotoUrl();
+                    _self.setState({ errorClose: true })
+                }
+                else {
+                    this.props.handleAlertInfo('error', response.data.message)
+                }
             }
         }
-        setTimeout(() => {
-            console.log('20191119 props refresh...', this.props.refresh, ": this.props.changeRegion=", this.props.changeRegion,": region = ", this.props.region, ":", this.props.regionInfo, ":", this.props.getRegion)
-            if(_self.props.refresh){
-                _self.props.refresh(this.props.changeRegion ? this.props.changeRegion : 'All');
-            } else {
-                //_self.props.handleChangeRegion(this.props.changeRegion ? this.props.changeRegion : 'All');
-                //_self.props.handleComputeRefresh(true);
-                _self.gotoUrl();
-            }
-
-        }, 3000);
-
-        // if(paseData.message) {
-        //     Alert.error(paseData.message, {
-        //         position: 'top-right',
-        //         effect: 'slide',
-        //         onShow: function () {
-        //             console.log('aye!')
-        //         },
-        //         beep: true,
-        //         timeout: 5000,
-        //         offset: 100
-        //     });
-        // } else {
-        //     let splitData = JSON.parse( "["+paseData.split('}\n{').join('},\n{')+"]" );
-
-        //     if(result.data.indexOf('successfully') > -1 || result.data.indexOf('ok') > -1) {
-        //         Alert.success("Success!", {
-        //             position: 'top-right',
-        //             effect: 'slide',
-        //             onShow: function () {
-        //                 console.log('aye!')
-        //             },
-        //             beep: true,
-        //             timeout: 5000,
-        //             offset: 100
-        //         });
-        //         _self.props.success();
-        //         _self.reqCount = 0;
-        //     }
-        // }
-
     }
 
     componentDidMount() {
@@ -292,8 +238,7 @@ class RegistryCloudletViewer extends React.Component {
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
                 console.log('20191119 create cloudlet....',nextProps.submitValues)
-                //service.createNewMultiClusterInst('CreateClusterInst',{params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit, nextProps.validateValue.Cloudlet)
-                service.createNewCloudlet('CreateCloudlet', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
+                serviceMC.sendWSRequest({ uuid:serviceMC.generateUniqueId(),token: store.userToken, method: serviceMC.getEP().CREATE_CLOUDLET, data: nextProps.submitValues }, this.receiveSubmit)
                 setTimeout(() => {
                     this.props.handleLoadingSpinner(false);
                     this.props.gotoUrl();

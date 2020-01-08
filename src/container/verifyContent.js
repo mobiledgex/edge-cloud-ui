@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import { Label, Loader } from 'semantic-ui-react'
-import RSAKey from 'react-native-rsa';
-import Login from '../components/login';
 
 //ajax test
 
@@ -9,7 +6,7 @@ import Login from '../components/login';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 //service
-import * as service from "../services/service_compute_service";
+import * as serviceMC from "../services/serviceMC";
 import {GridLoader} from "react-spinners";
 import Alert from 'react-s-alert';
 
@@ -58,31 +55,21 @@ class VerifyContent extends Component {
         _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
-    receiveData(result) {
-        console.log('receive result...', result.data)
-        if(result.data.error) {
-            Alert.error(result.data.error, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-
-            setTimeout(() => _self.goToNext('/site1'),3000)
-
-        } else {
-            Alert.success(result.data.message, {
-                position: 'top-right',
-                effect: 'slide',
-                timeout: 5000
-            });
-
-            setTimeout(() => _self.goToNext('/site1'),3000)
+    receiveData(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                Alert.success(response.data.message, {
+                    position: 'top-right',
+                    effect: 'slide',
+                    timeout: 5000
+                });
+                setTimeout(() => _self.goToNext('/site1'), 3000)
+            }
         }
-
-
     }
     requestVerify(token) {
-        service.getMCService('UpdateVerify',{service:'verifyemail',token:token}, this.receiveData, this)
+        serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().VERIFY_EMAIL, data: { service: 'verifyemail' } }, this.receiveData)
     }
 
 

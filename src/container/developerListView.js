@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, Grid, Header, Button, Table, Popup, Icon, Input, Divider, Container} from 'semantic-ui-react';
+import {Button, Header, Icon, Input, Popup, Table} from 'semantic-ui-react';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../actions';
@@ -11,11 +11,8 @@ import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import DeleteItem from './deleteItem';
 import './styles.css';
-import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
-import MaterialIcon from "material-icons-react";
-import * as services from '../services/service_compute_service';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -452,7 +449,7 @@ class DeveloperListView extends React.Component {
                  style={{backgroundColor: 'transparent', width: 0, height: 0, position: 'relative'}}></div>
             <Button
                     className="table_actions_button"
-                    disabled={(localStorage.selectRole === 'AdminManager' || localStorage.selectOrg == item.Organization || (this.state.selectUse == index)) ? false : true}
+                    disabled={(localStorage.selectRole === 'AdminManager' || (this.state.selectUse == index)) ? false : true}
                     // color={localStorage.selectRole === 'AdminManager' ? 'teal' : (this.state.selectUse == index) ? 'teal' : null}
                     onClick={() => {
                         this.setState({actionContextRef: 'actionCell_' + index})
@@ -473,11 +470,8 @@ class DeveloperListView extends React.Component {
         <div key={j} textAlign='center'
              style={(this.state.selectUse == i) ? {whiteSpace: 'nowrap', background: '#444'} : {whiteSpace: 'nowrap'}}>
             {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager') ?
-                <Button className='stepOrgDeveloper1' color={(localStorage.selectOrg == item.Organization) ? 'teal' : (this.state.selectUse == i) ? 'teal' : null}
-                        onClick={(evt) => this.onUseOrg(item, i, evt)}
-
-                >
-                    {/* <Icon name='check' /> */}
+                <Button className='stepOrgDeveloper1' color={(this.state.selectUse == i) ? 'teal' : null}
+                        onClick={(evt) => this.onUseOrg(item, i, evt)}>
                     Manage
                 </Button> : null}
             <Button disabled style={{display: 'none'}} key={`key_${j}`} color='teal'
@@ -532,9 +526,8 @@ class DeveloperListView extends React.Component {
 
                                             {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager') ?
                                                 <Button className='stepOrgDeveloper1'
-                                                        color={(localStorage.selectOrg == item.Organization) ? 'teal' :(this.state.selectUse == i) ? 'teal' : null}
-                                                        onClick={(evt) => this.onUseOrg(item, i, evt)}
-                                                >
+                                                        color={(this.state.selectUse == i) ? 'teal' : null}
+                                                        onClick={(evt) => this.onUseOrg(item, i, evt)}>
                                                     {/* <Icon name='check' /> */}
                                                     Manage
                                                 </Button> : null

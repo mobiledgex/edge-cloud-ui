@@ -3,7 +3,7 @@ import {Button, Divider, Modal, Grid, Input, TextArea, Dropdown} from "semantic-
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { withRouter } from 'react-router-dom';
-import * as serviceLogin from '../services/service_login_api';
+import * as serviceMC from '../services/serviceMC';
 
 const host = window.location.host;
 let _self = null;
@@ -36,12 +36,10 @@ class PopVerify extends React.Component {
     }
     onSendEmail() {
         _self.props.handleLoadingSpinner(true);
-        serviceLogin.resendVerify('resendverify',
-            {
-                username: _self.props.userName,
-                email:_self.props.email,
-                callbackurl : 'https://'+host+'/verify'
-            }, _self.props.receiveResendVerify)
+        let requestBody = {
+            data: { method: serviceMC.getEP().RESEND_VERIFY, data: { username: _self.props.userName, email: _self.props.email, callbackurl: `https://${host}/verify` } }
+        }
+        serviceMC.sendRequest(_self, requestBody, _self.props.receiveResendVerify)
     }
 
     /** ************************ **/

@@ -1,16 +1,21 @@
-import * as moment from 'moment';
-let trimData = (datas) => {
-    let newData = datas.splice(0,1);
-    return datas ;
-}
-const week_kr = ["월","화","수","목","금","토","일"]
-let week = moment().format('E');
-let getWeek = week_kr[(week-1)];
-const numberDes =(a,b)=> (
-    b-a
-)
+import {generateUniqueId} from '../serviceMC';
 
-let generateData = (datas,body) => {
+export const getKey = (data)=>
+{
+    const { CloudletName, Operator, Region } = data
+    return ({
+        region: Region,
+        cloudlet: {
+            key: {
+                operator_key: { name: Operator },
+                name: CloudletName
+            }
+        }
+    })
+}
+
+
+export const formatData = (datas,body) => {
     let values = [];
     let toArray = null;
     let toJson = [];
@@ -29,10 +34,9 @@ let generateData = (datas,body) => {
     }else {
         toJson = null;
     }
-    console.log("datasdatasdatasss",toJson)
     let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
     if(toJson && toJson.length){
-        toJson.map((dataResult, i) => {
+        toJson.map((dataResult) => {
             if(dataResult.error || dataResult.message || !dataResult.data) {
                 values.push({
                     Region:'',
@@ -49,7 +53,6 @@ let generateData = (datas,body) => {
                     Edit:null
                 })
             } else {
-                let Index = i;
                 let Region = body.region || '-';
                 let CloudletName = dataResult.data.key.name || '-';
                 let Operator = dataResult.data.key.operator_key.name || '-';
@@ -60,38 +63,13 @@ let generateData = (datas,body) => {
                 let Platform_type = dataResult.data.platform_type || '-';
                 let State = dataResult.data.state || '-';
                 let Status = dataResult.data.status;
-
-                values.push({Region:Region,  CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Ip_support:Ip_support, Num_dynamic_ips:Num_dynamic_ips, Physical_name:Physical_name, Platform_type:Platform_type, State:State, Progress:'', Status:Status, Edit:newRegistKey})
+                values.push({uuid:generateUniqueId(), Region:Region,  CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Ip_support:Ip_support, Num_dynamic_ips:Num_dynamic_ips, Physical_name:Physical_name, Platform_type:Platform_type, State:State, Progress:'', Status:Status, Edit:newRegistKey})
             }
-
         })
     } else {
         values.push({Region:'',CloudletLocation:''})
     }
-
-
-    //----------------
-
-    //ascending or descending
-
-    //values.sort(numberDes);
-    //values.reverse();
-
     return values
-
 }
-const retunDate = (str) => {
-    var year = str.substring(0, 4);
-    var month = str.substring(4, 6);
-    var day = str.substring(6, 8);
-    var hour = str.substring(8, 10);
-    var minute = str.substring(10, 12);
-    //var second = str.substring(12, 14);
-    var date = new Date(year, month-1, day, hour, minute);
-    return moment(date).format('hh:mm');
-}
-const FormatComputeClouldlet = (props,body) => (
-    generateData(props,body)
-)
 
-export default FormatComputeClouldlet;
+

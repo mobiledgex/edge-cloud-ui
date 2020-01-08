@@ -1,14 +1,9 @@
 import React from 'react';
-import {Button, Divider, Modal, Grid, Input, TextArea, Dropdown} from "semantic-ui-react";
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RegistNewInput from "./registNewInput";
-
-//http://react-s-alert.jsdemo.be/
-import Alert from 'react-s-alert';
-
-import * as service from "../services/service_compute_service";
+import * as serviceMC from "../services/serviceMC";
 import * as aggregate from "../utils";
 
 let _self = null;
@@ -80,11 +75,7 @@ class RegistNewItem extends React.Component {
     }
 
     componentDidMount() {
-        
-
-        // developer(Organization)
-        //service.getMCService('showOrg',{token:store.userToken}, _self.receiveDev)
-        
+        // developer(Organization)  
     }
     componentDidUpdate(){
         
@@ -101,7 +92,7 @@ class RegistNewItem extends React.Component {
             const operValue = (nextProps.submitData.registNewInput.values)?nextProps.submitData.registNewInput.values.Operator:null;
             if(operValue) {
                 this.state.operList.map((item,i) => {
-                    if(item.Operator == operValue) {
+                    if(item.Operator === operValue) {
                         cnArr.push(item.CloudletName);
                     }
                 })
@@ -113,7 +104,7 @@ class RegistNewItem extends React.Component {
             const cloudletValue = (nextProps.submitData.registNewInput.values)?nextProps.submitData.registNewInput.values.Cloudlet:null;
             if(cloudletValue) {
                 this.state.operList.map((item,i) => {
-                    if(item.CloudletName == cloudletValue) {
+                    if(item.CloudletName === cloudletValue) {
                         locObj = item.CloudletLocation;
                     }
                 })
@@ -161,7 +152,7 @@ class RegistNewItem extends React.Component {
         this.setState({ dropdownValueOrgRole: value })
     }
     handleChangeLong = (e, {value}) => {
-        if(value == '-') {
+        if(value === '-') {
             this.setState({ locationLong: value })
             return
         }
@@ -175,7 +166,7 @@ class RegistNewItem extends React.Component {
         this.locationValue(onlyNum,this.state.locationLat)
     }
     handleChangeLat = (e, {value}) => {
-        if(value == '-') {
+        if(value === '-') {
             this.setState({ locationLat: value })
             return
         }
@@ -248,96 +239,82 @@ class RegistNewItem extends React.Component {
         _self.setState({devOptionsFour: cl, devOptionsFive: vr})
     }
     //Show Option Operator(19.04.25)
-    receiveOper(result) {
-        let operArr = [];
-        let CloudArr = [];
-        result.map((item,i) => {
-            operArr.push(item.Operator)
-        })
-        _self.setState({devOptionsOperator: [...new Set(operArr)].map((item, i) => (
-            { key: i, value: item, text: item }
-        )),operList:result})
+    receiveOper(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                let operArr = [];
+                response.data.map((item) => {
+                    operArr.push(item.Operator)
+                })
+                _self.setState({
+                    devOptionsOperator: [...new Set(operArr)].map((item, i) => (
+                        { key: i, value: item, text: item }
+                    )), operList: response.data
+                })
+            }
+
+        } 
+    }
+    
+    //Show Option clusterFlavor(19.04.25)
+    receiveCF(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.setState({
+                    devOptionsCF: response.data.map((item, i) => (
+                        { key: i, value: item.FlavorName, text: item.FlavorName }
+                    ))
+                })
+            }
+        }
+
+    }
+
+    receiveCloudlet(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let result = mcRequest
+                let groupByOper = aggregate.groupBy(result, 'Operator')
+                _self.setState({ cloudletResult: groupByOper })
+            }
+        }
+
+    }
+
+    receiveApp(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let result = mcRequest
+                let groupByOper = aggregate.groupBy(result, 'DeveloperName')
+                _self.setState({ appResult: groupByOper })
+            }
+        }
+    }
+    receiveOrg(mcRequest) {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response;
+                _self.setState({
+                    devOptionsDeveloper: response.data.map((item, i) => (
+                        { key: i, value: item.Organization, text: item.Organization }
+                    ))
+                })
+            }
+        }
+    }
+    receiveSubmit(mcRequest) {
         
     }
-    //Show Option Organization(19.04.25)
-    // receiveDev(result) {
-    //     _self.setState({devOptionsDeveloper: result.map((item, i) => (
-//             { key: i, value: item.Organization, text: item.Organization }
-//         ))})
-    // }
 
-    //Show Option clusterFlavor(19.04.25)
-    receiveCF(result) {
-        _self.setState({devOptionsCF: result.map((item, i) => (
-            { key: i, value: item.FlavorName, text: item.FlavorName }
-        ))})
-    }
-
-    receiveCloudlet(result) {
-        let groupByOper = aggregate.groupBy(result, 'Operator')
-        _self.setState({cloudletResult:groupByOper})
-    }
-    receiveApp(result) {
-        let groupByOper = aggregate.groupBy(result, 'DeveloperName')
-        _self.setState({appResult:groupByOper})
-    }
-    receiveOrg(result) {
-        _self.setState({devOptionsDeveloper: result.map((item, i) => (
-            { key: i, value: item.Organization, text: item.Organization }
-        ))})
-    }
-    receiveSubmit(result) {
-        // if(result.data.error) {
-        //     // _self.props.handleCreatingSpinner(false);
-        //     Alert.error(result.data.error, {
-        //         position: 'top-right',
-        //         effect: 'slide',
-        //         onShow: function () {
-        //             console.log('error!')
-        //         },
-        //         beep: true,
-        //         timeout: 5000,
-        //         offset: 100
-        //     });
-        //     return;
-        // }
-        //_self.props.handleLoadingSpinner(false);
-        //_self.props.refresh()
-        //데모용 잠시 막아놓음_190513
-        // if(result.data.error) {
-        //     Alert.error(result.data.error, {
-        //         position: 'top-right',
-        //         effect: 'slide',
-        //         onShow: function () {
-        //             console.log('error!')
-        //         },
-        //         beep: true,
-        //         timeout: 5000,
-        //         offset: 100
-        //     });
-        //     return;
-        // } else {
-        //     Alert.success('SUCCESS', {
-        //         position: 'top-right',
-        //         effect: 'slide',
-        //         onShow: function () {
-        //             console.log('aye!')
-        //         },
-        //         beep: true,
-        //         timeout: 5000,
-        //         offset: 100
-        //     });
-        // }
-    }
-
-    receiveSubmitCloudlet = (result, body) => {
-        console.log('20191119 cloudlet receive submit cloudlet...', result.data)
-        this.props.refresh('All')
-        if(result.data.error) {
-            this.props.handleAlertInfo('error',result.data.error)
-            return;
-        } else {
-            this.props.handleAlertInfo('success','Cloudlet '+body.params.cloudlet.key.name+' created successfully')
+    receiveSubmitCloudlet = (mcRequest) => {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let request = mcRequest.request
+                this.props.refresh('All')
+                this.props.handleAlertInfo('success', 'Cloudlet ' + request.data.cloudlet.key.name + ' created successfully')
+            }
         }
         this.props.handleLoadingSpinner(false);
     }
@@ -354,24 +331,25 @@ class RegistNewItem extends React.Component {
             const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, Number_of_Master, Number_of_Node} = this.props.submitData.registNewInput.values
             // this.props.handleCreatingSpinner(true);
             serviceBody = {
-                "token":store ? store.userToken : 'null',
-                "params": {
-                    "region":Region,
-                    "clusterinst":{
-                        "key":{
-                            "cluster_key":{"name":ClusterName},
-                            "cloudlet_key":{"operator_key":{"name":Operator},"name":Cloudlet},
-                            "developer":OrganizationName
+                method: serviceMC.getEP().CREATE_CLUSTER_INST,
+                token: store ? store.userToken : 'null',
+                data: {
+                    region: Region,
+                    clusterinst: {
+                        key: {
+                            cluster_key: { name: ClusterName },
+                            cloudlet_key: { operator_key: { name: Operator }, name: Cloudlet },
+                            developer: OrganizationName
                         },
-                        "flavor":{"name":Flavor},
-                        "ip_access":Number(IpAccess),
-                        "num_masters":Number(Number_of_Master),
-                        "num_nodes":Number(Number_of_Node)
+                        flavor: { name: Flavor },
+                        ip_access: Number(IpAccess),
+                        num_masters: Number(Number_of_Master),
+                        num_nodes: Number(Number_of_Node)
                     }
                 }
             }
             //this.props.handleLoadingSpinner(true);
-            service.createNewClusterInst('CreateClusterInst', serviceBody, this.receiveSubmit)
+            serviceMC.sendWSRequest(serviceBody, this.receiveSubmit)
         } else if(localStorage.selectMenu === 'Cloudlets') {
             const cloudlet = ['Region','CloudletName','OperatorName','Latitude','Longitude','Num_dynamic_ips']
             let error = [];
@@ -384,28 +362,29 @@ class RegistNewItem extends React.Component {
             const {CloudletName, OperatorName, Latitude, Longitude, IpSupport, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
             
             serviceBody = {
-                "token":store ? store.userToken : 'null',
-                "params": {
-                    "region":Region,
-                    "cloudlet":{
-                        "key":{
-                            "operator_key":{"name":OperatorName},
-                            "name":CloudletName
+                method: serviceMC.getEP().CREATE_CLOUDLET,
+                token: store ? store.userToken : 'null',
+                data: {
+                    region: Region,
+                    cloudlet: {
+                        key: {
+                            operator_key: { name: OperatorName },
+                            name: CloudletName
                         },
-                        "location":{
-                            "latitude":Number(Latitude),
-                            "longitude":Number(Longitude),
-                            "timestamp":{}
+                        location: {
+                            latitude: Number(Latitude),
+                            longitude: Number(Longitude),
+                            timestamp: {}
                         },
-                        "ip_support":IpSupport,
-                        "num_dynamic_ips":Number(Num_dynamic_ips)
+                        ip_support: IpSupport,
+                        num_dynamic_ips: Number(Num_dynamic_ips)
                     }
                 }
             }
-            if(error.length == 0) {
+            if(error.length === 0) {
                 this.close();
                 this.props.handleLoadingSpinner(true);
-                service.createNewCloudlet('CreateCloudlet', serviceBody, this.receiveSubmitCloudlet)
+                serviceMC.sendWSRequest(serviceBody, this.receiveSubmitCloudlet)
             }
             this.setState({validateError:error})
 
@@ -426,19 +405,19 @@ class RegistNewItem extends React.Component {
         if(refVal) this.props.handleMapLat(refVal);
     }
     getOptionData = (region) => {
-        if(localStorage.selectMenu == "Cluster Instances") {
+        if(localStorage.selectMenu === "Cluster Instances") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // operator, cloudlet
-            service.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null',region:region}, _self.receiveOper)
+            serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
             // Flavor
-            setTimeout(() => service.getMCService('ShowFlavor',{token:store.userToken,region:region}, _self.receiveCF), 500);
+            setTimeout(() => serviceMC.sendRequest(_self,{ token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveCF), 500);
         }
     }
 
     getOrgData = () => {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // Organization
-            service.getMCService('showOrg',{token:store ? store.userToken : 'null'}, this.receiveOrg)
+            serviceMC.sendRequest(_self,{token:store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG}, this.receiveOrg)
         
     }
     
@@ -446,7 +425,7 @@ class RegistNewItem extends React.Component {
     render() {
         let {data, dimmer, selected} = this.props;
         const cloudletArr = ['Region','CloudletName','OperatorName','CloudletLocation','Ip_support','Num_dynamic_ips'];
-        let regKeys = (data[0])?data[0]['Edit']:(this.props.siteId=='Cloudlet')?cloudletArr:[];
+        let regKeys = (data[0])?data[0]['Edit']:(this.props.siteId==='Cloudlet')?cloudletArr:[];
         let optionArr = [this.state.devOptionsOperator, this.state.devOptionsDeveloper, this.state.devOptionsCloudlet, this.state.devOptionsFour, this.state.devOptionsSix, this.state.devOptionsFive, this.state.devOptionsOrgType, this.state.devOptionsOrgRole, this.state.devOptionsCF]
         let valueArr = [this.state.dropdownValueOne, this.state.dropdownValueTwo, this.state.dropdownValueThree, this.state.dropdownValueFour, this.state.dropdownValueSix, this.state.dropdownValueFive, this.state.handleChangeOrgType, this.state.handleChangeOrgRole, this.state.handleChangeCF]
         let changeArr = [this.handleChangeOne, this.handleChangeTwo, this.handleChangeThree, this.handleChangeFour, this.handleChangeSix, this.handleChangeFive, this.handleChangeOrgType, this.handleChangeOrgRole]
