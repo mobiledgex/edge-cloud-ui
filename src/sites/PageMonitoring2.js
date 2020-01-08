@@ -946,9 +946,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
 
                                     <div className="page_monitoring">
-                                        {/*todo:####################*/}
                                         {/*todo:SelectBox part start */}
-                                        {/*todo:####################*/}
+                                        {/*todo:SelectBox part start */}
+                                        {/*todo:SelectBox part start */}
                                         <FlexBox>
                                             <div className=''
                                                  style={{alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,}}>
@@ -960,15 +960,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         justifyContent: 'center',
                                                         alignItems: 'center',
                                                         marginBottom: 5,
+                                                        marginRight: -25,
 
                                                     }}>
 
-
-                                                        {/* <FA name="list" style={{fontSize: 30,}} onClick={() => {
-                                    this.setState({
-                                        isModalOpened: !this.state.isModalOpened
-                                    })
-                                }}/>*/}
                                                         <div
                                                             style={{
                                                                 display: 'flex',
@@ -990,7 +985,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 this.refreshAllData();
 
                                                             }}>
-                                                                <Button>
+                                                                <Button style={{width: 80, fontSize: 9}}>
                                                                     REFRESH
                                                                 </Button>
                                                             </div>
@@ -1004,7 +999,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                      await this.handleSelectBoxChanges('ALL', '', '', '')
                                                                  }}
                                                             >
-                                                                <Button>RESET_ALL</Button>
+                                                                <Button style={{width: 100, fontSize: 9}}>RESET_ALL</Button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1088,7 +1083,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo: App Instance*/}
 
                                                     <div style={Styles.selectHeader}>
-                                                        App Instance
+                                                        App Inst
                                                     </div>
                                                     <div>
                                                         <Dropdown
@@ -1155,7 +1150,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
                                             <div className='page_monitoring_row'
-                                                 //style={{opacity: !this.state.isShowBottomGrid ? 1.0 : 0.5}}
+                                                //style={{opacity: !this.state.isShowBottomGrid ? 1.0 : 0.5}}
                                             >
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
@@ -1244,7 +1239,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                     }, 1000)*/
                                                                 }}
                                                                 value={'RCV_BTYE'}
-                                                                style={{width: 280}}
+                                                                style={{width: 220}}
                                                             />
                                                         </div>
                                                     </div>
@@ -1368,7 +1363,7 @@ const Styles = {
         justifyContent: 'center',
         display: 'flex',
         marginTop: -8,
-        width: 100
+        width: 80,
     },
 
     div001: {
