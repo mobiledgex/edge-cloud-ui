@@ -1244,7 +1244,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                     }, 1000)*/
                                                                 }}
                                                                 value={'RCV_BTYE'}
-                                                                style={{width: 180}}
+                                                                style={{width: 280}}
                                                             />
                                                         </div>
                                                     </div>
