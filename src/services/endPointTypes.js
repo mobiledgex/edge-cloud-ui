@@ -8,6 +8,10 @@ import * as FormatComputeFlavor from './formatter/formatComputeFlavor';
 import * as FormatComputeApp from './formatter/formatComputeApp';
 import * as FormatComputeInst from './formatter/formatComputeInstance';
 import * as FormatComputeCluster from './formatter/formatComputeCluster';
+/** cloudlet pool */
+import * as FormatComputeCloudletPool from './formatter/formatComputeCloudletPool';
+import * as FormatComputeCloudletPoolMember from './formatter/formatComputeCloudletPoolMember';
+//import * as FormatComputeCloudletPoolLink from './formatter/formatComputeCloudletPoolLink';
 
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
@@ -49,6 +53,17 @@ export const ADD_USER_ROLE = "addUserRole";
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
 export const STREAM_CLOUDLET = "StreamCloudlet";
 export const STREAM_APP_INST = "StreamAppInst";
+/** cloudlet pool */
+export const SHOW_CLOUDLET_POOL = "ShowCloudletPool";
+export const SHOW_CLOUDLET_MEMBER = "ShowCloudletPoolMember";
+export const SHOW_CLOUDLET_LINKORG = "orgcloudletpool";
+export const SHOW_LINK_POOL_ORG = "orgcloudletpool";
+
+export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
+export const CREATE_CLOUDLET_POOL_MEMBER = "CreateCloudletPoolMember";
+export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
+
+export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
 
 export function getPath(request) {
     switch (request.method) {
@@ -101,6 +116,11 @@ export function getPath(request) {
         case CREATE_APP_INST:
         case DELETE_APP_INST:
         case STREAM_APP_INST:
+        case SHOW_CLOUDLET_POOL:
+        case SHOW_CLOUDLET_MEMBER:
+        case DELETE_CLOUDLET_POOL:
+        case CREATE_CLOUDLET_POOL:
+        case CREATE_CLOUDLET_POOL_MEMBER:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
@@ -108,6 +128,10 @@ export function getPath(request) {
         case RESET_PASSWORD:
         case CREATE_USER:
             return `/api/v1/${request.method}`;
+        case SHOW_CLOUDLET_LINKORG:
+            return `/api/v1/auth/orgcloudletpool/show`;
+        case CREATE_LINK_POOL_ORG:
+            return `/api/v1/auth/orgcloudletpool/create`;
         default:
             return null;
     }
@@ -142,6 +166,12 @@ export function formatData(request, response) {
             break;
         case SHOW_APP_INST:
             data = FormatComputeInst.formatData(response, request.data)
+            break;
+        case SHOW_CLOUDLET_POOL:
+            data = FormatComputeCloudletPool.formatData(response, request.data)
+            break;
+        case SHOW_CLOUDLET_MEMBER:
+            data = FormatComputeCloudletPoolMember.formatData(response, request.data)
             break;
         default:
             data = undefined;

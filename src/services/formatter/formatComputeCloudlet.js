@@ -14,8 +14,7 @@ export const getKey = (data)=>
     })
 }
 
-
-export const formatData = (datas,body) => {
+export const formatData  = (datas,body) => {
     let values = [];
     let toArray = null;
     let toJson = [];

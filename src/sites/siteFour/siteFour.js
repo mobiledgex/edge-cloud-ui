@@ -45,6 +45,12 @@ import SiteFourPageAppInstReg from './appInst/siteFour_page_appInstReg';
 import SiteFourPageCreateorga from './organization/siteFour_page_createOrga';
 import SiteFourPageAudits from './audits/siteFour_page_audits';
 import SiteFourPageClusterInstReg from './clusterInst/siteFour_page_clusterInstReg';
+import SiteFourPageCloudletPool from './cloudletPool/siteFour_page_cloudletPool';
+import SiteFourPageCloudletPoolReg from './cloudletPool/siteFour_page_cloudletPoolReg';
+import SiteFourPageLinkOrganizeReg from './cloudletPool/siteFour_page_linkOrganizeReg';
+//monitoring
+// import SiteFourPageMonitoring from "../siteFour_page_monitoring";
+// import PageMonitoring2 from "../PageMonitoring2";
 
 import PopLegendViewer from '../../container/popLegendViewer';
 import * as serviceMC from '../../services/serviceMC';
@@ -147,12 +153,14 @@ class SiteFour extends React.Component {
             {label:'Accounts', icon:'dvr', pg:101}
         ]
         this.menuItems = [
-            {label:'Cloudlets', icon:'cloud_queue', pg:2},
-            {label:'Flavors', icon:'free_breakfast', pg:3},
-            {label:'Cluster Instances', icon:'storage', pg:4},
-            {label:'Apps', icon:'apps', pg:5},
-            {label:'App Instances', icon:'storage', pg:6},
-            {label:'Audit Log', icon:'check', pg:'audits'}
+            {label: 'Cloudlets', icon: 'cloud_queue', pg: 2},
+            {label: 'Cloudlet Pool', icon: 'pool', pg: 7},
+            {label: 'Flavors', icon: 'free_breakfast', pg: 3},
+            {label: 'Cluster Instances', icon: 'storage', pg: 4},
+            {label: 'Apps', icon: 'apps', pg: 5},
+            {label: 'App Instances', icon: 'storage', pg: 6},
+            {label: 'Audit Log', icon: 'check', pg: 'audits'},
+            {label: 'Monitoring', icon: 'graphic_eq', pg: 'Monitoring2'},
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
@@ -256,6 +264,9 @@ class SiteFour extends React.Component {
         } else if(localStorage.selectMenu === 'Cluster Instances') {
             this.setState({page:'pg=createClusterInst'})
             this.gotoUrl('/site4', 'pg=createClusterInst')
+        } else if (localStorage.selectMenu === 'Cloudlet Pool') {
+            this.setState({page: 'pg=createCloudletPool'})
+            this.gotoUrl('/site4', 'pg=createCloudletPool')
         } else {
             this.props.handleInjectDeveloper('newRegist');
         }
@@ -407,6 +418,10 @@ class SiteFour extends React.Component {
         } else if(this.props.params.subPath === "pg=6")  {
             //App Instances
             currentStep = orgaSteps.stepsAppInst;
+            enable = true;}
+        else if(this.props.params.subPath === "pg=7")  {
+            //App Instances
+            currentStep = orgaSteps.stepsAppInst;
             enable = true;
         } else if(this.props.params.subPath === "pg=createClusterInst") {
             currentStep = orgaSteps.stepsClusterInstReg;
@@ -487,6 +502,12 @@ class SiteFour extends React.Component {
 
         }
 
+        console.log('20200103 next viewMode - ', nextProps.viewMode)
+        if (nextProps.viewMode) {
+            this.setState({viewMode: nextProps.viewMode})
+        } else {
+            this.setState({viewMode: 'listView'})
+        }
 
         if(nextProps.params && nextProps.params.subPath) {
             let subPaths = nextProps.params.subPath;
@@ -501,13 +522,9 @@ class SiteFour extends React.Component {
 
         }
 
-        if(nextProps.viewMode){
-            this.setState({viewMode:nextProps.viewMode})
-        } else {
-            this.setState({viewMode:'listView'})
-        }
-    
-        if((nextProps.alertInfo !== this.props.alertInfo) && nextProps.alertInfo.mode) {
+
+        //Redux Alert
+        if ((nextProps.alertInfo !== this.props.alertInfo) && nextProps.alertInfo.mode) {
             Alert.closeAll();
             if(nextProps.alertInfo.mode === 'success') {
 
@@ -608,6 +625,13 @@ class SiteFour extends React.Component {
             this.setState({intoCity:false})
         }
 
+        //set category
+        if (nextProps.detailData !== this.props.detailData) {
+
+            this.setState({detailData: nextProps.detailData})
+        }
+
+
     }
 
     componentDidUpdate() {
@@ -665,24 +689,8 @@ class SiteFour extends React.Component {
     searchClick = (e) => {
         this.props.handleSearchValue(e.target.value,this.state.searchChangeValue)
     }
-    makeGhost(elem, self) {
 
-        let child = document.createElement('div')
-        child.style.cssText = 'position:absolute; width:100px; height:30px; line-height:30px; text-align:center; opacity:0.8; left:0px; z-index:100; background:#aaaaaa; border-radius:5px';
-        child.innerHTML = '<div>Cloudlet Name</div>'
-        elem.appendChild(child);
-        //
-        let nextPosX = 15
-        let nextPosY = 90;
-        setTimeout(() => self.setState({setMotion:{left: spring(nextPosX, self.speed),top: spring(nextPosY, self.speed), position: 'absolute', opacity:0}}), 200);
-    }
-    resetMotion() {
-        let self = _self;
-        this.setState({setMotion:defaultMotion})
-        let nextPosX = 15
-        let nextPosY = 180;
-        setTimeout(() => self.setState({setMotion:{left: spring(nextPosX, self.speed),top: spring(nextPosY, self.speed), position: 'absolute', opacity:spring(0, self.speedOpacity)}}), 500);
-    }
+
     onChangeRegion = (e, {value}) => {
 
         _self.props.handleChangeRegion(value)
@@ -811,7 +819,168 @@ class SiteFour extends React.Component {
         serviceMC.sendRequest(_self, { token: store.userToken, method: serviceMC.getEP().SHOW_SELF, data: '{}',showMessage:false }, _self.receiveResult)
     }
 
-    /** audit ********/
+
+    renderSiteBody = (viewMode) => {
+        return (
+            <Grid.Row className='view_contents'>
+                <Grid.Column className='contents_body'>
+                    <Grid.Row className='content_title'
+                              style={{width: 'fit-content', display: 'inline-block'}}>
+                        <Grid.Column className='title_align'
+                                     style={{lineHeight: '36px'}}>{this.state.headerTitle}</Grid.Column>
+                        {
+                            (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1) ?
+                                <Grid.Column className='title_align'>
+                                    <Item className={'stepOrg2'} style={{marginLeft: 20, marginRight: 10}}>
+                                        <Button color='teal' disabled={this.props.viewBtn.onlyView}
+                                                onClick={() => this.onHandleRegistry()}>New</Button>
+                                    </Item>
+                                </Grid.Column>
+                                : null
+                        }
+                        {
+                            (viewMode === 'detailView') ?
+                                <Grid.Column className='title_align' style={{marginLeft: 20}}>
+                                    <Button onClick={() => this.props.handleDetail({
+                                        data: null,
+                                        viewMode: 'listView'
+                                    })}>Close Details</Button>
+                                    <div>
+                                        {this.state.detailData ? this.state.detailData.Region + " > ":null}
+                                        {(this.state.headerTitle === "Cloudlets") ? this.state.detailData.CloudletName : null}
+                                        {(this.state.headerTitle === 'Cluster Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterName : null}
+                                        {(this.state.headerTitle === 'App Instances') ? this.state.detailData.Cloudlet + " > " + this.state.detailData.OrganizationName + " > " + this.state.detailData.ClusterInst + " > " + this.state.detailData.AppName : null}
+
+                                    </div>
+                                </Grid.Column>
+                                : null
+                        }
+                        {/* {
+                                    //filtering for column of table
+                                    (viewMode !== 'detailView' && (this.state.headerTitle === 'App Instances' || this.state.headerTitle === 'Apps' || this.state.headerTitle === 'Cluster Instances')) ?
+                                        <Grid.Column>
+                                            <DropDownFilter></DropDownFilter>
+                                        </Grid.Column>
+                                        :
+                                        null
+                                } */}
+                        <div style={{marginLeft: '10px'}}>
+                            {/* {(this.state.enable)?this.getGuidePopup(this.state.headerTitle):null} */}
+                            {
+                                (
+                                    this.props.viewMode !== 'detailView' &&
+                                    this.state.headerTitle !== 'User Roles' &&
+                                    this.state.headerTitle !== 'Accounts' &&
+                                    this.state.headerTitle !== 'Flavors'
+                                ) ? this.getGuidePopup(this.state.headerTitle) : null}
+                        </div>
+                        {/* <div style={{position:'absolute', top:25, right:25}}>
+                                    {this.getHelpPopup(this.state.headerTitle)}
+                                </div> */}
+
+                    </Grid.Row>
+                    {
+                        (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1) ?
+                            (this.state.intoCity) ? <Button onClick={this.onClickBackBtn}>Back</Button> :
+                                <Grid.Row style={{padding: '10px 10px 0 10px', display: 'inline-block'}}>
+                                    <label style={{padding: '0 10px'}}>Region</label>
+                                    <Dropdown className='selection'
+                                              options={this.state.regions}
+                                              defaultValue={this.state.regions[0].value}
+                                              value={this.props.changeRegion}
+                                              onChange={this.onChangeRegion}
+                                    />
+                                </Grid.Row>
+                            : null
+                    }
+                    {
+                        (this.state.headerTitle == 'User Roles') ?
+                            <div className='user_search'
+                                 style={{top: 15, right: 65, position: 'absolute', zIndex: 99}}>
+                                <Input icon='search' placeholder={'Search ' + this.state.searchChangeValue}
+                                       style={{marginRight: '20px'}} onChange={this.searchClick}/>
+                                <Dropdown defaultValue={this.searchOptions[0].value} search selection
+                                          options={this.searchOptions} onChange={this.searchChange}/>
+                            </div>
+                            : null
+                    }
+
+                    <Grid.Row className='site_content_body'>
+                        <Grid.Column>
+                            <div className="table-no-resized"
+                                 style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
+                                {
+                                    (this.state.page === 'pg=0') ?
+                                        <SiteFourPageOrganization></SiteFourPageOrganization> :
+                                        (this.state.page === 'pg=1') ?
+                                            <SiteFourPageUser></SiteFourPageUser> :
+                                            (this.state.page === 'pg=101') ?
+                                                <SiteFourPageAccount></SiteFourPageAccount> :
+                                                (this.state.page === 'pg=2') ?
+                                                    <SiteFourPageCloudlet></SiteFourPageCloudlet> :
+                                                    (this.state.page === 'pg=3') ?
+                                                        <SiteFourPageFlavor></SiteFourPageFlavor> :
+                                                        (this.state.page === 'pg=4') ?
+                                                            <SiteFourPageClusterInst></SiteFourPageClusterInst> :
+                                                            /*@todo:apps detail page*/
+                                                            /*@todo:apps detail page*/
+                                                            /*@todo:apps detail page*/
+                                                            /*@todo:apps detail page*/
+                                                            (this.state.page === 'pg=5') ?
+                                                                <SiteFourPageApps></SiteFourPageApps> :
+                                                                (this.state.page === 'pg=6') ?
+                                                                    <SiteFourPageAppInst></SiteFourPageAppInst> :
+                                                                    (this.state.page === 'pg=7') ?
+                                                                        <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
+                                                                        (this.state.page === 'pg=newOrg') ?
+                                                                            <SiteFourPageCreateorga></SiteFourPageCreateorga> :
+
+
+                                                                            (this.state.page === 'pg=createApp') ?
+                                                                            <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
+
+                                                                            (this.state.page === 'pg=editApp') ?
+                                                                            <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
+
+
+
+                                                                            (this.state.page === 'pg=createAppInst') ?
+                                                                            <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
+
+                                                                            (this.state.page === 'pg=createCloudletPool')?
+                                                                            <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+
+                                                                            // (this.state.page === 'pg=updateCloudletPool')?
+                                                                            // <SiteFourPageCloudletPoolUpdate></SiteFourPageCloudletPoolUpdate> :
+
+                                                                            (this.state.page === 'pg=linkOrganize')?
+                                                                            <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
+
+                                                                                        (this.state.page === 'pg=createCloudletPool') ?
+                                                                                            <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                            (this.state.page === 'pg=editAppInst') ?
+                                                                                                <SiteFourPageAppInstReg
+                                                                                                    editable={true}></SiteFourPageAppInstReg> :
+                                                                                                (this.state.page === 'pg=createClusterInst') ?
+                                                                                                    <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
+                                                                                                    (this.state.page === 'pg=createCloudlet') ?
+                                                                                                        <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
+                                                                                                        (this.state.page === 'pg=createFlavor') ?
+                                                                                                            <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
+                                                                                                            (this.state.page === 'pg=audits') ?
+                                                                                                                <SiteFourPageAudits></SiteFourPageAudits> :
+                                                                                                                // (this.state.page === 'pg=Monitoring2') ?
+                                                                                                                //     <SiteFourPageMonitoring></SiteFourPageMonitoring> :
+
+                                                                                                                    <div></div>
+                                }
+                            </div>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid.Column>
+            </Grid.Row>
+        )
+    }
 
 
     render() {
@@ -993,114 +1162,30 @@ class SiteFour extends React.Component {
                                 </div>
 
                             </Menu>
-                            <div style={{zIndex:'100', color:'rgba(255,255,255,.2)', padding:'10px'}}>
+                            <div style={{zIndex: '100', color: 'rgba(255,255,255,.2)', padding: '10px'}}>
                                 {
-                                    (localStorage.selectRole == 'AdminManager')? this.state.currentVersion : null
+                                    (localStorage.selectRole == 'AdminManager') ? this.state.currentVersion : null
                                 }
                             </div>
                         </Grid.Column>
                     </Grid.Row>
                 </Container>
-                <Container className='contents_body_container' style={{top:this.headerH, left:this.menuW}}>
-                    <Grid.Row  className='view_contents'>
-                        <Grid.Column className='contents_body'>
-                            <Grid.Row className='content_title' style={{width:'fit-content', display:'inline-block'}}>
-                                <Grid.Column className='title_align' style={{lineHeight:'36px'}}>{this.state.headerTitle}</Grid.Column>
-                                {
-                                    (this.props.location.search !== 'pg=1' && this.props.location.search !== 'pg=101' && viewMode !== 'detailView' && this.props.location.search.indexOf('audits') === -1) ?
-                                        <Grid.Column className='title_align'>
-                                            <Item className={'stepOrg2'} style={{marginLeft:20, marginRight:10}}>
-                                                <Button color='teal' disabled={this.props.viewBtn.onlyView} onClick={() => this.onHandleRegistry()}>New</Button>
-                                            </Item>
-                                        </Grid.Column>
-                                        : null
-                                }
-                                {
-                                    (viewMode === 'detailView') ?
-                                        <Grid.Column className='title_align' style={{marginLeft:20}}>
-                                            <Button onClick={()=>this.props.handleDetail({data:null, viewMode:'listView'})}>Close Details</Button>
-                                        </Grid.Column>
-                                        : null
-                                }
-                                {/* {
-                                    //filtering for column of table
-                                    (viewMode !== 'detailView' && (this.state.headerTitle === 'App Instances' || this.state.headerTitle === 'Apps' || this.state.headerTitle === 'Cluster Instances')) ?
-                                        <Grid.Column>
-                                            <DropDownFilter></DropDownFilter>
-                                        </Grid.Column>
-                                        :
-                                        null
-                                } */}
-                                <div style={{marginLeft:'10px'}}>
-                                    {/* {(this.state.enable)?this.getGuidePopup(this.state.headerTitle):null} */}
-                                    {
-                                        (
-                                            this.props.viewMode !== 'detailView' &&
-                                            this.state.headerTitle !== 'User Roles' &&
-                                            this.state.headerTitle !== 'Accounts' &&
-                                            this.state.headerTitle !== 'Flavors'
-                                        )?this.getGuidePopup(this.state.headerTitle):null}
-                                </div>
-                                {/* <div style={{position:'absolute', top:25, right:25}}>
-                                    {this.getHelpPopup(this.state.headerTitle)}
-                                </div> */}
 
-                            </Grid.Row>
-                            {
-                                (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log'  && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1 ) ?
-                                    (this.state.intoCity)?<Button onClick={this.onClickBackBtn}>Back</Button>:<Grid.Row style={{padding:'10px 10px 0 10px',display:'inline-block'}}>
-                                        <label style={{padding:'0 10px'}}>Region</label>
-                                        <Dropdown className='selection'
-                                                options={this.state.regions}
-                                                defaultValue={this.state.regions[0].value}
-                                                value={this.props.changeRegion}
-                                                onChange={this.onChangeRegion}
-                                        />
-                                    </Grid.Row>
-                                    : null
-                            }
-                            {
-                                (this.state.headerTitle == 'User Roles') ?
-                                    <div className='user_search' style={{top:15, right:65, position:'absolute',zIndex:99}}>
-                                        <Input icon='search' placeholder={'Search '+this.state.searchChangeValue} style={{marginRight:'20px'}}  onChange={this.searchClick} />
-                                        <Dropdown defaultValue={this.searchOptions[0].value} search selection options={this.searchOptions} onChange={this.searchChange} />
-                                    </div>
-                                    : null
-                            }
+                {/*#############################*/}
+                {/*PAGE BODY RENDERING PART     */}
+                {/*페이지의 BODY부분을 렌더링 하는 부분*/}
+                {/*#############################*/}
+                <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
+                    {/*모니터링 페이지인 경우...*/}
+                    {(this.state.page === 'pg=Monitoring2') ? <div/> :
+                            this.renderSiteBody(viewMode)
 
-                            <Grid.Row className='site_content_body'>
-                                <Grid.Column>
-                                            <div className="table-no-resized" style={{height:'100%', display:'flex', overflow:'hidden'}}>
-                                                {
-                                                    (this.state.page === 'pg=0')?<SiteFourPageOrganization></SiteFourPageOrganization> :
-                                                        (this.state.page === 'pg=1')?<SiteFourPageUser></SiteFourPageUser> :
-                                                            (this.state.page === 'pg=101')?<SiteFourPageAccount></SiteFourPageAccount> :
-                                                                (this.state.page === 'pg=2')?<SiteFourPageCloudlet></SiteFourPageCloudlet> :
-                                                                    (this.state.page === 'pg=3')?<SiteFourPageFlavor></SiteFourPageFlavor> :
-                                                                        (this.state.page === 'pg=4')?<SiteFourPageClusterInst></SiteFourPageClusterInst>:
-                                                                            (this.state.page === 'pg=5')?<SiteFourPageApps></SiteFourPageApps>:
-                                                                                (this.state.page === 'pg=6')? <SiteFourPageAppInst></SiteFourPageAppInst> :
-                                                                                    (this.state.page === 'pg=newOrg')? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
-                                                                                        (this.state.page === 'pg=createApp')? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
-                                                                                        (this.state.page === 'pg=editApp')? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
-                                                                                            (this.state.page === 'pg=createAppInst')? <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
-                                                                                            (this.state.page === 'pg=editAppInst')? <SiteFourPageAppInstReg editable={true}></SiteFourPageAppInstReg> :
-                                                                                                (this.state.page === 'pg=createClusterInst')? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
-                                                                                                    (this.state.page === 'pg=createCloudlet')? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
-                                                                                                        (this.state.page === 'pg=createFlavor')? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
-                                                                                                        (this.state.page === 'pg=audits')? <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                        <div> </div>
-                                                }
-                                            </div>
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid.Column>
-                    </Grid.Row>
+                    }
                 </Container>
-                <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend} close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
-                <Motion defaultStyle={defaultMotion} style={this.state.setMotion}>
-                    {interpolatingStyle => <div style={interpolatingStyle} id='animationWrapper'></div>}
-                </Motion>
+
+                <PopLegendViewer data={this.state.detailViewData} dimmer={false} open={this.state.openLegend}
+                                 close={this.closeLegend} siteId={this.props.siteId}></PopLegendViewer>
+
             </Grid>
         );
     }
@@ -1109,43 +1194,45 @@ class SiteFour extends React.Component {
 
 const mapStateToProps = (state) => {
     let viewMode = null;
-    if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+    if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
         viewMode = state.changeViewMode.mode.viewMode;
     }
     let action = state.action;
-    let tutorState = (state.tutorState)?state.tutorState.state:null;
-    let formInfo = (state.form)?state.form:null;
-    let submitInfo = (state.submitInfo)?state.submitInfo:null;
-    let regionInfo = (state.regionInfo)?state.regionInfo:null;
-    let checkedAudit = (state.checkedAudit)?state.checkedAudit.audit:null;
+    let tutorState = (state.tutorState) ? state.tutorState.state : null;
+    let formInfo = (state.form) ? state.form : null;
+    let submitInfo = (state.submitInfo) ? state.submitInfo : null;
+    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
+    let checkedAudit = (state.checkedAudit) ? state.checkedAudit.audit : null;
+    let detailData = (state.changeViewMode && state.changeViewMode.mode)?state.changeViewMode.mode.data : null;
 
     return {
-        viewBtn : state.btnMnmt?state.btnMnmt:null,
-        userToken : (state.userToken) ? state.userToken: null,
-        userInfo : state.userInfo?state.userInfo:null,
-        userRole : state.showUserRole?state.showUserRole.role:null,
-        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
-        loadingSpinner : state.loadingSpinner.loading?state.loadingSpinner.loading:null,
-        creatingSpinner : state.creatingSpinner.creating?state.creatingSpinner.creating:null,
+        viewBtn: state.btnMnmt ? state.btnMnmt : null,
+        userToken: (state.userToken) ? state.userToken : null,
+        userInfo: state.userInfo ? state.userInfo : null,
+        userRole: state.showUserRole ? state.showUserRole.role : null,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
+        loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
+        creatingSpinner: state.creatingSpinner.creating ? state.creatingSpinner.creating : null,
         injectData: state.injectData ? state.injectData : null,
-        viewMode : viewMode,
-        alertInfo : {
+        viewMode: viewMode,
+        alertInfo: {
             mode: state.alertInfo.mode,
             msg: state.alertInfo.msg
         },
-        searchValue : (state.searchValue.search) ? state.searchValue.search: null,
-        changeRegion : (state.changeRegion.region) ? state.changeRegion.region : null,
-        tableHeaders : (state.tableHeader)? state.tableHeader.headers : null,
-        filters : (state.tableHeader)? state.tableHeader.filters : null,
-        siteName: (state.siteChanger)?state.siteChanger.site:null,
-        changeStep: (state.changeStep.step)?state.changeStep.step:null,
-        dataExist : state.dataExist.data,
-        tutorState : tutorState,
-        formInfo:formInfo,
-        submitInfo:submitInfo,
-        regionInfo:regionInfo,
+        searchValue: (state.searchValue.search) ? state.searchValue.search : null,
+        changeRegion: (state.changeRegion.region) ? state.changeRegion.region : null,
+        tableHeaders: (state.tableHeader) ? state.tableHeader.headers : null,
+        filters: (state.tableHeader) ? state.tableHeader.filters : null,
+        siteName: (state.siteChanger) ? state.siteChanger.site : null,
+        changeStep: (state.changeStep.step) ? state.changeStep.step : null,
+        dataExist: state.dataExist.data,
+        tutorState: tutorState,
+        formInfo: formInfo,
+        submitInfo: submitInfo,
+        regionInfo: regionInfo,
         audit: checkedAudit,
         clickCity: state.clickCityList.list,
+        detailData:detailData,
     }
 };
 
@@ -1165,7 +1252,6 @@ const mapDispatchProps = (dispatch) => {
         handleUserRole: (data) => { dispatch(actions.showUserRole(data))},
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))},
         handleDetail: (data) => { dispatch(actions.changeDetail(data))},
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},

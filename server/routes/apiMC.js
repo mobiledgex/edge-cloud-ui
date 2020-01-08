@@ -1975,3 +1975,360 @@ exports.SettingLock = (req, res) => {
             responseLoginError(res, error)
         });
 }
+
+/**
+ * cloudlet pool
+ * @inki 20191219
+ * @param req
+ * @param res
+ * @constructor
+ */
+//cloudlet pool
+exports.ShowCloudletPool = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    console.log('show me cloudlet-- ', 'domain url==',mcUrl)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/ShowCloudletPool', qs.stringify({
+            region:region
+        }),
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success show cloudlet', "- : -")
+            if(response.data && response.statusText === 'OK') {
+                res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+            console.log('error show ShowCloudlet..', String(error));
+            res.json({error:'Execution Of Request Failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
+        });
+}
+
+
+/**
+ * Now creating cloudletpool named "DeletemPool"
+ http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateCloudletPool <<< '{"region":"EU", "cloudletpool": {"key": {"name": "TEST1223"}}}'
+ * @param req
+ * @param res
+ * @constructor
+ */
+exports.CreateCloudletPool = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local';
+    let poolName = '';
+    if(req.body.serviceBody){
+        poolName = req.body.serviceBody.params.poolName;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.params.Region;
+        serviceBody = {"region":region, "cloudletpool": {"key": {"name": poolName}}};
+    }
+    console.log('create  cloudlet pool -- ', 'domain req.body.serviceBody==',req.body.serviceBody, ":region = ",region, ": poolName=", poolName)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudletPool', serviceBody,
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success create  pool ', "- : -", response)
+            if(response.data && response.statusText === 'OK') {
+                res.json({message:'Careated '+poolName+' successfully'})
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+            console.log('error show createCloudletpool..', String(error));
+            res.json({error:'Execution Of Request Failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
+        });
+}
+
+/**
+ * Now adding Cloudlet named "deleteme" to CloudletPool named "DeletemePool"
+ mcctl --addr https://mc-stage.mobiledgex.net:9900 region CreateCloudletPoolMember region=EU operator=TDG cloudlet=deleteme pool=DeletemePool
+ * @param req
+ * @param res
+ * @constructor
+ */
+exports.CreateCloudletPoolMember = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    console.log('show me create pool member -- ', 'domain url==',mcUrl, 'body = ', serviceBody)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/CreateCloudletPoolMember', serviceBody,
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success create pool member ', "- : -", response.data)
+            if(response.data && response.statusText === 'OK') {
+                //res.json(response.data)
+                res.json({message:'Added successfully'})
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+            console.log('error create cloudlet pool member ..', String(error));
+            res.json({error:'Execution Of Request Failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
+        });
+}
+
+/**
+ * Show cloudlet pool member
+ * $  mcctl --addr https://mc-stage.mobiledgex.net:9900 region ShowCloudletPoolMember region=EU
+ */
+
+exports.ShowCloudletPoolMember = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    console.log('show me cloudlet pool member -- ', 'region==',region)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/ShowCloudletPoolMember', qs.stringify({
+            region:region
+        }),
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+
+            if(response.data && response.statusText === 'OK') {
+                res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
+            } else {
+
+            }
+            console.log('success show cloudlet member -- ', "- : -",response.data)
+        })
+        .catch(function (error) {
+            console.log('error show ShowCloudlet pool member ..', String(error));
+            res.json({error:'Execution Of Request Failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
+        });
+}
+
+
+/**
+ * http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/orgcloudletpool/create <<< '{"cloudletpool":"cloudletPool_bictest_1223-01","org":"bicinkiOper","region":"EU"}'
+ * @param req
+ * @param res
+ * @constructor
+ */
+exports.CreateLinkPoolOrg = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+    }
+    console.log('show me link org to pool -- ', 'param==',serviceBody)
+    axios.post(mcUrl + '/api/v1/auth/orgcloudletpool/create', qs.stringify(serviceBody),
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success link org to pool -- ', "- : -",response.data)
+            if(response.data && response.statusText === 'OK') {
+                res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+            console.log('error link org to pool ..', String(error));
+            res.json({error:'Execution Of Request Failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
+        });
+}
+
+/**
+ * https://mc-stage.mobiledgex.net:9900/api/v1/auth/orgcloudletpool/show
+ * @param req
+ * @param res
+ * @constructor
+ */
+exports.ShowOrgCloudletpool = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+    }
+    console.log('show me link org cloudlet pool -- ', 'param==',serviceBody)
+    axios.post(mcUrl + '/api/v1/auth/orgcloudletpool/show', {},
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success show org cloudlet pool -- ', "- : -",response.data)
+            if(response.data && response.statusText === 'OK') {
+                res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+            console.log('error show org cloudlet pool ..', String(error));
+            res.json({error:'Execution Of Request Failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
+        });
+}
+
+/**
+ * $ http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/DeleteCloudletPool <<<
+ * '{"region":"EU", "cloudletpool": {"key": {"name": "pop"}}}'
+ * @param req
+ * @param res
+ * @constructor
+ */
+exports.DeleteCloudletpool = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+    }
+    console.log('show me delete cloudlet pool -- ', 'param==',serviceBody)
+    axios.post(mcUrl + '/api/v1/auth/ctrl/DeleteCloudletPool', serviceBody,
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success delete cloudlet pool -- ', "- : -",response.data)
+            if(response.data && response.statusText === 'OK') {
+                //res.json(response.data)
+                res.json({message:`Deleted ${serviceBody.cloudletpool.key.name} successfully`})
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
+            } else {
+                res.json({message:`Deleted ${serviceBody.cloudletpool.key.name} successfully`})
+            }
+        })
+        .catch(function (error) {
+            console.log('error show org cloudlet pool ..', String(error));
+            res.json({error:'Execution Of Request Failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
+        });
+}
+
+/**
+ * http --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/orgcloudlet/show <<<
+ * '{"region":"EU", "org": "bicinkiOrg1117-1"}'
+ * @param req
+ * @param res
+ * @constructor
+ */
+exports.ShowOrgCloudlet = (req, res) => {
+    if(process.env.MC_URL) mcUrl =  process.env.MC_URL;
+    let serviceName = '';
+    let serviceBody = {};
+    let superpass = '';
+    let region = 'local'
+    if(req.body.serviceBody){
+        serviceBody = req.body.serviceBody.params;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.region;
+    }
+    console.log('show me org cloudlet-- ', 'domain url==',mcUrl, ":", serviceBody)
+    axios.post(mcUrl + '/api/v1/auth/orgcloudlet/show', serviceBody,
+        {
+            headers: {
+                'Authorization':`Bearer ${superpass}`}
+        }
+    )
+        .then(function (response) {
+            console.log('success show org cloudlet', "- : -")
+            if(response.data && response.statusText === 'OK') {
+                res.json(response.data)
+            } else if(response.statusText === 'OK'){
+                console.log('empty')
+                res.json(null)
+
+            } else {
+
+            }
+        })
+        .catch(function (error) {
+            console.log('error show org Cloudlet..', String(error));
+            res.json({error:'Execution Of Request Failed'})
+            //res.json({error:'Login Timeout Expired. Please login again'})
+        });
+}

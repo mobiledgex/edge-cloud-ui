@@ -63,8 +63,10 @@ function responseError(self, request, response, callback) {
             }
             callback({request:request, error:{code:code, message:message}})
     }
-    catch{
-        alert('check')
+    catch (error){
+        //alert('check')
+        /** error of cloudlet pool : @Smith(inki)**/
+        console.log('20200108 error == ', error)
     }
 }
 
