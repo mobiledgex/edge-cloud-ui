@@ -1283,9 +1283,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
                                                 <OutsideClickHandler
                                                     onOutsideClick={() => {
-                                                        this.setState({
+                                                       /* this.setState({
                                                             isShowBottomGrid: !this.state.isShowBottomGrid,
-                                                        })
+                                                        })*/
                                                     }}
                                                 >
                                                     <div
