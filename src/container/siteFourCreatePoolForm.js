@@ -386,6 +386,7 @@ class SiteFourCreatePoolForm extends React.Component {
                 //this.getDataDeveloper(nextProps.data.region,nextProps.regionInfo.region)
             }
         }
+        console.log('20191223 props dev data nextProps.data=', nextProps.data)
         if(nextProps.data) this.setState({devData: nextProps.data, keys:nextProps.keys, regionInfo:nextProps.regionInfo})
         //reset cluster and node count
         if(nextProps.nodeNumber || nextProps.selectedFlavor) {
@@ -410,9 +411,6 @@ class SiteFourCreatePoolForm extends React.Component {
     }
 
     gotoUrl(num) {
-        if(num === 'skip') {
-            return;
-        }
         _self.props.history.push({
             pathname: '/site4',
             search: 'pg='+num
@@ -490,13 +488,12 @@ class SiteFourCreatePoolForm extends React.Component {
 
     render() {
         const { activeIndex, clusterName } = this.state;
-        let {data, dimmer, changeNext} = this.props;
-        console.log('20200106 props data in Form -- ', this.props.data)
+        let {data, dimmer, selected} = this.props;
         let randomState = Math.random()*100;
         return (
-            <Grid.Column>
-                {/*<Grid.Row className="grid_map_container">*/}
-                {/*    <Grid.Column className="left">*/}
+            <Grid>
+                <Grid.Row className="grid_map_container">
+                    <Grid.Column className="left">
                         <SiteFourCreateFormDefault data={data} pId={0} getUserRole={this.props.getUserRole}
                                                    gotoUrl={this.gotoUrl} clusterHide={this.clusterHide}
                                                    randomState = {randomState}
@@ -506,7 +503,6 @@ class SiteFourCreatePoolForm extends React.Component {
                                                    selected={this.props.selectedRegion}
                                                    regionInfo={this.state.regionInfo}
                                                    dimmer={dimmer}
-                                                   changeNext={changeNext}
                                                    handleChangeLat={this.handleChangeLat}
                                                    handleChangeLong={this.handleChangeLong}
                                                    onChangeState={this.onChangeFormState}
@@ -514,9 +510,9 @@ class SiteFourCreatePoolForm extends React.Component {
                                                    longError={this.state.longerror}>
 
                         </SiteFourCreateFormDefault>
-                {/*    </Grid.Column>*/}
-                {/*</Grid.Row>*/}
-            </Grid.Column>
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
         )
     }
 }
@@ -538,7 +534,6 @@ const mapStateToProps = (state) => {
     let nodeNumber = null;
     let getRegion = (state.getRegion)?state.getRegion.region:null
     let regionInfo = (state.regionInfo)?state.regionInfo:null;
-    let changeNext = state.changeNext ? state.changeNext.next:null;
     if(state.form.createAppFormDefault) {
         formValues = state.form.createAppFormDefault.values;
         if(state.form.createAppFormDefault.values.Region !== "") {
@@ -565,7 +560,7 @@ const mapStateToProps = (state) => {
 
     return {
         selectedRegion, selectedOperator, clusterName, formValues, selectedFlavor, masterNumber, nodeNumber, getRegion,
-        regionInfo: regionInfo, changeNext
+        regionInfo: regionInfo
     }
 };
 const mapDispatchProps = (dispatch) => {
@@ -574,7 +569,6 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleGetRegion: (data) => { dispatch(actions.getRegion(data)) },
-        handleChangeNext: (data) => { dispatch(actions.changeNext(data)) },
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };

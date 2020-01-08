@@ -60,7 +60,7 @@ class SiteFourPageOne extends React.Component {
     }
     componentDidMount() {
         console.log('info.. ', this.childFirst, this.childSecond)
-        //this.getDataDeveloper();
+        this.getDataDeveloper();
     }
     componentWillReceiveProps(nextProps) {
         this.setState({bodyHeight : (window.innerHeight - this.headerH)})

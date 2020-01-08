@@ -351,6 +351,7 @@ class ClustersMap extends Component {
     componentDidMount() {
         //this.fetchCities();
         //this.fetchCountry();
+        console.log('20191204 temploacation...', this.tempLocation)
         //zoom
         if(this.props.zoomControl) {
             this.setState({center:this.props.zoomControl.center, zoom:this.props.zoomControl.zoom})
@@ -380,6 +381,7 @@ class ClustersMap extends Component {
         let initialData = (nextProps.parentProps.devData)? nextProps.parentProps.devData : nextProps.parentProps.locData;
         let data = nextProps.parentProps.locData ? initialData : initialData.filter((item)=>item.State == 5);
         //let data = (nextProps.parentProps.devData)?nextProps.parentProps.devData:nextProps.parentProps.locData;
+        console.log('20191204 daaaata...', data, ":", nextProps.getRegion, ":parentProps.locData=", nextProps.parentProps.locData)
         if(this.tempData == data) return;
         this.tempData = data;
         this.tempLocation = data;

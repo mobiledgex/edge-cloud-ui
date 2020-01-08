@@ -29,36 +29,31 @@ let generateData = (datas,body) => {
     }else {
         toJson = null;
     }
-    /*
-    pool_key: {name: "cloudletPool_bictest_1223-01"}
-    cloudlet_key:
-        operator_key:
-        name: "TDG"
-    name: "automationBerlinCloudletStage"
-     */
+    console.log("20191220 datasdatasdatasss---",toJson)
     let newRegistKey = ['Region', 'PoolName', 'OperatorName'];
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
             if(dataResult.error || dataResult.message || !dataResult.data) {
                 values.push({
-                    Index:i,
-                    Operator:'',
+                    Region:'',
                     PoolName:'',
-                    Clouldet:''
+                    State:'',
+                    Status:'',
+                    Edit:null
                 })
             } else {
                 let Index = i;
-                let Operator = dataResult.data.cloudlet_key.operator_key.name || '-';
-                let PoolName = dataResult.data.pool_key.name || '-';
-                let Cloudlet = dataResult.data.cloudlet_key.name || '-';
                 let Region = body.region || '-';
+                let PoolName = dataResult.data.key.name || '-';
+                let CloudletLocation = dataResult.data.location || '-';
+                let State = dataResult.data.state || '-';
 
-                values.push({Region:Region, Operator:Operator,  PoolName:PoolName, Cloudlet:Cloudlet})
+                values.push({Region:Region,  PoolName:PoolName, CloudletLocation:CloudletLocation, State:State,  Edit:newRegistKey})
             }
 
         })
     } else {
-        values.push({Operator:'',PoolName:'', Cloudlet:''})
+        values.push({Region:'',CloudletLocation:''})
     }
 
     return values

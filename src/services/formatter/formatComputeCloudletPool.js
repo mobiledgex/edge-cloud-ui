@@ -29,6 +29,7 @@ let generateData = (datas,body) => {
     }else {
         toJson = null;
     }
+    console.log("20191220 datasdatasdatasss---",toJson)
     let newRegistKey = ['Region', 'PoolName', 'OperatorName'];
     if(toJson && toJson.length){
         toJson.map((dataResult, i) => {
@@ -36,18 +37,18 @@ let generateData = (datas,body) => {
                 values.push({
                     Region:'',
                     PoolName:'',
-                    Cloudlets:'',
-                    Organizations:'',
+                    State:'',
+                    Status:'',
                     Edit:null
                 })
             } else {
                 let Index = i;
                 let Region = body.region || '-';
                 let PoolName = dataResult.data.key.name || '-';
-                let Cloudlets = dataResult.data.state || 0;
-                let Organizations =  0;
+                let CloudletLocation = dataResult.data.location || '-';
+                let State = dataResult.data.state || '-';
 
-                values.push({Region:Region,  PoolName:PoolName, Cloudlets:Cloudlets, Organizations:Organizations,  Edit:newRegistKey})
+                values.push({Region:Region,  PoolName:PoolName, CloudletLocation:CloudletLocation, State:State,  Edit:newRegistKey})
             }
 
         })

@@ -44,7 +44,6 @@ import stateStream from './stateStream';
 import resetMap from './resetMap';
 import submitObj from './submitObj';
 import LoadingReducer from "./LoadingReducer";
-import changeNext from "./changeNext";
 
 const reducers = combineReducers({
     videoControl,
@@ -91,8 +90,6 @@ const reducers = combineReducers({
     alertInfo,
     dataExist,
     LoadingReducer,
-    changeNext,
-
     form: formReducer
 });
 

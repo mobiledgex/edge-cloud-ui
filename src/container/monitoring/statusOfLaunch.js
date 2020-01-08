@@ -16,6 +16,7 @@ class StatusOfLaunch extends React.Component {
         return (this.state.keys.length)? this.state.keys[i] : ' '
     }
     displayAppCount =(item, i) => {
+        console.log('20191218 region -- ', this.state.region)
         let regionFiltered = this.state.region;
         return (item && item[this.state.keys[i]])?item[this.state.keys[i]].length:' '
     }
@@ -28,6 +29,7 @@ class StatusOfLaunch extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         if(nextProps.data) {
             if(nextProps.data !== this.props.data) {
+                console.log('20191220 shouldComponentUpdate 1 -- ', nextProps.data)
                 this.setState({cloudletData:nextProps.data})
                 this.setState({keys:Object.keys(nextProps.data)})
                 this.setState({region:nextProps.rgn})

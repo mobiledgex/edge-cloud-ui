@@ -77,10 +77,10 @@ class RegistryInstViewer extends React.Component {
             autoClusterDisable:false,
             keysData:[
                 {
-                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', disable:(this.props.appLaunch && Object.keys(this.props.appLaunch) && Object.keys(this.props.appLaunch).length == 0)?true:false, active:true, items:[]},
-                    'DeveloperName':{label:'Organization Name', type:(this.props.appLaunch && Object.keys(this.props.appLaunch) && Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', disable:(this.props.appLaunch && Object.keys(this.props.appLaunch) && Object.keys(this.props.appLaunch).length == 0)?true:false, necessary:true, tip:'The name of the organization you are currently managing.', active:true, items:[null]},
-                    'AppName':{label:'App Name', type:(this.props.appLaunch && Object.keys(this.props.appLaunch) && Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', disable:(this.props.appLaunch && Object.keys(this.props.appLaunch) && Object.keys(this.props.appLaunch).length == 0)?true:false, necessary:true, tip:'The name of the application to deploy.', active:true, items:[null]},
-                    'Version':{label:'App Version', type:(this.props.appLaunch && Object.keys(this.props.appLaunch) && Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', disable:(this.props.appLaunch && Object.keys(this.props.appLaunch) && Object.keys(this.props.appLaunch).length == 0)?true:false, necessary:true, tip:'The version of the application to deploy.', active:true, items:[null]},
+                    'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', disable:(Object.keys(this.props.appLaunch).length == 0)?true:false, active:true, items:[]},
+                    'DeveloperName':{label:'Organization Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', disable:(Object.keys(this.props.appLaunch).length == 0)?true:false, necessary:true, tip:'The name of the organization you are currently managing.', active:true, items:[null]},
+                    'AppName':{label:'App Name', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', disable:(Object.keys(this.props.appLaunch).length == 0)?true:false, necessary:true, tip:'The name of the application to deploy.', active:true, items:[null]},
+                    'Version':{label:'App Version', type:(Object.keys(this.props.appLaunch).length == 0)?'RenderSelect':'', disable:(Object.keys(this.props.appLaunch).length == 0)?true:false, necessary:true, tip:'The version of the application to deploy.', active:true, items:[null]},
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Which operator do you want to deploy this applicaton? Please select one.', active:true, items:[null]},
                     'Cloudlet':{label:'Cloudlet', type:'RenderDropDown', necessary:true, tip:'Which cloudlet(s) do you want to deploy this application?', active:true, items:[null]},
                     'AutoClusterInst':{label:'Auto Cluster Instance', type:'RenderCheckbox', necessary:false, tip:'If you have yet to create a cluster, you can select this to auto create cluster instance.'},
@@ -273,7 +273,7 @@ class RegistryInstViewer extends React.Component {
          * **********/
         let assObj = Object.assign([], this.state.fakeData);
         assObj[0].DeveloperName = localStorage.selectOrg;
-        if(this.props.appLaunch && Object.keys(this.props.appLaunch).length > 0) {
+        if(Object.keys(this.props.appLaunch).length > 0) {
             assObj[0].Region = this.props.appLaunch.Region;
             assObj[0].AppName = this.props.appLaunch.AppName;
             assObj[0].Version = this.props.appLaunch.Version;
@@ -566,9 +566,6 @@ const createFormat = (data) => (
         }
     }
 )
-RegistryInstViewer.defaultProps = {
-    appLaunch:{data:[]}
-}
 const mapStateToProps = (state) => {
     let account = state.registryAccount.account;
     let dimm =  state.btnMnmt;

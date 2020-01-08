@@ -519,8 +519,7 @@ body, button, input, textarea, optgroup, select, textarea,
 .gnb_logout {
     background-color: rgba(24,26,31,.9) !important;
     border: 1px solid rgba(255,255,255,.2) !important;
-    /*top: 52px !important;*/
-    top: 52px;
+    top: 52px !important;
 }
 .gnb_logout:before {
     background-color: rgba(24,26,31,.9) !important;
