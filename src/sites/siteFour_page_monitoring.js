@@ -67,7 +67,6 @@ class SiteFourPageMonitoring extends React.Component {
     }
 
     receiveCloudletData (result) {
-        console.log('20191220 receive cloudlet data -- ', result)
         _self.setState({stateLaunchData:result})
     }
 

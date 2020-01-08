@@ -22,9 +22,8 @@ const appssEdit = [
     {key: 'delete', text:'Delete', icon:'trash alternate'},
 ]
 const cloudletPoolEdit = [
-    {key: 'add', text:'Add', icon:null},
-    {key: 'link', text:'Link', icon:null},
-    {key: 'update', text:'Update', icon:null},
+    {key: 'add', text:'Add Cloudlet', icon:null},
+    {key: 'link', text:'Link Organization', icon:null},
     {key: 'delete', text:'Delete', icon:'trash alternate'},
 ]
 const headerStyle = {
@@ -354,8 +353,10 @@ class InsideListView extends React.Component {
      * If you click the buttons that are grouped
      ** *****/
     onHandlePopMenu = (a, b) => {
+        //cloudlet pool
+        this.state.item.State = b.children;
         this.setState({ isOpen: false })
-        console.log('20191104 ... on handle pop menu.. ', a, b.children, ': orgName=', this.state.orgName)
+        console.log('20200104 ... on handle pop menu.. ', a, b.children, ': orgName=', this.state.item)
         if(b.children === 'Launch') {
             this.appLaunch(this.state.item)
         } else if(b.children === 'Update') {
@@ -363,10 +364,9 @@ class InsideListView extends React.Component {
         } else if(b.children === 'Delete') {
             this.setState({openDelete: true, selected:this.state.item})
         }
-        //cloudlet pool
-        if(b.children === 'Add') {
+        if(b.children === 'Add Cloudlet') {
             this.addCloudlet(this.state.item)
-        } else if(b.children === 'Link') {
+        } else if(b.children === 'Link Organization') {
             this.linkOrganize(this.state.item)
         }
 

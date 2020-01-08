@@ -37,12 +37,16 @@ class SiteFourPageCloudletPool extends React.Component {
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips','Status','Physical_name','Platform_type'];
+        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips','Status','Physical_name','Platform_type', 'cloudletGroup', 'OrganizGroup'];
         this.headerLayout = [1,3,3,3,2,2,2];
         this.userToken = null;
         this._devData = [];
         this.loadCount = 0;
+        this.loadCountM = 0;
+        this.loadCountLink = 0;
         this._cloudletDummy = [];
+        this._memberDummy = [];
+        this._linkDummy = [];
     }
     gotoUrl(site, subPath) {
         let mainPath = site;
@@ -80,7 +84,7 @@ class SiteFourPageCloudletPool extends React.Component {
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // this.getDataDeveloper(this.props.changeRegion);
+        this.getDataDeveloper(this.props.changeRegion);
         this.userToken = store.userToken;
 
     }
@@ -90,14 +94,10 @@ class SiteFourPageCloudletPool extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("20191119 ..cloudlet 11 region info in page cloudlet",nextProps.changeRegion,"-- : --",this.state.changeRegion,": props region ==>",nextProps.regionInfo.region,": state region==>",this.state.regions)
-
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
+        console.log("20200106 ..page cloudlet pool -",nextProps.viewMode)
         if(nextProps.viewMode) {
             if(nextProps.viewMode === 'listView') {
-                //alert('viewmode..'+nextProps.viewMode+':'+ this.state.devData)
-                //this.getDataDeveloper(this.props.changeRegion)
+                this.getDataDeveloper(this.props.changeRegion, this.state.regions)
                 this.setState({viewMode:nextProps.viewMode})
             } else {
                 this.setState({viewMode:nextProps.viewMode})
@@ -133,8 +133,7 @@ class SiteFourPageCloudletPool extends React.Component {
 
 
     }
-    receiveResult = (result) => {
-        console.log('20191220 receive result cloudlet pool...', JSON.stringify(result));
+    receiveResultShow = (result) => {
         // @inki if data has expired token
         if(result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
@@ -143,51 +142,108 @@ class SiteFourPageCloudletPool extends React.Component {
             _self.props.handleLoadingSpinner(false);
             return;
         }
-
+        console.log('20200103 result show pool - ', result)
         let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
         if(Object.keys(regionGroup)[0]) {
             _self._cloudletDummy = _self._cloudletDummy.concat(result)
         }
 
         this.loadCount ++;
-        console.log("20191220 ..cloudlet EditEditEdit",rgn.length,":::",this.loadCount)
         if(rgn.length == this.loadCount){
-            _self.countJoin()            
+            _self.countJoin()
         }
-        _self.props.handleLoadingSpinner(false);
-
-        // let join = null;
-        // if(result[0]['Edit']) {
-        //     join = this.state.devData.concat(result);
-        // } else {
-        //     join = this.state.devData;
-        // }
-        // this.loadCount ++;
-        // this.setState({devData:join})
-        // this.props.handleLoadingSpinner(false);
-        // if(rgn.length == this.loadCount-1){
-        //     return
-        // }
 
     }
 
-    // receiveResult = (result) => {
-    //     console.log('20191220 receive result cloudlet pool...', JSON.stringify(result));
-    // }
-    receiveResultCreate = (result) => {
-        console.log('20191220 receive result cloudlet pool create ...', JSON.stringify(result));
-    }
     receiveResultMember = (result) => {
-        console.log('20191220 receive result cloudlet pool member  ...', JSON.stringify(result));
+        console.log('20200103 result show - ', result)
+        if(result.error && result.error.indexOf('Expired') > -1) {
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleComputeRefresh(false);
+            _self.props.handleLoadingSpinner(false);
+            return;
+        }
+        let poolGroup = (!result.error) ? reducer.groupBy(result, 'PoolName'):{};
+        if(Object.keys(poolGroup)[0]) {
+            _self._memberDummy = _self._memberDummy.concat(poolGroup)
+        }
+        console.log('20200103 result show member - ', _self._memberDummy)
+        this.loadCountM ++;
+        if(rgn.length == this.loadCountM){
+            _self.countJoin();
+        }
     }
-    receiveResultCreateMember = (result) => {
-        console.log('20191220 receive result cloudlet pool create member  ...', JSON.stringify(result));
+    receiveResultLinkOrg = (result) => {
+        if(this.loadCountLink > 0) return;
+        console.log('20200106 result show link org - ', result, ": this.loadCountLink =", this.loadCountLink)
+        if(result.error && result.error.indexOf('Expired') > -1) {
+            _self.props.handleAlertInfo('error', result.error);
+            setTimeout(() => _self.gotoUrl('/logout'), 4000);
+            _self.props.handleComputeRefresh(false);
+            _self.props.handleLoadingSpinner(false);
+            return;
+        }
+        let poolGroup = (!result.error) ? reducer.groupBy(result.data, 'CloudletPool'):{};
+        console.log('20200106 result show link org - - - ', poolGroup)
+        if(Object.keys(poolGroup)[0]) {
+            _self._linkDummy = poolGroup;
+        }
+        console.log('20200106 result show link org - ', _self._linkDummy)
+        this.loadCountLink ++;
+
+        _self.countJoin();
+
+
     }
+
 
     countJoin() {
-        let cloudlet = this._cloudletDummy;
-        console.log('20191119 ..cloudlet---', cloudlet)
-        _self.setState({devData:cloudlet,dataSort:false})
+
+        if(this.loadCount == rgn.length && this.loadCountM == rgn.length && this.loadCountLink == 1) {
+            this.countAllJoin();
+        }
+    }
+
+    countAllJoin() {
+        this.loadCount = 0;
+        this.loadCountM = 0;
+        this.loadCountLink = 0;
+        let cloudlet = Object.assign([], this._memberDummy);
+        /** cloudlet pool join member data */
+        let cloneData = Object.assign([], this._cloudletDummy);
+        let orgData = Object.assign([], this._linkDummy)
+        console.log('20200103 ..cloudlet member count---', cloneData, ":", cloudlet)
+
+        cloneData.map((data, i) => {
+            console.log('20200103 data - ', data['PoolName'])
+            data['cloudletGroup'] = [];
+            data['OrganizGroup'] = [];
+            cloudlet.map(member => {
+                if(member[data['PoolName']]){
+                    member[data['PoolName']].map((pn)=> {
+                        if(pn['Region'] === data['Region']) {
+                            console.log("20200103 member", pn, ":", pn['Region'],":", data['Region'])
+                            data['Cloudlets'] += 1
+                            data['cloudletGroup'].push(pn)
+                        }
+                    })
+                }
+            })
+            if(orgData[data['PoolName']]) {
+                orgData[data['PoolName']].map((org) => {
+                    if(org['Region'] === data['Region']) {
+                        data['Organizations'] += 1
+                        data['OrganizGroup'].push(org)
+                    }
+                })
+            }
+        })
+
+        console.log('20200103 ..cloudlet member count join---', cloneData)
+        this.setState({devData:cloneData})
+        this._memberDummy = [];
+        this._cloudletDummy = [];
         this.props.handleLoadingSpinner(false);
     }
 
@@ -204,16 +260,14 @@ class SiteFourPageCloudletPool extends React.Component {
         }
 
         rgn.map((item, i) => {
-            services.getListCloudletPool('ShowCloudletPool',{token:store.userToken, region:item}, _self.receiveResult)
-            //services.getListCloudletPoolMember('ShowCloudletPoolMember',{token:store.userToken, region:item}, _self.receiveResultMember)
+            services.getListCloudletPool('ShowCloudletPool',{token:store.userToken, region:item}, _self.receiveResultShow)
+            services.getListCloudletPoolMember('ShowCloudletPoolMember',{token:store.userToken, region:item}, _self.receiveResultMember)
         })
+        services.showOrgCloudletPool('ShowOrgCloudletPool', {token:store.userToken}, _self.receiveResultLinkOrg)
         this.props.handleLoadingSpinner(true);
 
     }
-    createCloudletPool = (_region, _poolName) => {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        services.createCloudletPool('CreateCloudletPool',{token:store.userToken, region:_region, name:_poolName}, _self.receiveResultCreate)
-    }
+
     /*
        example : region=EU operator=TDG cloudlet=deleteme pool=DeletemePool
      */
@@ -224,9 +278,8 @@ class SiteFourPageCloudletPool extends React.Component {
         _self.props.handleComputeRefresh(false);
     }
     render() {
-        const {shouldShowBox, shouldShowCircle, devData} = this.state;
-        const { activeItem, viewMode } = this.state;
-        let randomValue = Math.round(Math.random() * 100);
+        const {devData, viewMode} = this.state;
+
         return (
             (viewMode === 'listView')?
                 <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet Pool'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
@@ -242,7 +295,7 @@ SiteFourPageCloudletPool.defaultProps = {
 
 
 const mapStateToProps = (state) => {
-    console.log("20191119 regionssInfo",state.regionInfo,":", state.changeRegion)
+    console.log("20200103 state.changeViewMode.mode.viewMode--",state.changeViewMode)
     let viewMode = null;
     let detailData = null;
 
@@ -269,4 +322,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCloudletPool)));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageCloudletPool));

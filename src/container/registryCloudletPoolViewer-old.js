@@ -175,7 +175,6 @@ class RegistryCloudletPoolViewer extends React.Component {
             if (result.data.error) {
                 this.props.handleAlertInfo('error', result.data.error)
             } else {
-                console.log('20191220 receive submit result is success..', result,":", result.data)
                 this.props.handleAlertInfo('success',result.data.message)
             }
             if(this.props.siteId !== 'appinst' || body.params.appinst.key.cluster_inst_key.cluster_key.name.indexOf('autocluster') > -1){
@@ -244,7 +243,6 @@ class RegistryCloudletPoolViewer extends React.Component {
             this.setState({ dimmer:'blurring', open: true })
         }
         if(nextProps.devData.length > 0) {
-            console.log('20191220 props dev data -- ', nextProps.devData)
             this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
         } else {
             this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
@@ -268,7 +266,6 @@ class RegistryCloudletPoolViewer extends React.Component {
             if(!this.pauseRender && nextProps.formClusterInst.submitSucceeded && error.length == 0){
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
-                console.log('20191223 create cloudlet....',nextProps.submitValues)
                 //servicePool.createCloudletPool('CreateCloudletPool', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
                 setTimeout(() => {
                     this.props.handleLoadingSpinner(false);
