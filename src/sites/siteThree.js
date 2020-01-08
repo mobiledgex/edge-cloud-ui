@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import './siteThree.css';
 //
-import * as serviceMC from '../services/serviceMC';
+import * as service from '../services/service_compute_service';
 import * as aggregate from '../utils';
 import {LOCAL_STRAGE_KEY} from "../components/utils/Settings";
 
@@ -22,7 +22,7 @@ let _devOptionsTwo = [
     { key: 'cl', value: 'cl', text: 'Barcelona MWC' }
 ]
 
-let rgn = ['US','EU'];
+let rgn = ['US','KR','EU'];
 let _self = null;
 class SiteThree extends React.Component {
     constructor(props) {
@@ -104,7 +104,12 @@ class SiteThree extends React.Component {
     receiveCluster(cloudlet) {
 
     }
-    
+    getClusterInfo() {
+        // 오퍼의 클러스터 정보
+        //service.getComputeService('cloudlet', this.receiveCloudlet)
+    }
+
+
     setCloudletList = (operNm) => {
         let cl = [];
         if(_self.state.cloudletResult && _self.state.cloudletResult[operNm]) {
@@ -117,13 +122,8 @@ class SiteThree extends React.Component {
     }
 
 
-    receiveResultClusterInst(mcRequest) {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                if (response.data.length) _self.groupJoin(response.data, 'clusterInst')
-            }
-        }
+    receiveResultClusterInst(result) {
+        if(result.length)_self.groupJoin(result,'clusterInst')
     }
 
 
@@ -146,31 +146,30 @@ class SiteThree extends React.Component {
         if(region !== 'All'){
             rgn = [region];
         } else {
-            rgn = ['US','EU'];
+            rgn = ['US','KR','EU'];
         }
 
-        if (localStorage.selectRole == 'AdminManager') {
+        if(localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
                 // All show clusterInst
-                console.log("changeRegionitem", item)
-                serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: item } }, _self.receiveResultClusterInst)
+                console.log("changeRegionitem",item)
+                service.getMCService('ShowClusterInst',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultClusterInst)
             })
         } else {
             rgn.map((item) => {
                 serviceBody = {
-                    "method": serviceMC.getEP().SHOW_CLUSTER_INST,
-                    "token": store ? store.userToken : 'null',
-                    "data": {
-                        "region": item,
-                        "clusterinst": {
-                            "key": {
+                    "token":store ? store.userToken : 'null',
+                    "params": {
+                        "region":item,
+                        "clusterinst":{
+                            "key":{
                                 "developer": localStorage.selectOrg
                             }
                         }
                     }
                 }
                 // org별 show clusterInst
-                serviceMC.sendRequest(_self, serviceBody, _self.receiveResultClusterInst)
+                service.getMCService('ShowClusterInsts',serviceBody, _self.receiveResultClusterInst)
             })
         }
 

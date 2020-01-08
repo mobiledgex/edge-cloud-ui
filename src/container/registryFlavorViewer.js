@@ -1,11 +1,11 @@
 import React from 'react';
-import {Tab} from 'semantic-ui-react';
+import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import './styles.css';
 import _ from "lodash";
 import * as reducer from '../utils'
-import * as serviceMC from '../services/serviceMC';
+import * as services from '../services/service_compute_service';
 import SiteFourCreateFormFlavorDefault from "./siteFourCreateFormFlavorDefault";
 import {withRouter} from "react-router-dom";
 
@@ -72,14 +72,14 @@ class RegistryFlavorViewer extends React.Component {
     }
 
     
-    receiveResult = (mcRequest) => {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let request = mcRequest.request;
-                _self.props.handleLoadingSpinner(false);
-                this.props.handleAlertInfo('success', 'Flavor ' + request.data.flavor.key.name + ' created successfully.')
-                this.gotoUrl('submit');
-            }
+    receiveResult = (result, body) => {
+        _self.props.handleLoadingSpinner(false);
+        if(result.data.error) {
+            this.props.handleAlertInfo('error',result.data.error)
+            return;
+        } else {
+            this.props.handleAlertInfo('success','Flavor '+body.params.flavor.key.name+' created successfully.')
+            this.gotoUrl('submit');
         }
     }
 
@@ -160,20 +160,35 @@ class RegistryFlavorViewer extends React.Component {
                 }
             })
 
-            if (nextProps.formAppInst.submitSucceeded && error.length == 0) {
+            if(nextProps.formAppInst.submitSucceeded && error.length == 0){
                 let submitData = nextProps.submitValues
-                this.setState({ toggleSubmit: true, validateError: error });
+                this.setState({toggleSubmit:true,validateError:error});
                 this.props.handleLoadingSpinner(true);
-                serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_FLAVOR, data: submitData }, this.receiveResult)
+                services.createNewFlavor('CreateFlavor',{params:submitData, token:store ? store.userToken : 'null'}, this.receiveResult)
             } else {
-                this.setState({ validateError: error, toggleSubmit: true })
+                this.setState({validateError:error,toggleSubmit:true})
             }
-
+            
         }
 
     }
 
     componentWillUnmount() {
+    }
+
+    receiveStatusData = (result) => {
+        let toArray = null;
+        let toJson = null;
+        toArray = result.data.split('\n')
+        toArray.pop();
+        toJson = toArray.map((str)=>(JSON.parse(str)))
+        console.log("toJsontoJson",toJson)
+        toJson.map((item) => {
+            if(item.result && item.result.code == 400){
+                console.log("item.result",item.result.message)
+                this.props.handleAlertInfo('error',item.result.message)
+            }
+        })
     }
 
     render() {

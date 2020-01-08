@@ -60,7 +60,6 @@
         "nodemailer": "^6.3.1",
         "plotly.js": "^1.43.1",
         "prop-types": "^15.6.2",
-        "public-ip": "^4.0.0",
         "qs": "^6.6.0",
         "randomcolor": "^0.5.4",
         "react": "16.12.0",

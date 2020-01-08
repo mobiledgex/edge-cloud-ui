@@ -1,58 +1,83 @@
 import * as reducer from '../../utils'
-import * as serviceMC from '../../services/serviceMC'
+import * as services from '../../services/service_compute_service';
 
 let rgn = [];
+let props = {};
+let loadCount = 0;
+let _AppInstDummy = [];
+let returnData = null;
 
-const receiveResultApp = (mcRequest) => {
-    let regionGroup = {};
-    if (mcRequest) {
-        if (mcRequest.response) {
-            let response = mcRequest.response;
-            regionGroup = reducer.groupBy(response.data, 'Region');
-            if (Object.keys(regionGroup)[0]) {
-                _self._AppInstDummy = _self._AppInstDummy.concat(response.data)
-            }
-            _self.loadCount++;
-            if (rgn.length == _self.loadCount) {
-                countJoin()
-            }
-        }
+const gotoUrl = (site, subPath) => {
+    props.history.push({
+        pathname: site,
+        search: subPath
+    });
+    props.history.location.search = subPath;
+
+}
+const receiveResultApp = (result) => {
+    if(result.error && result.error.indexOf('Expired') > -1) {
+        props.handleAlertInfo('error', result.error);
+        setTimeout(() => gotoUrl('/logout'), 4000);
+        props.handleLoadingSpinner(false);
+        return;
     }
-    _self.props.handleLoadingSpinner(false);
+
+    let cloudletGroup = (!result.error) ? reducer.groupBy(result, 'Cloudlet'):{};
+    if(Object.keys(cloudletGroup)[0]) {
+        _AppInstDummy = _AppInstDummy.concat(result)
+    }
+    loadCount ++;
+    if(rgn.length == loadCount){
+        countJoin(_AppInstDummy)
+    }
+    props.handleLoadingSpinner(false);
 
 }
-const countJoin = () => {
-    let AppInst = this._AppInstDummy;
-    _self.setState({devData:AppInst,dataSort:false})
-
+const countJoin = (_AppInstDummy) => {
+    let appInst = [];
+    appInst = reducer.groupBy(_AppInstDummy, 'Cloudlet')
+    returnData(appInst)
+    props.handleLoadingSpinner(false);
+    // TODO :  결과값을 차트에 적용하기
 }
-export const setRegion =(rgn) => {
-    rgn = rgn;
+export const setProps =(_rgn, _props, _return) => {
+    rgn = _rgn;
+    props = _props;
+    returnData = _return;
 }
 export const getDataofAppinst = (region,regionArr) => {
-    this.props.handleLoadingSpinner(true);
+    props.handleLoadingSpinner(true);
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let serviceBody = {}
-    this.loadCount = 0;
-    this.setState({devData:[]})
-    this._AppInstDummy = []
+    loadCount = 0;
+    //setState({devData:[]})
+    _AppInstDummy = []
     if(region !== 'All'){
         rgn = [region]
     } else {
-        rgn = (regionArr)?regionArr:this.props.regionInfo.region;
+        rgn = (regionArr)?regionArr:props.regionInfo.region;
+
+    }
+
+    let _store={
+        "email": "mexadmin",
+        "password": "mexadmin123",
+        "userToken": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY3MzY0OTIsImlhdCI6MTU3NjY1MDA5MiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.Cb4vFGypczftq4cJOamHi3kI810PNKsV6oWHD05eJAAUH0Wo5hCka0zzaR6N6jnprsArMUvGZCL9ezAHj0WJ-A"
     }
 
     if(localStorage.selectRole == 'AdminManager') {
         rgn.map((item) => {
             // All show appInst
-            serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_APP_INST, data: { region: item } }, receiveResultApp)
+
+            services.getMCService('ShowAppInst',{token:store ? store.userToken : 'null', region:item}, receiveResultApp)
+
         })
     } else {
         rgn.map((item) => {
             serviceBody = {
-                method:serviceMC.getEP().SHOW_APP_INST,
-                token:store.userToken,
-                data: {
+                "token":store.userToken,
+                "params": {
                     "region":item,
                     "appinst":{
                         "key":{
@@ -64,7 +89,9 @@ export const getDataofAppinst = (region,regionArr) => {
                 }
             }
             // org별 show appInst
-            serviceMC.sendRequest(_self, serviceBody, receiveResultApp)
+
+            services.getMCService('ShowAppInsts',serviceBody, receiveResultApp)
+
         })
     }
 }

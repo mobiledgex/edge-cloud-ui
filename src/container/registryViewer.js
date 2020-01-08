@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Tab} from 'semantic-ui-react';
+import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -9,10 +9,15 @@ import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import './styles.css';
+import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
-import * as serviceMC from '../services/serviceMC';
+import MaterialIcon from "material-icons-react";
+import * as services from '../services/service_compute_service';
 import SiteFourCreateFormAppDefault from "./siteFourCreateFormAppDefault";
+import Alert from "react-s-alert";
+import * as service from "../services/service_compute_service";
+const ReactGridLayout = WidthProvider(RGL);
 
 
 let itData = '';
@@ -127,25 +132,25 @@ class RegistryViewer extends React.Component {
         this.setState({ dimmer:dim, openAdd: true, selected:data })
     }
 
-    receiveResult = (mcRequest) => {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let result = mcRequest.response;
-                let request = mcRequest.request;
-                let resource = request.method === serviceMC.getEP().CREATE_APP ? 'created' : 'updated'
-                _self.props.handleLoadingSpinner(false);
-                this.setState({ toggleSubmit: false })
-                this.props.handleAlertInfo('success', 'Your application ' + request.data.app.key.name + ' ' + resource + ' successfully')
-                setTimeout(() => {
-                    this.gotoUrl();
-                }, 1000)
-            }
-            else if(mcRequest.error)
-            {
-                let error = mcRequest.error;
-                if(error.message == 'Key already exists') error.message = 'App already exists';
-                this.props.handleAlertInfo('error',error.message)
-            }
+    receiveResult = (result, body, resuorce) => {
+        console.log("bodybodybodysresult",result,":::",body,":::",resuorce)
+        let resource = ''
+        if(resuorce == 'CreateApp') resource = 'created'
+        else if(resuorce == 'UpdateApp') resource = 'updated'
+
+        _self.props.handleLoadingSpinner(false);
+        this.setState({toggleSubmit:false})
+        if(result.data.error) {
+            if(result.data.error == 'Key already exists') result.data.error = 'App already exists';
+            this.props.handleAlertInfo('error',result.data.error)
+        } else {
+            //this.props.gotoApp();
+            this.props.handleAlertInfo('success','Your application '+body.params.app.key.name+' '+resource+' successfully')
+            setTimeout(() => {
+                this.gotoUrl();
+            }, 1000)
+            //this.gotoUrl();
+            //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=6'})
         }
     }
 
@@ -265,21 +270,16 @@ class RegistryViewer extends React.Component {
         if(localStorage.selectMenu == "Apps") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // clusterFlavor
-            serviceMC.sendRequest(_self, { token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveF)
+            service.getMCService('ShowFlavor',{token:store.userToken,region:region}, _self.receiveF)
         }
     }
 
-    receiveF(mcRequest) {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                let arr = []
-                response.data.map((item, i) => {
-                    arr.push(item.FlavorName)
-                })
-                _self.setState({ devoptionsf: arr });
-            }
-        }
+    receiveF(result) {
+        let arr = []
+        result.map((item,i) => {
+            arr.push(item.FlavorName)
+        })
+        _self.setState({devoptionsf: arr});
     }
 
     updateFields(initData,updateData){
@@ -360,19 +360,21 @@ class RegistryViewer extends React.Component {
                 }
             })
             if(nextProps.formApps.submitSucceeded && error.length == 0){
-                let method = serviceMC.getEP().CREATE_APP;
+                let serviceBody = {}
+                let serviceResource = 'CreateApp'
                 if(nextProps.editMode){
-                    method = serviceMC.getEP().UPDATE_APP;
+                    serviceResource = 'UpdateApp'
                     nextProps.submitValues.app['fields'] = this.updateFields(nextProps.editData,nextProps.submitValues.app)
                 }
                 this.setState({toggleSubmit:true,validateError:error});
                 this.props.handleLoadingSpinner(true);
-                let serviceBody = {
-                    method : method,
-                    token:store ? store.userToken : 'null',
-                    data: nextProps.submitValues
+                //TODO: // 20190430 add spinner...(loading)
+                serviceBody = {
+                    "token":store ? store.userToken : 'null',
+                    "params": nextProps.submitValues
                 }
-                serviceMC.sendRequest(_self, serviceBody, this.receiveResult)
+
+                services.createNewApp(serviceResource, serviceBody, this.receiveResult)
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }

@@ -1,10 +1,17 @@
-import React from "react";
+import React, { Fragment } from "react";
+import {Button, Form, Divider, Modal, Grid, Input, TextArea, Dropdown} from "semantic-ui-react";
+import { Field, reduxForm } from "redux-form";
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import './styles.css';
 import RegistNewListInput from "./registNewListInput";
-import * as serviceMC from '../services/serviceMC';
+
+import * as service from '../services/service_compute_service';
+
+//http://react-s-alert.jsdemo.be/
+import Alert from 'react-s-alert';
+
 import * as aggregate from "../utils";
 
 
@@ -69,7 +76,12 @@ class RegistNewListItem extends React.Component {
         _self = this;
     }
 
+    componentDidMount() {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+       
+    }
     componentWillReceiveProps(nextProps, nextContext) {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         if(nextProps.open) {
             this.setState({open:nextProps.open, dimmer:nextProps.dimmer});
         }
@@ -150,13 +162,15 @@ class RegistNewListItem extends React.Component {
         let groupByOper = aggregate.groupBy(result, 'DeveloperName')
         _self.setState({appResult:groupByOper})
     }
-    receiveSubmit = (mcRequest) => {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let request = mcRequest.request;
-                this.props.refresh('All')
-                this.props.handleAlertInfo('success', 'Flavor ' + request.data.flavor.key.name + ' created successfully')
-            }
+    receiveSubmit = (result, body) => {
+        
+        this.props.refresh('All')
+        let paseData = result.data;
+        if(paseData.error) {
+            this.props.handleAlertInfo('error',paseData.error)
+            return
+        } else {
+            this.props.handleAlertInfo('success','Flavor '+body.params.flavor.key.name+' created successfully')
         }
         this.props.handleLoadingSpinner(false);
     }
@@ -182,22 +196,21 @@ class RegistNewListItem extends React.Component {
 
             const {FlavorName,RAM,vCPUs,Disk,Region} = this.props.submitData.registNewListInput.values
             serviceBody = {
-                token: store ? store.userToken : 'null',
-                method: serviceMC.getEP().CREATE_FLAVOR,
-                data: {
-                    "region": Region,
-                    "flavor": {
-                        "key": { "name": FlavorName },
-                        "ram": Number(RAM),
-                        "vcpus": Number(vCPUs),
-                        "disk": Number(Disk)
+                "token":store ? store.userToken : 'null',
+                "params": {
+                    "region":Region,
+                    "flavor":{
+                        "key":{"name":FlavorName},
+                        "ram":Number(RAM),
+                        "vcpus":Number(vCPUs),
+                        "disk":Number(Disk)
                     }
                 }
             }
-            if(error.length === 0) {
+            if(error.length == 0) {
                 this.close();
                 this.props.handleLoadingSpinner(true);
-                serviceMC.sendRequest(_self, serviceBody, this.receiveSubmit)
+                service.createNewFlavor('CreateFlavor',serviceBody, this.receiveSubmit)
             }
             this.setState({validateError:error})
         }

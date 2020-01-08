@@ -1,6 +1,21 @@
-import React, {Fragment} from "react";
-import {Button, Divider, Form, Grid, Icon, Input, Modal, Popup} from "semantic-ui-react";
-import {change, Field, reduxForm, reset} from "redux-form";
+import React, { Fragment } from "react";
+import {
+    Button,
+    Form,
+    Item,
+    Message,
+    Divider,
+    Modal,
+    List,
+    Grid,
+    Card,
+    Dropdown,
+    Input,
+    Popup,
+    Icon
+} from "semantic-ui-react";
+import { Field, reduxForm, initialize, change, reset } from "redux-form";
+import MaterialIcon from "../sites/siteFour_page_createOrga";
 import './styles.css';
 import EditMap from '../libs/simpleMaps/with-react-motion/editMap';
 
@@ -119,7 +134,7 @@ const renderLocationInput = ({ input, placeholder, change, type, error }) => (
         </Form.Field>
         {error && <span className="text-danger">{error}</span>}
     </div>
-
+   
 );
 
 class registNewInput extends React.Component {
@@ -179,7 +194,7 @@ class registNewInput extends React.Component {
             this.props.initialize(initData);
         }
     }
-
+    
     handleRegionChange = (e) => {
         this.props.getOptionData(e)
         this.props.dispatch(reset('registNewInput'));
@@ -189,7 +204,7 @@ class registNewInput extends React.Component {
         this.handleInitialize();
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) {        
         if(nextProps.locationLong || nextProps.locationLat){
             this.props.dispatch(change('registNewInput', 'Latitude', nextProps.locationLat));
             this.props.dispatch(change('registNewInput', 'Longitude', nextProps.locationLong));
@@ -306,11 +321,11 @@ class registNewInput extends React.Component {
                     </Form.Group>
                 </Form>
             </Fragment>
-
-
+            
+                
         );
     }
-
+    
 };
 
 export default reduxForm({

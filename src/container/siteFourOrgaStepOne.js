@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import {Button, Form, Item, Message, List, Grid, Card, Header, Image, Input} from "semantic-ui-react";
 import {Field, reduxForm, initialize, reset, stopSubmit} from "redux-form";
+import MaterialIcon from "../sites/siteFour_page_createOrga";
 import './styles.css';
 
 const validate = values => {

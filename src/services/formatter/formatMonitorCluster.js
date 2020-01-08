@@ -83,6 +83,16 @@
 
 import * as d3 from 'd3';
 import * as moment from 'moment';
+let trimData = (datas) => {
+    let newData = datas.splice(0,1);
+    return datas ;
+}
+const week_kr = ["월","화","수","목","금","토","일"]
+let week = moment().format('E');
+let getWeek = week_kr[(week-1)];
+const numberDes =(a,b)=> (
+    b-a
+)
 
 const formatDigit = (dNum, value) => (
     d3.format(dNum)(value)
@@ -90,7 +100,7 @@ const formatDigit = (dNum, value) => (
 /*
 {alarm:'3', dName:'Cluster-A', values:{cpu:35, mem:55, sys:33}}
  */
-export const  formatData = (datas) => {
+let generateData = (datas) => {
     let result = datas.data.data[0].Series[0];
     let values = [];
     if(result){
@@ -124,9 +134,36 @@ export const  formatData = (datas) => {
                 lastItem = item[0]
 
             })
+        } else {
+
         }
+
+
+
     } else {
         console.log('there is no result')
     }
+
+    //ascending or descending
+
+    //values.sort(numberDes);
+    //values.reverse();
+
     return values
+
 }
+const retunDate = (str) => {
+    var year = str.substring(0, 4);
+    var month = str.substring(4, 6);
+    var day = str.substring(6, 8);
+    var hour = str.substring(8, 10);
+    var minute = str.substring(10, 12);
+    //var second = str.substring(12, 14);
+    var date = new Date(year, month-1, day, hour, minute);
+    return moment(date).format('hh:mm');
+}
+const FormatMonitorCluster = (props) => (
+    generateData(props)
+)
+
+export default FormatMonitorCluster;

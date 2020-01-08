@@ -15,6 +15,8 @@ import {
     Popup, Icon
 } from "semantic-ui-react";
 import { Field, reduxForm, initialize, reset } from "redux-form";
+
+import MaterialIcon from "../sites/siteFour_page_createOrga";
 import './styles.css';
 import '../css/index.css';
 

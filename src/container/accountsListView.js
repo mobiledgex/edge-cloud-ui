@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Table, Icon} from 'semantic-ui-react';
+import { Modal, Grid, Header, Button, Table, Menu, Icon, Input, Divider, Container } from 'semantic-ui-react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as moment from 'moment';
@@ -14,7 +14,7 @@ import './styles.css';
 import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
-import * as serviceMC from '../services/serviceMC';
+import * as services from '../services/service_compute_service';
 import Alert from 'react-s-alert';
 
 
@@ -65,18 +65,13 @@ class AccountListView extends React.Component {
     }
 
     getDataDeveloper(token) {
-        serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_ROLE }, this.receiveResult)
+        services.getMCService('ShowRole',{token:token}, this.receiveResult)
     }
-    
-    receiveResult = (mcRequest) => {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                this.setState({ orgData: response })
-            }
-        }
+    receiveResult = (result) => {
+        //alert(JSON.stringify(result));
+        this.setState({orgData:result})
     }
-    receiveLockResult = (mcRequest) => {
+    receiveLockResult = (result) => {
         _self.props.handleComputeRefresh(true);
     }
     
@@ -206,7 +201,7 @@ class AccountListView extends React.Component {
     }
     onLocking(value) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SETTING_LOCK, data: { email: value.email, locked: value.lockState } }, this.receiveLockResult)
+        services.getMCService('SettingLock',{token:store ? store.userToken : 'null', params:{email:value.email, locked:value.lockState}}, this.receiveLockResult)
     }
     compareDate = (date) => {
         let isNew = false;

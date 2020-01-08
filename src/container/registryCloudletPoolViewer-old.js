@@ -1,16 +1,22 @@
 import React from 'react';
-import {Tab} from 'semantic-ui-react';
-import {connect} from 'react-redux';
+import {Header, Button, Table, Icon, Input, Tab, Item} from 'semantic-ui-react';
+import { connect } from 'react-redux';
 import * as actions from '../actions';
-import RGL, {WidthProvider} from "react-grid-layout";
+import RGL, { WidthProvider } from "react-grid-layout";
 import {withRouter} from "react-router-dom";
 import PopPoolDetailViewer from './popPoolDetailViewer';
 import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import './styles.css';
+import ContainerDimensions from 'react-container-dimensions'
+import _ from "lodash";
 import * as reducer from '../utils'
-import SiteFourCreatePoolForm from "./siteFourCreatePoolForm";
 
+import * as service from '../services/service_compute_service';
+import * as servicePool from '../services/service_cloudlet_pool';
+import SiteFourCreatePoolForm from "./siteFourCreatePoolForm";
+import Alert from "react-s-alert";
+import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";
 const ReactGridLayout = WidthProvider(RGL);
 
 
@@ -95,7 +101,7 @@ class RegistryCloudletPoolViewer extends React.Component {
 
     }
 
-
+    
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
         this.setState({ open: false })
@@ -167,7 +173,7 @@ class RegistryCloudletPoolViewer extends React.Component {
             //this.setState({clusterInstCreate:false})
             this.props.handleLoadingSpinner(false);
             if(paseData.error == 'Key already exists'){
-
+                
             } else {
                 this.props.handleAlertInfo('error',paseData.error)
             }
@@ -276,7 +282,7 @@ class RegistryCloudletPoolViewer extends React.Component {
             } else {
                 this.setState({validateError:error,toggleSubmit:true})
             }
-
+            
         }
 
 
@@ -370,7 +376,7 @@ const mapStateToProps = (state) => {
     let selectedApp = null;
     let flavors = null;
     let validateValue = {};
-
+    
     //TODO : 건희 20190902 새롭게 추가된 필드 'Cloudlet Type'데 대한 기능 구현 ()
     /**
      * EDGECLOUD-1187 Web UI - need to add new fields for creating a new cloudlet
@@ -393,13 +399,13 @@ const mapStateToProps = (state) => {
         state.form.createAppFormDefault.values.Latitude = state.getRegion.region.lat;
         state.form.createAppFormDefault.values.Longitude = state.getRegion.region.long;
     }
-
+    
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
         submitVal = createFormat(enableValue,state.getRegion.region);
         validateValue = state.form.createAppFormDefault.values;
     }
-
+    
     let region = state.changeRegion
         ? {
             value: state.changeRegion.region
@@ -428,7 +434,7 @@ const mapStateToProps = (state) => {
         getRegion : (state.getRegion)?state.getRegion.region:null,
         regionInfo: regionInfo
     }
-
+    
     // return (dimm) ? {
     //     dimmInfo : dimm
     // } : (account)? {
