@@ -18,10 +18,10 @@ import {
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
     filterAppInstOnCloudlet,
-    filterCpuOrMemUsageByAppInst,
-    filterCpuOrMemUsageByCloudLet,
-    filterCpuOrMemUsageByCluster,
-    filterCpuOrMemUsageListByRegion,
+    filterUsageByAppInst,
+    filterUsageByCloudLet,
+    filterUsageByCluster,
+    filterUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
     getMetricsUtilizationAtAppLevel,
     makeCloudletListSelectBox,
@@ -282,6 +282,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
+
             /* let usageList = await Promise.all([
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
@@ -378,8 +379,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
             let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
-            let filteredCpuUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allCpuUsageList);
-            let filteredMemUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allMemUsageList);
+            let filteredCpuUsageList = filterUsageListByRegion(pRegion, this.state.allCpuUsageList);
+            let filteredMemUsageList = filterUsageListByRegion(pRegion, this.state.allMemUsageList);
+            let filteredDiskUsageList = filterUsageListByRegion(pRegion, this.state.allDiskUsageList);
+            let filteredNetworkUsageList = filterUsageListByRegion(pRegion, this.state.allNetworkUsageList);
 
 
             //todo: ##########################################
@@ -390,8 +393,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                 appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
                 clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
-                filteredCpuUsageList = filterCpuOrMemUsageByCloudLet(filteredCpuUsageList, pCloudLet);
-                filteredMemUsageList = filterCpuOrMemUsageByCloudLet(filteredMemUsageList, pCloudLet);
+                filteredCpuUsageList = filterUsageByCloudLet(filteredCpuUsageList, pCloudLet);
+                filteredMemUsageList = filterUsageByCloudLet(filteredMemUsageList, pCloudLet);
+                filteredDiskUsageList = filterUsageByCloudLet(filteredDiskUsageList, pCloudLet);
+                filteredNetworkUsageList = filterUsageByCloudLet(filteredNetworkUsageList, pCloudLet);
 
             }
 
@@ -403,8 +408,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
                 //todo:app instalce list를 필터링
                 appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
-                filteredCpuUsageList = filterCpuOrMemUsageByCluster(filteredCpuUsageList, pCluster);
-                filteredMemUsageList = filterCpuOrMemUsageByCluster(filteredMemUsageList, pCluster);
+                filteredCpuUsageList = filterUsageByCluster(filteredCpuUsageList, pCluster);
+                filteredMemUsageList = filterUsageByCluster(filteredMemUsageList, pCluster);
+                filteredDiskUsageList = filterUsageByCluster(filteredDiskUsageList, pCluster);
+                filteredNetworkUsageList = filterUsageByCluster(filteredNetworkUsageList, pCluster);
             }
 
             //todo: ##########################################
@@ -413,8 +420,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (pAppInstance !== '') {
                 //todo:app instalce list를 필터링
                 //appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
-                filteredCpuUsageList = filterCpuOrMemUsageByAppInst(filteredCpuUsageList, pAppInstance);
-                filteredMemUsageList = filterCpuOrMemUsageByAppInst(filteredMemUsageList, pAppInstance);
+                filteredCpuUsageList = filterUsageByAppInst(filteredCpuUsageList, pAppInstance);
+                filteredMemUsageList = filterUsageByAppInst(filteredMemUsageList, pAppInstance);
+                filteredDiskUsageList = filterUsageByAppInst(filteredDiskUsageList, pAppInstance);
+                filteredNetworkUsageList = filterUsageByAppInst(filteredNetworkUsageList, pAppInstance);
             }
 
 
@@ -429,6 +438,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
+                filteredDiskUsageList: filteredDiskUsageList,
+                filteredNetworkUsageList: filteredNetworkUsageList,
                 appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
@@ -526,26 +537,27 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 <div
                                     style={{
                                         display: 'flex',
-                                        width: 270,
                                         //backgroundColor: 'red',
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        marginBottom: 5,
+                                        marginBottom: 0,
                                         color: 'white',
                                         fontSize: 15,
-                                        marginLeft: -10,
+                                        marginLeft: 0,
                                         marginRight: 0,
 
                                     }}
 
                                 >
 
-                                    <div style={{backgroundColor: 'transparent', width: 50, marginBottom: -3}} onClick={async () => {
+                                    <div style={{backgroundColor: 'transparent',  marginBottom: 0}} onClick={async () => {
 
                                         this.refreshAllData();
 
                                     }}>
-                                        <FA name="refresh" style={{fontSize: 30}}/>
+                                        <Button>
+                                            REFRESH
+                                        </Button>
                                     </div>
 
                                     <div style={{marginLeft: 10,}}
@@ -557,7 +569,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                              await this.handleSelectBoxChanges('ALL', '', '', '')
                                          }}
                                     >
-                                        <div>RESET_ALL</div>
+                                        <Button>RESET_ALL</Button>
                                     </div>
                                 </div>
                             </div>
@@ -636,6 +648,31 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     }, 1000)
                                 }}
                             />
+                            {/*todo: App Instance*/}
+                            {/*todo: App Instance*/}
+                            {/*todo: App Instance*/}
+
+                            <div style={Styles.selectHeader}>
+                                App Instance
+                            </div>
+                            <div>
+                                <Dropdown
+                                    clearable={this.state.appInstSelectBoxClearable}
+                                    value={this.state.currentAppInst}
+                                    placeholder='Select App Instance'
+                                    selection
+                                    options={this.state.appInstaceListForSelectBoxForCpu}
+                                    style={{width: 250}}
+                                    onChange={async (e, {value}) => {
+
+                                        await this.setState({
+                                            currentAppInst: value,
+                                        })
+                                        await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                    }}
+
+                                />
+                            </div>
 
                             {/*todo:TimeRange*/}
                             {/*todo:TimeRange*/}
@@ -1000,6 +1037,35 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        renderNetworkArea() {
+            return (
+                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
+
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_container'>
+                            {renderBarGraph(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
+                        </div>
+                    </div>
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                          <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Transition Of NETWORK Usage
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {renderLineChart(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
 
         render() {
 
@@ -1172,21 +1238,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                          })
                                                                      }, 1000)*/
                                                                 }}
-                                                                value={'RVCV_BTYE'}
+                                                                value={'RCV_BTYE'}
                                                                 style={{width: 250}}
                                                             />
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_column_for_grid'>
-                                                        <div>
-                                                            sdlkflsdkflksdf
-                                                        </div>
-                                                        <div>
-                                                            sdlkflsdkflksdf
-                                                        </div>
-                                                        <div>
-                                                            sdlkflsdkflksdf
-                                                        </div>
+                                                       {this.renderNetworkArea()}
                                                     </div>
                                                 </div>
 

@@ -54,7 +54,7 @@ export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet,
  * @param pCloudLet
  * @returns {*}
  */
-export const filterCpuOrMemUsageByCloudLet = (cpuOrMemUsageList, pCloudLet) => {
+export const filterUsageByCloudLet = (cpuOrMemUsageList, pCloudLet) => {
     let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
         if (item.instance.Cloudlet === pCloudLet) {
             return item;
@@ -79,7 +79,7 @@ export const filterCpuOrMemUsageByCloudLetByType = (cpuOrMemUsageList, pCloudLet
  * @param pCluster
  * @returns {*}
  */
-export const filterCpuOrMemUsageByCluster = (cpuOrMemUsageList, pCluster) => {
+export const filterUsageByCluster = (cpuOrMemUsageList, pCluster) => {
     let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
         if (item.instance.ClusterInst === pCluster) {
             return item;
@@ -88,7 +88,7 @@ export const filterCpuOrMemUsageByCluster = (cpuOrMemUsageList, pCluster) => {
     return filteredCpuOrMemUsageList
 }
 
-export const filterCpuOrMemUsageByAppInst = (cpuOrMemUsageList, pAppInst) => {
+export const filterUsageByAppInst = (cpuOrMemUsageList, pAppInst) => {
     let filteredList = cpuOrMemUsageList.filter((item) => {
         if (item.instance.AppName === pAppInst) {
             return item;
@@ -248,6 +248,13 @@ export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_T
         if (hardwareType === HARDWARE_TYPE.DISK) {
             return usageOne.sumDiskUsage
         }
+
+        if (hardwareType === HARDWARE_TYPE.NETWORK) {
+            //usageOne.sumSendBytes
+
+            return usageOne.sumRecvBytes
+
+        }
     }
 
     function renderUsageLabelByType(usageOne, hardwareType) {
@@ -263,6 +270,10 @@ export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_T
         if (hardwareType === HARDWARE_TYPE.DISK) {
             return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
         }
+
+        if (hardwareType === HARDWARE_TYPE.NETWORK) {
+            return numberWithCommas(usageOne.sumRecvBytes) + " Byte"
+        }
     }
 
     function renderTitle(hardwareType) {
@@ -276,6 +287,10 @@ export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_T
 
         if (hardwareType === HARDWARE_TYPE.DISK) {
             return ' Top 5 of DISK Usage'
+        }
+
+        if (hardwareType === HARDWARE_TYPE.NETWORK) {
+            return ' Top 5 of NETWORK Usage'
         }
     }
 
@@ -993,16 +1008,17 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                         })
                         await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
 
-                        if (index >= 0 && index < 4) {
-                            setTimeout(() => {
-                                _this.scrollToUp()
-                            }, 250)
-                        } else {
-                            setTimeout(() => {
-                                _this.scrollToBottom()
-                            }, 250)
-                        }
-
+                        /*
+                            if (index >= 0 && index < 4) {
+                                setTimeout(() => {
+                                    _this.scrollToUp()
+                                }, 250)
+                            } else {
+                                setTimeout(() => {
+                                    _this.scrollToBottom()
+                                }, 250)
+                            }
+                        */
 
                     }}
 
@@ -1941,7 +1957,7 @@ export const filterAppInstanceListByRegion = (pRegion: string, appInstanceList: 
  * @param memOrCpuUsageList
  * @returns {*}
  */
-export const filterCpuOrMemUsageListByRegion = (pRegion: string, memOrCpuUsageList) => {
+export const filterUsageListByRegion = (pRegion: string, memOrCpuUsageList) => {
     if (pRegion === REGION.ALL) {
         return memOrCpuUsageList;
     } else {
