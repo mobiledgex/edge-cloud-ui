@@ -271,30 +271,21 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
 .wrapperPercentage {
     display: flex;
     flex-direction: row;
-    /*flex-wrap: wrap;*/
     margin: 20px 0;
 }
-
-.wrapperPercentage.cloudlet {
-    flex-wrap: wrap;
-}
-
 .childPercentage {
     display: flex;
     flex-grow: 1;
-    /*flex-shrink: 1;*/
-    /*flex-basis: 0;*/
-    min-width: 140px;
     flex-basis: 100%;
     flex-direction: column;
-    height: auto;
-    margin: 10px 10px 10px 10px !important;
+    height: 130px;
+    margin: 0 20px 0 0 !important;
     border: 1px solid #4b4d52 !important;
     background: #292c33 !important;
     padding: 5px 10px !important;
 }
 .childPercentage:last-child {
-    margin: 10px 10px 10px 10px !important;
+    margin: 0 !important;
 }
 .childPercentage .ui.header {
     display: flex;
@@ -423,11 +414,11 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
 }
 
 .childPercentage.cloudlet_monitoring {
-    /*min-width: 200px;*/
+    min-width: 200px;
     height: unset;
 }
 .childPercentage.cloudlet_monitoring:last-child {
-    margin: 10px 10px 10px 10px !important;
+    margin: 0 20px 0 0 !important;
 }
 .childPercentage.cloudlet_monitoring .cloudlet_monitoring_charts {
     display: flex;
@@ -515,7 +506,7 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
     flex-grow: 1;
     align-items: flex-end;
     width: 100%;
-    margin: 0 20px 5px 0;
+    margin: 0 0 5px 0;
     padding: 0 0 5px 0;
     border-bottom: 1px solid #4b4d52;
 }
@@ -542,11 +533,3 @@ ui.form .disabled.field, .ui.form .disabled.fields .field, .ui.form .field :disa
     font-size: 16px;
     color: #ffffff;
 }
-
-.wrapperPercentage.cloudlet .childPercentage {
-    flex-shrink: 1;
-    flex-basis: 0;
-    min-width: 480px;
-}
-
-

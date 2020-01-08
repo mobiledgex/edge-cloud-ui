@@ -38,7 +38,6 @@ import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
 import {cutArrayList} from "../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
-import '../css/pages/monitoring_kj.css';
 
 
 const FA = require('react-fontawesome')
@@ -116,7 +115,7 @@ type State = {
 
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
-    class PageMonitoring2 extends Component<Props, State> {
+    class PageMonitoring extends Component<Props, State> {
         state = {
             date: '',
             time: '',
@@ -213,10 +212,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isReady: false,
             })
             //todo: REALDATA
-            let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
+            //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
 
             //todo: FAKEJSON FOR TEST
-            //let appInstanceList: Array<TypeAppInstance> = require('../TEMP_KYUNGJOOON_FOR_TEST/Jsons/appInstanceList')
+            let appInstanceList: Array<TypeAppInstance> = require('../temp/appInstanceList')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({
@@ -264,22 +263,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-            let usageList = await Promise.all([
+           /* let usageList = await Promise.all([
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
-             ])
-             let cpuUsageListPerOneInstance = usageList[0]
-             let memUsageListPerOneInstance = usageList[1]
-             console.log('_result===>', usageList);
+             ])*/
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
             //todo: ################################################################
-            /*let usageList = require('../TEMP_KYUNGJOOON_FOR_TEST/Jsons/allUsageList_50')
-            let cpuUsageListPerOneInstance = require('../TEMP_KYUNGJOOON_FOR_TEST/Jsons/cpuUsage_100Count')
-            let memUsageListPerOneInstance = require('../TEMP_KYUNGJOOON_FOR_TEST/Jsons/memUsage_100Count')*/
+            let usageList = require('../temp/allUsageList_50')
 
 
             //todo: MAKE SELECTBOX.
@@ -295,8 +289,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allNetworkUsageList: usageList[3],
                 cloudletList: cloudletList,
                 clusterList: clusterList,
-                filteredCpuUsageList: cpuUsageListPerOneInstance,
-                filteredMemUsageList: memUsageListPerOneInstance,
+                filteredCpuUsageList: usageList[0],
+                filteredMemUsageList: usageList[1],
             });
 
 

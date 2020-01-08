@@ -231,7 +231,7 @@ class TimelineAuditView extends React.Component {
                 if (liDom) {
                     liDom.appendChild(contentContainer)
                     //liDom.appendChild(span);
-                    _self.onHandleIndexClicked('0')
+                    _self.onHandleIndexClick('0')
                 }
             })
         }, 2000)

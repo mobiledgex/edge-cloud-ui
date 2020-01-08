@@ -150,9 +150,9 @@ class SiteFourOrgaThree extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            
         };
-
+       
     }
     changeOrg = () => {
         this.props.changeOrg()
@@ -204,7 +204,7 @@ class SiteFourOrgaThree extends React.Component {
                                             :
                                             <Grid.Column></Grid.Column>
                                         }
-
+                                        
                                     </Grid.Row>
                                 </Grid>
                             </Form.Group>
@@ -218,7 +218,7 @@ class SiteFourOrgaThree extends React.Component {
                 </Grid>
             </Fragment>
         )
-    }
+    } 
 };
 
 export default reduxForm({

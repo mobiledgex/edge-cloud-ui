@@ -7,7 +7,7 @@ import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
 import InsideListView from '../../../container/insideListView';
-import ListDetailViewer from '../../../container/ListDetailViewer';
+import ListDetailViewer from '../../../container/listDetailViewer';
 
 let _self = null;
 let rgn = [];
@@ -114,7 +114,7 @@ class SiteFourPageApps extends React.Component {
 
         }
     }
-
+    
     receiveResult = (mcRequest) => {
         if (mcRequest) {
             if (mcRequest.response) {
@@ -163,9 +163,9 @@ class SiteFourPageApps extends React.Component {
                 serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResult);
             })
         }
-
+        
     }
-
+    
     getDataDeveloperSub = () => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.getDataDeveloper(store ? store.userToken : 'null', this.props.region.value);

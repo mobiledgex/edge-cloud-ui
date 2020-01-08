@@ -11,7 +11,7 @@ import {HorizontalBar, Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
 import BubbleChart from "../components/BubbleChart";
-import PageMonitoring2 from "../sites/PageMonitoring2";
+import PageMonitoring2 from "../sites/PageMonitoring";
 import type {TypeAppInstance} from "../shared/Types";
 import {Bar as RBar, BarChart, BarLabel, BarSeries, Line, LinearXAxis, LinearYAxis, LinearYAxisTickSeries, StackedAreaChart, StackedAreaSeries} from "reaviz";
 import {notification} from "antd";
@@ -1443,7 +1443,6 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
 
 
 export const renderLineChart002 = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
-
 
     console.log('cpuUsageListPerInstanceSortByUsage===>', cpuUsageListPerInstanceSortByUsage);
 

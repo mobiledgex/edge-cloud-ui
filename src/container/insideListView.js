@@ -1,9 +1,9 @@
 import React from 'react';
-import {Button, Header, Icon, Input, Popup, Table} from 'semantic-ui-react';
-import {withRouter} from 'react-router-dom';
-import {connect} from 'react-redux';
+import { Modal, Grid, Header, Button, Table, Popup, Icon, Input, Dropdown, Container } from 'semantic-ui-react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import * as actions from '../actions';
-import RGL, {WidthProvider} from "react-grid-layout";
+import RGL, { WidthProvider } from "react-grid-layout";
 import SelectFromTo from '../components/selectFromTo';
 import RegistNewListItem from './registNewListItem';
 import PopDetailViewer from './popDetailViewer';
@@ -11,19 +11,14 @@ import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import DeleteItem from './deleteItem';
 import './styles.css';
+import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
-
+import MaterialIcon from "material-icons-react";
 const ReactGridLayout = WidthProvider(RGL);
 
 const appssEdit = [
     {key: 'launch', text:'Launch', icon:null},
-    {key: 'update', text:'Update', icon:null},
-    {key: 'delete', text:'Delete', icon:'trash alternate'},
-]
-const cloudletPoolEdit = [
-    {key: 'add', text:'Add', icon:null},
-    {key: 'link', text:'Link', icon:null},
     {key: 'update', text:'Update', icon:null},
     {key: 'delete', text:'Delete', icon:'trash alternate'},
 ]
@@ -108,9 +103,9 @@ class InsideListView extends React.Component {
             console.log('Error: There is no orgData')
         }
 
-
+        
     }
-
+    
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
         this.setState({ open: false, openDelete: false, selected:{} })
@@ -302,18 +297,6 @@ class InsideListView extends React.Component {
         // this.props.handleChangeComputeItem('App Instances')
         localStorage.setItem('selectMenu', 'App Instances')
     }
-    addCloudlet = (data) => {
-        this.gotoUrl('/site4', 'pg=createCloudletPool','pg=7')
-        this.props.handleAppLaunch(data)
-        // this.props.handleChangeComputeItem('App Instances')
-        localStorage.setItem('selectMenu', 'Cloudlet Pool')
-    }
-    linkOrganize = (data) => {
-        this.gotoUrl('/site4', 'pg=linkOrganize','pg=7')
-        this.props.handleAppLaunch(data)
-        // this.props.handleChangeComputeItem('App Instances')
-        localStorage.setItem('selectMenu', 'Cloudlet Pool')
-    }
     handleOpen = () => {
         this.setState({ isOpen: true })
 
@@ -363,24 +346,11 @@ class InsideListView extends React.Component {
         } else if(b.children === 'Delete') {
             this.setState({openDelete: true, selected:this.state.item})
         }
-        //cloudlet pool
-        if(b.children === 'Add') {
-            this.addCloudlet(this.state.item)
-        } else if(b.children === 'Link') {
-            this.linkOrganize(this.state.item)
-        }
 
     }
     makeActionButton = (target) => (
         <Button.Group vertical className="table_actions_popup_group">
             {
-                (this.props.siteId === "Cloudlet Pool")?
-                cloudletPoolEdit.map((option)=> (
-                    <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
-                        {option.text}
-                    </Button>
-                ))
-                    :
                 appssEdit.map((option)=> (
                     <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
                         {option.text}
@@ -447,7 +417,7 @@ class InsideListView extends React.Component {
                                         <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {item[value]}
                                         </div>
                                     </Table.Cell>
-                                :
+                                :   
                                 (value === 'Role Type')?
                                     <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
                                         <div className="markBox">{this.roleMark(item[value])}</div>
@@ -485,7 +455,7 @@ class InsideListView extends React.Component {
                     ))
                 }
             </Table.Body>
-
+            
         </Table>
     )
     componentDidMount() {
@@ -513,12 +483,12 @@ class InsideListView extends React.Component {
         return (
             <div style={{display:'flex', overflowY:'auto', overflowX:'hidden', width:'100%'}}>
                 <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
-
+                
                 <DeleteItem open={this.state.openDelete}
                             selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                             refresh={this.props.dataRefresh}
                 ></DeleteItem>
-
+                
                 <div
                     onLayoutChange={this.onLayoutChange}
                     {...this.props}
@@ -581,7 +551,7 @@ const mapStateToProps = (state) => {
         userRole : state.showUserRole?state.showUserRole.role:null,
         roleInfo : state.roleInfo?state.roleInfo.role:null,
     }
-
+    
     // return (dimm) ? {
     //     dimmInfo : dimm
     // } : (account)? {

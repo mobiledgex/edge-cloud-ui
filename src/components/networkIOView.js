@@ -3,6 +3,7 @@ import { Grid, Dropdown } from 'semantic-ui-react'
 import NetworkInoutLegend from './network/networkInoutLegend';
 import TimeSeriesFlow from '../charts/plotly/timeseriesFlow';
 import sizeMe from 'react-sizeme'
+import NetworkInOutSimple from "../container/developerSideInfo";
 import {connect} from "react-redux";
 import * as utils from '../utils';
 
