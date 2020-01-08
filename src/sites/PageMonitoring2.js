@@ -852,7 +852,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1_column*/}
                     {/*1_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                          <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 Transition Of NETWORK Usage
                             </div>
@@ -985,7 +985,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                         >
 
-                                                            <div style={{backgroundColor: 'transparent',  marginBottom: 0}} onClick={async () => {
+                                                            <div style={{backgroundColor: 'transparent', marginBottom: 0}} onClick={async () => {
 
                                                                 this.refreshAllData();
 
@@ -1154,7 +1154,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
-                                            <div className='page_monitoring_row' style={{opacity: !this.state.isShowBottomGrid ? 1.0 : 0.5}}>
+                                            <div className='page_monitoring_row'
+                                                 //style={{opacity: !this.state.isShowBottomGrid ? 1.0 : 0.5}}
+                                            >
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
@@ -1232,12 +1234,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 ]}
                                                                 defaultValue={'RVCV_BTYE'}
                                                                 onChange={async (e, {value}) => {
-                                                                    /* await this.handleSelectBoxChanges(value)
-                                                                     setTimeout(() => {
-                                                                         this.setState({
-                                                                             cloudLetSelectBoxPlaceholder: 'Select CloudLet'
-                                                                         })
-                                                                     }, 1000)*/
+
+                                                                    alert(value)
+                                                                    //await this.handleSelectBoxChanges(value)
+                                                                    /*setTimeout(() => {
+                                                                        this.setState({
+                                                                            cloudLetSelectBoxPlaceholder: 'Select CloudLet'
+                                                                        })
+                                                                    }, 1000)*/
                                                                 }}
                                                                 value={'RCV_BTYE'}
                                                                 style={{width: 180}}
@@ -1245,7 +1249,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_column_for_grid'>
-                                                       {this.renderNetworkArea()}
+                                                        {this.renderNetworkArea()}
                                                     </div>
                                                 </div>
 
@@ -1284,9 +1288,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
                                                 <OutsideClickHandler
                                                     onOutsideClick={() => {
-                                                         this.setState({
-                                                             isShowBottomGrid: !this.state.isShowBottomGrid,
-                                                         })
+                                                        this.setState({
+                                                            isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                        })
                                                     }}
                                                 >
                                                     <div
@@ -1296,7 +1300,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         }}
                                                     >
                                                         <p
-                                                            style={{display: 'flex', width: '100%', backgroundColor: 'transparent', alignItems: 'center', justifyContent: 'center', marginTop: 20}}
+                                                            style={{
+                                                                display: 'flex',
+                                                                width: '100%',
+                                                                backgroundColor: 'transparent',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                marginTop: 20
+                                                            }}
                                                             onClick={() => {
 
                                                                 this.setState({
