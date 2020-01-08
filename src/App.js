@@ -23,7 +23,7 @@ import VerifyContent from './container/verifyContent';
 import './css/index.css';
 
 import './css/pages/audit.css';
-import './css/pages/monitoring.css';
+import './sites/monitoring.css';
 import './css/components/timelineH.css';
 import BubbleChartScreen from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/BubbleChartScreen";
 import Test002 from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test002";
