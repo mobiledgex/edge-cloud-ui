@@ -507,6 +507,7 @@ class SiteFourCreatePoolForm extends React.Component {
                                                    regionInfo={this.state.regionInfo}
                                                    dimmer={dimmer}
                                                    changeNext={changeNext}
+                                                   editMode={this.props.editMode ? this.props.editMode : null}
                                                    handleChangeLat={this.handleChangeLat}
                                                    handleChangeLong={this.handleChangeLong}
                                                    onChangeState={this.onChangeFormState}

@@ -160,9 +160,9 @@ class SiteFourPoolThree extends React.Component {
     makeTable = (data) => (
         data.map((item) =>(
             <Table.Row>
-                <Table.Cell>{item.region}</Table.Cell>
-                <Table.Cell>{item.org}</Table.Cell>
-                <Table.Cell>{item.pool}</Table.Cell>
+                <Table.Cell width={2}>{item.region}</Table.Cell>
+                <Table.Cell width={7}>{item.org}</Table.Cell>
+                <Table.Cell width={7}>{item.pool}</Table.Cell>
             </Table.Row>
         ))
 
@@ -186,9 +186,9 @@ class SiteFourPoolThree extends React.Component {
                                                         <Table compact>
                                                             <Table.Header>
                                                                 <Table.Row>
-                                                                    <Table.HeaderCell>Region</Table.HeaderCell>
-                                                                    <Table.HeaderCell>Linked Orgnization</Table.HeaderCell>
-                                                                    <Table.HeaderCell>Cloudlet Pool</Table.HeaderCell>
+                                                                    <Table.HeaderCell width={2}>Region</Table.HeaderCell>
+                                                                    <Table.HeaderCell width={7}>Linked Orgnization</Table.HeaderCell>
+                                                                    <Table.HeaderCell width={7}>Cloudlet Pool</Table.HeaderCell>
                                                                 </Table.Row>
                                                             </Table.Header>
 

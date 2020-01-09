@@ -202,7 +202,8 @@ class SiteFourCreateFormDefault extends React.Component {
             selected: [],
             _mockData: [],
             targetKeys: [],
-            invisibleValue:[]
+            invisibleValue:[],
+            submitButton:'Create'
         };
 
     }
@@ -332,8 +333,7 @@ class SiteFourCreateFormDefault extends React.Component {
                 self.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
             }, 5000)
         }
-        
-        
+        if(nextProps.editMode) this.setState({submitButton:'Update'})
     }
 
     getLabel (key, pId) {
@@ -621,7 +621,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                             positive
                                             icon='checkmark'
                                             labelPosition='right'
-                                            content="Create"
+                                            content={this.state.submitButton}
                                         />
                                 }
                             </Form.Group>

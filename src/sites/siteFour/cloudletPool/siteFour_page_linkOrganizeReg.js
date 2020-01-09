@@ -153,7 +153,7 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
         return (
             <div className="round_panel">
                 <div className="grid_table" style={{overflow:'auto'}}>
-                    <SiteFourPoolTwo onSubmit={() => console.log('Form was submitted')} type={typeOperator} org={orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:selectedRegion, poolName:gavePoolName}} changeOrg={this.changeOrg}></SiteFourPoolTwo>
+                    <SiteFourPoolTwo onSubmit={() => console.log('Form was submitted')} type={typeOperator} org={orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:selectedRegion, poolName:gavePoolName}} changeOrg={this.changeOrg} editMode={true}></SiteFourPoolTwo>
                 </div>
             </div>
 

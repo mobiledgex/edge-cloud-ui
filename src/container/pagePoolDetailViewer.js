@@ -29,42 +29,19 @@ const panesCommand = [
 const detailViewer = (props, type) => (
     <Fragment>
         {(type === 'detailViewer')?
-            <Grid>
-                <Grid.Row columns={2}>
-                    <Grid.Column>Subject</Grid.Column>
-                    <Grid.Column>Update</Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
-                    <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
-                        {/*<Table.Header>*/}
-                            {/*<Table.Row>*/}
-                                {/*<Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>*/}
-                                {/*<Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>*/}
-                            {/*</Table.Row>*/}
-                        {/*</Table.Header>*/}
-                        <Table.Body>
-                            {
-                                props.data ? Object.keys(props.data).map((item, i) => makeCloudletTable(props.data, item, i)) : null
-                            }
-                        </Table.Body>
-                    </Table>
-                </Grid.Row>
-                {/*<Grid.Row>*/}
-                    {/*<Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>*/}
-                        {/*<Table.Header>*/}
-                            {/*<Table.Row>*/}
-                                {/*<Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>*/}
-                                {/*<Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>*/}
-                            {/*</Table.Row>*/}
-                        {/*</Table.Header>*/}
-                        {/*<Table.Body>*/}
-                            {/*{*/}
-                                {/*props.data ? Object.keys(props.data).map((item, i) => makeLinkTable(props.data, item, i)) : null*/}
-                            {/*}*/}
-                        {/*</Table.Body>*/}
-                    {/*</Table>*/}
-                {/*</Grid.Row>*/}
-            </Grid>
+            <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
+                <Table.Header>
+                    <Table.Row>
+                        <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
+                        <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                    {
+                        props.data ? Object.keys(props.data).map((item, i) => makeCloudletTable(props.data, item, i)) : null
+                    }
+                </Table.Body>
+            </Table>
 
             :
             <div></div>
@@ -104,6 +81,8 @@ const makeCloudletTable = (values, label, i) => (
                                 :(label === 'Created')? String( makeUTC(values[label]) )
                                     :(label === 'State')? _status[values[label]]
                                         :(label === 'Liveness')? _liveness[values[label]]
+                                            :(label === 'cloudletGroup')? tableCloudletPool(values[label])
+                                            :(label === 'OrganizGroup')? tableCloudletPoolOrg(values[label])
                                             :(typeof values[label] === 'object')? jsonView(values[label],label)
                                                 :(label === 'Platform_type')? String( makePFT(values[label]) )
                                                     :String(values[label])}
@@ -128,6 +107,70 @@ const jsonView = (jsonObj,_label) => {
     }
     return <ReactJson src={jsonObj} {..._self.jsonViewProps} />
 }
+
+
+
+const tableCloudletPool = (jsonObj) => {
+
+    return (
+        <Table celled>
+            <Table.Header>
+
+                <Table.Row>
+                    <Table.HeaderCell width={2}>Region</Table.HeaderCell>
+                    <Table.HeaderCell width={7}>Operator</Table.HeaderCell>
+                    {/*<Table.HeaderCell width={5}>PoolName</Table.HeaderCell>*/}
+                    <Table.HeaderCell width={7}>Cloudlet</Table.HeaderCell>
+                </Table.Row>
+            </Table.Header>
+            <Table.Body>
+                {jsonObj.map((item, i) => makeCloudletGroup(item, i))}
+            </Table.Body>
+        </Table>
+
+    )
+
+}
+
+const makeCloudletGroup = (item, i) => (
+    <Table.Row key={i}>
+        <Table.Cell width={2}>{item.Region}</Table.Cell>
+        <Table.Cell width={7}>{item.Operator}</Table.Cell>
+        {/*<Table.Cell width={5}>{item.PoolName}</Table.Cell>*/}
+        <Table.Cell width={7}>{item.Cloudlet}</Table.Cell>
+    </Table.Row>
+)
+
+const tableCloudletPoolOrg = (jsonObj) => {
+
+    return (
+        <Table celled>
+            <Table.Header>
+
+                <Table.Row>
+                    <Table.HeaderCell width={2}>Region</Table.HeaderCell>
+                    <Table.HeaderCell width={14}>Organization</Table.HeaderCell>
+                    {/*<Table.HeaderCell width={7}>CloudletPool</Table.HeaderCell>*/}
+                </Table.Row>
+            </Table.Header>
+            <Table.Body>
+                {jsonObj.map((item, i) => makeOrganizGroup(item, i))}
+            </Table.Body>
+        </Table>
+
+    )
+
+}
+
+const makeOrganizGroup = (item, i) => (
+    <Table.Row key={i}>
+        <Table.Cell width={2}>{item.Region}</Table.Cell>
+        <Table.Cell width={14}>{item.Org}</Table.Cell>
+        {/*<Table.Cell width={7}>{item.CloudletPool}</Table.Cell>*/}
+    </Table.Row>
+)
+
+
 
 const makeUTC = (time) => (
     moment.unix( time.replace('seconds : ', '') ).utc().format('YYYY-MM-DD HH:mm:ss') + ' UTC'
