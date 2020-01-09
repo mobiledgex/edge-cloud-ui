@@ -308,7 +308,7 @@ export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_T
 
     return (
         <Chart
-            width={window.innerWidth * 0.29}
+            width={window.innerWidth * 0.25}
             height={330}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
@@ -1461,7 +1461,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
 
     console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsage);
 
-    let width = window.innerWidth * 0.255
+    let width = window.innerWidth * 0.28
     let height = 500 + 100;
 
     let options = {
@@ -1537,7 +1537,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
         <div>
             <ReactChartJs
                 width={width}
-                height={330}
+                height={320}
                 data={data}
                 options={options}
             />
