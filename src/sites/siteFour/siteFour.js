@@ -1008,6 +1008,9 @@ class SiteFour extends React.Component {
                         />
                     </Grid.Column>
                 </Grid.Row>
+                {/*todo:###################### */}
+                {/*todo:RENDER LEFT_CONTAINER  */}
+                {/*todo:###################### */}
                 <Container className='view_left_container' style={{width: this.menuW}}>
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='view_left'>
@@ -1105,9 +1108,9 @@ class SiteFour extends React.Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Container>
-                {/*################*/}
-                {/*BODY RENDERING  */}
-                {/*################*/}
+                {/*todo:################*/}
+                {/*todo:BODY RENDERING  */}
+                {/*todo:################*/}
                 <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
                     {/*For Monitoring Page*/}
                     {(this.state.page === 'pg=Monitoring') ? <PageMonitoring/> :
