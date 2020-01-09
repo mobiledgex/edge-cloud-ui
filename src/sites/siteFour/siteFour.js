@@ -155,6 +155,8 @@ class SiteFour extends React.Component {
             { label: 'App Instances', icon: 'storage', pg: 6 },
             { label: 'Audit Log', icon: 'check', pg: 'audits' },
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
+
+
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
