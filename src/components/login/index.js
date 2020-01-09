@@ -30,7 +30,7 @@ const FormContainer = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{width:'100%'}} placeholder='Username or Email' name='username' width ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') {props.self.onSubmit()} }}></Input>
+                <Input style={{width:'100%'}} placeholder='Username or Email' name='username' ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') {props.self.onSubmit()} }}></Input>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
@@ -43,7 +43,7 @@ const FormContainer = (props) => (
         </div>
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Log In</Button>
+                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Log In</Button>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
@@ -318,7 +318,7 @@ class Login extends Component {
                         method:serviceMC.getEP().CREATE_USER, 
                         data : {
                             name:nextProps.values.username, 
-                            password:nextProps.values.password, 
+                            passhash:nextProps.values.password, 
                             email:nextProps.values.email, 
                             clientSysInfo:self.clientSysInfo, 
                             callbackurl : 'https://'+host+'/verify'
@@ -443,7 +443,7 @@ class Login extends Component {
         this.setState({ [name]: value })
     }
     onProgress(value) {
-        this.props.handleCreatingSpinner(value)
+        this.props.handleLoadingSpinner(value)
     }
 
     /**
@@ -646,7 +646,7 @@ const mapStateToProps = state => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleChangeTab: (data) => { dispatch(actions.changeTab(data))},
         mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data})),
