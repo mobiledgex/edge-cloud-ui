@@ -183,7 +183,7 @@ export default class PopLegendViewer extends React.Component {
     render() {
         let { orgType } = this.state;
         return (
-            <Modal style={{width: '450px'}} className="modal_role" open={this.state.open} dimmer={false}>
+            <Modal style={{width: '450px'}} className="modal_role" open={this.state.open}>
                 <Modal.Header >Permission of Role</Modal.Header>
                 <Modal.Content scrolling>
                     <Modal.Description>

@@ -329,7 +329,7 @@ class RegistNewItem extends React.Component {
         //TODO: 20190410 메뉴 별 구분 필요
         if(localStorage.selectMenu === 'Cluster Instances'){
             const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, Number_of_Master, Number_of_Node} = this.props.submitData.registNewInput.values
-            // this.props.handleCreatingSpinner(true);
+            // this.props.handleLoadingSpinner(true);
             serviceBody = {
                 method: serviceMC.getEP().CREATE_CLUSTER_INST,
                 token: store ? store.userToken : 'null',
@@ -485,7 +485,7 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
 
-        // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))}
+        // handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 

@@ -62,7 +62,7 @@ class DeleteItem extends React.Component {
                         break;
                 }
 
-                this.props.refresh(this.props.changeRegion)
+                //this.props.refresh(this.props.changeRegion)
 
                 if (response.data.message) {
                     this.props.handleAlertInfo('success', msg)
