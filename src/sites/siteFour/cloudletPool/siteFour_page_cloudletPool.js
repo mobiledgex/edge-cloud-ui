@@ -208,7 +208,7 @@ class SiteFourPageCloudletPool extends React.Component {
         if(this.loadCountLink > 0) return;
         console.log('20200108 result show link org - ', result, ": this.loadCountLink =", this.loadCountLink)
 
-        let poolGroup = (!result) ? reducer.groupBy(result, 'CloudletPool'):{};
+        let poolGroup = (result) ? reducer.groupBy(result, 'CloudletPool'):{};
         console.log('20200108 result show link org - - - ', poolGroup)
         if(Object.keys(poolGroup)[0]) {
             _self._linkDummy = poolGroup;
@@ -268,6 +268,7 @@ class SiteFourPageCloudletPool extends React.Component {
         this.setState({devData:cloneData})
         this._memberDummy = [];
         this._cloudletDummy = [];
+        this._linkDummy = [];
         this.props.handleLoadingSpinner(false);
     }
 

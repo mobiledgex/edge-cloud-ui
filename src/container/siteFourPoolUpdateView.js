@@ -35,14 +35,13 @@ class SiteFourPoolUpdateView extends React.Component {
     }
 
     receiveResult = (result) => {
-        console.log('20191231 show org result -- ', result)
+        console.log('20191231 show cloudlet result -- ', result)
 
         if(result.response.data && result.response.data.length) {
             _self.countJoin(result.response.data)
         } else if(result && result.length){
             _self.countJoin(result)
         }
-
     }
 
     receiveResultMember = (result) => {
@@ -81,7 +80,7 @@ class SiteFourPoolUpdateView extends React.Component {
         } else {
             // services.getMCService('ShowOrg',{token:store.userToken}, _self.receiveResultLinkOrg)
             let requestDataShowOra = {token:store.userToken, method:serviceMC.getEP().SHOW_ORG, data : {}};
-            serviceMC.sendRequest(_self, requestDataShowOra, _self.receiveResultLinkOrg)
+            serviceMC.sendRequest(_self, requestDataShowOra, _self.receiveResult)
             // poolServices.showOrgCloudletPool('ShowOrgCloudletPool', {token:store.userToken}, _self.receiveResultLinkOrg)
             let requestDataOrg = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET_LINKORG, data : {}};
             serviceMC.sendRequest(_self, requestDataOrg, _self.receiveResultLinkOrg)
@@ -107,7 +106,7 @@ class SiteFourPoolUpdateView extends React.Component {
         } else {
             let orgList = [];
             data.map((list) => {
-                orgList.push({'cloudlet':list['Name']})
+                orgList.push({'cloudlet':list['Organization']})
             })
             fieldValue = [{
                 'Region':this.state.selectedData['region'] || '',
