@@ -500,8 +500,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-
-
         async setAppInstanceOne(paramAppName: string) {
             this.setState({
                 loading777: true,
@@ -746,6 +744,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1_column*/}
                     {/*1_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 of CPU Usage
+                            </div>
+                        </div>
                         <div className='page_monitoring_container'>
                             {renderBarGraph(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
@@ -754,11 +757,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1_column*/}
                     {/*1_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                        {/*  <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 Transition Of CPU Usage
                             </div>
-                        </div>*/}
+                        </div>
                         <div className='page_monitoring_container'>
                             {renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
@@ -774,6 +777,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1111111111*/}
                     {/*1111111111*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 of MEM Usage
+                            </div>
+                        </div>
                         <div className='page_monitoring_container'>
                             {renderBarGraph(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
@@ -782,6 +790,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1111111111*/}
                     {/*1111111111*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Transition Of MEM Usage
+                            </div>
+                        </div>
                         <div className='page_monitoring_container'>
                             {renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
@@ -799,6 +812,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1_column*/}
                     {/*1_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 of DISK Usage
+                            </div>
+                        </div>
                         <div className='page_monitoring_container'>
                             {renderBarGraph(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
                         </div>
@@ -807,11 +825,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1_column*/}
                     {/*1_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                        {/*  <div className='page_monitoring_title_area'>
+                        <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                Transition Of CPU Usage
+                                Transition Of DISK Usage
                             </div>
-                        </div>*/}
+                        </div>
                         <div className='page_monitoring_container'>
                             {renderLineChart(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
                         </div>
@@ -823,11 +841,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderNetworkArea() {
             return (
                 <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
-
-                    {/*1_column*/}
-                    {/*1_column*/}
-                    {/*1_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 of NETWORK Usage
+                            </div>
+                        </div>
                         <div className='page_monitoring_container'>
                             {renderBarGraph(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
                         </div>
@@ -839,6 +858,33 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 Transition Of NETWORK Usage
+                            </div>
+                            <div style={{marginLeft: 25,}}>
+                                <Dropdown
+                                    clearable={this.state.regionSelectBoxClearable}
+                                    placeholder='SELECT OPTIONS'
+                                    selection
+                                    options={[
+                                        {value: 'RCV_BTYE', text: 'RCV_BTYE'},
+                                        {value: 'SND_BYTE', text: 'SND_BYTE'},
+                                        {value: 'TCP', text: 'TCP'},
+                                        {value: 'UDP', text: 'UDP'},
+
+                                    ]}
+                                    defaultValue={'RVCV_BTYE'}
+                                    onChange={async (e, {value}) => {
+
+                                        //alert(value)
+                                        //await this.handleSelectBoxChanges(value)
+                                        /*setTimeout(() => {
+                                            this.setState({
+                                                cloudLetSelectBoxPlaceholder: 'Select CloudLet'
+                                            })
+                                        }, 1000)*/
+                                    }}
+                                    value={'RCV_BTYE'}
+                                    style={{width: 220}}
+                                />
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -862,7 +908,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 justifyContent: 'center',
                 marginTop: -10,
                 width: 100,
-                display:'flex'
+                display: 'flex'
             },
 
             div001: {
@@ -871,7 +917,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             },
             dropDown: {
                 //minWidth: 150,
-                width:190,
+                width: 190,
             }
         }
 
@@ -1168,21 +1214,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </Modal>
                     <SemanticToastContainer/>
                     <Grid.Column className='contents_body'>
-                        {/*todo:Content Header part      */}
+                        {/*todo:#################### */}
+                        {/*todo:Content Header part  */}
+                        {/*todo:#################### */}
                         {this.renderHeader()}
-
-                        <Grid.Row className='site_content_body' style={{marginTop: 0,}}>
-
+                        <Grid.Row className='site_content_body' style={{}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
 
                                     <div className="page_monitoring">
-                                        {/*todo:SelectBox_row */}
-                                        {/*todo:SelectBox_row */}
-                                        {/*todo:SelectBox_row */}
+                                        {/*todo:#################### */}
+                                        {/*todo:SelectBox_row       */}
+                                        {/*todo:#################### */}
                                         {this.renderDropdownRow()}
-                                        <div className='page_monitoring_dashboard'>
+                                        <div className='page_monitoring_dashboard' style={{marginTop: -25, marginLeft: -25}}>
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
@@ -1247,46 +1293,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     </FlexBox>
 
                                                 </div>
-                                                {/* todo:NETWORK LIST 그리드 부분____4nd_col*/}
-                                                {/* todo:NETWORK LIST 그리드 부분____4nd_col*/}
-                                                {/* todo:NETWORK LIST 그리드 부분____4nd_col*/}
+                                                {/* todo:NETWORK LIST GRID__4nd_col*/}
+                                                {/* todo:NETWORK LIST GRID__4nd_col*/}
+                                                {/* todo:NETWORK LIST GRID__4nd_col*/}
                                                 <div className='page_monitoring_column_kj003'>
                                                     <div style={{flexDirection: 'row', display: 'flex'}}>
-                                                        <div style={{fontSize: 20, display: 'flex', alignItems: 'center', marginLeft: 10,}}>
-                                                            NETWORK TOP 5 LIST
-                                                        </div>
-
-                                                        <div style={{marginLeft: 25,}}>
-                                                            <Dropdown
-                                                                clearable={this.state.regionSelectBoxClearable}
-                                                                placeholder='SELECT OPTIONS'
-                                                                selection
-                                                                options={[
-                                                                    {value: 'RCV_BTYE', text: 'RCV_BTYE'},
-                                                                    {value: 'SND_BYTE', text: 'SND_BYTE'},
-                                                                    {value: 'TCP', text: 'TCP'},
-                                                                    {value: 'UDP', text: 'UDP'},
-
-                                                                ]}
-                                                                defaultValue={'RVCV_BTYE'}
-                                                                onChange={async (e, {value}) => {
-
-                                                                    //alert(value)
-                                                                    //await this.handleSelectBoxChanges(value)
-                                                                    /*setTimeout(() => {
-                                                                        this.setState({
-                                                                            cloudLetSelectBoxPlaceholder: 'Select CloudLet'
-                                                                        })
-                                                                    }, 1000)*/
-                                                                }}
-                                                                value={'RCV_BTYE'}
-                                                                style={{width: 220}}
-                                                            />
-                                                        </div>
                                                     </div>
-                                                    <div className='page_monitoring_column_for_grid'>
-                                                        {this.renderNetworkArea()}
-                                                    </div>
+                                                    {this.renderNetworkArea()}
                                                 </div>
 
 
