@@ -210,7 +210,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: REALDATA
             //let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
 
-
             //todo: FAKEJSON FOR TEST
             let appInstanceList: Array<TypeAppInstance> = require('../temp/appInstacelist2')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
@@ -235,18 +234,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-          /*  let usageList = await Promise.all([
-                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
-                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
-                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
-                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
-            ])*/
+            /*
+                  let usageList = await Promise.all([
+                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
+                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
+                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
+                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
+              ])*/
 
             //todo: ################################################################
             //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR TEST
             //todo: ################################################################
             let usageList = require('../temp/usageAllJsonList2')
-
 
             //todo: MAKE SELECTBOX.
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, 'ClusterInst')
@@ -541,124 +540,125 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         scrollToUp() {
             this.messageList.scrollTo(0, 0);
         }
+
         renderGridForAppInstaceList() {
-             return (
-                 <div>
-                     <Grid columns={8} padded={true} style={{height: 50}}>
-                         <Row>
-                             <Column color={'grey'}>
-                                 index
-                             </Column>
-                             <Column color={'grey'}>
-                                 NAME
-                             </Column>
-                             <Column color={'grey'}>
-                                 CPU(%)
-                             </Column>
-                             <Column color={'grey'}>
-                                 RSS MEM
-                             </Column>
-                             <Column color={'grey'}>
-                                 RecvBytes
-                             </Column>
-                             <Column color={'grey'}>
-                                 SendBytes
-                             </Column>
-                             <Column color={'grey'}>
-                                 Status
-                             </Column>
-                             <Column color={'grey'}>
-                                 Start
-                             </Column>
-                         </Row>
-                     </Grid>
-                     <div style={{
-                         marginTop: 10,
-                         //overflowY: 'scroll',
-                         //height: 525,
-                     }}
-                          ref={(div) => {
-                              this.messageList = div;
-                          }}
-                     >
-                         <Grid columns={8} padded={true}
+            return (
+                <div>
+                    <Grid columns={8} padded={true} style={{height: 50}}>
+                        <Row>
+                            <Column color={'grey'}>
+                                index
+                            </Column>
+                            <Column color={'grey'}>
+                                NAME
+                            </Column>
+                            <Column color={'grey'}>
+                                CPU(%)
+                            </Column>
+                            <Column color={'grey'}>
+                                RSS MEM
+                            </Column>
+                            <Column color={'grey'}>
+                                RecvBytes
+                            </Column>
+                            <Column color={'grey'}>
+                                SendBytes
+                            </Column>
+                            <Column color={'grey'}>
+                                Status
+                            </Column>
+                            <Column color={'grey'}>
+                                Start
+                            </Column>
+                        </Row>
+                    </Grid>
+                    <div style={{
+                        marginTop: 10,
+                        //overflowY: 'scroll',
+                        //height: 525,
+                    }}
+                         ref={(div) => {
+                             this.messageList = div;
+                         }}
+                    >
+                        <Grid columns={8} padded={true}
 
-                               style={{
-                                   marginTop: 10,
-                                   overflowY: 'auto',//@todo: 스크롤 처리 부분...
-                                   height: this.state.appInstanceList.length * 35 + 110,
-                               }}
-                         >
-                             {/*todo:ROW HEADER*/}
-                             {/*todo:ROW HEADER*/}
-                             {/*todo:ROW HEADER*/}
-                             {!this.state.isReady && <Row columns={1}>
-                                 <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
-                                     <CircularProgress
-                                         style={{color: 'green', justifyContent: "center", alignItems: 'center'}}/>
-                                 </Column>
-                             </Row>}
-                             {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
-                                 /*   sumCpuUsage: sumCpuUsage,
-                                    sumMemUsage: sumMemUsage,
-                                    sumDiskUsage: sumDiskUsage,
-                                    sumRecvBytes: sumRecvBytes,
-                                    sumSendBytes: sumSendBytes,*/
+                              style={{
+                                  marginTop: 10,
+                                  overflowY: 'auto',//@todo: 스크롤 처리 부분...
+                                  height: this.state.appInstanceList.length * 35 + 110,
+                              }}
+                        >
+                            {/*todo:ROW HEADER*/}
+                            {/*todo:ROW HEADER*/}
+                            {/*todo:ROW HEADER*/}
+                            {!this.state.isReady && <Row columns={1}>
+                                <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
+                                    <CircularProgress
+                                        style={{color: 'green', justifyContent: "center", alignItems: 'center'}}/>
+                                </Column>
+                            </Row>}
+                            {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
+                                /*   sumCpuUsage: sumCpuUsage,
+                                   sumMemUsage: sumMemUsage,
+                                   sumDiskUsage: sumDiskUsage,
+                                   sumRecvBytes: sumRecvBytes,
+                                   sumSendBytes: sumSendBytes,*/
 
-                                 return (
-                                     <Row
+                                return (
+                                    <Row
 
-                                         style={{
-                                             color: index === this.state.currentGridIndex ? 'white' : 'white',
-                                             backgroundColor: index === this.state.currentGridIndex && '#bea129',
-                                             height: 50
-                                         }}
-                                         onClick={async () => {
-                                             //alert(item.AppName)
-                                             await this.setState({
-                                                 currentAppInst: item.AppName,
-                                                 currentGridIndex: index,
-                                             })
-                                             await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.AppName)
-                                         }}
-                                     >
-                                         <Column
+                                        style={{
+                                            color: index === this.state.currentGridIndex ? 'white' : 'white',
+                                            backgroundColor: index === this.state.currentGridIndex && '#bea129',
+                                            height: 50
+                                        }}
+                                        onClick={async () => {
+                                            //alert(item.AppName)
+                                            await this.setState({
+                                                currentAppInst: item.AppName,
+                                                currentGridIndex: index,
+                                            })
+                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.AppName)
+                                        }}
+                                    >
+                                        <Column
 
-                                         >
-                                             {index}
-                                         </Column>
-                                         <Column
+                                        >
+                                            {index}
+                                        </Column>
+                                        <Column
 
-                                         >
-                                             {item.AppName}
-                                         </Column>
-                                         <Column>
-                                             {this.state.allCpuUsageList[index].sumCpuUsage.toFixed(2) + "%"}
-                                         </Column>
-                                         <Column>
-                                             {this.state.allMemUsageList[index].sumMemUsage.toFixed(0) + ' Byte'}
-                                         </Column>
-                                         <Column>
-                                             {this.state.allNetworkUsageList[index].sumRecvBytes}
-                                         </Column>
-                                         <Column>
-                                             {this.state.allNetworkUsageList[index].sumSendBytes}
-                                         </Column>
-                                         <Column>
-                                             Status_NULL
-                                         </Column>
-                                         <Column>
-                                             Start_NULL
-                                         </Column>
-                                     </Row>
+                                        >
+                                            {item.AppName}
+                                        </Column>
+                                        <Column>
+                                            {this.state.allCpuUsageList[index].sumCpuUsage.toFixed(2) + "%"}
+                                        </Column>
+                                        <Column>
+                                            {this.state.allMemUsageList[index].sumMemUsage.toFixed(0) + ' Byte'}
+                                        </Column>
+                                        <Column>
+                                            {this.state.allNetworkUsageList[index].sumRecvBytes}
+                                        </Column>
+                                        <Column>
+                                            {this.state.allNetworkUsageList[index].sumSendBytes}
+                                        </Column>
+                                        <Column>
+                                            Status_NULL
+                                        </Column>
+                                        <Column>
+                                            Start_NULL
+                                        </Column>
+                                    </Row>
 
-                                 )
-                             })}
-                         </Grid>
-                     </div>
-                 </div>
+                                )
+                            })}
+                        </Grid>
+                    </div>
+                </div>
 
-             )
+            )
         }
 
         /**###############################
