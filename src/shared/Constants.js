@@ -55,12 +55,38 @@ export const REGIONS_OPTIONS = [
     "Cloudlet": "frankfurt-eu",
     "ClusterInst": "kkkkkkk",*/
 export const MOINTORING_FILTER_ITEM_TYPE = {
-    REGION : "Region",
+    REGION: "Region",
     APP_INST: "AppName",
     CLOUDLET: "Cloudlet",
     CLUSTERINST: "ClusterInst",
 }
 
-export const SELECT_TYPE_ENUM = "Region"| "AppName" | "Cloudlet" | "ClusterInst"
+export const SELECT_TYPE_ENUM = "Region" | "AppName" | "Cloudlet" | "ClusterInst"
+
+export const APPINSTANCE_INIT_VALUE = {
+    "Region": "",
+    "OrganizationName": "",
+    "AppName": "",
+    "Version": "",
+    "Operator": "",
+    "Cloudlet": "",
+    "ClusterInst": "",
+    "CloudletLocation": {
+        "latitude": 0,
+        "longitude": 0,
+    },
+    "URI": "",
+    "Liveness": "",
+    "Mapped_port": "",
+    "Flavor": "",
+    "State": 0,
+    "Error": "",
+    "Runtime": "",
+    "Created": "",
+    "Progress": "",
+    "Edit": "",
+    "Status": "",
+    "Revision": 0,
+}
 
 

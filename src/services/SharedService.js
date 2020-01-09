@@ -213,3 +213,29 @@ export const renderPieGraph = () => {
         </div>
     )
 }
+
+export const Styles = {
+    selectBoxRow: {
+        alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
+    },
+    selectHeader: {
+        color: 'white',
+        backgroundColor: '#565656',
+        height: 35,
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        marginTop: -10,
+        width: 100,
+        display: 'flex'
+    },
+
+    div001: {
+        fontSize: 25,
+        color: 'white',
+    },
+    dropDown: {
+        //minWidth: 150,
+        width: 190,
+    }
+}

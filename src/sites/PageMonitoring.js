@@ -13,7 +13,7 @@ import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
 import * as reducer from "../utils";
 import {
-    fetchAppInstanceList,
+    requestShowAppInstanceList,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
@@ -33,10 +33,10 @@ import {
     renderPlaceHolder,
     renderPlaceHolder2
 } from "../services/PageMonitoringService";
-import {HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
+import {APPINSTANCE_INIT_VALUE, HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
-import {cutArrayList} from "../services/SharedService";
+import {cutArrayList, Styles} from "../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
 import moment from "moment";
@@ -197,28 +197,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        makeSelectBoxList(arrList, keyName) {
-            let newArrList = [];
-            for (let i in arrList) {
-                newArrList.push({
-                    value: arrList[i][0][keyName],
-                    text: arrList[i][0][keyName],//.toString()//.substring(0,25)+ "...",
-                })
-            }
-            return newArrList;
-        }
-
-        makeSelectBoxList2(arrList, keyName) {
-            let newArrList = [];
-            for (let i in arrList) {
-                newArrList.push({
-                    value: arrList[i].instance.AppName,
-                    text: arrList[i].instance.AppName,
-                })
-            }
-            return newArrList;
-        }
-
         componentDidMount = async () => {
             this.loadInitData();
         }
@@ -231,41 +209,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isReady: false,
             })
             //todo: REALDATA
-            //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
+            let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
             //todo: FAKEJSON FOR TEST
-            let appInstanceList: Array<TypeAppInstance> = require('../temp/appInstanceList')
+            //let appInstanceList: Array<TypeAppInstance> = require('../temp/appInstanceList')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({
-                        appInstanceOne: {
-                            "Region": "",
-                            "OrganizationName": "",
-                            "AppName": "",
-                            "Version": "",
-                            "Operator": "",
-                            "Cloudlet": "",
-                            "ClusterInst": "",
-                            "CloudletLocation": {
-                                "latitude": 0,
-                                "longitude": 0,
-                            },
-                            "URI": "",
-                            "Liveness": "",
-                            "Mapped_port": "",
-                            "Flavor": "",
-                            "State": 0,
-                            "Error": "",
-                            "Runtime": "",
-                            "Created": "",
-                            "Progress": "",
-                            "Edit": "",
-                            "Status": "",
-                            "Revision": 0,
-                        },
+                        appInstanceOne: APPINSTANCE_INIT_VALUE,
                     });
                 }
             })
-
 
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
             await this.setState({
@@ -468,12 +421,31 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
+        makeSelectBoxList(arrList, keyName) {
+            let newArrList = [];
+            for (let i in arrList) {
+                newArrList.push({
+                    value: arrList[i][0][keyName],
+                    text: arrList[i][0][keyName],//.toString()//.substring(0,25)+ "...",
+                })
+            }
+            return newArrList;
+        }
+
+        makeSelectBoxList2(arrList, keyName) {
+            let newArrList = [];
+            for (let i in arrList) {
+                newArrList.push({
+                    value: arrList[i].instance.AppName,
+                    text: arrList[i].instance.AppName,
+                })
+            }
+            return newArrList;
+        }
 
         componentWillUnmount() {
             clearInterval(this.intervalHandle)
         }
-
-        dropdownCloudlet = null;
 
         async refreshAllData() {
             toast({
@@ -895,31 +867,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        Styles = {
-            selectBoxRow: {
-                alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
-            },
-            selectHeader: {
-                color: 'white',
-                backgroundColor: '#565656',
-                height: 35,
-                alignItems: 'center',
-                alignSelf: 'center',
-                justifyContent: 'center',
-                marginTop: -10,
-                width: 100,
-                display: 'flex'
-            },
-
-            div001: {
-                fontSize: 25,
-                color: 'white',
-            },
-            dropDown: {
-                //minWidth: 150,
-                width: 190,
-            }
-        }
 
         renderHeader = () => {
             return (
@@ -992,14 +939,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderDropdownRow() {
             return (
                 <FlexBox>
-                    <div style={this.Styles.selectBoxRow}>
+                    <div style={Styles.selectBoxRow}>
                         <div className='page_monitoring_select_area' style={{marginLeft: 0,}}>
                             {/*todo:REGION Dropdown*/}
                             {/*todo:REGION Dropdown*/}
                             {/*todo:REGION Dropdown*/}
                             <div style={{flexDirection: 'row'}}>
                                 <div style={{display: 'flex', flexDirection: 'row'}}>
-                                    <div style={this.Styles.selectHeader}>
+                                    <div style={Styles.selectHeader}>
                                         Region
                                     </div>
                                     <Dropdown
@@ -1017,13 +964,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             }, 1000)
                                         }}
                                         value={this.state.currentRegion}
-                                        style={this.Styles.dropDown}
+                                        style={Styles.dropDown}
                                     />
 
                                     {/*todo:CloudLet selectbox*/}
                                     {/*todo:CloudLet selectbox*/}
                                     {/*todo:CloudLet selectbox*/}
-                                    <div style={this.Styles.selectHeader}>
+                                    <div style={Styles.selectHeader}>
                                         CloudLet
                                     </div>
                                     <Dropdown
@@ -1033,7 +980,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         placeholder={this.state.cloudLetSelectBoxPlaceholder}
                                         selection={true}
                                         options={this.state.cloudletList}
-                                        style={this.Styles.dropDown}
+                                        style={Styles.dropDown}
                                         onChange={async (e, {value}) => {
 
 
@@ -1050,7 +997,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     {/*todo:Cluster selectbox*/}
                                     {/*todo:Cluster selectbox*/}
                                     {/*todo:Cluster selectbox*/}
-                                    <div style={this.Styles.selectHeader}>
+                                    <div style={Styles.selectHeader}>
                                         Cluster
                                     </div>
                                     <Dropdown
@@ -1060,7 +1007,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         placeholder={this.state.clusterSelectBoxPlaceholder}
                                         selection
                                         options={this.state.clusterList}
-                                        style={this.Styles.dropDown}
+                                        style={Styles.dropDown}
                                         onChange={async (e, {value}) => {
                                             await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, value)
 
@@ -1075,7 +1022,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     {/*todo: App Instance*/}
                                     {/*todo: App Instance*/}
 
-                                    <div style={this.Styles.selectHeader}>
+                                    <div style={Styles.selectHeader}>
                                         App Inst
                                     </div>
                                     <div>
@@ -1085,7 +1032,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             placeholder='Select App Instance'
                                             selection
                                             options={this.state.appInstaceListForSelectBoxForCpu}
-                                            style={this.Styles.dropDown}
+                                            style={Styles.dropDown}
                                             onChange={async (e, {value}) => {
 
                                                 await this.setState({
@@ -1096,10 +1043,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                         />
                                     </div>
-
                                     {/*todo:TimeRange*/}
                                     {/*todo:TimeRange*/}
-                                    <div style={this.Styles.selectHeader}>
+                                    <div style={Styles.selectHeader}>
                                         TimeRange
                                     </div>
                                     <div style={{marginTop: 0}}>

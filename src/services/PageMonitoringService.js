@@ -1990,9 +1990,11 @@ export const filterCpuOrMemUsageListByType = (pRegion: string, memOrCpuUsageList
  * @param paramRegionArrayList
  * @returns {Promise<[]>}
  */
-export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'US']) => {
+export const requestShowAppInstanceList = async (paramRegionArrayList: any = ['EU', 'US']) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let finalizedAppInstanceList = [];
+
+
     for (let index = 0; index < paramRegionArrayList.length; index++) {
         let serviceBody = {
             "token": store.userToken,
@@ -2008,28 +2010,32 @@ export const fetchAppInstanceList = async (paramRegionArrayList: any = ['EU', 'U
             }
         }
 
-        let resource = 'ShowAppInsts';
-        const hostname = window.location.hostname;
-        let ServerUrl = 'https://' + hostname + ':3030';
+        let responseRslt = await axios({
+            url: '/api/v1/auth/ctrl/ShowAppInst',
+            method: 'post',
+            data: serviceBody['params'],
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + store.userToken
 
-        //https://mc.mobiledgex.net:9900/api/v1/auth/ctrl/ShowAppInst
-        let responseResult = await axios.post(ServerUrl + '/' + resource, qs.stringify({
-            service: resource,
-            serviceBody: serviceBody,
-            serviceId: Math.round(Math.random() * 10000)
-        })).then((response) => {
-
+            },
+            timeout: 15 * 1000
+        }).then(async response => {
             let parseData = JSON.parse(JSON.stringify(response));
             let finalizedJSON = formatData(parseData, serviceBody)
             console.log('finalizedJSON===>', finalizedJSON);
             return finalizedJSON;
+        }).catch(e => {
+            throw new Error(e)
         })
 
-        let mergedList = finalizedAppInstanceList.concat(responseResult);
+
+
+        let mergedList = finalizedAppInstanceList.concat(responseRslt);
         finalizedAppInstanceList = mergedList;
     }
 
-    console.log('mergedAppInstanceList===>', finalizedAppInstanceList);
+    console.log('finalizedAppInstanceList===>', finalizedAppInstanceList);
     return finalizedAppInstanceList;
 }
 
