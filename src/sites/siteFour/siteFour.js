@@ -819,6 +819,7 @@ class SiteFour extends React.Component {
         console.log('20190821 stepsEnabled..', stepsEnabled)
         return (
             <Grid className='view_body'>
+                {steps ?
                 <Steps
                     enabled={stepsEnabled}
                     steps={steps}
@@ -827,7 +828,7 @@ class SiteFour extends React.Component {
                     showButtons={true}
                     options={{ hideNext: false }}
                     ref={steps => (this.steps = steps)}
-                />
+                /> : null}
                 {hints ?
                     <Hints
                         enabled={hintsEnabled}
@@ -840,33 +841,8 @@ class SiteFour extends React.Component {
                             size={25}
                             color={'#70b2bc'}
                             loading={this.props.loadingSpinner}
-                        //loading={this.props.creatingSpinner}
-                        //loading={true}
                         />
-                        {/*<span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>*/}
                     </div> : null}
-                {/* <div className="creatingBox">
-                    <PulseLoader
-                        sizeUnit={"px"}
-                        size={20}
-                        color={'#70b2bc'}
-                        loading={this.props.creatingSpinner}
-                        //loading={true}
-                    />
-                    <span className={this.props.creatingSpinner ? '' : 'create'} style={{fontSize:'18px', color:'#70b2bc'}}>Creating...</span>
-                </div> */}
-                {(this.props.creatingSpinner == true) ?
-                    <div className="loadingBox" style={{ zIndex: 9999 }}>
-                        <GridLoader
-                            sizeUnit={"px"}
-                            size={25}
-                            color={'#70b2bc'}
-                            loading={this.props.creatingSpinner}
-                        //loading={true}
-                        />
-                        {/*<span className={this.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>*/}
-                    </div> : null}
-
                 <Grid.Row className='gnb_header'>
                     <Grid.Column width={6} className='navbar_left'>
                         <Header>
@@ -1126,7 +1102,6 @@ const mapStateToProps = (state) => {
         userRole: state.showUserRole ? state.showUserRole.role : null,
         selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
         loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
-        creatingSpinner: state.creatingSpinner.creating ? state.creatingSpinner.creating : null,
         injectData: state.injectData ? state.injectData : null,
         viewMode: viewMode,
         alertInfo: {
@@ -1165,7 +1140,6 @@ const mapDispatchProps = (dispatch) => {
         handleUserRole: (data) => { dispatch(actions.showUserRole(data)) },
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data)) },
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
-        // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))},
         handleDetail: (data) => { dispatch(actions.changeDetail(data)) },
         handleRoleInfo: (data) => { dispatch(actions.roleInfo(data)) },
         handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },

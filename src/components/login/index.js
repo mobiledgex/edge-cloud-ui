@@ -443,7 +443,7 @@ class Login extends Component {
         this.setState({ [name]: value })
     }
     onProgress(value) {
-        this.props.handleCreatingSpinner(value)
+        this.props.handleLoadingSpinner(value)
     }
 
     /**
@@ -646,7 +646,7 @@ const mapStateToProps = state => {
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))},
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
         handleChangeTab: (data) => { dispatch(actions.changeTab(data))},
         mapDispatchToLoginWithPassword: (data) => dispatch(actions.loginWithEmailRedux({ params: data})),

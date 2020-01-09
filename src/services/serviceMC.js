@@ -26,6 +26,12 @@ function getHeader(request) {
     return headers;
 }
 
+const showSpinner = (self, value) => {
+    if (self.props.handleLoadingSpinner) {
+        self.props.handleLoadingSpinner(value)
+    }
+}
+
 const showError = (request, message) =>
 {
     let showMessage = request.showMessage === undefined ? true : request.showMessage;
@@ -55,7 +61,7 @@ function responseError(self, request, response, callback) {
     if (response.data && response.data.message) {
         message = response.data.message
         if (checkExpiry(self, message)) {
-            self.props.handleLoadingSpinner(false)
+            showSpinner(self,false)
             showError(request, message);
             callback({ request: request, error: { code: code, message: message } })
         }
@@ -130,10 +136,8 @@ export function sendRequest(self, request, callback) {
         {
             headers: getHeader(request)
         })
-        .then(function (response) {
-            if (self.props.handleLoadingSpinner) {
-                self.props.handleLoadingSpinner(false)
-            }
+        .then(function (response) { 
+            showSpinner(self,false)
             if (responseValid(request, response, callback)) {
                 callback(EP.formatData(request, response));
             }
