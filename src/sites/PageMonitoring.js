@@ -647,7 +647,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                         style={{
                                             color: index === this.state.currentGridIndex ? 'white' : 'white',
-                                            backgroundColor: index === this.state.currentGridIndex && '#4fd1ff',
+                                            backgroundColor: index === this.state.currentGridIndex && '#21370c',
                                             height: 50
                                         }}
                                         onClick={async () => {
@@ -1122,14 +1122,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
                                                 'This Month': [moment().startOf('month'), moment().endOf('month')],
                                                 'Last Month': [moment().date(-30), moment().date(-1)],
-                                                /* 'Last Month2': [moment().date(-30), moment().date(-1)],
-                                                 'Last Month3': [moment().date(-30), moment().date(-1)],
-                                                 'Last Month4': [moment().date(-30), moment().date(-1)],
-                                                 'Last Month5': [moment().date(-30), moment().date(-1)],
-                                                 'Last Month6': [moment().date(-30), moment().date(-1)],
-                                                 'Last Month7': [moment().date(-30), moment().date(-1)],
-                                                 'Last Month8': [moment().date(-30), moment().date(-1)],
-                                                 'Last Month9': [moment().date(-30), moment().date(-1)],*/
                                             }}
                                             style={{width: 300}}
                                         />
@@ -1218,7 +1210,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:Content Header part  */}
                         {/*todo:#################### */}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body' style={{}}>
+                        <Grid.Row className='site_content_body' style={{overflow: 'hidden'}}>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
@@ -1255,10 +1247,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_column_kj003' style={{marginLeft: 0}}>
 
                                                     {/*todo: ################*/}
-                                                    {/*todo: RENDER TAB      */}
+                                                    {/*todo: RENDER TABAREA  */}
                                                     {/*todo: ################*/}
                                                     <Tab
-                                                        //style={{marginTop:-5}}
+                                                        style={{marginLeft: -10}}
                                                         panes={this.MONITORING_TABS}
                                                         activeIndex={this.state.currentTabIndex}
                                                         onTabChange={(e, {activeIndex}) => {
@@ -1317,11 +1309,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                 style={{
                                                     display: 'flex',
-                                                    width: '98.0%', backgroundColor: '#2f2f2f', alignItems: 'center',
+                                                    width: '99.0%', backgroundColor: '#2f2f2f', alignItems: 'center',
                                                     justifyContent: 'center',
                                                     alignSelf: 'center',
                                                     height: 30,
-                                                    borderRadius: 10,
+                                                    borderRadius: 1,
                                                 }}
                                             >
                                                 <div style={{color: 'white', backgroundColor: 'transparent'}}>SHOW APP INSTANCE LIST
@@ -1337,15 +1329,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
                                                 <OutsideClickHandler
                                                     onOutsideClick={() => {
-                                                        /* this.setState({
-                                                             isShowBottomGrid: !this.state.isShowBottomGrid,
-                                                         })*/
+                                                        this.setState({
+                                                            isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                        })
                                                     }}
                                                 >
                                                     <div
                                                         style={{
-                                                            backgroundColor: '#2f2f2f', opacity: 3.0, borderTopRightRadius: 20, borderTopLeftRadius: 20,
-                                                            position: 'absolute', zIndex: 999999, bottom: 50, height: 700, width: '96%', left: 48
+                                                            backgroundColor: '#2f2f2f', opacity: 3.0, borderTopRightRadius: 15, borderTopLeftRadius: 15,
+                                                            position: 'absolute', zIndex: 999999, bottom: 50, height: 700, width: '98.0%', left: 23
                                                         }}
                                                     >
                                                         <p

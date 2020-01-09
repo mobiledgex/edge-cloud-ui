@@ -4,6 +4,10 @@
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Righteous&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Black+Ops+One|Bungee|Candal|Encode+Sans+Condensed|Righteous&display=swap');
 
+/*그리드 로우의 hover*/
+.ui.grid > .row:hover{
+    background-color: green;
+}
 
 .page_monitoring {
     display: flex;
@@ -218,10 +222,10 @@
     height: 30px;
 }
 
-.gridRow:hover {
-    background-color: #919191;
+/*.gridRow:hover {
+    background-color: #645491;
 
-}
+}*/
 
 .bottomGridArea {
     opacity: 1.0!important;
@@ -16013,7 +16017,7 @@ span.ant-radio + * {
     border-radius: 5px;
     padding: 10px;
     margin-right: 20px;
-    height: 450px;
+    height: 420px;
     margin-top: 20px;
     margin-left: 20px;
     margin-bottom: -10px;
@@ -16029,7 +16033,7 @@ span.ant-radio + * {
     border-radius: 5px;
     padding: 10px;
     margin-right: 80px;
-    height: 390px;
+    height: 420px;
     margin-top: 20px;
     margin-left: 20px;
     margin-bottom: -10px;
@@ -16045,7 +16049,7 @@ span.ant-radio + * {
     border-radius: 5px;
     padding: 10px;
     margin-right: 20px;
-    height: 450px;
+    height: 420px;
     margin-top: 20px;
     margin-left: 0px;
     margin-bottom: -10px;

@@ -308,7 +308,7 @@ export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_T
 
     return (
         <Chart
-            width={window.innerWidth * 0.31}
+            width={window.innerWidth * 0.29}
             height={330}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
