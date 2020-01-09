@@ -10,6 +10,7 @@ import * as FormatComputeInst from './formatter/formatComputeInstance';
 import * as FormatComputeCluster from './formatter/formatComputeCluster';
 /** cloudlet pool */
 import * as FormatComputeCloudletPool from './formatter/formatComputeCloudletPool';
+import * as FormatComputeCloudletPoolDelete from './formatter/formatComputeCloudletPoolDelete';
 import * as FormatComputeCloudletPoolMember from './formatter/formatComputeCloudletPoolMember';
 //import * as FormatComputeCloudletPoolLink from './formatter/formatComputeCloudletPoolLink';
 
@@ -200,6 +201,8 @@ export function getKey(keyId, data) {
             return FormatComputeUsers.getKey(data)
         case 'Account':
             return FormatComputeAccounts.getKey(data)
+        case 'Cloudlet Pool':
+            return FormatComputeCloudletPoolDelete.getKey(data)
         default:
             return null;
     }
@@ -223,6 +226,8 @@ export function getDeleteMethod(keyId) {
             return DELETE_USER;
         case 'Account':
             return DELETE_ACCOUNT;
+        case 'Cloudlet Pool':
+            return DELETE_CLOUDLET_POOL;
         default:
             return null;
     }

@@ -25,7 +25,7 @@ const appssEdit = [
 const cloudletPoolEdit = [
     {key: 'add', text:'Add Cloudlet', icon:null},
     {key: 'link', text:'Link Organization', icon:null},
-    {key: 'delete', text:'Delete', icon:'trash alternate'},
+    {key: 'delete', text:'Delete CloudletPool', icon:'trash alternate'},
 ]
 const headerStyle = {
     backgroundImage: 'url()'
@@ -370,6 +370,8 @@ class InsideListView extends React.Component {
             this.addCloudlet(this.state.item)
         } else if(b.children === 'Link Organization') {
             this.linkOrganize(this.state.item)
+        } else if(b.children === 'Delete CloudletPool') {
+            this.setState({openDelete: true, selected:this.state.item})
         }
 
     }
