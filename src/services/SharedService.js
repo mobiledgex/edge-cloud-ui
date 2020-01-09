@@ -6,6 +6,7 @@ import '../css/index.css';
 import ndjsonStream from "can-ndjson-stream";
 import axios from "axios-jsonp-pro";
 import Plot from "react-plotly.js";
+import {formatData} from "./formatter/formatComputeInstance";
 
 export const getIPAddress = () => {
     var interfaces = require('os').networkInterfaces();
@@ -42,86 +43,31 @@ export const cutArrayList = (length: number = 5, paramArrayList: any) => {
 }
 
 
-export const requestShowAppInst = async () => {
-    let streamData = await fetch('/api/v1/auth/ctrl/ShowAppInst', {
-        method: 'POST',
+/**
+ *
+ * @param serviceBodyForAppInstanceOneInfo
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) => {
+
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+    let result= await axios({
+        url: '/api/v1/auth/metrics/app',
+        method: 'post',
+        data: serviceBodyForAppInstanceOneInfo['params'],
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY4MDk5MzIsImlhdCI6MTU3NjcyMzUzMiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.JPKz83yI45GdSIacNanYyX_7zmmE7HvaQvISTLVpWr-IofHwGY8tTQGChyizMpaMcOtKWg2J989p16Rm_2Mr1w",
+            Authorization: 'Bearer ' + store.userToken
+
         },
-        body: JSON.stringify({
-            "region": 'US',
-        })
-    }).then((response) => ndjsonStream(response.body)).then((streamData) => {
-        return streamData
-    });
-    const reader = streamData.getReader();
-    let read;
-    let _results = [];
-    reader.read().then(read = (result) => {
-        //todo:스트림이 완료 된 경우...
-        if (result.done) {
-
-            return _results;
-            return;
-        }
-        console.log("streaming data====>", result.value.data);
-        let streamedDataOne = result.value.data;
-        _results.push(streamedDataOne)
-        //todo:다음 Stream 데이터를 읽어온다..
-        reader.read().then(read);
-    });
-
-}
-
-
-export const getAppInstanceHealth = async (pInstanceOneInfo: string = "") => {
-
-    /*todo:request body example
-     let serviceBody_appInstInfo = {
-           "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY5MTYwODMsImlhdCI6MTU3NjgyOTY4MywidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.p3B_KtgZQsNWN8wKzuX2A1l6-xCqyiaFuPmnJFxm0hAKTBzcxx45kjvMLtGlyTKvzXT2u-ZlMEFo6u4CBzpCmQ",
-           "params": {
-               "region": "EU",
-               "appinst": {
-                   "app_key": {
-                       "developer_key": {
-                           "name": "MobiledgeX"
-                       },
-                       "name": "bictestapp1112-01",
-                       "version": "1.0"
-                   },
-                   "cluster_inst_key": {
-                       "cluster_key": {
-                           "name": "qqqaaa"
-                       },
-                       "cloudlet_key": {
-                           "name": "frankfurt-eu",
-                           "operator_key": {
-                               "name": "TDG"
-                           }
-                       }
-                   }
-               },
-               "selector": "cpu",
-               "last": 1200
-           }
-       }
-    */
-
-
-    let serverUri = 'https://' + window.location.hostname + ':3030';
-    return await axios.post(serverUri + '/timeAppinst', {
-        service: 'timeAppinst',
-        serviceBody: pInstanceOneInfo,
-        serviceId: Math.round(Math.random() * 10000)
-    }).then((response) => {
-        console.log('getAppInstanceHealth====>', response);
-        //alert(JSON.stringify(response.data))
-
+        timeout: 15 * 1000
+    }).then(async response => {
         return response.data;
     }).catch(e => {
-        alert(e)
+        throw new Error(e)
     })
+
+    return result;
 
 
 }

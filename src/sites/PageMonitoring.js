@@ -31,9 +31,9 @@ import {
     renderInstanceOnCloudletGrid,
     renderLineChart,
     renderPlaceHolder,
-    renderPlaceHolder2
+    renderPlaceHolder2, makeHardwareUsageListPerInstance
 } from "../services/PageMonitoringService";
-import {APPINSTANCE_INIT_VALUE, HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
+import {APPINSTANCE_INIT_VALUE, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
 import {cutArrayList, Styles} from "../services/SharedService";
@@ -210,6 +210,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
             //todo: REALDATA
             let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
+
+
             //todo: FAKEJSON FOR TEST
             //let appInstanceList: Array<TypeAppInstance> = require('../temp/appInstanceList')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
@@ -235,19 +237,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
 
-            /* let usageList = await Promise.all([
+             let usageList = await Promise.all([
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
-             ])*/
+             ])
 
             //todo: ################################################################
-            //todo: (last 100 datas) - Fake JSON FOR TEST
-            //let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
-            //let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
+            //todo: (last 100 datas FOR MATRIC) - FAKE JSON FOR TEST
             //todo: ################################################################
-            let usageList = require('../temp/allUsageList_50')
+            //let usageList = require('../temp/allUsageList_50')
 
 
             //todo: MAKE SELECTBOX.

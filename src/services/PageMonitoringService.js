@@ -5,7 +5,7 @@ import axios from "axios";
 import qs from "qs";
 import {formatData} from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
-import {getAppInstanceHealth, makeFormForAppInstance, numberWithCommas} from "./SharedService";
+import {getAppLevelMetrics, makeFormForAppInstance, numberWithCommas} from "./SharedService";
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
 import {Line as ReactChartJs, Bar as Bar2, HorizontalBar} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
@@ -1994,7 +1994,6 @@ export const requestShowAppInstanceList = async (paramRegionArrayList: any = ['E
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let finalizedAppInstanceList = [];
 
-
     for (let index = 0; index < paramRegionArrayList.length; index++) {
         let serviceBody = {
             "token": store.userToken,
@@ -2010,7 +2009,7 @@ export const requestShowAppInstanceList = async (paramRegionArrayList: any = ['E
             }
         }
 
-        let responseRslt = await axios({
+        let responseResult = await axios({
             url: '/api/v1/auth/ctrl/ShowAppInst',
             method: 'post',
             data: serviceBody['params'],
@@ -2023,7 +2022,6 @@ export const requestShowAppInstanceList = async (paramRegionArrayList: any = ['E
         }).then(async response => {
             let parseData = JSON.parse(JSON.stringify(response));
             let finalizedJSON = formatData(parseData, serviceBody)
-            console.log('finalizedJSON===>', finalizedJSON);
             return finalizedJSON;
         }).catch(e => {
             throw new Error(e)
@@ -2031,13 +2029,15 @@ export const requestShowAppInstanceList = async (paramRegionArrayList: any = ['E
 
 
 
-        let mergedList = finalizedAppInstanceList.concat(responseRslt);
+        let mergedList = finalizedAppInstanceList.concat(responseResult);
         finalizedAppInstanceList = mergedList;
     }
 
-    console.log('finalizedAppInstanceList===>', finalizedAppInstanceList);
     return finalizedAppInstanceList;
 }
+
+
+
 
 
 /**
@@ -2058,8 +2058,8 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
         //console.log('formOne====>', instanceInfoOneForm);
         //console.log('appInstanceList===>', appInstanceList[index]);
 
-        let appInstanceHealth = await getAppInstanceHealth(instanceInfoOneForm);
-        //console.log(`appInstanceHealth====>${index}`,)
+        let appInstanceHealth = await getAppLevelMetrics(instanceInfoOneForm);
+        console.log(`appInstanceHealth====>${index}`,)
 
         usageListPerOneInstance.push({
             instanceData: appInstanceList[index],
