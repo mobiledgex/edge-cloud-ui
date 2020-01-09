@@ -50,6 +50,8 @@ const showError = (request, message) =>
 const checkExpiry = (self, message) => {
     let isExpired  = message.indexOf('expired') > -1
     if (isExpired && self.gotoUrl) {
+        localStorage.setItem('userInfo', null)
+        localStorage.setItem('sessionData', null)
         setTimeout(() => self.gotoUrl('/logout'), 2000);
     }
     return !isExpired;
@@ -66,28 +68,6 @@ function responseError(self, request, response, callback) {
             callback({ request: request, error: { code: code, message: message } })
         }
     }
-}
-
-function responseValid(request, response, callback) {
-    let parseData = null;
-    if (response.data) {
-        if (response.data.message) {
-            if (response.data.message.indexOf('expired') > -1) {
-                localStorage.setItem('userInfo', null)
-                localStorage.setItem('sessionData', null)
-                callback({ error: 'Login Timeout Expired.<br/>Please login again' }, request.method);
-                return;
-            } else {
-                callback({ error: response.data.error }, request.method);
-                return;
-            }
-        } else {
-            parseData = JSON.parse(JSON.stringify(response));
-        }
-    } else {
-        parseData = response;
-    }
-    return parseData;
 }
 
 export function sendWSRequest(request, callback) {
@@ -138,9 +118,7 @@ export function sendRequest(self, request, callback) {
         })
         .then(function (response) { 
             showSpinner(self,false)
-            if (responseValid(request, response, callback)) {
-                callback(EP.formatData(request, response));
-            }
+            callback(EP.formatData(request, response));
         })
         .catch(function (error) {
             if(error.response)
