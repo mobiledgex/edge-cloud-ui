@@ -253,19 +253,27 @@ class SiteFourCreateFormDefault extends React.Component {
         }
         return mockData;
     };
-    getListData = (data) => {
+    getListData = (datas) => {
         const listData = [];
 
-        if(data.length) {
-            data.map((item, i) => {
+        if(datas.length) {
+            datas.map((item, i) => {
                 const data = {
                     value: i,
-                    label: item['cloudlet'],
-                };
+                    label: item['cloudlet']
+                }
                 listData.push(data)
+
+                if(this.props.selectListData){
+                    let selectListData = this.props.selectListData
+                    selectListData.map((selectItem, j) => {
+                        if(selectItem === data.label){
+                            this.state.selected[j] = data.value
+                        }
+                    })
+                }
             })
         }
-
         return listData;
     }
 
@@ -394,7 +402,7 @@ class SiteFourCreateFormDefault extends React.Component {
         if(arr.length > 1) {
             arr.pop()
         }
-        this.setState({portArray:arr}); 
+        this.setState({portArray:arr});
     }
     receiveResult = (mcRequest) => {
         if (mcRequest) {
@@ -420,7 +428,7 @@ class SiteFourCreateFormDefault extends React.Component {
         else if(localStorage.selectMenu == 'Cloudlet Pool') siteNum = 7
         this.props.gotoUrl(siteNum)
     }
-    
+
     render (){
         const {  dimmer, selected, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat } = this.props;
         const { data, regKeys, fieldKeys } = this.state;
@@ -631,7 +639,7 @@ class SiteFourCreateFormDefault extends React.Component {
                 </Fragment>
             </Item>
         )
-        
+
     }
 };
 

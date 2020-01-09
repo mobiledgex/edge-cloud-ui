@@ -48,6 +48,7 @@ import SiteFourPageClusterInstReg from './clusterInst/siteFour_page_clusterInstR
 import SiteFourPageCloudletPool from './cloudletPool/siteFour_page_cloudletPool';
 import SiteFourPageCloudletPoolReg from './cloudletPool/siteFour_page_cloudletPoolReg';
 import SiteFourPageLinkOrganizeReg from './cloudletPool/siteFour_page_linkOrganizeReg';
+import SiteFourPageCloudletPoolUpdate from './cloudletPool/siteFour_page_cloudletPoolUpdate';
 //monitoring
 // import SiteFourPageMonitoring from "../siteFour_page_monitoring";
 // import PageMonitoring2 from "../PageMonitoring2";
@@ -953,8 +954,8 @@ class SiteFour extends React.Component {
                                                                             (this.state.page === 'pg=createCloudletPool')?
                                                                             <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
 
-                                                                            // (this.state.page === 'pg=updateCloudletPool')?
-                                                                            // <SiteFourPageCloudletPoolUpdate></SiteFourPageCloudletPoolUpdate> :
+                                                                            (this.state.page === 'pg=updateCloudletPool')?
+                                                                            <SiteFourPageCloudletPoolUpdate></SiteFourPageCloudletPoolUpdate> :
 
                                                                             (this.state.page === 'pg=linkOrganize')?
                                                                             <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :

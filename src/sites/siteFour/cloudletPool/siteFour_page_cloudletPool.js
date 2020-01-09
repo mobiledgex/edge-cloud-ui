@@ -199,8 +199,8 @@ class SiteFourPageCloudletPool extends React.Component {
     }
     receiveResultLinkOrg = (_result) => {
         let result = null;
-        if(_result) {
-            result = _result
+        if(_result.response) {
+            result = _result.response.data
         } else {
             _self.props.handleComputeRefresh(false);
             return;
