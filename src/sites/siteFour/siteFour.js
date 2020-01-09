@@ -153,7 +153,8 @@ class SiteFour extends React.Component {
             { label: 'Cluster Instances', icon: 'storage', pg: 4 },
             { label: 'Apps', icon: 'apps', pg: 5 },
             { label: 'App Instances', icon: 'storage', pg: 6 },
-            { label: 'Audit Log', icon: 'check', pg: 'audits' }
+            { label: 'Audit Log', icon: 'check', pg: 'audits' },
+            { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
@@ -337,12 +338,12 @@ class SiteFour extends React.Component {
         <Popup
             trigger={<Icon name='question circle outline' size='small' style={{ marginTop: 0, paddingLeft: 10 }} />}
             content=
-            {(key == 'Cloudlets') ? 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator.'
-                : (key == 'Cluster Instances') ? 'ClusterInst is an instance of a Cluster on a Cloudlet. It is defined by a Cluster, Cloudlet, and Developer key.'
-                    : (key == 'Apps') ? 'App belongs to developers and is used to provide information about their application.'
-                        : (key == 'App Instances') ? 'AppInst is an instance of an App on a Cloudlet where it is defined by an App plus a ClusterInst key. Many of the fields here are inherited from the App definition.'
-                            : key
-            }
+                {(key == 'Cloudlets') ? 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator.'
+                    : (key == 'Cluster Instances') ? 'ClusterInst is an instance of a Cluster on a Cloudlet. It is defined by a Cluster, Cloudlet, and Developer key.'
+                        : (key == 'Apps') ? 'App belongs to developers and is used to provide information about their application.'
+                            : (key == 'App Instances') ? 'AppInst is an instance of an App on a Cloudlet where it is defined by an App plus a ClusterInst key. Many of the fields here are inherited from the App definition.'
+                                : key
+                }
             // content={this.state.tip}
             // style={style}
             inverted
@@ -639,7 +640,7 @@ class SiteFour extends React.Component {
                             sizeUnit={'px'}
                             color={'rgba(136,221,0,.85)'}
                             loading={this.props.loadingSpinner}
-                        // loading={true}
+                            // loading={true}
                         />
                         {(item.label === 'Audit Log' && this.props.audit > 0) ?
                             <Label circular color={'red'} key={'red'}>
@@ -917,15 +918,15 @@ class SiteFour extends React.Component {
         return (
             <Grid className='view_body'>
                 {steps ?
-                <Steps
-                    enabled={stepsEnabled}
-                    steps={steps}
-                    initialStep={initialStep}
-                    onExit={this.onExit}
-                    showButtons={true}
-                    options={{ hideNext: false }}
-                    ref={steps => (this.steps = steps)}
-                /> : null}
+                    <Steps
+                        enabled={stepsEnabled}
+                        steps={steps}
+                        initialStep={initialStep}
+                        onExit={this.onExit}
+                        showButtons={true}
+                        options={{ hideNext: false }}
+                        ref={steps => (this.steps = steps)}
+                    /> : null}
                 {hints ?
                     <Hints
                         enabled={hintsEnabled}
@@ -1042,7 +1043,7 @@ class SiteFour extends React.Component {
                                         this.OrgMenu.map((item, i) => (
                                             (item.label == 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
                                                 : (localStorage.selectRole == 'AdminManager') ? this.menuItemView(item, i, localStorage.selectMenu)
-                                                    : this.menuItemView(item, i, localStorage.selectMenu)
+                                                : this.menuItemView(item, i, localStorage.selectMenu)
                                         ))
                                     }
                                 </div>
@@ -1078,7 +1079,7 @@ class SiteFour extends React.Component {
                     </Grid.Row>
                 </Container>
                 {/*todo:################*/}
-                {/*todo:BODY RENDERING  */}
+                {/*todo:RENDERING BODY  */}
                 {/*todo:################*/}
                 <Container className='contents_body_container' style={{top: this.headerH, left: this.menuW}}>
                     {/*For Monitoring Page*/}
