@@ -2,7 +2,7 @@
   [
     {
       "instance": {
-        "uuid": "0fa57e0c-80af-469b-9f26-cb5ab4a2f9d8",
+        "uuid": "de4c86f7-c7f1-4e07-8230-7e2f017ec006",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "zzaaa",
@@ -115,7 +115,7 @@
     },
     {
       "instance": {
-        "uuid": "cabe1f2e-9999-48a5-bffc-2b6f250dd3f8",
+        "uuid": "5d76118b-cffb-4e24-8913-da7e797d5e51",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "test111qq",
@@ -221,7 +221,7 @@
     },
     {
       "instance": {
-        "uuid": "f34c2c90-14e5-4b0f-943d-e0c47c170c95",
+        "uuid": "4e760fad-5291-4641-9791-c4ca15d73ca3",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "bicTestApp1112-01",
@@ -327,7 +327,7 @@
     },
     {
       "instance": {
-        "uuid": "63f7e99e-7f2d-460e-8070-829401336ba7",
+        "uuid": "2cfcb259-ef6e-4dc4-b8dc-dd6165246157",
         "Region": "EU",
         "OrganizationName": "testaaa",
         "AppName": "jjj kkk",
@@ -442,119 +442,7 @@
     },
     {
       "instance": {
-        "uuid": "c481da24-d102-445c-b1b7-9ff4731bbc5a",
-        "Region": "EU",
-        "OrganizationName": "MobiledgeX",
-        "AppName": "Face Detection Demo",
-        "Version": "1.0",
-        "Operator": "mex",
-        "Cloudlet": "hackthon-anand",
-        "ClusterInst": "hackathon-anand-cluster",
-        "CloudletLocation": {
-          "latitude": 10,
-          "longitude": -100
-        },
-        "URI": "hackthon-anand.mex.mobiledgex.net",
-        "Liveness": 1,
-        "Mapped_port": [
-          {
-            "proto": 1,
-            "internal_port": 8008,
-            "public_port": 8008,
-            "fqdn_prefix": "facedetectiondemo-tcp."
-          },
-          {
-            "proto": 1,
-            "internal_port": 8011,
-            "public_port": 8011,
-            "fqdn_prefix": "facedetectiondemo-tcp."
-          }
-        ],
-        "Flavor": "x1.large",
-        "State": 5,
-        "Error": "-",
-        "Runtime": {
-          "container_ids": [
-            "facedetectiondemo-deployment-77dbb88dd9-92vxf"
-          ]
-        },
-        "Created": "seconds : 1578516428",
-        "Progress": "",
-        "Edit": [
-          "Region",
-          "DeveloperName",
-          "AppName",
-          "Version",
-          "Operator",
-          "Cloudlet",
-          "ClusterInst",
-          "CloudletLocation",
-          "State",
-          "Editable"
-        ],
-        "Status": {},
-        "Revision": "-"
-      },
-      "columns": "",
-      "values": "",
-      "sumCpuUsage": 0
-    },
-    {
-      "instance": {
-        "uuid": "8bbbba3b-25d3-41a5-8114-80f3b769e193",
-        "Region": "EU",
-        "OrganizationName": "MobiledgeX",
-        "AppName": "MobiledgeX SDK Demo",
-        "Version": "k8s",
-        "Operator": "mex",
-        "Cloudlet": "alex-hackathon",
-        "ClusterInst": "alex-hackathon-cluster",
-        "CloudletLocation": {
-          "latitude": 33.01,
-          "longitude": -96.61
-        },
-        "URI": "alex-hackathon.mex.mobiledgex.net",
-        "Liveness": 1,
-        "Mapped_port": [
-          {
-            "proto": 1,
-            "internal_port": 7777,
-            "public_port": 7777,
-            "fqdn_prefix": "mobiledgexsdkdemo-tcp."
-          }
-        ],
-        "Flavor": "x1.medium",
-        "State": 5,
-        "Error": "-",
-        "Runtime": {
-          "container_ids": [
-            "mobiledgexsdkdemo-deployment-78d4d4d778-8qhx2"
-          ]
-        },
-        "Created": "seconds : 1578441092",
-        "Progress": "",
-        "Edit": [
-          "Region",
-          "DeveloperName",
-          "AppName",
-          "Version",
-          "Operator",
-          "Cloudlet",
-          "ClusterInst",
-          "CloudletLocation",
-          "State",
-          "Editable"
-        ],
-        "Status": {},
-        "Revision": "-"
-      },
-      "columns": "",
-      "values": "",
-      "sumCpuUsage": 0
-    },
-    {
-      "instance": {
-        "uuid": "57c83b06-6781-49be-aed7-5bd72fcd93d0",
+        "uuid": "058ff138-86eb-4cda-984d-12b7ec73613c",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "eeeessss",
@@ -672,7 +560,119 @@
     },
     {
       "instance": {
-        "uuid": "d42e5efb-3e0c-4fad-a7bc-c868710d9210",
+        "uuid": "96b7e808-ec1a-4e67-8f7d-6459dd825999",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "Face Detection Demo",
+        "Version": "1.0",
+        "Operator": "mex",
+        "Cloudlet": "hackthon-anand",
+        "ClusterInst": "hackathon-anand-cluster",
+        "CloudletLocation": {
+          "latitude": 10,
+          "longitude": -100
+        },
+        "URI": "hackthon-anand.mex.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+          {
+            "proto": 1,
+            "internal_port": 8008,
+            "public_port": 8008,
+            "fqdn_prefix": "facedetectiondemo-tcp."
+          },
+          {
+            "proto": 1,
+            "internal_port": 8011,
+            "public_port": 8011,
+            "fqdn_prefix": "facedetectiondemo-tcp."
+          }
+        ],
+        "Flavor": "x1.large",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {
+          "container_ids": [
+            "facedetectiondemo-deployment-77dbb88dd9-92vxf"
+          ]
+        },
+        "Created": "seconds : 1578516428",
+        "Progress": "",
+        "Edit": [
+          "Region",
+          "DeveloperName",
+          "AppName",
+          "Version",
+          "Operator",
+          "Cloudlet",
+          "ClusterInst",
+          "CloudletLocation",
+          "State",
+          "Editable"
+        ],
+        "Status": {},
+        "Revision": "-"
+      },
+      "columns": "",
+      "values": "",
+      "sumCpuUsage": 0
+    },
+    {
+      "instance": {
+        "uuid": "431a4d52-6897-4cea-9938-0d8acd704218",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "MobiledgeX SDK Demo",
+        "Version": "k8s",
+        "Operator": "mex",
+        "Cloudlet": "alex-hackathon",
+        "ClusterInst": "alex-hackathon-cluster",
+        "CloudletLocation": {
+          "latitude": 33.01,
+          "longitude": -96.61
+        },
+        "URI": "alex-hackathon.mex.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+          {
+            "proto": 1,
+            "internal_port": 7777,
+            "public_port": 7777,
+            "fqdn_prefix": "mobiledgexsdkdemo-tcp."
+          }
+        ],
+        "Flavor": "x1.medium",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {
+          "container_ids": [
+            "mobiledgexsdkdemo-deployment-78d4d4d778-8qhx2"
+          ]
+        },
+        "Created": "seconds : 1578441092",
+        "Progress": "",
+        "Edit": [
+          "Region",
+          "DeveloperName",
+          "AppName",
+          "Version",
+          "Operator",
+          "Cloudlet",
+          "ClusterInst",
+          "CloudletLocation",
+          "State",
+          "Editable"
+        ],
+        "Status": {},
+        "Revision": "-"
+      },
+      "columns": "",
+      "values": "",
+      "sumCpuUsage": 0
+    },
+    {
+      "instance": {
+        "uuid": "881e0e9a-29b2-4eeb-ae12-afd62a5b738b",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "MEXPrometheusAppName",
@@ -722,7 +722,7 @@
     },
     {
       "instance": {
-        "uuid": "90de3022-70c4-441f-a33d-83132432327a",
+        "uuid": "e8809534-0730-43df-b679-56be65c7e69f",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "SDKdemoapp",
@@ -775,7 +775,7 @@
     },
     {
       "instance": {
-        "uuid": "cbc7acdb-4f1f-4e9e-9151-cfacbaade42e",
+        "uuid": "a5133ed1-53dd-4862-8b77-e6e553f16e9b",
         "Region": "US",
         "OrganizationName": "Sierraware",
         "AppName": "SierraVM",
@@ -829,7 +829,7 @@
   [
     {
       "instance": {
-        "uuid": "f34c2c90-14e5-4b0f-943d-e0c47c170c95",
+        "uuid": "4e760fad-5291-4641-9791-c4ca15d73ca3",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "bicTestApp1112-01",
@@ -935,7 +935,7 @@
     },
     {
       "instance": {
-        "uuid": "63f7e99e-7f2d-460e-8070-829401336ba7",
+        "uuid": "2cfcb259-ef6e-4dc4-b8dc-dd6165246157",
         "Region": "EU",
         "OrganizationName": "testaaa",
         "AppName": "jjj kkk",
@@ -1050,7 +1050,7 @@
     },
     {
       "instance": {
-        "uuid": "cabe1f2e-9999-48a5-bffc-2b6f250dd3f8",
+        "uuid": "5d76118b-cffb-4e24-8913-da7e797d5e51",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "test111qq",
@@ -1156,7 +1156,7 @@
     },
     {
       "instance": {
-        "uuid": "57c83b06-6781-49be-aed7-5bd72fcd93d0",
+        "uuid": "058ff138-86eb-4cda-984d-12b7ec73613c",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "eeeessss",
@@ -1274,7 +1274,7 @@
     },
     {
       "instance": {
-        "uuid": "0fa57e0c-80af-469b-9f26-cb5ab4a2f9d8",
+        "uuid": "de4c86f7-c7f1-4e07-8230-7e2f017ec006",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "zzaaa",
@@ -1387,7 +1387,7 @@
     },
     {
       "instance": {
-        "uuid": "c481da24-d102-445c-b1b7-9ff4731bbc5a",
+        "uuid": "96b7e808-ec1a-4e67-8f7d-6459dd825999",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "Face Detection Demo",
@@ -1446,7 +1446,7 @@
     },
     {
       "instance": {
-        "uuid": "8bbbba3b-25d3-41a5-8114-80f3b769e193",
+        "uuid": "431a4d52-6897-4cea-9938-0d8acd704218",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "MobiledgeX SDK Demo",
@@ -1499,7 +1499,7 @@
     },
     {
       "instance": {
-        "uuid": "d42e5efb-3e0c-4fad-a7bc-c868710d9210",
+        "uuid": "881e0e9a-29b2-4eeb-ae12-afd62a5b738b",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "MEXPrometheusAppName",
@@ -1549,7 +1549,7 @@
     },
     {
       "instance": {
-        "uuid": "90de3022-70c4-441f-a33d-83132432327a",
+        "uuid": "e8809534-0730-43df-b679-56be65c7e69f",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "SDKdemoapp",
@@ -1602,7 +1602,7 @@
     },
     {
       "instance": {
-        "uuid": "cbc7acdb-4f1f-4e9e-9151-cfacbaade42e",
+        "uuid": "a5133ed1-53dd-4862-8b77-e6e553f16e9b",
         "Region": "US",
         "OrganizationName": "Sierraware",
         "AppName": "SierraVM",
@@ -1656,7 +1656,252 @@
   [
     {
       "instance": {
-        "uuid": "63f7e99e-7f2d-460e-8070-829401336ba7",
+        "uuid": "058ff138-86eb-4cda-984d-12b7ec73613c",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "eeeessss",
+        "Version": "1",
+        "Operator": "TDG",
+        "Cloudlet": "frankfurt-eu",
+        "ClusterInst": "qqqaaa",
+        "CloudletLocation": {
+          "latitude": 50.110924,
+          "longitude": 8.682127
+        },
+        "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+          {
+            "proto": 1,
+            "internal_port": 1111,
+            "public_port": 1111
+          },
+          {
+            "proto": 1,
+            "internal_port": 2229,
+            "public_port": 2229,
+            "end_port": 2339
+          },
+          {
+            "proto": 1,
+            "internal_port": 555,
+            "public_port": 555,
+            "end_port": 666
+          }
+        ],
+        "Flavor": "m4.medium",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {
+          "container_ids": [
+            "eeeessss"
+          ]
+        },
+        "Created": "seconds : 1578512412",
+        "Progress": "",
+        "Edit": [
+          "Region",
+          "DeveloperName",
+          "AppName",
+          "Version",
+          "Operator",
+          "Cloudlet",
+          "ClusterInst",
+          "CloudletLocation",
+          "State",
+          "Editable"
+        ],
+        "Status": {},
+        "Revision": 4
+      },
+      "columns": [
+        "time",
+        "app",
+        "cloudlet",
+        "cluster",
+        "dev",
+        "operator",
+        "recvBytes",
+        "sendBytes"
+      ],
+      "values": [
+        [
+          "2019-11-14T15:13:26.988361728Z",
+          "eeeessss",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          "TDG",
+          0,
+          0
+        ],
+        [
+          "2019-11-14T15:13:18.903823664Z",
+          "eeeessss",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          "TDG",
+          0,
+          0
+        ],
+        [
+          "2019-11-14T15:13:10.820732793Z",
+          "eeeessss",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          "TDG",
+          0,
+          0
+        ],
+        [
+          "2019-11-14T15:13:02.732475659Z",
+          "eeeessss",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          "TDG",
+          0,
+          0
+        ],
+        [
+          "2019-11-14T15:12:54.639824258Z",
+          "eeeessss",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          "TDG",
+          0,
+          0
+        ]
+      ],
+      "sumRecvBytes": 0,
+      "sumSendBytes": 0
+    },
+    {
+      "instance": {
+        "uuid": "de4c86f7-c7f1-4e07-8230-7e2f017ec006",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "zzaaa",
+        "Version": "1",
+        "Operator": "TDG",
+        "Cloudlet": "frankfurt-eu",
+        "ClusterInst": "qqqaaa",
+        "CloudletLocation": {
+          "latitude": 50.110924,
+          "longitude": 8.682127
+        },
+        "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+          {
+            "proto": 1,
+            "internal_port": 111,
+            "public_port": 111
+          },
+          {
+            "proto": 2,
+            "internal_port": 222,
+            "public_port": 222
+          }
+        ],
+        "Flavor": "m4.medium",
+        "State": 8,
+        "Error": [
+          "Update App Inst failed: error running app, Unable to find image 'docker.mobiledgex.net/mobiledgex/images/mobiledgexsdkdemo:latest' locally\ndocker: Error response from daemon: Get https://docker.mobiledgex.net/v2/mobiledgex/images/mobiledgexsdkdemo/manifests/latest: denied: access forbidden.\nSee 'docker run --help'., Process exited with status 125"
+        ],
+        "Runtime": {
+          "container_ids": [
+            "zzaaa"
+          ]
+        },
+        "Created": "seconds : 1572245382",
+        "Progress": "",
+        "Edit": [
+          "Region",
+          "DeveloperName",
+          "AppName",
+          "Version",
+          "Operator",
+          "Cloudlet",
+          "ClusterInst",
+          "CloudletLocation",
+          "State",
+          "Editable"
+        ],
+        "Status": {},
+        "Revision": 6
+      },
+      "columns": [
+        "time",
+        "app",
+        "cloudlet",
+        "cluster",
+        "dev",
+        "operator",
+        "recvBytes",
+        "sendBytes"
+      ],
+      "values": [
+        [
+          "2019-10-22T22:01:06.86893966Z",
+          "zzaaa",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          "TDG",
+          0,
+          0
+        ],
+        [
+          "2019-10-22T22:00:58.818345131Z",
+          "zzaaa",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          "TDG",
+          0,
+          0
+        ],
+        [
+          "2019-10-22T22:00:50.775092729Z",
+          "zzaaa",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          "TDG",
+          0,
+          0
+        ],
+        [
+          "2019-10-22T22:00:42.722703926Z",
+          "zzaaa",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          "TDG",
+          0,
+          0
+        ],
+        [
+          "2019-10-22T22:00:34.676944409Z",
+          "zzaaa",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          "TDG",
+          0,
+          0
+        ]
+      ],
+      "sumRecvBytes": 0,
+      "sumSendBytes": 0
+    },
+    {
+      "instance": {
+        "uuid": "2cfcb259-ef6e-4dc4-b8dc-dd6165246157",
         "Region": "EU",
         "OrganizationName": "testaaa",
         "AppName": "jjj kkk",
@@ -1778,7 +2023,7 @@
     },
     {
       "instance": {
-        "uuid": "c481da24-d102-445c-b1b7-9ff4731bbc5a",
+        "uuid": "96b7e808-ec1a-4e67-8f7d-6459dd825999",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "Face Detection Demo",
@@ -1838,7 +2083,7 @@
     },
     {
       "instance": {
-        "uuid": "8bbbba3b-25d3-41a5-8114-80f3b769e193",
+        "uuid": "431a4d52-6897-4cea-9938-0d8acd704218",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "MobiledgeX SDK Demo",
@@ -1892,7 +2137,7 @@
     },
     {
       "instance": {
-        "uuid": "f34c2c90-14e5-4b0f-943d-e0c47c170c95",
+        "uuid": "4e760fad-5291-4641-9791-c4ca15d73ca3",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "bicTestApp1112-01",
@@ -2005,252 +2250,7 @@
     },
     {
       "instance": {
-        "uuid": "57c83b06-6781-49be-aed7-5bd72fcd93d0",
-        "Region": "EU",
-        "OrganizationName": "MobiledgeX",
-        "AppName": "eeeessss",
-        "Version": "1",
-        "Operator": "TDG",
-        "Cloudlet": "frankfurt-eu",
-        "ClusterInst": "qqqaaa",
-        "CloudletLocation": {
-          "latitude": 50.110924,
-          "longitude": 8.682127
-        },
-        "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
-        "Liveness": 1,
-        "Mapped_port": [
-          {
-            "proto": 1,
-            "internal_port": 1111,
-            "public_port": 1111
-          },
-          {
-            "proto": 1,
-            "internal_port": 2229,
-            "public_port": 2229,
-            "end_port": 2339
-          },
-          {
-            "proto": 1,
-            "internal_port": 555,
-            "public_port": 555,
-            "end_port": 666
-          }
-        ],
-        "Flavor": "m4.medium",
-        "State": 5,
-        "Error": "-",
-        "Runtime": {
-          "container_ids": [
-            "eeeessss"
-          ]
-        },
-        "Created": "seconds : 1578512412",
-        "Progress": "",
-        "Edit": [
-          "Region",
-          "DeveloperName",
-          "AppName",
-          "Version",
-          "Operator",
-          "Cloudlet",
-          "ClusterInst",
-          "CloudletLocation",
-          "State",
-          "Editable"
-        ],
-        "Status": {},
-        "Revision": 4
-      },
-      "columns": [
-        "time",
-        "app",
-        "cloudlet",
-        "cluster",
-        "dev",
-        "operator",
-        "recvBytes",
-        "sendBytes"
-      ],
-      "values": [
-        [
-          "2019-11-14T15:13:26.988361728Z",
-          "eeeessss",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          "TDG",
-          0,
-          0
-        ],
-        [
-          "2019-11-14T15:13:18.903823664Z",
-          "eeeessss",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          "TDG",
-          0,
-          0
-        ],
-        [
-          "2019-11-14T15:13:10.820732793Z",
-          "eeeessss",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          "TDG",
-          0,
-          0
-        ],
-        [
-          "2019-11-14T15:13:02.732475659Z",
-          "eeeessss",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          "TDG",
-          0,
-          0
-        ],
-        [
-          "2019-11-14T15:12:54.639824258Z",
-          "eeeessss",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          "TDG",
-          0,
-          0
-        ]
-      ],
-      "sumRecvBytes": 0,
-      "sumSendBytes": 0
-    },
-    {
-      "instance": {
-        "uuid": "0fa57e0c-80af-469b-9f26-cb5ab4a2f9d8",
-        "Region": "EU",
-        "OrganizationName": "MobiledgeX",
-        "AppName": "zzaaa",
-        "Version": "1",
-        "Operator": "TDG",
-        "Cloudlet": "frankfurt-eu",
-        "ClusterInst": "qqqaaa",
-        "CloudletLocation": {
-          "latitude": 50.110924,
-          "longitude": 8.682127
-        },
-        "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
-        "Liveness": 1,
-        "Mapped_port": [
-          {
-            "proto": 1,
-            "internal_port": 111,
-            "public_port": 111
-          },
-          {
-            "proto": 2,
-            "internal_port": 222,
-            "public_port": 222
-          }
-        ],
-        "Flavor": "m4.medium",
-        "State": 8,
-        "Error": [
-          "Update App Inst failed: error running app, Unable to find image 'docker.mobiledgex.net/mobiledgex/images/mobiledgexsdkdemo:latest' locally\ndocker: Error response from daemon: Get https://docker.mobiledgex.net/v2/mobiledgex/images/mobiledgexsdkdemo/manifests/latest: denied: access forbidden.\nSee 'docker run --help'., Process exited with status 125"
-        ],
-        "Runtime": {
-          "container_ids": [
-            "zzaaa"
-          ]
-        },
-        "Created": "seconds : 1572245382",
-        "Progress": "",
-        "Edit": [
-          "Region",
-          "DeveloperName",
-          "AppName",
-          "Version",
-          "Operator",
-          "Cloudlet",
-          "ClusterInst",
-          "CloudletLocation",
-          "State",
-          "Editable"
-        ],
-        "Status": {},
-        "Revision": 6
-      },
-      "columns": [
-        "time",
-        "app",
-        "cloudlet",
-        "cluster",
-        "dev",
-        "operator",
-        "recvBytes",
-        "sendBytes"
-      ],
-      "values": [
-        [
-          "2019-10-22T22:01:06.86893966Z",
-          "zzaaa",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          "TDG",
-          0,
-          0
-        ],
-        [
-          "2019-10-22T22:00:58.818345131Z",
-          "zzaaa",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          "TDG",
-          0,
-          0
-        ],
-        [
-          "2019-10-22T22:00:50.775092729Z",
-          "zzaaa",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          "TDG",
-          0,
-          0
-        ],
-        [
-          "2019-10-22T22:00:42.722703926Z",
-          "zzaaa",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          "TDG",
-          0,
-          0
-        ],
-        [
-          "2019-10-22T22:00:34.676944409Z",
-          "zzaaa",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          "TDG",
-          0,
-          0
-        ]
-      ],
-      "sumRecvBytes": 0,
-      "sumSendBytes": 0
-    },
-    {
-      "instance": {
-        "uuid": "d42e5efb-3e0c-4fad-a7bc-c868710d9210",
+        "uuid": "881e0e9a-29b2-4eeb-ae12-afd62a5b738b",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "MEXPrometheusAppName",
@@ -2301,7 +2301,7 @@
     },
     {
       "instance": {
-        "uuid": "90de3022-70c4-441f-a33d-83132432327a",
+        "uuid": "e8809534-0730-43df-b679-56be65c7e69f",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "SDKdemoapp",
@@ -2355,7 +2355,7 @@
     },
     {
       "instance": {
-        "uuid": "cabe1f2e-9999-48a5-bffc-2b6f250dd3f8",
+        "uuid": "5d76118b-cffb-4e24-8913-da7e797d5e51",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "test111qq",
@@ -2468,7 +2468,7 @@
     },
     {
       "instance": {
-        "uuid": "cbc7acdb-4f1f-4e9e-9151-cfacbaade42e",
+        "uuid": "a5133ed1-53dd-4862-8b77-e6e553f16e9b",
         "Region": "US",
         "OrganizationName": "Sierraware",
         "AppName": "SierraVM",
@@ -2523,7 +2523,7 @@
   [
     {
       "instance": {
-        "uuid": "63f7e99e-7f2d-460e-8070-829401336ba7",
+        "uuid": "2cfcb259-ef6e-4dc4-b8dc-dd6165246157",
         "Region": "EU",
         "OrganizationName": "testaaa",
         "AppName": "jjj kkk",
@@ -2638,225 +2638,7 @@
     },
     {
       "instance": {
-        "uuid": "c481da24-d102-445c-b1b7-9ff4731bbc5a",
-        "Region": "EU",
-        "OrganizationName": "MobiledgeX",
-        "AppName": "Face Detection Demo",
-        "Version": "1.0",
-        "Operator": "mex",
-        "Cloudlet": "hackthon-anand",
-        "ClusterInst": "hackathon-anand-cluster",
-        "CloudletLocation": {
-          "latitude": 10,
-          "longitude": -100
-        },
-        "URI": "hackthon-anand.mex.mobiledgex.net",
-        "Liveness": 1,
-        "Mapped_port": [
-          {
-            "proto": 1,
-            "internal_port": 8008,
-            "public_port": 8008,
-            "fqdn_prefix": "facedetectiondemo-tcp."
-          },
-          {
-            "proto": 1,
-            "internal_port": 8011,
-            "public_port": 8011,
-            "fqdn_prefix": "facedetectiondemo-tcp."
-          }
-        ],
-        "Flavor": "x1.large",
-        "State": 5,
-        "Error": "-",
-        "Runtime": {
-          "container_ids": [
-            "facedetectiondemo-deployment-77dbb88dd9-92vxf"
-          ]
-        },
-        "Created": "seconds : 1578516428",
-        "Progress": "",
-        "Edit": [
-          "Region",
-          "DeveloperName",
-          "AppName",
-          "Version",
-          "Operator",
-          "Cloudlet",
-          "ClusterInst",
-          "CloudletLocation",
-          "State",
-          "Editable"
-        ],
-        "Status": {},
-        "Revision": "-"
-      },
-      "columns": "",
-      "values": "",
-      "sumDiskUsage": 0
-    },
-    {
-      "instance": {
-        "uuid": "8bbbba3b-25d3-41a5-8114-80f3b769e193",
-        "Region": "EU",
-        "OrganizationName": "MobiledgeX",
-        "AppName": "MobiledgeX SDK Demo",
-        "Version": "k8s",
-        "Operator": "mex",
-        "Cloudlet": "alex-hackathon",
-        "ClusterInst": "alex-hackathon-cluster",
-        "CloudletLocation": {
-          "latitude": 33.01,
-          "longitude": -96.61
-        },
-        "URI": "alex-hackathon.mex.mobiledgex.net",
-        "Liveness": 1,
-        "Mapped_port": [
-          {
-            "proto": 1,
-            "internal_port": 7777,
-            "public_port": 7777,
-            "fqdn_prefix": "mobiledgexsdkdemo-tcp."
-          }
-        ],
-        "Flavor": "x1.medium",
-        "State": 5,
-        "Error": "-",
-        "Runtime": {
-          "container_ids": [
-            "mobiledgexsdkdemo-deployment-78d4d4d778-8qhx2"
-          ]
-        },
-        "Created": "seconds : 1578441092",
-        "Progress": "",
-        "Edit": [
-          "Region",
-          "DeveloperName",
-          "AppName",
-          "Version",
-          "Operator",
-          "Cloudlet",
-          "ClusterInst",
-          "CloudletLocation",
-          "State",
-          "Editable"
-        ],
-        "Status": {},
-        "Revision": "-"
-      },
-      "columns": "",
-      "values": "",
-      "sumDiskUsage": 0
-    },
-    {
-      "instance": {
-        "uuid": "f34c2c90-14e5-4b0f-943d-e0c47c170c95",
-        "Region": "EU",
-        "OrganizationName": "MobiledgeX",
-        "AppName": "bicTestApp1112-01",
-        "Version": "1.0",
-        "Operator": "TDG",
-        "Cloudlet": "frankfurt-eu",
-        "ClusterInst": "qqqaaa",
-        "CloudletLocation": {
-          "latitude": 50.110924,
-          "longitude": 8.682127
-        },
-        "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
-        "Liveness": 1,
-        "Mapped_port": [
-          {
-            "proto": 1,
-            "internal_port": 80,
-            "public_port": 80
-          }
-        ],
-        "Flavor": "x1.medium",
-        "State": 5,
-        "Error": "-",
-        "Runtime": {
-          "container_ids": [
-            "bicTestApp1112-01"
-          ]
-        },
-        "Created": "seconds : 1578512195",
-        "Progress": "",
-        "Edit": [
-          "Region",
-          "DeveloperName",
-          "AppName",
-          "Version",
-          "Operator",
-          "Cloudlet",
-          "ClusterInst",
-          "CloudletLocation",
-          "State",
-          "Editable"
-        ],
-        "Status": {},
-        "Revision": "-"
-      },
-      "columns": [
-        "time",
-        "app",
-        "cloudlet",
-        "cluster",
-        "dev",
-        "disk",
-        "operator"
-      ],
-      "values": [
-        [
-          "2019-11-21T19:59:14.007908333Z",
-          "bictestapp1112-01",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          0,
-          "TDG"
-        ],
-        [
-          "2019-11-21T19:59:05.916993511Z",
-          "bictestapp1112-01",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          0,
-          "TDG"
-        ],
-        [
-          "2019-11-21T19:58:57.830410811Z",
-          "bictestapp1112-01",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          0,
-          "TDG"
-        ],
-        [
-          "2019-11-21T19:58:49.744671622Z",
-          "bictestapp1112-01",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          0,
-          "TDG"
-        ],
-        [
-          "2019-11-21T19:58:41.655864792Z",
-          "bictestapp1112-01",
-          "frankfurt-eu",
-          "qqqaaa",
-          "MobiledgeX",
-          0,
-          "TDG"
-        ]
-      ],
-      "sumDiskUsage": 0
-    },
-    {
-      "instance": {
-        "uuid": "57c83b06-6781-49be-aed7-5bd72fcd93d0",
+        "uuid": "058ff138-86eb-4cda-984d-12b7ec73613c",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "eeeessss",
@@ -2974,7 +2756,7 @@
     },
     {
       "instance": {
-        "uuid": "0fa57e0c-80af-469b-9f26-cb5ab4a2f9d8",
+        "uuid": "de4c86f7-c7f1-4e07-8230-7e2f017ec006",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "zzaaa",
@@ -3087,7 +2869,225 @@
     },
     {
       "instance": {
-        "uuid": "d42e5efb-3e0c-4fad-a7bc-c868710d9210",
+        "uuid": "96b7e808-ec1a-4e67-8f7d-6459dd825999",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "Face Detection Demo",
+        "Version": "1.0",
+        "Operator": "mex",
+        "Cloudlet": "hackthon-anand",
+        "ClusterInst": "hackathon-anand-cluster",
+        "CloudletLocation": {
+          "latitude": 10,
+          "longitude": -100
+        },
+        "URI": "hackthon-anand.mex.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+          {
+            "proto": 1,
+            "internal_port": 8008,
+            "public_port": 8008,
+            "fqdn_prefix": "facedetectiondemo-tcp."
+          },
+          {
+            "proto": 1,
+            "internal_port": 8011,
+            "public_port": 8011,
+            "fqdn_prefix": "facedetectiondemo-tcp."
+          }
+        ],
+        "Flavor": "x1.large",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {
+          "container_ids": [
+            "facedetectiondemo-deployment-77dbb88dd9-92vxf"
+          ]
+        },
+        "Created": "seconds : 1578516428",
+        "Progress": "",
+        "Edit": [
+          "Region",
+          "DeveloperName",
+          "AppName",
+          "Version",
+          "Operator",
+          "Cloudlet",
+          "ClusterInst",
+          "CloudletLocation",
+          "State",
+          "Editable"
+        ],
+        "Status": {},
+        "Revision": "-"
+      },
+      "columns": "",
+      "values": "",
+      "sumDiskUsage": 0
+    },
+    {
+      "instance": {
+        "uuid": "431a4d52-6897-4cea-9938-0d8acd704218",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "MobiledgeX SDK Demo",
+        "Version": "k8s",
+        "Operator": "mex",
+        "Cloudlet": "alex-hackathon",
+        "ClusterInst": "alex-hackathon-cluster",
+        "CloudletLocation": {
+          "latitude": 33.01,
+          "longitude": -96.61
+        },
+        "URI": "alex-hackathon.mex.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+          {
+            "proto": 1,
+            "internal_port": 7777,
+            "public_port": 7777,
+            "fqdn_prefix": "mobiledgexsdkdemo-tcp."
+          }
+        ],
+        "Flavor": "x1.medium",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {
+          "container_ids": [
+            "mobiledgexsdkdemo-deployment-78d4d4d778-8qhx2"
+          ]
+        },
+        "Created": "seconds : 1578441092",
+        "Progress": "",
+        "Edit": [
+          "Region",
+          "DeveloperName",
+          "AppName",
+          "Version",
+          "Operator",
+          "Cloudlet",
+          "ClusterInst",
+          "CloudletLocation",
+          "State",
+          "Editable"
+        ],
+        "Status": {},
+        "Revision": "-"
+      },
+      "columns": "",
+      "values": "",
+      "sumDiskUsage": 0
+    },
+    {
+      "instance": {
+        "uuid": "4e760fad-5291-4641-9791-c4ca15d73ca3",
+        "Region": "EU",
+        "OrganizationName": "MobiledgeX",
+        "AppName": "bicTestApp1112-01",
+        "Version": "1.0",
+        "Operator": "TDG",
+        "Cloudlet": "frankfurt-eu",
+        "ClusterInst": "qqqaaa",
+        "CloudletLocation": {
+          "latitude": 50.110924,
+          "longitude": 8.682127
+        },
+        "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
+        "Liveness": 1,
+        "Mapped_port": [
+          {
+            "proto": 1,
+            "internal_port": 80,
+            "public_port": 80
+          }
+        ],
+        "Flavor": "x1.medium",
+        "State": 5,
+        "Error": "-",
+        "Runtime": {
+          "container_ids": [
+            "bicTestApp1112-01"
+          ]
+        },
+        "Created": "seconds : 1578512195",
+        "Progress": "",
+        "Edit": [
+          "Region",
+          "DeveloperName",
+          "AppName",
+          "Version",
+          "Operator",
+          "Cloudlet",
+          "ClusterInst",
+          "CloudletLocation",
+          "State",
+          "Editable"
+        ],
+        "Status": {},
+        "Revision": "-"
+      },
+      "columns": [
+        "time",
+        "app",
+        "cloudlet",
+        "cluster",
+        "dev",
+        "disk",
+        "operator"
+      ],
+      "values": [
+        [
+          "2019-11-21T19:59:14.007908333Z",
+          "bictestapp1112-01",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          0,
+          "TDG"
+        ],
+        [
+          "2019-11-21T19:59:05.916993511Z",
+          "bictestapp1112-01",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          0,
+          "TDG"
+        ],
+        [
+          "2019-11-21T19:58:57.830410811Z",
+          "bictestapp1112-01",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          0,
+          "TDG"
+        ],
+        [
+          "2019-11-21T19:58:49.744671622Z",
+          "bictestapp1112-01",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          0,
+          "TDG"
+        ],
+        [
+          "2019-11-21T19:58:41.655864792Z",
+          "bictestapp1112-01",
+          "frankfurt-eu",
+          "qqqaaa",
+          "MobiledgeX",
+          0,
+          "TDG"
+        ]
+      ],
+      "sumDiskUsage": 0
+    },
+    {
+      "instance": {
+        "uuid": "881e0e9a-29b2-4eeb-ae12-afd62a5b738b",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "MEXPrometheusAppName",
@@ -3137,7 +3137,7 @@
     },
     {
       "instance": {
-        "uuid": "90de3022-70c4-441f-a33d-83132432327a",
+        "uuid": "e8809534-0730-43df-b679-56be65c7e69f",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "SDKdemoapp",
@@ -3190,7 +3190,7 @@
     },
     {
       "instance": {
-        "uuid": "cabe1f2e-9999-48a5-bffc-2b6f250dd3f8",
+        "uuid": "5d76118b-cffb-4e24-8913-da7e797d5e51",
         "Region": "EU",
         "OrganizationName": "MobiledgeX",
         "AppName": "test111qq",
@@ -3296,7 +3296,7 @@
     },
     {
       "instance": {
-        "uuid": "cbc7acdb-4f1f-4e9e-9151-cfacbaade42e",
+        "uuid": "a5133ed1-53dd-4862-8b77-e6e553f16e9b",
         "Region": "US",
         "OrganizationName": "Sierraware",
         "AppName": "SierraVM",

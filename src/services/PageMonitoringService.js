@@ -841,9 +841,9 @@ export const toChunkArray = (myArray: any, chunkSize: any): any => {
  * @returns {*}
  */
 export const renderPlaceHolder = () => {
-    let boxWidth = window.innerWidth / 10 * 4.55;
+    let boxWidth = window.innerWidth / 3 - 50;
     return (
-        <div className='page_monitoring_grid_box_blank2'>
+        <div className='page_monitoring_grid_box_blank2' style={{width: boxWidth}}>
             {/*<CircularProgress style={{zIndex: 999999999, color: '#79BF14', marginTop:-50}}/>*/}
             <div style={{marginTop: -50}}>
                 <Lottie

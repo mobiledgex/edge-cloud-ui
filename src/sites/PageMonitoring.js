@@ -271,10 +271,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
             let selectBoxTop5InstaceForCpu = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), "AppName")
-            let selectBoxTop5instaceForMem = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredMemUsageList), "AppName")
+            //let selectBoxTop5instaceForMem = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredMemUsageList), "AppName")
             await this.setState({
                 selectBoxTop5InstanceForCpu: selectBoxTop5InstaceForCpu,
-                selectBoxTop5InstanceForMem: selectBoxTop5instaceForMem,
+                //selectBoxTop5InstanceForMem: selectBoxTop5instaceForMem,
             });
 
             this.props.toggleLoading(false);
@@ -543,9 +543,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         scrollToUp() {
             this.messageList.scrollTo(0, 0);
         }
-
-        renderAppInstanceGrid() {
-            /* return (
+        renderGridForAppInstaceList() {
+             return (
                  <div>
                      <Grid columns={8} padded={true} style={{height: 50}}>
                          <Row>
@@ -592,28 +591,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                    height: this.state.appInstanceList.length * 35 + 110,
                                }}
                          >
-                             {/!*todo:ROW HEADER*!/}
-                             {/!*todo:ROW HEADER*!/}
-                             {/!*todo:ROW HEADER*!/}
+                             {/*todo:ROW HEADER*/}
+                             {/*todo:ROW HEADER*/}
+                             {/*todo:ROW HEADER*/}
                              {!this.state.isReady && <Row columns={1}>
                                  <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
                                      <CircularProgress
-                                         style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
+                                         style={{color: '#aabe7a', justifyContent: "center", alignItems: 'center'}}/>
                                  </Column>
                              </Row>}
                              {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
-                                 /!*   sumCpuUsage: sumCpuUsage,
+                                 /*   sumCpuUsage: sumCpuUsage,
                                     sumMemUsage: sumMemUsage,
                                     sumDiskUsage: sumDiskUsage,
                                     sumRecvBytes: sumRecvBytes,
-                                    sumSendBytes: sumSendBytes,*!/
+                                    sumSendBytes: sumSendBytes,*/
 
                                  return (
                                      <Row
 
                                          style={{
                                              color: index === this.state.currentGridIndex ? 'white' : 'white',
-                                             backgroundColor: index === this.state.currentGridIndex && '#21370c',
+                                             backgroundColor: index === this.state.currentGridIndex && '#8fff93',
                                              height: 50
                                          }}
                                          onClick={async () => {
@@ -661,7 +660,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                      </div>
                  </div>
 
-             )*/
+             )
         }
 
         /**###############################
@@ -716,7 +715,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? <CircularProgress/> : renderBarGraph(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -729,7 +728,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? <CircularProgress/> : renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
                 </div>
@@ -749,7 +748,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? <CircularProgress/> : renderBarGraph(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -762,7 +761,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? <CircularProgress/> : renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
 
@@ -771,41 +770,41 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         renderDiskArea() {
-             return (
-                 <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
+            return (
+                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
 
-                     {/*1_column*/}
-                     {/*1_column*/}
-                     {/*1_column*/}
-                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                         <div className='page_monitoring_title_area'>
-                             <div className='page_monitoring_title'>
-                                 TOP5 of DISK Usage
-                             </div>
-                         </div>
-                         <div className='page_monitoring_container'>
-                             {renderBarGraph(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
-                         </div>
-                     </div>
-                     {/*2nd_column*/}
-                     {/*2nd_column*/}
-                     {/*2nd_column*/}
-                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                         <div className='page_monitoring_title_area'>
-                             <div className='page_monitoring_title'>
-                                 Transition Of DISK Usage
-                             </div>
-                         </div>
-                         <div className='page_monitoring_container'>
-                             {renderLineChart(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
-                         </div>
-                     </div>
-                 </div>
-             )
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 of DISK Usage
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                        </div>
+                    </div>
+                    {/*2nd_column*/}
+                    {/*2nd_column*/}
+                    {/*2nd_column*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Transition Of DISK Usage
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                        </div>
+                    </div>
+                </div>
+            )
         }
 
         renderNetworkArea() {
-            /*return (
+            return (
                 <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
                         <div className='page_monitoring_title_area'>
@@ -814,19 +813,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {renderBarGraph(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
                         </div>
                     </div>
-                    {/!*1_column*!/}
-                    {/!*1_column*!/}
-                    {/!*1_column*!/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 Transition Of NETWORK Usage
                             </div>
                             <div style={{marginLeft: 25,}}>
-                                <Dropdown
+                                {this.state.loading ? <CircularProgress color={'green'} size={'small'}/> : <Dropdown
                                     clearable={this.state.regionSelectBoxClearable}
                                     placeholder='SELECT OPTIONS'
                                     selection
@@ -842,23 +841,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                         //alert(value)
                                         //await this.handleSelectBoxChanges(value)
-                                        /!*setTimeout(() => {
+                                        /*setTimeout(() => {
                                             this.setState({
                                                 cloudLetSelectBoxPlaceholder: 'Select CloudLet'
                                             })
-                                        }, 1000)*!/
+                                        }, 1000)*/
                                     }}
                                     value={'RCV_BTYE'}
                                     style={{width: 220}}
-                                />
+                                />}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {renderLineChart(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
                         </div>
                     </div>
                 </div>
-            )*/
+            )
         }
 
 
@@ -1096,7 +1095,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         options={{
                                             loop: true,
                                             autoplay: true,
-                                            animationData: require('../lotties/79-animated-graph'),
+                                            animationData: require('../lotties/isometric-cube-animation'),
                                             rendererSettings: {
                                                 preserveAspectRatio: 'xMidYMid slice'
                                             }
@@ -1141,7 +1140,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     >
                         <Modal.Header>App Instance List</Modal.Header>
                         <Modal.Content>
-                            {this.renderAppInstanceGrid()}
+                            {this.renderGridForAppInstaceList()}
                         </Modal.Content>
                     </Modal>
                     <SemanticToastContainer/>
@@ -1157,7 +1156,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                     <div className="page_monitoring">
                                         {/*todo:#################### */}
-                                        {/*todo:SelectBox_row       */}
+                                        {/*todo:SELECTBOX_ROW       */}
                                         {/*todo:#################### */}
                                         {this.renderDropdownRow()}
                                         <div className='page_monitoring_dashboard' style={{marginTop: -25, marginLeft: -25}}>
@@ -1237,9 +1236,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                             </div>
 
-                                            {/*todo: 하단 그리드 area____toggle Up Button*/}
-                                            {/*todo: 하단 그리드 area____toggle Up Button*/}
-                                            {/*todo: 하단 그리드 area____toggle Up Button*/}
+                                            {/*todo: ################################*/}
+                                            {/*todo: BOTTOM GRID TOGGLE UP BUTTON   */}
+                                            {/*todo: ################################*/}
                                             <p
                                                 onClick={() => {
                                                     this.setState({
@@ -1263,9 +1262,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 </div>
                                             </p>
 
+                                            {/*todo: #################################*/}
                                             {/*todo: BOTTOM_GRID_AREA____SHOW_UP__AREA*/}
-                                            {/*todo: BOTTOM_GRID_AREA____SHOW_UP__AREA*/}
-                                            {/*todo: BOTTOM_GRID_AREA____SHOW_UP__AREA*/}
+                                            {/*todo: #################################*/}
                                             <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
                                                 <OutsideClickHandler
                                                     onOutsideClick={() => {
@@ -1306,16 +1305,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 <FA name="chevron-down" style={{fontSize: 15, color: 'white'}}/>
                                                             </div>
                                                         </p>
-                                                        {/*todo:renderAppInstanceGrid*/}
-                                                        {/*todo:renderAppInstanceGrid*/}
-                                                        {/*todo:renderAppInstanceGrid*/}
+                                                        {/*todo: #################################*/}
+                                                        {/*todo: renderGridForAppInstaceList      */}
+                                                        {/*todo: #################################*/}
                                                         <div style={{fontSize: 22, display: 'flex', alignItems: 'center', marginLeft: 10, color: 'white', fontWeight: 'bold'}}>
                                                             App Instance List
                                                         </div>
                                                         <div style={{height: 7}}/>
-                                                        {/*  <div className='page_monitoring_column_for_grid2'>
-                                                            {this.renderAppInstanceGrid()}
-                                                        </div>*/}
+                                                        <div className='page_monitoring_column_for_grid2'>
+                                                            {this.renderGridForAppInstaceList()}
+                                                        </div>
                                                     </div>
                                                 </OutsideClickHandler>
                                             </ToggleDisplay>
