@@ -490,6 +490,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //alert(this.state.currentAppInstaceListIndex)
             });
 
+
+            /*lfkasldkflaskdflksadlfk
+            asdlfksadlkflaskdflksadlfklk
+            sadlfksldakflskadflkasdlkflasdkflk*/
             /*console.log('appInstanceOne====>', appInstanceOne);
             let operator = appInstanceOne.Operator;
             console.log('operator====>', operator);*/
