@@ -50,29 +50,23 @@ const checkExpiry = (self, message) => {
 }
 
 function responseError(self, request, response, callback) {
-    try{
-            let message = 'UnKnown';
-            let code = response.status;
-            if(response.data && response.data.message)
-            {
-                message = response.data.message
-                if(checkExpiry(self, message))
-                {
-                    showError(request, message);
-                }
-            }
-            callback({request:request, error:{code:code, message:message}})
-    }
-    catch{
-        alert('check')
+    let message = 'UnKnown';
+    let code = response.status;
+    if (response.data && response.data.message) {
+        message = response.data.message
+        if (checkExpiry(self, message)) {
+            self.props.handleLoadingSpinner(false)
+            showError(request, message);
+            callback({ request: request, error: { code: code, message: message } })
+        }
     }
 }
 
 function responseValid(request, response, callback) {
     let parseData = null;
     if (response.data) {
-        if (response.data.error) {
-            if (response.data.error.indexOf('Expired') > -1) {
+        if (response.data.message) {
+            if (response.data.message.indexOf('expired') > -1) {
                 localStorage.setItem('userInfo', null)
                 localStorage.setItem('sessionData', null)
                 callback({ error: 'Login Timeout Expired.<br/>Please login again' }, request.method);
@@ -137,6 +131,9 @@ export function sendRequest(self, request, callback) {
             headers: getHeader(request)
         })
         .then(function (response) {
+            if (self.props.handleLoadingSpinner) {
+                self.props.handleLoadingSpinner(false)
+            }
             if (responseValid(request, response, callback)) {
                 callback(EP.formatData(request, response));
             }

@@ -30,7 +30,7 @@ const FormContainer = (props) => (
         </Grid.Row>
         <Grid.Row>
             <Grid.Column>
-                <Input style={{width:'100%'}} placeholder='Username or Email' name='username' width ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') {props.self.onSubmit()} }}></Input>
+                <Input style={{width:'100%'}} placeholder='Username or Email' name='username' ref={ipt=>{props.self.uid = ipt}} onChange={props.self.onChangeInput} onKeyPress={event => { if (event.key === 'Enter') {props.self.onSubmit()} }}></Input>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
@@ -43,7 +43,7 @@ const FormContainer = (props) => (
         </div>
         <Grid.Row>
             <Grid.Column>
-                <Button onFocus={() => props.self.onFocusHandle(true)} onfocusout={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Log In</Button>
+                <Button onFocus={() => props.self.onFocusHandle(true)} onBlur={() => props.self.onFocusHandle(false)} onClick={() => props.self.onSubmit()}>Log In</Button>
             </Grid.Column>
         </Grid.Row>
         <Grid.Row>
