@@ -1,6 +1,0 @@
-{"data":{"message":"Sourcing platform variables for pName1120 cloudlet"}}
-{"data":{"message":"failed to InternVaultEnv https://vault-main.mobiledgex.net:443, /secret/data/cloudlet/openstack/pName1120/openrc.json: no secrets at path /secret/data/cloudlet/openstack/pName1120/openrc.json"}}
-{"data":{"message":"Deleting Cloudlet due to failures"}}
-{"data":{"message":"Deleting cloudlet"}}
-{"data":{"message":"Deleted Cloudlet successfully"}}
-{"result":{"message":"failed to InternVaultEnv https://vault-main.mobiledgex.net:443, /secret/data/cloudlet/openstack/pName1120/openrc.json: no secrets at path /secret/data/cloudlet/openstack/pName1120/openrc.json","code":400}}
