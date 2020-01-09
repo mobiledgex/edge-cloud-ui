@@ -1254,7 +1254,7 @@ export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _th
 }
 
 
-export const getMetricsUtilizationAtAppLevel = async (appInstanceOne: TypeAppInstance) => {
+export const getMetricsUtilizationAtAppLevel_TEST = async (appInstanceOne: TypeAppInstance) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     console.log('appInstanceOne====>', appInstanceOne);
     let responseRslt = await axios({

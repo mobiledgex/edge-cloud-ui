@@ -23,7 +23,7 @@ import {
     filterUsageByCluster,
     filterUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
-    getMetricsUtilizationAtAppLevel,
+    getMetricsUtilizationAtAppLevel_TEST,
     makeCloudletListSelectBox,
     makeClusterListSelectBox,
     renderBarGraph,
@@ -494,9 +494,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let operator = appInstanceOne.Operator;
             console.log('operator====>', operator);*/
 
+
             let appInstanceUtilizationOne = ''
             try {
-                appInstanceUtilizationOne = await getMetricsUtilizationAtAppLevel(appInstanceOne);
+                appInstanceUtilizationOne = await getMetricsUtilizationAtAppLevel_TEST(appInstanceOne);
                 console.log('__rslt__rslt__rslt====>', appInstanceUtilizationOne.data[0].Series[0].columns);
                 console.log('__rslt__rslt__rslt====>', appInstanceUtilizationOne.data[0].Series[0].values[0]);
                 let appInstanceCurrentUtilization = appInstanceUtilizationOne.data[0].Series[0].values[0]
