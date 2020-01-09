@@ -133,7 +133,7 @@
     display: flex;
     flex-direction: row;
     /*flex-wrap: wrap;*/
-    width: 100%;
+    width: 600px;
     height: 100%;
     margin-bottom: 10px;
 }
@@ -146,8 +146,8 @@
     display: flex;
     flex-direction: column;
     /*flex-grow: 1;*/
-    width: 33.3333%;
     height: 100%;
+    flex:.33;
     margin-right: 10px;
     background: #1e2124;
     justify-content: center;
@@ -181,18 +181,6 @@
 .page_monitoring_grid_box:last-child {
     margin-right: 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*lkflsdkflksdlfklsdkflksdlfkdslfklsdkflksdlfklkdflksdlfklsdkflksdlfksdlkf*/

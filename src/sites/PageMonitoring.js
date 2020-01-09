@@ -500,21 +500,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderHeader = () => {
-            return (
-                <div>
-                    <FlexBox className='' style={{alignItem: 'flex-end'}}>
-                        <Grid.Column className=''
-                                     style={{lineHeight: '36px', fontSize: 30}}>Monitoring</Grid.Column>
-                        <div style={{marginLeft: '10px'}}>
-                            <button className="ui circular icon button"><i aria-hidden="true"
-                                                                           className="info icon"></i></button>
-                        </div>
-                    </FlexBox>
-                </div>
-
-            )
-        }
 
 
         async setAppInstanceOne(paramAppName: string) {
@@ -864,6 +849,254 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        Styles = {
+            selectBoxRow: {
+                alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
+            },
+            selectHeader: {
+                color: 'white',
+                backgroundColor: '#565656',
+                height: 35,
+                alignItems: 'center',
+                alignSelf: 'center',
+                justifyContent: 'center',
+                marginTop: -10,
+                width: 100,
+                display:'flex'
+            },
+
+            div001: {
+                fontSize: 25,
+                color: 'white',
+            },
+            dropDown: {
+                //minWidth: 150,
+                width:190,
+            }
+        }
+
+        renderHeader = () => {
+            return (
+                <div>
+                    <FlexBox className='' style={{alignItem: 'flex-end'}}>
+                        <Grid.Column className=''
+                                     style={{lineHeight: '36px', fontSize: 30}}>Monitoring</Grid.Column>
+                        <div style={{marginLeft: '10px'}}>
+                            <button className="ui circular icon button"><i aria-hidden="true"
+                                                                           className="info icon"></i></button>
+                        </div>
+
+                        {/*todo:REFRESH, RESET BUTTON DIV*/}
+                        {/*todo:REFRESH, RESET BUTTON DIV*/}
+                        {/*todo:REFRESH, RESET BUTTON DIV*/}
+                        <div style={{
+                            display: 'flex',
+                            width: 270,
+                            //backgroundColor: 'red',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginBottom: 5,
+                            marginRight: -25,
+
+                        }}>
+
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    //backgroundColor: 'red',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginBottom: 0,
+                                    color: 'white',
+                                    fontSize: 15,
+                                    marginLeft: 0,
+                                    marginRight: 0,
+
+                                }}
+
+                            >
+
+                                <div style={{backgroundColor: 'transparent', marginBottom: 0}} onClick={async () => {
+                                    this.refreshAllData();
+                                }}>
+                                    <Button>
+                                        REFRESH
+                                    </Button>
+                                </div>
+
+                                <div style={{marginLeft: 10,}}
+                                     onClick={async () => {
+                                         await this.setState({
+                                             currentGridIndex: -1,
+                                             currentTabIndex: 0,
+                                         })
+                                         await this.handleSelectBoxChanges('ALL', '', '', '')
+                                     }}
+                                >
+                                    <Button>RESET_ALL</Button>
+                                </div>
+                            </div>
+                        </div>
+                    </FlexBox>
+                </div>
+
+            )
+        }
+
+        renderDropdownRow() {
+            return (
+                <FlexBox>
+                    <div style={this.Styles.selectBoxRow}>
+                        <div className='page_monitoring_select_area' style={{marginLeft: 0,}}>
+                            {/*todo:REGION Dropdown*/}
+                            {/*todo:REGION Dropdown*/}
+                            {/*todo:REGION Dropdown*/}
+                            <div style={{flexDirection: 'row'}}>
+                                <div style={{display: 'flex', flexDirection: 'row'}}>
+                                    <div style={this.Styles.selectHeader}>
+                                        Region
+                                    </div>
+                                    <Dropdown
+                                        clearable={this.state.regionSelectBoxClearable}
+                                        placeholder='REGION'
+                                        selection
+                                        options={REGIONS_OPTIONS}
+                                        defaultValue={REGIONS_OPTIONS[0].value}
+                                        onChange={async (e, {value}) => {
+                                            await this.handleSelectBoxChanges(value)
+                                            setTimeout(() => {
+                                                this.setState({
+                                                    cloudLetSelectBoxPlaceholder: 'Select CloudLet'
+                                                })
+                                            }, 1000)
+                                        }}
+                                        value={this.state.currentRegion}
+                                        style={this.Styles.dropDown}
+                                    />
+
+                                    {/*todo:CloudLet selectbox*/}
+                                    {/*todo:CloudLet selectbox*/}
+                                    {/*todo:CloudLet selectbox*/}
+                                    <div style={this.Styles.selectHeader}>
+                                        CloudLet
+                                    </div>
+                                    <Dropdown
+                                        value={this.state.currentCloudLet}
+                                        clearable={this.state.cloudLetSelectBoxClearable}
+                                        loading={this.props.isLoading}
+                                        placeholder={this.state.cloudLetSelectBoxPlaceholder}
+                                        selection={true}
+                                        options={this.state.cloudletList}
+                                        style={this.Styles.dropDown}
+                                        onChange={async (e, {value}) => {
+
+
+                                            await this.handleSelectBoxChanges(this.state.currentRegion, value)
+                                            setTimeout(() => {
+                                                this.setState({
+                                                    clusterSelectBoxPlaceholder: 'Select Cluster'
+                                                })
+                                            }, 1000)
+                                        }}
+                                    />
+
+
+                                    {/*todo:Cluster selectbox*/}
+                                    {/*todo:Cluster selectbox*/}
+                                    {/*todo:Cluster selectbox*/}
+                                    <div style={this.Styles.selectHeader}>
+                                        Cluster
+                                    </div>
+                                    <Dropdown
+                                        value={this.state.currentCluster}
+                                        clearable={this.state.clusterSelectBoxClearable}
+                                        loading={this.props.isLoading}
+                                        placeholder={this.state.clusterSelectBoxPlaceholder}
+                                        selection
+                                        options={this.state.clusterList}
+                                        style={this.Styles.dropDown}
+                                        onChange={async (e, {value}) => {
+                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, value)
+
+                                            setTimeout(() => {
+                                                this.setState({
+                                                    appInstSelectBoxPlaceholder: "Select App Instance"
+                                                })
+                                            }, 1000)
+                                        }}
+                                    />
+                                    {/*todo: App Instance*/}
+                                    {/*todo: App Instance*/}
+                                    {/*todo: App Instance*/}
+
+                                    <div style={this.Styles.selectHeader}>
+                                        App Inst
+                                    </div>
+                                    <div>
+                                        <Dropdown
+                                            clearable={this.state.appInstSelectBoxClearable}
+                                            value={this.state.currentAppInst}
+                                            placeholder='Select App Instance'
+                                            selection
+                                            options={this.state.appInstaceListForSelectBoxForCpu}
+                                            style={this.Styles.dropDown}
+                                            onChange={async (e, {value}) => {
+
+                                                await this.setState({
+                                                    currentAppInst: value,
+                                                })
+                                                await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                            }}
+
+                                        />
+                                    </div>
+
+                                    {/*todo:TimeRange*/}
+                                    {/*todo:TimeRange*/}
+                                    <div style={this.Styles.selectHeader}>
+                                        TimeRange
+                                    </div>
+                                    <div style={{marginTop: 0}}>
+                                        <RangePicker
+                                            showTime={{format: 'HH:mm'}}
+                                            format="YYYY-MM-DD HH:mm"
+                                            placeholder={['Start Time', 'End Time']}
+                                            onChange={async (date, dateString) => {
+                                                let startDate = dateString[0]
+                                                let endDate = dateString[1]
+                                                await this.setState({
+                                                    startDate: startDate,
+                                                    endDate: endDate,
+                                                })
+                                                //await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
+                                            }}
+                                            ranges={{
+                                                Today: [moment(), moment()],
+                                                'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(1, 'd')],
+                                                'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
+                                                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                                'Last Month': [moment().date(-30), moment().date(-1)],
+                                                /* 'Last Month2': [moment().date(-30), moment().date(-1)],
+                                                 'Last Month3': [moment().date(-30), moment().date(-1)],
+                                                 'Last Month4': [moment().date(-30), moment().date(-1)],
+                                                 'Last Month5': [moment().date(-30), moment().date(-1)],
+                                                 'Last Month6': [moment().date(-30), moment().date(-1)],
+                                                 'Last Month7': [moment().date(-30), moment().date(-1)],
+                                                 'Last Month8': [moment().date(-30), moment().date(-1)],
+                                                 'Last Month9': [moment().date(-30), moment().date(-1)],*/
+                                            }}
+                                            style={{width: 300}}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </FlexBox>
+            )
+        }
+
 
         render() {
 
@@ -945,205 +1178,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
 
                                     <div className="page_monitoring">
-                                        {/*todo:SelectBox part start */}
-                                        {/*todo:SelectBox part start */}
-                                        {/*todo:SelectBox part start */}
-                                        <FlexBox>
-                                            <div className=''
-                                                 style={{alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,}}>
-                                                <div className='page_monitoring_select_area' style={{marginLeft: 0,}}>
-                                                    <div style={{
-                                                        display: 'flex',
-                                                        width: 270,
-                                                        //backgroundColor: 'red',
-                                                        justifyContent: 'center',
-                                                        alignItems: 'center',
-                                                        marginBottom: 5,
-                                                        marginRight: -25,
-
-                                                    }}>
-
-                                                        <div
-                                                            style={{
-                                                                display: 'flex',
-                                                                //backgroundColor: 'red',
-                                                                justifyContent: 'center',
-                                                                alignItems: 'center',
-                                                                marginBottom: 0,
-                                                                color: 'white',
-                                                                fontSize: 15,
-                                                                marginLeft: 0,
-                                                                marginRight: 0,
-
-                                                            }}
-
-                                                        >
-
-                                                            <div style={{backgroundColor: 'transparent', marginBottom: 0}} onClick={async () => {
-
-                                                                this.refreshAllData();
-
-                                                            }}>
-                                                                <Button style={{width: 80, fontSize: 9}}>
-                                                                    REFRESH
-                                                                </Button>
-                                                            </div>
-
-                                                            <div style={{marginLeft: 10,}}
-                                                                 onClick={async () => {
-                                                                     await this.setState({
-                                                                         currentGridIndex: -1,
-                                                                         currentTabIndex: 0,
-                                                                     })
-                                                                     await this.handleSelectBoxChanges('ALL', '', '', '')
-                                                                 }}
-                                                            >
-                                                                <Button style={{width: 100, fontSize: 9}}>RESET_ALL</Button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    {/*todo:REGION Dropdown*/}
-                                                    {/*todo:REGION Dropdown*/}
-                                                    {/*todo:REGION Dropdown*/}
-                                                    <div style={Styles.selectHeader}>
-                                                        Region
-                                                    </div>
-                                                    <Dropdown
-                                                        clearable={this.state.regionSelectBoxClearable}
-                                                        placeholder='REGION'
-                                                        selection
-                                                        options={REGIONS_OPTIONS}
-                                                        defaultValue={REGIONS_OPTIONS[0].value}
-                                                        onChange={async (e, {value}) => {
-                                                            await this.handleSelectBoxChanges(value)
-                                                            setTimeout(() => {
-                                                                this.setState({
-                                                                    cloudLetSelectBoxPlaceholder: 'Select CloudLet'
-                                                                })
-                                                            }, 1000)
-                                                        }}
-                                                        value={this.state.currentRegion}
-                                                        style={{width: 180}}
-                                                    />
-
-                                                    {/*todo:CloudLet selectbox*/}
-                                                    {/*todo:CloudLet selectbox*/}
-                                                    {/*todo:CloudLet selectbox*/}
-                                                    <div style={Styles.selectHeader}>
-                                                        CloudLet
-                                                    </div>
-                                                    <Dropdown
-                                                        value={this.state.currentCloudLet}
-                                                        clearable={this.state.cloudLetSelectBoxClearable}
-                                                        loading={this.props.isLoading}
-                                                        placeholder={this.state.cloudLetSelectBoxPlaceholder}
-                                                        selection={true}
-                                                        options={this.state.cloudletList}
-                                                        style={{width: 180}}
-                                                        onChange={async (e, {value}) => {
-
-
-                                                            await this.handleSelectBoxChanges(this.state.currentRegion, value)
-                                                            setTimeout(() => {
-                                                                this.setState({
-                                                                    clusterSelectBoxPlaceholder: 'Select Cluster'
-                                                                })
-                                                            }, 1000)
-                                                        }}
-                                                    />
-
-
-                                                    {/*todo:Cluster selectbox*/}
-                                                    {/*todo:Cluster selectbox*/}
-                                                    {/*todo:Cluster selectbox*/}
-                                                    <div style={Styles.selectHeader}>
-                                                        Cluster
-                                                    </div>
-                                                    <Dropdown
-                                                        value={this.state.currentCluster}
-                                                        clearable={this.state.clusterSelectBoxClearable}
-                                                        loading={this.props.isLoading}
-                                                        placeholder={this.state.clusterSelectBoxPlaceholder}
-                                                        selection
-                                                        options={this.state.clusterList}
-                                                        style={{width: 180}}
-                                                        onChange={async (e, {value}) => {
-                                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, value)
-
-                                                            setTimeout(() => {
-                                                                this.setState({
-                                                                    appInstSelectBoxPlaceholder: "Select App Instance"
-                                                                })
-                                                            }, 1000)
-                                                        }}
-                                                    />
-                                                    {/*todo: App Instance*/}
-                                                    {/*todo: App Instance*/}
-                                                    {/*todo: App Instance*/}
-
-                                                    <div style={Styles.selectHeader}>
-                                                        App Inst
-                                                    </div>
-                                                    <div>
-                                                        <Dropdown
-                                                            clearable={this.state.appInstSelectBoxClearable}
-                                                            value={this.state.currentAppInst}
-                                                            placeholder='Select App Instance'
-                                                            selection
-                                                            options={this.state.appInstaceListForSelectBoxForCpu}
-                                                            style={{width: 180}}
-                                                            onChange={async (e, {value}) => {
-
-                                                                await this.setState({
-                                                                    currentAppInst: value,
-                                                                })
-                                                                await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
-                                                            }}
-
-                                                        />
-                                                    </div>
-
-                                                    {/*todo:TimeRange*/}
-                                                    {/*todo:TimeRange*/}
-                                                    <div style={Styles.selectHeader}>
-                                                        TimeRange
-                                                    </div>
-                                                    <div style={{marginTop: -8}}>
-                                                        <RangePicker
-                                                            showTime={{format: 'HH:mm'}}
-                                                            format="YYYY-MM-DD HH:mm"
-                                                            placeholder={['Start Time', 'End Time']}
-                                                            onChange={async (date, dateString) => {
-                                                                let startDate = dateString[0]
-                                                                let endDate = dateString[1]
-                                                                await this.setState({
-                                                                    startDate: startDate,
-                                                                    endDate: endDate,
-                                                                })
-                                                                //await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
-                                                            }}
-                                                            ranges={{
-                                                                Today: [moment(), moment()],
-                                                                'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(1, 'd')],
-                                                                'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
-                                                                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                                                                'Last Month': [moment().date(-30), moment().date(-1)],
-                                                                /* 'Last Month2': [moment().date(-30), moment().date(-1)],
-                                                                 'Last Month3': [moment().date(-30), moment().date(-1)],
-                                                                 'Last Month4': [moment().date(-30), moment().date(-1)],
-                                                                 'Last Month5': [moment().date(-30), moment().date(-1)],
-                                                                 'Last Month6': [moment().date(-30), moment().date(-1)],
-                                                                 'Last Month7': [moment().date(-30), moment().date(-1)],
-                                                                 'Last Month8': [moment().date(-30), moment().date(-1)],
-                                                                 'Last Month9': [moment().date(-30), moment().date(-1)],*/
-                                                            }}
-                                                            style={{width: 300}}
-                                                        />
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </FlexBox>
+                                        {/*todo:SelectBox_row */}
+                                        {/*todo:SelectBox_row */}
+                                        {/*todo:SelectBox_row */}
+                                        {this.renderDropdownRow()}
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
@@ -1164,11 +1202,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
                                                     </div>
                                                 </div>
+
+                                                {/* ___col___2nd*/}
+                                                {/* ___col___2nd*/}
+                                                {/* ___col___2nd*/}
                                                 <div className='page_monitoring_column_kj003' style={{marginLeft: 0}}>
 
-                                                    {/*todo: RENDER TAB*/}
-                                                    {/*todo: RENDER TAB*/}
-                                                    {/*todo: RENDER TAB*/}
+                                                    {/*todo: ################*/}
+                                                    {/*todo: RENDER TAB      */}
+                                                    {/*todo: ################*/}
                                                     <Tab
                                                         //style={{marginTop:-5}}
                                                         panes={this.MONITORING_TABS}
@@ -1196,7 +1238,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     {/*todo:###########################***/}
-                                                    {/*todo:RENDER BubbleChart          */}
+                                                    {/*todo: RENDER BubbleChart          */}
                                                     {/*todo:###########################***/}
                                                     <FlexBox>
                                                         <div>
@@ -1282,9 +1324,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
                                                 <OutsideClickHandler
                                                     onOutsideClick={() => {
-                                                       /* this.setState({
-                                                            isShowBottomGrid: !this.state.isShowBottomGrid,
-                                                        })*/
+                                                        /* this.setState({
+                                                             isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                         })*/
                                                     }}
                                                 >
                                                     <div
@@ -1352,21 +1394,4 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
     }
 ))));
 
-const Styles = {
-    selectHeader: {
-        color: 'white',
-        backgroundColor: 'transparent',
-        height: 39,
-        alignItems: 'center',
-        alignSelf: 'center',
-        justifyContent: 'center',
-        display: 'flex',
-        marginTop: -8,
-        width: 80,
-    },
 
-    div001: {
-        fontSize: 25,
-        color: 'white',
-    }
-}
