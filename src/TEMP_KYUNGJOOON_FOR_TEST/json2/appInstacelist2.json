@@ -1,0 +1,507 @@
+[
+  {
+    "uuid": "a531d5b5-3432-494f-83bc-f84f7981e0f2",
+    "Region": "EU",
+    "OrganizationName": "MobiledgeX",
+    "AppName": "MEXPrometheusAppName",
+    "Version": "1.0",
+    "Operator": "TDG",
+    "Cloudlet": "frankfurt-eu",
+    "ClusterInst": "kkkkkkk",
+    "CloudletLocation": {
+      "latitude": 50.110924,
+      "longitude": 8.682127
+    },
+    "URI": "kkkkkkk.frankfurt-eu.tdg.mobiledgex.net",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 9090,
+        "public_port": 9090
+      }
+    ],
+    "Flavor": "x1.medium",
+    "State": 8,
+    "Error": [
+      "Update App Inst failed: UpdateAppInst not supported for deployment: helm"
+    ],
+    "Runtime": {},
+    "Created": "seconds : 1570417526",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": 1
+  },
+  {
+    "uuid": "a78b1d88-c6c2-416c-a371-e2ba4d01fd9f",
+    "Region": "EU",
+    "OrganizationName": "MobiledgeX",
+    "AppName": "SDKdemoapp",
+    "Version": "1.0",
+    "Operator": "mex",
+    "Cloudlet": "hackthon-anand",
+    "ClusterInst": "hackathon-anand-cluster",
+    "CloudletLocation": {
+      "latitude": 10,
+      "longitude": -100
+    },
+    "URI": "hackthon-anand.mex.mobiledgex.net",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 7777,
+        "public_port": 7777,
+        "fqdn_prefix": "sdkdemoapp-tcp."
+      }
+    ],
+    "Flavor": "m4.large",
+    "State": 5,
+    "Error": "-",
+    "Runtime": {
+      "container_ids": [
+        "sdkdemoapp-deployment-bd99845dc-dz7xr"
+      ]
+    },
+    "Created": "seconds : 1578525261",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": "-"
+  },
+  {
+    "uuid": "1f5c377d-866c-4ec5-a7fc-bf1fba3b9ca9",
+    "Region": "EU",
+    "OrganizationName": "MobiledgeX",
+    "AppName": "test111qq",
+    "Version": "1",
+    "Operator": "TDG",
+    "Cloudlet": "frankfurt-eu",
+    "ClusterInst": "qqqaaa",
+    "CloudletLocation": {
+      "latitude": 50.110924,
+      "longitude": 8.682127
+    },
+    "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 1115,
+        "public_port": 1115
+      }
+    ],
+    "Flavor": "m4.medium",
+    "State": 5,
+    "Error": "-",
+    "Runtime": {
+      "container_ids": [
+        "test111qq"
+      ]
+    },
+    "Created": "seconds : 1578512140",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": 11
+  },
+  {
+    "uuid": "7fee1e4d-accc-4c9c-85eb-c0b15c6dd361",
+    "Region": "EU",
+    "OrganizationName": "MobiledgeX",
+    "AppName": "Face Detection Demo",
+    "Version": "1.0",
+    "Operator": "mex",
+    "Cloudlet": "hackthon-anand",
+    "ClusterInst": "hackathon-anand-cluster",
+    "CloudletLocation": {
+      "latitude": 10,
+      "longitude": -100
+    },
+    "URI": "hackthon-anand.mex.mobiledgex.net",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 8008,
+        "public_port": 8008,
+        "fqdn_prefix": "facedetectiondemo-tcp."
+      },
+      {
+        "proto": 1,
+        "internal_port": 8011,
+        "public_port": 8011,
+        "fqdn_prefix": "facedetectiondemo-tcp."
+      }
+    ],
+    "Flavor": "x1.large",
+    "State": 5,
+    "Error": "-",
+    "Runtime": {
+      "container_ids": [
+        "facedetectiondemo-deployment-77dbb88dd9-92vxf"
+      ]
+    },
+    "Created": "seconds : 1578516428",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": "-"
+  },
+  {
+    "uuid": "53b292f1-bef7-4ab1-acad-0879d75898aa",
+    "Region": "EU",
+    "OrganizationName": "MobiledgeX",
+    "AppName": "MobiledgeX SDK Demo",
+    "Version": "k8s",
+    "Operator": "mex",
+    "Cloudlet": "alex-hackathon",
+    "ClusterInst": "alex-hackathon-cluster",
+    "CloudletLocation": {
+      "latitude": 33.01,
+      "longitude": -96.61
+    },
+    "URI": "alex-hackathon.mex.mobiledgex.net",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 7777,
+        "public_port": 7777,
+        "fqdn_prefix": "mobiledgexsdkdemo-tcp."
+      }
+    ],
+    "Flavor": "x1.medium",
+    "State": 5,
+    "Error": "-",
+    "Runtime": {
+      "container_ids": [
+        "mobiledgexsdkdemo-deployment-78d4d4d778-8qhx2"
+      ]
+    },
+    "Created": "seconds : 1578441092",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": "-"
+  },
+  {
+    "uuid": "65b0226f-4567-482a-a5e8-6022c176424e",
+    "Region": "EU",
+    "OrganizationName": "MobiledgeX",
+    "AppName": "bicTestApp1112-01",
+    "Version": "1.0",
+    "Operator": "TDG",
+    "Cloudlet": "frankfurt-eu",
+    "ClusterInst": "qqqaaa",
+    "CloudletLocation": {
+      "latitude": 50.110924,
+      "longitude": 8.682127
+    },
+    "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 80,
+        "public_port": 80
+      }
+    ],
+    "Flavor": "x1.medium",
+    "State": 5,
+    "Error": "-",
+    "Runtime": {
+      "container_ids": [
+        "bicTestApp1112-01"
+      ]
+    },
+    "Created": "seconds : 1578512195",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": "-"
+  },
+  {
+    "uuid": "641e8ac5-d665-4e56-9bf8-5e3b5c1a6529",
+    "Region": "EU",
+    "OrganizationName": "MobiledgeX",
+    "AppName": "eeeessss",
+    "Version": "1",
+    "Operator": "TDG",
+    "Cloudlet": "frankfurt-eu",
+    "ClusterInst": "qqqaaa",
+    "CloudletLocation": {
+      "latitude": 50.110924,
+      "longitude": 8.682127
+    },
+    "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 1111,
+        "public_port": 1111
+      },
+      {
+        "proto": 1,
+        "internal_port": 2229,
+        "public_port": 2229,
+        "end_port": 2339
+      },
+      {
+        "proto": 1,
+        "internal_port": 555,
+        "public_port": 555,
+        "end_port": 666
+      }
+    ],
+    "Flavor": "m4.medium",
+    "State": 5,
+    "Error": "-",
+    "Runtime": {
+      "container_ids": [
+        "eeeessss"
+      ]
+    },
+    "Created": "seconds : 1578512412",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": 4
+  },
+  {
+    "uuid": "50f27bbd-4cba-4458-b626-fa0c968299eb",
+    "Region": "EU",
+    "OrganizationName": "MobiledgeX",
+    "AppName": "zzaaa",
+    "Version": "1",
+    "Operator": "TDG",
+    "Cloudlet": "frankfurt-eu",
+    "ClusterInst": "qqqaaa",
+    "CloudletLocation": {
+      "latitude": 50.110924,
+      "longitude": 8.682127
+    },
+    "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 111,
+        "public_port": 111
+      },
+      {
+        "proto": 2,
+        "internal_port": 222,
+        "public_port": 222
+      }
+    ],
+    "Flavor": "m4.medium",
+    "State": 8,
+    "Error": [
+      "Update App Inst failed: error running app, Unable to find image 'docker.mobiledgex.net/mobiledgex/images/mobiledgexsdkdemo:latest' locally\ndocker: Error response from daemon: Get https://docker.mobiledgex.net/v2/mobiledgex/images/mobiledgexsdkdemo/manifests/latest: denied: access forbidden.\nSee 'docker run --help'., Process exited with status 125"
+    ],
+    "Runtime": {
+      "container_ids": [
+        "zzaaa"
+      ]
+    },
+    "Created": "seconds : 1572245382",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": 6
+  },
+  {
+    "uuid": "f91b6c1a-02eb-45d8-ae22-32b6e2c707e7",
+    "Region": "EU",
+    "OrganizationName": "testaaa",
+    "AppName": "jjj kkk",
+    "Version": "1.0",
+    "Operator": "TDG",
+    "Cloudlet": "frankfurt-eu",
+    "ClusterInst": "kkkkkkk",
+    "CloudletLocation": {
+      "latitude": 50.110924,
+      "longitude": 8.682127
+    },
+    "URI": "frankfurt-eu.tdg.mobiledgex.net",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 11111,
+        "public_port": 11111,
+        "fqdn_prefix": "jjjkkk-tcp."
+      },
+      {
+        "proto": 2,
+        "internal_port": 8888,
+        "public_port": 8888,
+        "fqdn_prefix": "jjjkkk-udp."
+      }
+    ],
+    "Flavor": "m4.medium",
+    "State": 8,
+    "Error": [
+      "Update App Inst failed: error running kubectl apply command unable to recognize \"jjjkkk23.yaml\": Get https://10.101.1.10:6443/api?timeout=32s: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"kubernetes\")\nunable to recognize \"jjjkkk23.yaml\": Get https://10.101.1.10:6443/api?timeout=32s: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"kubernetes\")\nunable to recognize \"jjjkkk23.yaml\": Get https://10.101.1.10:6443/api?timeout=32s: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"kubernetes\"), Process exited with status 1"
+    ],
+    "Runtime": {
+      "container_ids": [
+        "jjjkkk-deployment-b6f54656f-2xf4h"
+      ]
+    },
+    "Created": "seconds : 1570741867",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": 21
+  },
+  {
+    "uuid": "44f72c65-4277-4a62-8d71-e73fbde24a36",
+    "Region": "US",
+    "OrganizationName": "Sierraware",
+    "AppName": "SierraVM",
+    "Version": "50.0.8",
+    "Operator": "TDG",
+    "Cloudlet": "mexplat-stage-hamburg-cloudlet",
+    "ClusterInst": "appcluster",
+    "CloudletLocation": {
+      "latitude": 55,
+      "longitude": 44,
+      "timestamp": {}
+    },
+    "URI": "-",
+    "Liveness": 1,
+    "Mapped_port": [
+      {
+        "proto": 1,
+        "internal_port": 4433
+      },
+      {
+        "proto": 1,
+        "internal_port": 443
+      }
+    ],
+    "Flavor": "x1.medium",
+    "State": 5,
+    "Error": "-",
+    "Runtime": {},
+    "Created": "seconds : 1558078516",
+    "Progress": "",
+    "Edit": [
+      "Region",
+      "DeveloperName",
+      "AppName",
+      "Version",
+      "Operator",
+      "Cloudlet",
+      "ClusterInst",
+      "CloudletLocation",
+      "State",
+      "Editable"
+    ],
+    "Status": {},
+    "Revision": "-"
+  }
+]

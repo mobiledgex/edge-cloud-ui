@@ -208,11 +208,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isReady: false,
             })
             //todo: REALDATA
-            let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
+            //let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
 
 
             //todo: FAKEJSON FOR TEST
-            //let appInstanceList: Array<TypeAppInstance> = require('../temp/appInstanceList')
+            let appInstanceList: Array<TypeAppInstance> = require('../temp/appInstacelist2')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({
@@ -235,19 +235,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-
-            let usageList = await Promise.all([
+          /*  let usageList = await Promise.all([
                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
-
-            ])
+            ])*/
 
             //todo: ################################################################
-            //todo: (last 100 datas FOR MATRIC) - FAKE JSON FOR TEST
+            //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR TEST
             //todo: ################################################################
-            //let usageList = require('../temp/allUsageList_50')
+            let usageList = require('../temp/usageAllJsonList2')
 
 
             //todo: MAKE SELECTBOX.
@@ -316,7 +314,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo : fetch data from remote
             //let appInstanceList = await fetchAppInstanceList();
 
-            //todo : fetch data from LOCAL
+            //todo : fetch data from state
             let appInstanceList = this.state.allAppInstanceList;
 
             //todo: ##########################################
@@ -597,7 +595,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                              {!this.state.isReady && <Row columns={1}>
                                  <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
                                      <CircularProgress
-                                         style={{color: '#aabe7a', justifyContent: "center", alignItems: 'center'}}/>
+                                         style={{color: 'green', justifyContent: "center", alignItems: 'center'}}/>
                                  </Column>
                              </Row>}
                              {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
@@ -612,7 +610,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                          style={{
                                              color: index === this.state.currentGridIndex ? 'white' : 'white',
-                                             backgroundColor: index === this.state.currentGridIndex && '#8fff93',
+                                             backgroundColor: index === this.state.currentGridIndex && '#bea129',
                                              height: 50
                                          }}
                                          onClick={async () => {
