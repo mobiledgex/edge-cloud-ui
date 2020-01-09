@@ -1,8 +1,9 @@
 import 'react-hot-loader'
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
+import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
 import FlexBox from "flexbox-react";
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
@@ -17,32 +18,36 @@ import {
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
     filterAppInstOnCloudlet,
-    filterCpuOrMemUsageByAppInst,
-    filterCpuOrMemUsageByCloudLet,
-    filterCpuOrMemUsageByCluster,
-    filterCpuOrMemUsageListByRegion,
+    filterUsageByAppInst,
+    filterUsageByCloudLet,
+    filterUsageByCluster,
+    filterUsageListByRegion,
     filterInstanceCountOnCloutLetOne,
     getMetricsUtilizationAtAppLevel,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, makeHardwareUsageListPerInstance,
-    renderBarGraphForCpuMem,
+    makeClusterListSelectBox,
+    renderBarGraph,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
     renderLineChart,
     renderPlaceHolder,
     renderPlaceHolder2
 } from "../services/PageMonitoringService";
-import {HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../shared/Constants";
+import {HARDWARE_TYPE, REGIONS_OPTIONS} from "../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeAppInstance, TypeUtilization} from "../shared/Types";
 import {cutArrayList} from "../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
-
+import moment from "moment";
+import ToggleDisplay from 'react-toggle-display';
+import {ComposableMap, Geographies, Geography, Graticule, ZoomableGroup} from "react-simple-maps";
 
 const FA = require('react-fontawesome')
-const {Column, Row} = Grid;
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
+const {Column, Row} = Grid;
+const {Pane} = Tab
+
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
@@ -65,6 +70,7 @@ type Props = {
     sendingContent: any,
     loading: boolean,
     isLoading: boolean,
+    toggleLoading: Function,
 }
 
 type State = {
@@ -82,6 +88,8 @@ type State = {
     clusterList: any,
     filteredCpuUsageList: any,
     filteredMemUsageList: any,
+    filteredDiskUsageList: any,
+    filteredNetworkUsageList: any,
     counter: number,
     appInstanceList: Array<TypeAppInstance>,
     allAppInstanceList: Array<TypeAppInstance>,
@@ -110,7 +118,12 @@ type State = {
     cloudLetSelectBoxClearable: boolean,
     clusterSelectBoxClearable: boolean,
     appInstSelectBoxClearable: boolean,
-    isShowUtilizationArea: boolean
+    isShowUtilizationArea: boolean,
+    currentGridIndex: number,
+    currentTabIndex: number,
+    isShowBottomGrid: boolean,
+    isShowBottomGridForMap: boolean,
+    mapZoomLevel: number,
 }
 
 
@@ -129,12 +142,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clusterList: [],
             filteredCpuUsageList: [],
             filteredMemUsageList: [],
+            filteredDiskUsageList: [],
+            filteredNetworkUsageList: [],
             isReady: false,
             counter: 0,
             appInstanceList: [],
             allAppInstanceList: [],
             appInstanceOne: {},
-
             allCpuUsageList: [],
             allMemUsageList: [],
             allDiskUsageList: [],
@@ -160,6 +174,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clusterSelectBoxClearable: false,
             appInstSelectBoxClearable: false,
             isShowUtilizationArea: false,
+            currentGridIndex: -1,
+            currentTabIndex: 0,
+            isShowBottomGrid: false,
+            isShowBottomGridForMap: false,
+            mapZoomLevel: 0,
         };
 
         intervalHandle = null;
@@ -213,7 +232,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
             //todo: REALDATA
             //let appInstanceList: Array<TypeAppInstance> = await fetchAppInstanceList();
-
             //todo: FAKEJSON FOR TEST
             let appInstanceList: Array<TypeAppInstance> = require('../temp/appInstanceList')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
@@ -263,7 +281,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: 앱인스턴스 리스트를 가지고 MEM,CPU CHART DATA를 가지고 온다. (최근 100개 날짜의 데이터만을 끌어온다)
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
-           /* let usageList = await Promise.all([
+
+            /* let usageList = await Promise.all([
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
                  makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
@@ -272,6 +291,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //todo: ################################################################
             //todo: (last 100 datas) - Fake JSON FOR TEST
+            //let cpuUsageListPerOneInstance = require('../jsons/cpuUsage_100Count')
+            //let memUsageListPerOneInstance = require('../jsons/memUsage_100Count')
             //todo: ################################################################
             let usageList = require('../temp/allUsageList_50')
 
@@ -285,12 +306,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 allCpuUsageList: usageList[0],
                 allMemUsageList: usageList[1],
-                allDiskUsageList: usageList[2],
-                allNetworkUsageList: usageList[3],
+                allDiskUsageList: usageList[2],//diskUsage
+                allNetworkUsageList: usageList[3],//networkUsage
                 cloudletList: cloudletList,
                 clusterList: clusterList,
                 filteredCpuUsageList: usageList[0],
                 filteredMemUsageList: usageList[1],
+                filteredDiskUsageList: usageList[2],
+                filteredNetworkUsageList: usageList[3],
             });
 
 
@@ -355,8 +378,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
             let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, 'Cloudlet');
-            let filteredCpuUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allCpuUsageList);
-            let filteredMemUsageList = filterCpuOrMemUsageListByRegion(pRegion, this.state.allMemUsageList);
+            let filteredCpuUsageList = filterUsageListByRegion(pRegion, this.state.allCpuUsageList);
+            let filteredMemUsageList = filterUsageListByRegion(pRegion, this.state.allMemUsageList);
+            let filteredDiskUsageList = filterUsageListByRegion(pRegion, this.state.allDiskUsageList);
+            let filteredNetworkUsageList = filterUsageListByRegion(pRegion, this.state.allNetworkUsageList);
 
 
             //todo: ##########################################
@@ -367,8 +392,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                 appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
                 clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
-                filteredCpuUsageList = filterCpuOrMemUsageByCloudLet(filteredCpuUsageList, pCloudLet);
-                filteredMemUsageList = filterCpuOrMemUsageByCloudLet(filteredMemUsageList, pCloudLet);
+                filteredCpuUsageList = filterUsageByCloudLet(filteredCpuUsageList, pCloudLet);
+                filteredMemUsageList = filterUsageByCloudLet(filteredMemUsageList, pCloudLet);
+                filteredDiskUsageList = filterUsageByCloudLet(filteredDiskUsageList, pCloudLet);
+                filteredNetworkUsageList = filterUsageByCloudLet(filteredNetworkUsageList, pCloudLet);
 
             }
 
@@ -380,8 +407,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
                 //todo:app instalce list를 필터링
                 appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
-                filteredCpuUsageList = filterCpuOrMemUsageByCluster(filteredCpuUsageList, pCluster);
-                filteredMemUsageList = filterCpuOrMemUsageByCluster(filteredMemUsageList, pCluster);
+                filteredCpuUsageList = filterUsageByCluster(filteredCpuUsageList, pCluster);
+                filteredMemUsageList = filterUsageByCluster(filteredMemUsageList, pCluster);
+                filteredDiskUsageList = filterUsageByCluster(filteredDiskUsageList, pCluster);
+                filteredNetworkUsageList = filterUsageByCluster(filteredNetworkUsageList, pCluster);
             }
 
             //todo: ##########################################
@@ -390,8 +419,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (pAppInstance !== '') {
                 //todo:app instalce list를 필터링
                 //appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
-                filteredCpuUsageList = filterCpuOrMemUsageByAppInst(filteredCpuUsageList, pAppInstance);
-                filteredMemUsageList = filterCpuOrMemUsageByAppInst(filteredMemUsageList, pAppInstance);
+                filteredCpuUsageList = filterUsageByAppInst(filteredCpuUsageList, pAppInstance);
+                filteredMemUsageList = filterUsageByAppInst(filteredMemUsageList, pAppInstance);
+                filteredDiskUsageList = filterUsageByAppInst(filteredDiskUsageList, pAppInstance);
+                filteredNetworkUsageList = filterUsageByAppInst(filteredNetworkUsageList, pAppInstance);
             }
 
 
@@ -406,6 +437,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
+                filteredDiskUsageList: filteredDiskUsageList,
+                filteredNetworkUsageList: filteredNetworkUsageList,
                 appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
@@ -442,7 +475,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         dropdownCloudlet = null;
 
-        async resetAllData() {
+        async refreshAllData() {
             toast({
                 type: 'success',
                 //icon: 'smile',
@@ -469,170 +502,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderHeader = () => {
             return (
-                <FlexBox className='' style={{alignItem: 'flex-end'}}>
-                    <Grid.Column className=''
-                                 style={{lineHeight: '36px', fontSize: 30}}>Monitoring</Grid.Column>
-                    <div style={{marginLeft: '10px'}}>
-                        <button className="ui circular icon button"><i aria-hidden="true"
-                                                                       className="info icon"></i></button>
-                    </div>
-
-                    {/*{this.state.loading777 &&
-                    <CircularProgress
-                        style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
-                    }*/}
-                    <div className='page_monitoring_select_row'
-                         style={{alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,}}>
-                        <div className='page_monitoring_select_area' style={{marginLeft: 0,}}>
-                            <div style={{
-                                display: 'flex',
-                                width: 145,
-                                //backgroundColor: 'red',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginBottom: 5,
-
-                            }}>
-
-
-                                {/* <FA name="list" style={{fontSize: 30,}} onClick={() => {
-                                    this.setState({
-                                        isModalOpened: !this.state.isModalOpened
-                                    })
-                                }}/>*/}
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        width: 150,
-                                        //backgroundColor: 'red',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        marginBottom: 5,
-                                        color: 'white',
-                                        fontSize: 15,
-                                        marginLeft: -10,
-                                        marginRight: 0,
-
-                                    }}
-
-                                >
-
-                                    <Button style={{backgroundColor: 'white'}} onClick={async () => {
-
-                                        this.resetAllData();
-
-                                    }}>
-                                        Reset All
-
-                                    </Button>
-                                </div>
-
-
-                            </div>
-                            {/*todo:REGION Dropdown*/}
-                            {/*todo:REGION Dropdown*/}
-                            {/*todo:REGION Dropdown*/}
-                            <div style={{color: 'white', backgroundColor:'#393939', height:39, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-8, width:100}}>
-                                Region
-                            </div>
-                            <Dropdown
-                                clearable={this.state.regionSelectBoxClearable}
-                                placeholder='REGION'
-                                selection
-                                options={REGIONS_OPTIONS}
-                                defaultValue={REGIONS_OPTIONS[0].value}
-                                onChange={async (e, {value}) => {
-                                    await this.handleSelectBoxChanges(value)
-                                    setTimeout(() => {
-                                        this.setState({
-                                            cloudLetSelectBoxPlaceholder: 'Select CloudLet'
-                                        })
-                                    }, 1000)
-                                }}
-                                value={this.state.currentRegion}
-                                style={{width: 250}}
-                            />
-
-                            {/*todo:CloudLet selectbox*/}
-                            {/*todo:CloudLet selectbox*/}
-                            {/*todo:CloudLet selectbox*/}
-                            <div style={{color: 'white', backgroundColor:'#393939', height:39, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-8, width:100}}>
-                                CloudLet
-                            </div>
-                            <Dropdown
-                                value={this.state.currentCloudLet}
-                                clearable={this.state.cloudLetSelectBoxClearable}
-                                loading={this.props.isLoading}
-                                placeholder={this.state.cloudLetSelectBoxPlaceholder}
-                                selection={true}
-                                options={this.state.cloudletList}
-                                style={{width: 250}}
-                                onChange={async (e, {value}) => {
-
-
-                                    await this.handleSelectBoxChanges(this.state.currentRegion, value)
-                                    setTimeout(() => {
-                                        this.setState({
-                                            clusterSelectBoxPlaceholder: 'Select Cluster'
-                                        })
-                                    }, 1000)
-                                }}
-                            />
-
-
-                            {/*todo:Cluster selectbox*/}
-                            {/*todo:Cluster selectbox*/}
-                            {/*todo:Cluster selectbox*/}
-                            <div style={{color: 'white', backgroundColor:'#393939', height:39, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-8, width:100}}>
-                                Cluster
-                            </div>
-                            <Dropdown
-                                value={this.state.currentCluster}
-                                clearable={this.state.clusterSelectBoxClearable}
-                                loading={this.props.isLoading}
-                                placeholder={this.state.clusterSelectBoxPlaceholder}
-                                selection
-                                options={this.state.clusterList}
-                                style={{width: 250}}
-                                onChange={async (e, {value}) => {
-                                    await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, value)
-
-
-                                    setTimeout(() => {
-                                        this.setState({
-                                            appInstSelectBoxPlaceholder: "Select App Instance"
-                                        })
-                                    }, 1000)
-                                }}
-                            />
-
-                            {/*todo:RangePicker*/}
-                            {/*todo:RangePicker*/}
-                            {/*todo:RangePicker*/}
-                            <div style={{color: 'white', backgroundColor:'#393939', height:39, alignItems:'center', alignSelf:'center', justifyContent:'center', display:'flex', marginTop:-8, width:100}}>
-                                TimeRange
-                            </div>
-                            <div style={{marginTop: -8}}>
-                                <RangePicker
-                                    showTime={{format: 'HH:mm'}}
-                                    format="YYYY-MM-DD HH:mm"
-                                    placeholder={['Start Time', 'End Time']}
-                                    onChange={async (date, dateString) => {
-                                        let startDate = dateString[0]
-                                        let endDate = dateString[1]
-                                        await this.setState({
-                                            startDate: startDate,
-                                            endDate: endDate,
-                                        })
-                                        //await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
-                                    }}
-                                    style={{width: 300}}
-                                />
-                            </div>
-
+                <div>
+                    <FlexBox className='' style={{alignItem: 'flex-end'}}>
+                        <Grid.Column className=''
+                                     style={{lineHeight: '36px', fontSize: 30}}>Monitoring</Grid.Column>
+                        <div style={{marginLeft: '10px'}}>
+                            <button className="ui circular icon button"><i aria-hidden="true"
+                                                                           className="info icon"></i></button>
                         </div>
-                    </div>
-                </FlexBox>
+                    </FlexBox>
+                </div>
+
             )
         }
 
@@ -704,11 +584,25 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
+        scrollToBottom() {
+            const scrollHeight = this.messageList.scrollHeight;
+            const height = this.messageList.clientHeight;
+            const maxScrollTop = scrollHeight - height;
+            this.messageList.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+        }
+
+        scrollToUp() {
+            this.messageList.scrollTo(0, 0);
+        }
+
         renderAppInstanceGrid() {
             return (
                 <div>
-                    <Grid columns={7} padded={true} style={{height: 50}}>
+                    <Grid columns={8} padded={true} style={{height: 50}}>
                         <Row>
+                            <Column color={'grey'}>
+                                index
+                            </Column>
                             <Column color={'grey'}>
                                 NAME
                             </Column>
@@ -732,8 +626,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </Column>
                         </Row>
                     </Grid>
-                    <div className='grid00001'>
-                        <Grid columns={7} padded={true}>
+                    <div style={{
+                        marginTop: 10,
+                        //overflowY: 'scroll',
+                        //height: 525,
+                    }}
+                         ref={(div) => {
+                             this.messageList = div;
+                         }}
+                    >
+                        <Grid columns={8} padded={true}
+
+                              style={{
+                                  marginTop: 10,
+                                  overflowY: 'auto',//@todo: 스크롤 처리 부분...
+                                  height: this.state.appInstanceList.length * 35 + 110,
+                              }}
+                        >
                             {/*todo:ROW HEADER*/}
                             {/*todo:ROW HEADER*/}
                             {/*todo:ROW HEADER*/}
@@ -751,10 +660,30 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                    sumSendBytes: sumSendBytes,*/
 
                                 return (
-                                    <Row onClick={() => {
-                                        //this.props.history.push('PageMonitoringDetail')
-                                    }}>
-                                        <Column>
+                                    <Row
+
+                                        style={{
+                                            color: index === this.state.currentGridIndex ? 'white' : 'white',
+                                            backgroundColor: index === this.state.currentGridIndex && '#4fd1ff',
+                                            height: 50
+                                        }}
+                                        onClick={async () => {
+                                            //alert(item.AppName)
+                                            await this.setState({
+                                                currentAppInst: item.AppName,
+                                                currentGridIndex: index,
+                                            })
+                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.AppName)
+                                        }}
+                                    >
+                                        <Column
+
+                                        >
+                                            {index}
+                                        </Column>
+                                        <Column
+
+                                        >
                                             {item.AppName}
                                         </Column>
                                         <Column>
@@ -786,8 +715,161 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+        /**###############################
+         * * MONITORINGTABS
+         * * MONITORINGTABS
+         * * MONITORINGTABS
+         ##################################*/
+        MONITORING_TABS = [
+
+            {
+                menuItem: 'CPU', render: () => {
+                    return (
+                        <Pane style={{}}>
+                            {this.renderCpuArea()}
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'MEM', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderMemArea()}
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'DISK', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderDiskArea()}
+                        </Pane>
+                    )
+                }
+            },
+
+
+        ]
+
+        renderCpuArea() {
+            return (
+                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
+
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_container'>
+                            {renderBarGraph(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                        </div>
+                    </div>
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        {/*  <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Transition Of CPU Usage
+                            </div>
+                        </div>*/}
+                        <div className='page_monitoring_container'>
+                            {renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+        renderMemArea() {
+            return (
+                <div style={{display: 'flex', flexDirection: 'row'}}>
+                    {/*1111111111*/}
+                    {/*1111111111*/}
+                    {/*1111111111*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_container'>
+                            {renderBarGraph(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                        </div>
+                    </div>
+                    {/*1111111111*/}
+                    {/*1111111111*/}
+                    {/*1111111111*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_container'>
+                            {renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                        </div>
+                    </div>
+
+                </div>
+            )
+        }
+
+        renderDiskArea() {
+            return (
+                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
+
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_container'>
+                            {renderBarGraph(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                        </div>
+                    </div>
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        {/*  <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Transition Of CPU Usage
+                            </div>
+                        </div>*/}
+                        <div className='page_monitoring_container'>
+                            {renderLineChart(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+        renderNetworkArea() {
+            return (
+                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
+
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_container'>
+                            {renderBarGraph(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
+                        </div>
+                    </div>
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Transition Of NETWORK Usage
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {renderLineChart(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
 
         render() {
+
+            const geoUrl =
+                "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
+
             //todo:####################################################################
             //todo: Components showing when the loading of graph data is not completed.
             //todo:####################################################################
@@ -853,84 +935,252 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </Modal>
                     <SemanticToastContainer/>
                     <Grid.Column className='contents_body'>
-                        {/*todo:####################*/}
                         {/*todo:Content Header part      */}
-                        {/*todo:####################*/}
                         {this.renderHeader()}
 
-                        <Grid.Row className='site_content_body' style={{marginTop: 0}}>
+                        <Grid.Row className='site_content_body' style={{marginTop: 0,}}>
+
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
 
                                     <div className="page_monitoring">
-                                        {/*todo:####################*/}
                                         {/*todo:SelectBox part start */}
-                                        {/*todo:####################*/}
+                                        {/*todo:SelectBox part start */}
+                                        {/*todo:SelectBox part start */}
+                                        <FlexBox>
+                                            <div className=''
+                                                 style={{alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,}}>
+                                                <div className='page_monitoring_select_area' style={{marginLeft: 0,}}>
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        width: 270,
+                                                        //backgroundColor: 'red',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                        marginBottom: 5,
+                                                        marginRight: -25,
+
+                                                    }}>
+
+                                                        <div
+                                                            style={{
+                                                                display: 'flex',
+                                                                //backgroundColor: 'red',
+                                                                justifyContent: 'center',
+                                                                alignItems: 'center',
+                                                                marginBottom: 0,
+                                                                color: 'white',
+                                                                fontSize: 15,
+                                                                marginLeft: 0,
+                                                                marginRight: 0,
+
+                                                            }}
+
+                                                        >
+
+                                                            <div style={{backgroundColor: 'transparent', marginBottom: 0}} onClick={async () => {
+
+                                                                this.refreshAllData();
+
+                                                            }}>
+                                                                <Button style={{width: 80, fontSize: 9}}>
+                                                                    REFRESH
+                                                                </Button>
+                                                            </div>
+
+                                                            <div style={{marginLeft: 10,}}
+                                                                 onClick={async () => {
+                                                                     await this.setState({
+                                                                         currentGridIndex: -1,
+                                                                         currentTabIndex: 0,
+                                                                     })
+                                                                     await this.handleSelectBoxChanges('ALL', '', '', '')
+                                                                 }}
+                                                            >
+                                                                <Button style={{width: 100, fontSize: 9}}>RESET_ALL</Button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {/*todo:REGION Dropdown*/}
+                                                    {/*todo:REGION Dropdown*/}
+                                                    {/*todo:REGION Dropdown*/}
+                                                    <div style={Styles.selectHeader}>
+                                                        Region
+                                                    </div>
+                                                    <Dropdown
+                                                        clearable={this.state.regionSelectBoxClearable}
+                                                        placeholder='REGION'
+                                                        selection
+                                                        options={REGIONS_OPTIONS}
+                                                        defaultValue={REGIONS_OPTIONS[0].value}
+                                                        onChange={async (e, {value}) => {
+                                                            await this.handleSelectBoxChanges(value)
+                                                            setTimeout(() => {
+                                                                this.setState({
+                                                                    cloudLetSelectBoxPlaceholder: 'Select CloudLet'
+                                                                })
+                                                            }, 1000)
+                                                        }}
+                                                        value={this.state.currentRegion}
+                                                        style={{width: 180}}
+                                                    />
+
+                                                    {/*todo:CloudLet selectbox*/}
+                                                    {/*todo:CloudLet selectbox*/}
+                                                    {/*todo:CloudLet selectbox*/}
+                                                    <div style={Styles.selectHeader}>
+                                                        CloudLet
+                                                    </div>
+                                                    <Dropdown
+                                                        value={this.state.currentCloudLet}
+                                                        clearable={this.state.cloudLetSelectBoxClearable}
+                                                        loading={this.props.isLoading}
+                                                        placeholder={this.state.cloudLetSelectBoxPlaceholder}
+                                                        selection={true}
+                                                        options={this.state.cloudletList}
+                                                        style={{width: 180}}
+                                                        onChange={async (e, {value}) => {
+
+
+                                                            await this.handleSelectBoxChanges(this.state.currentRegion, value)
+                                                            setTimeout(() => {
+                                                                this.setState({
+                                                                    clusterSelectBoxPlaceholder: 'Select Cluster'
+                                                                })
+                                                            }, 1000)
+                                                        }}
+                                                    />
+
+
+                                                    {/*todo:Cluster selectbox*/}
+                                                    {/*todo:Cluster selectbox*/}
+                                                    {/*todo:Cluster selectbox*/}
+                                                    <div style={Styles.selectHeader}>
+                                                        Cluster
+                                                    </div>
+                                                    <Dropdown
+                                                        value={this.state.currentCluster}
+                                                        clearable={this.state.clusterSelectBoxClearable}
+                                                        loading={this.props.isLoading}
+                                                        placeholder={this.state.clusterSelectBoxPlaceholder}
+                                                        selection
+                                                        options={this.state.clusterList}
+                                                        style={{width: 180}}
+                                                        onChange={async (e, {value}) => {
+                                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, value)
+
+                                                            setTimeout(() => {
+                                                                this.setState({
+                                                                    appInstSelectBoxPlaceholder: "Select App Instance"
+                                                                })
+                                                            }, 1000)
+                                                        }}
+                                                    />
+                                                    {/*todo: App Instance*/}
+                                                    {/*todo: App Instance*/}
+                                                    {/*todo: App Instance*/}
+
+                                                    <div style={Styles.selectHeader}>
+                                                        App Inst
+                                                    </div>
+                                                    <div>
+                                                        <Dropdown
+                                                            clearable={this.state.appInstSelectBoxClearable}
+                                                            value={this.state.currentAppInst}
+                                                            placeholder='Select App Instance'
+                                                            selection
+                                                            options={this.state.appInstaceListForSelectBoxForCpu}
+                                                            style={{width: 180}}
+                                                            onChange={async (e, {value}) => {
+
+                                                                await this.setState({
+                                                                    currentAppInst: value,
+                                                                })
+                                                                await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                                            }}
+
+                                                        />
+                                                    </div>
+
+                                                    {/*todo:TimeRange*/}
+                                                    {/*todo:TimeRange*/}
+                                                    <div style={Styles.selectHeader}>
+                                                        TimeRange
+                                                    </div>
+                                                    <div style={{marginTop: -8}}>
+                                                        <RangePicker
+                                                            showTime={{format: 'HH:mm'}}
+                                                            format="YYYY-MM-DD HH:mm"
+                                                            placeholder={['Start Time', 'End Time']}
+                                                            onChange={async (date, dateString) => {
+                                                                let startDate = dateString[0]
+                                                                let endDate = dateString[1]
+                                                                await this.setState({
+                                                                    startDate: startDate,
+                                                                    endDate: endDate,
+                                                                })
+                                                                //await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
+                                                            }}
+                                                            ranges={{
+                                                                Today: [moment(), moment()],
+                                                                'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(1, 'd')],
+                                                                'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
+                                                                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                                                'Last Month': [moment().date(-30), moment().date(-1)],
+                                                                /* 'Last Month2': [moment().date(-30), moment().date(-1)],
+                                                                 'Last Month3': [moment().date(-30), moment().date(-1)],
+                                                                 'Last Month4': [moment().date(-30), moment().date(-1)],
+                                                                 'Last Month5': [moment().date(-30), moment().date(-1)],
+                                                                 'Last Month6': [moment().date(-30), moment().date(-1)],
+                                                                 'Last Month7': [moment().date(-30), moment().date(-1)],
+                                                                 'Last Month8': [moment().date(-30), moment().date(-1)],
+                                                                 'Last Month9': [moment().date(-30), moment().date(-1)],*/
+                                                            }}
+                                                            style={{width: 300}}
+                                                        />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </FlexBox>
                                         <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
-                                            <div className='page_monitoring_row'>
+                                            <div className='page_monitoring_row'
+                                                //style={{opacity: !this.state.isShowBottomGrid ? 1.0 : 0.5}}
+                                            >
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
-                                                <div className='page_monitoring_column_kj'>
-                                                    <div className='page_monitoring_title_area'>
+                                                <div className='page_monitoring_column_kj002' style={{}}>
+                                                    <div className=''>
                                                         <div className='page_monitoring_title'>
                                                             Status of Launched App Instances on Cloudlet
                                                         </div>
                                                     </div>
-                                                    <div className='page_monitoring_container'>
+                                                    <div className='page_monitoring_container' style={{width: 800}}>
                                                         {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
                                                     </div>
                                                 </div>
-                                                {/* cpu___col___2*/}
-                                                {/* cpu___col___2*/}
-                                                {/* cpu___col___2*/}
-                                                <div className='page_monitoring_column_kj'>
-                                                    <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title'>
-                                                            Top 5 of CPU Usage
-                                                        </div>
-                                                        {/*todo:APPINSTANCE selectbox*/}
-                                                        {/*todo:APPINSTANCE selectbox*/}
-                                                        {/*todo:APPINSTANCE selectbox*/}
-                                                        <div>
-                                                            <Dropdown
-                                                                clearable={this.state.appInstSelectBoxClearable}
-                                                                value={this.state.currentAppInst}
-                                                                placeholder='Select App Instance'
-                                                                selection
-                                                                options={this.state.appInstaceListForSelectBoxForCpu}
-                                                                style={{width: 250}}
-                                                                onChange={async (e, {value}) => {
+                                                <div className='page_monitoring_column_kj003' style={{marginLeft: 0}}>
 
-                                                                    await this.setState({
-                                                                        currentAppInst: value,
-                                                                    })
-                                                                    await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
-                                                                }}
+                                                    {/*todo: RENDER TAB*/}
+                                                    {/*todo: RENDER TAB*/}
+                                                    {/*todo: RENDER TAB*/}
+                                                    <Tab
+                                                        //style={{marginTop:-5}}
+                                                        panes={this.MONITORING_TABS}
+                                                        activeIndex={this.state.currentTabIndex}
+                                                        onTabChange={(e, {activeIndex}) => {
+                                                            this.setState({
+                                                                currentTabIndex: activeIndex,
+                                                            })
+                                                        }}
+                                                        defaultActiveIndex={this.state.currentTabIndex}
 
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className='page_monitoring_container'>
-                                                        {!this.state.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
-                                                    </div>
-                                                </div>
-                                                {/* cpu___col___3*/}
-                                                {/* cpu___col___3*/}
-                                                {/* cpu___col___3*/}
-                                                <div className='page_monitoring_column_kj'>
-                                                    <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title'>
-                                                            Transition Of CPU Usage
-                                                        </div>
-                                                    </div>
-                                                    <div className='page_monitoring_container'>
-                                                        {!this.state.isReady ? renderPlaceHolder() : renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
-                                                    </div>
+                                                    />
                                                 </div>
                                             </div>
 
@@ -939,7 +1189,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___4*/}
                                                 {/* ___col___4*/}
                                                 {/* ___col___4*/}
-                                                <div className='page_monitoring_column_kj'>
+                                                <div className='page_monitoring_column_kj002'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Engine Performance State Of App instance
@@ -952,89 +1202,137 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div>
                                                             {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChart(this)}
                                                         </div>
-                                                        <div style={{marginRight: 10,}}>
-                                                            {/*todo:#########################################****/}
-                                                            {/*todo: RENDER Donut Chart N App Status          */}
-                                                            {/*todo:#########################################****/}
-                                                            {/* {!this.state.isShowUtilizationArea ?
-                                                                <FlexBox
-                                                                    style={{
-                                                                        backgroundColor: 'black',
-                                                                        width: 180,
-                                                                        height: 320,
-                                                                        alignItem: 'center',
-                                                                        alignSelf: "center",
-                                                                        justifyContent: "center"
-                                                                    }}>
-                                                                    {this.state.loading777 ?
-                                                                        <Lottie
-                                                                            options={{
-                                                                                loop: true,
-                                                                                autoplay: true,
-                                                                                animationData: require('../lotties/loading-animation001'),
-                                                                                rendererSettings: {
-                                                                                    preserveAspectRatio: 'xMidYMid slice'
-                                                                                }
-                                                                            }}
-                                                                            height={120}
-                                                                            width={130}
-                                                                            isStopped={false}
-                                                                            isPaused={false}
-                                                                            style={{marginTop: 80}}
-                                                                        />
-                                                                        : <div></div>}
-                                                                </FlexBox>
-
-                                                                : renderPieChart2AndAppStatus(this.state.appInstanceOne, this)}*/}
-                                                        </div>
                                                     </FlexBox>
 
                                                 </div>
-                                                {/* mem___col___5*/}
-                                                {/* mem___col___5*/}
-                                                {/* mem___col___5 */}
-                                                <div className='page_monitoring_column_kj'>
-                                                    <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title'>
-                                                            Top 5 of MEM Usage
+                                                {/* todo:NETWORK LIST 그리드 부분____4nd_col*/}
+                                                {/* todo:NETWORK LIST 그리드 부분____4nd_col*/}
+                                                {/* todo:NETWORK LIST 그리드 부분____4nd_col*/}
+                                                <div className='page_monitoring_column_kj003'>
+                                                    <div style={{flexDirection: 'row', display: 'flex'}}>
+                                                        <div style={{fontSize: 20, display: 'flex', alignItems: 'center', marginLeft: 10,}}>
+                                                            NETWORK TOP 5 LIST
                                                         </div>
-                                                        {/* <div className='page_monitoring_column_kj_select'>
+
+                                                        <div style={{marginLeft: 25,}}>
                                                             <Dropdown
-                                                                placeholder='Select App Instance'
+                                                                clearable={this.state.regionSelectBoxClearable}
+                                                                placeholder='SELECT OPTIONS'
                                                                 selection
-                                                                options={this.state.appInstaceListForSelectBoxForMem}
-                                                                style={{width: 250}}
+                                                                options={[
+                                                                    {value: 'RCV_BTYE', text: 'RCV_BTYE'},
+                                                                    {value: 'SND_BYTE', text: 'SND_BYTE'},
+                                                                    {value: 'TCP', text: 'TCP'},
+                                                                    {value: 'UDP', text: 'UDP'},
+
+                                                                ]}
+                                                                defaultValue={'RVCV_BTYE'}
                                                                 onChange={async (e, {value}) => {
-                                                                    await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+
+                                                                    //alert(value)
+                                                                    //await this.handleSelectBoxChanges(value)
+                                                                    /*setTimeout(() => {
+                                                                        this.setState({
+                                                                            cloudLetSelectBoxPlaceholder: 'Select CloudLet'
+                                                                        })
+                                                                    }, 1000)*/
                                                                 }}
+                                                                value={'RCV_BTYE'}
+                                                                style={{width: 220}}
                                                             />
-                                                        </div>*/}
-                                                    </div>
-
-                                                    <div className='page_monitoring_container'>
-                                                        {!this.state.isReady ? renderPlaceHolder() : renderBarGraphForCpuMem(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
-                                                    </div>
-
-                                                </div>
-                                                {/* mem___col___6*/}
-                                                {/* mem___col___6*/}
-                                                {/* mem___col___6*/}
-                                                <div className='page_monitoring_column_kj'>
-                                                    <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title'>
-                                                            Transition Of Mem Usage
                                                         </div>
                                                     </div>
-                                                    <div className='page_monitoring_container'>
-                                                        {!this.state.isReady ? renderPlaceHolder() : renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                                                    <div className='page_monitoring_column_for_grid'>
+                                                        {this.renderNetworkArea()}
                                                     </div>
                                                 </div>
+
+
                                             </div>
-                                            <div className='page_monitoring_row'>
-                                                <div className='page_monitoring_column_for_grid'>
-                                                    {this.renderAppInstanceGrid()}
+
+                                            {/*todo: 하단 그리드 area____toggle Up Button*/}
+                                            {/*todo: 하단 그리드 area____toggle Up Button*/}
+                                            {/*todo: 하단 그리드 area____toggle Up Button*/}
+                                            <p
+                                                onClick={() => {
+                                                    this.setState({
+                                                        isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                    })
+                                                }}
+
+                                                style={{
+                                                    display: 'flex',
+                                                    width: '98.0%', backgroundColor: '#2f2f2f', alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    alignSelf: 'center',
+                                                    height: 30,
+                                                    borderRadius: 10,
+                                                }}
+                                            >
+                                                <div style={{color: 'white', backgroundColor: 'transparent'}}>SHOW APP INSTANCE LIST
                                                 </div>
-                                            </div>
+                                                <div style={{marginLeft: 15}}>
+                                                    <FA name="chevron-up" style={{fontSize: 15, color: 'white'}}/>
+                                                </div>
+                                            </p>
+
+                                            {/*todo: BOTTOM_GRID_AREA____SHOW_UP__AREA*/}
+                                            {/*todo: BOTTOM_GRID_AREA____SHOW_UP__AREA*/}
+                                            {/*todo: BOTTOM_GRID_AREA____SHOW_UP__AREA*/}
+                                            <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
+                                                <OutsideClickHandler
+                                                    onOutsideClick={() => {
+                                                       /* this.setState({
+                                                            isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                        })*/
+                                                    }}
+                                                >
+                                                    <div
+                                                        style={{
+                                                            backgroundColor: '#2f2f2f', opacity: 3.0, borderTopRightRadius: 20, borderTopLeftRadius: 20,
+                                                            position: 'absolute', zIndex: 999999, bottom: 50, height: 700, width: '96%', left: 48
+                                                        }}
+                                                    >
+                                                        <p
+                                                            style={{
+                                                                display: 'flex',
+                                                                width: '100%',
+                                                                backgroundColor: 'transparent',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                marginTop: 20
+                                                            }}
+                                                            onClick={() => {
+
+                                                                this.setState({
+                                                                    isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                                })
+
+                                                            }}
+
+
+                                                        >
+                                                            <div style={{color: 'white'}}>
+                                                                HIDE APP INSTANCE LIST
+                                                            </div>
+                                                            <div style={{marginLeft: 15}}>
+                                                                <FA name="chevron-down" style={{fontSize: 15, color: 'white'}}/>
+                                                            </div>
+                                                        </p>
+                                                        {/*todo:renderAppInstanceGrid*/}
+                                                        {/*todo:renderAppInstanceGrid*/}
+                                                        {/*todo:renderAppInstanceGrid*/}
+                                                        <div style={{fontSize: 22, display: 'flex', alignItems: 'center', marginLeft: 10, color: 'white', fontWeight: 'bold'}}>
+                                                            App Instance List
+                                                        </div>
+                                                        <div style={{height: 7}}/>
+                                                        <div className='page_monitoring_column_for_grid2'>
+                                                            {this.renderAppInstanceGrid()}
+                                                        </div>
+                                                    </div>
+                                                </OutsideClickHandler>
+                                            </ToggleDisplay>
+
                                         </div>
                                     </div>
 
@@ -1053,3 +1351,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
     }
 ))));
+
+const Styles = {
+    selectHeader: {
+        color: 'white',
+        backgroundColor: 'transparent',
+        height: 39,
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        display: 'flex',
+        marginTop: -8,
+        width: 80,
+    },
+
+    div001: {
+        fontSize: 25,
+        color: 'white',
+    }
+}

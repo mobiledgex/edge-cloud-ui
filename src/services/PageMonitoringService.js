@@ -7,13 +7,27 @@ import {formatData} from "./formatter/formatComputeInstance";
 import '../sites/PageMonitoring.css';
 import {getAppInstanceHealth, makeFormForAppInstance, numberWithCommas} from "./SharedService";
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../shared/Constants";
-import {HorizontalBar, Line as ReactChartJs} from 'react-chartjs-2';
+import {Line as ReactChartJs, Bar as Bar2, HorizontalBar} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
 import BubbleChart from "../components/BubbleChart";
-import PageMonitoring2 from "../sites/PageMonitoring";
+import PageMonitoring from "../sites/PageMonitoring";
 import type {TypeAppInstance} from "../shared/Types";
-import {Bar as RBar, BarChart, BarLabel, BarSeries, Line, LinearXAxis, LinearYAxis, LinearYAxisTickSeries, StackedAreaChart, StackedAreaSeries} from "reaviz";
+import {
+    Bar as RBar,
+    BarChart,
+    BarLabel,
+    BarSeries,
+    Line,
+    LinearXAxis,
+    LinearYAxis,
+    LinearYAxisTickSeries,
+    LineChart,
+    LineSeries,
+    StackedAreaChart,
+    StackedAreaSeries, StackedNormalizedAreaChart,
+    StackedNormalizedAreaSeries
+} from "reaviz";
 import {notification} from "antd";
 
 /**
@@ -40,7 +54,7 @@ export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet,
  * @param pCloudLet
  * @returns {*}
  */
-export const filterCpuOrMemUsageByCloudLet = (cpuOrMemUsageList, pCloudLet) => {
+export const filterUsageByCloudLet = (cpuOrMemUsageList, pCloudLet) => {
     let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
         if (item.instance.Cloudlet === pCloudLet) {
             return item;
@@ -65,7 +79,7 @@ export const filterCpuOrMemUsageByCloudLetByType = (cpuOrMemUsageList, pCloudLet
  * @param pCluster
  * @returns {*}
  */
-export const filterCpuOrMemUsageByCluster = (cpuOrMemUsageList, pCluster) => {
+export const filterUsageByCluster = (cpuOrMemUsageList, pCluster) => {
     let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
         if (item.instance.ClusterInst === pCluster) {
             return item;
@@ -74,7 +88,7 @@ export const filterCpuOrMemUsageByCluster = (cpuOrMemUsageList, pCluster) => {
     return filteredCpuOrMemUsageList
 }
 
-export const filterCpuOrMemUsageByAppInst = (cpuOrMemUsageList, pAppInst) => {
+export const filterUsageByAppInst = (cpuOrMemUsageList, pAppInst) => {
     let filteredList = cpuOrMemUsageList.filter((item) => {
         if (item.instance.AppName === pAppInst) {
             return item;
@@ -219,25 +233,83 @@ export const makeCloudletListSelectBox = (appInstanceList: Array) => {
  * @param hardwareType
  * @returns {*}
  */
-export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
+export const renderBarGraph = (usageList: any, hardwareType: string = HARDWARE_TYPE.CPU, _this) => {
+
+    function renderUsageByType(usageOne, hardwareType) {
+
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            return usageOne.sumCpuUsage
+        }
+
+        if (hardwareType === HARDWARE_TYPE.MEM) {
+            return usageOne.sumMemUsage
+        }
+
+        if (hardwareType === HARDWARE_TYPE.DISK) {
+            return usageOne.sumDiskUsage
+        }
+
+        if (hardwareType === HARDWARE_TYPE.NETWORK) {
+            //usageOne.sumSendBytes
+
+            return usageOne.sumRecvBytes
+
+        }
+    }
+
+    function renderUsageLabelByType(usageOne, hardwareType) {
+
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            return usageOne.sumCpuUsage.toFixed(2) + " %"
+        }
+
+        if (hardwareType === HARDWARE_TYPE.MEM) {
+            return numberWithCommas(usageOne.sumMemUsage) + " Byte"
+        }
+
+        if (hardwareType === HARDWARE_TYPE.DISK) {
+            return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
+        }
+
+        if (hardwareType === HARDWARE_TYPE.NETWORK) {
+            return numberWithCommas(usageOne.sumRecvBytes) + " Byte"
+        }
+    }
+
+    function renderTitle(hardwareType) {
+        if (hardwareType === HARDWARE_TYPE.CPU) {
+            return ' Top 5 of CPU Usage'
+        }
+
+        if (hardwareType === HARDWARE_TYPE.MEM) {
+            return ' Top 5 of MEM Usage'
+        }
+
+        if (hardwareType === HARDWARE_TYPE.DISK) {
+            return ' Top 5 of DISK Usage'
+        }
+
+        if (hardwareType === HARDWARE_TYPE.NETWORK) {
+            return ' Top 5 of NETWORK Usage'
+        }
+    }
 
     let chartDataList = [];
     chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
     for (let index = 0; index < usageList.length; index++) {
         if (index < 5) {
             let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
-                hardwareType === 'cpu' ? usageList[index].sumCpuUsage : usageList[index].sumMemUsage,
+                renderUsageByType(usageList[index], hardwareType),
                 CHART_COLOR_LIST[index],
-                hardwareType === 'cpu' ? usageList[index].sumCpuUsage.toFixed(2) + " %" : numberWithCommas(usageList[index].sumMemUsage) + " Byte"]
+                renderUsageLabelByType(usageList[index], hardwareType)]
             chartDataList.push(barDataOne);
         }
-
     }
 
     return (
         <Chart
             width={window.innerWidth * 0.31}
-            height={320}
+            height={330}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -284,17 +356,21 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                          }*/
                     }
                 },
-                is3D: false,
+
+                is3D: true,
                 title: '',
                 titleTextStyle: {
-                    color: 'red'
+                    color: '#fff',
+                    fontSize: 20,
+                    italic: true,
+                    bold: true,
                     /*fontName: <string>, // i.e. 'Times New Roman'
                     fontSize: <number>, // 12, 18 whatever you want (don't specify px)
                      bold: <boolean>,    // true or false
-                    italic: <boolean>   // true of false*/
+                      // true of false*/
                 },
-                titlePosition: 'out',
-                chartArea: {left: 100, right: 150, top: 20, width: "50%", height: "80%"},
+                //titlePosition: 'out',
+                chartArea: {left: 100, right: 150, top: 50, bottom: 25, width: "50%", height: "100%",},
                 legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
                 //xAxis
                 hAxis: {
@@ -321,7 +397,7 @@ export const renderBarGraphForCpuMem = (usageList: any, hardwareType: string = H
                 vAxis: {
                     title: '',
                     titleTextStyle: {
-                        fontSize: 14,
+                        fontSize: 20,
                         fontStyle: "normal",
                         color: 'white'
                     },
@@ -860,17 +936,18 @@ export const filterAppInstOnCloudlet = (CloudLetOneList: Array, pCluster: string
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
  * @returns {*}
  */
-export const renderBubbleChart = (_this: PageMonitoring2) => {
+export const renderBubbleChart = (_this: PageMonitoring) => {
     let appInstanceList = _this.state.appInstanceList
 
     console.log('appInstanceList2222====>', appInstanceList)
 
     let chartData = [];
-    appInstanceList.map((item: TypeAppInstance) => {
+    appInstanceList.map((item: TypeAppInstance, index) => {
 
         //console.log('Flavor222====>', item.Flavor);
         chartData.push({
             //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+            index: index,
             label: item.AppName.toString().substring(0, 10) + "...",
             value: instanceFlavorToPerformanceValue(item.Flavor),
             favor: item.Flavor,
@@ -923,17 +1000,46 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
                         weight: 'bold',
                     }}
                     //Custom bubble/legend click functions such as searching using the label, redirecting to other page
-                    bubbleClickFun={async (label) => {
+                    bubbleClickFun={async (label, index) => {
 
-                        await _this.setAppInstanceOne(label);
+                        await _this.setState({
+                            currentAppInst: label,
+                            currentGridIndex: index,
+                        })
+                        await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
+
+                        /*
+                            if (index >= 0 && index < 4) {
+                                setTimeout(() => {
+                                    _this.scrollToUp()
+                                }, 250)
+                            } else {
+                                setTimeout(() => {
+                                    _this.scrollToBottom()
+                                }, 250)
+                            }
+                        */
+
                     }}
 
-                    legendClickFun={(label) => {
+                    legendClickFun={async (label, index) => {
 
-                        notification.success({
-                            duration: 1.5,
-                            message: label.toString()
+                        await _this.setState({
+                            currentAppInst: label,
+                            currentGridIndex: index,
                         })
+                        await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
+
+                        if (index >= 0 && index < 4) {
+                            setTimeout(() => {
+                                _this.scrollToUp()
+                            }, 250)
+                        } else {
+                            setTimeout(() => {
+                                _this.scrollToBottom()
+                            }, 250)
+                        }
+
 
                     }}
                     data={chartData}
@@ -951,7 +1057,7 @@ export const renderBubbleChart = (_this: PageMonitoring2) => {
  * @todo: Render pie charts using Google charts
  * @returns {*}
  */
-export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _this: PageMonitoring2) => {
+export const renderPieChart2AndAppStatus = (appInstanceOne: TypeAppInstance, _this: PageMonitoring) => {
 
 
     let colorList = CHART_COLOR_LIST;
@@ -1356,7 +1462,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
     console.log('cpuUsageList===>', cpuUsageListPerInstanceSortByUsage);
 
     let width = window.innerWidth * 0.255
-    let height = 500 + 50;
+    let height = 500 + 100;
 
     let options = {
         maintainAspectRatio: true,
@@ -1431,7 +1537,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
         <div>
             <ReactChartJs
                 width={width}
-                height={300}
+                height={330}
                 data={data}
                 options={options}
             />
@@ -1443,6 +1549,7 @@ export const renderLineChart = (cpuUsageListPerInstanceSortByUsage, hardwareType
 
 
 export const renderLineChart002 = (cpuUsageListPerInstanceSortByUsage, hardwareType: string) => {
+
 
     console.log('cpuUsageListPerInstanceSortByUsage===>', cpuUsageListPerInstanceSortByUsage);
 
@@ -1728,7 +1835,7 @@ export const renderLineChart002 = (cpuUsageListPerInstanceSortByUsage, hardwareT
  * @param appInstanceListSortByCloudlet
  * @returns {*}
  */
-export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any, _this: PageMonitoring2) => {
+export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any, _this: PageMonitoring) => {
     // let boxWidth = window.innerWidth / 10 * 2.55;
 
     let cloudletCountList = []
@@ -1755,7 +1862,7 @@ export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet: any,
     //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
 
     return (
-        <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+        <div style={{display: 'flex', flexDirection: 'column', width: '90%'}}>
             {chunkedArraysOfColSize.map((colSizeArray, index) =>
                 <div className='page_monitoring_grid' key={index.toString()}>
                     {colSizeArray.map((item, index) =>
@@ -1850,7 +1957,7 @@ export const filterAppInstanceListByRegion = (pRegion: string, appInstanceList: 
  * @param memOrCpuUsageList
  * @returns {*}
  */
-export const filterCpuOrMemUsageListByRegion = (pRegion: string, memOrCpuUsageList) => {
+export const filterUsageListByRegion = (pRegion: string, memOrCpuUsageList) => {
     if (pRegion === REGION.ALL) {
         return memOrCpuUsageList;
     } else {
