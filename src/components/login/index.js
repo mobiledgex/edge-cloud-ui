@@ -318,7 +318,7 @@ class Login extends Component {
                         method:serviceMC.getEP().CREATE_USER, 
                         data : {
                             name:nextProps.values.username, 
-                            password:nextProps.values.password, 
+                            passhash:nextProps.values.password, 
                             email:nextProps.values.email, 
                             clientSysInfo:self.clientSysInfo, 
                             callbackurl : 'https://'+host+'/verify'
