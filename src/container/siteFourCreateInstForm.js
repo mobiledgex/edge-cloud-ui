@@ -341,7 +341,12 @@ class SiteFourCreateInstForm extends React.PureComponent {
         }
 
         rgn.map((item) => {
-            serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
+            //serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}, _self.receiveResultCloudlet)
+            if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
+            } else {
+                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org:_self.props.selectOrg } }, _self.receiveResultCloudlet)
+            }
             serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_FLAVOR, data : {region:item}}, _self.receiveResultFlavor)
         })
         serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_ORG}, _self.receiveResultOrg, _self)
@@ -531,7 +536,7 @@ const mapStateToProps = (state) => {
 
     return {
         selectedRegion, selectedOperator, clusterName, formValues, selectedFlavor, masterNumber, nodeNumber, getRegion,
-        regionInfo: regionInfo
+        regionInfo: regionInfo,selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : null,
     }
 };
 const mapDispatchProps = (dispatch) => {

@@ -170,7 +170,13 @@ class SiteFourPageCloudlet extends React.Component {
             rgn = (regionArr)?regionArr:this.props.regionInfo.region;
         }
         rgn.map(item => {
-            let requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}};
+            //let requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}};
+            let requestData = null;
+            if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+                requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}
+            } else {
+                requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_ORG_CLOUDLET, data : {region:item, org:_self.props.selectOrg}}
+            }
             serviceMC.sendRequest(_self, requestData, _self.receiveResult)
         })
         this.props.handleLoadingSpinner(true);
@@ -212,7 +218,8 @@ const mapStateToProps = (state) => {
         computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
         changeRegion : state.changeRegion?state.changeRegion.region:null,
         viewMode : viewMode, detailData:detailData,
-        regionInfo: regionInfo
+        regionInfo: regionInfo,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : null,
     }
 };
 const mapDispatchProps = (dispatch) => {

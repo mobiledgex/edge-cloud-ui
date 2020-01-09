@@ -205,7 +205,12 @@ class SiteFourPageClusterInst extends React.Component {
         let token = store ? store.userToken : 'null';
         if (localStorage.selectRole == 'AdminManager') {
             rgn.map((item) => {
-                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
+                //serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
+                if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+                    serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
+                } else {
+                    serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org:_self.props.selectOrg } }, _self.receiveResultCloudlet)
+                }
                 serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: item } }, _self.receiveResultClusterInst)
             })
         } else {
@@ -218,7 +223,12 @@ class SiteFourPageClusterInst extends React.Component {
                         }
                     }
                 }
-                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
+                //serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
+                if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+                    serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
+                } else {
+                    serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org:_self.props.selectOrg } }, _self.receiveResultCloudlet)
+                }
                 serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: data }, _self.receiveResultClusterInst)
             })
         }
@@ -259,7 +269,8 @@ const mapStateToProps = (state) => {
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
         viewMode : viewMode, detailData:detailData,
-        regionInfo: regionInfo
+        regionInfo: regionInfo,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : null
     }
 };
 const mapDispatchProps = (dispatch) => {

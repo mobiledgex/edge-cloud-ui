@@ -120,7 +120,16 @@ class RegistryInstViewer extends React.Component {
     }
     getDataDeveloper(token,_region) {
         serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_APP, data: { region: _region } }, this.receiveResultApp)
-        setTimeout(() => serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } }, this.receiveResultCloudlet), 200);
+        setTimeout(() => {
+            //serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } }, this.receiveResultCloudlet)
+            
+            if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+                serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } }, _self.receiveResultCloudlet)
+            } else {
+                serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: _region, org:_self.props.selectOrg } }, _self.receiveResultCloudlet)
+            }
+        }, 200);
+            
         setTimeout(() => serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: _region } }, this.receiveResultClusterInst), 400);
 
     }
@@ -641,7 +650,8 @@ const mapStateToProps = (state) => {
         selectedOrgName : selectedOrgName,
         selectedRegion : selectedRegion,
         editData : state.editInstance.data,
-        regionInfo: regionInfo
+        regionInfo: regionInfo,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : null
     }
 };
 const mapDispatchProps = (dispatch) => {

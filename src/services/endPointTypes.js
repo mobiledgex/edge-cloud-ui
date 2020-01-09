@@ -65,6 +65,7 @@ export const CREATE_CLOUDLET_POOL_MEMBER = "CreateCloudletPoolMember";
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
+export const SHOW_ORG_CLOUDLET = "orgcloudlet";
 
 export function getPath(request) {
     switch (request.method) {
@@ -133,6 +134,8 @@ export function getPath(request) {
             return `/api/v1/auth/orgcloudletpool/show`;
         case CREATE_LINK_POOL_ORG:
             return `/api/v1/auth/orgcloudletpool/create`;
+        case SHOW_ORG_CLOUDLET:
+            return `/api/v1/auth/orgcloudlet/show`;
         default:
             return null;
     }

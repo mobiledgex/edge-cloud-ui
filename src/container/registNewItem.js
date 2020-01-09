@@ -408,7 +408,12 @@ class RegistNewItem extends React.Component {
         if(localStorage.selectMenu === "Cluster Instances") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // operator, cloudlet
-            serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
+            if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
+            } else {
+                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: region, org: _self.props.selectOrg } }, _self.receiveOper)
+            }
+            
             // Flavor
             setTimeout(() => serviceMC.sendRequest(_self,{ token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveCF), 500);
         }
@@ -474,7 +479,8 @@ const mapStateToProps = (state) => {
         computeItem : state.computeItem?state.computeItem.item:null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
-        cloudletValue:formCloudlet
+        cloudletValue:formCloudlet,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : null,
     }
 };
 
