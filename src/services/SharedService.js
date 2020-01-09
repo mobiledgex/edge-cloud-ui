@@ -49,9 +49,8 @@ export const cutArrayList = (length: number = 5, paramArrayList: any) => {
  * @returns {Promise<AxiosResponse<any>>}
  */
 export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) => {
-
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    let result= await axios({
+    let result = await axios({
         url: '/api/v1/auth/metrics/app',
         method: 'post',
         data: serviceBodyForAppInstanceOneInfo['params'],
@@ -66,10 +65,7 @@ export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) 
     }).catch(e => {
         throw new Error(e)
     })
-
     return result;
-
-
 }
 
 
@@ -86,7 +82,14 @@ export const covertToComparableDate = (paramDate) => {
 }
 
 export const numberWithCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    try{
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }catch (e) {
+        alert(e)
+    }
+
+
 }
 
 

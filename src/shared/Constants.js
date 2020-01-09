@@ -27,7 +27,7 @@ export const REGION = {
     EU: 'EU',
 }
 
-export const RECENT_DATA_LIMIT_COUNT = 25
+export const RECENT_DATA_LIMIT_COUNT = 5
 
 export const APP_PERFORMANCE_VALUES = {
     M4_MEDIUM: {

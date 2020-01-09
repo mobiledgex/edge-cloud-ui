@@ -55,7 +55,6 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchProps = (dispatch) => {
     return {
-
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
         }
@@ -107,8 +106,8 @@ type State = {
     currentAppInst: string,
     isReady: boolean,
     isModalOpened: false,
-    appInstaceListForSelectBoxForCpu: Array,
-    appInstaceListForSelectBoxForMem: Array,
+    selectBoxTop5InstanceForCpu: Array,
+    selectBoxTop5InstanceForMem: Array,
     startDate: string,
     endDate: string,
     currentAppInstaceListIndex: number,
@@ -162,8 +161,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             currentCluster: '',
             currentAppInst: '',
             isModalOpened: false,
-            appInstaceListForSelectBoxForCpu: [],
-            appInstaceListForSelectBoxForMem: [],
+            selectBoxTop5InstanceForCpu: [],
+            selectBoxTop5InstanceForMem: [],
             startDate: '',
             endDate: '',
             currentAppInstaceListIndex: 0,
@@ -237,12 +236,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: Bring Mem and CPU chart Data with App Instance List. From remote
             //todo: ####################################################################################
 
-             let usageList = await Promise.all([
-                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
-                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
-                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
-                 makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
-             ])
+            let usageList = await Promise.all([
+                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.CPU, RECENT_DATA_LIMIT_COUNT),
+                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.MEM, RECENT_DATA_LIMIT_COUNT),
+                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.NETWORK, RECENT_DATA_LIMIT_COUNT),
+                makeHardwareUsageListPerInstance(appInstanceList, HARDWARE_TYPE.DISK, RECENT_DATA_LIMIT_COUNT),
+
+            ])
 
             //todo: ################################################################
             //todo: (last 100 datas FOR MATRIC) - FAKE JSON FOR TEST
@@ -259,38 +259,32 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 allCpuUsageList: usageList[0],
                 allMemUsageList: usageList[1],
-                allDiskUsageList: usageList[2],//diskUsage
-                allNetworkUsageList: usageList[3],//networkUsage
+                allNetworkUsageList: usageList[2],//networkUsage
+                allDiskUsageList: usageList[3],//diskUsage
                 cloudletList: cloudletList,
                 clusterList: clusterList,
                 filteredCpuUsageList: usageList[0],
                 filteredMemUsageList: usageList[1],
-                filteredDiskUsageList: usageList[2],
-                filteredNetworkUsageList: usageList[3],
+                filteredNetworkUsageList: usageList[2],
+                filteredDiskUsageList: usageList[3],
             });
-
 
             //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
-            let appInstaceListForSelectBoxForCpu = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), "AppName")
-            let appInstaceListForSelectBoxForMem = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredMemUsageList), "AppName")
+            let selectBoxTop5InstaceForCpu = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), "AppName")
+            let selectBoxTop5instaceForMem = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredMemUsageList), "AppName")
             await this.setState({
-                appInstaceListForSelectBoxForCpu: appInstaceListForSelectBoxForCpu,
-                appInstaceListForSelectBoxForMem: appInstaceListForSelectBoxForMem,
+                selectBoxTop5InstanceForCpu: selectBoxTop5InstaceForCpu,
+                selectBoxTop5InstanceForMem: selectBoxTop5instaceForMem,
             });
 
-
+            this.props.toggleLoading(false);
             await this.setState({
                 loading: false,
                 loading0: false,
                 isReady: true,
             });
-            clearInterval(this.intervalHandle)
-            this.props.toggleLoading(false);
-            /*notification.success({
-                duration: 1.5,
-                message: 'Data loading complete!'
-            })*/
 
+            clearInterval(this.intervalHandle)
             toast({
                 type: 'success',
                 //icon: 'smile',
@@ -406,8 +400,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     let appInstaceListForSelectBoxForCpu = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), "AppName")
                     let appInstaceListForSelectBoxForMem = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredMemUsageList), "AppName")
                     await this.setState({
-                        appInstaceListForSelectBoxForCpu: appInstaceListForSelectBoxForCpu,
-                        appInstaceListForSelectBoxForMem: appInstaceListForSelectBoxForMem,
+                        selectBoxTop5InstaceForCpu: appInstaceListForSelectBoxForCpu,
+                        selectBoxTop5InstanceForMem: appInstaceListForSelectBoxForMem,
                     });
                 }
                 setTimeout(() => {
@@ -551,123 +545,123 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         renderAppInstanceGrid() {
-            return (
-                <div>
-                    <Grid columns={8} padded={true} style={{height: 50}}>
-                        <Row>
-                            <Column color={'grey'}>
-                                index
-                            </Column>
-                            <Column color={'grey'}>
-                                NAME
-                            </Column>
-                            <Column color={'grey'}>
-                                CPU(%)
-                            </Column>
-                            <Column color={'grey'}>
-                                RSS MEM
-                            </Column>
-                            <Column color={'grey'}>
-                                RecvBytes
-                            </Column>
-                            <Column color={'grey'}>
-                                SendBytes
-                            </Column>
-                            <Column color={'grey'}>
-                                Status
-                            </Column>
-                            <Column color={'grey'}>
-                                Start
-                            </Column>
-                        </Row>
-                    </Grid>
-                    <div style={{
-                        marginTop: 10,
-                        //overflowY: 'scroll',
-                        //height: 525,
-                    }}
-                         ref={(div) => {
-                             this.messageList = div;
-                         }}
-                    >
-                        <Grid columns={8} padded={true}
+            /* return (
+                 <div>
+                     <Grid columns={8} padded={true} style={{height: 50}}>
+                         <Row>
+                             <Column color={'grey'}>
+                                 index
+                             </Column>
+                             <Column color={'grey'}>
+                                 NAME
+                             </Column>
+                             <Column color={'grey'}>
+                                 CPU(%)
+                             </Column>
+                             <Column color={'grey'}>
+                                 RSS MEM
+                             </Column>
+                             <Column color={'grey'}>
+                                 RecvBytes
+                             </Column>
+                             <Column color={'grey'}>
+                                 SendBytes
+                             </Column>
+                             <Column color={'grey'}>
+                                 Status
+                             </Column>
+                             <Column color={'grey'}>
+                                 Start
+                             </Column>
+                         </Row>
+                     </Grid>
+                     <div style={{
+                         marginTop: 10,
+                         //overflowY: 'scroll',
+                         //height: 525,
+                     }}
+                          ref={(div) => {
+                              this.messageList = div;
+                          }}
+                     >
+                         <Grid columns={8} padded={true}
 
-                              style={{
-                                  marginTop: 10,
-                                  overflowY: 'auto',//@todo: 스크롤 처리 부분...
-                                  height: this.state.appInstanceList.length * 35 + 110,
-                              }}
-                        >
-                            {/*todo:ROW HEADER*/}
-                            {/*todo:ROW HEADER*/}
-                            {/*todo:ROW HEADER*/}
-                            {!this.state.isReady && <Row columns={1}>
-                                <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
-                                    <CircularProgress
-                                        style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
-                                </Column>
-                            </Row>}
-                            {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
-                                /*   sumCpuUsage: sumCpuUsage,
-                                   sumMemUsage: sumMemUsage,
-                                   sumDiskUsage: sumDiskUsage,
-                                   sumRecvBytes: sumRecvBytes,
-                                   sumSendBytes: sumSendBytes,*/
+                               style={{
+                                   marginTop: 10,
+                                   overflowY: 'auto',//@todo: 스크롤 처리 부분...
+                                   height: this.state.appInstanceList.length * 35 + 110,
+                               }}
+                         >
+                             {/!*todo:ROW HEADER*!/}
+                             {/!*todo:ROW HEADER*!/}
+                             {/!*todo:ROW HEADER*!/}
+                             {!this.state.isReady && <Row columns={1}>
+                                 <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
+                                     <CircularProgress
+                                         style={{color: '#77BD25', justifyContent: "center", alignItems: 'center'}}/>
+                                 </Column>
+                             </Row>}
+                             {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
+                                 /!*   sumCpuUsage: sumCpuUsage,
+                                    sumMemUsage: sumMemUsage,
+                                    sumDiskUsage: sumDiskUsage,
+                                    sumRecvBytes: sumRecvBytes,
+                                    sumSendBytes: sumSendBytes,*!/
 
-                                return (
-                                    <Row
+                                 return (
+                                     <Row
 
-                                        style={{
-                                            color: index === this.state.currentGridIndex ? 'white' : 'white',
-                                            backgroundColor: index === this.state.currentGridIndex && '#21370c',
-                                            height: 50
-                                        }}
-                                        onClick={async () => {
-                                            //alert(item.AppName)
-                                            await this.setState({
-                                                currentAppInst: item.AppName,
-                                                currentGridIndex: index,
-                                            })
-                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.AppName)
-                                        }}
-                                    >
-                                        <Column
+                                         style={{
+                                             color: index === this.state.currentGridIndex ? 'white' : 'white',
+                                             backgroundColor: index === this.state.currentGridIndex && '#21370c',
+                                             height: 50
+                                         }}
+                                         onClick={async () => {
+                                             //alert(item.AppName)
+                                             await this.setState({
+                                                 currentAppInst: item.AppName,
+                                                 currentGridIndex: index,
+                                             })
+                                             await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.AppName)
+                                         }}
+                                     >
+                                         <Column
 
-                                        >
-                                            {index}
-                                        </Column>
-                                        <Column
+                                         >
+                                             {index}
+                                         </Column>
+                                         <Column
 
-                                        >
-                                            {item.AppName}
-                                        </Column>
-                                        <Column>
-                                            {this.state.allCpuUsageList[index].sumCpuUsage.toFixed(2) + "%"}
-                                        </Column>
-                                        <Column>
-                                            {this.state.allMemUsageList[index].sumMemUsage.toFixed(0) + ' Byte'}
-                                        </Column>
-                                        <Column>
-                                            {this.state.allNetworkUsageList[index].sumRecvBytes}
-                                        </Column>
-                                        <Column>
-                                            {this.state.allNetworkUsageList[index].sumSendBytes}
-                                        </Column>
-                                        <Column>
-                                            Status_NULL
-                                        </Column>
-                                        <Column>
-                                            Start_NULL
-                                        </Column>
-                                    </Row>
+                                         >
+                                             {item.AppName}
+                                         </Column>
+                                         <Column>
+                                             {this.state.allCpuUsageList[index].sumCpuUsage.toFixed(2) + "%"}
+                                         </Column>
+                                         <Column>
+                                             {this.state.allMemUsageList[index].sumMemUsage.toFixed(0) + ' Byte'}
+                                         </Column>
+                                         <Column>
+                                             {this.state.allNetworkUsageList[index].sumRecvBytes}
+                                         </Column>
+                                         <Column>
+                                             {this.state.allNetworkUsageList[index].sumSendBytes}
+                                         </Column>
+                                         <Column>
+                                             Status_NULL
+                                         </Column>
+                                         <Column>
+                                             Start_NULL
+                                         </Column>
+                                     </Row>
 
-                                )
-                            })}
-                        </Grid>
-                    </div>
-                </div>
+                                 )
+                             })}
+                         </Grid>
+                     </div>
+                 </div>
 
-            )
+             )*/
         }
 
         /**###############################
@@ -722,12 +716,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {renderBarGraph(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? <CircularProgress/> : renderBarGraph(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
-                    {/*1_column*/}
-                    {/*1_column*/}
-                    {/*1_column*/}
+                    {/*2nd_column*/}
+                    {/*2nd_column*/}
+                    {/*2nd_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
@@ -735,7 +729,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? <CircularProgress/> : renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
                 </div>
@@ -745,9 +739,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         renderMemArea() {
             return (
                 <div style={{display: 'flex', flexDirection: 'row'}}>
-                    {/*1111111111*/}
-                    {/*1111111111*/}
-                    {/*1111111111*/}
+                    {/*1st_column*/}
+                    {/*1st_column*/}
+                    {/*1st_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
@@ -755,12 +749,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {renderBarGraph(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? <CircularProgress/> : renderBarGraph(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
-                    {/*1111111111*/}
-                    {/*1111111111*/}
-                    {/*1111111111*/}
+                    {/*2nd_column*/}
+                    {/*2nd_column*/}
+                    {/*2nd_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
@@ -768,7 +762,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? <CircularProgress/> : renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
 
@@ -777,41 +771,41 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         renderDiskArea() {
-            return (
-                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
+             return (
+                 <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
 
-                    {/*1_column*/}
-                    {/*1_column*/}
-                    {/*1_column*/}
-                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of DISK Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {renderBarGraph(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
-                        </div>
-                    </div>
-                    {/*1_column*/}
-                    {/*1_column*/}
-                    {/*1_column*/}
-                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Transition Of DISK Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {renderLineChart(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
-                        </div>
-                    </div>
-                </div>
-            )
+                     {/*1_column*/}
+                     {/*1_column*/}
+                     {/*1_column*/}
+                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                         <div className='page_monitoring_title_area'>
+                             <div className='page_monitoring_title'>
+                                 TOP5 of DISK Usage
+                             </div>
+                         </div>
+                         <div className='page_monitoring_container'>
+                             {renderBarGraph(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                         </div>
+                     </div>
+                     {/*2nd_column*/}
+                     {/*2nd_column*/}
+                     {/*2nd_column*/}
+                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                         <div className='page_monitoring_title_area'>
+                             <div className='page_monitoring_title'>
+                                 Transition Of DISK Usage
+                             </div>
+                         </div>
+                         <div className='page_monitoring_container'>
+                             {renderLineChart(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                         </div>
+                     </div>
+                 </div>
+             )
         }
 
         renderNetworkArea() {
-            return (
+            /*return (
                 <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
                         <div className='page_monitoring_title_area'>
@@ -823,9 +817,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {renderBarGraph(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
                         </div>
                     </div>
-                    {/*1_column*/}
-                    {/*1_column*/}
-                    {/*1_column*/}
+                    {/!*1_column*!/}
+                    {/!*1_column*!/}
+                    {/!*1_column*!/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
@@ -848,11 +842,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                         //alert(value)
                                         //await this.handleSelectBoxChanges(value)
-                                        /*setTimeout(() => {
+                                        /!*setTimeout(() => {
                                             this.setState({
                                                 cloudLetSelectBoxPlaceholder: 'Select CloudLet'
                                             })
-                                        }, 1000)*/
+                                        }, 1000)*!/
                                     }}
                                     value={'RCV_BTYE'}
                                     style={{width: 220}}
@@ -864,7 +858,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                     </div>
                 </div>
-            )
+            )*/
         }
 
 
@@ -1031,7 +1025,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             value={this.state.currentAppInst}
                                             placeholder='Select App Instance'
                                             selection
-                                            options={this.state.appInstaceListForSelectBoxForCpu}
+                                            options={this.state.selectBoxTop5InstanceForCpu}
                                             style={Styles.dropDown}
                                             onChange={async (e, {value}) => {
 
@@ -1319,9 +1313,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             App Instance List
                                                         </div>
                                                         <div style={{height: 7}}/>
-                                                        <div className='page_monitoring_column_for_grid2'>
+                                                        {/*  <div className='page_monitoring_column_for_grid2'>
                                                             {this.renderAppInstanceGrid()}
-                                                        </div>
+                                                        </div>*/}
                                                     </div>
                                                 </OutsideClickHandler>
                                             </ToggleDisplay>

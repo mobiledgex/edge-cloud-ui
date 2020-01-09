@@ -1987,18 +1987,18 @@ export const filterCpuOrMemUsageListByType = (pRegion: string, memOrCpuUsageList
 /**
  * @todo 현재 선택된 지역의 인스턴스 리스트를 가지고 온다...
  * @todo : fetch App Instance List BY region
- * @param paramRegionArrayList
+ * @param pArrayRegion
  * @returns {Promise<[]>}
  */
-export const requestShowAppInstanceList = async (paramRegionArrayList: any = ['EU', 'US']) => {
+export const requestShowAppInstanceList = async (pArrayRegion: any = ['EU', 'US']) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    let finalizedAppInstanceList = [];
+    let mergedAppInstanceList = [];
 
-    for (let index = 0; index < paramRegionArrayList.length; index++) {
+    for (let index = 0; index < pArrayRegion.length; index++) {
         let serviceBody = {
             "token": store.userToken,
             "params": {
-                "region": paramRegionArrayList[index],
+                "region": pArrayRegion[index],
                 "appinst": {
                     "key": {
                         "app_key": {
@@ -2016,7 +2016,6 @@ export const requestShowAppInstanceList = async (paramRegionArrayList: any = ['E
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + store.userToken
-
             },
             timeout: 15 * 1000
         }).then(async response => {
@@ -2027,17 +2026,11 @@ export const requestShowAppInstanceList = async (paramRegionArrayList: any = ['E
             throw new Error(e)
         })
 
-
-
-        let mergedList = finalizedAppInstanceList.concat(responseResult);
-        finalizedAppInstanceList = mergedList;
+        let mergedList = mergedAppInstanceList.concat(responseResult);
+        mergedAppInstanceList = mergedList;
     }
-
-    return finalizedAppInstanceList;
+    return mergedAppInstanceList;
 }
-
-
-
 
 
 /**
@@ -2046,20 +2039,20 @@ export const requestShowAppInstanceList = async (paramRegionArrayList: any = ['E
  * @param appInstanceList
  * @returns {Promise<Array>}
  */
-export const makeHardwareUsageListPerInstance = async (appInstanceList: any, paramCpuOrMem: HARDWARE_TYPE = HARDWARE_TYPE.CPU, recentDataLimitCount: number) => {
+export const makeHardwareUsageListPerInstance = async (appInstanceList: any, pHardwareType: HARDWARE_TYPE, recentDataLimitCount: number) => {
 
     let usageListPerOneInstance = []
     for (let index = 0; index < appInstanceList.length; index++) {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
 
         //todo: 레퀘스트를 요청할 데이터 FORM형식을 만들어 준다.
-        let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], paramCpuOrMem, store.userToken, recentDataLimitCount)
+        let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount)
 
         //console.log('formOne====>', instanceInfoOneForm);
         //console.log('appInstanceList===>', appInstanceList[index]);
 
         let appInstanceHealth = await getAppLevelMetrics(instanceInfoOneForm);
-        console.log(`appInstanceHealth====>${index}`,)
+        console.log(`appInstanceHealth==index==>${index}`,)
 
         usageListPerOneInstance.push({
             instanceData: appInstanceList[index],
@@ -2084,14 +2077,14 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
             for (let jIndex = 0; jIndex < values.length; jIndex++) {
                 //console.log('itemeLength===>',  values[i][4]);
 
-                if (paramCpuOrMem === HARDWARE_TYPE.CPU) {
+                if (pHardwareType === HARDWARE_TYPE.CPU) {
                     sumCpuUsage = sumCpuUsage + values[jIndex][4];
-                } else if (paramCpuOrMem === HARDWARE_TYPE.MEM) {
+                } else if (pHardwareType === HARDWARE_TYPE.MEM) {
                     sumMemUsage = sumMemUsage + values[jIndex][5];
-                } else if (paramCpuOrMem === HARDWARE_TYPE.NETWORK) {
+                } else if (pHardwareType === HARDWARE_TYPE.NETWORK) {
                     sumRecvBytes = sumRecvBytes + values[jIndex][6];
                     sumSendBytes = sumSendBytes + values[jIndex][7];
-                } else if (paramCpuOrMem === HARDWARE_TYPE.DISK) {
+                } else if (pHardwareType === HARDWARE_TYPE.DISK) {
                     sumDiskUsage = sumDiskUsage + values[jIndex][5];
                 }
 
@@ -2105,7 +2098,7 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
 
 
             let body = {}
-            if (paramCpuOrMem === 'cpu') {
+            if (pHardwareType === HARDWARE_TYPE.CPU) {
                 body = {
                     instance: usageListPerOneInstance[index].instanceData,
                     columns: columns,
@@ -2113,7 +2106,7 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
                     sumCpuUsage: sumCpuUsage,
                 }
 
-            } else if (paramCpuOrMem === 'mem') {
+            } else if (pHardwareType === HARDWARE_TYPE.MEM) {
                 body = {
                     instance: usageListPerOneInstance[index].instanceData,
                     columns: columns,
@@ -2121,7 +2114,7 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
                     sumMemUsage: sumMemUsage,
                 }
 
-            } else if (paramCpuOrMem === 'disk') {
+            } else if (pHardwareType === HARDWARE_TYPE.DISK) {
                 body = {
                     instance: usageListPerOneInstance[index].instanceData,
                     columns: columns,
@@ -2141,10 +2134,10 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
 
             newHardwareUsageList.push(body);
 
-        } else {
+        } else {//todo:usage data가 0인 경우 처리....
 
             let body = {}
-            if (paramCpuOrMem === 'cpu') {
+            if (pHardwareType === HARDWARE_TYPE.CPU) {
                 body = {
                     instance: usageListPerOneInstance[index].instanceData,
                     columns: '',
@@ -2152,7 +2145,7 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
                     sumCpuUsage: 0,
                 }
 
-            } else if (paramCpuOrMem === 'mem') {
+            } else if (pHardwareType === HARDWARE_TYPE.MEM) {
                 body = {
                     instance: usageListPerOneInstance[index].instanceData,
                     columns: '',
@@ -2160,7 +2153,7 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
                     sumMemUsage: 0,
                 }
 
-            } else if (paramCpuOrMem === 'disk') {
+            } else if (pHardwareType === HARDWARE_TYPE.DISK) {
                 body = {
                     instance: usageListPerOneInstance[index].instanceData,
                     columns: '',
@@ -2184,19 +2177,19 @@ export const makeHardwareUsageListPerInstance = async (appInstanceList: any, par
     //@todo :##################################
     //@todo : Sort usage in reverse order.
     //@todo :##################################
-    if (paramCpuOrMem === HARDWARE_TYPE.CPU) {
+    if (pHardwareType === HARDWARE_TYPE.CPU) {
         newHardwareUsageList.sort((a, b) => {
             return b.sumCpuUsage - a.sumCpuUsage;
         });
-    } else if (paramCpuOrMem === HARDWARE_TYPE.MEM) {
+    } else if (pHardwareType === HARDWARE_TYPE.MEM) {
         newHardwareUsageList.sort((a, b) => {
             return b.sumMemUsage - a.sumMemUsage;
         });
-    } else if (paramCpuOrMem === HARDWARE_TYPE.NETWORK) {
+    } else if (pHardwareType === HARDWARE_TYPE.NETWORK) {
         newHardwareUsageList.sort((a, b) => {
             return b.sumRecvBytes - a.sumRecvBytes;
         });
-    } else if (paramCpuOrMem === HARDWARE_TYPE.DISK) {
+    } else if (pHardwareType === HARDWARE_TYPE.DISK) {
         newHardwareUsageList.sort((a, b) => {
             return b.sumDiskUsage - a.sumDiskUsage;
         });
