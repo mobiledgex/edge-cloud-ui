@@ -218,14 +218,8 @@ class SiteFourPageCloudletPoolReg extends React.Component {
      */
     render() {
         const {shouldShowBox, shouldShowCircle, devData} = this.state;
-        const { activeItem } = this.state
-        return (
-
-            ((this.props.appLaunch && this.props.appLaunch.data) && this.props.appLaunch.data['Region']) ?
-                <RegistryCloudletPoolViewer devData={devData} stepMove={this.state.step} gotoUrl={this.gotoUrl}/>
-                :
-                <SiteFourPoolStepViewer devData={devData} stepMove={this.state.step} gotoUrl={this.gotoUrl}/>
-        );
+        const { activeItem } = this.state;
+        return (<SiteFourPoolStepViewer devData={devData} stepMove={this.state.step} gotoUrl={this.gotoUrl}/>)
     }
 
 };
@@ -263,4 +257,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCloudletPoolReg)));
+export default  withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageCloudletPoolReg)));

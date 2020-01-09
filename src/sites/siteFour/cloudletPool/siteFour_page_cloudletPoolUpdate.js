@@ -4,11 +4,11 @@ import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
+
 import * as servicePool from '../../../services/service_cloudlet_pool';
-import SiteFourPoolTwo from "../../../container/siteFourPoolStepTwo";
+import SiteFourPoolUpdateView from "../../../container/siteFourPoolUpdateView";
 import * as reducer from '../../../utils'
 import '../../siteThree.css';
-import SiteFourPoolUpdateView from "../../../container/siteFourPoolUpdateView";
 import * as serviceMC from "../../../services/serviceMC";
 
 const createFormat = (data) => (
@@ -17,19 +17,24 @@ const createFormat = (data) => (
         "cloudletpool":{"key": {"name":data['poolName']}}
     }
 )
-let _self = null;
-
 const keys = [
 
+    // {
+    //     'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
+    //     'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
+    //     'LinktoOrganization':{label:'Link an Organization to Pool', type:'RenderDualListBox', necessary:true, tip:'Select an orgization in left side', active:true},
+    //     'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true}
+    // }
     {
-        'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
-        'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
-        'LinktoOrganization':{label:'Link an Organization to Pool', type:'RenderDualListBox', necessary:true, tip:'Select an orgization in left side', active:true},
-        'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true}
+        'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
+        'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
+        'AddCloudlet':{label:'Add cloudlet', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
+        'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
     }
 ]
+let _self = null;
 
-class SiteFourPageLinkOrganizeReg extends React.Component {
+class SiteFourPageCloudletPoolUpdate extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -47,7 +52,7 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
             apps:[],
             selectedRegion:null,
             typeOperator:'Developer',
-            updateType: 'organization',
+            updateType: 'cloudlet',
             orgaName:'',
             gavePoolName:'',
             keys: keys
@@ -72,7 +77,7 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
         _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
-    receiveResultLinkOrg = (result) => {
+    receiveResultCloudlet = (result) => {
         console.log('20200107 result -- ',JSON.stringify(result))
 
         if(result.error) {
@@ -103,7 +108,6 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
         //TODO: 편집 기능 - 오거나이제이션 링크된것과 새로 등록할 오거나이를 좌, 우측 리스트박스에 넣기
     }
     componentWillReceiveProps(nextProps) {
-
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
         this.setState({submitValues: nextProps.formClusterInst.values})
@@ -123,19 +127,34 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
              */
             if(this.pauseRender) return;
             let _params = {};
-            let selectedNumber = (nextProps.formClusterInst.values.invisibleField)?JSON.parse(nextProps.formClusterInst.values.invisibleField):[];
+            let selectedNumber = JSON.parse(nextProps.formClusterInst.values.invisibleField);
             let cloudletPool = nextProps.formClusterInst.values.poolName;
             let region = nextProps.formClusterInst.values.Region;
             console.log('20200106 create link pool org.. ', region,":", cloudletPool, ":", selectedNumber)
             if(selectedNumber.length) {
                 this.pauseRender = true;
-                let organiz = ''
+                let cloudlet = ''
                 selectedNumber.map((no) => {
-                    organiz = nextProps.formClusterInst.values.LinktoOrganization[no];
-                    _params = {"cloudletpool":cloudletPool,"org":organiz['cloudlet'],"region":region}
-                    // servicePool.createLinkPoolOrg('CreateLinkPoolOrg',{token:store.userToken, params:_params}, _self.receiveResultLinkOrg)
-                    let requestDataCreateLinkPoolOrg = {token:store.userToken, method:serviceMC.getEP().CREATE_LINK_POOL_ORG, data : _params};
-                    serviceMC.sendRequest(_self, requestDataCreateLinkPoolOrg, _self.receiveResultLinkOrg)
+                    cloudlet = nextProps.formClusterInst.values.AddCloudlet[no];
+                    // _params = {"poolName":cloudletPool,"cloudlet":cloudlets['cloudlet'],"region":region}
+
+                    _params = {
+                        "cloudletpoolmember":{
+                            "cloudlet_key":{
+                                "name":cloudlet.cloudlet,
+                                "operator_key":{
+                                    "name":cloudlet.orgaName
+                                }
+                            },
+                            "pool_key":{
+                                "name":nextProps.formClusterInst.values.poolName
+                            }
+                        },
+                        "region":cloudlet.region
+                    }
+                    // servicePool.createCloudletPoolMember('CreateCloudletPoolMember',{token:store.userToken, params:_params}, _self.receiveResultCloudlet, 0)
+                    let requestDataCreateCloudletPoolMember = {token:store.userToken, method:serviceMC.getEP().CREATE_CLOUDLET_POOL_MEMBER, data : _params};
+                    serviceMC.sendRequest(_self, requestDataCreateCloudletPoolMember, _self.receiveResultCloudlet)
                 })
             }
         }
@@ -165,7 +184,7 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
         return (
             <div className="round_panel">
                 <div className="grid_table" style={{overflow:'auto'}}>
-                    <SiteFourPoolUpdateView onSubmit={() => console.log('Form was submitted')} type={typeOperator} org={orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:selectedRegion, poolName:gavePoolName}} changeOrg={this.changeOrg} keys={this.state.keys} updateType={this.state.updateType}></SiteFourPoolUpdateView>
+                    <SiteFourPoolUpdateView onSubmit={() => console.log('Form was submitted')} type={typeOperator} org={orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:this.props.appLaunch.data.Region, poolName:gavePoolName}} changeOrg={this.changeOrg} keys={this.state.keys} updateType={this.state.updateType}></SiteFourPoolUpdateView>
                 </div>
             </div>
 
@@ -216,4 +235,4 @@ const mapDispatchProps = (dispatch) => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageLinkOrganizeReg));
+export default withRouter(connect(mapStateToProps, mapDispatchProps)(SiteFourPageCloudletPoolUpdate));
