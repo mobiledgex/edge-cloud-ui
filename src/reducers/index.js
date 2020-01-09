@@ -21,7 +21,6 @@ import searchValue from './searchValue';
 import changeRegion from './changeRegion';
 import computeRefresh from './computeRefresh';
 import loadingSpinner from './loadingSpinner';
-import creatingSpinner from './creatingSpinner';
 import loginMode from './loginMode';
 import injectData from './injectData';
 import alertMsg from './alertMsg';
@@ -83,7 +82,6 @@ const reducers = combineReducers({
     searchValue,
     computeRefresh,
     loadingSpinner,
-    creatingSpinner,
     alertMsg,
     roleInfo,
     appLaunch,
