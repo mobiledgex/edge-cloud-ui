@@ -176,16 +176,16 @@ const DashboardContainer = ( props, props2) => {
                 {props.mainPath === '/passwordreset' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} reset={true}/>}
                 {props.mainPath === '/verify' && <VerifyContent params={_params} history={(props2.history)?props2.history:null}/>}
             <Alert stack={{limit: 3}} />
-            {(self.props.creatingSpinner==true)?
+            {(self.props.loadingSpinner==true)?
             <div className="loadingBox" style={{zIndex:99999}}>
                 <GridLoader
                     sizeUnit={"px"}
                     size={25}
                     color={'#70b2bc'}
-                    loading={self.props.creatingSpinner}
+                    loading={self.props.loadingSpinner}
                     //loading={true}
                 />
-                <span className={self.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
+                <span className={self.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
             </div>:null}
 
         </div>
@@ -352,7 +352,7 @@ const mapStateToProps = (state) => {
         siteName: (state.siteChanger)?state.siteChanger.site:null,
         tab: (state.tabChanger.tab)?state.tabChanger.tab:null,
         clickTab: (state.tabClick.clickTab)?state.tabClick.clickTab:null,
-        creatingSpinner : state.creatingSpinner.creating?state.creatingSpinner.creating:null,
+        loadingSpinner : state.loadingSpinner.creating?state.loadingSpinner.creating:null,
 
     };
 };

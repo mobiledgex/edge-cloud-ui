@@ -120,7 +120,7 @@ export default class PopDetailViewer extends React.Component {
     render() {
         let { orgType } = this.state;
         return (
-            <Modal size={'small'} open={this.state.open} dimmer={false}>
+            <Modal size={'small'} open={this.state.open}>
                 <Modal.Header >View Detail</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
