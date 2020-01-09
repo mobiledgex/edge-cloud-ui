@@ -76,7 +76,7 @@ class SiteFourPageCloudletPoolUpdate extends React.Component {
         _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
 
     }
-    receiveResultLinkOrg = (result) => {
+    receiveResultCloudlet = (result) => {
         console.log('20200107 result -- ',JSON.stringify(result))
 
         if(result.error) {
@@ -132,11 +132,26 @@ class SiteFourPageCloudletPoolUpdate extends React.Component {
             console.log('20200106 create link pool org.. ', region,":", cloudletPool, ":", selectedNumber)
             if(selectedNumber.length) {
                 this.pauseRender = true;
-                let organiz = ''
+                let cloudlet = ''
                 selectedNumber.map((no) => {
-                    organiz = nextProps.formClusterInst.values.LinktoOrganization[no];
-                    _params = {"cloudletpool":cloudletPool,"org":organiz['cloudlet'],"region":region}
-                    servicePool.createLinkPoolOrg('CreateLinkPoolOrg',{token:store.userToken, params:_params}, _self.receiveResultLinkOrg)
+                    cloudlet = nextProps.formClusterInst.values.AddCloudlet[no];
+                    // _params = {"poolName":cloudletPool,"cloudlet":cloudlets['cloudlet'],"region":region}
+
+                    _params = {
+                        "cloudletpoolmember":{
+                            "cloudlet_key":{
+                                "name":cloudlet.cloudlet,
+                                "operator_key":{
+                                    "name":cloudlet.orgaName
+                                }
+                            },
+                            "pool_key":{
+                                "name":nextProps.formClusterInst.values.poolName
+                            }
+                        },
+                        "region":cloudlet.region
+                    }
+                    servicePool.createCloudletPoolMember('CreateCloudletPoolMember',{token:store.userToken, params:_params}, _self.receiveResultCloudlet, 0)
                 })
             }
         }

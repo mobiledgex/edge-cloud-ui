@@ -493,6 +493,7 @@ class SiteFourCreatePoolForm extends React.Component {
         let {data, dimmer, changeNext} = this.props;
         console.log('20200106 props data in Form -- ', this.props.data)
         let randomState = Math.random()*100;
+        console.log("20200109_1 " + this.props.selectListData)
         return (
             <Grid.Column>
                 {/*<Grid.Row className="grid_map_container">*/}
@@ -510,6 +511,7 @@ class SiteFourCreatePoolForm extends React.Component {
                                                    handleChangeLat={this.handleChangeLat}
                                                    handleChangeLong={this.handleChangeLong}
                                                    onChangeState={this.onChangeFormState}
+                                                   selectListData={this.props.selectListData}
                                                    latError={this.state.laterror}
                                                    longError={this.state.longerror}>
 

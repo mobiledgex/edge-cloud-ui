@@ -123,7 +123,7 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
              */
             if(this.pauseRender) return;
             let _params = {};
-            let selectedNumber = JSON.parse(nextProps.formClusterInst.values.invisibleField);
+            let selectedNumber = (nextProps.formClusterInst.values.invisibleField)?JSON.parse(nextProps.formClusterInst.values.invisibleField):[];
             let cloudletPool = nextProps.formClusterInst.values.poolName;
             let region = nextProps.formClusterInst.values.Region;
             console.log('20200106 create link pool org.. ', region,":", cloudletPool, ":", selectedNumber)
@@ -133,6 +133,7 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
                 selectedNumber.map((no) => {
                     organiz = nextProps.formClusterInst.values.LinktoOrganization[no];
                     _params = {"cloudletpool":cloudletPool,"org":organiz['cloudlet'],"region":region}
+
                     servicePool.createLinkPoolOrg('CreateLinkPoolOrg',{token:store.userToken, params:_params}, _self.receiveResultLinkOrg)
                 })
             }
@@ -163,7 +164,7 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
         return (
             <div className="round_panel">
                 <div className="grid_table" style={{overflow:'auto'}}>
-                    <SiteFourPoolTwo onSubmit={() => console.log('Form was submitted')} type={typeOperator} org={orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:selectedRegion, poolName:gavePoolName}} changeOrg={this.changeOrg} keys={this.state.keys} updateType={this.state.updateType}></SiteFourPoolTwo>
+                    <SiteFourPoolUpdateView onSubmit={() => console.log('Form was submitted')} type={typeOperator} org={orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:selectedRegion, poolName:gavePoolName}} changeOrg={this.changeOrg} keys={this.state.keys} updateType={this.state.updateType}></SiteFourPoolUpdateView>
                 </div>
             </div>
 

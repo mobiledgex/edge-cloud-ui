@@ -351,6 +351,10 @@ class SiteFourCreateFormDefault extends React.Component {
                 self.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
             }, 5000)
         }
+        console.log("20200109 " + JSON.stringify(this.props.selectListData))
+        if(this.props.selectListData){
+            this.setState({selected:this.props.selectListData})
+        }
 
     }
 
@@ -412,7 +416,7 @@ class SiteFourCreateFormDefault extends React.Component {
         if(arr.length > 1) {
             arr.pop()
         }
-        this.setState({portArray:arr}); 
+        this.setState({portArray:arr});
     }
     receiveResult = (result) => {
         let arr = [];
@@ -434,7 +438,7 @@ class SiteFourCreateFormDefault extends React.Component {
         else if(localStorage.selectMenu == 'Cloudlet Pool') siteNum = 7
         this.props.gotoUrl(siteNum)
     }
-    
+
     render (){
         const {  dimmer, longLoc, latLoc, type, pId, getUserRole, handleChangeLong, handleChangeLat, step } = this.props;
         const { data, regKeys, fieldKeys, available, selected } = this.state;
@@ -645,7 +649,7 @@ class SiteFourCreateFormDefault extends React.Component {
                 </Fragment>
             </Item>
         )
-        
+
     }
 };
 

@@ -3,11 +3,13 @@ import {Button, Form, Item, Message, List, Grid, Card, Header, Image, Input} fro
 import {Field, reduxForm, initialize, reset, stopSubmit} from "redux-form";
 import SiteFourCreatePoolForm  from './siteFourCreatePoolForm';
 import * as services from '../services/service_compute_service';
+import * as poolServices from '../services/service_cloudlet_pool';
 import './styles.css';
+import * as reducer from "../utils";
 
 let _self = null;
 let rgn = [];
-class SiteFourPoolTwo extends React.Component {
+class SiteFourPoolUpdateView extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
@@ -15,8 +17,11 @@ class SiteFourPoolTwo extends React.Component {
             typeValue:'',
             propsData:[],
             selectedData:[],
-            keys: []
+            keys: [],
+            selectListData: []
         };
+        this._memberDummy = [];
+        this._linkDummy = [];
 
     }
 
@@ -40,15 +45,41 @@ class SiteFourPoolTwo extends React.Component {
         }
 
     }
+
+    receiveResultMember = (result) => {
+        let cloudletData = [];
+        let poolName = this.state.selectedData['poolName']
+        result.map((item) =>{
+            if(poolName === item.PoolName){
+                cloudletData.push(item.Cloudlet)
+            }
+        })
+        this.state.selectListData = cloudletData
+    }
+
+    receiveResultLinkOrg = (result) => {
+        let orgData = [];
+        let poolName = this.state.selectedData['poolName']
+        result.map((item) =>{
+            if(poolName === item.PoolName){
+                orgData.push(item['Org'])
+            }
+        })
+        this.state.selectListData = orgData
+    }
+
     getDataList = () => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
         let updateType = this.props.updateType;
         if(updateType === 'cloudlet'){
             services.getMCService('ShowCloudlet',{token:store.userToken, region:this.props.selectedData.region}, _self.receiveResult)
+            poolServices.getListCloudletPoolMember('ShowCloudletPoolMember',{token:store.userToken, region:this.props.selectedData.region}, _self.receiveResultMember)
         } else {
             services.getMCService('ShowOrg',{token:store.userToken}, _self.receiveResult)
+            poolServices.showOrgCloudletPool('ShowOrgCloudletPool', {token:store.userToken}, _self.receiveResultLinkOrg)
         }
+
 
     }
 
@@ -64,10 +95,7 @@ class SiteFourPoolTwo extends React.Component {
                 'Region':this.state.selectedData['region'] || '',
                 'poolName':this.state.selectedData['poolName'] || '',
                 'AddCloudlet':cloudletList,
-                'invisibleField':'',
-                'CloudletPool':'',
-                'LinktoOrganization':'',
-                'LinkDiagram':''
+                'invisibleField':''
             }]
         } else {
             let orgList = [];
@@ -112,12 +140,13 @@ class SiteFourPoolTwo extends React.Component {
     //data:data, keys:keysData, region:region
     // data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}
     render (){
+        console.log("20200109_2 " + JSON.stringify(this.state.selectListData))
         const { handleSubmit, reset, org, type } = this.props;
         return (
             <Fragment>
                 <Grid>
                     <Grid.Column>
-                        <div><SiteFourCreatePoolForm data={this.state.devData}  pId={2} getUserRole={this.props.userrole} gotoUrl={this.props.gotoUrl} toggleSubmit={this.props.toggleSubmit} validError={this.props.error || []} onSubmit={() => console.log('submit form')} changeNext={'201'}/></div>
+                        <div><SiteFourCreatePoolForm data={this.state.devData}  pId={2} getUserRole={this.props.userrole} gotoUrl={this.props.gotoUrl} toggleSubmit={this.props.toggleSubmit} validError={this.props.error || []} onSubmit={() => console.log('submit form')} changeNext={'201'} selectListData = {this.state.selectListData}/></div>
                     </Grid.Column>
                 </Grid>
             </Fragment>
@@ -127,4 +156,4 @@ class SiteFourPoolTwo extends React.Component {
 };
 
 
-export default SiteFourPoolTwo;
+export default SiteFourPoolUpdateView;
