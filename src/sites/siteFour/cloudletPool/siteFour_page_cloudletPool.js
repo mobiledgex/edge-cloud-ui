@@ -24,21 +24,21 @@ class SiteFourPageCloudletPool extends React.Component {
         this.state = {
             shouldShowBox: true,
             shouldShowCircle: false,
-            contHeight:0,
-            contWidth:0,
-            bodyHeight:0,
+            contHeight: 0,
+            contWidth: 0,
+            bodyHeight: 0,
             activeItem: 'Developers',
-            devData:[],
-            viewMode:'listView',
-            regions:[],
-            regionToggle:false,
-            dataSort:false,
-            changeRegion:null
+            devData: [],
+            viewMode: 'listView',
+            regions: [],
+            regionToggle: false,
+            dataSort: false,
+            changeRegion: null
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips','Status','Physical_name','Platform_type', 'cloudletGroup', 'OrganizGroup', 'uuid'];
-        this.headerLayout = [1,3,3,3,2,2,2];
+        this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips', 'Status', 'Physical_name', 'Platform_type', 'cloudletGroup', 'OrganizGroup', 'uuid'];
+        this.headerLayout = [1, 3, 3, 3, 2, 2, 2];
         this.userToken = null;
         this._devData = [];
         this.loadCount = 0;
@@ -55,7 +55,7 @@ class SiteFourPageCloudletPool extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
 
 
     }
@@ -70,7 +70,7 @@ class SiteFourPageCloudletPool extends React.Component {
             state: { some: 'state' }
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
 
     }
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -79,8 +79,8 @@ class SiteFourPageCloudletPool extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+        this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
+        this.setState({ contHeight: (window.innerHeight - this.headerH) / 2 - this.hgap })
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
@@ -94,39 +94,39 @@ class SiteFourPageCloudletPool extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("20200106 ..page cloudlet pool -",nextProps.viewMode)
-        if(nextProps.viewMode) {
-            if(nextProps.viewMode === 'listView') {
+        console.log("20200106 ..page cloudlet pool -", nextProps.viewMode)
+        if (nextProps.viewMode) {
+            if (nextProps.viewMode === 'listView') {
                 this.getDataDeveloper(this.props.changeRegion, this.state.regions)
-                this.setState({viewMode:nextProps.viewMode})
+                this.setState({ viewMode: nextProps.viewMode })
             } else {
-                this.setState({viewMode:nextProps.viewMode})
+                this.setState({ viewMode: nextProps.viewMode })
                 // setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
-                this.setState({detailData:nextProps.detailData})
+                this.setState({ detailData: nextProps.detailData })
             }
 
         }
-        if(this.state.changeRegion !== nextProps.changeRegion){
-            console.log("20191119 ..cloudlet 22 nextProps.changeRegion = ",nextProps.changeRegion,"-- : --",this.props.changeRegion)
-            this.setState({changeRegion: nextProps.changeRegion})
+        if (this.state.changeRegion !== nextProps.changeRegion) {
+            console.log("20191119 ..cloudlet 22 nextProps.changeRegion = ", nextProps.changeRegion, "-- : --", this.props.changeRegion)
+            this.setState({ changeRegion: nextProps.changeRegion })
             this.getDataDeveloper(nextProps.changeRegion, this.state.regions);
 
         } else {
 
         }
-        if(nextProps.computeRefresh.compute) {
+        if (nextProps.computeRefresh.compute) {
             console.log('20191119 computeRefresh..')
             this._cloudletDummy = [];
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
-            this.setState({dataSort:true});
+            this.setState({ dataSort: true });
         }
 
-        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
+        if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
             //{ key: 1, text: 'All', value: 'All' }
             console.log("20191119 ..cloudlet 33 region info in page cloudlet")
-            _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
-            this.getDataDeveloper(nextProps.changeRegion,nextProps.regionInfo.region);
+            _self.setState({ regionToggle: true, regions: nextProps.regionInfo.region })
+            this.getDataDeveloper(nextProps.changeRegion, nextProps.regionInfo.region);
         }
 
 
@@ -143,14 +143,14 @@ class SiteFourPageCloudletPool extends React.Component {
      */
     receiveResultShow = (_result) => {
         let result = null;
-        if(_result.response) {
+        if (_result.response) {
             result = _result.response.data
         } else {
             _self.props.handleComputeRefresh(false);
             return;
         }
         // @inki if data has expired token
-        if(result.error && result.error.indexOf('Expired') > -1) {
+        if (result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
             _self.props.handleComputeRefresh(false);
@@ -158,13 +158,13 @@ class SiteFourPageCloudletPool extends React.Component {
             return;
         }
         console.log('20200108 result show pool - ', result, ": rgn= ", rgn)
-        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-        if(Object.keys(regionGroup)[0]) {
+        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region') : {};
+        if (Object.keys(regionGroup)[0]) {
             _self._cloudletDummy = _self._cloudletDummy.concat(result)
         }
 
-        this.loadCount ++;
-        if(rgn.length === this.loadCount){
+        this.loadCount++;
+        if (rgn.length === this.loadCount) {
             _self.countJoin()
         }
 
@@ -172,48 +172,48 @@ class SiteFourPageCloudletPool extends React.Component {
 
     receiveResultMember = (_result) => {
         let result = null;
-        if(_result.response) {
+        if (_result.response) {
             result = _result.response.data
         } else {
             _self.props.handleComputeRefresh(false);
             return;
         }
         console.log('20200108 result show - ', result)
-        if(result.error && result.error.indexOf('Expired') > -1) {
+        if (result.error && result.error.indexOf('Expired') > -1) {
             _self.props.handleAlertInfo('error', result.error);
             setTimeout(() => _self.gotoUrl('/logout'), 4000);
             _self.props.handleComputeRefresh(false);
             _self.props.handleLoadingSpinner(false);
             return;
         }
-        let poolGroup = (!result.error) ? reducer.groupBy(result, 'PoolName'):{};
-        if(Object.keys(poolGroup)[0]) {
+        let poolGroup = (!result.error) ? reducer.groupBy(result, 'PoolName') : {};
+        if (Object.keys(poolGroup)[0]) {
             _self._memberDummy = _self._memberDummy.concat(poolGroup)
         }
         console.log('20200108 result show member - ', _self._memberDummy)
-        this.loadCountM ++;
-        if(rgn.length === this.loadCountM){
+        this.loadCountM++;
+        if (rgn.length === this.loadCountM) {
             _self.countJoin();
         }
     }
     receiveResultLinkOrg = (_result) => {
         let result = null;
-        if(_result.response) {
+        if (_result.response) {
             result = _result.response.data
         } else {
             _self.props.handleComputeRefresh(false);
             return;
         }
-        if(this.loadCountLink > 0) return;
+        if (this.loadCountLink > 0) return;
         console.log('20200108 result show link org - ', result, ": this.loadCountLink =", this.loadCountLink)
 
-        let poolGroup = (result) ? reducer.groupBy(result, 'CloudletPool'):{};
+        let poolGroup = (result) ? reducer.groupBy(result, 'CloudletPool') : {};
         console.log('20200108 result show link org - - - ', poolGroup)
-        if(Object.keys(poolGroup)[0]) {
+        if (Object.keys(poolGroup)[0]) {
             _self._linkDummy = poolGroup;
         }
         console.log('20200108 result show link org - ', _self._linkDummy)
-        this.loadCountLink ++;
+        this.loadCountLink++;
 
         _self.countJoin();
 
@@ -222,8 +222,8 @@ class SiteFourPageCloudletPool extends React.Component {
 
 
     countJoin() {
-        console.log('20200108 ==== countJoin... ', this.loadCount,":", this.loadCountM, ":", this.loadCountLink)
-        if(this.loadCount == rgn.length && this.loadCountM == rgn.length && this.loadCountLink == 1) {
+        console.log('20200108 ==== countJoin... ', this.loadCount, ":", this.loadCountM, ":", this.loadCountLink)
+        if (this.loadCount == rgn.length && this.loadCountM == rgn.length && this.loadCountLink == 1) {
             this.countAllJoin();
         }
     }
@@ -243,19 +243,19 @@ class SiteFourPageCloudletPool extends React.Component {
             data['cloudletGroup'] = [];
             data['OrganizGroup'] = [];
             cloudlet.map(member => {
-                if(member[data['PoolName']]){
-                    member[data['PoolName']].map((pn)=> {
-                        if(pn['Region'] === data['Region']) {
-                            console.log("20200103 member", pn, ":", pn['Region'],":", data['Region'])
+                if (member[data['PoolName']]) {
+                    member[data['PoolName']].map((pn) => {
+                        if (pn['Region'] === data['Region']) {
+                            console.log("20200103 member", pn, ":", pn['Region'], ":", data['Region'])
                             data['Cloudlets'] += 1
                             data['cloudletGroup'].push(pn)
                         }
                     })
                 }
             })
-            if(orgData[data['PoolName']]) {
+            if (orgData[data['PoolName']]) {
                 orgData[data['PoolName']].map((org) => {
-                    if(org['Region'] === data['Region']) {
+                    if (org['Region'] === data['Region']) {
                         data['Organizations'] += 1
                         data['OrganizGroup'].push(org)
                     }
@@ -264,7 +264,7 @@ class SiteFourPageCloudletPool extends React.Component {
         })
 
         console.log('20200103 ..cloudlet member count join---', cloneData)
-        this.setState({devData:cloneData})
+        this.setState({ devData: cloneData })
         this._memberDummy = [];
         this._cloudletDummy = [];
         this._linkDummy = [];
@@ -272,15 +272,15 @@ class SiteFourPageCloudletPool extends React.Component {
     }
 
 
-    getDataDeveloper = (region,regionArr) => {
+    getDataDeveloper = (region, regionArr) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.setState({devData:[]})
+        this.setState({ devData: [] })
         this._cloudletDummy = [];
         _self.loadCount = 0;
-        if(region !== 'All'){
+        if (region !== 'All') {
             rgn = [region]
         } else {
-            rgn = (regionArr)?regionArr:this.props.regionInfo.region;
+            rgn = (regionArr) ? regionArr : this.props.regionInfo.region;
         }
 
         rgn.map((item, i) => {
@@ -288,16 +288,16 @@ class SiteFourPageCloudletPool extends React.Component {
             //services.getListCloudletPool('ShowCloudletPool',{token:store.userToken, region:item}, _self.receiveResultShow)
             //services.getListCloudletPoolMember('ShowCloudletPoolMember',{token:store.userToken, region:item}, _self.receiveResultMember)
             //TODO : apply arch of Rahul to ..
-            let requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET_POOL, data : {region:item}};
+            let requestData = { token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET_POOL, data: { region: item } };
             serviceMC.sendRequest(_self, requestData, _self.receiveResultShow)
             //
-            let requestDataMember = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET_MEMBER, data : {region:item}};
+            let requestDataMember = { token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET_MEMBER, data: { region: item } };
             serviceMC.sendRequest(_self, requestDataMember, _self.receiveResultMember)
         })
         //old
         //services.showOrgCloudletPool('ShowOrgCloudletPool', {token:store.userToken}, _self.receiveResultLinkOrg)
         //new
-        let requestDataOrg = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET_LINKORG, data : {}};
+        let requestDataOrg = { token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET_LINKORG, data: {} };
         serviceMC.sendRequest(_self, requestDataOrg, _self.receiveResultLinkOrg)
         this.props.handleLoadingSpinner(true);
 
@@ -308,52 +308,52 @@ class SiteFourPageCloudletPool extends React.Component {
      */
 
     getDataDeveloperSub = (region) => {
-        let _region = (region)?region:'All';
+        let _region = (region) ? region : 'All';
         this.getDataDeveloper(_region);
         _self.props.handleComputeRefresh(false);
     }
     render() {
-        const {devData, viewMode} = this.state;
+        const { devData, viewMode } = this.state;
 
         return (
-            (viewMode === 'listView')?
+            (viewMode === 'listView') ?
                 <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet Pool'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
-            :
-            <PagePoolDetailViewer data={this.state.detailData} page='cloudletPool'/>
+                :
+                <PagePoolDetailViewer data={this.state.detailData} page='cloudletPool' />
         );
     }
 
 };
 SiteFourPageCloudletPool.defaultProps = {
-    changeRegion : ''
+    changeRegion: ''
 }
 
 
 const mapStateToProps = (state) => {
-    console.log("20200106 state.changeViewMode.mode.viewMode--",state.changeViewMode)
+    console.log("20200106 state.changeViewMode.mode.viewMode--", state.changeViewMode)
     let viewMode = null;
     let detailData = null;
 
-    if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+    if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
         viewMode = state.changeViewMode.mode.viewMode;
         detailData = state.changeViewMode.mode.data;
     }
-    let regionInfo = (state.regionInfo)?state.regionInfo:null;
+    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     return {
-        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
-        changeRegion : state.changeRegion?state.changeRegion.region:null,
-        viewMode : viewMode, detailData:detailData,
+        computeRefresh: (state.computeRefresh) ? state.computeRefresh : null,
+        changeRegion: state.changeRegion ? state.changeRegion.region : null,
+        viewMode: viewMode, detailData: detailData,
         regionInfo: regionInfo
     }
 };
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
+        handleInjectData: (data) => { dispatch(actions.injectData(data)) },
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data)) },
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data)) },
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 
