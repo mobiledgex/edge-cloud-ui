@@ -4,7 +4,6 @@ import SiteFourCreateFormDefault from './siteFourCreateFormDefault';
 import BubbleGroup from '../charts/bubbleGroup';
 import EditMap from '../libs/simpleMaps/with-react-motion/editMap';
 import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
-import * as services from "../services/service_compute_service";
 import * as aggregate from "../utils";
 import * as actions from "../actions";
 import {connect} from "react-redux";
