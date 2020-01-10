@@ -1196,7 +1196,6 @@ const mapStateToProps = (state) => {
         userRole: state.showUserRole ? state.showUserRole.role : null,
         selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
         loadingSpinner: state.loadingSpinner.loading ? state.loadingSpinner.loading : null,
-        creatingSpinner: state.creatingSpinner.creating ? state.creatingSpinner.creating : null,
         injectData: state.injectData ? state.injectData : null,
         viewMode: viewMode,
         alertInfo: {
