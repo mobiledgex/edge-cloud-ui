@@ -1,8 +1,7 @@
 import React, { Fragment } from "react";
 import {Button, Form, Header, Message, List, Grid, Table} from "semantic-ui-react";
-import { Field, reduxForm } from "redux-form";
-import InsideListView from "../container/insideListView";
-import * as servicePool from '../services/service_cloudlet_pool';
+import { reduxForm } from "redux-form";
+import * as serviceMC from '../services/serviceMC';
 import './styles.css';
 
 const validate = values => {
@@ -136,26 +135,30 @@ class SiteFourPoolThree extends React.Component {
         this.props.changeOrg()
     }
 
-    receiveResultShow = (result) => {
-        console.log('20191231 result .. ', result.data)
-        let createdState = [];
-        if(result.data && result.data.length) {
-            result.data.map((item) => {
-                console.log('20191231 devdata -- ', item, ":", this.props.selectedData)
-                if(item.Region === this.props.selectedData.region && item.CloudletPool === this.props.selectedData.poolName) {
-                    createdState.push({region:item.Region, org:item.Org, pool:item.CloudletPool})
+    receiveResultShow = (mcRequest) => {
+        if (mcRequest) {
+            if (mcRequest.response) {
+                let response = mcRequest.response
+                console.log('20191231 result .. ', response.data)
+                let createdState = [];
+                if (response.data && response.data.length) {
+                    response.data.map((item) => {
+                        console.log('20191231 devdata -- ', item, ":", this.props.selectedData)
+                        if (item.Region === this.props.selectedData.region && item.CloudletPool === this.props.selectedData.poolName) {
+                            createdState.push({ region: item.Region, org: item.Org, pool: item.CloudletPool })
+                        }
+                    })
                 }
-            })
+                this.setState({ devData: createdState })
+            }
         }
-        this.setState({devData:createdState})
     }
 
-    componentDidMount(): void {
+    componentDidMount() {
         console.log('20191231 props info --', this.props.selectedData)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({devData:[]})
-        // TODO: 20200109 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        servicePool.showOrgCloudletPool('showOrgCloudletPool',{token:store.userToken, params:null}, this.receiveResultShow)
+        serviceMC.sendRequest(this, { token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET_LINKORG, data: null }, this.receiveResultShow)
     }
     makeTable = (data) => (
         data.map((item) =>(
