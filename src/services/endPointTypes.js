@@ -154,6 +154,7 @@ export function formatData(request, response) {
             data = FormatComputeAccounts.formatData(response, request.data)
             break;
         case SHOW_CLOUDLET:
+        case SHOW_ORG_CLOUDLET:
             data = FormatComputeCloudlet.formatData(response, request.data)
             break;
         case SHOW_CLUSTER_INST:

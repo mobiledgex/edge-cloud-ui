@@ -219,7 +219,7 @@ const mapStateToProps = (state) => {
         changeRegion : state.changeRegion?state.changeRegion.region:null,
         viewMode : viewMode, detailData:detailData,
         regionInfo: regionInfo,
-        selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : null,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : localStorage.selectOrg,
     }
 };
 const mapDispatchProps = (dispatch) => {
