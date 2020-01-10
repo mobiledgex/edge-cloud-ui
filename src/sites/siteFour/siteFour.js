@@ -45,6 +45,10 @@ import SiteFourPageAppInstReg from './appInst/siteFour_page_appInstReg';
 import SiteFourPageCreateorga from './organization/siteFour_page_createOrga';
 import SiteFourPageAudits from './audits/siteFour_page_audits';
 import SiteFourPageClusterInstReg from './clusterInst/siteFour_page_clusterInstReg';
+import SiteFourPageCloudletPool from './cloudletPool/siteFour_page_cloudletPool';
+import SiteFourPageCloudletPoolReg from './cloudletPool/siteFour_page_cloudletPoolReg';
+import SiteFourPageLinkOrganizeReg from './cloudletPool/siteFour_page_linkOrganizeReg';
+import SiteFourPageCloudletPoolUpdate from './cloudletPool/siteFour_page_cloudletPoolUpdate';
 
 import PopLegendViewer from '../../container/popLegendViewer';
 import * as serviceMC from '../../services/serviceMC';
