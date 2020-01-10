@@ -7,7 +7,6 @@ import RGL, { WidthProvider } from "react-grid-layout";
 import RegistNewItem from './registNewItem';
 import PopDetailViewer from './popDetailViewer';
 import PopUserViewer from './popUserViewer';
-import * as servicePool from '../services/service_cloudlet_pool';
 import * as serviceMC from '../services/serviceMC';
 import './styles.css';
 import * as reducer from '../utils'
