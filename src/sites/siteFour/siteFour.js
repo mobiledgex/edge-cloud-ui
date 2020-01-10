@@ -1050,7 +1050,8 @@ class SiteFour extends React.Component {
 
                             <Grid.Row className='site_content_body'>
                                 <Grid.Column>
-                                    <div className="table-no-resized" style={{ height: '100%', display: 'flex', overflow: 'hidden' }}>
+                                    <div className="table-no-resized"
+                                        style={{ height: '100%', display: 'flex', overflow: 'hidden' }}>
                                         {
                                             (this.state.page === 'pg=0') ? <SiteFourPageOrganization></SiteFourPageOrganization> :
                                                 (this.state.page === 'pg=1') ? <SiteFourPageUser></SiteFourPageUser> :
@@ -1058,18 +1059,27 @@ class SiteFour extends React.Component {
                                                         (this.state.page === 'pg=2') ? <SiteFourPageCloudlet></SiteFourPageCloudlet> :
                                                             (this.state.page === 'pg=3') ? <SiteFourPageFlavor></SiteFourPageFlavor> :
                                                                 (this.state.page === 'pg=4') ? <SiteFourPageClusterInst></SiteFourPageClusterInst> :
+                                                                    /*@todo:apps detail page*/
+                                                                    /*@todo:apps detail page*/
+                                                                    /*@todo:apps detail page*/
+                                                                    /*@todo:apps detail page*/
                                                                     (this.state.page === 'pg=5') ? <SiteFourPageApps></SiteFourPageApps> :
                                                                         (this.state.page === 'pg=6') ? <SiteFourPageAppInst></SiteFourPageAppInst> :
-                                                                            (this.state.page === 'pg=newOrg') ? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
-                                                                                (this.state.page === 'pg=createApp') ? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
-                                                                                    (this.state.page === 'pg=editApp') ? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
-                                                                                        (this.state.page === 'pg=createAppInst') ? <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
-                                                                                            (this.state.page === 'pg=editAppInst') ? <SiteFourPageAppInstReg editable={true}></SiteFourPageAppInstReg> :
-                                                                                                (this.state.page === 'pg=createClusterInst') ? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
-                                                                                                    (this.state.page === 'pg=createCloudlet') ? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
-                                                                                                        (this.state.page === 'pg=createFlavor') ? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
-                                                                                                            (this.state.page === 'pg=audits') ? <SiteFourPageAudits></SiteFourPageAudits> :
-                                                                                                                <div> </div>
+                                                                            (this.state.page === 'pg=7') ? <SiteFourPageCloudletPool></SiteFourPageCloudletPool> :
+                                                                                (this.state.page === 'pg=newOrg') ? <SiteFourPageCreateorga></SiteFourPageCreateorga> :
+                                                                                    (this.state.page === 'pg=createApp') ? <SiteFourPageAppReg editable={false}></SiteFourPageAppReg> :
+                                                                                        (this.state.page === 'pg=editApp') ? <SiteFourPageAppReg editable={true}></SiteFourPageAppReg> :
+                                                                                            (this.state.page === 'pg=createAppInst') ? <SiteFourPageAppInstReg editable={false}></SiteFourPageAppInstReg> :
+                                                                                                (this.state.page === 'pg=createCloudletPool') ? <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                                    (this.state.page === 'pg=updateCloudletPool') ? <SiteFourPageCloudletPoolUpdate></SiteFourPageCloudletPoolUpdate> :
+                                                                                                        (this.state.page === 'pg=linkOrganize') ? <SiteFourPageLinkOrganizeReg></SiteFourPageLinkOrganizeReg> :
+                                                                                                            (this.state.page === 'pg=createCloudletPool') ? <SiteFourPageCloudletPoolReg></SiteFourPageCloudletPoolReg> :
+                                                                                                                (this.state.page === 'pg=editAppInst') ? <SiteFourPageAppInstReg editable={true}></SiteFourPageAppInstReg> :
+                                                                                                                    (this.state.page === 'pg=createClusterInst') ? <SiteFourPageClusterInstReg></SiteFourPageClusterInstReg> :
+                                                                                                                        (this.state.page === 'pg=createCloudlet') ? <SiteFourPageCloudletReg></SiteFourPageCloudletReg> :
+                                                                                                                            (this.state.page === 'pg=createFlavor') ? <SiteFourPageFlavorReg></SiteFourPageFlavorReg> :
+                                                                                                                                (this.state.page === 'pg=audits') ? <SiteFourPageAudits></SiteFourPageAudits> :
+                                                                                                                                    null
                                         }
                                     </div>
                                 </Grid.Column>
