@@ -75,16 +75,15 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
     receiveResultLinkOrg = (result) => {
         console.log('20200107 result -- ',JSON.stringify(result))
 
-        if(result.response.error) {
+        if(result.error) {
             //this.setState({clusterInstCreate:false})
-            this.props.handleLoadingSpinner(false);
+            // this.props.handleLoadingSpinner(false);
             if(result.error == 'Key already exists'){
 
             } else {
-                this.props.handleAlertInfo('error',result.response.error.message || 'Request Failed')
+                this.props.handleAlertInfo('error',result.error.message || 'Request Failed')
             }
         } else {
-            
             this.props.handleAlertInfo('success',result.response.data.message)
             setTimeout(()=> this.gotoUrl(), 3000);
             
