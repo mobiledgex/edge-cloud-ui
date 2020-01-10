@@ -1,13 +1,5 @@
 # World map dashboard
 
-### Run /server
-
-##### You should run the express.js server to goto directory '/server' and fallow the README.MD
-```
-$ cd server
-$ npm -- run start_server
-
-```
 ### Run 
 ```
 $ cd ..
