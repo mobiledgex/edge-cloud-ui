@@ -110,6 +110,33 @@ export function sendWSRequest(request, callback) {
     }
 }
 
+
+export function sendMultiRequest(self, requestDataList, callback) {
+    let promise = [];
+    let resResults = [];
+    requestDataList.map((request) => {
+        promise.push(axios.post(EP.getPath(request), request.data,
+            {
+                headers: getHeader(request)
+            }))
+
+    })
+    axios.all(promise)
+        .then(responseList => {
+            responseList.map((response, i) => {
+                resResults.push(EP.formatData(requestDataList[i], response));
+            })
+            if (self.props.handleLoadingSpinner) {
+                self.props.handleLoadingSpinner(false)
+            }
+            callback(resResults);
+        
+        }).catch(error => {
+            responseError(self, requestDataList[0], error.response, callback)
+        })
+
+}
+
 export function sendRequest(self, request, callback) {
 
     axios.post(EP.getPath(request), request.data,
@@ -117,7 +144,8 @@ export function sendRequest(self, request, callback) {
             headers: getHeader(request)
         })
         .then(function (response) { 
-            showSpinner(self,false)
+           
+            
             callback(EP.formatData(request, response));
         })
         .catch(function (error) {

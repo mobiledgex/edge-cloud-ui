@@ -8,6 +8,9 @@ import * as FormatComputeFlavor from './formatter/formatComputeFlavor';
 import * as FormatComputeApp from './formatter/formatComputeApp';
 import * as FormatComputeInst from './formatter/formatComputeInstance';
 import * as FormatComputeCluster from './formatter/formatComputeCluster';
+import * as FormatMonitorCloudlet from "./formatter/formatMonitorCloudlet";
+import * as FormatMonitorCluster from "./formatter/formatMonitorCluster";
+import * as FormatMonitorApp from "./formatter/formatMonitorApp";
 
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
@@ -49,6 +52,9 @@ export const ADD_USER_ROLE = "addUserRole";
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
 export const STREAM_CLOUDLET = "StreamCloudlet";
 export const STREAM_APP_INST = "StreamAppInst";
+export const CLOUDLET_METRICS_APP = "CloudletMetricsApp";
+export const CLUSTER_INST_METRICS_APP = "ClusterInstMetricsApp";
+export const APP_INST_METRICS_APP = "AppInstMetricsApp";
 
 export function getPath(request) {
     switch (request.method) {
@@ -108,6 +114,10 @@ export function getPath(request) {
         case RESET_PASSWORD:
         case CREATE_USER:
             return `/api/v1/${request.method}`;
+        case CLOUDLET_METRICS_APP:
+        case CLUSTER_INST_METRICS_APP:
+        case APP_INST_METRICS_APP:
+            return '/api/v1/auth/metrics/app';
         default:
             return null;
     }
@@ -142,6 +152,15 @@ export function formatData(request, response) {
             break;
         case SHOW_APP_INST:
             data = FormatComputeInst.formatData(response, request.data)
+            break;
+        case CLOUDLET_METRICS_APP:
+            data = FormatMonitorCloudlet.formatData(response, request.data)
+            break;
+        case CLUSTER_INST_METRICS_APP:
+            data = FormatMonitorCluster.formatData(response, request.data)
+            break;
+        case APP_INST_METRICS_APP:
+            data = FormatMonitorApp.formatData(response, request.data)
             break;
         default:
             data = undefined;
