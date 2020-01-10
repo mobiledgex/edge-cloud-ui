@@ -694,23 +694,10 @@ class SiteFour extends React.Component {
         this.props.handleSearchValue(e.target.value, this.state.searchChangeValue)
     }
 
+
     onChangeRegion = (e, {value}) => {
-        let child = document.createElement('div')
-        child.style.cssText = 'position:absolute; width:100px; height:30px; line-height:30px; text-align:center; opacity:0.8; left:0px; z-index:100; background:#aaaaaa; border-radius:5px';
-        child.innerHTML = '<div>Cloudlet Name</div>'
-        elem.appendChild(child);
-        //
-        let nextPosX = 15
-        let nextPosY = 90;
-        setTimeout(() => self.setState({ setMotion: { left: spring(nextPosX, self.speed), top: spring(nextPosY, self.speed), position: 'absolute', opacity: 0 } }), 200);
+
         _self.props.handleChangeRegion(value)
-    }
-    resetMotion() {
-        let self = _self;
-        this.setState({ setMotion: defaultMotion })
-        let nextPosX = 15
-        let nextPosY = 180;
-        setTimeout(() => self.setState({ setMotion: { left: spring(nextPosX, self.speed), top: spring(nextPosY, self.speed), position: 'absolute', opacity: spring(0, self.speedOpacity) } }), 500);
     }
 
     computeRefresh = () => {
@@ -1159,7 +1146,7 @@ class SiteFour extends React.Component {
                                 </div>
 
                             </Menu>
-                            <div style={{ zIndex: '100', color: 'rgba(255,255,255,.2)', padding: '10px' }}>
+                            <div style={{zIndex: '100', color: 'rgba(255,255,255,.2)', padding: '10px'}}>
                                 {
                                     (localStorage.selectRole == 'AdminManager') ? this.state.currentVersion : null
                                 }
