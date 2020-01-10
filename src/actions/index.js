@@ -220,13 +220,6 @@ export function changeLoginMode(mode) {
     }
 }
 
-export function creatingSpinner(creating) {
-    return {
-        type: types.CREATING_SPINNER,
-        creating
-    }
-}
-
 export function alertMsg(msg) {
     return {
         type: types.ALERT_MSG,

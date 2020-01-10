@@ -19,14 +19,14 @@ import sizeMe from 'react-sizeme';
 
 import { withRouter } from 'react-router-dom';
 import MaterialIcon from 'material-icons-react';
-import {Motion, spring} from "react-motion";
+import { Motion, spring } from "react-motion";
 import { Steps, Hints } from 'intro.js-react';
 
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
-import {GridLoader, ClipLoader} from "react-spinners";
+import { GridLoader, ClipLoader } from "react-spinners";
 import HeaderGlobalMini from '../../container/headerGlobalMini';
 
 //pages
@@ -63,7 +63,7 @@ import Alert from 'react-s-alert';
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
 
-let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
+let devOptions = [{ key: 'af', value: 'af', text: 'SK Telecom' }]
 const locationOptions = [
     { key: 'Arabic', text: 'Arabic', value: 'Arabic' },
     { key: 'Chinese', text: 'Chinese', value: 'Chinese' },
@@ -87,7 +87,7 @@ const locationOptions = [
     { key: 'Turkish', text: 'Turkish', value: 'Turkish' },
     { key: 'Vietnamese', text: 'Vietnamese', value: 'Vietnamese' },
 ]
-let defaultMotion = {left: window.innerWidth/2,top: window.innerHeight/2, position: 'absolute', opacity:1}
+let defaultMotion = { left: window.innerWidth / 2, top: window.innerHeight / 2, opacity: 1 }
 
 const orgaSteps = organizationTutor();
 const cloudletSteps = CloudletTutor();
@@ -100,58 +100,58 @@ class SiteFour extends React.Component {
         this.state = {
             shouldShowBox: true,
             shouldShowCircle: false,
-            contHeight:0,
-            contWidth:0,
-            bodyHeight:0,
-            headerTitle:'',
+            contHeight: 0,
+            contWidth: 0,
+            bodyHeight: 0,
+            headerTitle: '',
             activeItem: 'Organizations',
             page: 'pg=0',
             email: store ? store.email : 'Administrator',
             role: '', //db에서
             onlyView: false,
-            userToken:null,
-            profileViewData:null,
-            userName:'',
-            controllerRegions:null,
-            regions:[
+            userToken: null,
+            profileViewData: null,
+            userName: '',
+            controllerRegions: null,
+            regions: [
                 { key: 1, text: 'All', value: 'All' },
             ],
-            nextPosX:window.innerWidth / 2 ,
-            nextPosY:window.innerHeight / 2,
-            nextOpacity:1,
-            setMotion:defaultMotion,
-            OrganizationName:'',
-            adminShow:false,
-            createState:'',
+            nextPosX: window.innerWidth / 2,
+            nextPosY: window.innerHeight / 2,
+            nextOpacity: 1,
+            setMotion: defaultMotion,
+            OrganizationName: '',
+            adminShow: false,
+            createState: '',
             // toggleState:true,
-            noData:false,
-            viewMode:'listView',
-            toggleDisable:true,
-            currentVersion:'v-',
-            searchChangeValue:'Username',
-            menuClick:false,
-            showItem:false,
-            learned:false,
+            noData: false,
+            viewMode: 'listView',
+            toggleDisable: true,
+            currentVersion: 'v-',
+            searchChangeValue: 'Username',
+            menuClick: false,
+            showItem: false,
+            learned: false,
 
             stepsEnabled: false,
             initialStep: 0,
-            steps:[],
+            steps: [],
 
-            openLegend:false,
+            openLegend: false,
 
-            enable:false,
+            enable: false,
             hideNext: true,
-            camBtnStat:'leave',
-            regionToggle:false,
-            intoCity:false
+            camBtnStat: 'leave',
+            regionToggle: false,
+            intoCity: false
         };
         this.headerH = 70;
         this.menuW = 240;
         this.hgap = 0;
         this.OrgMenu = [
-            {label:'Organizations', icon:'people', pg:0},
-            {label:'User Roles', icon:'dvr', pg:1},
-            {label:'Accounts', icon:'dvr', pg:101}
+            { label: 'Organizations', icon: 'people', pg: 0 },
+            { label: 'User Roles', icon: 'dvr', pg: 1 },
+            { label: 'Accounts', icon: 'dvr', pg: 101 }
         ]
         this.menuItems = [
             {label: 'Cloudlets', icon: 'cloud_queue', pg: 2},
@@ -165,24 +165,24 @@ class SiteFour extends React.Component {
         ]
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
-            {role:'AdminManager', view:[]},
-            {role:'DeveloperManager', view:[2,3]},
-            {role:'DeveloperContributor', view:[1,2,3]},
-            {role:'DeveloperViewer', view:[1,2,3,4,5,6]},
-            {role:'OperatorManager', view:[]},
-            {role:'OperatorContributor', view:[1]},
-            {role:'OperatorViewer', view:[1,2]}
+            { role: 'AdminManager', view: [] },
+            { role: 'DeveloperManager', view: [2, 3] },
+            { role: 'DeveloperContributor', view: [1, 2, 3] },
+            { role: 'DeveloperViewer', view: [1, 2, 3, 4, 5, 6] },
+            { role: 'OperatorManager', view: [] },
+            { role: 'OperatorContributor', view: [1] },
+            { role: 'OperatorViewer', view: [1, 2] }
         ]
         this.searchOptions = [
             {
-                key:'Username',
-                text:'Username',
-                value:'Username'
+                key: 'Username',
+                text: 'Username',
+                value: 'Username'
             },
             {
-                key:'Organization',
-                text:'Organization',
-                value:'Organization'
+                key: 'Organization',
+                text: 'Organization',
+                value: 'Organization'
             }
         ]
 
@@ -210,7 +210,7 @@ class SiteFour extends React.Component {
             state: { some: 'state' }
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
     }
     gotoUrl(site, subPath) {
         let mainPath = site;
@@ -219,13 +219,13 @@ class SiteFour extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
-        _self.setState({ page:subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
+        _self.setState({ page: subPath })
     }
-    handleItemClick ( id, label, pg, role ) {
+    handleItemClick(id, label, pg, role) {
         localStorage.setItem('selectMenu', label)
-        _self.setState({menuClick:true})
-        _self.props.handleDetail({data:null, viewMode:'listView'})
+        _self.setState({ menuClick: true })
+        _self.props.handleDetail({ data: null, viewMode: 'listView' })
         _self.props.handleChangeViewBtn(false);
         _self.props.handleChangeClickCity([]);
         _self.props.handleChangeComputeItem(label);
@@ -233,37 +233,37 @@ class SiteFour extends React.Component {
         _self.props.handleChangeRegion('All')
         _self.props.history.push({
             pathname: '/site4',
-            search: "pg="+pg
+            search: "pg=" + pg
         });
         let mainPath = '/site4';
-        let subPath = 'pg='+pg;
-        _self.props.history.location.search = "pg="+pg;
+        let subPath = 'pg=' + pg;
+        _self.props.history.location.search = "pg=" + pg;
         _self.props.handleChangeStep(pg)
-        _self.setState({ page:'pg='+pg, activeItem: label, headerTitle:label, intoCity:false })
+        _self.setState({ page: 'pg=' + pg, activeItem: label, headerTitle: label, intoCity: false })
 
     }
 
     onHandleRegistry() {
-        if(localStorage.selectMenu === 'Organizations') {
-            this.setState({page:'pg=newOrg'})
+        if (localStorage.selectMenu === 'Organizations') {
+            this.setState({ page: 'pg=newOrg' })
             this.gotoUrl('/site4', 'pg=newOrg')
-        } else if(localStorage.selectMenu === 'Cloudlets') {
-            this.setState({page: 'pg='})
+        } else if (localStorage.selectMenu === 'Cloudlets') {
+            this.setState({ page: 'pg=' })
             this.gotoUrl('/site4', 'pg=createCloudlet')
-        } else if(localStorage.selectMenu === 'Apps') {
-            this.setState({page: 'pg=createApp'})
+        } else if (localStorage.selectMenu === 'Apps') {
+            this.setState({ page: 'pg=createApp' })
             this.gotoUrl('/site4', 'pg=createApp')
-        } else if(localStorage.selectMenu === 'App Instances') {
-            this.setState({page:'pg=createAppInst'})
+        } else if (localStorage.selectMenu === 'App Instances') {
+            this.setState({ page: 'pg=createAppInst' })
             this.gotoUrl('/site4', 'pg=createAppInst')
-        } else if(localStorage.selectMenu === '') {
-            this.setState({page:'pg=createAppInst'})
+        } else if (localStorage.selectMenu === '') {
+            this.setState({ page: 'pg=createAppInst' })
             this.gotoUrl('/site4', 'pg=createAppInst')
-        } else if(localStorage.selectMenu === 'Flavors') {
-            this.setState({page:'pg=createFlavor'})
+        } else if (localStorage.selectMenu === 'Flavors') {
+            this.setState({ page: 'pg=createFlavor' })
             this.gotoUrl('/site4', 'pg=createFlavor')
-        } else if(localStorage.selectMenu === 'Cluster Instances') {
-            this.setState({page:'pg=createClusterInst'})
+        } else if (localStorage.selectMenu === 'Cluster Instances') {
+            this.setState({ page: 'pg=createClusterInst' })
             this.gotoUrl('/site4', 'pg=createClusterInst')
         } else if (localStorage.selectMenu === 'Cloudlet Pool') {
             this.setState({page: 'pg=createCloudletPool'})
@@ -272,17 +272,16 @@ class SiteFour extends React.Component {
             this.props.handleInjectDeveloper('newRegist');
         }
         this.props.handleChangeClickCity([])
-        this.setState({intoCity:false})
+        this.setState({ intoCity: false })
     }
 
     receiveControllerResult(mcRequest) {
         if (mcRequest) {
-            if(mcRequest.response)
-            {
+            if (mcRequest.response) {
                 let response = mcRequest.response;
                 _self.props.handleLoadingSpinner();
                 _self.controllerOptions(response.data);
-            }    
+            }
         }
     }
 
@@ -302,10 +301,10 @@ class SiteFour extends React.Component {
     }
 
 
-    controllerOptions(option){
+    controllerOptions(option) {
         let arr = []
-        if(option) {
-            option.map((item)=> {
+        if (option) {
+            option.map((item) => {
                 arr.push({
                     key: item.Region,
                     text: item.Region,
@@ -345,54 +344,54 @@ class SiteFour extends React.Component {
 
     )
 
-    getHelpPopup =(key)=> (
+    getHelpPopup = (key) => (
         <Popup
-            trigger={<Icon name='question circle outline' size='small' style={{marginTop:0,paddingLeft:10}}/>}
+            trigger={<Icon name='question circle outline' size='small' style={{ marginTop: 0, paddingLeft: 10 }} />}
             content=
-                {(key=='Cloudlets')? 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator.'
-                    :(key=='Cluster Instances')? 'ClusterInst is an instance of a Cluster on a Cloudlet. It is defined by a Cluster, Cloudlet, and Developer key.'
-                        :(key=='Apps')? 'App belongs to developers and is used to provide information about their application.'
-                            :(key=='App Instances')? 'AppInst is an instance of an App on a Cloudlet where it is defined by an App plus a ClusterInst key. Many of the fields here are inherited from the App definition.'
-                                : key
-                }
+            {(key == 'Cloudlets') ? 'A Cloudlet is a set of compute resources at a particular location, provided by an Operator.'
+                : (key == 'Cluster Instances') ? 'ClusterInst is an instance of a Cluster on a Cloudlet. It is defined by a Cluster, Cloudlet, and Developer key.'
+                    : (key == 'Apps') ? 'App belongs to developers and is used to provide information about their application.'
+                        : (key == 'App Instances') ? 'AppInst is an instance of an App on a Cloudlet where it is defined by an App plus a ClusterInst key. Many of the fields here are inherited from the App definition.'
+                            : key
+            }
             // content={this.state.tip}
             // style={style}
             inverted
         />
     )
-    getGuidePopup =(key)=> (
+    getGuidePopup = (key) => (
         <button className="ui circular icon button" onClick={this.enalbeSteps}><i aria-hidden="true" className="info icon"></i></button>
     )
 
-    enalbeSteps =()=> {
+    enalbeSteps = () => {
         let enable = false;
         let currentStep = null;
 
-        if(this.props.viewMode === 'detailView') return;
+        if (this.props.viewMode === 'detailView') return;
 
-        console.log('20190821 siteName==', this.props, 'change org step..', this.props.changeStep, 'steps data=', orgaSteps, 'userRole=', this.props.userRole,this.props.userInfo.info, 'this.props.dataExist==',this.props.dataExist)
+        console.log('20190821 siteName==', this.props, 'change org step..', this.props.changeStep, 'steps data=', orgaSteps, 'userRole=', this.props.userRole, this.props.userInfo.info, 'this.props.dataExist==', this.props.dataExist)
         let site = this.props.siteName;
-        let userName = (this.props.userInfo && this.props.userInfo.info)?this.props.userInfo.info.Name:'';
-        if(this.props.params.mainPath === "/site4" && this.props.params.subPath === "pg=newOrg") {
-            if(this.props.changeStep === '02'){
+        let userName = (this.props.userInfo && this.props.userInfo.info) ? this.props.userInfo.info.Name : '';
+        if (this.props.params.mainPath === "/site4" && this.props.params.subPath === "pg=newOrg") {
+            if (this.props.changeStep === '02') {
                 currentStep = orgaSteps.stepsNewOrg2;
-            } else if(this.props.changeStep === '03') {
+            } else if (this.props.changeStep === '03') {
                 currentStep = orgaSteps.stepsNewOrg3;
             } else {
                 currentStep = orgaSteps.stepsNewOrg;
             }
-            
+
 
             enable = true;
-        } else if(this.props.params.subPath === "pg=0") {
-            if(this.props.dataExist){
-                if(userName === 'mexadmin') {
+        } else if (this.props.params.subPath === "pg=0") {
+            if (this.props.dataExist) {
+                if (userName === 'mexadmin') {
                     currentStep = orgaSteps.stepsOrgDataAdmin;
                 } else {
                     currentStep = orgaSteps.stepsOrgDataDeveloper;
                 }
             } else {
-                if(userName === 'mexadmin') {
+                if (userName === 'mexadmin') {
                     currentStep = orgaSteps.stepsOrgAdmin;
                 } else {
                     currentStep = orgaSteps.stepsOrgDeveloper;
@@ -400,23 +399,23 @@ class SiteFour extends React.Component {
             }
 
             enable = true;
-        } else if(this.props.params.subPath === "pg=2")  {
+        } else if (this.props.params.subPath === "pg=2") {
             //Cloudlets  
             currentStep = cloudletSteps.stepsCloudlet;
             enable = true;
-        } else if(this.props.params.subPath === "pg=3")  {
+        } else if (this.props.params.subPath === "pg=3") {
             //Flavors
             currentStep = orgaSteps.stepsFlavors;
             enable = true;
-        } else if(this.props.params.subPath === "pg=4")  {
+        } else if (this.props.params.subPath === "pg=4") {
             //Cluster Instances
             currentStep = orgaSteps.stepsClusterInst;
             enable = true;
-        } else if(this.props.params.subPath === "pg=5")  {
+        } else if (this.props.params.subPath === "pg=5") {
             //Apps
             currentStep = orgaSteps.stepsApp;
             enable = true;
-        } else if(this.props.params.subPath === "pg=6")  {
+        } else if (this.props.params.subPath === "pg=6") {
             //App Instances
             currentStep = orgaSteps.stepsAppInst;
             enable = true;}
@@ -424,43 +423,43 @@ class SiteFour extends React.Component {
             //App Instances
             currentStep = orgaSteps.stepsAppInst;
             enable = true;
-        } else if(this.props.params.subPath === "pg=createClusterInst") {
+        } else if (this.props.params.subPath === "pg=createClusterInst") {
             currentStep = orgaSteps.stepsClusterInstReg;
             enable = true;
-        } else if(this.props.params.subPath === "pg=createApp") {
+        } else if (this.props.params.subPath === "pg=createApp") {
             currentStep = orgaSteps.stepsCreateApp;
             enable = true;
-        } else if(this.props.params.subPath === "pg=createAppInst") {
+        } else if (this.props.params.subPath === "pg=createAppInst") {
             currentStep = orgaSteps.stepsCreateAppInst;
             enable = true;
-        } else if(this.props.params.subPath === "pg=createCloudlet") {
+        } else if (this.props.params.subPath === "pg=createCloudlet") {
             currentStep = cloudletSteps.stepsCloudletReg;
             enable = true;
-        } else if(this.props.params.subPath === "pg=createFlavor") {
+        } else if (this.props.params.subPath === "pg=createFlavor") {
             currentStep = orgaSteps.stepsCreateFlavor;
             enable = true;
         }
 
-        this.setState({steps : currentStep})
+        this.setState({ steps: currentStep })
         console.log('20190826 this.steps==', this.steps, currentStep)
 
-        let elmentName = (this.steps)?currentStep:null;
+        let elmentName = (this.steps) ? currentStep : null;
         //this.steps.props.options.hideNext = true;
-        let element = (elmentName)?document.getElementsByClassName(elmentName[0].element.replace('.', '')):[];
+        let element = (elmentName) ? document.getElementsByClassName(elmentName[0].element.replace('.', '')) : [];
         console.log('20190821 step..', this.steps, element)
-        if(enable) {
-            console.log("elementelement111",element)
-            this.setState({stepsEnabled:true, enable: true})
+        if (enable) {
+            console.log("elementelement111", element)
+            this.setState({ stepsEnabled: true, enable: true })
         }
 
     }
     getAdminInfo(token) {
         serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CONTROLLER }, this.receiveControllerResult);
         serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_ROLE }, this.receiveAdminInfo)
-        _self.setState({currentVersion:process.env.REACT_APP_BUILD_VERSION ?  process.env.REACT_APP_BUILD_VERSION : 'v0.0.0'})
+        _self.setState({ currentVersion: process.env.REACT_APP_BUILD_VERSION ? process.env.REACT_APP_BUILD_VERSION : 'v0.0.0' })
     }
-    onClickBackBtn =() => {
-        this.setState({intoCity:false})
+    onClickBackBtn = () => {
+        this.setState({ intoCity: false })
         this.props.handleChangeClickCity([]);
         this.props.handleResetMap('back')
 
@@ -470,36 +469,36 @@ class SiteFour extends React.Component {
     }
     componentDidMount() {
         let store = JSON.parse(localStorage.PROJECT_INIT);
-        this.setState({activeItem: (localStorage.selectMenu)?localStorage.selectMenu:'Organizations', headerTitle:(localStorage.selectMenu)?localStorage.selectMenu:'Organizations'})
-       
+        this.setState({ activeItem: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations', headerTitle: (localStorage.selectMenu) ? localStorage.selectMenu : 'Organizations' })
+
         this.disableBtn();
 
-        if(store){
+        if (store) {
             this.getAdminInfo(store.userToken);
         } else {
             this.gotoUrl('/logout')
         }
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
-            if(elem){
+            if (elem) {
             }
         }, 4000)
 
-        this.setState({steps: orgaSteps.stepsZero, intoCity:false});
+        this.setState({ steps: orgaSteps.stepsZero, intoCity: false });
         //
-        if(this.props.params.subPath !== 'pg=audits'){
+        if (this.props.params.subPath !== 'pg=audits') {
             this.getDataAudit();
         }
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        try{
-            this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-            this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
-            this.setState({contWidth:(window.innerWidth-this.menuW)})
-            this.setState({userToken: nextProps.userToken})
-            this.setState({userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null})
-        } catch(e) {
+        try {
+            this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
+            this.setState({ contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap })
+            this.setState({ contWidth: (window.innerWidth - this.menuW) })
+            this.setState({ userToken: nextProps.userToken })
+            this.setState({ userName: (nextProps.userInfo && nextProps.userInfo.info) ? nextProps.userInfo.info.Name : null })
+        } catch (e) {
 
         }
 
@@ -510,24 +509,28 @@ class SiteFour extends React.Component {
             this.setState({viewMode: 'listView'})
         }
 
-        if(nextProps.params && nextProps.params.subPath) {
+        if (nextProps.params && nextProps.params.subPath) {
             let subPaths = nextProps.params.subPath;
             let subPath = '';
             let subParam = '';
-            if(subPaths.indexOf('&org=')) {
+            if (subPaths.indexOf('&org=')) {
                 let paths = subPaths.split('&')
                 subPath = paths[0];
                 subParam = paths[1];
             }
-            this.setState({page:subPath, OrganizationName:subParam})
+            this.setState({ page: subPath, OrganizationName: subParam })
 
         }
 
+        if (nextProps.viewMode) {
+            this.setState({ viewMode: nextProps.viewMode })
+        } else {
+            this.setState({ viewMode: 'listView' })
+        }
 
-        //Redux Alert
         if ((nextProps.alertInfo !== this.props.alertInfo) && nextProps.alertInfo.mode) {
             Alert.closeAll();
-            if(nextProps.alertInfo.mode === 'success') {
+            if (nextProps.alertInfo.mode === 'success') {
 
                 Alert.success(nextProps.alertInfo.msg, {
                     position: 'top-right',
@@ -536,27 +539,27 @@ class SiteFour extends React.Component {
                     timeout: 5000,
                     offset: 100
                 });
-            } else if(nextProps.alertInfo.mode === 'error') {
+            } else if (nextProps.alertInfo.mode === 'error') {
                 Alert.error(nextProps.alertInfo.msg, {
                     position: 'top-right',
                     effect: 'slide',
                     beep: true,
                     timeout: 'none',
                     offset: 100,
-                    html:true
+                    html: true
                 });
-               //return(<MexMessage open={true} info={{error:400,message:nextProps.alertInfo.msg}}/>)
-                
+                //return(<MexMessage open={true} info={{error:400,message:nextProps.alertInfo.msg}}/>)
+
 
             }
-            nextProps.handleAlertInfo('','');
+            nextProps.handleAlertInfo('', '');
         }
 
         //set filters
-        if(nextProps.tableHeaders) {
-            this.setState({showItem:false})
-            if(nextProps.tableHeaders.length) {
-                this.setState({tableHeaders:nextProps.tableHeaders})
+        if (nextProps.tableHeaders) {
+            this.setState({ showItem: false })
+            if (nextProps.tableHeaders.length) {
+                this.setState({ tableHeaders: nextProps.tableHeaders })
             } else {
 
             }
@@ -569,61 +572,61 @@ class SiteFour extends React.Component {
 
         let formKey = Object.keys(nextProps.formInfo);
         //let submitSucceeded = (nextProps.formInfo) ? nextProps.formInfo[formKey[0]]['submitSucceeded']: null
-        if(formKey.length){
+        if (formKey.length) {
             console.log('submitSucceeded = ', nextProps.formInfo[formKey[0]], nextProps.formInfo[formKey[0]]['submitSucceeded'])
-            if(nextProps.formInfo[formKey[0]]['submitSucceeded']) {
-                if(nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
-                    _self.setState({stepsEnabled:false})
+            if (nextProps.formInfo[formKey[0]]['submitSucceeded']) {
+                if (nextProps.formInfo[formKey[0]]['submitSucceeded'] === true) {
+                    _self.setState({ stepsEnabled: false })
                 }
             }
         }
-        if(tutorial === 'done') {
+        if (tutorial === 'done') {
             //_self.setState({stepsEnabled:false})
         }
         //
         let enable = true;
         setTimeout(() => {
             let elem = document.getElementById('animationWrapper')
-            if(elem){
+            if (elem) {
                 //_self.makeGhost(elem, _self)
 
             }
             console.log('20190822 tutorial=', tutorial)
-            if(enable && !_self.state.learned && !tutorial) {
+            if (enable && !_self.state.learned && !tutorial) {
                 _self.enalbeSteps();
-                _self.setState({stepsEnabled:true, learned:true})
+                _self.setState({ stepsEnabled: true, learned: true })
                 localStorage.setItem('TUTORIAL', 'done')
             }
 
         }, 1000)
 
         let site = this.props.siteName;
-        if(!this.props.changeStep || this.props.changeStep === '02') {
-            this.setState({enable : true})
+        if (!this.props.changeStep || this.props.changeStep === '02') {
+            this.setState({ enable: true })
         } else {
-            this.setState({enable:false})
+            this.setState({ enable: false })
         }
 
 
         //{ key: 1, text: 'All', value: 'All' }
-        console.log("nextProps.regionInfo.region",nextProps.regionInfo,":::",_self.props.regionInfo)
-        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
-            
+        console.log("nextProps.regionInfo.region", nextProps.regionInfo, ":::", _self.props.regionInfo)
+        if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
+
             let getRegions = []
-            _self.setState({regionToggle:true})
-            if(nextProps.regionInfo.region){
+            _self.setState({ regionToggle: true })
+            if (nextProps.regionInfo.region) {
                 nextProps.regionInfo.region.map((region, i) => {
-                    getRegions.push({key:i+2, text:region, value:region})
+                    getRegions.push({ key: i + 2, text: region, value: region })
                 })
             }
             let newRegions = Object.assign([], _self.state.regions).concat(getRegions)
-            _self.setState({regions:newRegions})
+            _self.setState({ regions: newRegions })
 
         }
-        if(nextProps.clickCity.length > 0){
-            this.setState({intoCity:true})
+        if (nextProps.clickCity.length > 0) {
+            this.setState({ intoCity: true })
         } else {
-            this.setState({intoCity:false})
+            this.setState({ intoCity: false })
         }
 
         //set category
@@ -636,51 +639,51 @@ class SiteFour extends React.Component {
     }
 
     componentDidUpdate() {
-        if(localStorage.selectRole && this.state.menuClick) {
+        if (localStorage.selectRole && this.state.menuClick) {
             this.disableBtn();
-            this.setState({menuClick:false})
+            this.setState({ menuClick: false })
         }
     }
     componentWillUnmount() {
-        this.setState({learned:false})
+        this.setState({ learned: false })
     }
 
     //compute page menu view
     menuItemView = (item, i, activeItem) => (
         <Menu.Item
-            className={'leftMenu_'+item.label}
+            className={'leftMenu_' + item.label}
             key={i}
             name={item.label}
             active={activeItem === item.label}
             onClick={() => this.handleItemClick(i, item.label, item.pg, localStorage.selectRole)}
         >
             <div className="left_menu_item">
-                <MaterialIcon icon={item.icon}/>
+                <MaterialIcon icon={item.icon} />
                 <div className='label'>{item.label}</div>
-                {(activeItem === item.label)?
-                    <div style={{position:'absolute', right:'12px', top:'12px'}}>
+                {(activeItem === item.label) ?
+                    <div style={{ position: 'absolute', right: '12px', top: '12px' }}>
                         <ClipLoader
                             size={20}
                             sizeUnit={'px'}
                             color={'rgba(136,221,0,.85)'}
                             loading={this.props.loadingSpinner}
-                            // loading={true}
+                        // loading={true}
                         />
-                        {(item.label === 'Audit Log' && this.props.audit > 0)?
+                        {(item.label === 'Audit Log' && this.props.audit > 0) ?
                             <Label circular color={'red'} key={'red'}>
                                 {this.props.audit}
-                            </Label>:null}
+                            </Label> : null}
                     </div>
 
-                    :null}
+                    : null}
 
 
-                    <div style={{position:'absolute', right:'12px', top:'12px'}}>
-                        {(item.label === 'Audit Log' && this.props.audit > 0)?
-                            <Label circular color={'red'} key={'red'}>
-                                {this.props.audit}
-                            </Label>:null}
-                    </div>
+                <div style={{ position: 'absolute', right: '12px', top: '12px' }}>
+                    {(item.label === 'Audit Log' && this.props.audit > 0) ?
+                        <Label circular color={'red'} key={'red'}>
+                            {this.props.audit}
+                        </Label> : null}
+                </div>
 
             </div>
 
@@ -688,13 +691,26 @@ class SiteFour extends React.Component {
     )
 
     searchClick = (e) => {
-        this.props.handleSearchValue(e.target.value,this.state.searchChangeValue)
+        this.props.handleSearchValue(e.target.value, this.state.searchChangeValue)
     }
 
-
     onChangeRegion = (e, {value}) => {
-
+        let child = document.createElement('div')
+        child.style.cssText = 'position:absolute; width:100px; height:30px; line-height:30px; text-align:center; opacity:0.8; left:0px; z-index:100; background:#aaaaaa; border-radius:5px';
+        child.innerHTML = '<div>Cloudlet Name</div>'
+        elem.appendChild(child);
+        //
+        let nextPosX = 15
+        let nextPosY = 90;
+        setTimeout(() => self.setState({ setMotion: { left: spring(nextPosX, self.speed), top: spring(nextPosY, self.speed), position: 'absolute', opacity: 0 } }), 200);
         _self.props.handleChangeRegion(value)
+    }
+    resetMotion() {
+        let self = _self;
+        this.setState({ setMotion: defaultMotion })
+        let nextPosX = 15
+        let nextPosY = 180;
+        setTimeout(() => self.setState({ setMotion: { left: spring(nextPosX, self.speed), top: spring(nextPosY, self.speed), position: 'absolute', opacity: spring(0, self.speedOpacity) } }), 500);
     }
 
     computeRefresh = () => {
@@ -702,11 +718,11 @@ class SiteFour extends React.Component {
         this.props.handleComputeRefresh(true);
     }
     disableBtn = () => {
-        const menuArr = ['Organization','User Roles','Cloudlets','Flavors','Cluster Instances','Apps','App Instances']
-        this.auth_list.map((item,i) => {
-            if(item.role == localStorage.selectRole) {
+        const menuArr = ['Organization', 'User Roles', 'Cloudlets', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances']
+        this.auth_list.map((item, i) => {
+            if (item.role == localStorage.selectRole) {
                 item.view.map((item) => {
-                    if(menuArr[item] == localStorage.selectMenu) {
+                    if (menuArr[item] == localStorage.selectMenu) {
                         this.props.handleChangeViewBtn(true);
                     }
                 })
@@ -716,9 +732,9 @@ class SiteFour extends React.Component {
 
     }
 
-    searchChange = (e, {value}) => {
-        this.setState({searchChangeValue:value})
-        this.props.handleSearchValue(this.props.searchValue,value)
+    searchChange = (e, { value }) => {
+        this.setState({ searchChangeValue: value })
+        this.props.handleSearchValue(this.props.searchValue, value)
     }
 
 
@@ -743,11 +759,11 @@ class SiteFour extends React.Component {
         },
     ]
     onExit() {
-        _self.setState({stepsEnabled: false})
+        _self.setState({ stepsEnabled: false })
     }
 
-    orgTypeLegendShow=()=> {
-        _self.setState({openLegend: true})
+    orgTypeLegendShow = () => {
+        _self.setState({ openLegend: true })
     }
     closeLegend = () => {
         this.setState({ openLegend: false })
@@ -765,16 +781,16 @@ class SiteFour extends React.Component {
         let checked = [];
         console.log('20191022 item is -- ', all, "  :  ", savedArray, typeof savedArray)
         all.map((item, i) => {
-            if(savedArray && JSON.parse(savedArray).length) {
-                console.log('20191022 item is -- ', JSON.parse(savedArray).findIndex(k => k==item.traceid) )
+            if (savedArray && JSON.parse(savedArray).length) {
+                console.log('20191022 item is -- ', JSON.parse(savedArray).findIndex(k => k == item.traceid))
                 //이전에 없던 데이터 이면 추가하기
-                if(JSON.parse(savedArray).findIndex(k => k==item.traceid) === -1) addArray.push(item.traceid)
+                if (JSON.parse(savedArray).findIndex(k => k == item.traceid) === -1) addArray.push(item.traceid)
             } else {
                 itemArray.push(item.traceid)
             }
         })
 
-        if(addArray.length) {
+        if (addArray.length) {
             console.log('20191022 if has new data ... ', addArray)
             JSON.parse(savedArray).concat(addArray);
         }
@@ -783,19 +799,19 @@ class SiteFour extends React.Component {
         // 이제 새로운 데이터에서 체크된 오딧은 제거
         let checkResult = null;
 
-        if(savedArray && JSON.parse(savedArray).length) {
+        if (savedArray && JSON.parse(savedArray).length) {
             checkResult = JSON.parse(savedArray);
-        } else if(itemArray.length) {
+        } else if (itemArray.length) {
             checkResult = itemArray;
         }
 
         checked = (checkedArray) ? JSON.parse(checkedArray) : [];
-        console.log('20191022  unchecked... is -- ',checkResult.length, ":", checked.length," - ", (checkResult.length - checked.length))
+        console.log('20191022  unchecked... is -- ', checkResult.length, ":", checked.length, " - ", (checkResult.length - checked.length))
         this.props.handleAuditCheckCount(checkResult.length - checked.length)
         localStorage.setItem('auditUnChecked', JSON.stringify(checkResult))
 
     }
-    
+
     receiveResult = (mcRequest) => {
         if (mcRequest) {
             if (mcRequest.response) {
@@ -810,14 +826,14 @@ class SiteFour extends React.Component {
         this.props.handleLoadingSpinner(false);
     }
     makeOga = (logName) => {
-        let lastSub = logName.substring(logName.lastIndexOf('=')+1);
+        let lastSub = logName.substring(logName.lastIndexOf('=') + 1);
         return lastSub
     }
     getDataAudit = () => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.setState({devData:[]})
+        this.setState({ devData: [] })
         _self.loadCount = 0;
-        serviceMC.sendRequest(_self, { token: store.userToken, method: serviceMC.getEP().SHOW_SELF, data: '{}',showMessage:false }, _self.receiveResult)
+        serviceMC.sendRequest(_self, { token: store.userToken, method: serviceMC.getEP().SHOW_SELF, data: '{}', showMessage: false }, _self.receiveResult)
     }
 
 
@@ -988,76 +1004,53 @@ class SiteFour extends React.Component {
 
 
     render() {
-        const {shouldShowBox, shouldShowCircle, viewMode } = this.state;
-        const { stepsEnabled, initialStep,hintsEnabled,hints, steps } = this.state;
+        const { shouldShowBox, shouldShowCircle, viewMode } = this.state;
+        const { stepsEnabled, initialStep, hintsEnabled, hints, steps } = this.state;
         console.log('20190821 stepsEnabled..', stepsEnabled)
         return (
             <Grid className='view_body'>
+                {steps ?
                 <Steps
                     enabled={stepsEnabled}
                     steps={steps}
                     initialStep={initialStep}
                     onExit={this.onExit}
                     showButtons={true}
-                    options ={{hideNext:false}}
+                    options={{ hideNext: false }}
                     ref={steps => (this.steps = steps)}
-                />
-                <Hints
-                    enabled={hintsEnabled}
-                    hints={hints}
-                />
-                {(this.props.loadingSpinner==true)?
-                    <div className="loadingBox" style={{zIndex:9999}}>
+                /> : null}
+                {hints ?
+                    <Hints
+                        enabled={hintsEnabled}
+                        hints={hints}
+                    /> : null}
+                {(this.props.loadingSpinner == true) ?
+                    <div className="loadingBox" style={{ zIndex: 9999 }}>
                         <GridLoader
                             sizeUnit={"px"}
                             size={25}
                             color={'#70b2bc'}
                             loading={this.props.loadingSpinner}
-                            //loading={this.props.creatingSpinner}
-                            //loading={true}
                         />
-                        {/*<span className={this.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Loading...</span>*/}
-                    </div>:null}
-                {/* <div className="creatingBox">
-                    <PulseLoader
-                        sizeUnit={"px"}
-                        size={20}
-                        color={'#70b2bc'}
-                        loading={this.props.creatingSpinner}
-                        //loading={true}
-                    />
-                    <span className={this.props.creatingSpinner ? '' : 'create'} style={{fontSize:'18px', color:'#70b2bc'}}>Creating...</span>
-                </div> */}
-                {(this.props.creatingSpinner==true)?
-                    <div className="loadingBox" style={{zIndex:9999}}>
-                        <GridLoader
-                            sizeUnit={"px"}
-                            size={25}
-                            color={'#70b2bc'}
-                            loading={this.props.creatingSpinner}
-                            //loading={true}
-                        />
-                        {/*<span className={this.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>*/}
-                    </div>:null}
-
+                    </div> : null}
                 <Grid.Row className='gnb_header'>
                     <Grid.Column width={6} className='navbar_left'>
                         <Header>
-                            <Header.Content onClick={() => this.gotoPreview('/site1')}  className='brand' />
+                            <Header.Content onClick={() => this.gotoPreview('/site1')} className='brand' />
                         </Header>
                     </Grid.Column>
                     <Grid.Column width={10} className='navbar_right'>
-                        <div style={{cursor:'pointer'}} onClick={this.computeRefresh}>
+                        <div style={{ cursor: 'pointer' }} onClick={this.computeRefresh}>
                             <MaterialIcon icon={'refresh'} />
                         </div>
-                        <div style={{cursor:'pointer'}} onClick={() => this.gotoUrl('/site1','pg=0')}>
+                        <div style={{ cursor: 'pointer' }} onClick={() => this.gotoUrl('/site1', 'pg=0')}>
                             <MaterialIcon icon={'public'} />
                         </div>
-                        <div style={{cursor:'pointer', display:'none'}}>
+                        <div style={{ cursor: 'pointer', display: 'none' }}>
                             <MaterialIcon icon={'notifications_none'} />
                         </div>
                         <Popup
-                            trigger={<div style={{cursor:'pointer', display:'none'}}>
+                            trigger={<div style={{ cursor: 'pointer', display: 'none' }}>
                                 <MaterialIcon icon={'add'} />
                             </div>}
                             content={this.menuAddItem()}
@@ -1066,9 +1059,9 @@ class SiteFour extends React.Component {
                             className='gnb_logout'
                         />
                         {/* 프로필 */}
-                        <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false}/>
+                        <HeaderGlobalMini email={this.state.email} data={this.props.userInfo.info} dimmer={false} />
                         <Popup
-                            trigger={<div style={{cursor:'pointer'}}> Support </div>}
+                            trigger={<div style={{ cursor: 'pointer' }}> Support </div>}
                             content={this.menuSupport()}
                             on='click'
                             position='bottom center'
@@ -1076,53 +1069,53 @@ class SiteFour extends React.Component {
                         />
                     </Grid.Column>
                 </Grid.Row>
-                <Container className='view_left_container' style={{width:this.menuW}}>
+                <Container className='view_left_container' style={{ width: this.menuW }}>
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='view_left'>
                             <Menu secondary vertical className='view_left_menu org_menu'>
                                 {/* show name of organization */}
                                 <Grid.Column className="left_org">
                                     <div className="left_org_title">Organization</div>
-                                    <div className="left_org_selected">{localStorage.selectOrg?localStorage.selectOrg:'No organization selected'}</div>
+                                    <div className="left_org_selected">{localStorage.selectOrg ? localStorage.selectOrg : 'No organization selected'}</div>
                                 </Grid.Column>
                                 {/* show role of user */}
                                 <Grid.Row className="left_authority">
                                     <Segment className="stepOrgDeveloper2">
                                         <Grid>
-                                            <Grid.Row style={{cursor:'pointer'}} onClick={this.orgTypeLegendShow}>
+                                            <Grid.Row style={{ cursor: 'pointer' }} onClick={this.orgTypeLegendShow}>
                                                 <Grid.Column>
-                                                    {localStorage.selectRole?
+                                                    {localStorage.selectRole ?
                                                         <div className="markBox">
                                                             {
-                                                                (localStorage.selectRole == 'AdminManager')? <div className="mark markA markS">S</div>
+                                                                (localStorage.selectRole == 'AdminManager') ? <div className="mark markA markS">S</div>
                                                                     :
-                                                                    (localStorage.selectRole == 'DeveloperManager')?
+                                                                    (localStorage.selectRole == 'DeveloperManager') ?
                                                                         <div className="mark markD markM">M</div>
                                                                         :
-                                                                        (localStorage.selectRole == 'DeveloperContributor')?
+                                                                        (localStorage.selectRole == 'DeveloperContributor') ?
                                                                             <div className="mark markD markC">C</div>
                                                                             :
-                                                                            (localStorage.selectRole == 'DeveloperViewer')?
+                                                                            (localStorage.selectRole == 'DeveloperViewer') ?
                                                                                 <div className="mark markD markV">V</div>
                                                                                 :
-                                                                                (localStorage.selectRole == 'OperatorManager')?
+                                                                                (localStorage.selectRole == 'OperatorManager') ?
                                                                                     <div className="mark markO markM">M</div>
                                                                                     :
-                                                                                    (localStorage.selectRole == 'OperatorContributor')?
+                                                                                    (localStorage.selectRole == 'OperatorContributor') ?
                                                                                         <div className="mark markO markC">C</div>
                                                                                         :
-                                                                                        (localStorage.selectRole == 'OperatorViewer')?
+                                                                                        (localStorage.selectRole == 'OperatorViewer') ?
                                                                                             <div className="mark markO markV">V</div>
                                                                                             :
                                                                                             <span></span>
                                                             }
                                                         </div>
-                                                        :null
+                                                        : null
                                                     }
                                                     <div>
-                                                    {
-                                                        (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole?localStorage.selectRole:'Please select a role' : localStorage.selectRole?localStorage.selectRole:'Please select a role'
-                                                    }
+                                                        {
+                                                            (localStorage.selectRole == 'AdminManager') ? localStorage.selectRole ? localStorage.selectRole : 'Please select a role' : localStorage.selectRole ? localStorage.selectRole : 'Please select a role'
+                                                        }
                                                     </div>
                                                 </Grid.Column>
                                             </Grid.Row>
@@ -1135,38 +1128,38 @@ class SiteFour extends React.Component {
                             </Menu>
                             <Menu secondary vertical className='view_left_menu main_menu'>
                                 <div className='menuPart'>
-                                {
-                                    this.OrgMenu.map((item, i)=>(
-                                        (item.label == 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
-                                            : (localStorage.selectRole == 'AdminManager') ? this.menuItemView(item, i, localStorage.selectMenu)
-                                            : this.menuItemView(item, i, localStorage.selectMenu)
-                                    ))
-                                }
+                                    {
+                                        this.OrgMenu.map((item, i) => (
+                                            (item.label == 'Accounts' && localStorage.selectRole !== 'AdminManager') ? null
+                                                : (localStorage.selectRole == 'AdminManager') ? this.menuItemView(item, i, localStorage.selectMenu)
+                                                    : this.menuItemView(item, i, localStorage.selectMenu)
+                                        ))
+                                    }
                                 </div>
 
                                 <div className='menuPart'>
-                                {
-                                    (localStorage.selectRole == 'AdminManager')?
-                                        this.menuItems.map((item, i)=>(
-                                            this.menuItemView(item, i, localStorage.selectMenu)
-                                        ))
-                                        :
-                                        (localStorage.selectRole == 'DeveloperManager' || localStorage.selectRole == 'DeveloperContributor' || localStorage.selectRole == 'DeveloperViewer')?
-                                            this.menuItems.map((item, i)=>(
+                                    {
+                                        (localStorage.selectRole == 'AdminManager') ?
+                                            this.menuItems.map((item, i) => (
                                                 this.menuItemView(item, i, localStorage.selectMenu)
                                             ))
                                             :
-                                            (localStorage.selectRole == 'OperatorManager' || localStorage.selectRole == 'OperatorContributor' || localStorage.selectRole == 'OperatorViewer')?
-                                                this.auth_three.map((item, i)=>(
+                                            (localStorage.selectRole == 'DeveloperManager' || localStorage.selectRole == 'DeveloperContributor' || localStorage.selectRole == 'DeveloperViewer') ?
+                                                this.menuItems.map((item, i) => (
                                                     this.menuItemView(item, i, localStorage.selectMenu)
                                                 ))
                                                 :
-                                                null
-                                }
+                                                (localStorage.selectRole == 'OperatorManager' || localStorage.selectRole == 'OperatorContributor' || localStorage.selectRole == 'OperatorViewer') ?
+                                                    this.auth_three.map((item, i) => (
+                                                        this.menuItemView(item, i, localStorage.selectMenu)
+                                                    ))
+                                                    :
+                                                    null
+                                    }
                                 </div>
 
                             </Menu>
-                            <div style={{zIndex: '100', color: 'rgba(255,255,255,.2)', padding: '10px'}}>
+                            <div style={{ zIndex: '100', color: 'rgba(255,255,255,.2)', padding: '10px' }}>
                                 {
                                     (localStorage.selectRole == 'AdminManager') ? this.state.currentVersion : null
                                 }

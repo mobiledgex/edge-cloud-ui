@@ -50,7 +50,7 @@ export default class PopUserViewer extends React.Component {
     render() {
 
         return (
-            <Modal size={'tiny'} open={this.state.open} dimmer={false}>
+            <Modal size={'tiny'} open={this.state.open}>
                 <Modal.Header>User</Modal.Header>
                 <Modal.Content  image scrolling>
                     <Grid>
