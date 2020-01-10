@@ -120,6 +120,12 @@ export function getPath(request) {
         case DELETE_APP_INST:
         case STREAM_APP_INST:
             return `/api/v1/auth/ctrl/${request.method}`;
+        case SHOW_CLOUDLET_POOL:
+        case SHOW_CLOUDLET_MEMBER:
+        case DELETE_CLOUDLET_POOL:
+        case CREATE_CLOUDLET_POOL:
+        case CREATE_CLOUDLET_POOL_MEMBER:
+            return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
         case VERIFY_EMAIL:
