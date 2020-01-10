@@ -49,6 +49,7 @@ export const ADD_USER_ROLE = "addUserRole";
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
 export const STREAM_CLOUDLET = "StreamCloudlet";
 export const STREAM_APP_INST = "StreamAppInst";
+export const METRICS_APP = "MetricsApp";
 
 export function getPath(request) {
     switch (request.method) {
@@ -108,6 +109,8 @@ export function getPath(request) {
         case RESET_PASSWORD:
         case CREATE_USER:
             return `/api/v1/${request.method}`;
+        case METRICS_APP:
+            return '/api/v1/auth/metrics/app';
         default:
             return null;
     }
