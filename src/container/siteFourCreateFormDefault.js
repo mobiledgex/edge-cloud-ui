@@ -462,7 +462,7 @@ class SiteFourCreateFormDefault extends React.Component {
             <Item className='content create-org' style={{margin:'0 auto', maxWidth:1200}}>
                 {(disableLabel)?<Header style={{borderBottom:'1px solid rgba(255,255,255,0.1)'}}>Settings</Header>:null}
                 <Fragment >
-                    <Form onSubmit={this.onHandleSubmit} getFormState={this.onFormState} className={"fieldForm"} >
+                    <Form onSubmit={this.onHandleSubmit} getformstate={this.onFormState} className={"fieldForm"} >
                         <Form.Group widths="equal" style={{flexDirection:'column', marginLeft:10, marginRight:10, alignContent:'space-around'}}>
                             <Grid columns={2}>
                                 {
@@ -473,7 +473,7 @@ class SiteFourCreateFormDefault extends React.Component {
 
                                                 (fieldKeys[pId][key]['type'] === 'InvisibleField') ?
 
-                                                    <div style={ {opacity:0, position:'absolute', left:-9999, zIndex:-999}}>
+                                                    <div key={i} style={ {opacity:0, position:'absolute', left:-9999, zIndex:-999}}>
                                                         <Field
                                                             component={renderInputInvisible}
                                                             value={this.state.invisibleValue}

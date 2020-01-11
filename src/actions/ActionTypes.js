@@ -47,4 +47,3 @@ export const STATE_STREAM = 'STATE_STREAM';
 export const RESET_MAP = 'RESET_MAP';
 export const SUBMIT_OBJ = 'SUBMIT_OBJ';
 export const CHANGE_NEXT = 'CHANGE_NEXT';
-

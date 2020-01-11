@@ -13,7 +13,6 @@ import _ from "lodash";
 import * as reducer from '../utils'
 
 import * as serviceMC from '../services/serviceMC';
-//import * as servicePool from '../services/service_cloudlet_pool';
 import SiteFourPoolOne from "./siteFourPoolStepOne";
 import Alert from "react-s-alert";
 import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";

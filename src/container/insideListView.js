@@ -255,9 +255,7 @@ class InsideListView extends React.Component {
         ));
     }
 
-    onLayoutChange(layout) {
-        //this.props.onLayoutChange(layout);
-    }
+   
     onPortClick() {
 
     }
@@ -379,8 +377,8 @@ class InsideListView extends React.Component {
         <Button.Group vertical className="table_actions_popup_group">
             {
                 (this.props.siteId === "Cloudlet Pool")?
-                    cloudletPoolEdit.map((option)=> (
-                        <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
+                    cloudletPoolEdit.map((option, i)=> (
+                        <Button key={i} onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
                             {option.text}
                         </Button>
                     ))
@@ -524,7 +522,6 @@ class InsideListView extends React.Component {
                 ></DeleteItem>
                 
                 <div
-                    onLayoutChange={this.onLayoutChange}
                     {...this.props}
                     style={{width:'100%'}}
                 >

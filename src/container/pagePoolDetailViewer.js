@@ -4,7 +4,7 @@ import ContainerDimensions from 'react-container-dimensions';
 import * as moment from 'moment';
 import RGL, { WidthProvider } from "react-grid-layout";
 import ReactJson from 'react-json-view'
-import * as serviceInstance from '../services/service_instance_service';
+import * as serviceMC from '../services/serviceMC';
 import * as aggregate from '../utils';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -308,9 +308,14 @@ class PagePoolDetailViewer extends React.Component {
 
         ))
     }
-    receiveInstanceInfo(result) {
-        _self.setState({monitorData:result})
-        _self.props.handleLoadingSpinner(false)
+    receiveInstanceInfo(mcRequestList) {
+        let dataList = [];
+        if (mcRequestList && mcRequestList.length > 0) {
+            mcRequestList.map(mcRequest => {
+                dataList = dataList.concat(mcRequest.response.data);
+            })
+            _self.setState({ monitorData: dataList })
+        }
     }
     getParams = (page, data, store) => (
         (page === 'appInst' && _self.resources[page].length)?
@@ -320,11 +325,26 @@ class PagePoolDetailViewer extends React.Component {
             _self.resources[page].map((valid) => this.makeFormCluster(data, valid, store.userToken))
     )
     loopGetHealth (page, data, store) {
-        (page === 'appInst' && store.userToken)  ?
-            serviceInstance.getAppinstHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
-        (page === 'cloudlet' && store.userToken)  ?
-            serviceInstance.getCloudletHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
-        serviceInstance.getClusterHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo)
+        let method = serviceMC.getEP().CLUSTER_INST_METRICS_APP;
+        let dataList = _self.resources[page].map((valid) => {
+            if (page === 'appInst') {
+                method = serviceMC.getEP().APP_INST_METRICS_APP;
+                return this.makeFormApp(data, valid, store.userToken)
+            }
+            else if (page === 'cloudlet') {
+                method = serviceMC.getEP().CLOUDLET_METRICS_APP;
+                return this.makeFormCloudlet(data, valid, store.userToken)
+            }
+            else {
+                return this.makeFormCluster(data, valid, store.userToken)
+            }
+        })
+
+        let requestDataList = [];
+        dataList.map(data => {
+            requestDataList.push({ token: store.userToken, method: method, data: data })
+        })
+        serviceMC.sendMultiRequest(_self, requestDataList, _self.receiveInstanceInfo)
     }
 
     getInstanceHealth (page, data) {
