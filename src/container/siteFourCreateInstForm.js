@@ -345,7 +345,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
             if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
                 serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
             } else {
-                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org:_self.props.selectOrg } }, _self.receiveResultCloudlet)
+                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org:_self.props.selectOrg || localStorage.selectOrg } }, _self.receiveResultCloudlet)
             }
             serviceMC.sendRequest(_self, {token:store ? store.userToken : 'null', method:serviceMC.getEP().SHOW_FLAVOR, data : {region:item}}, _self.receiveResultFlavor)
         })

@@ -266,7 +266,7 @@ class SiteTwoPageOne extends React.Component  {
                 if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
                     serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResult)
                 } else {
-                    serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org:this.receiveOrg } }, _self.receiveResult)
+                    serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org:this.receiveOrg || localStorage.selectOrg } }, _self.receiveResult)
                 }
             }, 500 * i)
         })

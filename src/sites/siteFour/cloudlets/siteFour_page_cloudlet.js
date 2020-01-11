@@ -134,12 +134,12 @@ class SiteFourPageCloudlet extends React.Component {
             if(mcRequest.response)
             {
                 let response = mcRequest.response;
-                regionGroup = reducer.groupBy(response.data, 'Region');
+                regionGroup = reducer.groupBy(response.data, 'CloudletName');
                 if(Object.keys(regionGroup)[0]) {
                     _self._cloudletDummy = _self._cloudletDummy.concat(response.data)
                 }
-                this.loadCount ++;
-                if(rgn.length == this.loadCount){
+                _self.loadCount ++;
+                if(rgn.length == _self.loadCount){ 
                     _self.countJoin()            
                 }
             }
@@ -175,7 +175,7 @@ class SiteFourPageCloudlet extends React.Component {
             if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
                 requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}
             } else {
-                requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_ORG_CLOUDLET, data : {region:item, org:_self.props.selectOrg}}
+                requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_ORG_CLOUDLET, data : {region:item, org:_self.props.selectOrg || localStorage.selectOrg}}
             }
             serviceMC.sendRequest(_self, requestData, _self.receiveResult)
         })

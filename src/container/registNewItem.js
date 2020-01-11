@@ -411,7 +411,7 @@ class RegistNewItem extends React.Component {
             if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
                 serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
             } else {
-                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: region, org: _self.props.selectOrg } }, _self.receiveOper)
+                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg } }, _self.receiveOper)
             }
             
             // Flavor

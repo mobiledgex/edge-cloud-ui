@@ -126,7 +126,7 @@ class RegistryInstViewer extends React.Component {
             if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
                 serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } }, _self.receiveResultCloudlet)
             } else {
-                serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: _region, org:_self.props.selectOrg } }, _self.receiveResultCloudlet)
+                serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: _region, org:_self.props.selectOrg || localStorage.selectOrg } }, _self.receiveResultCloudlet)
             }
         }, 200);
             
