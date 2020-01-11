@@ -292,8 +292,14 @@ class MapWithListView extends React.Component {
     }
     detailView(item) {
         //change popup to page view
-        _self.setState({ viewMode: 'detailView' })
-        _self.props.handleDetail({ data: item, viewMode: 'detailView' })
+        if ((localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') && item.Operator !== localStorage.selectOrg) {
+            _self.setState({ viewMode: 'listView' })
+            _self.props.handleDetail({ data: item, viewMode: 'listView' })
+        } else {
+            _self.setState({ viewMode: 'detailView' })
+            _self.props.handleDetail({ data: item, viewMode: 'detailView' })
+
+        }
     }
     jsonView = (jsonObj) => (
         <ReactJson src={jsonObj} {...this.jsonViewProps} />
