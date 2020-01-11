@@ -37,32 +37,43 @@ class SiteFourPoolUpdateView extends React.Component {
     receiveResult = (result) => {
         console.log('20191231 show cloudlet result -- ', result)
 
-        if(result.response.data && result.response.data.length) {
-            _self.countJoin(result.response.data)
-        } else if(result && result.length){
-            _self.countJoin(result)
+        if(result.response){
+            if(result.response.data && result.response.data.length) {
+                _self.countJoin(result.response.data)
+            } else if(result && result.length){
+                _self.countJoin(result)
+            }
         }
     }
 
     receiveResultMember = (result) => {
         let cloudletData = [];
         let poolName = this.state.selectedData['poolName']
-        result.response.data.map((item) =>{
-            if(poolName === item.PoolName){
-                cloudletData.push(item.Cloudlet)
+        if(result.response){
+            if(result.response.data && result.response.data.length) {
+                result.response.data.map((item) =>{
+                    if(poolName === item.PoolName){
+                        cloudletData.push(item.Cloudlet)
+                    }
+                })
             }
-        })
+        }
+
         this.state.selectListData = cloudletData
     }
 
     receiveResultLinkOrg = (result) => {
         let orgData = [];
         let poolName = this.state.selectedData['poolName']
-        result.response.data.data.map((item) =>{
-            if(poolName === item.CloudletPool){
-                orgData.push(item['Org'])
+        if(result.response){
+            if(result.response.data && result.response.data.length) {
+                result.response.data.map((item) =>{
+                    if(poolName === item.CloudletPool){
+                        orgData.push(item['Org'])
+                    }
+                })
             }
-        })
+        }
         this.state.selectListData = orgData
     }
 

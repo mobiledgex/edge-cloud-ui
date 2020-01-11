@@ -222,6 +222,7 @@ class SiteFourCreateFormDefault extends React.Component {
 
     }
     onChangeDualList = (selected) => {
+        console.log("20200110 " + selected)
         this.setState({ selected });
         this.props.dispatch(change('createAppFormDefault', 'invisibleField', JSON.stringify(selected)));
     }
@@ -253,6 +254,7 @@ class SiteFourCreateFormDefault extends React.Component {
         }
         return mockData;
     };
+
     getListData = (datas) => {
         const listData = [];
 
@@ -263,18 +265,35 @@ class SiteFourCreateFormDefault extends React.Component {
                     label: item['cloudlet']
                 }
                 listData.push(data)
-
-                if(this.props.selectListData){
-                    let selectListData = this.props.selectListData
-                    selectListData.map((selectItem, j) => {
-                        if(selectItem === data.label){
-                            this.state.selected[j] = data.value
-                        }
-                    })
-                }
             })
         }
         return listData;
+    }
+
+    getSelectedListData = (data, pId, regKeys, fieldKeys, selectListData) => {
+        if(regKeys && regKeys.length > 0) {
+            regKeys.map((key) => {
+                if(fieldKeys[pId][key]){
+                    if(fieldKeys[pId][key]['type'] === 'RenderDualListBox'){
+                        if(data[key].length) {
+                            data[key].map((item, i) => {
+                                const data = {
+                                    value: i,
+                                    label: item['cloudlet']
+                                }
+                                if(selectListData){
+                                    selectListData.map((selectItem, j) => {
+                                        if(selectItem === data.label){
+                                            this.state.selected[j] = data.value
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    }
+                }
+            })
+        }
     }
 
     filterOption = (inputValue, option) => option.description.indexOf(inputValue) > -1;
@@ -340,6 +359,7 @@ class SiteFourCreateFormDefault extends React.Component {
             setTimeout(() => {
                 self.setState({data:nextProps.data.data[0], regKeys:keys, fieldKeys:nextProps.data.keys, pId:nextProps.pId})
             }, 5000)
+            this.getSelectedListData(nextProps.data.data[0], nextProps.pId, keys, nextProps.data.keys, nextProps.selectListData)
         }
         if(nextProps.editMode) this.setState({submitButton:'Update'})
     }
