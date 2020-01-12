@@ -152,6 +152,14 @@ class SiteFour extends React.Component {
         ]
         this.menuItems = [
             { label: 'Cloudlets', icon: 'cloud_queue', pg: 2 },
+            { label: 'Flavors', icon: 'free_breakfast', pg: 3 },
+            { label: 'Cluster Instances', icon: 'storage', pg: 4 },
+            { label: 'Apps', icon: 'apps', pg: 5 },
+            { label: 'App Instances', icon: 'storage', pg: 6 },
+            { label: 'Audit Log', icon: 'check', pg: 'audits' }
+        ]
+        this.menuItemsAll = [
+            { label: 'Cloudlets', icon: 'cloud_queue', pg: 2 },
             { label: 'Cloudlet Pool', icon: 'pool', pg: 7 },
             { label: 'Flavors', icon: 'free_breakfast', pg: 3 },
             { label: 'Cluster Instances', icon: 'storage', pg: 4 },
@@ -159,12 +167,13 @@ class SiteFour extends React.Component {
             { label: 'App Instances', icon: 'storage', pg: 6 },
             { label: 'Audit Log', icon: 'check', pg: 'audits' }
         ]
+        this.menuArr = ['Organization', 'User Roles', 'Cloudlets', 'Cloudlet Pool', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances']
         this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
             { role: 'AdminManager', view: [] },
             { role: 'DeveloperManager', view: [2, 3] },
             { role: 'DeveloperContributor', view: [1, 2, 3] },
-            { role: 'DeveloperViewer', view: [1, 2, 3, 4, 5, 6] },
+            { role: 'DeveloperViewer', view: [1, 2, 3, 5, 6, 7] },
             { role: 'OperatorManager', view: [] },
             { role: 'OperatorContributor', view: [1] },
             { role: 'OperatorViewer', view: [1, 2] }
@@ -493,7 +502,9 @@ class SiteFour extends React.Component {
         } catch (e) {
 
         }
-
+        if(nextProps.selectedOrg) {
+            this.setState({selectOrg: nextProps.selectedOrg})
+        }
 
         if (nextProps.params && nextProps.params.subPath) {
             let subPaths = nextProps.params.subPath;
@@ -700,11 +711,10 @@ class SiteFour extends React.Component {
         this.props.handleComputeRefresh(true);
     }
     disableBtn = () => {
-        const menuArr = ['Organization', 'User Roles', 'Cloudlets', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances']
         this.auth_list.map((item, i) => {
             if (item.role == localStorage.selectRole) {
-                item.view.map((item) => {
-                    if (menuArr[item] == localStorage.selectMenu) {
+                item.view.map((view) => {
+                    if (this.menuArr[view] == localStorage.selectMenu) {
                         this.props.handleChangeViewBtn(true);
                     }
                 })
@@ -958,7 +968,7 @@ class SiteFour extends React.Component {
                                 <div className='menuPart'>
                                     {
                                         (localStorage.selectRole == 'AdminManager') ?
-                                            this.menuItems.map((item, i) => (
+                                            this.menuItemsAll.map((item, i) => (
                                                 this.menuItemView(item, i, localStorage.selectMenu)
                                             ))
                                             :
@@ -1112,6 +1122,7 @@ const mapStateToProps = (state) => {
     let submitInfo = (state.submitInfo) ? state.submitInfo : null;
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let checkedAudit = (state.checkedAudit) ? state.checkedAudit.audit : null;
+    let selectedOrg = (state.selectOrganiz) ? state.selectOrganiz.org : null;
 
     return {
         viewBtn: state.btnMnmt ? state.btnMnmt : null,
@@ -1139,6 +1150,7 @@ const mapStateToProps = (state) => {
         regionInfo: regionInfo,
         audit: checkedAudit,
         clickCity: state.clickCityList.list,
+        selectedOrg
     }
 };
 

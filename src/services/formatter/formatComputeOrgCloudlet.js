@@ -23,7 +23,7 @@ export const formatData  = (datas,body) => {
             if(datas.data == null) {
                 toJson = null;
             } else {
-                toJson.push((datas.data)?datas.data:{});
+                toJson = (datas.data)?datas.data:[];
             }
         } else {
             toArray = datas.data.split('\n')
@@ -33,39 +33,47 @@ export const formatData  = (datas,body) => {
     }else {
         toJson = null;
     }
-    let newRegistKey = ['Region', 'PoolName', 'OperatorName'];
+    let newRegistKey = ['Region', 'CloudletName', 'OperatorName', 'CloudletLocation', 'Ip_support', 'Num_dynamic_ips'];
     if(toJson && toJson.length){
-        toJson.map((dataResult, i) => {
-            if(dataResult.error || dataResult.message || !dataResult.data) {
+        toJson.map((dataResult) => {
+            if(dataResult.error || dataResult.message || !dataResult.key) {
                 values.push({
                     Region:'',
-                    PoolName:'',
-                    Cloudlets:'',
-                    Organizations:'',
+                    CloudletName:'',
+                    Operator:'',
+                    CloudletLocation:'',
+                    Ip_support:'',
+                    Num_dynamic_ips:'',
+                    Physical_name:'',
+                    Platform_type:'',
+                    State:'',
+                    Progress:'',
+                    Status:'',
                     Edit:null
                 })
             } else {
-                let Index = i;
                 let Region = body.region || '-';
-                let PoolName = dataResult.data.key.name || '-';
-                let Cloudlets = dataResult.data.state || 0;
-                let Organizations =  0;
-                values.push({uuid:generateUniqueId(), Region:Region,  PoolName:PoolName, Cloudlets:Cloudlets, Organizations:Organizations,  Edit:newRegistKey})
+                let CloudletName = dataResult.key.name || '-';
+                let Operator = dataResult.key.operator_key.name || '-';
+                let CloudletLocation = dataResult.location || '-';
+                let Ip_support = dataResult.ip_support || '-';
+                let Num_dynamic_ips = dataResult.num_dynamic_ips || '-';
+                let Physical_name = dataResult.physical_name || '-';
+                let Platform_type = dataResult.platform_type || '-';
+                let State = dataResult.state || '-';
+                let Status = dataResult.status;
+                values.push({uuid:generateUniqueId(), Region:Region,  CloudletName:CloudletName, Operator:Operator, CloudletLocation:CloudletLocation, Ip_support:Ip_support, Num_dynamic_ips:Num_dynamic_ips, Physical_name:Physical_name, Platform_type:Platform_type, State:State, Progress:'', Status:Status, Edit:newRegistKey})
             }
-
         })
     } else {
         values.push({Region:'',CloudletLocation:''})
     }
-
     return values
-
 }
 
 
-/*
-
-{
+/**
+ {
         "config": {}, 
         "flavor": {}, 
         "ip_support": 2, 
@@ -92,5 +100,5 @@ export const formatData  = (datas,body) => {
             "update_cluster_inst_timeout": 1200000000000
         }
     }
-    
-*/
+ */
+

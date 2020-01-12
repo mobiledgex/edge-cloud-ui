@@ -7,7 +7,7 @@ import * as serviceMC from '../services/serviceMC';
 import SankeyDiagram from '../charts/plotly/SankeyDiagram';
 import DualListBox from 'react-dual-listbox';
 import './styles.css';
-import './react_dualist.css'
+//import './react_dualist.css'
 import '../css/components/dualListbox/react-dual-listbox.css';
 
 
@@ -146,6 +146,18 @@ const options = [
 const renderDualListInput = (self,data) => (
     <DualListBox
         // style={{width:500}}
+        icons={{
+            moveLeft: <Icon name="angle left" />,
+            moveAllLeft: [
+                <Icon key={0} name="angle double left" />,
+            ],
+            moveRight: <Icon name="angle right" />,
+            moveAllRight: [
+                <Icon key={0} name="angle double right" />,
+            ],
+            moveDown: <span className="fa fa-chevron-down" />,
+            moveUp: <span className="fa fa-chevron-up" />,
+        }}
         canFilter
         options={self.getListData(data)}
         selected={self.state.selected}

@@ -14,6 +14,7 @@ import * as FormatMonitorApp from "./formatter/formatMonitorApp";
 import * as FormatComputeCloudletPool from './formatter/formatComputeCloudletPool';
 import * as FormatComputeCloudletPoolDelete from './formatter/formatComputeCloudletPoolDelete';
 import * as FormatComputeCloudletPoolMember from './formatter/formatComputeCloudletPoolMember';
+import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
 
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
@@ -191,6 +192,9 @@ export function formatData(request, response) {
             break;
         case SHOW_CLOUDLET_MEMBER:
             data = FormatComputeCloudletPoolMember.formatData(response, request.data)
+            break;
+        case SHOW_ORG_CLOUDLET:
+            data = FormatComputeOrgCloudlet.formatData(response, request.data)
             break;
         default:
             data = undefined;
