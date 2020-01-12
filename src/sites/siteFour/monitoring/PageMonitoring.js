@@ -222,12 +222,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: ####################################################################################
             //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA)
             //todo: ####################################################################################
-            //let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
+            let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
 
             //todo: ################################################################
             //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR DEV
             //todo: ################################################################
-            let usageList = require('../../../temp/usageAllJsonList2')
+            //let usageList = require('../../../temp/usageAllJsonList2')
 
             //todo: MAKE SELECTBOX.
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
