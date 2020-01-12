@@ -354,3 +354,10 @@ export function resetMap(region) {
         region
     }
 }
+
+export function changeNext(next) {
+    return {
+        type: types.CHANGE_NEXT,
+        next
+    }
+}

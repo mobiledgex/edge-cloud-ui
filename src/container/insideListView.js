@@ -22,6 +22,11 @@ const appssEdit = [
     {key: 'update', text:'Update', icon:null},
     {key: 'delete', text:'Delete', icon:'trash alternate'},
 ]
+const cloudletPoolEdit = [
+    {key: 'add', text:'Add Cloudlet', icon:null},
+    {key: 'link', text:'Link Organization', icon:null},
+    {key: 'delete', text:'Delete CloudletPool', icon:'trash alternate'},
+]
 const headerStyle = {
     backgroundImage: 'url()'
 }
@@ -250,9 +255,7 @@ class InsideListView extends React.Component {
         ));
     }
 
-    onLayoutChange(layout) {
-        //this.props.onLayoutChange(layout);
-    }
+   
     onPortClick() {
 
     }
@@ -305,6 +308,19 @@ class InsideListView extends React.Component {
         // }, timeoutLength)
     }
 
+    addCloudlet = (data) => {
+        this.gotoUrl('/site4', 'pg=updateCloudletPool','pg=7')
+        this.props.handleAppLaunch(data)
+        // this.props.handleChangeComputeItem('App Instances')
+        localStorage.setItem('selectMenu', 'Cloudlet Pool')
+    }
+    linkOrganize = (data) => {
+        this.gotoUrl('/site4', 'pg=linkOrganize','pg=7')
+        this.props.handleAppLaunch(data)
+        // this.props.handleChangeComputeItem('App Instances')
+        localStorage.setItem('selectMenu', 'Cloudlet Pool')
+    }
+
     handleClose = () => {
         this.setState({ isOpen: false, isOpenTip:false })
         //clearTimeout(this.timeout)
@@ -337,8 +353,10 @@ class InsideListView extends React.Component {
      * If you click the buttons that are grouped
      ** *****/
     onHandlePopMenu = (a, b) => {
+        //cloudlet pool
+        this.state.item.State = b.children;
         this.setState({ isOpen: false })
-        console.log('20191104 ... on handle pop menu.. ', a, b.children, ': orgName=', this.state.orgName)
+        console.log('20200104 ... on handle pop menu.. ', a, b.children, ': orgName=', this.state.orgName)
         if(b.children === 'Launch') {
             this.appLaunch(this.state.item)
         } else if(b.children === 'Update') {
@@ -346,16 +364,30 @@ class InsideListView extends React.Component {
         } else if(b.children === 'Delete') {
             this.setState({openDelete: true, selected:this.state.item})
         }
+        if(b.children === 'Add Cloudlet') {
+            this.addCloudlet(this.state.item)
+        } else if(b.children === 'Link Organization') {
+            this.linkOrganize(this.state.item)
+        } else if(b.children === 'Delete CloudletPool') {
+            this.setState({openDelete: true, selected:this.state.item})
+        }
 
     }
     makeActionButton = (target) => (
         <Button.Group vertical className="table_actions_popup_group">
             {
-                appssEdit.map((option)=> (
-                    <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
-                        {option.text}
-                    </Button>
-                ))
+                (this.props.siteId === "Cloudlet Pool")?
+                    cloudletPoolEdit.map((option, i)=> (
+                        <Button key={i} onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
+                            {option.text}
+                        </Button>
+                    ))
+                    :
+                    appssEdit.map((option)=> (
+                        <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
+                            {option.text}
+                        </Button>
+                    ))
             }
         </Button.Group>
     )
@@ -490,7 +522,6 @@ class InsideListView extends React.Component {
                 ></DeleteItem>
                 
                 <div
-                    onLayoutChange={this.onLayoutChange}
                     {...this.props}
                     style={{width:'100%'}}
                 >

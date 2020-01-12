@@ -63,9 +63,11 @@ function responseError(self, request, response, callback) {
     if (response.data && response.data.message) {
         message = response.data.message
         if (checkExpiry(self, message)) {
-            showSpinner(self,false)
+            showSpinner(self, false)
             showError(request, message);
-            callback({ request: request, error: { code: code, message: message } })
+            if (callback) {
+                callback({ request: request, error: { code: code, message: message } })
+            }
         }
     }
 }
@@ -110,6 +112,48 @@ export function sendWSRequest(request, callback) {
     }
 }
 
+
+export function sendMultiRequest(self, requestDataList, callback) {
+    let promise = [];
+    let resResults = [];
+    requestDataList.map((request) => {
+        promise.push(axios.post(EP.getPath(request), request.data,
+            {
+                headers: getHeader(request)
+            }))
+
+    })
+    axios.all(promise)
+        .then(responseList => {
+            responseList.map((response, i) => {
+                resResults.push(EP.formatData(requestDataList[i], response));
+            })
+            if (self.props.handleLoadingSpinner) {
+                self.props.handleLoadingSpinner(false)
+            }
+            callback(resResults);
+        
+        }).catch(error => {
+            responseError(self, requestDataList[0], error.response, callback)
+        })
+
+}
+
+export const sendSyncRequest = async (self, request) => {
+    try {
+        let response = await axios.post(EP.getPath(request), request.data,
+            {
+                headers: getHeader(request)
+            });
+        return EP.formatData(request, response);
+    }
+    catch (error) {
+        if (error.response) {
+            responseError(self, request, error.response)
+        }
+    }
+}
+
 export function sendRequest(self, request, callback) {
 
     axios.post(EP.getPath(request), request.data,
@@ -117,7 +161,8 @@ export function sendRequest(self, request, callback) {
             headers: getHeader(request)
         })
         .then(function (response) { 
-            showSpinner(self,false)
+           
+            
             callback(EP.formatData(request, response));
         })
         .catch(function (error) {
