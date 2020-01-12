@@ -63,9 +63,11 @@ function responseError(self, request, response, callback) {
     if (response.data && response.data.message) {
         message = response.data.message
         if (checkExpiry(self, message)) {
-            showSpinner(self,false)
+            showSpinner(self, false)
             showError(request, message);
-            callback({ request: request, error: { code: code, message: message } })
+            if (callback) {
+                callback({ request: request, error: { code: code, message: message } })
+            }
         }
     }
 }
@@ -135,6 +137,21 @@ export function sendMultiRequest(self, requestDataList, callback) {
             responseError(self, requestDataList[0], error.response, callback)
         })
 
+}
+
+export const sendSyncRequest = async (self, request) => {
+    try {
+        let response = await axios.post(EP.getPath(request), request.data,
+            {
+                headers: getHeader(request)
+            });
+        return EP.formatData(request, response);
+    }
+    catch (error) {
+        if (error.response) {
+            responseError(self, request, error.response)
+        }
+    }
 }
 
 export function sendRequest(self, request, callback) {
