@@ -3,19 +3,15 @@ FROM ubuntu:18.04
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
 	ca-certificates \
-	git \
-	nodejs \
-	npm \
-	supervisor
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+	curl \
+	git
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN apt-get update && apt-get install -y \
+	nodejs
 
 # Install dependencies
 WORKDIR /edge-cloud-ui
 COPY package.json .
-RUN mkdir server
-COPY server/package.json server/package.json
-RUN npm install
-WORKDIR server
 RUN npm install
 
 WORKDIR /edge-cloud-ui
@@ -26,4 +22,6 @@ ARG TAG
 ENV BUILD_VERSION=$TAG
 ENV REACT_APP_BUILD_VERSION=$TAG
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+ENV HTTPS=true
+CMD ["/usr/bin/npm", "start"]
