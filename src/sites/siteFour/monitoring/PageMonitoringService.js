@@ -4,7 +4,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import './PageMonitoring.css';
-import {makeFormForAppInstance, numberWithCommas, requestAppLevelMetrics} from "../../../services/SharedService";
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../shared/Constants";
 import {HorizontalBar, Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
@@ -12,6 +11,129 @@ import Lottie from "react-lottie";
 import BubbleChart from "../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../shared/Types";
 import {Bar as RBar, BarChart, BarLabel, BarSeries, LinearXAxis, LinearYAxis, LinearYAxisTickSeries} from "reaviz";
+import Plot from "react-plotly.js";
+
+
+
+export const getIPAddress = () => {
+    var interfaces = require('os').networkInterfaces();
+    for (var devName in interfaces) {
+        var iface = interfaces[devName];
+        console.log('ifce=', iface)
+        for (var i = 0; i < iface.length; i++) {
+            var alias = iface[i];
+            console.log('add = ', alias.address)
+            if (alias.family === 'IPv4' && !alias.internal || alias.address === '127.0.0.1')
+                return alias.address;
+        }
+    }
+
+    return '0.0.0.0';
+}
+
+
+export const cutArrayList = (length: number = 5, paramArrayList: any) => {
+
+    let newArrayList = [];
+    for (let index in paramArrayList) {
+        if (index < 5) {
+            newArrayList.push(paramArrayList[index])
+        }
+    }
+    return newArrayList;
+}
+
+
+export const covertToComparableDate = (paramDate) => {
+    let arrayDate = paramDate.toString().split("-");
+    let compareableFullDate = arrayDate[0] + arrayDate[1] + arrayDate[2]
+    return compareableFullDate
+
+}
+
+export const numberWithCommas = (x) => {
+
+    try{
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }catch (e) {
+        alert(e)
+    }
+
+
+}
+
+
+export const makeFormForAppInstance = (instanceDataOne, valid = "*", token, fetchingDataNo = 20) => {
+
+    return (
+        {
+            "token": token,
+            "params": {
+                "region": instanceDataOne.Region,
+                "appinst": {
+                    "app_key": {
+                        "developer_key": {"name": instanceDataOne.OrganizationName},
+                        "name": instanceDataOne.AppName.toLowerCase().replace(/\s+/g, ''),
+                        "version": instanceDataOne.Version
+                    },
+                    "cluster_inst_key": {
+                        "cluster_key": {"name": instanceDataOne.ClusterInst},
+                        "cloudlet_key": {
+                            "name": instanceDataOne.Cloudlet,
+                            "operator_key": {"name": instanceDataOne.Operator}
+                        }
+                    }
+                },
+                "selector": valid,
+                //"last": 25
+                "last": fetchingDataNo,
+            }
+        }
+    )
+}
+
+export const isEmpty = (value) => {
+    if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
+        return true
+    } else {
+        return false
+    }
+};
+
+
+export const renderPieGraph = () => {
+    return (
+
+        <div style={{backgroundColor: 'transparent',}}>
+            <Plot
+                style={{
+                    backgroundColor: '#373737',
+                    overflow: 'hidden',
+                    color: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                    marginTop: 0
+                }}
+                data={[{
+                    values: [30, 40, 30],
+                    labels: ['Residential', 'Non-Residential', 'Utility'],
+                    type: 'pie'
+                }]}
+                layout={{
+                    height: 350,
+                    width: 300,
+                    paper_bgcolor: 'transparent',
+                    plot_bgcolor: 'transparent',
+                    color: 'white',
+
+                }}
+            />
+        </div>
+    )
+}
+
+
 
 /**
  * todo: 클라우드렛위에 올라와 있는 인스턴스 리스트를 flitering by pCloudlet.
@@ -713,34 +835,6 @@ export const renderBarGraphForInfo = (appInstanceListOnCloudlet, _this) => {
 }
 
 
-const Styles = {
-    cell000: {
-        marginLeft: 0,
-        backgroundColor: '#a3a3a3',
-        flex: .4,
-        alignItems: 'center',
-        fontSize: 13,
-    },
-    cell001: {
-        marginLeft: 0,
-        backgroundColor: 'transparent',
-        flex: .6,
-        alignItems: 'center',
-        fontSize: 13
-    },
-
-    cpuDiskCol001: {
-        marginTop: 0, height: 33, width: '100%'
-    },
-    cell003: {
-        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35, marginTop: -9,
-    },
-    cell004: {
-        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'transparent'
-        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35
-    }
-}
 
 
 /**
@@ -1695,6 +1789,31 @@ export const requestShowAppInstanceList = async (pArrayRegion = ['EU', 'US']) =>
     return mergedAppInstanceList;
 }
 
+/**
+ *
+ * @param serviceBodyForAppInstanceOneInfo
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+export const requestAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) => {
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+    let result = await axios({
+        url: '/api/v1/auth/metrics/app',
+        method: 'post',
+        data: serviceBodyForAppInstanceOneInfo['params'],
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + store.userToken
+
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        throw new Error(e)
+    })
+    return result;
+}
+
 
 export const getUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount) => {
 
@@ -1863,4 +1982,56 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
 }
 
 
+
+export const Styles = {
+    selectBoxRow: {
+        alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
+    },
+    selectHeader: {
+        color: 'white',
+        backgroundColor: '#565656',
+        height: 35,
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        marginTop: -10,
+        width: 100,
+        display: 'flex'
+    },
+
+    div001: {
+        fontSize: 25,
+        color: 'white',
+    },
+    dropDown: {
+        //minWidth: 150,
+        width: 190,
+    },
+    cell000: {
+        marginLeft: 0,
+        backgroundColor: '#a3a3a3',
+        flex: .4,
+        alignItems: 'center',
+        fontSize: 13,
+    },
+    cell001: {
+        marginLeft: 0,
+        backgroundColor: 'transparent',
+        flex: .6,
+        alignItems: 'center',
+        fontSize: 13
+    },
+
+    cpuDiskCol001: {
+        marginTop: 0, height: 33, width: '100%'
+    },
+    cell003: {
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center'
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35, marginTop: -9,
+    },
+    cell004: {
+        color: 'white', textAlign: 'center', fontSize: 12, alignSelf: 'center', backgroundColor: 'transparent'
+        , justifyContent: 'center', alignItems: 'center', width: '100%', height: 35
+    }
+}
 

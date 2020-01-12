@@ -13,6 +13,7 @@ import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
 import * as reducer from "../../../utils";
 import {
+    cutArrayList,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
@@ -32,16 +33,16 @@ import {
     renderLineChart,
     renderPlaceHolder,
     renderPlaceHolder2,
-    requestShowAppInstanceList
+    Styles
 } from "./PageMonitoringService";
 import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
-import {cutArrayList, Styles} from "../../../services/SharedService";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
+
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
 const {Column, Row} = Grid;
