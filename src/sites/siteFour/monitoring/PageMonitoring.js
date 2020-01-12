@@ -32,7 +32,7 @@ import {
     renderInstanceOnCloudletGrid,
     renderLineChart,
     renderPlaceHolder,
-    renderPlaceHolder2,
+    renderPlaceHolder2, requestShowAppInstanceList,
     Styles
 } from "./PageMonitoringService";
 import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../shared/Constants";
@@ -198,10 +198,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isReady: false,
             })
             //todo: REALDATA
-            //let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
+            let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
 
             //todo: FAKE JSON FOR DEV
-            let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
+            //let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({
