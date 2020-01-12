@@ -4,7 +4,7 @@ import ContainerDimensions from 'react-container-dimensions';
 import * as moment from 'moment';
 import RGL, { WidthProvider } from "react-grid-layout";
 import ReactJson from 'react-json-view'
-import * as serviceInstance from '../services/service_instance_service';
+import * as serviceMC from '../services/serviceMC';
 import * as aggregate from '../utils';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -29,42 +29,19 @@ const panesCommand = [
 const detailViewer = (props, type) => (
     <Fragment>
         {(type === 'detailViewer')?
-            <Grid>
-                <Grid.Row columns={2}>
-                    <Grid.Column>Subject</Grid.Column>
-                    <Grid.Column>Update</Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
-                    <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
-                                <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
-                            </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {
-                                props.data ? Object.keys(props.data).map((item, i) => makeCloudletTable(props.data, item, i)) : null
-                            }
-                        </Table.Body>
-                    </Table>
-                </Grid.Row>
-                <Grid.Row>
-                    <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
-                        <Table.Header>
-                            <Table.Row>
-                                <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
-                                <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
-                            </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {
-                                props.data ? Object.keys(props.data).map((item, i) => makeLinkTable(props.data, item, i)) : null
-                            }
-                        </Table.Body>
-                    </Table>
-                </Grid.Row>
-            </Grid>
+            <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
+                <Table.Header>
+                    <Table.Row>
+                        <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
+                        <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                    {
+                        props.data ? Object.keys(props.data).map((item, i) => makeCloudletTable(props.data, item, i)) : null
+                    }
+                </Table.Body>
+            </Table>
 
             :
             <div></div>
@@ -104,6 +81,8 @@ const makeCloudletTable = (values, label, i) => (
                                 :(label === 'Created')? String( makeUTC(values[label]) )
                                     :(label === 'State')? _status[values[label]]
                                         :(label === 'Liveness')? _liveness[values[label]]
+                                            :(label === 'cloudletGroup')? tableCloudletPool(values[label])
+                                            :(label === 'OrganizGroup')? tableCloudletPoolOrg(values[label])
                                             :(typeof values[label] === 'object')? jsonView(values[label],label)
                                                 :(label === 'Platform_type')? String( makePFT(values[label]) )
                                                     :String(values[label])}
@@ -128,6 +107,70 @@ const jsonView = (jsonObj,_label) => {
     }
     return <ReactJson src={jsonObj} {..._self.jsonViewProps} />
 }
+
+
+
+const tableCloudletPool = (jsonObj) => {
+
+    return (
+        <Table celled>
+            <Table.Header>
+
+                <Table.Row>
+                    <Table.HeaderCell width={2}>Region</Table.HeaderCell>
+                    <Table.HeaderCell width={7}>Operator</Table.HeaderCell>
+                    {/*<Table.HeaderCell width={5}>PoolName</Table.HeaderCell>*/}
+                    <Table.HeaderCell width={7}>Cloudlet</Table.HeaderCell>
+                </Table.Row>
+            </Table.Header>
+            <Table.Body>
+                {jsonObj.map((item, i) => makeCloudletGroup(item, i))}
+            </Table.Body>
+        </Table>
+
+    )
+
+}
+
+const makeCloudletGroup = (item, i) => (
+    <Table.Row key={i}>
+        <Table.Cell width={2}>{item.Region}</Table.Cell>
+        <Table.Cell width={7}>{item.Operator}</Table.Cell>
+        {/*<Table.Cell width={5}>{item.PoolName}</Table.Cell>*/}
+        <Table.Cell width={7}>{item.Cloudlet}</Table.Cell>
+    </Table.Row>
+)
+
+const tableCloudletPoolOrg = (jsonObj) => {
+
+    return (
+        <Table celled>
+            <Table.Header>
+
+                <Table.Row>
+                    <Table.HeaderCell width={2}>Region</Table.HeaderCell>
+                    <Table.HeaderCell width={14}>Organization</Table.HeaderCell>
+                    {/*<Table.HeaderCell width={7}>CloudletPool</Table.HeaderCell>*/}
+                </Table.Row>
+            </Table.Header>
+            <Table.Body>
+                {jsonObj.map((item, i) => makeOrganizGroup(item, i))}
+            </Table.Body>
+        </Table>
+
+    )
+
+}
+
+const makeOrganizGroup = (item, i) => (
+    <Table.Row key={i}>
+        <Table.Cell width={2}>{item.Region}</Table.Cell>
+        <Table.Cell width={14}>{item.Org}</Table.Cell>
+        {/*<Table.Cell width={7}>{item.CloudletPool}</Table.Cell>*/}
+    </Table.Row>
+)
+
+
 
 const makeUTC = (time) => (
     moment.unix( time.replace('seconds : ', '') ).utc().format('YYYY-MM-DD HH:mm:ss') + ' UTC'
@@ -265,9 +308,14 @@ class PagePoolDetailViewer extends React.Component {
 
         ))
     }
-    receiveInstanceInfo(result) {
-        _self.setState({monitorData:result})
-        _self.props.handleLoadingSpinner(false)
+    receiveInstanceInfo(mcRequestList) {
+        let dataList = [];
+        if (mcRequestList && mcRequestList.length > 0) {
+            mcRequestList.map(mcRequest => {
+                dataList = dataList.concat(mcRequest.response.data);
+            })
+            _self.setState({ monitorData: dataList })
+        }
     }
     getParams = (page, data, store) => (
         (page === 'appInst' && _self.resources[page].length)?
@@ -277,11 +325,26 @@ class PagePoolDetailViewer extends React.Component {
             _self.resources[page].map((valid) => this.makeFormCluster(data, valid, store.userToken))
     )
     loopGetHealth (page, data, store) {
-        (page === 'appInst' && store.userToken)  ?
-            serviceInstance.getAppinstHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
-        (page === 'cloudlet' && store.userToken)  ?
-            serviceInstance.getCloudletHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo) :
-        serviceInstance.getClusterHealth( _self.getParams(page, data, store), _self.receiveInstanceInfo)
+        let method = serviceMC.getEP().CLUSTER_INST_METRICS_APP;
+        let dataList = _self.resources[page].map((valid) => {
+            if (page === 'appInst') {
+                method = serviceMC.getEP().APP_INST_METRICS_APP;
+                return this.makeFormApp(data, valid, store.userToken)
+            }
+            else if (page === 'cloudlet') {
+                method = serviceMC.getEP().CLOUDLET_METRICS_APP;
+                return this.makeFormCloudlet(data, valid, store.userToken)
+            }
+            else {
+                return this.makeFormCluster(data, valid, store.userToken)
+            }
+        })
+
+        let requestDataList = [];
+        dataList.map(data => {
+            requestDataList.push({ token: store.userToken, method: method, data: data })
+        })
+        serviceMC.sendMultiRequest(_self, requestDataList, _self.receiveInstanceInfo)
     }
 
     getInstanceHealth (page, data) {

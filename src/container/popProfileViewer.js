@@ -68,7 +68,7 @@ export default class PopProfileViewer extends React.Component {
     render() {
 
         return (
-            <Modal size={'small'} open={this.state.open} dimmer={false}>
+            <Modal size={'small'} open={this.state.open}>
                 <Modal.Header>Profile</Modal.Header>
                 <Modal.Content>
                     <Grid divided>

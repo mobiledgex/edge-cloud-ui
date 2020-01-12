@@ -26,6 +26,12 @@ function getHeader(request) {
     return headers;
 }
 
+const showSpinner = (self, value) => {
+    if (self.props.handleLoadingSpinner) {
+        self.props.handleLoadingSpinner(value)
+    }
+}
+
 const showError = (request, message) =>
 {
     let showMessage = request.showMessage === undefined ? true : request.showMessage;
@@ -44,50 +50,26 @@ const showError = (request, message) =>
 const checkExpiry = (self, message) => {
     let isExpired  = message.indexOf('expired') > -1
     if (isExpired && self.gotoUrl) {
+        localStorage.setItem('userInfo', null)
+        localStorage.setItem('sessionData', null)
         setTimeout(() => self.gotoUrl('/logout'), 2000);
     }
     return !isExpired;
 }
 
 function responseError(self, request, response, callback) {
-    try{
-            let message = 'UnKnown';
-            let code = response.status;
-            if(response.data && response.data.message)
-            {
-                message = response.data.message
-                if(checkExpiry(self, message))
-                {
-                    showError(request, message);
-                }
+    let message = 'UnKnown';
+    let code = response.status;
+    if (response.data && response.data.message) {
+        message = response.data.message
+        if (checkExpiry(self, message)) {
+            showSpinner(self, false)
+            showError(request, message);
+            if (callback) {
+                callback({ request: request, error: { code: code, message: message } })
             }
-            callback({request:request, error:{code:code, message:message}})
-    }
-    catch{
-        alert('check')
-    }
-}
-
-function responseValid(request, response, callback) {
-    let parseData = null;
-    if (response.data) {
-        if (response.data.error) {
-            if (response.data.error.indexOf('Expired') > -1) {
-                localStorage.setItem('userInfo', null)
-                localStorage.setItem('sessionData', null)
-                callback({ error: 'Login Timeout Expired.<br/>Please login again' }, request.method);
-                return;
-            } else {
-                callback({ error: response.data.error }, request.method);
-                return;
-            }
-        } else {
-            parseData = JSON.parse(JSON.stringify(response));
         }
-    } else {
-        parseData = response;
     }
-    return parseData;
 }
 
 export function sendWSRequest(request, callback) {
@@ -130,16 +112,58 @@ export function sendWSRequest(request, callback) {
     }
 }
 
+
+export function sendMultiRequest(self, requestDataList, callback) {
+    let promise = [];
+    let resResults = [];
+    requestDataList.map((request) => {
+        promise.push(axios.post(EP.getPath(request), request.data,
+            {
+                headers: getHeader(request)
+            }))
+
+    })
+    axios.all(promise)
+        .then(responseList => {
+            responseList.map((response, i) => {
+                resResults.push(EP.formatData(requestDataList[i], response));
+            })
+            if (self.props.handleLoadingSpinner) {
+                self.props.handleLoadingSpinner(false)
+            }
+            callback(resResults);
+        
+        }).catch(error => {
+            responseError(self, requestDataList[0], error.response, callback)
+        })
+
+}
+
+export const sendSyncRequest = async (self, request) => {
+    try {
+        let response = await axios.post(EP.getPath(request), request.data,
+            {
+                headers: getHeader(request)
+            });
+        return EP.formatData(request, response);
+    }
+    catch (error) {
+        if (error.response) {
+            responseError(self, request, error.response)
+        }
+    }
+}
+
 export function sendRequest(self, request, callback) {
 
     axios.post(EP.getPath(request), request.data,
         {
             headers: getHeader(request)
         })
-        .then(function (response) {
-            if (responseValid(request, response, callback)) {
-                callback(EP.formatData(request, response));
-            }
+        .then(function (response) { 
+           
+            
+            callback(EP.formatData(request, response));
         })
         .catch(function (error) {
             if(error.response)

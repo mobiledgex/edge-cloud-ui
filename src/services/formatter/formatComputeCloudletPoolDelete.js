@@ -2,18 +2,18 @@ import {generateUniqueId} from '../serviceMC';
 
 export const getKey = (data)=>
 {
-    const { CloudletName, Operator, Region } = data
+    const { PoolName, Region } = data
     return ({
         region: Region,
-        cloudlet: {
+        cloudletpool: {
             key: {
-                operator_key: { name: Operator },
-                name: CloudletName
+                name: PoolName
             }
         }
     })
 }
 
+/** formatData is not correct. It should be change code */
 export const formatData  = (datas,body) => {
     let values = [];
     let toArray = null;
@@ -61,5 +61,8 @@ export const formatData  = (datas,body) => {
     return values
 
 }
+
+
+
 
 

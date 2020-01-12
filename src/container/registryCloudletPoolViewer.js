@@ -12,9 +12,8 @@ import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
 
-import * as service from '../services/service_compute_service';
-import * as servicePool from '../services/service_cloudlet_pool';
-import SiteFourCreatePoolForm from "./siteFourCreatePoolForm";
+import * as serviceMC from '../services/serviceMC';
+import SiteFourPoolOne from "./siteFourPoolStepOne";
 import Alert from "react-s-alert";
 import SiteFourCreateFormDefault from "./siteFourCreateFormDefault";
 const ReactGridLayout = WidthProvider(RGL);
@@ -31,7 +30,17 @@ var layout = [
 let _self = null;
 
 const panes = [
-    { menuItem: 'CloudletPool Registry', render: (props) => <Tab.Pane attached={false}><SiteFourCreatePoolForm data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}/></Tab.Pane> },
+    { menuItem: 'CloudletPool Registry', render: (props) => <Tab.Pane attached={false}>
+                <SiteFourPoolOne
+                    data={props} pId={0}
+                    getUserRole={props.userrole}
+                    gotoUrl={props.gotoUrl}
+                    toggleSubmit={props.toggleSubmit}
+                    validError={props.error}
+                    selectedData={{region:props.selectedRegion, poolName:props.gavePoolName}}
+                    onSubmit={() => console.log('submit form')}
+                />
+            </Tab.Pane> },
     // { menuItem: 'Docker deployment', render: () => <Tab.Pane  attached={false} pId={1}>None</Tab.Pane> },
     // { menuItem: 'VM deployment', render: () => <Tab.Pane attached={false} pId={2}>None</Tab.Pane> }
 ]
@@ -74,23 +83,31 @@ class RegistryCloudletPoolViewer extends React.Component {
             validateError:[],
             regSuccess:true,
             errorClose:false,
+            selectedData: null,
             selectedCloudlet:[],
+            selectedRegion:null,
+            gavePoolName:null,
             keysData:[
                 {
                     'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
                     'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
-                    'selectCloudlet':{label:'Into the pool', type:'RenderDualListBox', necessary:false, tip:'select a cloudlet', active:true},
-                    'invisibleField':{label:'Invisible', type:'InvisibleField', necessary:false, tip:'invisible field', active:true}
-                },
+                    'AddCloudlet':{label:'Add cloudlet', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
+                    'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
+                }
+            ],
+            keysDataUpdate:[
                 {
-
+                    'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
+                    'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
+                    'AddCloudlet':{label:'Add cloudlet', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
+                    'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
                 }
             ],
             fakeData:[
                 {
                     'Region':'',
                     'poolName':'',
-                    'selectCloudlet':'',
+                    'AddCloudlet':'',
                     'invisibleField':''
                 }
             ],
@@ -98,10 +115,7 @@ class RegistryCloudletPoolViewer extends React.Component {
                 {
                     'CloudletPool':{label:'Cloudlet Pool', type:'RenderDropDown', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
                     'LinktoOrganization':{label:'Into the pool', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
-                    'LinkDiagram':{label:'Linked Status', type:'RenderLinkedDiagram', necessary:false, tip:'linked the cloudlet pool with the organization', active:true},
-                },
-                {
-
+                    'LinkDiagram':{label:'Linked Status', type:'RenderLinkedDiagram', necessary:false, tip:'linked the cloudlet pool with the organization', active:true}
                 }
             ],
             fakeDataLink:[
@@ -146,15 +160,22 @@ class RegistryCloudletPoolViewer extends React.Component {
 
 
     generateDOM(open, dimmer, data, keysData, hideHeader, region) {
-
         let panelParams = {data:data, keys:keysData, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
-
         return layout.map((item, i) => (
 
             (i === 0)?
                 <div className="round_panel" key={i}>
                     <div className="grid_table">
-                        <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }} panes={panes}{...panelParams} gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} />
+                        <Tab className="grid_tabs"
+                             menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }}
+                             panes={panes}{...panelParams}
+                             gotoUrl={this.gotoUrl}
+                             toggleSubmit={this.state.toggleSubmit}
+                             error={this.state.validateError}
+                             selectedCloudlet={this.state.selectedCloudlet}
+                             selectedRegion={this.state.selectedRegion}
+                             gavePoolName={this.state.gavePoolName}
+                        />
                     </div>
                 </div>
                 :
@@ -185,41 +206,52 @@ class RegistryCloudletPoolViewer extends React.Component {
         }
     }
 
-    /**
-     *
-     */
-    createCloudletPoolMember = (_region, _oper, _cloudlet, _pool) => {
-        //TODO: 맴버 가져오기
-        let selectedCloudlet = this.state.selectedCloudlet;
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let _params = {region: _region, operator: _oper, cloudlet: _cloudlet, pool:_pool};
-        services.createCloudletPoolMember('CreateCloudletPoolMember',{token:store.userToken, params:_params}, _self.receiveResultCreateMember)
 
-    }
-    receiveSubmit = (result, body) => {
-        console.log("20191119 cloudlet paseDatapaseDatapaseData",result, ": this.props.changeRegion=", this.props.changeRegion,": region = ", this.props.region, ":", this.props.regionInfo, ":", this.props.getRegion)
+    receiveSubmit = (mcRequest) => {
+        
         this.pauseRender = false;
-        let paseData = result.data;
-        if(paseData.error && !this.state.errorClose) {
-            //this.setState({clusterInstCreate:false})
-            this.props.handleLoadingSpinner(false);
-            if(paseData.error == 'Key already exists'){
+        // old code : should delete
+        // let paseData = result.data;
+        // if(paseData.error && !this.state.errorClose) {
+        //     //this.setState({clusterInstCreate:false})
+        //     this.props.handleLoadingSpinner(false);
+        //     if(paseData.error == 'Key already exists'){
 
-            } else {
-                this.props.handleAlertInfo('error',paseData.error)
+        //     } else {
+        //         this.props.handleAlertInfo('error',paseData.error)
+        //     }
+        // } else {
+        //     if (result.data.error) {
+        //         this.props.handleAlertInfo('error', result.data.error)
+        //     } else {
+        //         console.log('20191119 receive submit result is success..', result,":", result.data)
+        //         this.props.handleAlertInfo('success','Created successfully')
+
+        //         /** add pool-member to cloudlet pool if has data of selected cloudlet  **/
+
+        //     }
+
+        // }
+        
+
+
+        ///// new
+        if(mcRequest)
+        {
+            if(mcRequest.response)
+            {
+                let response = mcRequest.response;
+                if (response.data.length == 0) {
+                    _self.setState({ devData: [] })
+                    _self.props.handleDataExist(false)
+                    _self.props.handleAlertInfo('error', 'There is no data')
+                } else {
+                    _self.props.handleAlertInfo('success','Created successfully')
+                    _self.props.handleDataExist(true)
+                }
             }
-        } else {
-            if (result.data.error) {
-                this.props.handleAlertInfo('error', result.data.error)
-            } else {
-                console.log('20191119 receive submit result is success..', result,":", result.data)
-                this.props.handleAlertInfo('success','Created successfully')
-
-                /** add pool-member to cloudlet pool if has data of selected cloudlet  **/
-
-            }
-
-        }
+        }      
+        _self.props.handleLoadingSpinner(false);
     }
     receiveSubmitMember = (result, body) => {
 
@@ -241,6 +273,8 @@ class RegistryCloudletPoolViewer extends React.Component {
         _self.props.handleGetRegion(null)
     }
     componentWillReceiveProps(nextProps, nextContext) {
+        if(nextProps === this.props) return;
+
         if(nextProps.regionInfo.region.length){
             let assObj = Object.assign([], this.state.keysData);
             assObj[0].Region.items = nextProps.regionInfo.region;
@@ -248,12 +282,27 @@ class RegistryCloudletPoolViewer extends React.Component {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-        if(nextProps.devData.length > 0) {
-            console.log('20191220 props dev data -- ', nextProps.devData)
-            this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+        if(nextProps.appLaunch) {
+            let cloneData = Object.assign([], nextProps.devData);
+            let newData = cloneData;
+            console.log('20200106 props appLaunch .. ',cloneData, ": this.state.devData =", newData)
+            if(cloneData.length) {
+                newData[0]['Region'] = nextProps.appLaunch.data['Region'];
+                newData[0]['poolName'] = nextProps.appLaunch.data['PoolName'];
+                console.log('20200106 props appLaunch .. ',newData, ": props appLaunch =", nextProps.appLaunch)
+
+                this.setState({dummyData:newData, keysData:this.state.keysDataUpdate})
+            }
+            return;
         } else {
-            this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+            if(nextProps.devData.length > 0) {
+                this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+            } else {
+                this.setState({dummyData:this.state.fakeData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+            }
         }
+
+
 
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         this.setState({toggleSubmit:false});
@@ -273,18 +322,23 @@ class RegistryCloudletPoolViewer extends React.Component {
             //close tutorial
             this.props.handleStateTutor('done');
 
-            console.log('20191223 create cloudlet pool....',nextProps.submitValues, ": nextProps.formClusterInst.submitSucceeded=", nextProps.formClusterInst,
-                '  : this.pauseRender =',this.pauseRender, ": error= ", error
-                )
-
             if(!this.pauseRender && nextProps.formClusterInst.submitSucceeded && error.length == 0){
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true, selectedCloudlet:nextProps.formClusterInst.value['invisibleField']});
                 this.props.handleLoadingSpinner(true);
-                console.log('20191223 create cloudlet pool....',nextProps.submitValues)
-                servicePool.createCloudletPool('CreateCloudletPool', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
 
-                // --- test ---
-                this.createCloudletPoolMember(a,b,c)
+                // TODO: 20200109 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                // old
+                //.createCloudletPool('CreateCloudletPool', {params:nextProps.submitValues, token:store.userToken}, this.receiveSubmit)
+                /*
+                poolName = req.body.serviceBody.params.poolName;
+        superpass = req.body.serviceBody.token;
+        region = req.body.serviceBody.params.Region;
+        serviceBody = {"region":region, "cloudletpool": {"key": {"name": poolName}}};
+                */
+                // new
+                let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+                serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_CLOUDLET_POOL }, _self.receiveSubmit)
+                
 
                 setTimeout(() => {
                     this.props.handleLoadingSpinner(false);
@@ -297,7 +351,6 @@ class RegistryCloudletPoolViewer extends React.Component {
             }
 
         }
-
 
     }
 
@@ -371,11 +424,6 @@ const mapStateToProps = (state) => {
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
-    let selectedRegion = null;
-    let selectedCloudlet = null;
-    let selectedOperator = null;
-    let selectedApp = null;
-    let flavors = null;
     let validateValue = {};
 
     //TODO : 건희 20190902 새롭게 추가된 필드 'Cloudlet Type'데 대한 기능 구현 ()
@@ -396,13 +444,10 @@ const mapStateToProps = (state) => {
      "physical_name":"hamburg"
      "physical_name":"bonn"
      */
-    if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.getRegion.region){
-        state.form.createAppFormDefault.values.Latitude = state.getRegion.region.lat;
-        state.form.createAppFormDefault.values.Longitude = state.getRegion.region.long;
-    }
+
 
     if(state.form.createAppFormDefault && state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
-        console.log('20191223 state.form.createAppFormDefault == ', state.form.createAppFormDefault)
+        console.log('20200104 state form., ', state.form)
         let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
         submitVal = createFormat(enableValue,state.getRegion.region);
         validateValue = state.form.createAppFormDefault.values;
@@ -421,27 +466,24 @@ const mapStateToProps = (state) => {
         }
         : {};
     let regionInfo = (state.regionInfo)?state.regionInfo:null;
+    let appLaunch = (state.appLaunch)?state.appLaunch:null;
     return {
         accountInfo,
         dimmInfo,
         itemLabel: state.computeItem.item,
         userToken : (state.user.userToken) ? state.userToken: null,
         submitValues: submitVal,
+        validateValue:validateValue,
         region: region.value,
         flavors: (state.showFlavor) ? state.showFlavor.flavor : null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
-        validateValue:validateValue,
         formClusterInst : formClusterInst,
         getRegion : (state.getRegion)?state.getRegion.region:null,
-        regionInfo: regionInfo
+        regionInfo: regionInfo,
+        appLaunch: appLaunch
     }
 
-    // return (dimm) ? {
-    //     dimmInfo : dimm
-    // } : (account)? {
-    //     accountInfo: account + Math.random()*10000
-    // } : null;
 };
 
 const mapDispatchProps = (dispatch) => {

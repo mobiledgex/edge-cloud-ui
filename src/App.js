@@ -17,8 +17,7 @@ import { LOCAL_STRAGE_KEY } from './components/utils/Settings'
 //insert pages
 import EntranceGlob from './sites/entranceGlob';
 import SiteTwo from "./sites/siteTwo";
-import SiteThree from "./sites/siteThree";
-import SiteFour from "./sites/siteFour/siteFour";
+import SiteFour from "./sites//siteFour/siteFour";
 import CreateAccount from './components/login/CreateAccont';
 import history from './history';
 import VerifyContent from './container/verifyContent';
@@ -75,7 +74,7 @@ const DashboardContainer = ( props, props2) => {
     const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
     if(self.routed){
         self.profileView();
-    }
+    } 
     let storeData= localStorage.getItem('PROJECT_INIT')
 
 
@@ -170,22 +169,21 @@ const DashboardContainer = ( props, props2) => {
                 {props.mainPath === '/' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} />}
                 {props.mainPath === '/site1' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/site2' && <SiteTwo params={_params} history={(props2.history)?props2.history:null}/>}
-                {props.mainPath === '/site3' && <SiteThree params={_params} history={(props2.history)?props2.history:null} selectedCloudlet={self.state.selectedCloudlet}/>}
                 {props.mainPath === '/site4' && <SiteFour params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/createAccount' && <CreateAccount params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/passwordreset' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} reset={true}/>}
                 {props.mainPath === '/verify' && <VerifyContent params={_params} history={(props2.history)?props2.history:null}/>}
             <Alert stack={{limit: 3}} />
-            {(self.props.creatingSpinner==true)?
+            {(self.props.loadingSpinner==true)?
             <div className="loadingBox" style={{zIndex:99999}}>
                 <GridLoader
                     sizeUnit={"px"}
                     size={25}
                     color={'#70b2bc'}
-                    loading={self.props.creatingSpinner}
+                    loading={self.props.loadingSpinner}
                     //loading={true}
                 />
-                <span className={self.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
+                <span className={self.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
             </div>:null}
 
         </div>
@@ -251,7 +249,7 @@ class App extends Component {
             }
         }
     }
-
+    
     receiveController = (mcRequest) => {
         if (mcRequest) {
             if (mcRequest.response) {
@@ -288,12 +286,12 @@ class App extends Component {
     }
 
     componentDidMount() {
-
+        
         let pathName = window.location.pathname;
 
         //this.router.history.push(pathName);
-
-
+        
+        
         const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
         if (!storage_data) {
             return;
@@ -352,7 +350,7 @@ const mapStateToProps = (state) => {
         siteName: (state.siteChanger)?state.siteChanger.site:null,
         tab: (state.tabChanger.tab)?state.tabChanger.tab:null,
         clickTab: (state.tabClick.clickTab)?state.tabClick.clickTab:null,
-        creatingSpinner : state.creatingSpinner.creating?state.creatingSpinner.creating:null,
+        loadingSpinner : state.loadingSpinner.creating?state.loadingSpinner.creating:null,
 
     };
 };

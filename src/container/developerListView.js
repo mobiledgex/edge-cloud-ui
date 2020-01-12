@@ -420,8 +420,8 @@ class DeveloperListView extends React.Component {
     makeActionButton = (item, j, i) => (
         <Button.Group vertical className="table_actions_popup_group">
             {
-                organizationEdit.map((option) => (
-                    <Button ref={btn => this.actionButton = btn} onClick={this.onHandlePopMenu}
+                organizationEdit.map((option, i) => (
+                    <Button key={i} ref={btn => this.actionButton = btn} onClick={this.onHandlePopMenu}
                             className="table_actions_popup_group_button">
                         {option.text}
                     </Button>
@@ -467,7 +467,7 @@ class DeveloperListView extends React.Component {
         </div>
     )
     makeEditMenu = (item, j, i) => (
-        <div key={j} textAlign='center'
+        <div key={j} textalign='center'
              style={(this.state.selectUse == i) ? {whiteSpace: 'nowrap', background: '#444'} : {whiteSpace: 'nowrap'}}>
             {(this.props.siteId == 'Organization' && localStorage.selectRole !== 'AdminManager') ?
                 <Button className='stepOrgDeveloper1' color={(this.state.selectUse == i) ? 'teal' : null}
