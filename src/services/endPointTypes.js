@@ -15,6 +15,7 @@ import * as FormatComputeCloudletPool from './formatter/formatComputeCloudletPoo
 import * as FormatComputeCloudletPoolDelete from './formatter/formatComputeCloudletPoolDelete';
 import * as FormatComputeCloudletPoolMember from './formatter/formatComputeCloudletPoolMember';
 import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
+import * as FormatComputeLinkPoolOrgDelete from './formatter/formatComputeLinkPoolOrgDelete';
 
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
@@ -67,6 +68,8 @@ export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
 export const CREATE_CLOUDLET_POOL_MEMBER = "CreateCloudletPoolMember";
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
+export const DELETE_CLOUDLET_MEMBER = "DeleteCloudletMember";
+export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const SHOW_ORG_CLOUDLET = "orgcloudlet";
 
 export function getPath(request) {
@@ -141,6 +144,8 @@ export function getPath(request) {
             return `/api/v1/auth/orgcloudletpool/show`;
         case CREATE_LINK_POOL_ORG:
             return `/api/v1/auth/orgcloudletpool/create`;
+        case DELETE_LINK_POOL_ORG:
+            return `/api/v1/auth/orgcloudletpool/delete`;
         case SHOW_ORG_CLOUDLET:
             return `/api/v1/auth/orgcloudlet/show`;
         default:
@@ -225,6 +230,8 @@ export function getKey(keyId, data) {
             return FormatComputeAccounts.getKey(data)
         case 'Cloudlet Pool':
             return FormatComputeCloudletPoolDelete.getKey(data)
+        case 'delete link':
+            return FormatComputeLinkPoolOrgDelete.getKey(data)
         default:
             return null;
     }
@@ -250,6 +257,8 @@ export function getDeleteMethod(keyId) {
             return DELETE_ACCOUNT;
         case 'Cloudlet Pool':
             return DELETE_CLOUDLET_POOL;
+        case 'delete link':
+            return DELETE_LINK_POOL_ORG;
         default:
             return null;
     }

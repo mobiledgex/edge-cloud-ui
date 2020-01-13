@@ -29,11 +29,11 @@ const panesCommand = [
 const detailViewer = (props, type) => (
     <Fragment>
         {(type === 'detailViewer')?
-            <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
+            <Table className='detailIn' striped>
                 <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
-                        <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
+                    <Table.Row textAlign='center'>
+                        <Table.HeaderCell width={4}><div>Subject</div></Table.HeaderCell>
+                        <Table.HeaderCell width={12}><div>Value</div></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -53,10 +53,8 @@ const detailViewer = (props, type) => (
 const makeCloudletTable = (values, label, i) => (
     (label !== 'Edit')?
         <Table.Row key={i}>
-            <Table.Cell>
-                <Header as='h4' image>
-                    <Icon name={'dot'} />
-                    <Header.Content>
+            <Table.Cell width={4}>
+                
                         {(label == 'CloudletName')?'Cloudlet Name'
                             :(label == 'CloudletLocation')?'Cloudlet Location'
                                 :(label == 'Ip_support')?'IP Support'
@@ -70,10 +68,9 @@ const makeCloudletTable = (values, label, i) => (
                                                                 :(label == 'Physical_name')?'Physical Name'
                                                                     :(label == 'Platform_type')?'Platform Type'
                                                                         :label}
-                    </Header.Content>
-                </Header>
+                    
             </Table.Cell>
-            <Table.Cell>
+            <Table.Cell width={12}>
                 {(label === 'Ip_support' && String(values[label]) == '1')?'Static'
                     :(label === 'Ip_support' && String(values[label]) == '2')?'Dynamic' /* Cloudlets */
                         :(label === 'IpAccess' && String(values[label]) == '1')?'Dedicated'
@@ -113,14 +110,14 @@ const jsonView = (jsonObj,_label) => {
 const tableCloudletPool = (jsonObj) => {
 
     return (
-        <Table celled>
+        <Table celled unstackable compact striped fixed>
             <Table.Header>
-
                 <Table.Row>
-                    <Table.HeaderCell width={2}>Region</Table.HeaderCell>
-                    <Table.HeaderCell width={7}>Operator</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='left'>Region</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='center'>Operator</Table.HeaderCell>
                     {/*<Table.HeaderCell width={5}>PoolName</Table.HeaderCell>*/}
-                    <Table.HeaderCell width={7}>Cloudlet</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='center'>Cloudlet</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='right'>Delete</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -131,13 +128,16 @@ const tableCloudletPool = (jsonObj) => {
     )
 
 }
-
+const makeDeleteIcon = (_item, _type) => (
+    <Button onClick={_self.onHandleDelete} item={_item} type={_type} size='mini'><Icon name='trash' style={{cursor:'pointer'}}></Icon></Button>
+)
 const makeCloudletGroup = (item, i) => (
     <Table.Row key={i}>
-        <Table.Cell width={2}>{item.Region}</Table.Cell>
-        <Table.Cell width={7}>{item.Operator}</Table.Cell>
+        <Table.Cell textAlign='left'>{item.Region}</Table.Cell>
+        <Table.Cell textAlign='center'>{item.Operator}</Table.Cell>
         {/*<Table.Cell width={5}>{item.PoolName}</Table.Cell>*/}
-        <Table.Cell width={7}>{item.Cloudlet}</Table.Cell>
+        <Table.Cell textAlign='center'>{item.Cloudlet}</Table.Cell>
+        <Table.Cell textAlign='right'>{makeDeleteIcon(item, 'delete member')}</Table.Cell>
     </Table.Row>
 )
 
@@ -146,11 +146,10 @@ const tableCloudletPoolOrg = (jsonObj) => {
     return (
         <Table celled>
             <Table.Header>
-
                 <Table.Row>
-                    <Table.HeaderCell width={2}>Region</Table.HeaderCell>
-                    <Table.HeaderCell width={14}>Organization</Table.HeaderCell>
-                    {/*<Table.HeaderCell width={7}>CloudletPool</Table.HeaderCell>*/}
+                    <Table.HeaderCell  textAlign='left' width={2}>Region</Table.HeaderCell>
+                    <Table.HeaderCell  textAlign='center'width={12}>Organization</Table.HeaderCell>
+                    <Table.HeaderCell  textAlign='right'width={2}>Delete</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -164,9 +163,9 @@ const tableCloudletPoolOrg = (jsonObj) => {
 
 const makeOrganizGroup = (item, i) => (
     <Table.Row key={i}>
-        <Table.Cell width={2}>{item.Region}</Table.Cell>
-        <Table.Cell width={14}>{item.Org}</Table.Cell>
-        {/*<Table.Cell width={7}>{item.CloudletPool}</Table.Cell>*/}
+        <Table.Cell textAlign='left' width={2}>{item.Region}</Table.Cell>
+        <Table.Cell textAlign='center' width={12}>{item.Org}</Table.Cell>
+        <Table.Cell textAlign='right' width={2}>{makeDeleteIcon(item, 'delete link')}</Table.Cell>
     </Table.Row>
 )
 
@@ -286,6 +285,34 @@ class PagePoolDetailViewer extends React.Component {
             _self.props.handleLoadingSpinner(false)
         }
     }
+    httpResponse = (result) => {
+        if(result) {
+            alert(JSON.stringify(result))
+        }
+    }
+    onHandleDelete = (e, _data) => {
+        console.log('on handle delete ...', e, _data)
+        // TODO: delete cloudlet in pool
+        if(_data.type === 'delete member') {
+
+        } else if(_data.type === 'delete link') {
+            
+        }
+        //////
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let method = serviceMC.getEP().getDeleteMethod(_data.type);
+        let data = serviceMC.getEP().getKey(_data.type, _data.item);
+        if (method && data) {
+            let serviceBody = {
+                token: store ? store.userToken : null,
+                method: method,
+                data: data
+            }
+            this.props.handleLoadingSpinner(true);
+            serviceMC.sendRequest(_self, serviceBody, this.httpResponse)
+        }
+    }
+
     generateDOM(open, dimmer, data, mData, keysData, hideHeader, region, page) {
 
         let panelParams = {data:data, mData:mData, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
