@@ -26,16 +26,25 @@ import {
     getMetricsUtilizationAtAppLevel_TEST,
     getUsageList, instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox,
-    renderBarGraph,
+    makeClusterListSelectBox, makeGradientColor,
+    renderBarGraph, renderBarGraphForNetwork,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
-    renderLineChart,
+    renderLineChart, renderLineChartForNetWork,
     renderPlaceHolder,
-    renderPlaceHolder2, requestShowAppInstanceList,
+    renderPlaceHolder2, renderUsageByType, renderUsageLabelByType, requestShowAppInstanceList,
     Styles
 } from "./PageMonitoringService";
-import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, HARDWARE_OPTIONS, HARDWARE_TYPE, HARDWARE_TYPES, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../shared/Constants";
+import {
+    APPINSTANCE_INIT_VALUE, CHART_COLOR_LIST,
+    CLASSIFICATION,
+    HARDWARE_OPTIONS,
+    HARDWARE_TYPE,
+    NETWORK_OPTIONS, NETWORK_TYPES as NETWORK_TYPE,
+    NETWORK_TYPES,
+    RECENT_DATA_LIMIT_COUNT,
+    REGIONS_OPTIONS
+} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -127,6 +136,11 @@ type State = {
     mapZoomLevel: number,
     currentHardwareType: string,
     bubbleChartData: Array,
+    currentNetworkType: string,
+    lineChartData: Array,
+    networkChartData: Array,
+    networkBarChartData: Array,
+
 }
 
 
@@ -182,8 +196,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isShowBottomGrid: false,
             isShowBottomGridForMap: false,
             mapZoomLevel: 0,
-            currentHardwareType: HARDWARE_TYPES.FAVOR,
+            currentHardwareType: HARDWARE_TYPE.FAVOR,
             bubbleChartData: [],
+            currentNetworkType: NETWORK_TYPE.RECV_BYTES,
+            lineChartData: [],
+            networkChartData: [],
+            networkBarChartData: [],
         };
 
 
@@ -260,6 +278,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredNetworkUsageList: usageList[2],
                 filteredDiskUsageList: usageList[3],
             });
+
+
+            //todo:#############################
+            //todo: make NETWORK CHART DATA
+            //todo:#############################
+            let networkLineChartData = this.makeNetworkChartData(this.state.filteredNetworkUsageList, HARDWARE_TYPE.RECV_BYTES);
+            let networkBarChartData = this.makeNetworkBarData(this.state.filteredNetworkUsageList, HARDWARE_TYPE.RECV_BYTES);
+
+            await this.setState({
+                networkChartData: networkLineChartData,
+                networkBarChartData: networkBarChartData,
+            })
 
             //todo: MAKE TOP5 INSTANCE LIST
             let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
@@ -368,7 +398,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
 
-            this.setState({
+            await this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
                 filteredDiskUsageList: filteredDiskUsageList,
@@ -380,24 +410,126 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clusterList: clusterSelectBoxList,
                 currentCloudLet: pCloudLet,
                 currentCluster: pCluster,
-            }, async () => {
+            });
+            //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
+            if (pAppInstance === '') {
+                //todo: MAKE TOP5 INSTANCE LIST
+                let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
+                await this.setState({
+                    appInstanceListTop5: appInstanceListTop5,
+                });
+            }
+            setTimeout(() => {
+                this.setState({
+                    cloudLetSelectBoxPlaceholder: 'Select CloudLet',
+                    clusterSelectBoxPlaceholder: 'Select Cluster',
+                })
+            }, 500)
 
-                //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
-                if (pAppInstance === '') {
-                    //todo: MAKE TOP5 INSTANCE LIST
-                    let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
-                    await this.setState({
-                        appInstanceListTop5: appInstanceListTop5,
-                    });
-                }
-                setTimeout(() => {
-                    this.setState({
-                        cloudLetSelectBoxPlaceholder: 'Select CloudLet',
-                        clusterSelectBoxPlaceholder: 'Select Cluster',
-                    })
-                }, 500)
-                this.props.toggleLoading(false)
+            //todo: make FirstbubbleChartData
+            let bubbleChartData = await this.makeFirstBubbleChartData(appInstanceList);
+            await this.setState({
+                bubbleChartData: bubbleChartData,
             })
+            this.props.toggleLoading(false)
+
+
+        }
+
+        async makeNetworkBarData(networkUsageList, pHardwareType) {
+
+            alert(pHardwareType)
+
+            let chartDataList = [];
+            chartDataList.push(["Element", pHardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
+            for (let index = 0; index < networkUsageList.length; index++) {
+                if (index < 5) {
+                    let barDataOne = [networkUsageList[index].instance.AppName.toString().substring(0, 10) + "...",
+                        renderUsageByType(networkUsageList[index], pHardwareType),
+                        CHART_COLOR_LIST[index],
+                        renderUsageLabelByType(networkUsageList[index], pHardwareType)]
+                    chartDataList.push(barDataOne);
+                }
+            }
+
+            return chartDataList;
+
+        }
+
+
+        async makeNetworkChartData(filteredNetworkUsageList, pHardwareType) {
+            let hardwareUsageList = filteredNetworkUsageList;
+            let instanceAppName = ''
+            let instanceNameList = [];
+            let usageSetList = []
+            let dateTimeList = []
+
+            for (let i in hardwareUsageList) {
+                let seriesValues = hardwareUsageList[i].values
+
+                instanceAppName = hardwareUsageList[i].instance.AppName
+                let usageList = [];
+
+
+                for (let j in seriesValues) {
+
+                    let usageOne = 0;
+                    if (pHardwareType === HARDWARE_TYPE.RECV_BYTES) {
+                        usageOne = seriesValues[j]["12"];//receivceBytes -> index12
+                    } else if (pHardwareType === HARDWARE_TYPE.SEND_BYTE) {
+                        usageOne = seriesValues[j]["13"]; //sendBytes -> index13
+                    }
+                    usageList.push(usageOne);
+                    let dateOne = seriesValues[j]["0"];
+                    dateOne = dateOne.toString().split("T")
+
+                    dateTimeList.push(dateOne[1]);
+                }
+
+                instanceNameList.push(instanceAppName)
+                usageSetList.push(usageList);
+            }
+
+
+            //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
+            let newDateTimeList = []
+            for (let i in dateTimeList) {
+                if (i < RECENT_DATA_LIMIT_COUNT) {
+                    let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
+                    let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+                    newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
+                }
+
+            }
+
+            let finalSeriesDataSets = [];
+            for (let i in usageSetList) {
+                //@todo: top5 만을 추린다
+                if (i < 5) {
+                    let datasetsOne = {
+                        label: instanceNameList[i],
+                        borderColor: CHART_COLOR_LIST[i],
+                        borderWidth: 2,
+                        pointColor: "#fff",
+                        pointStrokeColor: 'white',
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: 'white',
+                        data: usageSetList[i],
+                        radius: 0,
+                        pointRadius: 1,
+                    }
+
+                    finalSeriesDataSets.push(datasetsOne)
+                }
+
+            }
+
+            let lineChartData = {
+                labels: newDateTimeList,
+                datasets: finalSeriesDataSets,
+            }
+
+            return lineChartData;
 
         }
 
@@ -448,7 +580,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             toast({
                 type: 'success',
                 //icon: 'smile',
-                title: 'Reset All',
+                title: 'REFRESH_ALL_DATA',
                 //description: 'This is a Semantic UI toast wich waits 5 seconds before closing',
                 animation: 'bounce',
                 time: 3 * 1000,
@@ -527,18 +659,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         }
-
-        /*
-        scrollToBottom() {
-            const scrollHeight = this.messageList.scrollHeight;
-            const height = this.messageList.clientHeight;
-            const maxScrollTop = scrollHeight - height;
-            this.messageList.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
-        }
-
-        scrollToUp() {
-            this.messageList.scrollTo(0, 0);
-        }*/
 
         renderBottomAppInstanceGrid() {
             return (
@@ -717,7 +837,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
                 </div>
@@ -750,7 +870,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
 
@@ -780,7 +900,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                 </div>
@@ -797,47 +917,43 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForNetwork(this)}
                         </div>
                     </div>
-                    {/*1_column*/}
-                    {/*1_column*/}
-                    {/*1_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 Transition Of NETWORK Usage
                             </div>
                             <div style={{marginLeft: 25,}}>
-                                {this.state.loading ? <div></div> : <Dropdown
-                                    clearable={this.state.regionSelectBoxClearable}
-                                    placeholder='SELECT OPTIONS'
-                                    selection
-                                    options={[
-                                        {value: 'RCV_BTYE', text: 'RCV_BTYE'},
-                                        {value: 'SND_BYTE', text: 'SND_BYTE'},
-                                        {value: 'TCP', text: 'TCP'},
-                                        {value: 'UDP', text: 'UDP'},
+                                {this.state.loading
+                                    ? <div></div>
+                                    :
 
-                                    ]}
-                                    defaultValue={'RVCV_BTYE'}
-                                    onChange={async (e, {value}) => {
-
-                                        //alert(value)
-                                        //await this.handleSelectBoxChanges(value)
-                                        /*setTimeout(() => {
+                                    /*@todo:NETWORK DROPDOWN*/
+                                    /*@todo:NETWORK DROPDOWN*/
+                                    /*@todo:NETWORK DROPDOWN*/
+                                    <Dropdown
+                                        clearable={this.state.regionSelectBoxClearable}
+                                        placeholder='SELECT OPTIONS'
+                                        selection
+                                        options={NETWORK_OPTIONS}
+                                        defaultValue={NETWORK_TYPE.RECV_BYTES}
+                                        onChange={async (e, {value}) => {
+                                            let networkChartData = await this.makeNetworkChartData(this.state.filteredNetworkUsageList, value)
                                             this.setState({
-                                                cloudLetSelectBoxPlaceholder: 'Select CloudLet'
+                                                networkChartData: networkChartData,
+                                                currentNetworkType: value,
                                             })
-                                        }, 1000)*/
-                                    }}
-                                    value={'RCV_BTYE'}
-                                    style={{width: 220}}
-                                />}
+                                        }}
+                                        value={this.state.currentNetworkType}
+                                        style={{width: 220}}
+                                    />
+                                }
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartForNetWork(this)}
                         </div>
                     </div>
                 </div>
@@ -893,7 +1009,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         REFRESH
                                     </Button>
                                 </div>
-
                                 <div style={{marginLeft: 10,}}
                                      onClick={async () => {
                                          await this.setState({
@@ -903,7 +1018,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                          await this.handleSelectBoxChanges('ALL', '', '', '')
                                      }}
                                 >
-                                    <Button>RESET_ALL</Button>
+                                    <Button>RESET </Button>
                                 </div>
                             </div>
                         </div>
@@ -1074,7 +1189,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             let chartData = [];
 
-            if (value === HARDWARE_TYPES.FAVOR) {
+            if (value === HARDWARE_TYPE.FAVOR) {
                 appInstanceList.map((item, index) => {
 
                     chartData.push({
@@ -1086,8 +1201,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         fullLabel: item.AppName.toString(),
                     })
                 })
-            }
-            else if (value === HARDWARE_TYPES.CPU) {
+            } else if (value === HARDWARE_TYPE.CPU) {
                 allCpuUsageList.map((item, index) => {
 
                     chartData.push({
@@ -1099,7 +1213,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         fullLabel: item.instance.AppName.toString(),
                     })
                 })
-            } else  if (value === HARDWARE_TYPES.MEM) {
+            } else if (value === HARDWARE_TYPE.MEM) {
                 allMemUsageList.map((item, index) => {
 
                     chartData.push({
@@ -1111,8 +1225,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         fullLabel: item.instance.AppName.toString(),
                     })
                 })
-            }
-            else  if (value === HARDWARE_TYPES.DISK) {
+            } else if (value === HARDWARE_TYPE.DISK) {
                 allDiskUsageList.map((item, index) => {
 
                     chartData.push({
@@ -1124,9 +1237,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         fullLabel: item.instance.AppName.toString(),
                     })
                 })
-            }
-
-            else  if (value === HARDWARE_TYPES.NETWORK_RECV_BYTE) {
+            } else if (value === HARDWARE_TYPE.RECV_BYTES) {
                 allNetworkUsageList.map((item, index) => {
                     chartData.push({
                         //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
@@ -1138,7 +1249,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     })
                 })
             }
-
 
 
             this.setState({

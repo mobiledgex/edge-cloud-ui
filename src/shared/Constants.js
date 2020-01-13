@@ -55,38 +55,38 @@ export const REGIONS_OPTIONS = [
 
 ]
 
-
-export const HARDWARE_OPTIONS = [
-    {value: 'FAVOR', text: 'FAVOR'},
-    {value: 'CPU', text: 'CPU'},
-    {value: 'MEM', text: 'MEM'},
-    {value: 'DISK', text: 'DISK'},
-    {value: 'NETWORK_RECV_BYTE', text: 'NETWORK_RECV_BYTE'},
-    {value: 'NETWORK_SEND_BYTE', text: 'NETWORK_SEND_BYTE'},
-
+export const NETWORK_OPTIONS = [
+    {text: 'RECV_BYTE', value: 'recv_byte'},
+    {text: 'SEND_BYTE', value: 'send_bytes'},
 ]
 
-export const HARDWARE_TYPES = {
-    FAVOR: 'FAVOR',
-    CPU: 'CPU',
-    MEM: 'MEM',
-    DISK: 'DISK',
-    NETWORK_RECV_BYTE: 'NETWORK_RECV_BYTE',
-    NETWORK_SEND_BYTE: 'NETWORK_SEND_BYTE',
+export const NETWORK_TYPES = {
+    RECV_BYTES: 'recv_byte',
+    SEND_BYTES: 'send_bytes',
+
 }
+
+
+export const HARDWARE_OPTIONS = [
+    {text: 'FAVOR', value: 'favor'},
+    {text: 'CPU', value: 'cpu'},
+    {text: 'MEM', value: 'mem'},
+    {text: 'DISK', value: 'disk'},
+    {text: 'RECV_BYTE', value: 'recv_byte'},
+    {text: 'SEND_BYTE', value: 'send_byte'},
+]
 
 export const HARDWARE_TYPE = {
-    FAVOR: "FAVOR",
-    CPU: "CPU",
-    MEM: "MEM",
-    NETWORK: "NETWORK",
-    DISK: "DISK"
+    FAVOR: 'favor',
+    CPU: 'cpu',
+    MEM: 'mem',
+    RECV_BYTE: 'recv_byte',
+    SEND_BYTE: 'recv_byte',
+    DISK: 'disk',
 
 }
 
-/*"AppName": "MEXPrometheusAppName",
-    "Cloudlet": "frankfurt-eu",
-    "ClusterInst": "kkkkkkk",*/
+
 export const MOINTORING_FILTER_ITEM_TYPE = {
     REGION: "Region",
     APP_INST: "AppName",
