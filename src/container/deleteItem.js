@@ -80,8 +80,12 @@ class DeleteItem extends React.Component {
 
     wsResponse = (mcRequest) => {
         if (mcRequest) {
-            //let result = mcRequest.response;
-            //let request = mcRequest.request;
+            if (mcRequest.response) {
+                let response = mcRequest.response.data
+                if (response.code !== 200) {
+                    this.props.handleAlertInfo('error', response.data.message)
+                }
+            }
         }
 
         this.props.handleDeleteReset(true);

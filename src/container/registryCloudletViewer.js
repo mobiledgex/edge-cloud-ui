@@ -177,7 +177,6 @@ class RegistryCloudletViewer extends React.Component {
             if (mcRequest.response) {
                 let response = mcRequest.response.data
                 if (response.code === 200) {
-                    _self.props.handleLoadingSpinner(false);
                     _self.props.gotoUrl();
                     _self.setState({ errorClose: true })
                 }
@@ -186,6 +185,7 @@ class RegistryCloudletViewer extends React.Component {
                 }
             }
         }
+        _self.props.handleLoadingSpinner(false);
     }
 
     componentDidMount() {

@@ -165,7 +165,6 @@ class RegistryClusterInstViewer extends React.Component {
                     }   
                 })
                 if (valid) {
-                    this.props.handleLoadingSpinner(false);
                     this.props.gotoUrl();
                     this.setState({ errorClose: true })
                 }
@@ -176,6 +175,7 @@ class RegistryClusterInstViewer extends React.Component {
                 }
             }
         }
+        this.props.handleLoadingSpinner(false);
     }
 
     componentDidMount() {
