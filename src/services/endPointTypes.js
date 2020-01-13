@@ -14,6 +14,7 @@ import * as FormatMonitorApp from "./formatter/formatMonitorApp";
 import * as FormatComputeCloudletPool from './formatter/formatComputeCloudletPool';
 import * as FormatComputeCloudletPoolDelete from './formatter/formatComputeCloudletPoolDelete';
 import * as FormatComputeCloudletPoolMember from './formatter/formatComputeCloudletPoolMember';
+import * as FormatComputeCloudletPoolMemberDelete from './formatter/formatComputeCloudletPoolMemberDelete';
 import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
 import * as FormatComputeLinkPoolOrgDelete from './formatter/formatComputeLinkPoolOrgDelete';
 
@@ -68,7 +69,7 @@ export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
 export const CREATE_CLOUDLET_POOL_MEMBER = "CreateCloudletPoolMember";
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
-export const DELETE_CLOUDLET_MEMBER = "DeleteCloudletMember";
+export const DELETE_CLOUDLET_POOL_MEMBER = "DeleteCloudletPoolMember";
 export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const SHOW_ORG_CLOUDLET = "orgcloudlet";
 
@@ -129,6 +130,7 @@ export function getPath(request) {
         case DELETE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL_MEMBER:
+        case DELETE_CLOUDLET_POOL_MEMBER:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
@@ -230,6 +232,8 @@ export function getKey(keyId, data) {
             return FormatComputeAccounts.getKey(data)
         case 'Cloudlet Pool':
             return FormatComputeCloudletPoolDelete.getKey(data)
+        case 'delete member':
+            return FormatComputeCloudletPoolMemberDelete.getKey(data)
         case 'delete link':
             return FormatComputeLinkPoolOrgDelete.getKey(data)
         default:
@@ -257,6 +261,8 @@ export function getDeleteMethod(keyId) {
             return DELETE_ACCOUNT;
         case 'Cloudlet Pool':
             return DELETE_CLOUDLET_POOL;
+        case 'delete member':
+            return DELETE_CLOUDLET_POOL_MEMBER;
         case 'delete link':
             return DELETE_LINK_POOL_ORG;
         default:

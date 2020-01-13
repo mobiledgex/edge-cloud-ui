@@ -235,7 +235,8 @@ class PagePoolDetailViewer extends React.Component {
             clusterName:null,
             activeIndex:0,
             page:'',
-            user:'AdminManager'
+            user:'AdminManager',
+            refreshId:0
         }
         _self = this;
         this.initData = null;
@@ -287,8 +288,16 @@ class PagePoolDetailViewer extends React.Component {
     }
     httpResponse = (result) => {
         if(result) {
-            alert(JSON.stringify(result))
+            console.log(JSON.stringify(result))
+            if(result.response && result.response.data) {
+                _self.props.handleAlertInfo('success', 'Delete sucessfully')
+            }
+        } else {
+            _self.props.handleAlertInfo('success', 'Delete sucessfully')
         }
+
+        this.props.refreshData('All');
+
     }
     onHandleDelete = (e, _data) => {
         console.log('on handle delete ...', e, _data)
@@ -313,9 +322,9 @@ class PagePoolDetailViewer extends React.Component {
         }
     }
 
-    generateDOM(open, dimmer, data, mData, keysData, hideHeader, region, page) {
+    generateDOM(open, dimmer, data, mData, keysData, hideHeader, region, page, rfId) {
 
-        let panelParams = {data:data, mData:mData, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
+        let panelParams = {data:data, mData:mData, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole, rfId:rfId}
         return layout.map((item, i) => (
 
             (i === 0)?
@@ -468,15 +477,20 @@ class PagePoolDetailViewer extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
+        let regKeys = [];
+        let component = null;
+        let data = [];
+        if(nextProps.data && !this.initData){
+            setTimeout(() => this.setState({listData:nextProps.data, page:nextProps.page}), 2000)
+            this.initData = true;
+            this.props.handleLoadingSpinner(false)
+        }
 
-            let regKeys = [];
-            let component = null;
-            let data = [];
-            if(nextProps.data && !this.initData){
-                this.setState({listData:nextProps.data, page:nextProps.page})
-                this.initData = true;
-                this.props.handleLoadingSpinner(false)
-            }
+        if(nextProps.loading) {
+            console.log('20200113 refresh view')
+            this.setState({refreshId: Math.random() * 300})
+            this.forceUpdate();
+        }
 
     }
     componentWillUnmount() {
@@ -514,11 +528,11 @@ class PagePoolDetailViewer extends React.Component {
     }
 
     render() {
-        let { listData, monitorData, clusterName, open, dimmer, hiddenKeys, userRole } = this.state;
+        let { listData, monitorData, clusterName, open, dimmer, hiddenKeys, userRole, refreshId } = this.state;
         let { loading } = this.props;
         return (
             <div className="regis_container">
-                {this.generateDOM(open, dimmer, listData, monitorData, this.state.keysData, hiddenKeys, this.props.region, this.props.page)}
+                {this.generateDOM(open, dimmer, listData, monitorData, this.state.keysData, hiddenKeys, this.props.region, this.props.page, refreshId={refreshId})}
             </div>
 
         )
@@ -537,7 +551,8 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
     };
 };
 
