@@ -1205,7 +1205,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         NETWORK_TABS = [
 
             {
-                menuItem: 'RECEIVE_BYTES', render: () => {
+                menuItem: 'RECEIVE BYTES', render: () => {
                     return (
                         <Pane>
                             {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
@@ -1214,7 +1214,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
             },
             {
-                menuItem: 'SEND_BYTES', render: () => {
+                menuItem: 'SEND BYTES', render: () => {
                     return (
                         <Pane>
                             {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
@@ -1222,8 +1222,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     )
                 }
             },
-
-
         ]
 
 
