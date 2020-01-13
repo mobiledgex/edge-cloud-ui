@@ -259,21 +259,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isAppInstaceDataReady: true,
             })
 
-
+            //todo: -------------------------------------------------------------------------------
             //todo: make FirstbubbleChartData
+            //todo: -------------------------------------------------------------------------------
             let bubbleChartData = await this.makeFirstBubbleChartData(appInstanceList);
             await this.setState({
                 bubbleChartData: bubbleChartData,
             })
 
-            //todo: ####################################################################################
+            //todo: -------------------------------------------------------------------------------
             //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA)
-            //todo: ####################################################################################
+            //todo: -------------------------------------------------------------------------------
             let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
 
-            //todo: ################################################################
+            //todo: -------------------------------------------------------------
             //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR DEV
-            //todo: ################################################################
+            //todo: -------------------------------------------------------------
             //let usageList = require('../../../temp/usageAllJsonList2')
 
             console.log('usageList===>', usageList)
@@ -301,9 +302,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
 
-            //todo:#############################
+            //todo: -------------------------------------------------------------
             //todo: make NETWORK CHART DATA
-            //todo:#############################
+            //todo: -------------------------------------------------------------
             let networkLineChartData = makeNetworkLineChartData(this.state.filteredNetworkUsageList, 'recv_bytes');
             let networkBarChartData = makeNetworkBarData(this.state.filteredNetworkUsageList, 'recv_bytes');
             await this.setState({
@@ -643,9 +644,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                   height: this.state.appInstanceList.length * 35 + 110,
                               }}
                         >
-                            {/*todo:ROW HEADER*/}
-                            {/*todo:ROW HEADER*/}
-                            {/*todo:ROW HEADER*/}
+                            {/*-----------------------*/}
+                            {/*todo:ROW HEADER        */}
+                            {/*-----------------------*/}
                             {!this.state.isReady && <Row columns={1}>
                                 <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
                                     <div style={{position: 'absolute', top: '-20%', left: '48%'}}>
@@ -1132,10 +1133,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         fullLabel: item.instance.AppName.toString(),
                     })
                 })
-            } else if (value === HARDWARE_TYPE.RECV_BYTES) {
+            } else if (value === NETWORK_TYPE.RECV_BYTES) {
                 allNetworkUsageList.map((item, index) => {
                     chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                         index: index,
                         label: item.instance.AppName.toString().substring(0, 10) + "...",
                         value: item.sumRecvBytes,
@@ -1144,6 +1144,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     })
                 })
             }
+            else if (value === HARDWARE_TYPE.SEND_BYTE) {
+                allNetworkUsageList.map((item, index) => {
+                    chartData.push({
+                        index: index,
+                        label: item.instance.AppName.toString().substring(0, 10) + "...",
+                        value: item.sumSendBytes,
+                        favor: item.sumSendBytes,
+                        fullLabel: item.instance.AppName.toString(),
+                    })
+                })
+            }
+
+            console.log('allNetworkUsageList===>', allNetworkUsageList);
 
 
             this.setState({
@@ -1215,9 +1228,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         render() {
-            //todo:####################################################################
-            //todo: Components showing when the loading of graph data is not completed.
-            //todo:####################################################################
+            {/*todo:-------------------------------------------------------------------------------*/}
+            // todo: Components showing when the loading of graph data is not completed.
+            {/*todo:-------------------------------------------------------------------------------*/}
             if (!this.state.isAppInstaceDataReady) {
                 return (
                     <Grid.Row className='view_contents'>
@@ -1250,10 +1263,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <Grid.Row className='view_contents'>
-                    {/*todo:#############################*/}
-                    {/*todo: POPUP APP INSTACE LIST DIV  */}
-                    {/*todo:#############################*/}
-
+                    {/*todo:---------------------------------*/}
+                    {/*todo: POPUP APP INSTACE LIST DIV      */}
+                    {/*todo:---------------------------------*/}
                     <Modal
                         closeIcon={true}
                         open={this.state.isModalOpened}
@@ -1272,9 +1284,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </Modal>
                     <SemanticToastContainer/>
                     <Grid.Column className='contents_body'>
-                        {/*todo:#################### */}
-                        {/*todo:Content Header       */}
-                        {/*todo:#################### */}
+                        {/*todo:---------------------------------*/}
+                        {/*todo:Content Header                   */}
+                        {/*todo:---------------------------------*/}
                         {this.renderHeader()}
                         <Grid.Row className='site_content_body' style={{overflow: 'hidden'}}>
                             <Grid.Column>
@@ -1282,9 +1294,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
 
                                     <div className="page_monitoring">
-                                        {/*todo:#################### */}
+                                        {/*todo:---------------------------------*/}
                                         {/*todo:SELECTBOX_ROW        */}
-                                        {/*todo:#################### */}
+                                        {/*todo:---------------------------------*/}
                                         {this.renderSelectBoxRow()}
                                         <div className='page_monitoring_dashboard' style={{marginTop: -25, marginLeft: -25}}>
                                             {/*_____row____1*/}
@@ -1342,6 +1354,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo: bubbleChart DropDown            */}
                                                         {/*todo:---------------------------------*/}
                                                         <Dropdown
+                                                            disabled={this.state.loading}
                                                             clearable={this.state.regionSelectBoxClearable}
                                                             placeholder='SELECT HARDWARE'
                                                             selection

@@ -71,8 +71,8 @@ export const HARDWARE_OPTIONS = [
     {text: 'CPU', value: 'cpu'},
     {text: 'MEM', value: 'mem'},
     {text: 'DISK', value: 'disk'},
-    {text: 'RECV_BYTE', value: 'recv_bytes'},
-    {text: 'SEND_BYTE', value: 'send_bytes'},
+    {text: 'RECV_BYTES', value: 'recv_bytes'},
+    {text: 'SEND_BYTES', value: 'send_bytes'},
 ]
 
 export const HARDWARE_TYPE = {
