@@ -54,10 +54,13 @@ export const covertToComparableDate = (paramDate) => {
 
 export const numberWithCommas = (x) => {
 
+    let value = ''
     try {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        value = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     } catch (e) {
-        alert(e)
+        console.log('error===>', e);
+    } finally {
+        return value;
     }
 
 
@@ -519,6 +522,8 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
 
 
 export const renderBarGraphForNetwork = (_this) => {
+
+    console.log('networkBarChartData===>', _this.state.networkBarChartData);
 
     return (
         <Chart
@@ -1293,6 +1298,105 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
 
 
 }
+
+export const makeNetworkBarData = (networkUsageList, hwType) => {
+    let chartDataList = [];
+    chartDataList.push(["Element", hwType + " USAGE", {role: "style"}, {role: 'annotation'}])
+
+    for (let index = 0; index < networkUsageList.length; index++) {
+        if (index < 5) {
+            let barDataOne = [
+                networkUsageList[index].instance.AppName.toString().substring(0, 10) + "...",
+                hwType === HARDWARE_TYPE.RECV_BYTE ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
+                CHART_COLOR_LIST[index],
+                hwType === HARDWARE_TYPE.RECV_BYTE ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
+            ]
+            chartDataList.push(barDataOne);
+        }
+    }
+
+    console.log('chartDataList===>', chartDataList);
+
+    return chartDataList;
+
+}
+
+export const makeNetworkChartData = (filteredNetworkUsageList, pHardwareType) => {
+    let hardwareUsageList = filteredNetworkUsageList;
+    let instanceAppName = ''
+    let instanceNameList = [];
+    let usageSetList = []
+    let dateTimeList = []
+
+    for (let i in hardwareUsageList) {
+        let seriesValues = hardwareUsageList[i].values
+
+        instanceAppName = hardwareUsageList[i].instance.AppName
+        let usageList = [];
+
+
+        for (let j in seriesValues) {
+
+            let usageOne = 0;
+            if (pHardwareType === HARDWARE_TYPE.RECV_BYTES) {
+                usageOne = seriesValues[j]["12"];//receivceBytes -> index12
+            } else if (pHardwareType === HARDWARE_TYPE.SEND_BYTE) {
+                usageOne = seriesValues[j]["13"]; //sendBytes -> index13
+            }
+            usageList.push(usageOne);
+            let dateOne = seriesValues[j]["0"];
+            dateOne = dateOne.toString().split("T")
+
+            dateTimeList.push(dateOne[1]);
+        }
+
+        instanceNameList.push(instanceAppName)
+        usageSetList.push(usageList);
+    }
+
+
+    //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
+    let newDateTimeList = []
+    for (let i in dateTimeList) {
+        if (i < RECENT_DATA_LIMIT_COUNT) {
+            let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
+            let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+            newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
+        }
+
+    }
+
+    let finalSeriesDataSets = [];
+    for (let i in usageSetList) {
+        //@todo: top5 만을 추린다
+        if (i < 5) {
+            let datasetsOne = {
+                label: instanceNameList[i],
+                borderColor: CHART_COLOR_LIST[i],
+                borderWidth: 2,
+                pointColor: "#fff",
+                pointStrokeColor: 'white',
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: 'white',
+                data: usageSetList[i],
+                radius: 0,
+                pointRadius: 1,
+            }
+
+            finalSeriesDataSets.push(datasetsOne)
+        }
+
+    }
+
+    let lineChartData = {
+        labels: newDateTimeList,
+        datasets: finalSeriesDataSets,
+    }
+
+    return lineChartData;
+
+}
+
 
 export const renderLineChartForNetWork = (_this: PageMonitoring) => {
 

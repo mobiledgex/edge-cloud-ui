@@ -60,10 +60,9 @@ export const NETWORK_OPTIONS = [
     {text: 'SEND_BYTE', value: 'send_bytes'},
 ]
 
-export const NETWORK_TYPES = {
+export const NETWORK_TYPE = {
     RECV_BYTES: 'recv_byte',
     SEND_BYTES: 'send_bytes',
-
 }
 
 

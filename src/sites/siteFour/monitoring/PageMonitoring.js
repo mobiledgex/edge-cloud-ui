@@ -24,24 +24,29 @@ import {
     filterUsageByCluster,
     filterUsageListByRegion,
     getMetricsUtilizationAtAppLevel_TEST,
-    getUsageList, instanceFlavorToPerformanceValue,
+    instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, makeGradientColor,
-    renderBarGraph, renderBarGraphForNetwork,
+    makeClusterListSelectBox, makeNetworkBarData, makeNetworkChartData,
+    renderBarGraph,
+    renderBarGraphForNetwork,
     renderBubbleChart,
     renderInstanceOnCloudletGrid,
-    renderLineChart, renderLineChartForNetWork,
+    renderLineChart,
+    renderLineChartForNetWork,
     renderPlaceHolder,
-    renderPlaceHolder2, renderUsageByType, renderUsageLabelByType, requestShowAppInstanceList,
+    renderPlaceHolder2,
+    renderUsageByType,
+    renderUsageLabelByType,
     Styles
 } from "./PageMonitoringService";
 import {
-    APPINSTANCE_INIT_VALUE, CHART_COLOR_LIST,
+    APPINSTANCE_INIT_VALUE,
+    CHART_COLOR_LIST,
     CLASSIFICATION,
     HARDWARE_OPTIONS,
     HARDWARE_TYPE,
-    NETWORK_OPTIONS, NETWORK_TYPES as NETWORK_TYPE,
-    NETWORK_TYPES,
+    NETWORK_OPTIONS,
+    NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
     REGIONS_OPTIONS
 } from "../../../shared/Constants";
@@ -51,7 +56,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
-import {showToast} from "./SharedService";
 
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
@@ -211,7 +215,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-            this.loadInitData();
+            await this.loadInitData();
         }
 
         async loadInitData() {
@@ -283,9 +287,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo:#############################
             //todo: make NETWORK CHART DATA
             //todo:#############################
-            let networkLineChartData = this.makeNetworkChartData(this.state.filteredNetworkUsageList, HARDWARE_TYPE.RECV_BYTES);
-            let networkBarChartData = this.makeNetworkBarData(this.state.filteredNetworkUsageList, HARDWARE_TYPE.RECV_BYTES);
-
+            let networkLineChartData = makeNetworkChartData(this.state.filteredNetworkUsageList, HARDWARE_TYPE.RECV_BYTES);
+            let networkBarChartData = makeNetworkBarData(this.state.filteredNetworkUsageList, 'recv_bytes');
             await this.setState({
                 networkChartData: networkLineChartData,
                 networkBarChartData: networkBarChartData,
@@ -433,103 +436,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
             this.props.toggleLoading(false)
 
-
-        }
-
-        async makeNetworkBarData(networkUsageList, pHardwareType) {
-
-            alert(pHardwareType)
-
-            let chartDataList = [];
-            chartDataList.push(["Element", pHardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
-            for (let index = 0; index < networkUsageList.length; index++) {
-                if (index < 5) {
-                    let barDataOne = [networkUsageList[index].instance.AppName.toString().substring(0, 10) + "...",
-                        renderUsageByType(networkUsageList[index], pHardwareType),
-                        CHART_COLOR_LIST[index],
-                        renderUsageLabelByType(networkUsageList[index], pHardwareType)]
-                    chartDataList.push(barDataOne);
-                }
-            }
-
-            return chartDataList;
-
-        }
-
-
-        async makeNetworkChartData(filteredNetworkUsageList, pHardwareType) {
-            let hardwareUsageList = filteredNetworkUsageList;
-            let instanceAppName = ''
-            let instanceNameList = [];
-            let usageSetList = []
-            let dateTimeList = []
-
-            for (let i in hardwareUsageList) {
-                let seriesValues = hardwareUsageList[i].values
-
-                instanceAppName = hardwareUsageList[i].instance.AppName
-                let usageList = [];
-
-
-                for (let j in seriesValues) {
-
-                    let usageOne = 0;
-                    if (pHardwareType === HARDWARE_TYPE.RECV_BYTES) {
-                        usageOne = seriesValues[j]["12"];//receivceBytes -> index12
-                    } else if (pHardwareType === HARDWARE_TYPE.SEND_BYTE) {
-                        usageOne = seriesValues[j]["13"]; //sendBytes -> index13
-                    }
-                    usageList.push(usageOne);
-                    let dateOne = seriesValues[j]["0"];
-                    dateOne = dateOne.toString().split("T")
-
-                    dateTimeList.push(dateOne[1]);
-                }
-
-                instanceNameList.push(instanceAppName)
-                usageSetList.push(usageList);
-            }
-
-
-            //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
-            let newDateTimeList = []
-            for (let i in dateTimeList) {
-                if (i < RECENT_DATA_LIMIT_COUNT) {
-                    let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
-                    let timeOne = splitDateTimeArrayList[0].replace("T", "T");
-                    newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
-                }
-
-            }
-
-            let finalSeriesDataSets = [];
-            for (let i in usageSetList) {
-                //@todo: top5 만을 추린다
-                if (i < 5) {
-                    let datasetsOne = {
-                        label: instanceNameList[i],
-                        borderColor: CHART_COLOR_LIST[i],
-                        borderWidth: 2,
-                        pointColor: "#fff",
-                        pointStrokeColor: 'white',
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: 'white',
-                        data: usageSetList[i],
-                        radius: 0,
-                        pointRadius: 1,
-                    }
-
-                    finalSeriesDataSets.push(datasetsOne)
-                }
-
-            }
-
-            let lineChartData = {
-                labels: newDateTimeList,
-                datasets: finalSeriesDataSets,
-            }
-
-            return lineChartData;
 
         }
 
@@ -940,11 +846,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         options={NETWORK_OPTIONS}
                                         defaultValue={NETWORK_TYPE.RECV_BYTES}
                                         onChange={async (e, {value}) => {
-                                            let networkChartData = await this.makeNetworkChartData(this.state.filteredNetworkUsageList, value)
+
+                                            let networkChartData = await makeNetworkChartData(this.state.filteredNetworkUsageList, value)
+                                            let networkBarChartData = await makeNetworkBarData(this.state.filteredNetworkUsageList, value)
                                             this.setState({
                                                 networkChartData: networkChartData,
+                                                networkBarChartData: networkBarChartData,
                                                 currentNetworkType: value,
+
                                             })
+
+
                                         }}
                                         value={this.state.currentNetworkType}
                                         style={{width: 220}}
