@@ -13,7 +13,7 @@ import {TypeAppInstance} from "../../../shared/Types";
 import {Bar as RBar, BarChart, BarLabel, BarSeries, LinearXAxis, LinearYAxis, LinearYAxisTickSeries} from "reaviz";
 import Plot from "react-plotly.js";
 import PageMonitoring from "./PageMonitoring";
-import {showToast} from "./SharedService";
+import {showToast} from "./MonitoringChartService";
 
 
 export const getIPAddress = () => {
@@ -345,7 +345,7 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
 
         let cpuUsageOne = '';
         try {
-            cpuUsageOne = (usageOne.sumCpuUsage*1).toFixed(2) + " %";
+            cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
         } catch (e) {
             cpuUsageOne = 0;
         } finally {
@@ -364,14 +364,8 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
     }
 
     if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
-        let usageOne = '';
-        try {
-            usageOne = numberWithCommas(usageOne.sumRecvBytes) + " Byte"
-        } catch (e) {
-            usageOne = 0;
-        } finally {
-        }
-        return usageOne;
+
+        return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
     }
 }
 
@@ -415,6 +409,8 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
             chartDataList.push(barDataOne);
         }
     }
+
+    console.log('chartDataList===>', chartDataList);
 
     return (
         <Chart
@@ -1114,7 +1110,7 @@ export const getMetricsUtilizationAtAtClusterLevel = async (appInstanceOne) => {
  * @returns {*}
  */
 export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array, hardwareType: string) => {
-    console.log('itemeLength===>', hardwareUsageList);
+    console.log('hardwareType===>', hardwareType);
 
     let instanceAppName = ''
     let instanceNameList = [];
@@ -1133,9 +1129,9 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
             let usageOne = 0;
             if (hardwareType === HARDWARE_TYPE.CPU) {
                 usageOne = seriesValues[j]["6"];
-            } else if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
+            } else if (hardwareType === 'recv_byte') {
                 usageOne = seriesValues[j]["13"];//receivceBytes
-            } else if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+            } else if (hardwareType === 'send_byte') {
                 usageOne = seriesValues[j]["12"]; //sendBytes
             } else if (hardwareType === HARDWARE_TYPE.MEM) {
                 usageOne = seriesValues[j]["10"]; //mem usage
@@ -1492,31 +1488,17 @@ export const renderLineChartForNetWork = (_this: PageMonitoring, networkType: st
     //todo : networkChartData rendering
     //todo :############################
 
-    if ( _this.state.currentNetworkType===NETWORK_TYPE.RECV_BYTES){
-        return (
-            <div>
-                <ReactChartJs
-                    width={width}
-                    height={320}
-                    data={_this.state.networkChartData}
-                    options={options}
-                />
-            </div>
-        );
-    }else{
-        return (
-            <div>
-                <ReactChartJs
-                    width={width}
-                    height={320}
-                    data={_this.state.networkChartData2}
-                    options={options}
-                />
-            </div>
-        );
-    }
-
-
+    return (
+        <div>
+            <ReactChartJs
+                width={width}
+                height={320}
+                data={_this.state.networkChartData}
+                options={options}
+                redraw={true}
+            />
+        </div>
+    );
 
 
 }

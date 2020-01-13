@@ -146,6 +146,9 @@ type State = {
     networkBarChartData: Array,
     networkChartData2: Array,
     isReadyNetWorkCharts: boolean,
+    isEnableCloutletDropDown: boolean,
+    isEnableClusterDropDown: boolean,
+    isEnableAppInstDropDown: boolean,
 
 }
 
@@ -210,6 +213,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             networkChartData2: [],
             networkBarChartData: [],
             isReadyNetWorkCharts: false,
+            isEnableCloutletDropDown: true,
+            isEnableClusterDropDown: false,
+            isEnableAppInstDropDown: false,
         };
 
 
@@ -346,9 +352,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo : fetch data from state
             let appInstanceList = this.state.allAppInstanceList;
 
-            //todo: ##########################################
+            //todo: -------------------------------------------
             //todo: FLITER By pRegion
-            //todo: ##########################################
+            //todo: -------------------------------------------
             appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
             let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
@@ -358,9 +364,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let filteredNetworkUsageList = filterUsageListByRegion(pRegion, this.state.allNetworkUsageList);
 
 
-            //todo: ##########################################
+            //todo: -------------------------------------------
             //todo: FLITER  By pCloudLet
-            //todo: ##########################################
+            //todo: -------------------------------------------
             let clusterSelectBoxList = [];
             if (pCloudLet !== '') {
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
@@ -373,9 +379,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             }
 
-            //todo: ##########################################
+            //todo: -------------------------------------------
             //todo: FLITER By pCluster
-            //todo: ##########################################
+            //todo: -------------------------------------------
             if (pCluster !== '') {
                 //todo:LeftTop의 Cloudlet위에 올라가는 인스턴스 리스트를 필터링 처리하는 로직.
                 appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
@@ -387,9 +393,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredNetworkUsageList = filterUsageByCluster(filteredNetworkUsageList, pCluster);
             }
 
-            //todo: ##########################################
+            //todo: -------------------------------------------
             //todo: FLITER By pAppInstance
-            //todo: ##########################################
+            //todo: -------------------------------------------
             if (pAppInstance !== '') {
                 //todo:app instalce list를 필터링
                 //appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
@@ -400,18 +406,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
 
-            //todo: ##########################################
+            //todo: -------------------------------------------
             //todo: FLITER By startDate, endDate
-            //todo: ##########################################
+            //todo: -------------------------------------------
             if (this.state.startDate !== '' && this.state.endDate !== '') {
                 //alert(this.state.startDate)
             }
 
-            //todo: ##########################################
-            //todo: FLITER By startDate, endDate
-            //todo: ##########################################
-            let networkChartData = makeNetworkLineChartData(filteredNetworkUsageList, this.state.currentNetworkType)
-            let networkBarChartData = makeNetworkBarData(filteredNetworkUsageList, this.state.currentNetworkType)
 
             await this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
@@ -425,8 +426,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clusterList: clusterSelectBoxList,
                 currentCloudLet: pCloudLet,
                 currentCluster: pCluster,
-                networkChartData: networkChartData,
-                networkBarChartData: networkBarChartData,
             });
             //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
             if (pAppInstance === '') {
@@ -442,12 +441,27 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     clusterSelectBoxPlaceholder: 'Select Cluster',
                 })
             }, 500)
-
+            //todo: -------------------------------------------
+            //todo: -------------------------------------------
             //todo: make FirstbubbleChartData
+            //todo: -------------------------------------------
+            //todo: -------------------------------------------
             let bubbleChartData = await this.makeFirstBubbleChartData(appInstanceList);
             await this.setState({
                 bubbleChartData: bubbleChartData,
             })
+            //todo: -------------------------------------------
+            //todo: -------------------------------------------
+            //todo: NETWORK chart data filtering
+            //todo: -------------------------------------------
+            //todo: -------------------------------------------
+            let networkChartData = makeNetworkLineChartData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
+            let networkBarChartData = makeNetworkBarData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
+            await this.setState({
+                networkChartData: networkChartData,
+                networkBarChartData: networkBarChartData,
+            })
+
             this.props.toggleLoading(false)
 
 
@@ -837,7 +851,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForNetwork(this)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, HARDWARE_TYPE.RECV_BYTE)}
                         </div>
                     </div>
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
@@ -860,29 +874,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         options={NETWORK_OPTIONS}
                                         defaultValue={NETWORK_TYPE.RECV_BYTES}
                                         onChange={async (e, {value}) => {
+
                                             await this.setState({
                                                 currentNetworkType: value,
+                                            }, () => {
+                                                alert(this.state.currentNetworkType)
                                             })
 
-                                            if (this.state.currentNetworkType === NETWORK_TYPE.RECV_BYTES) {
-                                                console.log('allNetworkUsageList===>', this.state.filteredNetworkUsageList);
-                                                let networkLineChartData = await makeNetworkLineChartData(this.state.filteredNetworkUsageList, value)
-                                                let networkBarChartData = await makeNetworkBarData(this.state.allNetworkUsageList, value)
-                                                await this.setState({
-                                                    networkChartData: networkLineChartData,
-                                                    networkBarChartData: networkBarChartData,
-                                                    isReadyNetWorkCharts: true,
-                                                })
-                                            } else {
-                                                console.log('allNetworkUsageList===>', this.state.filteredNetworkUsageList);
-                                                let networkLineChartData = await makeNetworkLineChartData(this.state.filteredNetworkUsageList, value)
-                                                let networkBarChartData = await makeNetworkBarData(this.state.allNetworkUsageList, value)
-                                                await this.setState({
-                                                    networkChartData2: networkLineChartData,
-                                                    networkBarChartData: networkBarChartData,
-                                                    isReadyNetWorkCharts: true,
-                                                })
-                                            }
+                                            /*
+
+                                              console.log('allNetworkUsageList===>', this.state.filteredNetworkUsageList);
+                                              let networkLineChartData = await makeNetworkLineChartData(this.state.filteredNetworkUsageList, value)
+                                              let networkBarChartData = await makeNetworkBarData(this.state.allNetworkUsageList, value)
+                                              await this.setState({
+                                                  networkChartData: networkLineChartData,
+                                                  networkBarChartData: networkBarChartData,
+                                                  isReadyNetWorkCharts: true,
+                                              })*/
 
 
                                         }}
@@ -893,7 +901,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForNetWork(this, this.state.currentNetworkType)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredNetworkUsageList, this.state.currentNetworkType)}
                         </div>
                     </div>
                 </div>
@@ -973,15 +981,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <FlexBox>
                     <div style={Styles.selectBoxRow}>
                         <div className='page_monitoring_select_area' style={{marginLeft: 0,}}>
-                            {/*todo:##########################*/}
+                            {/*todo:---------------------------*/}
                             {/*todo:REGION Dropdown           */}
-                            {/*todo:##########################*/}
+                            {/*todo:---------------------------*/}
                             <div style={{flexDirection: 'row'}}>
                                 <div style={{display: 'flex', flexDirection: 'row'}}>
                                     <div style={Styles.selectHeader}>
                                         Region
                                     </div>
                                     <Dropdown
+                                        disabled={this.state.loading}
                                         clearable={this.state.regionSelectBoxClearable}
                                         placeholder='REGION'
                                         selection
@@ -1000,13 +1009,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         style={Styles.dropDown}
                                     />
 
-                                    {/*todo:##########################*/}
-                                    {/*todo:CloudLet selectbox       */}
-                                    {/*todo:##########################*/}
+                                    {/*todo:---------------------------*/}
+                                    {/*todo:CloudLet Dropdown       */}
+                                    {/*todo:---------------------------*/}
                                     <div style={Styles.selectHeader}>
                                         CloudLet
                                     </div>
                                     <Dropdown
+                                        disabled={this.state.loading}
                                         value={this.state.currentCloudLet}
                                         clearable={this.state.cloudLetSelectBoxClearable}
                                         loading={this.state.loading}
@@ -1027,13 +1037,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     />
 
 
-                                    {/*todo:##########################*/}
-                                    {/*todo:Cluster selectbox         */}
-                                    {/*todo:##########################*/}
+                                    {/*todo:---------------------------*/}
+                                    {/*todo:Cluster Dropdown         */}
+                                    {/*todo:---------------------------*/}
                                     <div style={Styles.selectHeader}>
                                         Cluster
                                     </div>
                                     <Dropdown
+                                        disabled={this.state.currentCloudLet === ''}
                                         value={this.state.currentCluster}
                                         clearable={this.state.clusterSelectBoxClearable}
                                         loading={this.state.loading}
@@ -1051,15 +1062,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             }, 500)
                                         }}
                                     />
-                                    {/*todo:##########################*/}
-                                    {/*todo: App Instance             */}
-                                    {/*todo:##########################*/}
 
+                                    {/*todo:---------------------------*/}
+                                    {/*todo: App Instance Dropdown      */}
+                                    {/*todo:---------------------------*/}
                                     <div style={Styles.selectHeader}>
                                         App Inst
                                     </div>
                                     <div>
                                         <Dropdown
+                                            disabled={this.state.currentCluster === '' || this.state.loading}
                                             clearable={this.state.appInstSelectBoxClearable}
                                             loading={this.state.loading}
                                             value={this.state.currentAppInst}
@@ -1077,14 +1089,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                         />
                                     </div>
-                                    {/*todo:##########################*/}
-                                    {/*todo:TimeRange                 */}
-                                    {/*todo:##########################*/}
+                                    {/*todo:---------------------------*/}
+                                    {/*todo:TimeRange   Dropdown       */}
+                                    {/*todo:---------------------------*/}
                                     <div style={Styles.selectHeader}>
                                         TimeRange
                                     </div>
                                     <div style={{marginTop: 0}}>
                                         <RangePicker
+                                            disabled={this.state.loading}
                                             showTime={{format: 'HH:mm'}}
                                             format="YYYY-MM-DD HH:mm"
                                             placeholder={['Start Time', 'End Time']}
