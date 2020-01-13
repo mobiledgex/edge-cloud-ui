@@ -71,27 +71,27 @@ export default class BubbleChart extends Component {
                     d.label = '' + d.data.label; //todo:라벨 셋팅 부분..
                     d.id = d.data.label.toLowerCase().replace(/ |\//g, "-");
                     d.favor = d.data.favor;
-                    d.fullLabel= d.data.fullLabel;
-                    d.index= d.data.index;
+                    d.fullLabel = d.data.fullLabel;
+                    d.index = d.data.index;
                 }
             });
 
         // Pass the data to the pack layout to calculate the distribution.
         const nodes = pack(root).leaves();
 
-        let newNodes=[]
-        nodes.map(item=>{
-            if ( item.data.value >0){
-                newNodes.push(item)
-            }
-        })
+        /*  let newNodes=[]
+          nodes.map(item=>{
+              if ( item.data.value >0){
+                  newNodes.push(item)
+              }
+          })*/
 
-        console.log('nodes===>', newNodes)
+        // console.log('nodes===>', nodes)
 
-        this.renderBubbles(bubblesWidth, newNodes, color);
+        this.renderBubbles(bubblesWidth, nodes, color);
         // Call to the function that draw the legend.
         if (showLegend) {
-            this.renderLegend(legendWidth, height, bubblesWidth, newNodes, color);
+            this.renderLegend(legendWidth, height, bubblesWidth, nodes, color);
         }
     }
 
@@ -104,6 +104,14 @@ export default class BubbleChart extends Component {
             labelFont,
         } = this.props;
 
+        /*  let newNodes=[]
+          nodes.map(item=>{
+              if ( item.data.value >0){
+                  newNodes.push(item)
+              }
+          })*!/*/
+
+
         const bubbleChart = d3.select(this.svg).append("g")
             .attr("class", "bubble-chart")
             .attr("transform", function (d) {
@@ -113,9 +121,7 @@ export default class BubbleChart extends Component {
             });
         ;
 
-        const node = bubbleChart.selectAll(".node")
-            .data(nodes)
-            .enter().append("g")
+        const node = bubbleChart.selectAll(".node").data(nodes).enter().append("g")
             .attr("class", "node")
             .attr("transform", function (d) {
                 return "translate(" + d.x + "," + d.y + ")";
@@ -123,6 +129,7 @@ export default class BubbleChart extends Component {
             .on("click", function (d) {
                 bubbleClickFun(d.fullLabel, d.index);
             })
+
 
         node.append("circle")
             .attr("id", function (d) {
@@ -238,7 +245,6 @@ export default class BubbleChart extends Component {
             });
 
 
-
         node.append("title")
             .text(function (d) {
                 return d.label;
@@ -312,7 +318,7 @@ export default class BubbleChart extends Component {
             });
 
         texts.append("text")
-            //.style("font-size", `${legendFont.size}px`)
+        //.style("font-size", `${legendFont.size}px`)
             .style("font-size", `17px`)
             /*.style("font-weight", (d) => {
                 return legendFont.weight ? legendFont.weight : 50;
