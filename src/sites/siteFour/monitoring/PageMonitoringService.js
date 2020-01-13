@@ -763,7 +763,7 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
                 <BubbleChart
                     className='bubbleChart'
                     graph={{
-                        zoom: appInstanceList.length <= 4 ? 0.45 : 0.70,
+                        zoom: appInstanceList.length <= 4 ? 0.45 : 0.75,
                         offsetX: 0.15,
                         offsetY: appInstanceList.length <= 4 ? 0.03 : -0.00,
                     }}
@@ -775,19 +775,19 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
                     legendFont={{
                         //family: 'Candal',
                         size: 12,
-                        color: 'yellow',
+                        color: 'black',
                         weight: 'bold',
                     }}
                     valueFont={{
                         //family: 'Righteous',
                         size: 12,
-                        color: 'yellow',
+                        color: '#525252',
                         //weight: 'bold',
                         fontStyle: 'italic',
                     }}
                     labelFont={{
                         //family: 'Righteous',
-                        size: 12,
+                        size: 14,
                         color: 'black',
                         weight: 'bold',
                     }}

@@ -648,8 +648,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*todo:ROW HEADER*/}
                             {!this.state.isReady && <Row columns={1}>
                                 <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
-                                    <CircularProgress
-                                        style={{color: 'green', justifyContent: "center", alignItems: 'center'}}/>
+                                    <div style={{position: 'absolute', top: '-20%', left: '48%'}}>
+                                        <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop:-170}}>
+                                            <Lottie
+                                                options={{
+                                                    loop: true,
+                                                    autoplay: true,
+                                                    animationData: require('../../../lotties/loader001'),
+                                                    rendererSettings: {
+                                                        preserveAspectRatio: 'xMidYMid slice'
+                                                    }
+                                                }}
+                                                height={240}
+                                                width={240}
+                                                isStopped={false}
+                                                isPaused={false}
+                                            />
+                                        </div>
+                                    </div>
                                 </Column>
                             </Row>}
                             {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
@@ -1398,9 +1414,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 </div>
                                             </p>
 
-                                            {/*todo: #################################*/}
-                                            {/*todo: BOTTOM_GRID_AREA____SHOW_UP__AREA*/}
-                                            {/*todo: #################################*/}
+                                            {/*todo:---------------------------------*/}
+                                            {/*todo: BOTTOM_GRID_AREA_SHOW_UP_AREA   */}
+                                            {/*todo:---------------------------------*/}
                                             <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
                                                 <OutsideClickHandler
                                                     onOutsideClick={() => {
@@ -1439,9 +1455,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 <FA name="chevron-down" style={{fontSize: 15, color: 'white'}}/>
                                                             </div>
                                                         </p>
-                                                        {/*todo: #################################*/}
-                                                        {/*todo: BOTTOM APP INSTACE LIST      */}
-                                                        {/*todo: #################################*/}
+                                                        {/*todo:---------------------------------*/}
+                                                        {/*todo: BOTTOM APP INSTACE LIST         */}
+                                                        {/*todo:---------------------------------*/}
                                                         <div style={{fontSize: 22, display: 'flex', alignItems: 'center', marginLeft: 10, color: 'white', fontWeight: 'bold'}}>
                                                             App Instance List
                                                         </div>
