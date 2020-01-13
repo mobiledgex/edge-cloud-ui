@@ -57,12 +57,12 @@ export const REGIONS_OPTIONS = [
 
 export const NETWORK_OPTIONS = [
     {text: 'RECV_BYTE', value: 'recv_byte'},
-    {text: 'SEND_BYTE', value: 'send_bytes'},
+    {text: 'SEND_BYTE', value: 'send_byte'},
 ]
 
 export const NETWORK_TYPE = {
     RECV_BYTES: 'recv_byte',
-    SEND_BYTES: 'send_bytes',
+    SEND_BYTES: 'send_byte',
 }
 
 
@@ -80,7 +80,7 @@ export const HARDWARE_TYPE = {
     CPU: 'cpu',
     MEM: 'mem',
     RECV_BYTE: 'recv_byte',
-    SEND_BYTE: 'recv_byte',
+    SEND_BYTE: 'send_byte',
     DISK: 'disk',
 
 }

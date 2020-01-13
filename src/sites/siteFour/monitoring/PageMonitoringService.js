@@ -4,7 +4,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import './PageMonitoring.css';
-import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../shared/Constants";
+import {CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../shared/Constants";
 import {HorizontalBar, Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
@@ -345,7 +345,7 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
 
         let cpuUsageOne = '';
         try {
-            cpuUsageOne = usageOne.sumCpuUsage.toFixed(2) + " %";
+            cpuUsageOne = (usageOne.sumCpuUsage*1).toFixed(2) + " %";
         } catch (e) {
             cpuUsageOne = 0;
         } finally {
@@ -1315,33 +1315,37 @@ export const makeNetworkBarData = (networkUsageList, hwType) => {
         }
     }
 
-    console.log('chartDataList===>', chartDataList);
+    console.log('BarchartDataList===>', chartDataList);
 
     return chartDataList;
 
 }
 
-export const makeNetworkChartData = (filteredNetworkUsageList, pHardwareType) => {
-    let hardwareUsageList = filteredNetworkUsageList;
+export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType = HARDWARE_TYPE.RECV_BYTES) => {
     let instanceAppName = ''
     let instanceNameList = [];
     let usageSetList = []
     let dateTimeList = []
 
-    for (let i in hardwareUsageList) {
-        let seriesValues = hardwareUsageList[i].values
 
-        instanceAppName = hardwareUsageList[i].instance.AppName
+    for (let i in filteredNetworkUsageList) {
+        let seriesValues = filteredNetworkUsageList[i].values
+
+        console.log('seriesValues===>', seriesValues);
+
+        instanceAppName = filteredNetworkUsageList[i].instance.AppName
         let usageList = [];
-
 
         for (let j in seriesValues) {
 
             let usageOne = 0;
             if (pHardwareType === HARDWARE_TYPE.RECV_BYTES) {
+                console.log('pHardwareType===>', pHardwareType);
                 usageOne = seriesValues[j]["12"];//receivceBytes -> index12
-            } else if (pHardwareType === HARDWARE_TYPE.SEND_BYTE) {
+
+            } else {
                 usageOne = seriesValues[j]["13"]; //sendBytes -> index13
+                console.log('usageOne===>', usageOne);
             }
             usageList.push(usageOne);
             let dateOne = seriesValues[j]["0"];
@@ -1354,6 +1358,8 @@ export const makeNetworkChartData = (filteredNetworkUsageList, pHardwareType) =>
         usageSetList.push(usageList);
     }
 
+    console.log('makeNetworkLineChartDatausageList===>', usageSetList);
+
 
     //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
     let newDateTimeList = []
@@ -1365,7 +1371,6 @@ export const makeNetworkChartData = (filteredNetworkUsageList, pHardwareType) =>
         }
 
     }
-
     let finalSeriesDataSets = [];
     for (let i in usageSetList) {
         //@todo: top5 만을 추린다
@@ -1393,12 +1398,15 @@ export const makeNetworkChartData = (filteredNetworkUsageList, pHardwareType) =>
         datasets: finalSeriesDataSets,
     }
 
+    console.log('instanceNameList===>', instanceNameList);
+    console.log('finalSeriesDataSets===>', finalSeriesDataSets);
+
     return lineChartData;
 
 }
 
 
-export const renderLineChartForNetWork = (_this: PageMonitoring) => {
+export const renderLineChartForNetWork = (_this: PageMonitoring, networkType: string) => {
 
     let width = window.innerWidth * 0.28
 
@@ -1480,20 +1488,35 @@ export const renderLineChartForNetWork = (_this: PageMonitoring) => {
         }
 
     }
-
     //todo :#############################
     //todo : networkChartData rendering
     //todo :############################
-    return (
-        <div>
-            <ReactChartJs
-                width={width}
-                height={320}
-                data={_this.state.networkChartData}
-                options={options}
-            />
-        </div>
-    );
+
+    if ( _this.state.currentNetworkType===NETWORK_TYPE.RECV_BYTES){
+        return (
+            <div>
+                <ReactChartJs
+                    width={width}
+                    height={320}
+                    data={_this.state.networkChartData}
+                    options={options}
+                />
+            </div>
+        );
+    }else{
+        return (
+            <div>
+                <ReactChartJs
+                    width={width}
+                    height={320}
+                    data={_this.state.networkChartData2}
+                    options={options}
+                />
+            </div>
+        );
+    }
+
+
 
 
 }
@@ -1823,7 +1846,7 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
             cpuUsageList.push({
                 instance: item.instanceData,
                 columns: cpuSeries.columns,
-                sumCpuUsage: sumCpuUsage,
+                sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
                 values: cpuSeries.values,
                 appName: appName,
 
@@ -1840,7 +1863,7 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
             memUsageList.push({
                 instance: item.instanceData,
                 columns: memSeries.columns,
-                sumMemUsage: sumMemUsage,
+                sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
                 values: memSeries.values,
                 appName: appName,
             })
@@ -1857,7 +1880,7 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
             diskUsageList.push({
                 instance: item.instanceData,
                 columns: diskSeries.columns,
-                sumDiskUsage: sumDiskUsage,
+                sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
                 values: diskSeries.values,
                 appName: appName,
             })
@@ -1867,21 +1890,23 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
             //@todo##############################
             let networkSeries = series["0"]
             networkSeries.values.map(item => {
-                let recvBytesOne = item[12];//memUsage
+                let recvBytesOne = item[12];//recvBytesOne
                 sumRecvBytes += recvBytesOne;
-
-                let sendBytesOne = item[13];//memUsage
+                let sendBytesOne = item[13];//sendBytesOne
                 sumSendBytes += sendBytesOne;
             })
 
             networkUsageList.push({
                 instance: item.instanceData,
                 columns: networkSeries.columns,
-                sumRecvBytes: sumRecvBytes,
-                sumSendBytes: sumSendBytes,
+                sumRecvBytes: Math.ceil(sumRecvBytes / RECENT_DATA_LIMIT_COUNT),
+                sumSendBytes: Math.ceil(sumSendBytes / RECENT_DATA_LIMIT_COUNT),
                 values: networkSeries.values,
                 appName: appName,
             })
+
+            console.log('networkSeries===>', networkSeries.values)
+
         } else {//@todo: If series data is null
             cpuUsageList.push({
                 instance: item.instanceData,
@@ -1932,6 +1957,10 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
     matrixedUsageList.push(memUsageList)
     matrixedUsageList.push(networkUsageList)
     matrixedUsageList.push(diskUsageList)
+
+
+    console.log('networkUsageList===>', networkUsageList);
+
     return matrixedUsageList;
 }
 

@@ -23,10 +23,10 @@ import {
     filterUsageByCloudLet,
     filterUsageByCluster,
     filterUsageListByRegion,
-    getMetricsUtilizationAtAppLevel_TEST,
+    getMetricsUtilizationAtAppLevel_TEST, getUsageList,
     instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, makeNetworkBarData, makeNetworkChartData,
+    makeClusterListSelectBox, makeNetworkBarData, makeNetworkLineChartData,
     renderBarGraph,
     renderBarGraphForNetwork,
     renderBubbleChart,
@@ -36,7 +36,7 @@ import {
     renderPlaceHolder,
     renderPlaceHolder2,
     renderUsageByType,
-    renderUsageLabelByType,
+    renderUsageLabelByType, requestShowAppInstanceList,
     Styles
 } from "./PageMonitoringService";
 import {
@@ -144,6 +144,8 @@ type State = {
     lineChartData: Array,
     networkChartData: Array,
     networkBarChartData: Array,
+    networkChartData2: Array,
+    isReadyNetWorkCharts: boolean,
 
 }
 
@@ -205,7 +207,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             currentNetworkType: NETWORK_TYPE.RECV_BYTES,
             lineChartData: [],
             networkChartData: [],
+            networkChartData2: [],
             networkBarChartData: [],
+            isReadyNetWorkCharts: false,
         };
 
 
@@ -225,10 +229,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isReady: false,
             })
             //todo: REALDATA
-            //let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
+            let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
 
             //todo: FAKE JSON FOR DEV
-            let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
+            //let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({
@@ -257,12 +261,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: ####################################################################################
             //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA)
             //todo: ####################################################################################
-            //let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
+            let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
 
             //todo: ################################################################
             //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR DEV
             //todo: ################################################################
-            let usageList = require('../../../temp/usageAllJsonList2')
+            //let usageList = require('../../../temp/usageAllJsonList2')
+
+            console.log('usageList===>', usageList)
 
             //todo: MAKE SELECTBOX.
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
@@ -287,7 +293,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo:#############################
             //todo: make NETWORK CHART DATA
             //todo:#############################
-            let networkLineChartData = makeNetworkChartData(this.state.filteredNetworkUsageList, HARDWARE_TYPE.RECV_BYTES);
+            let networkLineChartData = makeNetworkLineChartData(this.state.filteredNetworkUsageList, 'recv_bytes');
             let networkBarChartData = makeNetworkBarData(this.state.filteredNetworkUsageList, 'recv_bytes');
             await this.setState({
                 networkChartData: networkLineChartData,
@@ -305,6 +311,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading: false,
                 loading0: false,
                 isReady: true,
+                isReadyNetWorkCharts: true,
             });
 
             toast({
@@ -400,6 +407,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //alert(this.state.startDate)
             }
 
+            //todo: ##########################################
+            //todo: FLITER By startDate, endDate
+            //todo: ##########################################
+            let networkChartData = makeNetworkLineChartData(filteredNetworkUsageList, this.state.currentNetworkType)
+            let networkBarChartData = makeNetworkBarData(filteredNetworkUsageList, this.state.currentNetworkType)
 
             await this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
@@ -413,6 +425,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clusterList: clusterSelectBoxList,
                 currentCloudLet: pCloudLet,
                 currentCluster: pCluster,
+                networkChartData: networkChartData,
+                networkBarChartData: networkBarChartData,
             });
             //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
             if (pAppInstance === '') {
@@ -846,15 +860,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         options={NETWORK_OPTIONS}
                                         defaultValue={NETWORK_TYPE.RECV_BYTES}
                                         onChange={async (e, {value}) => {
-
-                                            let networkChartData = await makeNetworkChartData(this.state.filteredNetworkUsageList, value)
-                                            let networkBarChartData = await makeNetworkBarData(this.state.filteredNetworkUsageList, value)
-                                            this.setState({
-                                                networkChartData: networkChartData,
-                                                networkBarChartData: networkBarChartData,
+                                            await this.setState({
                                                 currentNetworkType: value,
-
                                             })
+
+                                            if (this.state.currentNetworkType === NETWORK_TYPE.RECV_BYTES) {
+                                                console.log('allNetworkUsageList===>', this.state.filteredNetworkUsageList);
+                                                let networkLineChartData = await makeNetworkLineChartData(this.state.filteredNetworkUsageList, value)
+                                                let networkBarChartData = await makeNetworkBarData(this.state.allNetworkUsageList, value)
+                                                await this.setState({
+                                                    networkChartData: networkLineChartData,
+                                                    networkBarChartData: networkBarChartData,
+                                                    isReadyNetWorkCharts: true,
+                                                })
+                                            } else {
+                                                console.log('allNetworkUsageList===>', this.state.filteredNetworkUsageList);
+                                                let networkLineChartData = await makeNetworkLineChartData(this.state.filteredNetworkUsageList, value)
+                                                let networkBarChartData = await makeNetworkBarData(this.state.allNetworkUsageList, value)
+                                                await this.setState({
+                                                    networkChartData2: networkLineChartData,
+                                                    networkBarChartData: networkBarChartData,
+                                                    isReadyNetWorkCharts: true,
+                                                })
+                                            }
 
 
                                         }}
@@ -865,7 +893,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForNetWork(this)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartForNetWork(this, this.state.currentNetworkType)}
                         </div>
                     </div>
                 </div>
@@ -1120,8 +1148,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                         index: index,
                         label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumCpuUsage.toFixed(0) * 1,
-                        favor: item.sumCpuUsage.toFixed(0) * 1,
+                        value: (item.sumCpuUsage * 100).toFixed(0),
+                        favor: (item.sumCpuUsage * 100).toFixed(0),
                         fullLabel: item.instance.AppName.toString(),
                     })
                 })
