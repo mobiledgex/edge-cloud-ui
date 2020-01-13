@@ -351,7 +351,6 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
         } finally {
             //cpuUsageOne = 0;
         }
-
         return cpuUsageOne;
     }
 
@@ -364,8 +363,11 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
     }
 
     if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
-
         return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
+    }
+
+    if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+        return numberWithCommas(usageOne.sumSendBytes) + " Byte";
     }
 }
 
@@ -1129,9 +1131,9 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
             let usageOne = 0;
             if (hardwareType === HARDWARE_TYPE.CPU) {
                 usageOne = seriesValues[j]["6"];
-            } else if (hardwareType === 'recv_byte') {
+            } else if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
                 usageOne = seriesValues[j]["13"];//receivceBytes
-            } else if (hardwareType === 'send_byte') {
+            } else if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
                 usageOne = seriesValues[j]["12"]; //sendBytes
             } else if (hardwareType === HARDWARE_TYPE.MEM) {
                 usageOne = seriesValues[j]["10"]; //mem usage

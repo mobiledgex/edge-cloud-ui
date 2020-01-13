@@ -149,6 +149,7 @@ type State = {
     isEnableCloutletDropDown: boolean,
     isEnableClusterDropDown: boolean,
     isEnableAppInstDropDown: boolean,
+    currentNetworkTab: number,
 
 }
 
@@ -216,6 +217,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isEnableCloutletDropDown: true,
             isEnableClusterDropDown: false,
             isEnableAppInstDropDown: false,
+            currentNetworkTab: 0,
         };
 
 
@@ -281,7 +283,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, CLASSIFICATION.CLOUDLET)
             let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, CLASSIFICATION.CLUSTER_INST)
 
-
             await this.setState({
                 allCpuUsageList: usageList[0],
                 allMemUsageList: usageList[1],
@@ -293,7 +294,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredMemUsageList: usageList[1],
                 filteredNetworkUsageList: usageList[2],
                 filteredDiskUsageList: usageList[3],
+            },()=>{
+                console.log('filteredNetworkUsageList===>', this.state.filteredNetworkUsageList);
             });
+
+
 
 
             //todo:#############################
@@ -506,10 +511,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return newArrList;
         }
 
-        componentWillUnmount() {
-            clearInterval(this.intervalHandle)
-        }
-
         async refreshAllData() {
             toast({
                 type: 'success',
@@ -708,41 +709,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        /**###############################
-         MONITORING_TABS
-         ##################################*/
-        MONITORING_TABS = [
-
-            {
-                menuItem: 'CPU', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderCpuTabArea()}
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'MEM', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderMemTabArea()}
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'DISK', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderDiskTabArea()}
-                        </Pane>
-                    )
-                }
-            },
-
-
-        ]
 
         renderCpuTabArea() {
             return (
@@ -841,7 +807,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderNetworkArea() {
+        renderNetworkArea(networkType: string) {
             return (
                 <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
@@ -851,7 +817,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, HARDWARE_TYPE.RECV_BYTE)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, networkType)}
                         </div>
                     </div>
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
@@ -859,49 +825,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <div className='page_monitoring_title'>
                                 Transition Of NETWORK Usage
                             </div>
-                            <div style={{marginLeft: 25,}}>
-                                {this.state.loading
-                                    ? <div></div>
-                                    :
-
-                                    /*@todo:NETWORK DROPDOWN*/
-                                    /*@todo:NETWORK DROPDOWN*/
-                                    /*@todo:NETWORK DROPDOWN*/
-                                    <Dropdown
-                                        clearable={this.state.regionSelectBoxClearable}
-                                        placeholder='SELECT OPTIONS'
-                                        selection
-                                        options={NETWORK_OPTIONS}
-                                        defaultValue={NETWORK_TYPE.RECV_BYTES}
-                                        onChange={async (e, {value}) => {
-
-                                            await this.setState({
-                                                currentNetworkType: value,
-                                            }, () => {
-                                                alert(this.state.currentNetworkType)
-                                            })
-
-                                            /*
-
-                                              console.log('allNetworkUsageList===>', this.state.filteredNetworkUsageList);
-                                              let networkLineChartData = await makeNetworkLineChartData(this.state.filteredNetworkUsageList, value)
-                                              let networkBarChartData = await makeNetworkBarData(this.state.allNetworkUsageList, value)
-                                              await this.setState({
-                                                  networkChartData: networkLineChartData,
-                                                  networkBarChartData: networkBarChartData,
-                                                  isReadyNetWorkCharts: true,
-                                              })*/
-
-
-                                        }}
-                                        value={this.state.currentNetworkType}
-                                        style={{width: 220}}
-                                    />
-                                }
-                            </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredNetworkUsageList, this.state.currentNetworkType)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredNetworkUsageList, networkType)}
                         </div>
                     </div>
                 </div>
@@ -920,9 +846,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                            className="info icon"></i></button>
                         </div>
 
-                        {/*todo:REFRESH, RESET BUTTON DIV*/}
-                        {/*todo:REFRESH, RESET BUTTON DIV*/}
-                        {/*todo:REFRESH, RESET BUTTON DIV*/}
+                        {/*todo:---------------------------*/}
+                        {/*todo:REFRESH, RESET BUTTON DIV  */}
+                        {/*todo:---------------------------*/}
                         <div style={{
                             display: 'flex',
                             width: 270,
@@ -1211,6 +1137,66 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
         }
 
+        //@todo:-----------------------
+        //@todo:-----------------------
+        //@todo:    CPU,MEM,DISK TAB
+        //@todo:-----------------------
+        //@todo:-----------------------
+        CPU_MEM_DISK_TABS = [
+
+            {
+                menuItem: 'CPU', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderCpuTabArea()}
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'MEM', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderMemTabArea()}
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'DISK', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderDiskTabArea()}
+                        </Pane>
+                    )
+                }
+            },
+        ]
+
+        NETWORK_TABS = [
+
+            {
+                menuItem: 'RECEIVE_BYTES', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'SEND_BYTES', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
+                        </Pane>
+                    )
+                }
+            },
+
+
+        ]
+
 
         render() {
             //todo:####################################################################
@@ -1310,12 +1296,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___2nd*/}
                                                 <div className='page_monitoring_column_kj003' style={{marginLeft: 0}}>
 
-                                                    {/*todo: ################*/}
-                                                    {/*todo: RENDER TAB_AREA  */}
-                                                    {/*todo: ################*/}
+                                                    {/*todo:---------------------------------*/}
+                                                    {/*todo: RENDER TAB_AREA                 */}
+                                                    {/*todo:---------------------------------*/}
                                                     <Tab
                                                         style={{marginLeft: -10}}
-                                                        panes={this.MONITORING_TABS}
+                                                        panes={this.CPU_MEM_DISK_TABS}
                                                         activeIndex={this.state.currentTabIndex}
                                                         onTabChange={(e, {activeIndex}) => {
                                                             this.setState({
@@ -1336,9 +1322,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             Engine Performance State Of App instance
                                                         </div>
-                                                        {/*todo: ########################*/}
-                                                        {/*todo: bubbleChart DropDown    */}
-                                                        {/*todo: ########################*/}
+                                                        {/*todo:---------------------------------*/}
+                                                        {/*todo: bubbleChart DropDown            */}
+                                                        {/*todo:---------------------------------*/}
                                                         <Dropdown
                                                             clearable={this.state.regionSelectBoxClearable}
                                                             placeholder='SELECT HARDWARE'
@@ -1355,9 +1341,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             style={Styles.dropDown}
                                                         />
                                                     </div>
-                                                    {/*todo:###########################***/}
+                                                    {/*todo:---------------------------------*/}
                                                     {/*todo: RENDER BUBBLE_CHART          */}
-                                                    {/*todo:###########################***/}
+                                                    {/*todo:---------------------------------*/}
                                                     <FlexBox>
                                                         <div>
                                                             {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChart(this, this.state.currentHardwareType, this.state.bubbleChartData)}
@@ -1365,21 +1351,30 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     </FlexBox>
 
                                                 </div>
-                                                {/*todo:##########################*/}
-                                                {/*todo:NETWORK LIST GRID__4nd_col*/}
-                                                {/*todo:##########################*/}
-                                                <div className='page_monitoring_column_kj003'>
-                                                    <div style={{flexDirection: 'row', display: 'flex'}}>
-                                                    </div>
-                                                    {this.renderNetworkArea()}
+                                                <div className='page_monitoring_column_kj003' style={{marginLeft: 0}}>
+                                                    {/*todo:-----------------------*/}
+                                                    {/*todo:  네트워크 탭을 랜더링     */}
+                                                    {/*todo:-----------------------*/}
+                                                    <Tab
+                                                        style={{marginLeft: -10}}
+                                                        panes={this.NETWORK_TABS}
+                                                        activeIndex={this.state.currentNetworkTab}
+                                                        onTabChange={(e, {activeIndex}) => {
+                                                            this.setState({
+                                                                currentNetworkTab: activeIndex,
+                                                            })
+                                                        }}
+                                                        defaultActiveIndex={this.state.currentNetworkTab}
+
+                                                    />
                                                 </div>
 
 
                                             </div>
 
-                                            {/*todo: ################################*/}
+                                            {/*todo:---------------------------------*/}
                                             {/*todo: BOTTOM GRID TOGGLE UP BUTTON   */}
-                                            {/*todo: ################################*/}
+                                            {/*todo:---------------------------------*/}
                                             <p
                                                 onClick={() => {
                                                     this.setState({

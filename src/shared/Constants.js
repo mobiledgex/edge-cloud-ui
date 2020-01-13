@@ -56,13 +56,13 @@ export const REGIONS_OPTIONS = [
 ]
 
 export const NETWORK_OPTIONS = [
-    {text: 'RECV_BYTE', value: 'recv_byte'},
-    {text: 'SEND_BYTE', value: 'send_byte'},
+    {text: 'RECV_BYTE', value: 'recv_bytes'},
+    {text: 'SEND_BYTE', value: 'send_bytes'},
 ]
 
 export const NETWORK_TYPE = {
-    RECV_BYTES: 'recv_byte',
-    SEND_BYTES: 'send_byte',
+    RECV_BYTES: 'recv_bytes',
+    SEND_BYTES: 'send_bytes',
 }
 
 
@@ -71,16 +71,16 @@ export const HARDWARE_OPTIONS = [
     {text: 'CPU', value: 'cpu'},
     {text: 'MEM', value: 'mem'},
     {text: 'DISK', value: 'disk'},
-    {text: 'RECV_BYTE', value: 'recv_byte'},
-    {text: 'SEND_BYTE', value: 'send_byte'},
+    {text: 'RECV_BYTE', value: 'recv_bytes'},
+    {text: 'SEND_BYTE', value: 'send_bytes'},
 ]
 
 export const HARDWARE_TYPE = {
     FAVOR: 'favor',
     CPU: 'cpu',
     MEM: 'mem',
-    RECV_BYTE: 'recv_byte',
-    SEND_BYTE: 'send_byte',
+    RECV_BYTE: 'recv_bytes',
+    SEND_BYTE: 'send_bytes',
     DISK: 'disk',
 
 }
