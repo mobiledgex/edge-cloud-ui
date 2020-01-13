@@ -12,7 +12,8 @@ import BubbleChart from "../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../shared/Types";
 import {Bar as RBar, BarChart, BarLabel, BarSeries, LinearXAxis, LinearYAxis, LinearYAxisTickSeries} from "reaviz";
 import Plot from "react-plotly.js";
-
+import PageMonitoring from "./PageMonitoring";
+import {showToast} from "./SharedService";
 
 
 export const getIPAddress = () => {
@@ -53,9 +54,9 @@ export const covertToComparableDate = (paramDate) => {
 
 export const numberWithCommas = (x) => {
 
-    try{
+    try {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }catch (e) {
+    } catch (e) {
         alert(e)
     }
 
@@ -132,7 +133,6 @@ export const renderPieGraph = () => {
         </div>
     )
 }
-
 
 
 /**
@@ -835,8 +835,6 @@ export const renderBarGraphForInfo = (appInstanceListOnCloudlet, _this) => {
 }
 
 
-
-
 /**
  * @todo: toChunkArray for TopLeftGrid
  * @todo: toChunkArray for TopLeftGrid
@@ -953,24 +951,8 @@ export const filterAppInstOnCloudlet = (CloudLetOneList, pCluster) => {
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
  * @returns {*}
  */
-export const renderBubbleChart = (_this) => {
-    let appInstanceList = _this.state.appInstanceList
-
-    console.log('appInstanceList2222====>', appInstanceList)
-
-    let chartData = [];
-    appInstanceList.map((item, index) => {
-
-        //console.log('Flavor222====>', item.Flavor);
-        chartData.push({
-            //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
-            index: index,
-            label: item.AppName.toString().substring(0, 10) + "...",
-            value: instanceFlavorToPerformanceValue(item.Flavor),
-            favor: item.Flavor,
-            fullLabel: item.AppName.toString(),
-        })
-    })
+export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, pBubbleChartData:any) => {
+    let appInstanceList = _this.state.appInstanceList;
 
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -1005,8 +987,8 @@ export const renderBubbleChart = (_this) => {
                     }}
                     valueFont={{
                         //family: 'Righteous',
-                        size: 8,
-                        color: '#404040',
+                        size: 12,
+                        color: 'yellow',
                         //weight: 'bold',
                         fontStyle: 'italic',
                     }}
@@ -1025,18 +1007,6 @@ export const renderBubbleChart = (_this) => {
                         })
                         await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
 
-                        /*
-                            if (index >= 0 && index < 4) {
-                                setTimeout(() => {
-                                    _this.scrollToUp()
-                                }, 250)
-                            } else {
-                                setTimeout(() => {
-                                    _this.scrollToBottom()
-                                }, 250)
-                            }
-                        */
-
                     }}
 
                     legendClickFun={async (label, index) => {
@@ -1047,19 +1017,8 @@ export const renderBubbleChart = (_this) => {
                         })
                         await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
 
-                     /*   if (index >= 0 && index < 4) {
-                            setTimeout(() => {
-                                _this.scrollToUp()
-                            }, 250)
-                        } else {
-                            setTimeout(() => {
-                                _this.scrollToBottom()
-                            }, 250)
-                        }*/
-
-
                     }}
-                    data={chartData}
+                    data={pBubbleChartData}
                 />
 
             </div>
@@ -1411,7 +1370,7 @@ export const renderLineChart = (hardwareUsageList, hardwareType) => {
 
     const data = (canvas) => {
 
-        let gradientList= makeGradientColor(canvas, height);
+        let gradientList = makeGradientColor(canvas, height);
 
         let finalSeriesDataSets = [];
         for (let i in usageSetList) {
@@ -1551,7 +1510,7 @@ export const renderLineChart = (hardwareUsageList, hardwareType) => {
  * @param height
  * @returns {[]}
  */
-export const makeGradientColor = (canvas, height)=>{
+export const makeGradientColor = (canvas, height) => {
     const ctx = canvas.getContext("2d");
 
     let gradientList = []
@@ -1982,12 +1941,11 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
 }
 
 
-
 export const Styles = {
     selectBoxRow: {
         alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
     },
-    tabPaneDiv :{
+    tabPaneDiv: {
         display: 'flex', flexDirection: 'row', height: 380,
     },
     selectHeader: {

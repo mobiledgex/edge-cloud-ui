@@ -1,13 +1,6 @@
 export const API_ENDPOINT_PREFIX = '/api/v1/';
 
-export const HARDWARE_TYPE = {
 
-    CPU: "cpu",
-    MEM: "mem",
-    NETWORK: "network",
-    DISK: "disk"
-
-}
 //rgb(255,0,10)
 
 export const BORDER_CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
@@ -33,9 +26,9 @@ export const USAGE_TYPE = {
 }
 
 export const CLASSIFICATION = {
-    CLOUDLET : 'Cloudlet',
-    APP_NAME : 'AppName',
-    CLUSTER_INST : 'ClusterInst',
+    CLOUDLET: 'Cloudlet',
+    APP_NAME: 'AppName',
+    CLUSTER_INST: 'ClusterInst',
 }
 
 export const RECENT_DATA_LIMIT_COUNT = 100
@@ -61,6 +54,35 @@ export const REGIONS_OPTIONS = [
     {value: 'US', text: 'US'},
 
 ]
+
+
+export const HARDWARE_OPTIONS = [
+    {value: 'FAVOR', text: 'FAVOR'},
+    {value: 'CPU', text: 'CPU'},
+    {value: 'MEM', text: 'MEM'},
+    {value: 'DISK', text: 'DISK'},
+    {value: 'NETWORK_RECV_BYTE', text: 'NETWORK_RECV_BYTE'},
+    {value: 'NETWORK_SEND_BYTE', text: 'NETWORK_SEND_BYTE'},
+
+]
+
+export const HARDWARE_TYPES = {
+    FAVOR: 'FAVOR',
+    CPU: 'CPU',
+    MEM: 'MEM',
+    DISK: 'DISK',
+    NETWORK_RECV_BYTE: 'NETWORK_RECV_BYTE',
+    NETWORK_SEND_BYTE: 'NETWORK_SEND_BYTE',
+}
+
+export const HARDWARE_TYPE = {
+    FAVOR: "FAVOR",
+    CPU: "CPU",
+    MEM: "MEM",
+    NETWORK: "NETWORK",
+    DISK: "DISK"
+
+}
 
 /*"AppName": "MEXPrometheusAppName",
     "Cloudlet": "frankfurt-eu",

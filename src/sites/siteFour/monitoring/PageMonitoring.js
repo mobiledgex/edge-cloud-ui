@@ -24,7 +24,7 @@ import {
     filterUsageByCluster,
     filterUsageListByRegion,
     getMetricsUtilizationAtAppLevel_TEST,
-    getUsageList,
+    getUsageList, instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
     makeClusterListSelectBox,
     renderBarGraph,
@@ -35,13 +35,14 @@ import {
     renderPlaceHolder2, requestShowAppInstanceList,
     Styles
 } from "./PageMonitoringService";
-import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../shared/Constants";
+import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, HARDWARE_OPTIONS, HARDWARE_TYPE, HARDWARE_TYPES, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
+import {showToast} from "./SharedService";
 
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
@@ -124,6 +125,8 @@ type State = {
     isShowBottomGrid: boolean,
     isShowBottomGridForMap: boolean,
     mapZoomLevel: number,
+    currentHardwareType: string,
+    bubbleChartData: Array,
 }
 
 
@@ -179,6 +182,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isShowBottomGrid: false,
             isShowBottomGridForMap: false,
             mapZoomLevel: 0,
+            currentHardwareType: HARDWARE_TYPES.FAVOR,
+            bubbleChartData: [],
         };
 
 
@@ -198,10 +203,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isReady: false,
             })
             //todo: REALDATA
-            let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
+            //let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
 
             //todo: FAKE JSON FOR DEV
-            //let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
+            let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({
@@ -220,15 +225,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isAppInstaceDataReady: true,
             })
 
+
+            //todo: make FirstbubbleChartData
+            let bubbleChartData = await this.makeFirstBubbleChartData(appInstanceList);
+            await this.setState({
+                bubbleChartData: bubbleChartData,
+            })
+
             //todo: ####################################################################################
             //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA)
             //todo: ####################################################################################
-            let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
+            //let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
 
             //todo: ################################################################
             //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR DEV
             //todo: ################################################################
-            //let usageList = require('../../../temp/usageAllJsonList2')
+            let usageList = require('../../../temp/usageAllJsonList2')
 
             //todo: MAKE SELECTBOX.
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
@@ -271,6 +283,22 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 color: 'black',
             });
 
+        }
+
+        async makeFirstBubbleChartData(appInstanceList: any) {
+            let bubbleChartData = []
+            appInstanceList.map((item, index) => {
+                bubbleChartData.push({
+                    //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                    index: index,
+                    label: item.AppName.toString().substring(0, 10) + "...",
+                    value: instanceFlavorToPerformanceValue(item.Flavor),
+                    favor: item.Flavor,
+                    fullLabel: item.AppName.toString(),
+                })
+            })
+
+            return bubbleChartData;
         }
 
         /**
@@ -510,7 +538,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             this.messageList.scrollTo(0, 0);
         }*/
 
-        renderGridForAppInstanceList() {
+        renderBottomAppInstanceGrid() {
             return (
                 <div>
                     <Grid columns={8} padded={true} style={{height: 50}}>
@@ -1085,7 +1113,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     >
                         <Modal.Header>App Instance List</Modal.Header>
                         <Modal.Content>
-                            {this.renderGridForAppInstanceList()}
+                            {this.renderBottomAppInstanceGrid()}
                         </Modal.Content>
                     </Modal>
                     <SemanticToastContainer/>
@@ -1150,21 +1178,122 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                             <div className='page_monitoring_row'>
 
-                                                {/* ___col___4*/}
-                                                {/* ___col___4*/}
-                                                {/* ___col___4*/}
+
                                                 <div className='page_monitoring_column_kj002'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Engine Performance State Of App instance
                                                         </div>
+                                                        {/*todo: ########################*/}
+                                                        {/*todo: bubbleChart DropDown    */}
+                                                        {/*todo: ########################*/}
+                                                        <Dropdown
+                                                            clearable={this.state.regionSelectBoxClearable}
+                                                            placeholder='SELECT HARDWARE'
+                                                            selection
+                                                            loading={this.state.loading}
+                                                            options={HARDWARE_OPTIONS}
+                                                            defaultValue={HARDWARE_OPTIONS[0].value}
+                                                            onChange={async (e, {value}) => {
+
+                                                                await this.setState({
+                                                                    currentHardwareType: value,
+                                                                });
+
+                                                                let appInstanceList = this.state.appInstanceList;
+                                                                let allCpuUsageList = this.state.allCpuUsageList;
+                                                                let allMemUsageList = this.state.allMemUsageList;
+                                                                let allDiskUsageList = this.state.allDiskUsageList;
+                                                                let allNetworkUsageList = this.state.allNetworkUsageList;
+
+
+                                                                let chartData = [];
+
+                                                                if (value === HARDWARE_TYPES.FAVOR) {
+                                                                    appInstanceList.map((item, index) => {
+
+                                                                        chartData.push({
+                                                                            //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                                                                            index: index,
+                                                                            label: item.AppName.toString().substring(0, 10) + "...",
+                                                                            value: instanceFlavorToPerformanceValue(item.Flavor),
+                                                                            favor: item.Flavor,
+                                                                            fullLabel: item.AppName.toString(),
+                                                                        })
+                                                                    })
+                                                                }
+                                                                else if (value === HARDWARE_TYPES.CPU) {
+                                                                    allCpuUsageList.map((item, index) => {
+
+                                                                        chartData.push({
+                                                                            //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                                                                            index: index,
+                                                                            label: item.instance.AppName.toString().substring(0, 10) + "...",
+                                                                            value: item.sumCpuUsage.toFixed(0) * 1,
+                                                                            favor: item.sumCpuUsage.toFixed(0) * 1,
+                                                                            fullLabel: item.instance.AppName.toString(),
+                                                                        })
+                                                                    })
+                                                                } else  if (value === HARDWARE_TYPES.MEM) {
+                                                                    allMemUsageList.map((item, index) => {
+
+                                                                        chartData.push({
+                                                                            //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                                                                            index: index,
+                                                                            label: item.instance.AppName.toString().substring(0, 10) + "...",
+                                                                            value: item.sumMemUsage,
+                                                                            favor: item.sumMemUsage,
+                                                                            fullLabel: item.instance.AppName.toString(),
+                                                                        })
+                                                                    })
+                                                                }
+                                                                else  if (value === HARDWARE_TYPES.DISK) {
+                                                                    allDiskUsageList.map((item, index) => {
+
+                                                                        chartData.push({
+                                                                            //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                                                                            index: index,
+                                                                            label: item.instance.AppName.toString().substring(0, 10) + "...",
+                                                                            value: item.sumDiskUsage,
+                                                                            favor: item.sumDiskUsage,
+                                                                            fullLabel: item.instance.AppName.toString(),
+                                                                        })
+                                                                    })
+                                                                }
+
+                                                                else  if (value === HARDWARE_TYPES.NETWORK_RECV_BYTE) {
+                                                                    allNetworkUsageList.map((item, index) => {
+                                                                        chartData.push({
+                                                                            //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                                                                            index: index,
+                                                                            label: item.instance.AppName.toString().substring(0, 10) + "...",
+                                                                            value: item.sumRecvBytes,
+                                                                            favor: item.sumRecvBytes,
+                                                                            fullLabel: item.instance.AppName.toString(),
+                                                                        })
+                                                                    })
+                                                                }
+
+
+
+                                                                this.setState({
+                                                                    bubbleChartData: chartData,
+                                                                }, () => {
+                                                                    console.log('bubbleChartData===>', this.state.bubbleChartData)
+                                                                })
+
+
+                                                            }}
+                                                            value={this.state.currentHardwareType}
+                                                            style={Styles.dropDown}
+                                                        />
                                                     </div>
                                                     {/*todo:###########################***/}
                                                     {/*todo: RENDER BUBBLE_CHART          */}
                                                     {/*todo:###########################***/}
                                                     <FlexBox>
                                                         <div>
-                                                            {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChart(this)}
+                                                            {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChart(this, this.state.currentHardwareType, this.state.bubbleChartData)}
                                                         </div>
                                                     </FlexBox>
 
@@ -1256,7 +1385,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                         <div style={{height: 7}}/>
                                                         <div className='page_monitoring_column_for_grid2'>
-                                                            {this.renderGridForAppInstanceList()}
+                                                            {this.renderBottomAppInstanceGrid()}
                                                         </div>
                                                     </div>
                                                 </OutsideClickHandler>
