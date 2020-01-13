@@ -632,8 +632,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             {
                 menuItem: 'CPU', render: () => {
                     return (
-                        <Pane style={{}}>
-                            {this.renderCpuArea()}
+                        <Pane>
+                            {this.renderCpuTabArea()}
                         </Pane>
                     )
                 }
@@ -642,7 +642,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'MEM', render: () => {
                     return (
                         <Pane>
-                            {this.renderMemArea()}
+                            {this.renderMemTabArea()}
                         </Pane>
                     )
                 }
@@ -651,7 +651,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'DISK', render: () => {
                     return (
                         <Pane>
-                            {this.renderDiskArea()}
+                            {this.renderDiskTabArea()}
                         </Pane>
                     )
                 }
@@ -660,9 +660,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         ]
 
-        renderCpuArea() {
+        renderCpuTabArea() {
             return (
-                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
+                <div style={Styles.tabPaneDiv}>
 
                     {/*1_column*/}
                     {/*1_column*/}
@@ -694,9 +694,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderMemArea() {
+        renderMemTabArea() {
             return (
-                <div style={{display: 'flex', flexDirection: 'row'}}>
+                <div style={Styles.tabPaneDiv}>
                     {/*1st_column*/}
                     {/*1st_column*/}
                     {/*1st_column*/}
@@ -728,12 +728,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderDiskArea() {
+        renderDiskTabArea() {
             return (
-                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
-
-                    {/*1_column*/}
-                    {/*1_column*/}
+                <div style={Styles.tabPaneDiv}>
                     {/*1_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
                         <div className='page_monitoring_title_area'>
@@ -745,8 +742,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
-                    {/*2nd_column*/}
-                    {/*2nd_column*/}
                     {/*2nd_column*/}
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
                         <div className='page_monitoring_title_area'>

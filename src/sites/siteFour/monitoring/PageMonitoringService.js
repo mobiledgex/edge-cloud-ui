@@ -1987,6 +1987,9 @@ export const Styles = {
     selectBoxRow: {
         alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
     },
+    tabPaneDiv :{
+        display: 'flex', flexDirection: 'row', height: 380,
+    },
     selectHeader: {
         color: 'white',
         backgroundColor: '#565656',
