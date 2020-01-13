@@ -79,11 +79,19 @@ export default class BubbleChart extends Component {
         // Pass the data to the pack layout to calculate the distribution.
         const nodes = pack(root).leaves();
 
-        // Call to the function that draw the bubbles.
-        this.renderBubbles(bubblesWidth, nodes, color);
+        let newNodes=[]
+        nodes.map(item=>{
+            if ( item.data.value >0){
+                newNodes.push(item)
+            }
+        })
+
+        console.log('nodes===>', newNodes)
+
+        this.renderBubbles(bubblesWidth, newNodes, color);
         // Call to the function that draw the legend.
         if (showLegend) {
-            this.renderLegend(legendWidth, height, bubblesWidth, nodes, color);
+            this.renderLegend(legendWidth, height, bubblesWidth, newNodes, color);
         }
     }
 
