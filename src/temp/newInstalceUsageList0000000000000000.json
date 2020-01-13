@@ -1,0 +1,1186 @@
+[
+    {
+        "instanceData": {
+            "uuid": "38bf5f8b-eb03-4b7b-ae01-f93df7083b7b",
+            "Region": "EU",
+            "OrganizationName": "MobiledgeX",
+            "AppName": "MobiledgeX SDK Demo",
+            "Version": "docker",
+            "Operator": "TDG",
+            "Cloudlet": "frankfurt-eu",
+            "ClusterInst": "webuieudocker",
+            "CloudletLocation": {
+                "latitude": 50.110924,
+                "longitude": 8.682127
+            },
+            "URI": "webuieudocker.frankfurt-eu.tdg.mobiledgex.net",
+            "Liveness": 1,
+            "Mapped_port": [
+                {
+                    "proto": 1,
+                    "internal_port": 7777,
+                    "public_port": 7777
+                }
+            ],
+            "Flavor": "x1.medium",
+            "State": 5,
+            "Error": "-",
+            "Runtime": {
+                "container_ids": [
+                    "MobiledgeXSDKDemo"
+                ]
+            },
+            "Created": "seconds : 1578697017",
+            "Progress": "",
+            "Edit": [
+                "Region",
+                "DeveloperName",
+                "AppName",
+                "Version",
+                "Operator",
+                "Cloudlet",
+                "ClusterInst",
+                "CloudletLocation",
+                "State",
+                "Editable"
+            ],
+            "Status": {},
+            "Revision": "-"
+        },
+        "appInstanceHealth": {
+            "data": [
+                {
+                    "Series": [
+                        {
+                            "name": "appinst-cpu",
+                            "columns": [
+                                "time",
+                                "app",
+                                "cloudlet",
+                                "cluster",
+                                "cpu",
+                                "dev",
+                                "operator"
+                            ],
+                            "values": [
+                                [
+                                    "2020-01-11T03:47:18.12111406Z",
+                                    "mobiledgexsdkdemo",
+                                    "frankfurt-eu",
+                                    "webuieudocker",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2020-01-11T03:47:10.072654422Z",
+                                    "mobiledgexsdkdemo",
+                                    "frankfurt-eu",
+                                    "webuieudocker",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2020-01-11T03:47:02.026156436Z",
+                                    "mobiledgexsdkdemo",
+                                    "frankfurt-eu",
+                                    "webuieudocker",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2020-01-11T03:46:53.981429101Z",
+                                    "mobiledgexsdkdemo",
+                                    "frankfurt-eu",
+                                    "webuieudocker",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2020-01-11T03:46:45.937548013Z",
+                                    "mobiledgexsdkdemo",
+                                    "frankfurt-eu",
+                                    "webuieudocker",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ]
+                            ]
+                        }
+                    ],
+                    "Messages": null
+                }
+            ]
+        }
+    },
+    {
+        "instanceData": {
+            "uuid": "e8eeef73-a396-4993-8a17-6a6e54f04a4a",
+            "Region": "EU",
+            "OrganizationName": "MobiledgeX",
+            "AppName": "automationVM",
+            "Version": "1.0",
+            "Operator": "TDG",
+            "Cloudlet": "frankfurt-eu",
+            "ClusterInst": "xxx",
+            "CloudletLocation": {
+                "latitude": 50.110924,
+                "longitude": 8.682127
+            },
+            "URI": "mobiledgexautomationvm10.frankfurt-eu.tdg.mobiledgex.net",
+            "Liveness": 1,
+            "Mapped_port": [
+                {
+                    "proto": 1,
+                    "internal_port": 2015,
+                    "public_port": 2015
+                }
+            ],
+            "Flavor": "x1.large",
+            "State": 5,
+            "Error": "-",
+            "Runtime": {},
+            "Created": "seconds : 1578697257",
+            "Progress": "",
+            "Edit": [
+                "Region",
+                "DeveloperName",
+                "AppName",
+                "Version",
+                "Operator",
+                "Cloudlet",
+                "ClusterInst",
+                "CloudletLocation",
+                "State",
+                "Editable"
+            ],
+            "Status": {},
+            "Revision": "-"
+        },
+        "appInstanceHealth": {
+            "data": [
+                {
+                    "Series": null,
+                    "Messages": null
+                }
+            ]
+        }
+    },
+    {
+        "instanceData": {
+            "uuid": "e948eeea-8e90-40e5-90da-7272137802d4",
+            "Region": "EU",
+            "OrganizationName": "MobiledgeX",
+            "AppName": "bicTestApp1112-01",
+            "Version": "1.0",
+            "Operator": "TDG",
+            "Cloudlet": "frankfurt-eu",
+            "ClusterInst": "qqqaaa",
+            "CloudletLocation": {
+                "latitude": 50.110924,
+                "longitude": 8.682127
+            },
+            "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
+            "Liveness": 1,
+            "Mapped_port": [
+                {
+                    "proto": 1,
+                    "internal_port": 80,
+                    "public_port": 80
+                }
+            ],
+            "Flavor": "x1.medium",
+            "State": 5,
+            "Error": "-",
+            "Runtime": {
+                "container_ids": [
+                    "bicTestApp1112-01"
+                ]
+            },
+            "Created": "seconds : 1578611317",
+            "Progress": "",
+            "Edit": [
+                "Region",
+                "DeveloperName",
+                "AppName",
+                "Version",
+                "Operator",
+                "Cloudlet",
+                "ClusterInst",
+                "CloudletLocation",
+                "State",
+                "Editable"
+            ],
+            "Status": {},
+            "Revision": "-"
+        },
+        "appInstanceHealth": {
+            "data": [
+                {
+                    "Series": [
+                        {
+                            "name": "appinst-cpu",
+                            "columns": [
+                                "time",
+                                "app",
+                                "cloudlet",
+                                "cluster",
+                                "cpu",
+                                "dev",
+                                "operator"
+                            ],
+                            "values": [
+                                [
+                                    "2019-11-21T19:59:14.007908333Z",
+                                    "bictestapp1112-01",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0.03,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-11-21T19:59:05.916993511Z",
+                                    "bictestapp1112-01",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0.03,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-11-21T19:58:57.830410811Z",
+                                    "bictestapp1112-01",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0.06,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-11-21T19:58:49.744671622Z",
+                                    "bictestapp1112-01",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0.03,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-11-21T19:58:41.655864792Z",
+                                    "bictestapp1112-01",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0.03,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ]
+                            ]
+                        }
+                    ],
+                    "Messages": null
+                }
+            ]
+        }
+    },
+    {
+        "instanceData": {
+            "uuid": "e877b246-8301-4790-bc76-f4030e99e743",
+            "Region": "EU",
+            "OrganizationName": "MobiledgeX",
+            "AppName": "test111qq",
+            "Version": "1",
+            "Operator": "TDG",
+            "Cloudlet": "frankfurt-eu",
+            "ClusterInst": "qqqaaa",
+            "CloudletLocation": {
+                "latitude": 50.110924,
+                "longitude": 8.682127
+            },
+            "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
+            "Liveness": 1,
+            "Mapped_port": [
+                {
+                    "proto": 1,
+                    "internal_port": 1115,
+                    "public_port": 1115
+                }
+            ],
+            "Flavor": "m4.medium",
+            "State": 5,
+            "Error": "-",
+            "Runtime": {
+                "container_ids": [
+                    "test111qq"
+                ]
+            },
+            "Created": "seconds : 1578512140",
+            "Progress": "",
+            "Edit": [
+                "Region",
+                "DeveloperName",
+                "AppName",
+                "Version",
+                "Operator",
+                "Cloudlet",
+                "ClusterInst",
+                "CloudletLocation",
+                "State",
+                "Editable"
+            ],
+            "Status": {},
+            "Revision": 11
+        },
+        "appInstanceHealth": {
+            "data": [
+                {
+                    "Series": [
+                        {
+                            "name": "appinst-cpu",
+                            "columns": [
+                                "time",
+                                "app",
+                                "cloudlet",
+                                "cluster",
+                                "cpu",
+                                "dev",
+                                "operator"
+                            ],
+                            "values": [
+                                [
+                                    "2019-11-14T15:13:26.988361728Z",
+                                    "test111qq",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0.08,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-11-14T15:13:18.903823664Z",
+                                    "test111qq",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0.06,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-11-14T15:13:10.820732793Z",
+                                    "test111qq",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0.07,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-11-14T15:13:02.732475659Z",
+                                    "test111qq",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0.25,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-11-14T15:12:54.639824258Z",
+                                    "test111qq",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0.06,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ]
+                            ]
+                        }
+                    ],
+                    "Messages": null
+                }
+            ]
+        }
+    },
+    {
+        "instanceData": {
+            "uuid": "2c207942-556c-445c-9143-597582cea854",
+            "Region": "EU",
+            "OrganizationName": "MobiledgeX",
+            "AppName": "zzaaa",
+            "Version": "1",
+            "Operator": "TDG",
+            "Cloudlet": "frankfurt-eu",
+            "ClusterInst": "qqqaaa",
+            "CloudletLocation": {
+                "latitude": 50.110924,
+                "longitude": 8.682127
+            },
+            "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
+            "Liveness": 1,
+            "Mapped_port": [
+                {
+                    "proto": 1,
+                    "internal_port": 111,
+                    "public_port": 111
+                },
+                {
+                    "proto": 2,
+                    "internal_port": 222,
+                    "public_port": 222
+                }
+            ],
+            "Flavor": "m4.medium",
+            "State": 8,
+            "Error": [
+                "Update App Inst failed: error running app, Unable to find image 'docker.mobiledgex.net/mobiledgex/images/mobiledgexsdkdemo:latest' locally\ndocker: Error response from daemon: Get https://docker.mobiledgex.net/v2/mobiledgex/images/mobiledgexsdkdemo/manifests/latest: denied: access forbidden.\nSee 'docker run --help'., Process exited with status 125"
+            ],
+            "Runtime": {
+                "container_ids": [
+                    "zzaaa"
+                ]
+            },
+            "Created": "seconds : 1572245382",
+            "Progress": "",
+            "Edit": [
+                "Region",
+                "DeveloperName",
+                "AppName",
+                "Version",
+                "Operator",
+                "Cloudlet",
+                "ClusterInst",
+                "CloudletLocation",
+                "State",
+                "Editable"
+            ],
+            "Status": {},
+            "Revision": 6
+        },
+        "appInstanceHealth": {
+            "data": [
+                {
+                    "Series": [
+                        {
+                            "name": "appinst-cpu",
+                            "columns": [
+                                "time",
+                                "app",
+                                "cloudlet",
+                                "cluster",
+                                "cpu",
+                                "dev",
+                                "operator"
+                            ],
+                            "values": [
+                                [
+                                    "2019-10-22T22:01:06.86893966Z",
+                                    "zzaaa",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-10-22T22:00:58.818345131Z",
+                                    "zzaaa",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    1.78,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-10-22T22:00:50.775092729Z",
+                                    "zzaaa",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    2.98,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-10-22T22:00:42.722703926Z",
+                                    "zzaaa",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-10-22T22:00:34.676944409Z",
+                                    "zzaaa",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ]
+                            ]
+                        }
+                    ],
+                    "Messages": null
+                }
+            ]
+        }
+    },
+    {
+        "instanceData": {
+            "uuid": "3d7329ca-8d24-4b3f-b016-5cb8fde18825",
+            "Region": "EU",
+            "OrganizationName": "testaaa",
+            "AppName": "jjj kkk",
+            "Version": "1.0",
+            "Operator": "TDG",
+            "Cloudlet": "frankfurt-eu",
+            "ClusterInst": "kkkkkkk",
+            "CloudletLocation": {
+                "latitude": 50.110924,
+                "longitude": 8.682127
+            },
+            "URI": "frankfurt-eu.tdg.mobiledgex.net",
+            "Liveness": 1,
+            "Mapped_port": [
+                {
+                    "proto": 1,
+                    "internal_port": 11111,
+                    "public_port": 11111,
+                    "fqdn_prefix": "jjjkkk-tcp."
+                },
+                {
+                    "proto": 2,
+                    "internal_port": 8888,
+                    "public_port": 8888,
+                    "fqdn_prefix": "jjjkkk-udp."
+                }
+            ],
+            "Flavor": "m4.medium",
+            "State": 8,
+            "Error": [
+                "Update App Inst failed: error running kubectl apply command unable to recognize \"jjjkkk23.yaml\": Get https://10.101.1.10:6443/api?timeout=32s: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"kubernetes\")\nunable to recognize \"jjjkkk23.yaml\": Get https://10.101.1.10:6443/api?timeout=32s: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"kubernetes\")\nunable to recognize \"jjjkkk23.yaml\": Get https://10.101.1.10:6443/api?timeout=32s: x509: certificate signed by unknown authority (possibly because of \"crypto/rsa: verification error\" while trying to verify candidate authority certificate \"kubernetes\"), Process exited with status 1"
+            ],
+            "Runtime": {
+                "container_ids": [
+                    "jjjkkk-deployment-b6f54656f-2xf4h"
+                ]
+            },
+            "Created": "seconds : 1570741867",
+            "Progress": "",
+            "Edit": [
+                "Region",
+                "DeveloperName",
+                "AppName",
+                "Version",
+                "Operator",
+                "Cloudlet",
+                "ClusterInst",
+                "CloudletLocation",
+                "State",
+                "Editable"
+            ],
+            "Status": {},
+            "Revision": 21
+        },
+        "appInstanceHealth": {
+            "data": [
+                {
+                    "Series": [
+                        {
+                            "name": "appinst-cpu",
+                            "columns": [
+                                "time",
+                                "app",
+                                "cloudlet",
+                                "cluster",
+                                "cpu",
+                                "dev",
+                                "operator"
+                            ],
+                            "values": [
+                                [
+                                    "2019-10-19T23:02:19.50999999Z",
+                                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                                    "frankfurt-eu",
+                                    "kkkkkkk",
+                                    0.00026642227031069217,
+                                    "testaaa",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-10-19T23:02:11.040999889Z",
+                                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                                    "frankfurt-eu",
+                                    "kkkkkkk",
+                                    0.00020066157288965554,
+                                    "testaaa",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-10-19T23:02:02.740000009Z",
+                                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                                    "frankfurt-eu",
+                                    "kkkkkkk",
+                                    0.00027244226402033583,
+                                    "testaaa",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-10-19T23:01:54.329999923Z",
+                                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                                    "frankfurt-eu",
+                                    "kkkkkkk",
+                                    0.00027244226402033583,
+                                    "testaaa",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-10-19T23:01:45.974999904Z",
+                                    "jjjkkk-deployment-b6f54656f-2xf4h",
+                                    "frankfurt-eu",
+                                    "kkkkkkk",
+                                    0.0002362197452205174,
+                                    "testaaa",
+                                    "TDG"
+                                ]
+                            ]
+                        }
+                    ],
+                    "Messages": null
+                }
+            ]
+        }
+    },
+    {
+        "instanceData": {
+            "uuid": "2d88d4b4-ac7c-4adf-bcfd-040d7f6a4309",
+            "Region": "EU",
+            "OrganizationName": "MobiledgeX",
+            "AppName": "MobiledgeX SDK Demo",
+            "Version": "1.0",
+            "Operator": "TDG",
+            "Cloudlet": "frankfurt-eu",
+            "ClusterInst": "webuieuk8s",
+            "CloudletLocation": {
+                "latitude": 50.110924,
+                "longitude": 8.682127
+            },
+            "URI": "frankfurt-eu.tdg.mobiledgex.net",
+            "Liveness": 1,
+            "Mapped_port": [
+                {
+                    "proto": 1,
+                    "internal_port": 7777,
+                    "public_port": 7777,
+                    "fqdn_prefix": "mobiledgexsdkdemo-tcp."
+                }
+            ],
+            "Flavor": "m4.large",
+            "State": 5,
+            "Error": "-",
+            "Runtime": {
+                "container_ids": [
+                    "mobiledgexsdkdemo-deployment-866c8784c-6dzwb"
+                ]
+            },
+            "Created": "seconds : 1578696962",
+            "Progress": "",
+            "Edit": [
+                "Region",
+                "DeveloperName",
+                "AppName",
+                "Version",
+                "Operator",
+                "Cloudlet",
+                "ClusterInst",
+                "CloudletLocation",
+                "State",
+                "Editable"
+            ],
+            "Status": {},
+            "Revision": "-"
+        },
+        "appInstanceHealth": {
+            "data": [
+                {
+                    "Series": [
+                        {
+                            "name": "appinst-cpu",
+                            "columns": [
+                                "time",
+                                "app",
+                                "cloudlet",
+                                "cluster",
+                                "cpu",
+                                "dev",
+                                "operator"
+                            ],
+                            "values": [
+                                [
+                                    "2020-01-11T03:47:16.855000019Z",
+                                    "mobiledgexsdkdemo-deployment-866c8784c-6dzwb",
+                                    "frankfurt-eu",
+                                    "webuieuk8s",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2020-01-11T03:47:08.562999963Z",
+                                    "mobiledgexsdkdemo-deployment-866c8784c-6dzwb",
+                                    "frankfurt-eu",
+                                    "webuieuk8s",
+                                    0.000009911998390827735,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2020-01-11T03:46:52.187000036Z",
+                                    "mobiledgexsdkdemo-deployment-866c8784c-6dzwb",
+                                    "frankfurt-eu",
+                                    "webuieuk8s",
+                                    0.000010774806489701336,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2020-01-11T03:46:44.072999954Z",
+                                    "mobiledgexsdkdemo-deployment-866c8784c-6dzwb",
+                                    "frankfurt-eu",
+                                    "webuieuk8s",
+                                    0.000014533992036572802,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2020-01-11T03:46:27.615000009Z",
+                                    "mobiledgexsdkdemo-deployment-866c8784c-6dzwb",
+                                    "frankfurt-eu",
+                                    "webuieuk8s",
+                                    4.833784116057339e-7,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ]
+                            ]
+                        }
+                    ],
+                    "Messages": null
+                }
+            ]
+        }
+    },
+    {
+        "instanceData": {
+            "uuid": "b0ecb69d-229d-4502-bc79-e59d3871f246",
+            "Region": "EU",
+            "OrganizationName": "MobiledgeX",
+            "AppName": "MEXPrometheusAppName",
+            "Version": "1.0",
+            "Operator": "TDG",
+            "Cloudlet": "frankfurt-eu",
+            "ClusterInst": "kkkkkkk",
+            "CloudletLocation": {
+                "latitude": 50.110924,
+                "longitude": 8.682127
+            },
+            "URI": "kkkkkkk.frankfurt-eu.tdg.mobiledgex.net",
+            "Liveness": 1,
+            "Mapped_port": [
+                {
+                    "proto": 1,
+                    "internal_port": 9090,
+                    "public_port": 9090
+                }
+            ],
+            "Flavor": "x1.medium",
+            "State": 8,
+            "Error": [
+                "Update App Inst failed: UpdateAppInst not supported for deployment: helm"
+            ],
+            "Runtime": {},
+            "Created": "seconds : 1570417526",
+            "Progress": "",
+            "Edit": [
+                "Region",
+                "DeveloperName",
+                "AppName",
+                "Version",
+                "Operator",
+                "Cloudlet",
+                "ClusterInst",
+                "CloudletLocation",
+                "State",
+                "Editable"
+            ],
+            "Status": {},
+            "Revision": 1
+        },
+        "appInstanceHealth": {
+            "data": [
+                {
+                    "Series": null,
+                    "Messages": null
+                }
+            ]
+        }
+    },
+    {
+        "instanceData": {
+            "uuid": "aa6e70b6-319d-4502-919f-535715625043",
+            "Region": "EU",
+            "OrganizationName": "MobiledgeX",
+            "AppName": "MEXPrometheusAppName",
+            "Version": "1.0",
+            "Operator": "TDG",
+            "Cloudlet": "frankfurt-eu",
+            "ClusterInst": "webuieuk8s",
+            "CloudletLocation": {
+                "latitude": 50.110924,
+                "longitude": 8.682127
+            },
+            "URI": "webuieuk8s.frankfurt-eu.tdg.mobiledgex.net",
+            "Liveness": 1,
+            "Mapped_port": [
+                {
+                    "proto": 1,
+                    "internal_port": 9090,
+                    "public_port": 9090
+                }
+            ],
+            "Flavor": "x1.medium",
+            "State": 5,
+            "Error": "-",
+            "Runtime": {},
+            "Created": "seconds : 1578694594",
+            "Progress": "",
+            "Edit": [
+                "Region",
+                "DeveloperName",
+                "AppName",
+                "Version",
+                "Operator",
+                "Cloudlet",
+                "ClusterInst",
+                "CloudletLocation",
+                "State",
+                "Editable"
+            ],
+            "Status": {},
+            "Revision": 2
+        },
+        "appInstanceHealth": {
+            "data": [
+                {
+                    "Series": [
+                        {
+                            "name": "appinst-cpu",
+                            "columns": [
+                                "time",
+                                "app",
+                                "cloudlet",
+                                "cluster",
+                                "cpu",
+                                "dev",
+                                "operator"
+                            ],
+                            "values": [
+                                [
+                                    "2020-01-11T03:47:16.855000019Z",
+                                    "prometheus-mexprometheusappname-prome-prometheus-0",
+                                    "frankfurt-eu",
+                                    "webuieuk8s",
+                                    0.03276925386988294,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2020-01-11T03:47:16.855000019Z",
+                                    "mexprometheusappname-prometheus-node-exporter-ghxhm",
+                                    "frankfurt-eu",
+                                    "webuieuk8s",
+                                    0.0045909339366339485,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2020-01-11T03:47:16.855000019Z",
+                                    "mexprometheusappname-prome-operator-bfbbf4699-9j7d6",
+                                    "frankfurt-eu",
+                                    "webuieuk8s",
+                                    0.0009839636608632624,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2020-01-11T03:47:16.855000019Z",
+                                    "mexprometheusappname-kube-state-metrics-7994f8847c-rs4qg",
+                                    "frankfurt-eu",
+                                    "webuieuk8s",
+                                    0.0006601986422183882,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2020-01-11T03:47:08.562999963Z",
+                                    "prometheus-mexprometheusappname-prome-prometheus-0",
+                                    "frankfurt-eu",
+                                    "webuieuk8s",
+                                    0.031587036497507215,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ]
+                            ]
+                        }
+                    ],
+                    "Messages": null
+                }
+            ]
+        }
+    },
+    {
+        "instanceData": {
+            "uuid": "f0ac87fc-04b2-4df9-b4db-5a1f99f2410d",
+            "Region": "EU",
+            "OrganizationName": "MobiledgeX",
+            "AppName": "MobiledgeX SDK Demo",
+            "Version": "k8s",
+            "Operator": "mex",
+            "Cloudlet": "alex-hackathon",
+            "ClusterInst": "alex-hackathon-cluster",
+            "CloudletLocation": {
+                "latitude": 33.01,
+                "longitude": -96.61
+            },
+            "URI": "alex-hackathon.mex.mobiledgex.net",
+            "Liveness": 1,
+            "Mapped_port": [
+                {
+                    "proto": 1,
+                    "internal_port": 7777,
+                    "public_port": 7777,
+                    "fqdn_prefix": "mobiledgexsdkdemo-tcp."
+                }
+            ],
+            "Flavor": "x1.medium",
+            "State": 5,
+            "Error": "-",
+            "Runtime": {
+                "container_ids": [
+                    "mobiledgexsdkdemo-deployment-78d4d4d778-8qhx2"
+                ]
+            },
+            "Created": "seconds : 1578441092",
+            "Progress": "",
+            "Edit": [
+                "Region",
+                "DeveloperName",
+                "AppName",
+                "Version",
+                "Operator",
+                "Cloudlet",
+                "ClusterInst",
+                "CloudletLocation",
+                "State",
+                "Editable"
+            ],
+            "Status": {},
+            "Revision": "-"
+        },
+        "appInstanceHealth": {
+            "data": [
+                {
+                    "Series": null,
+                    "Messages": null
+                }
+            ]
+        }
+    },
+    {
+        "instanceData": {
+            "uuid": "10838833-c437-48ce-9cb7-520555d2318f",
+            "Region": "EU",
+            "OrganizationName": "MobiledgeX",
+            "AppName": "eeeessss",
+            "Version": "1",
+            "Operator": "TDG",
+            "Cloudlet": "frankfurt-eu",
+            "ClusterInst": "qqqaaa",
+            "CloudletLocation": {
+                "latitude": 50.110924,
+                "longitude": 8.682127
+            },
+            "URI": "qqqaaa.frankfurt-eu.tdg.mobiledgex.net",
+            "Liveness": 1,
+            "Mapped_port": [
+                {
+                    "proto": 1,
+                    "internal_port": 1111,
+                    "public_port": 1111
+                },
+                {
+                    "proto": 1,
+                    "internal_port": 2229,
+                    "public_port": 2229,
+                    "end_port": 2339
+                },
+                {
+                    "proto": 1,
+                    "internal_port": 555,
+                    "public_port": 555,
+                    "end_port": 666
+                }
+            ],
+            "Flavor": "m4.medium",
+            "State": 5,
+            "Error": "-",
+            "Runtime": {
+                "container_ids": [
+                    "eeeessss"
+                ]
+            },
+            "Created": "seconds : 1578512412",
+            "Progress": "",
+            "Edit": [
+                "Region",
+                "DeveloperName",
+                "AppName",
+                "Version",
+                "Operator",
+                "Cloudlet",
+                "ClusterInst",
+                "CloudletLocation",
+                "State",
+                "Editable"
+            ],
+            "Status": {},
+            "Revision": 4
+        },
+        "appInstanceHealth": {
+            "data": [
+                {
+                    "Series": [
+                        {
+                            "name": "appinst-cpu",
+                            "columns": [
+                                "time",
+                                "app",
+                                "cloudlet",
+                                "cluster",
+                                "cpu",
+                                "dev",
+                                "operator"
+                            ],
+                            "values": [
+                                [
+                                    "2019-11-14T15:13:26.988361728Z",
+                                    "eeeessss",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-11-14T15:13:18.903823664Z",
+                                    "eeeessss",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-11-14T15:13:10.820732793Z",
+                                    "eeeessss",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-11-14T15:13:02.732475659Z",
+                                    "eeeessss",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ],
+                                [
+                                    "2019-11-14T15:12:54.639824258Z",
+                                    "eeeessss",
+                                    "frankfurt-eu",
+                                    "qqqaaa",
+                                    0,
+                                    "MobiledgeX",
+                                    "TDG"
+                                ]
+                            ]
+                        }
+                    ],
+                    "Messages": null
+                }
+            ]
+        }
+    },
+    {
+        "instanceData": {
+            "uuid": "6196dcb0-b113-4cfb-9526-150af783d5e9",
+            "Region": "US",
+            "OrganizationName": "Sierraware",
+            "AppName": "SierraVM",
+            "Version": "50.0.8",
+            "Operator": "TDG",
+            "Cloudlet": "mexplat-stage-hamburg-cloudlet",
+            "ClusterInst": "appcluster",
+            "CloudletLocation": {
+                "latitude": 55,
+                "longitude": 44,
+                "timestamp": {}
+            },
+            "URI": "-",
+            "Liveness": 1,
+            "Mapped_port": [
+                {
+                    "proto": 1,
+                    "internal_port": 4433
+                },
+                {
+                    "proto": 1,
+                    "internal_port": 443
+                }
+            ],
+            "Flavor": "x1.medium",
+            "State": 5,
+            "Error": "-",
+            "Runtime": {},
+            "Created": "seconds : 1558078516",
+            "Progress": "",
+            "Edit": [
+                "Region",
+                "DeveloperName",
+                "AppName",
+                "Version",
+                "Operator",
+                "Cloudlet",
+                "ClusterInst",
+                "CloudletLocation",
+                "State",
+                "Editable"
+            ],
+            "Status": {},
+            "Revision": "-"
+        },
+        "appInstanceHealth": {
+            "data": [
+                {
+                    "Series": null,
+                    "Messages": null
+                }
+            ]
+        }
+    }
+]

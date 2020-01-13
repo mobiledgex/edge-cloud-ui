@@ -7,7 +7,6 @@ import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
 import MapWithListView from "../../../container/mapWithListView";
-import PageDetailViewer from '../../../container/pageDetailViewer';
 import * as reducer from '../../../utils'
 
 let _self = null;
@@ -250,10 +249,7 @@ class SiteFourPageAppInst extends React.Component {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem, viewMode, devData, detailData } = this.state;
         return (
-            (viewMode === 'listView')?
             <MapWithListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort}></MapWithListView>
-            :
-            <PageDetailViewer data={detailData} page='appInst'/>
         );
     }
 

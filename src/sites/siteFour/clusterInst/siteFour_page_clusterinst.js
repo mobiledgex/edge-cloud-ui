@@ -1,7 +1,6 @@
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import PageDetailViewer from '../../../container/pageDetailViewer';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -235,13 +234,7 @@ class SiteFourPageClusterInst extends React.Component {
         const { activeItem, viewMode } = this.state;
         let randomValue = Math.round(Math.random() * 100);
         return (
-
-            //<DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
-            (viewMode === 'listView')?
-
-                <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
-                :
-                <PageDetailViewer className="ttt" data={this.state.detailData} page='clusterInst'/>
+            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
         );
     }
 
