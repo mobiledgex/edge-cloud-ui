@@ -56,6 +56,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
+import type {TypeGridInstanceList} from "../../../shared/Types";
 
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
@@ -150,6 +151,9 @@ type State = {
     isEnableClusterDropDown: boolean,
     isEnableAppInstDropDown: boolean,
     currentNetworkTab: number,
+    gridInstanceList: TypeGridInstanceList,
+    filteredGridInstanceList:any,
+
 
 }
 
@@ -218,6 +222,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isEnableClusterDropDown: false,
             isEnableAppInstDropDown: false,
             currentNetworkTab: 0,
+            gridInstanceList: [],
+            filteredGridInstanceList:[],
         };
 
 
@@ -267,6 +273,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 bubbleChartData: bubbleChartData,
             })
 
+
             //todo: -------------------------------------------------------------------------------
             //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA)
             //todo: -------------------------------------------------------------------------------
@@ -295,11 +302,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredMemUsageList: usageList[1],
                 filteredNetworkUsageList: usageList[2],
                 filteredDiskUsageList: usageList[3],
-            },()=>{
+            }, () => {
                 console.log('filteredNetworkUsageList===>', this.state.filteredNetworkUsageList);
             });
-
-
 
 
             //todo: -------------------------------------------------------------
@@ -312,10 +317,41 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 networkBarChartData: networkBarChartData,
             })
 
+            //todo: -------------------------------------------------------------
             //todo: MAKE TOP5 INSTANCE LIST
+            //todo: -------------------------------------------------------------
             let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
+
+
+            //todo: ##########################################
+            //todo: -------------------------------------------
+            //todo: _gridInstanceList _gridInstanceList_3409509340593049599503409530495043590345903405934095
+            //todo: -------------------------------------------
+            //todo: ##########################################
+            let allCpuUsageList = this.state.allCpuUsageList
+            let allMemUsageList = this.state.allMemUsageList
+            let allDiskUsageList = this.state.allDiskUsageList
+            let allNetworkUsageList = this.state.allNetworkUsageList
+
+            let gridInstanceList = []
+            allCpuUsageList.map((item, index) => {
+                console.log('item===>', item);
+                gridInstanceList.push({
+                    instance: item.instance,
+                    sumCpuUsage: item.sumCpuUsage,
+                    sumMemUsage: allMemUsageList[index].sumMemUsage,
+                    sumRecvBytes: allNetworkUsageList[index].sumRecvBytes,
+                    sumSendBytes: allNetworkUsageList[index].sumSendBytes,
+                })
+            })
+
+
+            console.log('gridInstanceList===>', gridInstanceList);
+
             await this.setState({
                 appInstanceListTop5: appInstanceListTop5,
+                gridInstanceList: gridInstanceList,
+                filteredGridInstanceList:gridInstanceList,
             });
 
             this.props.toggleLoading(false);
@@ -368,6 +404,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let filteredMemUsageList = filterUsageListByRegion(pRegion, this.state.allMemUsageList);
             let filteredDiskUsageList = filterUsageListByRegion(pRegion, this.state.allDiskUsageList);
             let filteredNetworkUsageList = filterUsageListByRegion(pRegion, this.state.allNetworkUsageList);
+            let filteredGridInstanceList = filterUsageListByRegion(pRegion, this.state.gridInstanceList);
 
 
             //todo: -------------------------------------------
@@ -382,6 +419,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredMemUsageList = filterUsageByCloudLet(filteredMemUsageList, pCloudLet);
                 filteredDiskUsageList = filterUsageByCloudLet(filteredDiskUsageList, pCloudLet);
                 filteredNetworkUsageList = filterUsageByCloudLet(filteredNetworkUsageList, pCloudLet);
+                filteredGridInstanceList = filterUsageByCloudLet(filteredGridInstanceList, pCloudLet);
 
             }
 
@@ -397,6 +435,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredMemUsageList = filterUsageByCluster(filteredMemUsageList, pCluster);
                 filteredDiskUsageList = filterUsageByCluster(filteredDiskUsageList, pCluster);
                 filteredNetworkUsageList = filterUsageByCluster(filteredNetworkUsageList, pCluster);
+
+                filteredGridInstanceList = filterUsageByCluster(filteredGridInstanceList, pCluster);
             }
 
             //todo: -------------------------------------------
@@ -409,6 +449,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredMemUsageList = filterUsageByAppInst(filteredMemUsageList, pAppInstance);
                 filteredDiskUsageList = filterUsageByAppInst(filteredDiskUsageList, pAppInstance);
                 filteredNetworkUsageList = filterUsageByAppInst(filteredNetworkUsageList, pAppInstance);
+                filteredGridInstanceList = filterUsageByAppInst(filteredGridInstanceList, pAppInstance);
             }
 
 
@@ -419,12 +460,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //alert(this.state.startDate)
             }
 
-
             await this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
                 filteredDiskUsageList: filteredDiskUsageList,
                 filteredNetworkUsageList: filteredNetworkUsageList,
+                filteredGridInstanceList: filteredGridInstanceList,
                 appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
@@ -456,6 +497,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 bubbleChartData: bubbleChartData,
             })
+
+
             //todo: -------------------------------------------
             //todo: -------------------------------------------
             //todo: NETWORK chart data filtering
@@ -470,6 +513,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             this.props.toggleLoading(false)
 
+
+        }
+
+
+        async makeBottomGridInstanceList(appInstanceList: any) {
+
+            let _gridInstanceList = []
+            appInstanceList.map((item, index) => {
+                console.log('item===>', item);
+            })
 
         }
 
@@ -596,7 +649,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        renderBottomAppInstanceGrid() {
+        renderBottomAppInstanceList() {
             return (
                 <div>
                     <Grid columns={8} padded={true} style={{height: 50}}>
@@ -611,19 +664,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 CPU(%)
                             </Column>
                             <Column color={'grey'}>
-                                RSS MEM
+                                MEM
                             </Column>
                             <Column color={'grey'}>
-                                RecvBytes
+                                RECV BYTES
                             </Column>
                             <Column color={'grey'}>
-                                SendBytes
+                                SEND BYTES
                             </Column>
                             <Column color={'grey'}>
-                                Status
+                                ACTIVE CONNECTIONS
                             </Column>
                             <Column color={'grey'}>
-                                Start
+                                ACCEPTS
                             </Column>
                         </Row>
                     </Grid>
@@ -650,7 +703,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {!this.state.isReady && <Row columns={1}>
                                 <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
                                     <div style={{position: 'absolute', top: '-20%', left: '48%'}}>
-                                        <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop:-170}}>
+                                        <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: -170}}>
                                             <Lottie
                                                 options={{
                                                     loop: true,
@@ -669,7 +722,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     </div>
                                 </Column>
                             </Row>}
-                            {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
+                            {this.state.isReady && this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
                                 return (
                                     <Row
 
@@ -681,33 +734,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         onClick={async () => {
                                             //alert(item.AppName)
                                             await this.setState({
-                                                currentAppInst: item.AppName,
+                                                currentAppInst: item.instance.AppName,
                                                 currentGridIndex: index,
                                             })
-                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.AppName)
+                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)
                                         }}
                                     >
-                                        <Column
-
-                                        >
+                                        <Column>
                                             {index}
                                         </Column>
-                                        <Column
-
-                                        >
-                                            {item.AppName}
+                                        <Column>
+                                            {item.instance.AppName}
                                         </Column>
                                         <Column>
-                                            {this.state.allCpuUsageList[index].sumCpuUsage.toFixed(2) + "%"}
+                                            {item.sumCpuUsage.toFixed(2) + "%"}
                                         </Column>
                                         <Column>
-                                            {this.state.allMemUsageList[index].sumMemUsage.toFixed(0) + ' Byte'}
+                                            {item.sumMemUsage.toFixed(0) + ' Byte'}
                                         </Column>
                                         <Column>
-                                            {this.state.allNetworkUsageList[index].sumRecvBytes}
+                                            {item.sumRecvBytes}
                                         </Column>
                                         <Column>
-                                            {this.state.allNetworkUsageList[index].sumSendBytes}
+                                            {item.sumSendBytes}
                                         </Column>
                                         <Column>
                                             Status_NULL
@@ -1143,8 +1192,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         fullLabel: item.instance.AppName.toString(),
                     })
                 })
-            }
-            else if (value === HARDWARE_TYPE.SEND_BYTE) {
+            } else if (value === HARDWARE_TYPE.SEND_BYTE) {
                 allNetworkUsageList.map((item, index) => {
                     chartData.push({
                         index: index,
@@ -1226,9 +1274,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         render() {
-            {/*todo:-------------------------------------------------------------------------------*/}
+            {/*todo:-------------------------------------------------------------------------------*/
+            }
             // todo: Components showing when the loading of graph data is not completed.
-            {/*todo:-------------------------------------------------------------------------------*/}
+            {/*todo:-------------------------------------------------------------------------------*/
+            }
             if (!this.state.isAppInstaceDataReady) {
                 return (
                     <Grid.Row className='view_contents'>
@@ -1275,9 +1325,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         }}
                         style={{width: '80%'}}
                     >
-                        <Modal.Header>App Instance List</Modal.Header>
+                        <Modal.Header>Status of App Instance</Modal.Header>
                         <Modal.Content>
-                            {this.renderBottomAppInstanceGrid()}
+                            {this.renderBottomAppInstanceList()}
                         </Modal.Content>
                     </Modal>
                     <SemanticToastContainer/>
@@ -1431,9 +1481,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
                                                 <OutsideClickHandler
                                                     onOutsideClick={() => {
-                                                        this.setState({
-                                                            isShowBottomGrid: !this.state.isShowBottomGrid,
-                                                        })
+                                                        /*  this.setState({
+                                                              isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                          })*/
                                                     }}
                                                 >
                                                     <div
@@ -1469,12 +1519,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
-                                                        <div style={{fontSize: 22, display: 'flex', alignItems: 'center', marginLeft: 10, color: 'white', fontWeight: 'bold'}}>
-                                                            App Instance List
+                                                        <div style={Styles.header00001}>
+                                                            Status of App
                                                         </div>
                                                         <div style={{height: 7}}/>
                                                         <div className='page_monitoring_column_for_grid2'>
-                                                            {this.renderBottomAppInstanceGrid()}
+                                                            {this.renderBottomAppInstanceList()}
                                                         </div>
                                                     </div>
                                                 </OutsideClickHandler>
