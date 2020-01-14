@@ -67,7 +67,7 @@ export const NETWORK_TYPE = {
 
 
 export const HARDWARE_OPTIONS = [
-    {text: 'FAVOR', value: 'favor'},
+    {text: 'FLAVOR', value: 'flavor'},
     {text: 'CPU', value: 'cpu'},
     {text: 'MEM', value: 'mem'},
     {text: 'DISK', value: 'disk'},
@@ -76,7 +76,7 @@ export const HARDWARE_OPTIONS = [
 ]
 
 export const HARDWARE_TYPE = {
-    FAVOR: 'favor',
+    FLAVOR: 'flavor',
     CPU: 'cpu',
     MEM: 'mem',
     RECV_BYTE: 'recv_bytes',

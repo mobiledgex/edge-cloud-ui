@@ -1159,7 +1159,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             let chartData = [];
 
-            if (value === HARDWARE_TYPE.FAVOR) {
+            if (value === HARDWARE_TYPE.FLAVOR) {
                 appInstanceList.map((item, index) => {
 
                     chartData.push({
