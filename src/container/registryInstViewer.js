@@ -490,7 +490,6 @@ class RegistryInstViewer extends React.Component {
                     }
                 })
                 if (valid) {
-                    this.props.handleLoadingSpinner(false);
                     this.gotoUrl('submit');
                 }
                 else {
@@ -500,6 +499,7 @@ class RegistryInstViewer extends React.Component {
                 }
             }
         }
+        this.props.handleLoadingSpinner(false);
     }
 
     closeDialog = ()=>{
