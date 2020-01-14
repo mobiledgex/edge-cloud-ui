@@ -13,24 +13,6 @@ import {TypeAppInstance} from "../../../shared/Types";
 import Plot from "react-plotly.js";
 import PageMonitoring from "./PageMonitoring";
 
-
-export const getIPAddress = () => {
-    var interfaces = require('os').networkInterfaces();
-    for (var devName in interfaces) {
-        var iface = interfaces[devName];
-        console.log('ifce=', iface)
-        for (var i = 0; i < iface.length; i++) {
-            var alias = iface[i];
-            console.log('add = ', alias.address)
-            if (alias.family === 'IPv4' && !alias.internal || alias.address === '127.0.0.1')
-                return alias.address;
-        }
-    }
-
-    return '0.0.0.0';
-}
-
-
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
 
     let newArrayList = [];
@@ -170,49 +152,6 @@ export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
 }
 
 
-export const filterUsageByCloudLet = (cpuOrMemUsageList, pCloudLet) => {
-    let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
-        if (item.instance.Cloudlet === pCloudLet) {
-            return item;
-        }
-    });
-    return filteredCpuOrMemUsageList
-}
-
-export const filterCpuOrMemUsageByCloudLetByType = (cpuOrMemUsageList, pCloudLet, pType) => {
-    let filteredUsageList = cpuOrMemUsageList.filter((item) => {
-        if (item.instance[pType] === pCloudLet) {
-            return item;
-        }
-    });
-    return filteredUsageList
-}
-
-/**
- * @fixme : 리펙토링 필요
- * @todo: 그래프 데이터를 clusterinst에 맞게 필터링
- * @param cpuOrMemUsageList
- * @param pCluster
- * @returns {*}
- */
-export const filterUsageByCluster = (cpuOrMemUsageList, pCluster) => {
-    let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
-        if (item.instance.ClusterInst === pCluster) {
-            return item;
-        }
-    });
-    return filteredCpuOrMemUsageList
-}
-
-export const filterUsageByAppInst = (cpuOrMemUsageList, pAppInst) => {
-    let filteredList = cpuOrMemUsageList.filter((item) => {
-        if (item.instance.AppName === pAppInst) {
-            return item;
-        }
-    });
-    return filteredList
-}
-
 
 /**
  * todo: Fliter app instace list by cloudlet Value
@@ -250,16 +189,6 @@ export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '
     })
 
     return instanceListFilteredByClusterInst;
-}
-
-export const filterAppInstanceListByAppInst = (appInstanceList, pAppInst = '') => {
-    let filteredList = []
-    appInstanceList.map(item => {
-        if (item.AppName === pAppInst) {
-            filteredList.push(item);
-        }
-    })
-    return filteredList;
 }
 
 
@@ -524,131 +453,6 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
         />
     );
 
-}
-
-
-export const renderBarGraphForNetwork = (_this) => {
-
-    console.log('networkBarChartData===>', _this.state.networkBarChartData);
-
-    return (
-        <Chart
-            width={window.innerWidth * 0.25}
-            height={330}
-            chartType="BarChart"
-            loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
-            data={_this.state.networkBarChartData}
-            options={{
-                annotations: {
-                    style: 'line',
-                    textStyle: {
-                        fontName: 'Righteous',
-                        fontSize: 20,
-                        bold: true,
-                        italic: true,
-                        // The color of the text.
-                        color: '#fff',
-                        // The color of the text outline.
-                        auraColor: 'black',
-                        // The transparency of the text.
-                        opacity: 1.0
-                    },
-                    boxStyle: {
-                        // Color of the box outline.
-                        stroke: '#ffffff',
-                        // Thickness of the box outline.
-                        strokeWidth: 1,
-                        // x-radius of the corner curvature.
-                        rx: 10,
-                        // y-radius of the corner curvature.
-                        ry: 10,
-                    }
-                },
-
-                is3D: true,
-                title: '',
-                titleTextStyle: {
-                    color: '#fff',
-                    fontSize: 20,
-                    italic: true,
-                    bold: true,
-                    /*fontName: <string>, // i.e. 'Times New Roman'
-                    fontSize: <number>, // 12, 18 whatever you want (don't specify px)
-                     bold: <boolean>,    // true or false
-                      // true of false*/
-                },
-                //titlePosition: 'out',
-                chartArea: {left: 100, right: 150, top: 50, bottom: 25, width: "50%", height: "100%",},
-                legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
-                //xAxis
-                hAxis: {
-                    textPosition: 'none',//HIDE xAxis
-                    title: '',
-                    titleTextStyle: {
-                        //fontName: "Times",
-                        fontSize: 12,
-                        fontStyle: "italic",
-                        color: 'white'
-                    },
-                    minValue: 0,
-                    textStyle: {
-                        color: "white"
-                    },
-                    gridlines: {
-                        color: "none"
-                    },
-                    format: '0.##\' byte\'',
-                    baselineColor: 'grey',
-                    //out', 'in', 'none'.
-                },
-                //Y축
-                vAxis: {
-                    title: '',
-                    titleTextStyle: {
-                        fontSize: 20,
-                        fontStyle: "normal",
-                        color: 'white'
-                    },
-                    textStyle: {
-                        color: "white",
-                        fontSize: 15,
-                    },
-
-                },
-                //colors: ['#FB7A21'],
-                fontColor: 'white',
-                backgroundColor: {
-                    fill: 'black'
-                },
-                /*  animation: {
-                      duration: 300,
-                      easing: 'out',
-                      startup: true
-                  }*/
-                //colors: ['green']
-            }}
-
-            // For tests
-            rootProps={{'data-testid': '1'}}
-        />
-    );
-
-}
-
-
-/**
- * @todo: toChunkArray for TopLeftGrid
- * @todo: toChunkArray for TopLeftGrid
- * @param myArray
- * @param chunkSize
- * @returns {Array}
- */
-export const toChunkArray = (myArray, chunkSize) => {
-    let results = [];
-    while (myArray.length) {
-        results.push(myArray.splice(0, chunkSize));
-    }
-    return results;
 }
 
 
@@ -1410,109 +1214,6 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
     return lineChartData;
 
 }
-
-
-export const renderLineChartForNetWork = (_this: PageMonitoring, networkType: string) => {
-
-    let width = window.innerWidth * 0.28
-
-
-    let options = {
-        plugins: {
-            zoom: {
-                pan: {
-                    enabled: true,
-                    mode: 'y'
-                },
-                zoom: {
-                    enabled: true,
-                    mode: 'xy'
-                }
-            }
-        },
-        maintainAspectRatio: true,
-        responsive: true,
-        datasetStrokeWidth: 3,
-        pointDotStrokeWidth: 4,
-        layout: {
-            padding: {
-                left: 0,
-                right: 10,
-                top: 0,
-                bottom: 0
-            }
-        },
-        legend: {
-            position: 'top',
-            labels: {
-                boxWidth: 10,
-                fontColor: 'white'
-            }
-        },
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true,
-                    fontColor: 'white',
-                    callback(value, index, label) {
-                        return numberWithCommas(value);
-
-                    },
-                },
-                gridLines: {
-                    color: "#505050",
-                },
-                //stacked: true
-
-            }],
-            xAxes: [{
-                /*ticks: {
-                    fontColor: 'white'
-                },*/
-                gridLines: {
-                    color: "#505050",
-                },
-                ticks: {
-                    fontSize: 14,
-                    fontColor: 'white',
-                    //maxRotation: 0.05,
-                    //autoSkip: true,
-                    maxRotation: 45,
-                    minRotation: 45,
-                    padding: 10,
-                    labelOffset: 0,
-                    callback(value, index, label) {
-                        return value;
-
-                    },
-                },
-                beginAtZero: false,
-                /* gridLines: {
-                     drawTicks: true,
-                 },*/
-            }]
-        }
-
-    }
-    //todo :#############################
-    //todo : networkChartData rendering
-    //todo :############################
-
-    return (
-        <div>
-            <ReactChartJs
-                width={width}
-                height={320}
-                data={_this.state.networkChartData}
-                options={options}
-                redraw={true}
-            />
-        </div>
-    );
-
-
-}
-
 
 /**
  *
