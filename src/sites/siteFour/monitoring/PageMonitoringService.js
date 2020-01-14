@@ -329,6 +329,29 @@ export const renderUsageByType = (usageOne, hardwareType) => {
     }
 }
 
+export const renderLottie = () =>{
+    return (
+        <div style={{position: 'absolute', top: '-20%', left: '48%'}}>
+            <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: -170}}>
+                <Lottie
+                    options={{
+                        loop: true,
+                        autoplay: true,
+                        animationData: require('../../../lotties/loader001'),
+                        rendererSettings: {
+                            preserveAspectRatio: 'xMidYMid slice'
+                        }
+                    }}
+                    height={240}
+                    width={240}
+                    isStopped={false}
+                    isPaused={false}
+                />
+            </div>
+        </div>
+    )
+}
+
 /**
  * @todo: Bar Graph Rendering By Google Chart
  * @todo: 바그래프 랜더링 By Google Chart
@@ -356,7 +379,7 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
             width={window.innerWidth * 0.25}
             height={330}
             chartType="BarChart"
-            loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
+            loader={renderLottie()}
             data={chartDataList}
             options={{
                 annotations: {
@@ -464,7 +487,6 @@ export const renderPlaceHolder = () => {
     let boxWidth = window.innerWidth / 3 - 50;
     return (
         <div className='page_monitoring_grid_box_blank2' style={{width: boxWidth}}>
-            {/*<CircularProgress style={{zIndex: 999999999, color: '#79BF14', marginTop:-50}}/>*/}
             <div style={{marginTop: -50}}>
                 <Lottie
                     options={{
