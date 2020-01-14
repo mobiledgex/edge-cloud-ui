@@ -141,9 +141,6 @@ type State = {
     bubbleChartData: Array,
     currentNetworkType: string,
     lineChartData: Array,
-    networkChartData: Array,
-    networkBarChartData: Array,
-    networkChartData2: Array,
     isReadyNetWorkCharts: boolean,
     isEnableCloutletDropDown: boolean,
     isEnableClusterDropDown: boolean,
@@ -214,9 +211,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             bubbleChartData: [],
             currentNetworkType: NETWORK_TYPE.RECV_BYTES,
             lineChartData: [],
-            networkChartData: [],
-            networkChartData2: [],
-            networkBarChartData: [],
             isReadyNetWorkCharts: false,
             isEnableCloutletDropDown: true,
             isEnableClusterDropDown: false,
@@ -307,17 +301,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }, () => {
                 console.log('filteredNetworkUsageList===>', this.state.filteredNetworkUsageList);
             });
-
-
-            //todo: -------------------------------------------------------------
-            //todo: make NETWORK CHART DATA
-            //todo: -------------------------------------------------------------
-            let networkLineChartData = makeNetworkLineChartData(this.state.filteredNetworkUsageList, 'recv_bytes');
-            let networkBarChartData = makeNetworkBarData(this.state.filteredNetworkUsageList, 'recv_bytes');
-            await this.setState({
-                networkChartData: networkLineChartData,
-                networkBarChartData: networkBarChartData,
-            })
 
             //todo: -------------------------------------------------------------
             //todo: MAKE TOP5 INSTANCE LIST
