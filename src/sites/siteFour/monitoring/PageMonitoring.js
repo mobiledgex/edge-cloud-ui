@@ -1,6 +1,4 @@
 import 'react-hot-loader'
-
-import {Line, Circle} from 'rc-progress';
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
@@ -12,9 +10,8 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker,} from 'antd';
+import {DatePicker, Progress,} from 'antd';
 import * as reducer from "../../../utils";
-import {Progress} from 'antd';
 import {
     cutArrayList,
     filterAppInstanceListByCloudLet,
@@ -22,45 +19,41 @@ import {
     filterAppInstanceListByRegion,
     filterAppInstOnCloudlet,
     filterInstanceCountOnCloutLetOne,
-    filterUsageByAppInst,
-    filterUsageByCloudLet,
-    filterUsageByCluster, filterUsageByType,
+    filterUsageByType,
     filterUsageListByRegion,
-    getMetricsUtilizationAtAppLevel_TEST, getUsageList,
+    getMetricsUtilizationAtAppLevel_TEST,
+    getUsageList,
     instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, makeNetworkBarData, makeNetworkLineChartData,
+    makeClusterListSelectBox,
+    makeNetworkBarData,
+    makeNetworkLineChartData,
     renderBarGraph,
-    renderBarGraphForNetwork,
     renderBubbleChart,
-    renderSixGridInstanceOnCloudletGrid,
     renderLineChart,
-    renderLineChartForNetWork,
     renderPlaceHolder,
     renderPlaceHolder2,
-    renderUsageByType,
-    renderUsageLabelByType, requestShowAppInstanceList,
+    renderSixGridInstanceOnCloudletGrid,
+    requestShowAppInstanceList,
     Styles
 } from "./PageMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
-    CHART_COLOR_LIST,
     CLASSIFICATION,
     HARDWARE_OPTIONS,
-    HARDWARE_TYPE, MONITORING_CATE_SELECT_TYPE,
+    HARDWARE_TYPE,
+    MONITORING_CATE_SELECT_TYPE,
     NETWORK_OPTIONS,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
     REGIONS_OPTIONS
 } from "../../../shared/Constants";
 import Lottie from "react-lottie";
+import type {TypeGridInstanceList} from "../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import './PageMonitoring.css';
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
-import type {TypeGridInstanceList} from "../../../shared/Types";
-import {showToast} from "./MonitoringChartService";
 import {TabPanel, Tabs} from "react-tabs";
 
 const FA = require('react-fontawesome')

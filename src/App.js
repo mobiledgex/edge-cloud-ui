@@ -1,19 +1,16 @@
-import React, { Component } from 'react';
-import { Grid, Button, Container } from 'semantic-ui-react';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import React, {Component} from 'react';
+import {BrowserRouter as Router, Route} from "react-router-dom";
 import Alert from 'react-s-alert';
 
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'semantic-ui-css/semantic.min.css';
-import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
+import {GridLoader} from "react-spinners";
 //redux
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from './actions';
 import * as serviceMC from './services/serviceMC';
-// API
-
-import { LOCAL_STRAGE_KEY } from './components/utils/Settings'
+import {LOCAL_STRAGE_KEY} from './components/utils/Settings'
 //insert pages
 import EntranceGlob from './sites/entranceGlob';
 import SiteTwo from "./sites/siteTwo";
@@ -25,7 +22,7 @@ import './css/index.css';
 
 import './css/pages/audit.css';
 import './css/components/timelineH.css';
-import {Test001} from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
+// API
 
 let self = null;
 
@@ -332,7 +329,6 @@ class App extends Component {
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
-                    <Route exact path='/Test001' component={Test001} />
 
                 </div>
             </Router>

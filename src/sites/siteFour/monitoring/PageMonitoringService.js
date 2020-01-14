@@ -4,16 +4,14 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 import {formatData} from "../../../services/formatter/formatComputeInstance";
 import './PageMonitoring.css';
-import {CHART_COLOR_LIST, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../shared/Constants";
-import {HorizontalBar, Line as ReactChartJs} from 'react-chartjs-2';
+import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../shared/Constants";
+import {Line as ReactChartJs} from 'react-chartjs-2';
 import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
 import BubbleChart from "../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../shared/Types";
-import {Bar as RBar, BarChart, BarLabel, BarSeries, LinearXAxis, LinearYAxis, LinearYAxisTickSeries} from "reaviz";
 import Plot from "react-plotly.js";
 import PageMonitoring from "./PageMonitoring";
-import {showToast} from "./MonitoringChartService";
 
 
 export const getIPAddress = () => {
