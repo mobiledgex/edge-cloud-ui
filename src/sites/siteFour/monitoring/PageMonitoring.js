@@ -1151,6 +1151,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentHardwareType: value,
             });
 
+
+
             let appInstanceList = this.state.appInstanceList;
             let allCpuUsageList = this.state.allCpuUsageList;
             let allMemUsageList = this.state.allMemUsageList;
