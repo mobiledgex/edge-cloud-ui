@@ -1,4 +1,6 @@
 import 'react-hot-loader'
+
+import {Line, Circle} from 'rc-progress';
 import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
@@ -12,6 +14,7 @@ import * as actions from '../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
 import * as reducer from "../../../utils";
+import {Progress} from 'antd';
 import {
     cutArrayList,
     filterAppInstanceListByCloudLet,
@@ -57,6 +60,7 @@ import './PageMonitoring.css';
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import type {TypeGridInstanceList} from "../../../shared/Types";
+import {showToast} from "./MonitoringChartService";
 
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
@@ -153,6 +157,7 @@ type State = {
     currentNetworkTab: number,
     allGridInstanceList: TypeGridInstanceList,
     filteredGridInstanceList: any,
+    gridInstanceListMemMax: number,
 
 
 }
@@ -224,6 +229,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             currentNetworkTab: 0,
             allGridInstanceList: [],
             filteredGridInstanceList: [],
+            gridInstanceListMemMax: 0,
         };
 
 
@@ -243,10 +249,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isReady: false,
             })
             //todo: REALDATA
-            let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
+            //let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
 
             //todo: FAKE JSON FOR DEV
-            //let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
+            let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({
@@ -277,12 +283,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: -------------------------------------------------------------------------------
             //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA)
             //todo: -------------------------------------------------------------------------------
-            let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
+            //let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
 
-            //todo: -------------------------------------------------------------
+            //todo: #####################################################
             //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR DEV
-            //todo: -------------------------------------------------------------
-            //let usageList = require('../../../temp/usageAllJsonList2')
+            //todo:#####################################################
+            let usageList = require('../../../temp/usageAllJsonList2')
 
             console.log('usageList===>', usageList)
 
@@ -322,36 +328,25 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: -------------------------------------------------------------
             let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
 
-
-            //todo: ##########################################
             //todo: -------------------------------------------
-            //todo: _gridInstanceList _gridInstanceList_3409509340593049599503409530495043590345903405934095
+            //todo: _gridInstanceList _gridInstanceList________
             //todo: -------------------------------------------
-            //todo: ##########################################
-            let allCpuUsageList = this.state.allCpuUsageList
-            let allMemUsageList = this.state.allMemUsageList
-            let allDiskUsageList = this.state.allDiskUsageList
-            let allNetworkUsageList = this.state.allNetworkUsageList
-
-            let gridInstanceList = []
-            allCpuUsageList.map((item, index) => {
-                console.log('item===>', item);
-                gridInstanceList.push({
-                    instance: item.instance,
-                    sumCpuUsage: item.sumCpuUsage,
-                    sumMemUsage: allMemUsageList[index].sumMemUsage,
-                    sumRecvBytes: allNetworkUsageList[index].sumRecvBytes,
-                    sumSendBytes: allNetworkUsageList[index].sumSendBytes,
-                })
-            })
+            let gridInstanceList = this.makeGridInstanceList();
 
 
-            console.log('gridInstanceList===>', gridInstanceList);
+            //todo: -------------------------------------------
+            //todo: _gridInstanceList MAXVALUE
+            //todo: -------------------------------------------
+            let gridInstanceListMemMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
+                return o.sumMemUsage;
+            }));
+
 
             await this.setState({
                 appInstanceListTop5: appInstanceListTop5,
                 allGridInstanceList: gridInstanceList,
                 filteredGridInstanceList: gridInstanceList,
+                gridInstanceListMemMax: gridInstanceListMemMax,
             });
 
             this.props.toggleLoading(false);
@@ -371,6 +366,32 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 color: 'black',
             });
 
+        }
+
+
+        /**
+         * bottom Grid InstanceList maker..
+         * @returns {[]}
+         */
+        makeGridInstanceList() {
+            let allCpuUsageList = this.state.allCpuUsageList
+            let allMemUsageList = this.state.allMemUsageList
+            let allDiskUsageList = this.state.allDiskUsageList
+            let allNetworkUsageList = this.state.allNetworkUsageList
+
+            let gridInstanceList = []
+            allCpuUsageList.map((item, index) => {
+                console.log('item===>', item);
+                gridInstanceList.push({
+                    instance: item.instance,
+                    sumCpuUsage: item.sumCpuUsage,
+                    sumDiskUsage: allDiskUsageList[index].sumDiskUsage,
+                    sumMemUsage: allMemUsageList[index].sumMemUsage,
+                    sumRecvBytes: allNetworkUsageList[index].sumRecvBytes,
+                    sumSendBytes: allNetworkUsageList[index].sumSendBytes,
+                })
+            })
+            return gridInstanceList;
         }
 
 
@@ -461,12 +482,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 //alert(this.state.startDate)
             }
 
+            //todo: -------------------------------------------
+            //todo: _gridInstanceList MAXVALUE
+            //todo: -------------------------------------------
+            let gridInstanceListMemMax = Math.max.apply(Math, filteredGridInstanceList.map(function (o) {
+                return o.sumMemUsage;
+            }));
+
             await this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
                 filteredDiskUsageList: filteredDiskUsageList,
                 filteredNetworkUsageList: filteredNetworkUsageList,
                 filteredGridInstanceList: filteredGridInstanceList,
+                gridInstanceListMemMax: gridInstanceListMemMax,
                 appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
@@ -650,7 +679,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        renderBottomAppInstanceList() {
+        renderGridArea() {
             return (
                 <div>
                     <Grid columns={8} padded={true} style={{height: 50}}>
@@ -668,16 +697,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 MEM
                             </Column>
                             <Column color={'grey'}>
+                                DISK
+                            </Column>
+                            <Column color={'grey'}>
                                 RECV BYTES
                             </Column>
                             <Column color={'grey'}>
                                 SEND BYTES
                             </Column>
+
                             <Column color={'grey'}>
                                 ACTIVE CONNECTIONS
-                            </Column>
-                            <Column color={'grey'}>
-                                ACCEPTS
                             </Column>
                         </Row>
                     </Grid>
@@ -724,6 +754,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 </Column>
                             </Row>}
                             {this.state.isReady && this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
+
                                 return (
                                     <Row
 
@@ -734,11 +765,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         }}
                                         onClick={async () => {
                                             //alert(item.AppName)
-                                            await this.setState({
+                                            /*await this.setState({
                                                 currentAppInst: item.instance.AppName,
                                                 currentGridIndex: index,
                                             })
-                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)
+                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)*/
                                         }}
                                     >
                                         <Column>
@@ -748,22 +779,42 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             {item.instance.AppName}
                                         </Column>
                                         <Column>
-                                            {item.sumCpuUsage.toFixed(2) + "%"}
+                                            <div>
+                                                <div>
+                                                    {item.sumCpuUsage.toFixed(2) + '%'}
+                                                </div>
+                                                <div>
+                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false} percent={item.sumCpuUsage.toFixed(2)} strokeColor={'blue'}
+                                                              status={'normal'}/>
+                                                </div>
+
+                                            </div>
+
                                         </Column>
                                         <Column>
-                                            {item.sumMemUsage.toFixed(0) + ' Byte'}
+                                            <div>
+                                                <div>
+                                                    {(item.sumMemUsage) + ' Byte'}
+                                                </div>
+                                                <div>
+                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                              percent={(item.sumMemUsage / this.state.gridInstanceListMemMax) * 100}
+                                                              strokeColor={'blue'} status={'normal'}/>
+                                                </div>
+
+                                            </div>
                                         </Column>
                                         <Column>
-                                            {item.sumRecvBytes}
+                                            {item.sumDiskUsage + ' Byte'}
                                         </Column>
                                         <Column>
-                                            {item.sumSendBytes}
+                                            {item.sumRecvBytes + ' Byte'}
                                         </Column>
                                         <Column>
-                                            Status_NULL
+                                            {item.sumSendBytes + ' Byte'}
                                         </Column>
                                         <Column>
-                                            Start_NULL
+                                            0
                                         </Column>
                                     </Row>
 
@@ -1328,7 +1379,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     >
                         <Modal.Header>Status of App Instance</Modal.Header>
                         <Modal.Content>
-                            {this.renderBottomAppInstanceList()}
+                            {this.renderGridArea()}
                         </Modal.Content>
                     </Modal>
                     <SemanticToastContainer/>
@@ -1525,7 +1576,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                         <div style={{height: 7}}/>
                                                         <div className='page_monitoring_column_for_grid2'>
-                                                            {this.renderBottomAppInstanceList()}
+                                                            {this.renderGridArea()}
                                                         </div>
                                                     </div>
                                                 </OutsideClickHandler>

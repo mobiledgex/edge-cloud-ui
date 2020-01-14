@@ -1964,7 +1964,11 @@ export const Styles = {
         width: 100,
         display: 'flex'
     },
-
+    header00001:{
+        fontSize: 21,
+        marginLeft:5,
+        color: 'white',
+    },
     div001: {
         fontSize: 25,
         color: 'white',

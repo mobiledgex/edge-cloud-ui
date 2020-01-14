@@ -119,6 +119,10 @@
     height: 100%;
 }
 
+.ant-progress-text {
+    color: white;
+}
+
 .page_monitoring_container2 {
     display: flex;
     flex-grow: 1;
@@ -146,7 +150,7 @@
     flex-direction: column;
     /*flex-grow: 1;*/
     height: 100%;
-    flex:.33;
+    flex: .33;
     margin-right: 10px;
     background: #1e2124;
     justify-content: center;
@@ -223,7 +227,7 @@
 }*/
 
 .bottomGridArea {
-    opacity: 1.0!important;
+    opacity: 1.0 !important;
     z-index: 99999999999999;
 }
 
@@ -264,7 +268,7 @@
     font-weight: 700;
     margin-bottom: -1px;
     box-shadow: none;
-    border-bottom : 1px solid greenyellow;
+    border-bottom: 1px solid greenyellow;
     border-radius: .28571429rem .28571429rem 0 0 !important;
 }
 
@@ -275,7 +279,7 @@
     border-right: 0px solid transparent;
     border-top: 2px solid transparent;
     padding: .92857143em 1.42857143em;
-    color: rgba(0,0,0,.87);
+    color: rgba(0, 0, 0, .87);
 }
 
 
@@ -290,7 +294,7 @@
     /*padding: 10px;*/
     z-index: 99999999;
     height: 600px;
-    padding:3px;
+    padding: 3px;
     /*margin-top: 20px;
     margin-left: -10px;
     margin-right: 20px;
@@ -23802,7 +23806,7 @@ textarea.ant-mentions {
     display: inline-block;
     width: 2em;
     margin-left: 8px;
-    color: rgba(0, 0, 0, 0.45);
+    color: white;
     font-size: 1em;
     line-height: 1;
     white-space: nowrap;
