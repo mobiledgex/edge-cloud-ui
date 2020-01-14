@@ -61,6 +61,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import type {TypeGridInstanceList} from "../../../shared/Types";
 import {showToast} from "./MonitoringChartService";
+import {TabPanel, Tabs} from "react-tabs";
 
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
@@ -158,6 +159,7 @@ type State = {
     allGridInstanceList: TypeGridInstanceList,
     filteredGridInstanceList: any,
     gridInstanceListMemMax: number,
+    networkTabIndex: number,
 
 
 }
@@ -230,6 +232,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allGridInstanceList: [],
             filteredGridInstanceList: [],
             gridInstanceListMemMax: 0,
+            networkTabIndex: 0,
         };
 
 
@@ -249,10 +252,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isReady: false,
             })
             //todo: REALDATA
-            //let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
+            let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
 
             //todo: FAKE JSON FOR DEV
-            let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
+            //let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({
@@ -283,12 +286,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: -------------------------------------------------------------------------------
             //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA)
             //todo: -------------------------------------------------------------------------------
-            //let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
+            let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
 
             //todo: #####################################################
             //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR DEV
             //todo:#####################################################
-            let usageList = require('../../../temp/usageAllJsonList2')
+            //let usageList = require('../../../temp/usageAllJsonList2')
 
             console.log('usageList===>', usageList)
 
@@ -773,7 +776,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {item.sumCpuUsage.toFixed(2) + '%'}
                                                 </div>
                                                 <div>
-                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false} percent={item.sumCpuUsage.toFixed(2)} strokeColor={'#29a1ff'}
+                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false} percent={item.sumCpuUsage.toFixed(2)}
+                                                              strokeColor={'#29a1ff'}
                                                               status={'normal'}/>
                                                 </div>
 
@@ -918,21 +922,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
                     <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of NETWORK Usage
-                            </div>
-                        </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, networkType)}
                         </div>
                     </div>
-                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Transition Of NETWORK Usage
-                            </div>
-                        </div>
+                    <div className='' style={{marginLeft: 5, marginRight: 5, marginTop:0}}>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredNetworkUsageList, networkType)}
                         </div>
@@ -1471,20 +1465,51 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 </div>
                                                 <div className='page_monitoring_column_kj003' style={{marginLeft: 0}}>
                                                     {/*todo:-----------------------*/}
-                                                    {/*todo:  네트워크 탭을 랜더링     */}
+                                                    {/*todo:  NETWORK HEADER     */}
                                                     {/*todo:-----------------------*/}
-                                                    <Tab
-                                                        style={{marginLeft: -10}}
-                                                        panes={this.NETWORK_TABS}
-                                                        activeIndex={this.state.currentNetworkTab}
-                                                        onTabChange={(e, {activeIndex}) => {
-                                                            this.setState({
-                                                                currentNetworkTab: activeIndex,
-                                                            })
-                                                        }}
-                                                        defaultActiveIndex={this.state.currentNetworkTab}
+                                                    <div className='page_monitoring_title_area2'>
+                                                        <div className='page_monitoring_title'>
+                                                            TOP5 of NETWORK Usage
+                                                        </div>
+                                                        <div className='page_monitoring_title2'>
+                                                            &nbsp;Transition Of Network Usage
+                                                        </div>
+                                                        <div style={{marginRight:126}}>
+                                                            <Dropdown
+                                                                placeholder='SELECT HARDWARE'
+                                                                selection
+                                                                loading={this.state.loading}
+                                                                options={NETWORK_OPTIONS}
+                                                                defaultValue={NETWORK_OPTIONS[0].value}
+                                                                onChange={async (e, {value}) => {
 
-                                                    />
+                                                                    if (value===NETWORK_TYPE.RECV_BYTES){
+                                                                        this.setState({
+                                                                            networkTabIndex: 0,
+                                                                        })
+                                                                    }else{
+                                                                        this.setState({
+                                                                            networkTabIndex: 1,
+                                                                        })
+                                                                    }
+
+                                                                }}
+                                                                value={this.state.currentNetworkType}
+                                                                style={Styles.dropDown}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    {/*todo:---------------------------------*/}
+                                                    {/*todo: NETWORK TAB PANEL AREA           */}
+                                                    {/*todo:---------------------------------*/}
+                                                    <Tabs selectedIndex={this.state.networkTabIndex}>
+                                                        <TabPanel style={{color: 'white'}}>
+                                                            {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
+                                                        </TabPanel>
+                                                        <TabPanel style={{color: 'white'}}>
+                                                            {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
+                                                        </TabPanel>
+                                                    </Tabs>
                                                 </div>
 
 

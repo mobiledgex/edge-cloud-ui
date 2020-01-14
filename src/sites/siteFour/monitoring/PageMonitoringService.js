@@ -1297,7 +1297,7 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
         <div>
             <ReactChartJs
                 width={width}
-                height={320}
+                height={331}
                 data={lineChartData}
                 options={options}
             />
@@ -1740,6 +1740,9 @@ export const requestShowAppInstanceList = async (pArrayRegion = ['EU', 'US']) =>
         }).catch(e => {
             throw new Error(e)
         })
+
+
+
 
         let mergedList = mergedAppInstanceList.concat(responseResult);
         mergedAppInstanceList = mergedList;

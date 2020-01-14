@@ -25,6 +25,7 @@ import './css/index.css';
 
 import './css/pages/audit.css';
 import './css/components/timelineH.css';
+import {Test001} from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
 
 let self = null;
 
@@ -74,7 +75,7 @@ const DashboardContainer = ( props, props2) => {
     const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
     if(self.routed){
         self.profileView();
-    } 
+    }
     let storeData= localStorage.getItem('PROJECT_INIT')
 
 
@@ -249,7 +250,7 @@ class App extends Component {
             }
         }
     }
-    
+
     receiveController = (mcRequest) => {
         if (mcRequest) {
             if (mcRequest.response) {
@@ -286,12 +287,12 @@ class App extends Component {
     }
 
     componentDidMount() {
-        
+
         let pathName = window.location.pathname;
 
         //this.router.history.push(pathName);
-        
-        
+
+
         const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
         if (!storage_data) {
             return;
@@ -331,6 +332,7 @@ class App extends Component {
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
+                    <Route exact path='/Test001' component={Test001} />
 
                 </div>
             </Router>

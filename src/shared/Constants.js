@@ -56,8 +56,8 @@ export const REGIONS_OPTIONS = [
 ]
 
 export const NETWORK_OPTIONS = [
-    {text: 'RECV_BYTE', value: 'recv_bytes'},
-    {text: 'SEND_BYTE', value: 'send_bytes'},
+    {text: 'RECV BYTES', value: 'recv_bytes'},
+    {text: 'SEND BYTES', value: 'send_bytes'},
 ]
 
 export const NETWORK_TYPE = {

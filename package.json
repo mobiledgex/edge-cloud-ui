@@ -106,6 +106,7 @@
         "react-spinners": "^0.4.7",
         "react-svg-pan-zoom": "^2.18.0",
         "react-sweet-progress": "^1.1.2",
+        "react-tabs": "^3.1.0",
         "react-textarea-autosize": "^7.1.0",
         "react-toggle-display": "^2.2.0",
         "react-tooltip": "^3.9.0",

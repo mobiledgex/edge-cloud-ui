@@ -1,7 +1,11 @@
 import * as React from 'react';
-import Axios from 'axios-observable';
 import {CircularProgress} from "@material-ui/core";
-import ndjsonStream from "can-ndjson-stream";
+import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+import {Button} from "antd";
+import {Dropdown} from "semantic-ui-react";
+import {REGIONS_OPTIONS} from "../../shared/Constants";
+import {Styles} from "../../sites/siteFour/monitoring/PageMonitoringService";
 
 type Props = {};
 type State = {
@@ -14,123 +18,71 @@ export class Test001 extends React.Component<Props, State> {
     state = {
         loading: false,
         results: [],
+        index: 0,
     }
 
     async componentDidMount(): void {
-        this.getStream();
     }
 
-
-    async requestStreamEndPoint() {
-        this.setState({
-            loading: true,
-
-        })
-        //http --stream --timeout 100000 --auth-type=jwt --auth=$SUPERPASS POST https://mc-stage.mobiledgex.net:9900/api/v1/auth/ctrl/CreateClusterInst <<< '{"region":"US","clusterinst":{"key":{"cluster_key":{"name":"dockertest20190802-9"},"cloudlet_key":{"operator_key":{"name":"TDG"},"name":"mexplat-stage-bonn-cloudlet"},"developer":"MobiledgeX"},"deployment":"docker","flavor":{"name":"c1.small"},"ip_access":1,"num_masters":0,"num_nodes":0}}'
-
-
-        fetch('http://35.221.245.158:8080/TickTock?time=5', {
-            method: 'get',
-        }).then((response) => {
-            return ndjsonStream(response.body); //ndjsonStream parses the response.body
-
-        }).then((streamData) => {
-            const reader = streamData.getReader();
-            let read;
-
-            let index = 0;
-            reader.read().then(read = (result) => {
-                if (result.done) {
-                    this.setState({
-                        loading: false,
-                    })
-                    return;
-                }
-                console.log(`data___${index}====>`, result.value);
-                reader.read().then(read);
-                index++;
-
-            });
-        });
-    }
-
-
-    async getStream() {
-
-        await this.setState({
-            loading: true,
-        })
-
-        let url = 'http://35.221.245.158:8080/TickTock?time=5';
-
-
-        this.setState({
-            loading: true,
-        })
-        fetch(url, {
-            method: 'GET',
-           /* headers: {
-                'Content-Type': 'application/json',
-                //'Authorization': "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY4MDk5MzIsImlhdCI6MTU3NjcyMzUzMiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.JPKz83yI45GdSIacNanYyX_7zmmE7HvaQvISTLVpWr-IofHwGY8tTQGChyizMpaMcOtKWg2J989p16Rm_2Mr1w",
-            },*/
-           /* body: JSON.stringify({
-                "region": 'US',
-            })*/
-        }).then((response) => {
-            return ndjsonStream(response.body); //ndjsonStream parses the response.body
-
-        }).then((streamData) => {
-            const reader = streamData.getReader();
-            let read;
-
-            let index = 0;
-            reader.read().then(read = (result) => {
-                if (result.done) {
-                    this.setState({
-                        loading: false,
-                    })
-                    return;
-                }
-                console.log(`data___${index}====>`, result.value.data);
-                reader.read().then(read);
-                index++;
-
-            });
-        });
-
-
-    }
-
-    /*requesetExample000001() {
-        fetch('/api/v1/auth/ctrl/ShowAppInst', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzY4MDk5MzIsImlhdCI6MTU3NjcyMzUzMiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.JPKz83yI45GdSIacNanYyX_7zmmE7HvaQvISTLVpWr-IofHwGY8tTQGChyizMpaMcOtKWg2J989p16Rm_2Mr1w",
-            },
-            body: JSON.stringify({
-                "region": 'US',
-            })
-        }).then((response) => {
-            console.log('response====>', response);
-            return response;
-        }).then((data) => {
-            console.log('data====>' + JSON.stringify(data));
-        });
-    }*/
 
     render() {
         return (
-            <div>
+            <div style={{color: 'white'}}>
 
-                {this.state.loading && <CircularProgress/>}
-                {this.state.results.map(item => {
-                    return (
-                        <div>
-                            {item.uri}
-                        </div>
-                    )
-                })}
+
+                <Button title={'slkdfsldkflks'} value={'00001'} onClick={() => {
+                    this.setState({
+                        index: 0,
+                    })
+                }}>
+                    recve byte
+                </Button>
+                <Button title={'slkdfsldkflks'} value={'00001'} onClick={() => {
+                    this.setState({
+                        index: 1,
+                    })
+                }}>
+                    send byte
+                </Button>
+
+                <Dropdown
+                    placeholder='REGION'
+                    selection
+                    options={[
+                        {
+                            text: 'RECV', value: 0,
+                        },
+                        {
+                            text: 'SEND', value: 1,
+                        },
+
+                    ]}
+                    defaultValue={0}
+                    onChange={async (e, {value}) => {
+
+                        this.setState({
+                            index: value,
+                        })
+
+                    }}
+                    value={this.state.currentRegion}
+                    style={Styles.dropDown}
+                />
+
+                <Tabs selectedIndex={this.state.index}>
+                    {/* <TabList>
+                        <Tab>Title 1</Tab>
+                        <Tab>Title 2</Tab>
+                    </TabList>*/}
+
+                    <TabPanel style={{color: 'white'}}>
+                        <h2 style={{color: 'white'}}>Any adsfsdfasdfasdfasdf 1</h2>
+                    </TabPanel>
+                    <TabPanel style={{color: 'white'}}>
+                        <h2 style={{color: 'white'}}>Any adsfsdfasdfasdfasdf 2</h2>
+                    </TabPanel>
+                </Tabs>
+
             </div>
         );
     };
