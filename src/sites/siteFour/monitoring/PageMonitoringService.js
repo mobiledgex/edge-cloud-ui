@@ -1563,7 +1563,7 @@ export const makeGradientColor = (canvas, height) => {
  * @param appInstanceListSortByCloudlet
  * @returns {*}
  */
-export const renderInstanceOnCloudletGrid = (appInstanceListSortByCloudlet, _this) => {
+export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudlet, _this) => {
     // let boxWidth = window.innerWidth / 10 * 2.55;
 
     let cloudletCountList = []

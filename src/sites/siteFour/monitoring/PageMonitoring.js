@@ -33,7 +33,7 @@ import {
     renderBarGraph,
     renderBarGraphForNetwork,
     renderBubbleChart,
-    renderInstanceOnCloudletGrid,
+    renderSixGridInstanceOnCloudletGrid,
     renderLineChart,
     renderLineChartForNetWork,
     renderPlaceHolder,
@@ -546,17 +546,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-
-        async makeBottomGridInstanceList(appInstanceList: any) {
-
-            let _gridInstanceList = []
-            appInstanceList.map((item, index) => {
-                console.log('item===>', item);
-            })
-
-        }
-
-
         async makeFirstBubbleChartData(appInstanceList: any) {
             let bubbleChartData = []
             appInstanceList.map((item, index) => {
@@ -679,7 +668,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        renderGridArea() {
+        renderBottomGridArea() {
             return (
                 <div>
                     <Grid columns={8} padded={true} style={{height: 50}}>
@@ -784,7 +773,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {item.sumCpuUsage.toFixed(2) + '%'}
                                                 </div>
                                                 <div>
-                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false} percent={item.sumCpuUsage.toFixed(2)} strokeColor={'blue'}
+                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false} percent={item.sumCpuUsage.toFixed(2)} strokeColor={'#29a1ff'}
                                                               status={'normal'}/>
                                                 </div>
 
@@ -799,7 +788,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div>
                                                     <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
                                                               percent={(item.sumMemUsage / this.state.gridInstanceListMemMax) * 100}
-                                                              strokeColor={'blue'} status={'normal'}/>
+                                                              strokeColor={'#29a1ff'} status={'normal'}/>
                                                 </div>
 
                                             </div>
@@ -1379,7 +1368,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     >
                         <Modal.Header>Status of App Instance</Modal.Header>
                         <Modal.Content>
-                            {this.renderGridArea()}
+                            {this.renderBottomGridArea()}
                         </Modal.Content>
                     </Modal>
                     <SemanticToastContainer/>
@@ -1415,7 +1404,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container' style={{width: 800}}>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
+                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : renderSixGridInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
                                                     </div>
                                                 </div>
 
@@ -1576,7 +1565,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                         <div style={{height: 7}}/>
                                                         <div className='page_monitoring_column_for_grid2'>
-                                                            {this.renderGridArea()}
+                                                            {this.renderBottomGridArea()}
                                                         </div>
                                                     </div>
                                                 </OutsideClickHandler>
