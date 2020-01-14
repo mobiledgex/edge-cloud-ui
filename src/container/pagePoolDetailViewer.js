@@ -51,7 +51,7 @@ const detailViewer = (props, type) => (
 )
 
 const makeCloudletTable = (values, label, i) => (
-    (label !== 'Edit')?
+    (label !== 'Edit' && label !== 'uuid')?
         <Table.Row key={i}>
             <Table.Cell width={4}>
                 
@@ -290,10 +290,24 @@ class PagePoolDetailViewer extends React.Component {
     removeSelectedItems = () => {
         _self.selectedItems.map((item) => {
             // 데이터에서 아이템 제거
-            let groupData = (item.type === 'delete member') ? _self.state.listData['cloudletGroup'] : _self.state.listData['OrganizGroup'];
-            if(groupData){
-                let filteredData = Object.assign([], aggregate.filterDefine(groupData, item.item))
-                _self.setState({listData: filteredData})
+            let groupData = null;
+            let filterDefine = null;
+            let cloneListData = Object.assign([], _self.state.listData)
+            if(item.type === 'delete member') {
+                groupData = _self.state.listData['cloudletGroup'];
+                filterDefine = groupData.filter( data => data['Cloudlet'] !== item.item['Cloudlet']);
+                cloneListData['cloudletGroup'] = filterDefine;
+                cloneListData['Cloudlets'] -= 1;
+            } else if(item.type === 'delete link') {
+                groupData = _self.state.listData['OrganizGroup'];
+                filterDefine = groupData.filter( data => data['Org'] !== item.item['Org']);
+                cloneListData['OrganizGroup'] = filterDefine;
+                cloneListData['Organizations'] -= 1;
+            }
+            
+            
+            if(filterDefine){
+                _self.setState({listData: cloneListData})
             }
         })
     }
@@ -301,15 +315,15 @@ class PagePoolDetailViewer extends React.Component {
         if(result) {
             console.log(JSON.stringify(result))
             if(result.response && result.response.data) {
-                _self.props.handleAlertInfo('success', 'Delete sucessfully')
+                _self.props.handleAlertInfo('success', result.response.data.message)
             }
             /** remove item from list */
             this.removeSelectedItems();
 
         } else {
-            _self.props.handleAlertInfo('success', 'Delete sucessfully')
+            _self.props.handleAlertInfo('error', 'View the audit log')
         }
-
+        _self.props.handleLoadingSpinner(false)
     }
     onHandleDelete = (e, _data) => {
         console.log('on handle delete ...', e, _data)
@@ -335,9 +349,9 @@ class PagePoolDetailViewer extends React.Component {
         }
     }
 
-    generateDOM(open, dimmer, data, mData, keysData, hideHeader, region, page, rfId) {
+    generateDOM(open, dimmer, data, keysData, hideHeader, region, page, rfId) {
 
-        let panelParams = {data:data, mData:mData, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole, rfId:rfId}
+        let panelParams = {data:data, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole, rfId:rfId}
         return layout.map((item, i) => (
 
             (i === 0)?
@@ -477,11 +491,11 @@ class PagePoolDetailViewer extends React.Component {
     }
 
     render() {
-        let { listData, monitorData, clusterName, open, dimmer, hiddenKeys, userRole, refreshId } = this.state;
+        let { listData, clusterName, open, dimmer, hiddenKeys, userRole, refreshId } = this.state;
         let { loading } = this.props;
         return (
             <div className="regis_container">
-                {this.generateDOM(open, dimmer, listData, monitorData, this.state.keysData, hiddenKeys, this.props.region, this.props.page, refreshId={refreshId})}
+                {this.generateDOM(open, dimmer, listData, this.state.keysData, hiddenKeys, this.props.region, this.props.page, refreshId={refreshId})}
             </div>
 
         )
