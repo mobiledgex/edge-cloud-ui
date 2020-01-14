@@ -21,7 +21,7 @@ import {
     filterInstanceCountOnCloutLetOne,
     filterUsageByAppInst,
     filterUsageByCloudLet,
-    filterUsageByCluster,
+    filterUsageByCluster, filterUsageByType,
     filterUsageListByRegion,
     getMetricsUtilizationAtAppLevel_TEST, getUsageList,
     instanceFlavorToPerformanceValue,
@@ -44,7 +44,7 @@ import {
     CHART_COLOR_LIST,
     CLASSIFICATION,
     HARDWARE_OPTIONS,
-    HARDWARE_TYPE,
+    HARDWARE_TYPE, MONITORING_CATE_SELECT_TYPE,
     NETWORK_OPTIONS,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
@@ -151,8 +151,8 @@ type State = {
     isEnableClusterDropDown: boolean,
     isEnableAppInstDropDown: boolean,
     currentNetworkTab: number,
-    gridInstanceList: TypeGridInstanceList,
-    filteredGridInstanceList:any,
+    allGridInstanceList: TypeGridInstanceList,
+    filteredGridInstanceList: any,
 
 
 }
@@ -222,8 +222,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isEnableClusterDropDown: false,
             isEnableAppInstDropDown: false,
             currentNetworkTab: 0,
-            gridInstanceList: [],
-            filteredGridInstanceList:[],
+            allGridInstanceList: [],
+            filteredGridInstanceList: [],
         };
 
 
@@ -350,8 +350,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             await this.setState({
                 appInstanceListTop5: appInstanceListTop5,
-                gridInstanceList: gridInstanceList,
-                filteredGridInstanceList:gridInstanceList,
+                allGridInstanceList: gridInstanceList,
+                filteredGridInstanceList: gridInstanceList,
             });
 
             this.props.toggleLoading(false);
@@ -404,7 +404,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let filteredMemUsageList = filterUsageListByRegion(pRegion, this.state.allMemUsageList);
             let filteredDiskUsageList = filterUsageListByRegion(pRegion, this.state.allDiskUsageList);
             let filteredNetworkUsageList = filterUsageListByRegion(pRegion, this.state.allNetworkUsageList);
-            let filteredGridInstanceList = filterUsageListByRegion(pRegion, this.state.gridInstanceList);
+            let filteredGridInstanceList = filterUsageListByRegion(pRegion, this.state.allGridInstanceList);
 
 
             //todo: -------------------------------------------
@@ -415,12 +415,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                 appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
                 clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
-                filteredCpuUsageList = filterUsageByCloudLet(filteredCpuUsageList, pCloudLet);
-                filteredMemUsageList = filterUsageByCloudLet(filteredMemUsageList, pCloudLet);
-                filteredDiskUsageList = filterUsageByCloudLet(filteredDiskUsageList, pCloudLet);
-                filteredNetworkUsageList = filterUsageByCloudLet(filteredNetworkUsageList, pCloudLet);
-                filteredGridInstanceList = filterUsageByCloudLet(filteredGridInstanceList, pCloudLet);
 
+                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredCpuUsageList);
+                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredMemUsageList);
+                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredDiskUsageList);
+                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredNetworkUsageList);
+                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredGridInstanceList);
             }
 
             //todo: -------------------------------------------
@@ -431,12 +431,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
                 //todo:app instalce list를 필터링
                 appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
-                filteredCpuUsageList = filterUsageByCluster(filteredCpuUsageList, pCluster);
-                filteredMemUsageList = filterUsageByCluster(filteredMemUsageList, pCluster);
-                filteredDiskUsageList = filterUsageByCluster(filteredDiskUsageList, pCluster);
-                filteredNetworkUsageList = filterUsageByCluster(filteredNetworkUsageList, pCluster);
+                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredCpuUsageList);
+                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredMemUsageList);
+                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredDiskUsageList);
+                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredNetworkUsageList);
+                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredGridInstanceList);
 
-                filteredGridInstanceList = filterUsageByCluster(filteredGridInstanceList, pCluster);
             }
 
             //todo: -------------------------------------------
@@ -445,11 +445,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             if (pAppInstance !== '') {
                 //todo:app instalce list를 필터링
                 //appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
-                filteredCpuUsageList = filterUsageByAppInst(filteredCpuUsageList, pAppInstance);
-                filteredMemUsageList = filterUsageByAppInst(filteredMemUsageList, pAppInstance);
-                filteredDiskUsageList = filterUsageByAppInst(filteredDiskUsageList, pAppInstance);
-                filteredNetworkUsageList = filterUsageByAppInst(filteredNetworkUsageList, pAppInstance);
-                filteredGridInstanceList = filterUsageByAppInst(filteredGridInstanceList, pAppInstance);
+                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredCpuUsageList);
+                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredMemUsageList);
+                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredDiskUsageList);
+                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredNetworkUsageList);
+                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredGridInstanceList);
+
             }
 
 

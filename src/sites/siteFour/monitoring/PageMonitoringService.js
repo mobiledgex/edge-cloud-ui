@@ -156,12 +156,22 @@ export const filterInstanceCountOnCloutLetOne = (appInstanceListGroupByCloudlet,
 }
 
 /**
- * @fixme : 리펙토링 필요 (below method와 함꼐 merge)
- * @todo: 그래프 데이터를 필터링 BY Cloudlet
- * @param cpuOrMemUsageList
- * @param pCloudLet
+ *
+ * @param usageList
+ * @param pTypeKey
+ * @param pTypeValue
  * @returns {*}
  */
+export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
+    let filteredUsageList = usageList.filter((item) => {
+        if (item.instance[pTypeKey] === pTypeValue) {
+            return item;
+        }
+    });
+    return filteredUsageList
+}
+
+
 export const filterUsageByCloudLet = (cpuOrMemUsageList, pCloudLet) => {
     let filteredCpuOrMemUsageList = cpuOrMemUsageList.filter((item) => {
         if (item.instance.Cloudlet === pCloudLet) {
@@ -1672,27 +1682,14 @@ export const filterAppInstanceListByRegion = (pRegion, appInstanceList) => {
 /**
  * @todo: Cpu/Mem 사용량을 리전별로 필터링
  * @param pRegion
- * @param memOrCpuUsageList
+ * @param usageList
  * @returns {*}
  */
-export const filterUsageListByRegion = (pRegion, memOrCpuUsageList) => {
+export const filterUsageListByRegion = (pRegion, usageList) => {
     if (pRegion === REGION.ALL) {
-        return memOrCpuUsageList;
+        return usageList;
     } else {
-        let filteredUsageListByRegion = memOrCpuUsageList.filter((item) => {
-            if (item.instance.Region === pRegion) {
-                return item;
-            }
-        });
-        return filteredUsageListByRegion;
-    }
-}
-
-export const filterCpuOrMemUsageListByType = (pRegion, memOrCpuUsageList, type) => {
-    if (pRegion === REGION.ALL) {
-        return memOrCpuUsageList;
-    } else {
-        let filteredUsageListByRegion = memOrCpuUsageList.filter((item) => {
+        let filteredUsageListByRegion = usageList.filter((item) => {
             if (item.instance.Region === pRegion) {
                 return item;
             }
