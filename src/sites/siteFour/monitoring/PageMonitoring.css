@@ -125,13 +125,14 @@
 .page_monitoring_title2 {
     display: flex;
     margin-right: 20px;
+    margin-left: 89px;
     flex-grow: 1;
     min-width: 120px;
     line-height: 38px;
     font-size: 20px;
     color: #c5c6c8;
-    width: 120px;
-    //background-color: red;
+    width: 180px;
+    /*background-color: red;*/
 }
 
 .page_monitoring_container {

@@ -919,7 +919,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, networkType)}
                         </div>
                     </div>
-                    <div className='' style={{marginLeft: 5, marginRight: 5, marginTop:0}}>
+                    <div className='' style={{marginLeft: 5, marginRight: 5, marginTop: 0}}>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredNetworkUsageList, networkType)}
                         </div>
@@ -1467,8 +1467,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title2'>
                                                             &nbsp;Transition Of Network Usage
                                                         </div>
-                                                        <div style={{marginRight:126}}>
-                                                            <Dropdown
+                                                        <div style={{marginRight: 0}}>
+                                                            {!this.state.loading && <Dropdown
                                                                 placeholder='SELECT HARDWARE'
                                                                 selection
                                                                 loading={this.state.loading}
@@ -1476,11 +1476,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 defaultValue={NETWORK_OPTIONS[0].value}
                                                                 onChange={async (e, {value}) => {
 
-                                                                    if (value===NETWORK_TYPE.RECV_BYTES){
+                                                                    if (value === NETWORK_TYPE.RECV_BYTES) {
                                                                         this.setState({
                                                                             networkTabIndex: 0,
                                                                         })
-                                                                    }else{
+                                                                    } else {
                                                                         this.setState({
                                                                             networkTabIndex: 1,
                                                                         })
@@ -1489,7 +1489,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 }}
                                                                 value={this.state.currentNetworkType}
                                                                 style={Styles.dropDown}
-                                                            />
+                                                            />}
                                                         </div>
                                                     </div>
                                                     {/*todo:---------------------------------*/}
