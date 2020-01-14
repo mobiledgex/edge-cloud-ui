@@ -536,10 +536,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 networkChartData: networkChartData,
                 networkBarChartData: networkBarChartData,
             })
-
             this.props.toggleLoading(false)
-
-
         }
 
         async makeFirstBubbleChartData(appInstanceList: any) {
