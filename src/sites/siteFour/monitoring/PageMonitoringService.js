@@ -119,7 +119,6 @@ export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
 }
 
 
-
 /**
  * todo: Fliter app instace list by cloudlet Value
  * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
@@ -296,7 +295,7 @@ export const renderUsageByType = (usageOne, hardwareType) => {
     }
 }
 
-export const renderLottie = () =>{
+export const renderLottie = () => {
     return (
         <div style={{position: 'absolute', top: '-20%', left: '48%'}}>
             <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: -170}}>
@@ -451,25 +450,23 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
  * @returns {*}
  */
 export const renderPlaceHolder = () => {
-    let boxWidth = window.innerWidth / 3 - 50;
+    let boxWidth = window.innerWidth / 3 - 100;
     return (
-        <div className='page_monitoring_grid_box_blank2' style={{width: boxWidth}}>
-            <div style={{marginTop: -50}}>
-                <Lottie
-                    options={{
-                        loop: true,
-                        autoplay: true,
-                        animationData: require('../../../lotties/loader001'),
-                        rendererSettings: {
-                            preserveAspectRatio: 'xMidYMid slice'
-                        }
-                    }}
-                    height={120}
-                    width={120}
-                    isStopped={false}
-                    isPaused={false}
-                />
-            </div>
+        <div style={{marginTop: -50, backgroundColor: 'transparent', width: boxWidth - 50, display: 'flex', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
+            <Lottie
+                options={{
+                    loop: true,
+                    autoplay: true,
+                    animationData: require('../../../lotties/loader001'),
+                    rendererSettings: {
+                        preserveAspectRatio: 'xMidYMid slice'
+                    }
+                }}
+                height={120}
+                width={120}
+                isStopped={false}
+                isPaused={false}
+            />
         </div>
     )
 }
@@ -620,7 +617,6 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
         </div>
     )
 }
-
 
 
 export const getMetricsUtilizationAtAppLevel_TEST = async (appInstanceOne) => {
@@ -1233,8 +1229,6 @@ export const requestShowAppInstanceList = async (pArrayRegion = ['EU', 'US']) =>
         })
 
 
-
-
         let mergedList = mergedAppInstanceList.concat(responseResult);
         mergedAppInstanceList = mergedList;
     }
@@ -1458,9 +1452,9 @@ export const Styles = {
         width: 100,
         display: 'flex'
     },
-    header00001:{
+    header00001: {
         fontSize: 21,
-        marginLeft:5,
+        marginLeft: 5,
         color: 'white',
     },
     div001: {

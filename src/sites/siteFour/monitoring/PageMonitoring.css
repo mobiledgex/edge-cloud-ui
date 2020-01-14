@@ -193,7 +193,9 @@
     align-items: center;
 }
 
-.page_monitoring_grid_box_blank2 {
+
+
+.page_monitoring_grid_box_for_placeholder {
     display: flex;
     flex-direction: column;
     /*flex-grow: 1;*/
@@ -203,6 +205,7 @@
     margin-right: 0px;
     justify-content: center;
     align-items: center;
+    background-color: red;
 }
 
 .page_monitoring_grid_box:last-child {

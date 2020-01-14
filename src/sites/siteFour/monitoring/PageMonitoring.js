@@ -270,9 +270,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
 
-            //todo: -------------------------------------------------------------------------------
+            //todo: #####################################################
             //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA)
-            //todo: -------------------------------------------------------------------------------
+            //todo: #####################################################
             let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
 
             //todo: #####################################################
