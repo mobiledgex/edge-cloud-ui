@@ -19,7 +19,7 @@ const panes = [
 const panesCommand = [
     { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> },
     { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props} /></Tab.Pane> },
-    { menuItem: 'Command', render: (props) => <Tab.Pane><CommandViewer data={props} /></Tab.Pane> }
+    // { menuItem: 'Command', render: (props) => <Tab.Pane><CommandViewer data={props} /></Tab.Pane> }
 ]
 const detailViewer = (props, type) => (
     <Fragment>
@@ -46,7 +46,7 @@ const detailViewer = (props, type) => (
 )
 
 const makeTable = (values, label, i) => (
-    (label !== 'Edit') ?
+    (label !== 'Edit' && label !== 'uuid') ?
         <Table.Row key={i}>
             <Table.Cell>
                 <Header as='h4' image>

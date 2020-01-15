@@ -225,7 +225,7 @@ export function deleteCloudletPool(resource, body, callback, self) {
                     parseData = JSON.parse(JSON.stringify(response));
                 }
             } else {
-                parseData = response;
+                parseData = {message:'Deleted successfully'};
             }
             if(parseData){
                 switch(resource){

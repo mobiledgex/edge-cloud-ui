@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
+import PageDetailViewer from '../../../container/pageDetailViewer';
 import MapWithListView from "../../../container/mapWithListView";
 import * as reducer from '../../../utils'
 
@@ -249,7 +250,10 @@ class SiteFourPageAppInst extends React.Component {
         const {shouldShowBox, shouldShowCircle} = this.state;
         const { activeItem, viewMode, devData, detailData } = this.state;
         return (
-            <MapWithListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort}></MapWithListView>
+            (viewMode === 'listView')?
+                <MapWithListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort}></MapWithListView>
+                :
+                <PageDetailViewer data={detailData} page='appInst'/>
         );
     }
 

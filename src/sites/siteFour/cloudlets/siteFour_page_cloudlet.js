@@ -3,6 +3,7 @@ import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
+import PageDetailViewer from '../../../container/pageDetailViewer';
 import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
@@ -190,7 +191,10 @@ class SiteFourPageCloudlet extends React.Component {
         const { activeItem, viewMode } = this.state;
         let randomValue = Math.round(Math.random() * 100);
         return (
-            <MapWithListView devData={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
+            (viewMode === 'listView') ?
+                <MapWithListView devData={this.state.devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
+                :
+                <PageDetailViewer data={this.state.detailData} page='cloudlet'/>
         );
     }
 

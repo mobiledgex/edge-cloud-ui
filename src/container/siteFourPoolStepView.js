@@ -366,7 +366,7 @@ class SiteFourPoolStepView extends React.Component {
         console.log('20191231 result -- ',JSON.stringify(result))
         if(this.pauseRender) return;
 
-        if(result.error) {
+        if(result.response && result.response.error) {
             //this.setState({clusterInstCreate:false})
             this.props.handleLoadingSpinner(false);
             if(result.error == 'Key already exists'){
@@ -380,14 +380,12 @@ class SiteFourPoolStepView extends React.Component {
                 this.props.handleAlertInfo('error','Request Failed')
             }
         } else {
-            if (result.data.error) {
+            if (result.response && result.response.data.error) {
                 this.props.handleAlertInfo('error', result.data.error)
             } else {
-                this.props.handleAlertInfo('success',result.data.message)
-
+                this.props.handleAlertInfo('success',result.response.data.message ? result.response.data.message : 'Created sucessfully')
 
                 /** send props to next step **/
-
                 this.setState({selectedRegion:this.state.submitValues.Region, gavePoolName:this.state.submitValues.poolName})
                 this.setState({step:3, validateError:null, keysData:[keys[2]], fakeData:[fakes[2]]})
             }
@@ -437,6 +435,9 @@ class SiteFourPoolStepView extends React.Component {
         if(nextProps.formClusterInst && nextProps.formClusterInst.submitSucceeded){
             //
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            if(nextProps.formClusterInst.values === this.state.submitValues) {
+                return;
+            }
             this.setState({submitValues: nextProps.formClusterInst.values})
 
             if(this.state.step === 1) {
@@ -459,12 +460,12 @@ class SiteFourPoolStepView extends React.Component {
                 serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_CLOUDLET_POOL, data : keyObj }, _self.receiveSubmit)
 
                 /** TEST 20191231 go to next step 2 **/
-                let self = this;
-                setTimeout(() => {
-                    self.setState({selectedRegion:self.state.submitValues.Region, gavePoolName:self.state.submitValues.poolName})
-                    self.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
-                    self.props.handleChangeNext(2)
-                }, 2000)
+                // let self = this;
+                // setTimeout(() => {
+                //     self.setState({selectedRegion:self.state.submitValues.Region, gavePoolName:self.state.submitValues.poolName})
+                //     self.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
+                //     self.props.handleChangeNext(2)
+                // }, 2000)
 
 
             } else if(this.state.step === 2) {
@@ -485,18 +486,21 @@ class SiteFourPoolStepView extends React.Component {
                     selectedNumber.map((no) => {
                         organiz = nextProps.formClusterInst.values.LinktoOrganization[no];
                         _params = {"cloudletpool":cloudletPool,"org":organiz['cloudlet'],"region":region}
-
-                        // TODO: 20200109 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                        // old
                         //servicePool.createLinkPoolOrg('CreateLinkPoolOrg',{token:store.userToken, params:_params}, _self.receiveResultLinkOrg)
+
+                        // new
+                        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+                        serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_LINK_POOL_ORG, data : _params }, _self.receiveResultLinkOrg)
                     })
                 }
 
-                //TEST goto step 3
-                let self = this;
-                setTimeout(() => {
-                    self.setState({selectedRegion:self.state.submitValues.Region, gavePoolName:self.state.submitValues.poolName})
-                    self.setState({step:3, validateError:null, keysData:[keys[2]], fakeData:[fakes[2]]})
-                }, 2000)
+                //TEST goto step 3 -test-test-test-test-
+                // let self = this;
+                // setTimeout(() => {
+                //     self.setState({selectedRegion:self.state.submitValues.Region, gavePoolName:self.state.submitValues.poolName})
+                //     self.setState({step:3, validateError:null, keysData:[keys[2]], fakeData:[fakes[2]]})
+                // }, 2000)
 
             } else if(this.state.step === 3) {
 

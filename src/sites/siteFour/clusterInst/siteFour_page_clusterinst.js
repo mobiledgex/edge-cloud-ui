@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
+import PageDetailViewer from '../../../container/pageDetailViewer';
 import MapWithListView from "../../../container/mapWithListView";
 import * as reducer from '../../../utils'
 
@@ -234,7 +235,10 @@ class SiteFourPageClusterInst extends React.Component {
         const { activeItem, viewMode } = this.state;
         let randomValue = Math.round(Math.random() * 100);
         return (
+            (viewMode === 'listView')?
             <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
+            :
+            <PageDetailViewer className="ttt" data={this.state.detailData} page='clusterInst'/>
         );
     }
 

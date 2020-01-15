@@ -76,7 +76,7 @@ class SiteFourPoolTwo extends React.Component {
     countJoinOrg(orgs) {
         let orgList = [];
         orgs.map((list) => {
-            orgList.push({'cloudlet':list['Name']})
+            orgList.push({'cloudlet':list['Organization']})
         })
 
         //

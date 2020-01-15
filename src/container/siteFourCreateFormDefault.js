@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 
 import {Button, Form, Grid, Header, Item, Popup, Icon, Input} from "semantic-ui-react";
 import { Transfer } from 'antd';
-import { Field, reduxForm, change,stopSubmit } from "redux-form";
+import { Field, reduxForm, change,stopSubmit, initialize, reset } from "redux-form";
 import * as serviceMC from '../services/serviceMC';
 import SankeyDiagram from '../charts/plotly/SankeyDiagram';
 import DualListBox from 'react-dual-listbox';
@@ -391,7 +391,8 @@ class SiteFourCreateFormDefault extends React.Component {
             inverted
         />
     )
-    onHandleSubmit=(a,b)=> {
+    onHandleSubmit=(result,dispatch)=> {
+        
         this.props.handleSubmit();
     }
     onFormState=(a,b)=> {
@@ -678,4 +679,7 @@ class SiteFourCreateFormDefault extends React.Component {
 export default reduxForm({
     form: "createAppFormDefault",
     enableReinitialize: true,
+    onSubmitSuccess (result, dispatch) {
+        setTimeout(() => dispatch( reset( "createAppFormDefault" ) ), 1000 );
+    }
 })(SiteFourCreateFormDefault);

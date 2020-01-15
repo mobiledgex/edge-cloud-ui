@@ -58,8 +58,8 @@ class SiteFourPoolUpdateView extends React.Component {
                 })
             }
         }
-
-        this.state.selectListData = cloudletData
+        this.setState({selectListData: cloudletData});
+        this.props.filterOldData(cloudletData);
     }
 
     receiveResultLinkOrg = (result) => {
@@ -74,7 +74,8 @@ class SiteFourPoolUpdateView extends React.Component {
                 })
             }
         }
-        this.state.selectListData = orgData
+        this.setState({selectListData: orgData});
+        this.props.filterOldData(orgData);
     }
 
     getDataList = () => {
