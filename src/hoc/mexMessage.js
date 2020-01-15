@@ -68,23 +68,23 @@ const MexMessage = (props) => {
 
     return (
         props.info && props.info.error ?
-        <div>
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                open={open}
-                autoHideDuration={10000}
-                onClose={handleClose}
-            >
-                <MessageWrapper
+            <div>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={open}
+                    autoHideDuration={10000}
                     onClose={handleClose}
-                    error={props.info.error}
-                    message={props.info.message}
-                />
-            </Snackbar>
-        </div>:null
+                >
+                    <MessageWrapper
+                        onClose={handleClose}
+                        error={props.info.error}
+                        message={props.info.message}
+                    />
+                </Snackbar>
+            </div>:null
     );
 }
 
