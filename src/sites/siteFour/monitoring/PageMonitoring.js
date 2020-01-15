@@ -912,46 +912,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <div className='page_monitoring_dual_column'>
                     <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of NETWORK Usage
-                            </div>
-                        </div>
+
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, networkType)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, networkType, this)}
                         </div>
                     </div>
                     {/*1_column*/}
                     {/*1_column*/}
                     {/*1_column*/}
                     <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Transition Of NETWORK Usage
-                            </div>
-                            <Dropdown
-                                placeholder='SELECT HARDWARE'
-                                selection
-                                loading={this.state.loading}
-                                options={NETWORK_OPTIONS}
-                                defaultValue={NETWORK_OPTIONS[0].value}
-                                onChange={async (e, {value}) => {
-
-                                    if (value===NETWORK_TYPE.RECV_BYTES){
-                                        this.setState({
-                                            networkTabIndex: 0,
-                                        })
-                                    }else{
-                                        this.setState({
-                                            networkTabIndex: 1,
-                                        })
-                                    }
-
-                                }}
-                                value={this.state.currentNetworkType}
-                                // style={Styles.dropDown}
-                            />
-                        </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredNetworkUsageList, networkType)}
                         </div>
@@ -1003,7 +972,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             )
         }
-
 
 
         renderSelectBoxRow() {
@@ -1425,7 +1393,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo:---------------------------------*/}
                                                     <Tab
                                                         className='page_monitoring_tab'
-                                                        menu={{ secondary: true, pointing: true }}
+                                                        menu={{secondary: true, pointing: true}}
                                                         panes={this.CPU_MEM_DISK_TABS}
                                                         activeIndex={this.state.currentTabIndex}
                                                         onTabChange={(e, {activeIndex}) => {
@@ -1479,50 +1447,50 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo:-----------------------*/}
                                                     {/*todo:  NETWORK HEADER     */}
                                                     {/*todo:-----------------------*/}
-                                                    {/*<div className='page_monitoring_title_area2'>*/}
-                                                    {/*    <div style={{display: 'flex', flexDirection: 'row',}}>*/}
-                                                    {/*        <div className='page_monitoring_title'>*/}
-                                                    {/*            TOP5 of NETWORK Usage*/}
-                                                    {/*        </div>*/}
-                                                    {/*        <div className='page_monitoring_title'>*/}
-                                                    {/*            TOP5 of NETWORK Usage*/}
-                                                    {/*        </div>*/}
-                                                    {/*        <div style={{marginRight: 0}}>*/}
-                                                    {/*            {!this.state.loading && <Dropdown*/}
-                                                    {/*                placeholder='SELECT HARDWARE'*/}
-                                                    {/*                selection*/}
-                                                    {/*                loading={this.state.loading}*/}
-                                                    {/*                options={NETWORK_OPTIONS}*/}
-                                                    {/*                defaultValue={NETWORK_OPTIONS[0].value}*/}
-                                                    {/*                onChange={async (e, {value}) => {*/}
+                                                    <div style={{display: 'flex', flexDirection: 'row'}}>
 
-                                                    {/*                    if (value === NETWORK_TYPE.RECV_BYTES) {*/}
-                                                    {/*                        this.setState({*/}
-                                                    {/*                            networkTabIndex: 0,*/}
-                                                    {/*                        })*/}
-                                                    {/*                    } else {*/}
-                                                    {/*                        this.setState({*/}
-                                                    {/*                            networkTabIndex: 1,*/}
-                                                    {/*                        })*/}
-                                                    {/*                    }*/}
+                                                        <div className='page_monitoring_title_area2'>
+                                                            <div className='page_monitoring_title'>
+                                                                TOP5 of NETWORK Usage
+                                                            </div>
+                                                        </div>
+                                                        <div className='page_monitoring_title_area3'>
+                                                            <div className='page_monitoring_title'>
+                                                                Transition Of NETWORK Usage
+                                                            </div>
+                                                        </div>
+                                                        <Dropdown
+                                                            placeholder='SELECT HARDWARE'
+                                                            selection
+                                                            loading={this.state.loading}
+                                                            options={NETWORK_OPTIONS}
+                                                            defaultValue={NETWORK_OPTIONS[0].value}
+                                                            onChange={async (e, {value}) => {
 
-                                                    {/*                }}*/}
-                                                    {/*                value={this.state.currentNetworkType}*/}
-                                                    {/*                style={Styles.dropDown}*/}
-                                                    {/*            />}*/}
-                                                    {/*        </div>*/}
-                                                    {/*    </div>*/}
+                                                                if (value === NETWORK_TYPE.RECV_BYTES) {
+                                                                    this.setState({
+                                                                        networkTabIndex: 0,
+                                                                    })
+                                                                } else {
+                                                                    this.setState({
+                                                                        networkTabIndex: 1,
+                                                                    })
+                                                                }
 
-                                                    {/*</div>*/}
+                                                            }}
+                                                            value={this.state.currentNetworkType}
+                                                            // style={Styles.dropDown}
+                                                        />
+                                                    </div>
+
                                                     {/*todo:---------------------------------*/}
                                                     {/*todo: NETWORK TAB PANEL AREA           */}
                                                     {/*todo:---------------------------------*/}
-                                                    <Tabs selectedIndex={this.state.networkTabIndex}
-                                                          className='page_monitoring_tab'>
-                                                        <TabPanel style={{color: 'white', height:'100%'}}>
+                                                    <Tabs selectedIndex={this.state.networkTabIndex}>
+                                                        <TabPanel>
                                                             {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
                                                         </TabPanel>
-                                                        <TabPanel style={{color: 'white', height:'100%'}}>
+                                                        <TabPanel>
                                                             {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
                                                         </TabPanel>
                                                     </Tabs>

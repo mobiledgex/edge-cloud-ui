@@ -206,6 +206,31 @@
     margin: 5px 0;
     height: fit-content;
 }
+
+.page_monitoring_title_area2 {
+    display: flex;
+    flex-direction: row;
+    /*flex-wrap: wrap;*/
+    align-items: center;
+    margin: 5px 0;
+    height: fit-content;
+    /*background-color: crimson;*/
+    flex:.58;
+}
+
+
+.page_monitoring_title_area3 {
+    display: flex;
+    flex-direction: row;
+    /*flex-wrap: wrap;*/
+    align-items: center;
+    margin: 5px 0;
+    height: fit-content;
+   /* background-color: #ff5e1d;*/
+    flex:.42;
+}
+
+
 .page_monitoring_row:last-child .page_monitoring_title_area {
     margin: 5px 0;
 

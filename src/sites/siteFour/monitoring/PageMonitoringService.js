@@ -337,12 +337,13 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
 
     console.log('chartDataList===>', chartDataList);
 
-    let boxWidth = (window.innerWidth-340)/3 - 22;
+
+    let chartHeight = window.innerHeight / 3;
 
     return (
         <Chart
             width="100%"
-            height={"100%"}
+            height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -386,7 +387,8 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
                 //titlePosition: 'out',
                 chartArea: {
                     // left: 20, right: 150, top: 50, bottom: 25,
-                    width: "60%", height: "80%",},
+                    width: "60%", height: "80%",
+                },
                 legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
                 //xAxis
                 hAxis: {
@@ -495,7 +497,8 @@ export const renderBarGraphForNetwork = (_this) => {
                 //titlePosition: 'out',
                 chartArea: {
                     // left: 20, right: 150, top: 50, bottom: 25,
-                    width: "60%", height: "80%",},
+                    width: "60%", height: "80%",
+                },
                 legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
                 //xAxis
                 hAxis: {
@@ -655,7 +658,7 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
     let appInstanceList = _this.state.appInstanceList;
 
 
-    let boxWidth = (window.innerWidth-300)/3 - 20
+    let boxWidth = (window.innerWidth - 300) / 3 - 20
 
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -913,7 +916,6 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
     console.log('cpuUsageList===>', hardwareUsageList);
 
 
-
     let width = window.innerWidth * 0.28
     let height = 500 + 100;
 
@@ -999,18 +1001,18 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
     }
 
 
-    let chartWidth = ((window.innerWidth-300)*2/3-50)/2
-    let chartHeight = window.innerWidth > 1700 ? ((window.innerHeight-320)/2-80)-10 : ((window.innerHeight-370)/2-80)-10 //(height 사이즈)-(여유공백)
+    let chartWidth = ((window.innerWidth - 300) * 2 / 3 - 50) / 2
+    let chartHeight = window.innerWidth > 1700 ? ((window.innerHeight - 320) / 2 - 80) - 10 : ((window.innerHeight - 370) / 2 - 80) - 10 //(height 사이즈)-(여유공백)
     // let chartNetHeight = window.innerWidth > 1782 ? (window.innerHeight-320)/2-50 : (window.innerHeight-370)/2-50
 
     //todo :#######################
     //todo : chart rendering part
     //todo :#######################
     return (
-        <div style={{width:'100%', height:'100%'}}>
+        <div style={{width: '100%', height: '100%'}}>
             <ReactChartJs
                 width={chartWidth}
-                height={hardwareType === "recv_bytes" || hardwareType === "send_bytes"? chartHeight+20 : chartHeight}
+                height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
                 data={lineChartData}
                 options={options}
 
@@ -1333,8 +1335,6 @@ export const requestShowAppInstanceList = async (pArrayRegion = ['EU', 'US']) =>
         })
 
 
-
-
         let mergedList = mergedAppInstanceList.concat(responseResult);
         mergedAppInstanceList = mergedList;
     }
@@ -1558,9 +1558,9 @@ export const Styles = {
         width: 100,
         display: 'flex'
     },
-    header00001:{
+    header00001: {
         fontSize: 21,
-        marginLeft:5,
+        marginLeft: 5,
         color: 'white',
     },
     div001: {
