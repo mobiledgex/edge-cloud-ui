@@ -50,14 +50,12 @@ import {
 import Lottie from "react-lottie";
 import type {TypeGridInstanceList} from "../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
-
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import './PageMonitoring.css'
-
 const FA = require('react-fontawesome')
-const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
+const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;
 const {Pane} = Tab
 
@@ -65,7 +63,6 @@ const {Pane} = Tab
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
-        userRole: state.showUserRole ? state.showUserRole.role : null,
     }
 };
 const mapDispatchProps = (dispatch) => {
@@ -73,9 +70,6 @@ const mapDispatchProps = (dispatch) => {
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
         }
-        , handleUserRole: (data) => {
-            dispatch(actions.showUserRole(data))
-        },
     };
 };
 
@@ -190,7 +184,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             cloudLetSelectBoxPlaceholder: 'Select CloudLet',
             clusterSelectBoxPlaceholder: 'Select Cluster',
             appInstSelectBoxPlaceholder: 'Select Instance',
-            //@todo: selectbox 초기값
             currentRegion: 'ALL',
             currentCloudLet: '',
             currentCluster: '',
@@ -964,13 +957,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                     </Grid.Row>
                 </div>
-
             )
         }
 
-
         renderSelectBoxRow() {
-
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
@@ -1091,7 +1081,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
 
                         {/*todo:---------------------------*/}
-                        {/*todo:TimeRange   Dropdown       */}
+                        {/*todo: Time Range Dropdown       */}
                         {/*todo:---------------------------*/}
                         <div className="page_monitoring_dropdown_box">
                             {/*<div className="page_monitoring_dropdown_label">*/}
@@ -1247,29 +1237,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
             },
         ]
-
-        NETWORK_TABS = [
-
-            {
-                menuItem: 'RECEIVE BYTES', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'SEND BYTES', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
-                        </Pane>
-                    )
-                }
-            },
-        ]
-
 
         render() {
             {/*todo:-------------------------------------------------------------------------------*/
