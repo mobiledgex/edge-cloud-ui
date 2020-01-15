@@ -14,29 +14,29 @@ const DialogContent = withStyles(theme => ({
 
 const DialogActions = withStyles(theme => ({
     root: {
-      margin: 0,
-      padding: theme.spacing(1),
+        margin: 0,
+        padding: theme.spacing(1),
     },
-  }))(MuiDialogActions);
+}))(MuiDialogActions);
 
 const MexMessageDialog = (props) => {
     return (
         props.message && props.message.length>0 ?
-        <Dialog  open={props.message.length>0}>
-            {props.message.map(item=>(
-                <DialogContent style={{background:'#616161',width:500}}>
-                    <Typography style={{color:'#FFF'}}>
-                        <p>{item}</p>
-                    </Typography>
-                </DialogContent>
-            ))}
-            <DialogActions style={{background:'#616161'}}>
-            <Button  autoFocus onClick={()=>{props.close()}} color="primary">
-                OK
-            </Button>
-            </DialogActions>
-            
-        </Dialog> : null
+            <Dialog  open={props.message.length>0}>
+                {props.message.map(item=>(
+                    <DialogContent style={{background:'#616161',width:500}}>
+                        <Typography style={{color:'#FFF'}}>
+                            <p>{item}</p>
+                        </Typography>
+                    </DialogContent>
+                ))}
+                <DialogActions style={{background:'#616161'}}>
+                    <Button  autoFocus onClick={()=>{props.close()}} color="primary">
+                        OK
+                    </Button>
+                </DialogActions>
+
+            </Dialog> : null
     )
 }
 
