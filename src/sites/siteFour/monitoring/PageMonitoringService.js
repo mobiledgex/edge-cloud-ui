@@ -6,15 +6,12 @@ import {formatData} from "../../../services/formatter/formatComputeInstance";
 import './PageMonitoring.css';
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../shared/Constants";
 import {Line as ReactChartJs} from 'react-chartjs-2';
-import FlexBox from "flexbox-react";
 import Lottie from "react-lottie";
 import BubbleChart from "../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../shared/Types";
-import Plot from "react-plotly.js";
 import PageMonitoring from "./PageMonitoring";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
-
     let newArrayList = [];
     for (let index in paramArrayList) {
         if (index < 5) {
@@ -340,25 +337,27 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
 
     console.log('chartDataList===>', chartDataList);
 
+    let boxWidth = (window.innerWidth-340)/3 - 22;
+
     return (
         <Chart
-            width={window.innerWidth * 0.25}
-            height={330}
+            width="100%"
+            height={"100%"}
             chartType="BarChart"
-            loader={renderLottie()}
+            loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
             options={{
                 annotations: {
                     style: 'line',
                     textStyle: {
-                        fontName: 'Righteous',
-                        fontSize: 20,
-                        bold: true,
-                        italic: true,
+                        //fontName: 'Righteous',
+                        fontSize: 12,
+                        //bold: true,
+                        //italic: true,
                         // The color of the text.
                         color: '#fff',
                         // The color of the text outline.
-                        auraColor: 'black',
+                        //auraColor: 'black',
                         // The transparency of the text.
                         opacity: 1.0
                     },
@@ -378,16 +377,16 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
                 title: '',
                 titleTextStyle: {
                     color: '#fff',
-                    fontSize: 20,
-                    italic: true,
-                    bold: true,
+                    fontSize: 12,
                     /*fontName: <string>, // i.e. 'Times New Roman'
                     fontSize: <number>, // 12, 18 whatever you want (don't specify px)
                      bold: <boolean>,    // true or false
                       // true of false*/
                 },
                 //titlePosition: 'out',
-                chartArea: {left: 100, right: 150, top: 50, bottom: 25, width: "50%", height: "100%",},
+                chartArea: {
+                    // left: 20, right: 150, top: 50, bottom: 25,
+                    width: "60%", height: "80%",},
                 legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
                 //xAxis
                 hAxis: {
@@ -404,10 +403,10 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
                         color: "white"
                     },
                     gridlines: {
-                        color: "none"
+                        color: "grey"
                     },
                     format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '0.##\' byte\'',
-                    baselineColor: 'grey',
+                    baselineColor: "grey",
                     //out', 'in', 'none'.
                 },
                 //Y축
@@ -420,14 +419,123 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
                     },
                     textStyle: {
                         color: "white",
-                        fontSize: 15,
+                        fontSize: 12,
                     },
 
                 },
                 //colors: ['#FB7A21'],
                 fontColor: 'white',
                 backgroundColor: {
-                    fill: 'black'
+                    fill: '#1e2124'
+                },
+                /*  animation: {
+                      duration: 300,
+                      easing: 'out',
+                      startup: true
+                  }*/
+                //colors: ['green']
+            }}
+
+            // For tests
+            rootProps={{'data-testid': '1'}}
+        />
+    );
+
+}
+
+
+export const renderBarGraphForNetwork = (_this) => {
+
+    console.log('networkBarChartData===>', _this.state.networkBarChartData);
+
+    return (
+        <Chart
+            width={'100%'}
+            height={'100%'}
+            chartType="BarChart"
+            loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
+            data={_this.state.networkBarChartData}
+            options={{
+                annotations: {
+                    style: 'line',
+                    textStyle: {
+                        //fontName: 'Righteous',
+                        fontSize: 12,
+                        //bold: true,
+                        //italic: true,
+                        // The color of the text.
+                        color: '#fff',
+                        // The color of the text outline.
+                        //auraColor: 'black',
+                        // The transparency of the text.
+                        opacity: 1.0
+                    },
+                    boxStyle: {
+                        // Color of the box outline.
+                        stroke: '#ffffff',
+                        // Thickness of the box outline.
+                        strokeWidth: 1,
+                        // x-radius of the corner curvature.
+                        rx: 10,
+                        // y-radius of the corner curvature.
+                        ry: 10,
+                    }
+                },
+
+                is3D: true,
+                title: '',
+                titleTextStyle: {
+                    color: '#fff',
+                    fontSize: 12,
+                    /*fontName: <string>, // i.e. 'Times New Roman'
+                    fontSize: <number>, // 12, 18 whatever you want (don't specify px)
+                     bold: <boolean>,    // true or false
+                      // true of false*/
+                },
+                //titlePosition: 'out',
+                chartArea: {
+                    // left: 20, right: 150, top: 50, bottom: 25,
+                    width: "60%", height: "80%",},
+                legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
+                //xAxis
+                hAxis: {
+                    textPosition: 'none',//HIDE xAxis
+                    title: '',
+                    titleTextStyle: {
+                        //fontName: "Times",
+                        fontSize: 12,
+                        fontStyle: "italic",
+                        color: 'white'
+                    },
+                    minValue: 0,
+                    textStyle: {
+                        color: "white"
+                    },
+                    gridlines: {
+                        color: "grey"
+                    },
+                    format: '0.##\' byte\'',
+                    baselineColor: "grey",
+                    //out', 'in', 'none'.
+                },
+                //Y축
+                vAxis: {
+                    title: '',
+                    titleTextStyle: {
+                        fontSize: 20,
+                        fontStyle: "normal",
+                        color: 'white'
+                    },
+                    textStyle: {
+                        color: "white",
+                        fontSize: 12,
+                    },
+
+                },
+                //colors: ['#FB7A21'],
+                fontColor: 'white',
+                backgroundColor: {
+                    fill: '#1e2124'
                 },
                 /*  animation: {
                       duration: 300,
@@ -450,9 +558,10 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
  * @returns {*}
  */
 export const renderPlaceHolder = () => {
-    let boxWidth = window.innerWidth / 3 - 100;
+    // let boxWidth = window.innerWidth / 3 - 50;
     return (
-        <div style={{marginTop: -50, backgroundColor: 'transparent', width: boxWidth - 50, display: 'flex', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
+        <div className='page_monitoring_blank_box'>
+            {/*<CircularProgress style={{zIndex: 999999999, color: '#79BF14', marginTop:-50}}/>*/}
             <Lottie
                 options={{
                     loop: true,
@@ -545,13 +654,15 @@ export const filterAppInstOnCloudlet = (CloudLetOneList, pCluster) => {
 export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, pBubbleChartData: any) => {
     let appInstanceList = _this.state.appInstanceList;
 
+
+    let boxWidth = (window.innerWidth-300)/3 - 20
+
     return (
         <div style={{display: 'flex', flexDirection: 'row'}}>
-            {/* <div style={{                marginLeft: 1,                marginRight: 1,                width: 80,            }}>                <FlexBox style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>                    {appInstanceList.map((item: TypeAppInstance) => {                        return (                            <FlexBox>                                {item.AppName}                            </FlexBox>                        )                    })}                </FlexBox>            </div>            */}
             <div style={{
                 //backgroundColor: 'blue',
-                backgroundColor: 'black',
-                marginLeft: 0, marginRight: 0, marginBottom: 10,
+                backgroundColor: '#1e2124',
+                // marginLeft: 0, marginRight: 0, marginBottom: 10,
             }}>
                 {/* {_this.state.loading777 &&
                 <div className='loaderDiv'>
@@ -561,25 +672,26 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
                 <BubbleChart
                     className='bubbleChart'
                     graph={{
-                        zoom: appInstanceList.length <= 4 ? 0.45 : 0.75,
+                        // zoom: appInstanceList.length <= 4 ? 0.45 : 0.70,
+                        zoom: 0.70,
                         offsetX: 0.15,
-                        offsetY: appInstanceList.length <= 4 ? 0.03 : -0.00,
+                        offsetY: appInstanceList.length <= 4 ? 0.1 : -0.00,
                     }}
-                    width={690}
-                    height={315}
-                    padding={-5} // optional value, number that set the padding between bubbles
+                    width={boxWidth}
+                    height={'100%'}
+                    padding={0} // optional value, number that set the padding between bubbles
                     showLegend={true} // optional value, pass false to disable the legend.
-                    legendPercentage={35} // number that represent the % of with that legend going to use.
+                    legendPercentage={20} // number that represent the % of with that legend going to use.
                     legendFont={{
                         //family: 'Candal',
-                        size: 12,
+                        size: 9,
                         color: 'black',
                         weight: 'bold',
                     }}
                     valueFont={{
                         //family: 'Righteous',
                         size: 12,
-                        color: '#525252',
+                        color: 'black',
                         //weight: 'bold',
                         fontStyle: 'italic',
                     }}
@@ -774,7 +886,8 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
             if (i < 5) {
                 let datasetsOne = {
                     label: instanceNameList[i],
-                    backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '',
+                    // backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '',
+                    backgroundColor: '',
                     borderColor: gradientList[i],
                     borderWidth: 2,
                     pointColor: "#fff",
@@ -798,6 +911,8 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
 
 
     console.log('cpuUsageList===>', hardwareUsageList);
+
+
 
     let width = window.innerWidth * 0.28
     let height = 500 + 100;
@@ -875,21 +990,30 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
                 /* gridLines: {
                      drawTicks: true,
                  },*/
-            }]
+            }],
+            backgroundColor: {
+                fill: "#1e2124"
+            },
         }
 
     }
+
+
+    let chartWidth = ((window.innerWidth-300)*2/3-50)/2
+    let chartHeight = window.innerWidth > 1700 ? ((window.innerHeight-320)/2-80)-10 : ((window.innerHeight-370)/2-80)-10 //(height 사이즈)-(여유공백)
+    // let chartNetHeight = window.innerWidth > 1782 ? (window.innerHeight-320)/2-50 : (window.innerHeight-370)/2-50
 
     //todo :#######################
     //todo : chart rendering part
     //todo :#######################
     return (
-        <div>
+        <div style={{width:'100%', height:'100%'}}>
             <ReactChartJs
-                width={width}
-                height={331}
+                width={chartWidth}
+                height={hardwareType === "recv_bytes" || hardwareType === "send_bytes"? chartHeight+20 : chartHeight}
                 data={lineChartData}
                 options={options}
+
             />
         </div>
     );
@@ -1077,12 +1201,12 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
     //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
 
     return (
-        <div style={{display: 'flex', flexDirection: 'column', width: '90%'}}>
+        <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
             {chunkedArraysOfColSize.map((colSizeArray, index) =>
                 <div className='page_monitoring_grid' key={index.toString()}>
                     {colSizeArray.map((item, index) =>
-                        <div className='page_monitoring_grid_box'
-                             style={{flex: colSizeArray.length === 1 && index === 0 ? .318 : .33}}
+
+                        <div className='page_monitoring_grid_box_layout'
                             /* onClick={async () => {
                                  //alert(item.name)
                                  await _this.handleSelectBoxChanges(_this.state.currentRegion, item.name)
@@ -1093,21 +1217,16 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
                                  }, 1000)
                              }}*/
                         >
-                            <FlexBox style={{
-                                fontSize: 15,
-                                marginTop: 10,
+                            <div className='page_monitoring_grid_box'>
+                                <div className='page_monitoring_grid_box_name'>
+                                    {item.name}
+                                    {/*{item.name.toString().substring(0, 19) + "..."}*/}
+                                </div>
+                                <div className='page_monitoring_grid_box_num'>
+                                    {item.length}
+                                </div>
 
-                            }}>
-                                {item.name.toString().substring(0, 19) + "..."}
-                            </FlexBox>
-                            <FlexBox style={{
-                                marginTop: 0,
-                                fontSize: 50,
-                                color: '#29a1ff',
-                            }}>
-                                {item.length}
-                            </FlexBox>
-
+                            </div>
                         </div>
                     )}
                 </div>
@@ -1117,24 +1236,9 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
             {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
             {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
             {chunkedArraysOfColSize.length === 1 &&
-            <div className='page_monitoring_grid_box_blank2'>
+            <div className='page_monitoring_grid'>
                 {[1, 2, 3].map((item, index) =>
-                    <div key={index} className='page_monitoring_grid_box_blank2'
-                         style={{backgroundColor: 'transprent'}}>
-                        <FlexBox style={{
-                            fontSize: 15,
-                            color: '#fff',
-                            marginTop: 10,
-                        }}>
-                            {/*blank*/}
-                        </FlexBox>
-                        <FlexBox style={{
-                            marginTop: 0,
-                            fontSize: 50,
-                            color: 'transprent',
-                        }}>
-                            {/*blank*/}
-                        </FlexBox>
+                    <div className='page_monitoring_grid_box_layout'>
 
                     </div>
                 )}
@@ -1227,6 +1331,8 @@ export const requestShowAppInstanceList = async (pArrayRegion = ['EU', 'US']) =>
         }).catch(e => {
             throw new Error(e)
         })
+
+
 
 
         let mergedList = mergedAppInstanceList.concat(responseResult);
@@ -1452,9 +1558,9 @@ export const Styles = {
         width: 100,
         display: 'flex'
     },
-    header00001: {
+    header00001:{
         fontSize: 21,
-        marginLeft: 5,
+        marginLeft:5,
         color: 'white',
     },
     div001: {
