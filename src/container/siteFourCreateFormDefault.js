@@ -215,7 +215,7 @@ class SiteFourCreateFormDefault extends React.Component {
             _mockData: [],
             targetKeys: [],
             invisibleValue:[],
-            submitButton:'Create'
+            submitButton:'Create',
         };
 
     }
@@ -637,7 +637,7 @@ class SiteFourCreateFormDefault extends React.Component {
                             <Form.Group inline>
                                 {/*<Button onClick={()=>this.onHandleReset()}>Reset</Button>*/}
                                 <span style={{marginRight:'1em'}}>
-                                    {(this.props.changeNext === 2)?
+                                    {(this.props.stepTwo)?
                                         <Button>
                                             Skip
                                         </Button>
@@ -649,7 +649,7 @@ class SiteFourCreateFormDefault extends React.Component {
 
                                 </span>
                                 {
-                                    (parseInt(this.props.changeNext) === 201) ?
+                                    (this.props.stepTwo)?
                                         <Button
                                             primary
                                             positive
