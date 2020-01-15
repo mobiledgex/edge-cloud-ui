@@ -20,6 +20,7 @@ import VerifyContent from './container/verifyContent';
 import './css/index.css';
 import SiteFour from "./sites//siteFour/siteFour";
 import './css/pages/audit.css';
+import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import Test001 from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
 // API

@@ -55,8 +55,8 @@ import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
-import './PageMonitoring.css';
-import './monitoring.css'
+import './PageMonitoring.css'
+// import './monitoring.css'
 
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
@@ -912,11 +912,46 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <div className='page_monitoring_dual_column'>
                     <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 of NETWORK Usage
+                            </div>
+                        </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, networkType)}
                         </div>
                     </div>
+                    {/*1_column*/}
+                    {/*1_column*/}
+                    {/*1_column*/}
                     <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Transition Of NETWORK Usage
+                            </div>
+                            <Dropdown
+                                placeholder='SELECT HARDWARE'
+                                selection
+                                loading={this.state.loading}
+                                options={NETWORK_OPTIONS}
+                                defaultValue={NETWORK_OPTIONS[0].value}
+                                onChange={async (e, {value}) => {
+
+                                    if (value===NETWORK_TYPE.RECV_BYTES){
+                                        this.setState({
+                                            networkTabIndex: 0,
+                                        })
+                                    }else{
+                                        this.setState({
+                                            networkTabIndex: 1,
+                                        })
+                                    }
+
+                                }}
+                                value={this.state.currentNetworkType}
+                                // style={Styles.dropDown}
+                            />
+                        </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredNetworkUsageList, networkType)}
                         </div>
@@ -928,6 +963,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderHeader = () => {
             return (
+
                 <div>
                     <Grid.Row className='content_title'
                               style={{width: 'fit-content', display: 'inline-block'}}>
@@ -968,7 +1004,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
+
+
         renderSelectBoxRow() {
+
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
@@ -1030,102 +1069,103 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     }, 1000)
                                 }}
                             />
+                        </div>
 
 
-                            {/*todo:---------------------------*/}
-                            {/*todo:Cluster Dropdown         */}
-                            {/*todo:---------------------------*/}
+                        {/*todo:---------------------------*/}
+                        {/*todo:Cluster Dropdown         */}
+                        {/*todo:---------------------------*/}
 
-                            <div className="page_monitoring_dropdown_box">
-                                <div className="page_monitoring_dropdown_label">
-                                    Cluster
-                                </div>
-                                <Dropdown
-                                    disabled={this.state.currentCloudLet === ''}
-                                    value={this.state.currentCluster}
-                                    clearable={this.state.clusterSelectBoxClearable}
-                                    loading={this.state.loading}
-                                    placeholder={this.state.clusterSelectBoxPlaceholder}
-                                    selection
-                                    options={this.state.clusterList}
-                                    // style={Styles.dropDown}
-                                    onChange={async (e, {value}) => {
-                                        await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, value)
-
-                                        setTimeout(() => {
-                                            this.setState({
-                                                appInstSelectBoxPlaceholder: "Select App Instance"
-                                            })
-                                        }, 500)
-                                    }}
-                                />
-
-                                {/*todo:---------------------------*/}
-                                {/*todo: App Instance Dropdown      */}
-                                {/*todo:---------------------------*/}
-
-                                <div className="page_monitoring_dropdown_box">
-                                    <div className="page_monitoring_dropdown_label">
-                                        App Inst
-                                    </div>
-                                    <Dropdown
-                                        disabled={this.state.currentCluster === '' || this.state.loading}
-                                        clearable={this.state.appInstSelectBoxClearable}
-                                        loading={this.state.loading}
-                                        value={this.state.currentAppInst}
-                                        placeholder='Select App Instance'
-                                        selection
-                                        options={this.state.appInstanceListTop5}
-                                        // style={Styles.dropDown}
-                                        onChange={async (e, {value}) => {
-
-                                            await this.setState({
-                                                currentAppInst: value,
-                                            })
-                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
-                                        }}
-
-                                    />
-                                </div>
-
-
-                                {/*todo:---------------------------*/}
-                                {/*todo:TimeRange   Dropdown       */}
-                                {/*todo:---------------------------*/}
-                                <div className="page_monitoring_dropdown_box">
-                                    {/*<div className="page_monitoring_dropdown_label">*/}
-                                    {/*    TimeRange*/}
-                                    {/*</div>*/}
-                                    <RangePicker
-                                        disabled={this.state.loading}
-                                        showTime={{format: 'HH:mm'}}
-                                        format="YYYY-MM-DD HH:mm"
-                                        placeholder={['Start Time', 'End Time']}
-                                        onChange={async (date, dateString) => {
-                                            let startDate = dateString[0]
-                                            let endDate = dateString[1]
-                                            await this.setState({
-                                                startDate: startDate,
-                                                endDate: endDate,
-                                            })
-                                            //await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
-                                        }}
-                                        ranges={{
-                                            Today: [moment(), moment()],
-                                            'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(1, 'd')],
-                                            'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
-                                            'This Month': [moment().startOf('month'), moment().endOf('month')],
-                                            'Last Month': [moment().date(-30), moment().date(-1)],
-                                        }}
-                                        style={{width: 300}}
-                                    />
-                                </div>
-
+                        <div className="page_monitoring_dropdown_box">
+                            <div className="page_monitoring_dropdown_label">
+                                Cluster
                             </div>
+                            <Dropdown
+                                disabled={this.state.currentCloudLet === ''}
+                                value={this.state.currentCluster}
+                                clearable={this.state.clusterSelectBoxClearable}
+                                loading={this.state.loading}
+                                placeholder={this.state.clusterSelectBoxPlaceholder}
+                                selection
+                                options={this.state.clusterList}
+                                // style={Styles.dropDown}
+                                onChange={async (e, {value}) => {
+                                    await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, value)
+
+                                    setTimeout(() => {
+                                        this.setState({
+                                            appInstSelectBoxPlaceholder: "Select App Instance"
+                                        })
+                                    }, 500)
+                                }}
+                            />
+                        </div>
+
+                        {/*todo:---------------------------*/}
+                        {/*todo: App Instance Dropdown      */}
+                        {/*todo:---------------------------*/}
+
+                        <div className="page_monitoring_dropdown_box">
+                            <div className="page_monitoring_dropdown_label">
+                                App Inst
+                            </div>
+                            <Dropdown
+                                disabled={this.state.currentCluster === '' || this.state.loading}
+                                clearable={this.state.appInstSelectBoxClearable}
+                                loading={this.state.loading}
+                                value={this.state.currentAppInst}
+                                placeholder='Select App Instance'
+                                selection
+                                options={this.state.appInstanceListTop5}
+                                // style={Styles.dropDown}
+                                onChange={async (e, {value}) => {
+
+                                    await this.setState({
+                                        currentAppInst: value,
+                                    })
+                                    await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                }}
+                            />
+                        </div>
+
+
+                        {/*todo:---------------------------*/}
+                        {/*todo:TimeRange   Dropdown       */}
+                        {/*todo:---------------------------*/}
+
+
+                        <div className="page_monitoring_dropdown_box">
+                            {/*<div className="page_monitoring_dropdown_label">*/}
+                            {/*    TimeRange*/}
+                            {/*</div>*/}
+                            <RangePicker
+                                disabled={this.state.loading}
+                                showTime={{format: 'HH:mm'}}
+                                format="YYYY-MM-DD HH:mm"
+                                placeholder={['Start Time', 'End Time']}
+                                onChange={async (date, dateString) => {
+                                    let startDate = dateString[0]
+                                    let endDate = dateString[1]
+                                    await this.setState({
+                                        startDate: startDate,
+                                        endDate: endDate,
+                                    })
+                                    //await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
+                                }}
+                                ranges={{
+                                    Today: [moment(), moment()],
+                                    'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(1, 'd')],
+                                    'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
+                                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                    'Last Month': [moment().date(-30), moment().date(-1)],
+                                }}
+                                style={{width: 300}}
+                            />
                         </div>
 
                     </div>
                 </div>
+
             )
         }
 
@@ -1385,7 +1425,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo:---------------------------------*/}
                                                     <Tab
                                                         className='page_monitoring_tab'
-                                                        menu={{secondary: true, pointing: true}}
+                                                        menu={{ secondary: true, pointing: true }}
                                                         panes={this.CPU_MEM_DISK_TABS}
                                                         activeIndex={this.state.currentTabIndex}
                                                         onTabChange={(e, {activeIndex}) => {
@@ -1439,49 +1479,50 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo:-----------------------*/}
                                                     {/*todo:  NETWORK HEADER     */}
                                                     {/*todo:-----------------------*/}
-                                                    <div className='page_monitoring_title_area2'>
-                                                        <div style={{display: 'flex', flexDirection: 'row',}}>
-                                                            <div className='page_monitoring_title'>
-                                                                TOP5 of NETWORK Usage
-                                                            </div>
-                                                            <div className='page_monitoring_title'>
-                                                                TOP5 of NETWORK Usage
-                                                            </div>
-                                                            <div style={{marginRight: 0}}>
-                                                                {!this.state.loading && <Dropdown
-                                                                    placeholder='SELECT HARDWARE'
-                                                                    selection
-                                                                    loading={this.state.loading}
-                                                                    options={NETWORK_OPTIONS}
-                                                                    defaultValue={NETWORK_OPTIONS[0].value}
-                                                                    onChange={async (e, {value}) => {
+                                                    {/*<div className='page_monitoring_title_area2'>*/}
+                                                    {/*    <div style={{display: 'flex', flexDirection: 'row',}}>*/}
+                                                    {/*        <div className='page_monitoring_title'>*/}
+                                                    {/*            TOP5 of NETWORK Usage*/}
+                                                    {/*        </div>*/}
+                                                    {/*        <div className='page_monitoring_title'>*/}
+                                                    {/*            TOP5 of NETWORK Usage*/}
+                                                    {/*        </div>*/}
+                                                    {/*        <div style={{marginRight: 0}}>*/}
+                                                    {/*            {!this.state.loading && <Dropdown*/}
+                                                    {/*                placeholder='SELECT HARDWARE'*/}
+                                                    {/*                selection*/}
+                                                    {/*                loading={this.state.loading}*/}
+                                                    {/*                options={NETWORK_OPTIONS}*/}
+                                                    {/*                defaultValue={NETWORK_OPTIONS[0].value}*/}
+                                                    {/*                onChange={async (e, {value}) => {*/}
 
-                                                                        if (value === NETWORK_TYPE.RECV_BYTES) {
-                                                                            this.setState({
-                                                                                networkTabIndex: 0,
-                                                                            })
-                                                                        } else {
-                                                                            this.setState({
-                                                                                networkTabIndex: 1,
-                                                                            })
-                                                                        }
+                                                    {/*                    if (value === NETWORK_TYPE.RECV_BYTES) {*/}
+                                                    {/*                        this.setState({*/}
+                                                    {/*                            networkTabIndex: 0,*/}
+                                                    {/*                        })*/}
+                                                    {/*                    } else {*/}
+                                                    {/*                        this.setState({*/}
+                                                    {/*                            networkTabIndex: 1,*/}
+                                                    {/*                        })*/}
+                                                    {/*                    }*/}
 
-                                                                    }}
-                                                                    value={this.state.currentNetworkType}
-                                                                    style={Styles.dropDown}
-                                                                />}
-                                                            </div>
-                                                        </div>
+                                                    {/*                }}*/}
+                                                    {/*                value={this.state.currentNetworkType}*/}
+                                                    {/*                style={Styles.dropDown}*/}
+                                                    {/*            />}*/}
+                                                    {/*        </div>*/}
+                                                    {/*    </div>*/}
 
-                                                    </div>
+                                                    {/*</div>*/}
                                                     {/*todo:---------------------------------*/}
                                                     {/*todo: NETWORK TAB PANEL AREA           */}
                                                     {/*todo:---------------------------------*/}
-                                                    <Tabs selectedIndex={this.state.networkTabIndex}>
-                                                        <TabPanel style={{color: 'white'}}>
+                                                    <Tabs selectedIndex={this.state.networkTabIndex}
+                                                          className='page_monitoring_tab'>
+                                                        <TabPanel style={{color: 'white', height:'100%'}}>
                                                             {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
                                                         </TabPanel>
-                                                        <TabPanel style={{color: 'white'}}>
+                                                        <TabPanel style={{color: 'white', height:'100%'}}>
                                                             {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
                                                         </TabPanel>
                                                     </Tabs>

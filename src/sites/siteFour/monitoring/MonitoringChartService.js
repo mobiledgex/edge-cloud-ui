@@ -1,5 +1,5 @@
 import React from 'react';
-import './PageMonitoring.css';
+import '../../../css/pages/PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
 import {CHART_COLOR_LIST, HARDWARE_TYPE} from "../../../shared/Constants";
 import {HorizontalBar} from "react-chartjs-2";
