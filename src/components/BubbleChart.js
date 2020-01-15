@@ -117,7 +117,7 @@ export default class BubbleChart extends Component {
             .attr("transform", function (d) {
                 //todo: Bubble chart location setting...
                 //todo: Bubble chart location setting...
-                return "translate(" + (260) + "," + (width * graph.offsetY) + ")";
+                return "translate(" + (width*5/10) + "," + (width * graph.offsetY) + ")"; //버블차트 위치
             });
         ;
 
@@ -272,7 +272,8 @@ export default class BubbleChart extends Component {
 
         const legend = d3.select(this.svg).append("g")
             .attr("transform", function () {
-                return `translate(${offset},${(bubbleHeight) * 0.18})`;
+                // return `translate(${offset},${(bubbleHeight) * 0.18})`;
+                return `translate(450,${(bubbleHeight) * 0.12})`;
             })
             .attr("class", "legend")//.style("marginLeft", `-100px`)
 
@@ -318,13 +319,13 @@ export default class BubbleChart extends Component {
             });
 
         texts.append("text")
-        //.style("font-size", `${legendFont.size}px`)
-            .style("font-size", `17px`)
+            //.style("font-size", `${legendFont.size}px`)
+            .style("font-size", `12px`)
             /*.style("font-weight", (d) => {
                 return legendFont.weight ? legendFont.weight : 50;
             })*/
             //.style("font-family", legendFont.family)
-            .style("font-family", 'Righteous')
+            //.style("font-family", 'Righteous')
             /*.style("fill", () => {
                 return legendFont.color ? legendFont.color : '#000';
             })*/
