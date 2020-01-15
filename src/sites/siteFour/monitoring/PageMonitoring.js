@@ -4,7 +4,6 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
 import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
-import FlexBox from "flexbox-react";
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -319,13 +318,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
 
             //todo: -------------------------------------------
-            //todo: _gridInstanceList _gridInstanceList________
+            //todo: GridInstanceList
             //todo: -------------------------------------------
             let gridInstanceList = this.makeGridInstanceList();
 
-
             //todo: -------------------------------------------
-            //todo: _gridInstanceList MAXVALUE
+            //todo: GridInstanceList MEM,CPU MAX VALUE
             //todo: -------------------------------------------
             let gridInstanceListMemMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
                 return o.sumMemUsage;
@@ -334,7 +332,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let gridInstanceListCpuMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
                 return o.sumCpuUsage;
             }));
-
 
             await this.setState({
                 appInstanceListTop5: appInstanceListTop5,
@@ -431,7 +428,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                 appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
                 clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
-
                 filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredCpuUsageList);
                 filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredMemUsageList);
                 filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredDiskUsageList);
@@ -1071,7 +1067,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------*/}
                         {/*todo: App Instance Dropdown      */}
                         {/*todo:---------------------------*/}
-
                         <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
                                 App Inst
@@ -1095,12 +1090,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             />
                         </div>
 
-
                         {/*todo:---------------------------*/}
                         {/*todo:TimeRange   Dropdown       */}
                         {/*todo:---------------------------*/}
-
-
                         <div className="page_monitoring_dropdown_box">
                             {/*<div className="page_monitoring_dropdown_label">*/}
                             {/*    TimeRange*/}
@@ -1141,7 +1133,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentHardwareType: value,
             });
 
-
             let appInstanceList = this.state.appInstanceList;
             let allCpuUsageList = this.state.allCpuUsageList;
             let allMemUsageList = this.state.allMemUsageList;
@@ -1152,7 +1143,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             if (value === HARDWARE_TYPE.FLAVOR) {
                 appInstanceList.map((item, index) => {
-
                     chartData.push({
                         //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                         index: index,
@@ -1164,7 +1154,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             } else if (value === HARDWARE_TYPE.CPU) {
                 allCpuUsageList.map((item, index) => {
-
                     chartData.push({
                         //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                         index: index,
@@ -1176,7 +1165,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             } else if (value === HARDWARE_TYPE.MEM) {
                 allMemUsageList.map((item, index) => {
-
                     chartData.push({
                         //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                         index: index,
@@ -1188,7 +1176,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             } else if (value === HARDWARE_TYPE.DISK) {
                 allDiskUsageList.map((item, index) => {
-
                     chartData.push({
                         //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                         index: index,
@@ -1220,14 +1207,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
 
-            console.log('allNetworkUsageList===>', allNetworkUsageList);
-
-
             this.setState({
                 bubbleChartData: chartData,
-            }, () => {
-                console.log('bubbleChartData===>', this.state.bubbleChartData)
-            })
+            });
         }
 
         //@todo:-----------------------
@@ -1408,9 +1390,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             {/*_____row____2*/}
                                             {/*_____row____2*/}
                                             <div className='page_monitoring_row'>
-                                                {/* ___col___4*/}
-                                                {/* ___col___4*/}
-                                                {/* ___col___4*/}
+                                                {/* ___col___1*/}
+                                                {/* ___col___1*/}
+                                                {/* ___col___1*/}
                                                 <div className='page_monitoring_column'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
@@ -1442,6 +1424,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChart(this, this.state.currentHardwareType, this.state.bubbleChartData)}
                                                     </div>
                                                 </div>
+                                                {/* row2___col___2*/}
+                                                {/* row2___col___2*/}
+                                                {/* row2___col___2*/}
                                                 <div className='page_monitoring_column'>
                                                     {/*todo:-----------------------*/}
                                                     {/*todo:  NETWORK HEADER     */}
@@ -1507,15 +1492,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                          isShowBottomGrid: !this.state.isShowBottomGrid,
                                                      })
                                                  }}
-
-                                                // style={{
-                                                //     display: 'flex',
-                                                //     width: '99.0%', backgroundColor: '#2f2f2f', alignItems: 'center',
-                                                //     justifyContent: 'center',
-                                                //     alignSelf: 'center',
-                                                //     height: 30,
-                                                //     borderRadius: 1,
-                                                // }}
                                             >
                                                 <div className='page_monitoring_table_column'>
                                                     <div className='page_monitoring_title_area'>

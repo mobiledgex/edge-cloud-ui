@@ -1,5 +1,5 @@
 import React from 'react';
-import GridLayout from "../../components/react-grid-layout/ReactGridLayout";
+import GridLayout from "../../components/react-grid-layout_kj/ReactGridLayout";
 import './Test001.css'
 import './Test001_2.css'
 
