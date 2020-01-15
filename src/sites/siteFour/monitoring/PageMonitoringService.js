@@ -273,12 +273,10 @@ export const renderUsageByType = (usageOne, hardwareType) => {
         return usageOne.sumDiskUsage
     }
     if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
-        //usageOne.sumSendBytes
         return usageOne.sumRecvBytes
     }
 
     if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
-        //usageOne.sumSendBytes
         return usageOne.sumSendBytes
     }
 }
@@ -783,13 +781,7 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
         }
     }
 
-
-    console.log('cpuUsageList===>', hardwareUsageList);
-
-
-    let width = window.innerWidth * 0.28
     let height = 500 + 100;
-
     let options = {
         plugins: {
             zoom: {
@@ -925,9 +917,6 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
 
     for (let i in filteredNetworkUsageList) {
         let seriesValues = filteredNetworkUsageList[i].values
-
-        console.log('seriesValues===>', seriesValues);
-
         instanceAppName = filteredNetworkUsageList[i].instance.AppName
         let usageList = [];
 
@@ -935,12 +924,12 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
 
             let usageOne = 0;
             if (pHardwareType === HARDWARE_TYPE.RECV_BYTES) {
-                console.log('pHardwareType===>', pHardwareType);
+                //console.log('pHardwareType===>', pHardwareType);
                 usageOne = seriesValues[j]["12"];//receivceBytes -> index12
 
             } else {
                 usageOne = seriesValues[j]["13"]; //sendBytes -> index13
-                console.log('usageOne===>', usageOne);
+                //console.log('usageOne===>', usageOne);
             }
             usageList.push(usageOne);
             let dateOne = seriesValues[j]["0"];
@@ -952,8 +941,6 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
         instanceNameList.push(instanceAppName)
         usageSetList.push(usageList);
     }
-
-    console.log('makeNetworkLineChartDatausageList===>', usageSetList);
 
 
     //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
@@ -992,9 +979,6 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
         labels: newDateTimeList,
         datasets: finalSeriesDataSets,
     }
-
-    console.log('instanceNameList===>', instanceNameList);
-    console.log('finalSeriesDataSets===>', finalSeriesDataSets);
 
     return lineChartData;
 
@@ -1052,8 +1036,6 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
 
     let cloudletCountList = []
     for (let i in appInstanceListSortByCloudlet) {
-        console.log('renderGrid===title>', appInstanceListSortByCloudlet[i][0].Cloudlet);
-        console.log('renderGrid===length>', appInstanceListSortByCloudlet[i].length);
         cloudletCountList.push({
             name: appInstanceListSortByCloudlet[i][0].Cloudlet,
             length: appInstanceListSortByCloudlet[i].length,
@@ -1069,10 +1051,6 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
     }
 
     let chunkedArraysOfColSize = toChunkArray(cloudletCountList, 3);
-
-    console.log('chunkedArraysOfColSize_length===>', chunkedArraysOfColSize.length);
-    //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
-
     return (
         <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
             {chunkedArraysOfColSize.map((colSizeArray, index) =>
