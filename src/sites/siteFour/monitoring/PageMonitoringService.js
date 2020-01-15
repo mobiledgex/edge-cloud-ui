@@ -337,7 +337,6 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
 
     console.log('chartDataList===>', chartDataList);
 
-
     let chartHeight = window.innerHeight / 3;
 
     return (
