@@ -59,7 +59,6 @@ const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;
 const {Pane} = Tab
 
-
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
@@ -206,7 +205,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isShowBottomGrid: false,
             isShowBottomGridForMap: false,
             mapZoomLevel: 0,
-            currentHardwareType: HARDWARE_TYPE.FAVOR,
+            currentHardwareType: HARDWARE_TYPE.FLAVOR,
             bubbleChartData: [],
             currentNetworkType: NETWORK_TYPE.RECV_BYTES,
             lineChartData: [],
