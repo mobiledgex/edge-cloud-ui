@@ -55,6 +55,7 @@ import './PageMonitoring.css';
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
+import {SHOW_AUDIT_ORG} from "../../../services/endPointTypes";
 
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
@@ -65,6 +66,7 @@ const {Pane} = Tab
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
+        userRole: state.showUserRole ? state.showUserRole.role : null,
     }
 };
 const mapDispatchProps = (dispatch) => {
@@ -72,6 +74,9 @@ const mapDispatchProps = (dispatch) => {
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
         }
+        , handleUserRole: (data) => {
+            dispatch(actions.showUserRole(data))
+        },
     };
 };
 
@@ -84,6 +89,7 @@ type Props = {
     loading: boolean,
     isLoading: boolean,
     toggleLoading: Function,
+    userRole: any,
 }
 
 type State = {
@@ -150,6 +156,7 @@ type State = {
     filteredGridInstanceList: any,
     gridInstanceListMemMax: number,
     networkTabIndex: number,
+    gridInstanceListCpuMax: number,
 
 
 }
@@ -220,6 +227,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             filteredGridInstanceList: [],
             gridInstanceListMemMax: 0,
             networkTabIndex: 0,
+            gridInstanceListCpuMax: 0,
         };
 
 
@@ -233,6 +241,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async loadInitData() {
+            let userRole= localStorage.getItem('selectRole')
+            console.log('userRole====>',userRole);
+
             this.setState({
                 loading: true,
                 loading0: true,
@@ -320,12 +331,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return o.sumMemUsage;
             }));
 
+            let gridInstanceListCpuMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
+                return o.sumCpuUsage;
+            }));
+
 
             await this.setState({
                 appInstanceListTop5: appInstanceListTop5,
                 allGridInstanceList: gridInstanceList,
                 filteredGridInstanceList: gridInstanceList,
                 gridInstanceListMemMax: gridInstanceListMemMax,
+                gridInstanceListCpuMax: gridInstanceListCpuMax,
             });
 
             this.props.toggleLoading(false);
@@ -749,9 +765,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {item.sumCpuUsage.toFixed(2) + '%'}
                                                 </div>
                                                 <div>
-                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false} percent={item.sumCpuUsage.toFixed(2)}
-                                                              strokeColor={'#29a1ff'}
-                                                              status={'normal'}/>
+                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                              percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
+                                                              strokeColor={'#29a1ff'} status={'normal'}/>
                                                 </div>
 
                                             </div>
@@ -1133,7 +1149,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 currentHardwareType: value,
             });
-
 
 
             let appInstanceList = this.state.appInstanceList;

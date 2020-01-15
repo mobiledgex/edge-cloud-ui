@@ -14,14 +14,14 @@ import {LOCAL_STRAGE_KEY} from './components/utils/Settings'
 //insert pages
 import EntranceGlob from './sites/entranceGlob';
 import SiteTwo from "./sites/siteTwo";
-import SiteFour from "./sites//siteFour/siteFour";
 import CreateAccount from './components/login/CreateAccont';
 import history from './history';
 import VerifyContent from './container/verifyContent';
 import './css/index.css';
-
+import SiteFour from "./sites//siteFour/siteFour";
 import './css/pages/audit.css';
 import './css/components/timelineH.css';
+import Test001 from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
 // API
 
 let self = null;
@@ -329,6 +329,7 @@ class App extends Component {
                     <Route exact path='/createAccount' component={DashboardContainer.bind(this, {mainPath:'/createAccount'})} />
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
+                    <Route exact path='/Test001' component={Test001} />
 
                 </div>
             </Router>
