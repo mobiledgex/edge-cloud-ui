@@ -76,7 +76,6 @@ export const isEmpty = (value) => {
 
 
 /**
- * todo: 클라우드렛위에 올라와 있는 인스턴스 리스트를 flitering by pCloudlet.
  * @param appInstanceListGroupByCloudlet
  * @param pCloudLet
  * @returns {[]}
@@ -110,9 +109,6 @@ export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
 
 /**
  * todo: Fliter app instace list by cloudlet Value
- * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
- * * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
- * * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
  * @param appInstanceList
  * @param pCloudLet
  * @returns {[]}
@@ -147,7 +143,6 @@ export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '
 
 
 /**
- * @todo: arrayList에서 중복값을 제거.
  * @todo: Remove duplicates from an array.
  * @param names
  * @returns {string[]}
@@ -197,7 +192,6 @@ export const makeClusterListSelectBox = (appInstanceList, pCloudLet) => {
 }
 
 /**
- * @todo : 클러스터렛 리스트를 셀렉트 박스 형태로 가공
  * @todo : Process clusterlet list into select box
  * @param appInstanceList
  * @returns {[]}
@@ -305,8 +299,7 @@ export const renderLottie = () => {
 }
 
 /**
- * @todo: Bar Graph Rendering By Google Chart
- * @todo: 바그래프 랜더링 By Google Chart
+ * @todo: Bar Graph Rendering
  * @param usageList
  * @param hardwareType
  * @returns {*}
@@ -1141,8 +1134,8 @@ export const filterUsageListByRegion = (pRegion, usageList) => {
 }
 
 
+
 /**
- * @todo 현재 선택된 지역의 인스턴스 리스트를 가지고 온다...
  * @todo : fetch App Instance List BY region
  * @param pArrayRegion
  * @returns {Promise<[]>}
@@ -1381,10 +1374,6 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
     matrixedUsageList.push(memUsageList)
     matrixedUsageList.push(networkUsageList)
     matrixedUsageList.push(diskUsageList)
-
-
-    console.log('networkUsageList===>', networkUsageList);
-
     return matrixedUsageList;
 }
 
