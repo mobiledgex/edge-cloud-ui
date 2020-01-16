@@ -38,32 +38,64 @@ export const numberWithCommas = (x) => {
     }
 }
 
-export const makeFormForAppInstance = (instanceDataOne, valid = "*", token, fetchingDataNo = 20) => {
-    return (
-        {
-            "token": token,
-            "params": {
-                "region": instanceDataOne.Region,
-                "appinst": {
-                    "app_key": {
-                        "developer_key": {"name": instanceDataOne.OrganizationName},
-                        "name": instanceDataOne.AppName.toLowerCase().replace(/\s+/g, ''),
-                        "version": instanceDataOne.Version
-                    },
-                    "cluster_inst_key": {
-                        "cluster_key": {"name": instanceDataOne.ClusterInst},
-                        "cloudlet_key": {
-                            "name": instanceDataOne.Cloudlet,
-                            "operator_key": {"name": instanceDataOne.Operator}
+export const makeFormForAppInstance = (instanceDataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+
+    if (pStartTime !== '' && pEndTime !== '') {
+        return (
+            {
+                "token": token,
+                "params": {
+                    "region": instanceDataOne.Region,
+                    "appinst": {
+                        "app_key": {
+                            "developer_key": {"name": instanceDataOne.OrganizationName},
+                            "name": instanceDataOne.AppName.toLowerCase().replace(/\s+/g, ''),
+                            "version": instanceDataOne.Version
+                        },
+                        "cluster_inst_key": {
+                            "cluster_key": {"name": instanceDataOne.ClusterInst},
+                            "cloudlet_key": {
+                                "name": instanceDataOne.Cloudlet,
+                                "operator_key": {"name": instanceDataOne.Operator}
+                            }
                         }
-                    }
-                },
-                "selector": valid,
-                //"last": 25
-                "last": fetchingDataNo,
+                    },
+                    "selector": valid,
+                    "last": fetchingDataNo,
+                    "starttime": pStartTime,
+                    "endtime": pEndTime,
+                }
             }
-        }
-    )
+        )
+    } else {
+        return (
+            {
+                "token": token,
+                "params": {
+                    "region": instanceDataOne.Region,
+                    "appinst": {
+                        "app_key": {
+                            "developer_key": {"name": instanceDataOne.OrganizationName},
+                            "name": instanceDataOne.AppName.toLowerCase().replace(/\s+/g, ''),
+                            "version": instanceDataOne.Version
+                        },
+                        "cluster_inst_key": {
+                            "cluster_key": {"name": instanceDataOne.ClusterInst},
+                            "cloudlet_key": {
+                                "name": instanceDataOne.Cloudlet,
+                                "operator_key": {"name": instanceDataOne.Operator}
+                            }
+                        }
+                    },
+                    "selector": valid,
+                    //"last": 25
+                    "last": fetchingDataNo,
+                }
+            }
+        )
+    }
+
+
 }
 
 export const isEmpty = (value) => {
@@ -1134,7 +1166,6 @@ export const filterUsageListByRegion = (pRegion, usageList) => {
 }
 
 
-
 /**
  * @todo : fetch App Instance List BY region
  * @param pArrayRegion
@@ -1209,16 +1240,20 @@ export const requestAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: a
 }
 
 
-export const getUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount) => {
+export const getUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStateTime = '', pEndTime = '') => {
 
     let instanceBodyList = []
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
     for (let index = 0; index < appInstanceList.length; index++) {
         //todo: Create a data FORM format for requests
-        let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount)
+        let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStateTime, pEndTime)
         instanceBodyList.push(instanceInfoOneForm);
     }
 
+        /*
+        "starttime": "2019-06-11T21:26:00Z",
+        "endtime": "2019-12-31T21:26:00Z"
+        */
     let promiseList = []
     for (let index = 0; index < instanceBodyList.length; index++) {
         promiseList.push(requestAppLevelMetrics(instanceBodyList[index]))

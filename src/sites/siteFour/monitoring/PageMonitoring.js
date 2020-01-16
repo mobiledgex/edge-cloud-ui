@@ -54,6 +54,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import './PageMonitoring.css'
+
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;
@@ -94,8 +95,8 @@ type State = {
     loading0: boolean,
     cloudletList: any,
     clusterInstanceGroupList: any,
-    startDate: string,
-    endDate: string,
+    startTime: string,
+    endTime: string,
     clusterList: any,
     filteredCpuUsageList: any,
     filteredMemUsageList: any,
@@ -190,8 +191,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isModalOpened: false,
             appInstanceListTop5: [],
             selectBoxTop5InstanceForMem: [],
-            startDate: '',
-            endDate: '',
+            startTime: '',
+            endTime: '',
             currentAppInstaceListIndex: 0,
             loading777: false,
             currentUtilization: '',
@@ -383,7 +384,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
          * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
          * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
          */
-        async handleSelectBoxChanges(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '') {
+        async handleSelectBoxChanges(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
 
             this.props.toggleLoading(true)
             await this.setState({
@@ -459,13 +460,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
             //todo: -------------------------------------------
-            //todo: FLITER By startDate, endDate
-            //todo: -------------------------------------------
-            if (this.state.startDate !== '' && this.state.endDate !== '') {
-                //alert(this.state.startDate)
-            }
-
-            //todo: -------------------------------------------
             //todo: _gridInstanceList MAXVALUE
             //todo: -------------------------------------------
             let gridInstanceListMemMax = Math.max.apply(Math, filteredGridInstanceList.map(function (o) {
@@ -524,6 +518,167 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 networkBarChartData: networkBarChartData,
             })
             this.props.toggleLoading(false)
+        }
+
+        makeCompleteDateTime(date: string) {
+            let arrayDate = date.split(" ");
+            let completeDateTimeString = arrayDate[0] + "T" + arrayDate[1] + ":00Z";
+            return completeDateTimeString;
+        }
+
+        async filterUsageListByDate() {
+            //todo: -------------------------------------------
+            //todo: FLITER By startDate, endDate
+            //todo: -------------------------------------------
+            if (this.state.startTime !== '' && this.state.endTime !== '') {
+
+                console.log('111.startTime===>', this.state.startTime);
+                console.log('111.endTime===>', this.state.endTime);
+
+                let startTime = this.makeCompleteDateTime(this.state.startTime);
+                let endTime = this.makeCompleteDateTime(this.state.endTime);
+
+                this.setState({loading: true})
+                let usageList = await getUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                this.setState({loading: false})
+                console.log('startDate_____usageList===>', usageList);
+
+
+                let appInstanceList = this.state.appInstanceList;
+                let allCpuUsageList = usageList[0]
+                let allMemUsageList = usageList[1]
+                let allDiskUsageList = usageList[2]
+                let allNetworkUsageList = usageList[3]
+                let allGridInstanceList = this.makeGridInstanceList();
+                let pRegion = this.state.currentRegion;
+                let pCloudLet = this.state.currentCloudLet;
+                let pCluster = this.state.currentCluster;
+                let pAppInstance = this.state.currentAppInst;
+
+                ////////////////// filtering /////////////////////////////////
+                ////////////////// filtering /////////////////////////////////
+                ////////////////// filtering /////////////////////////////////
+                ////////////////// filtering /////////////////////////////////
+                //todo: -------------------------------------------
+                //todo: FLITER By pRegion
+                //todo: -------------------------------------------
+                appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
+                let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
+                let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+                let filteredCpuUsageList = filterUsageListByRegion(pRegion, allCpuUsageList);
+                let filteredMemUsageList = filterUsageListByRegion(pRegion, allMemUsageList);
+                let filteredDiskUsageList = filterUsageListByRegion(pRegion, allDiskUsageList);
+                let filteredNetworkUsageList = filterUsageListByRegion(pRegion, allNetworkUsageList);
+                let filteredGridInstanceList = filterUsageListByRegion(pRegion, allGridInstanceList);
+
+
+                //todo: -------------------------------------------
+                //todo: FLITER  By pCloudLet
+                //todo: -------------------------------------------
+                let clusterSelectBoxList = [];
+                if (pCloudLet !== '') {
+                    appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
+                    appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
+                    clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
+                    filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredCpuUsageList);
+                    filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredMemUsageList);
+                    filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredDiskUsageList);
+                    filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredNetworkUsageList);
+                    filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredGridInstanceList);
+                }
+
+                //todo: -------------------------------------------
+                //todo: FLITER By pCluster
+                //todo: -------------------------------------------
+                if (pCluster !== '') {
+                    //todo:LeftTop의 Cloudlet위에 올라가는 인스턴스 리스트를 필터링 처리하는 로직.
+                    appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
+                    //todo:app instalce list를 필터링
+                    appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
+                    filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredCpuUsageList);
+                    filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredMemUsageList);
+                    filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredDiskUsageList);
+                    filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredNetworkUsageList);
+                    filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredGridInstanceList);
+
+                }
+
+                //todo: -------------------------------------------
+                //todo: FLITER By pAppInstance
+                //todo: -------------------------------------------
+                if (pAppInstance !== '') {
+                    //todo:app instalce list를 필터링
+                    //appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
+                    filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredCpuUsageList);
+                    filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredMemUsageList);
+                    filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredDiskUsageList);
+                    filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredNetworkUsageList);
+                    filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredGridInstanceList);
+
+                }
+
+
+                //todo: -------------------------------------------
+                //todo: _gridInstanceList MAXVALUE
+                //todo: -------------------------------------------
+                let gridInstanceListMemMax = Math.max.apply(Math, filteredGridInstanceList.map(function (o) {
+                    return o.sumMemUsage;
+                }));
+
+                await this.setState({
+                    filteredCpuUsageList: filteredCpuUsageList,
+                    filteredMemUsageList: filteredMemUsageList,
+                    filteredDiskUsageList: filteredDiskUsageList,
+                    filteredNetworkUsageList: filteredNetworkUsageList,
+                    filteredGridInstanceList: filteredGridInstanceList,
+                    gridInstanceListMemMax: gridInstanceListMemMax,
+                    appInstanceList: appInstanceList,
+                    appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                    loading0: false,
+                    cloudletList: cloudletSelectBoxList,
+                    clusterList: clusterSelectBoxList,
+                    currentCloudLet: pCloudLet,
+                    currentCluster: pCluster,
+                });
+                //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
+                if (pAppInstance === '') {
+                    //todo: MAKE TOP5 INSTANCE LIST
+                    let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
+                    await this.setState({
+                        appInstanceListTop5: appInstanceListTop5,
+                    });
+                }
+                setTimeout(() => {
+                    this.setState({
+                        cloudLetSelectBoxPlaceholder: 'Select CloudLet',
+                        clusterSelectBoxPlaceholder: 'Select Cluster',
+                    })
+                }, 500)
+                //todo: -------------------------------------------
+                //todo: -------------------------------------------
+                //todo: make FirstbubbleChartData
+                //todo: -------------------------------------------
+                //todo: -------------------------------------------
+                let bubbleChartData = await this.makeFirstBubbleChartData(appInstanceList);
+                await this.setState({
+                    bubbleChartData: bubbleChartData,
+                })
+
+
+                //todo: -------------------------------------------
+                //todo: -------------------------------------------
+                //todo: NETWORK chart data filtering
+                //todo: -------------------------------------------
+                //todo: -------------------------------------------
+                let networkChartData = makeNetworkLineChartData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
+                let networkBarChartData = makeNetworkBarData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
+                await this.setState({
+                    networkChartData: networkChartData,
+                    networkBarChartData: networkBarChartData,
+                })
+                this.props.toggleLoading(false)
+
+            }
         }
 
         async makeFirstBubbleChartData(appInstanceList: any) {
@@ -1092,13 +1247,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 format="YYYY-MM-DD HH:mm"
                                 placeholder={['Start Time', 'End Time']}
                                 onChange={async (date, dateString) => {
-                                    let startDate = dateString[0]
-                                    let endDate = dateString[1]
+                                    let stateTime = dateString[0]
+                                    let endTime = dateString[1]
                                     await this.setState({
-                                        startDate: startDate,
-                                        endDate: endDate,
+                                        startTime: stateTime,
+                                        endTime: endTime,
                                     })
-                                    //await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
+                                    this.filterUsageListByDate()
                                 }}
                                 ranges={{
                                     Today: [moment(), moment()],
