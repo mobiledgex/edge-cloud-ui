@@ -1,28 +1,27 @@
-
 //Grouping objects by a property
 export const groupBy = (objectArray, property) => (
     objectArray.reduce((accumulator, obj) => {
         let key = obj[property];
-        if(!accumulator[key]) {
+        if (!accumulator[key]) {
             accumulator[key] = [];
         }
         accumulator[key].push(obj);
         return accumulator;
-    },{})
+    }, {})
 )
 
 export const groupByCompare = (objectArray, properties) => (
     objectArray.reduce((accumulator, obj) => {
         let key1 = obj[properties[0]];
         let key2 = obj[properties[1]];
-        let key = [properties[0]]+':'+key1 + [properties[1]]+':'+key2
+        let key = [properties[0]] + ':' + key1 + [properties[1]] + ':' + key2
         // console.log('reduce key-', key)
-        if(!accumulator[key]) {
+        if (!accumulator[key]) {
             accumulator[key] = [];
         }
         accumulator[key].push(obj);
         return accumulator;
-    },{})
+    }, {})
 )
 
 //Counting instances of values in an object
@@ -30,12 +29,11 @@ export const countedNames = (objectArray) => (
     objectArray.reduce((allNames, name) => {
         if (name in allNames) {
             allNames[name]++;
-        }
-        else {
+        } else {
             allNames[name] = 1;
         }
         return allNames;
-    },{})
+    }, {})
 )
 
 
@@ -113,18 +111,37 @@ export const filterDefineKey = (object, values) => {
 }
 export const filterSearch = (data, searchValue, searchType) => {
     let searchArr = []
-    
+
     data.filter((item) => {
 
         let itemCheck = item[searchType].toLowerCase();
         let searchValueCheck = searchValue.toLowerCase();
 
-        if(itemCheck.indexOf(searchValueCheck)!==-1){
+        if (itemCheck.indexOf(searchValueCheck) !== -1) {
 
             searchArr.push(item);
         }
     })
     return searchArr;
 
+}
+
+export const getTodayDate = () => {
+    let d = Date.now();
+    d = new Date(d);
+    let year = d.getFullYear();
+    let month = (d.getMonth() + 1)
+    let day = d.getDate()
+    d = year + "-" + month + "-" + day;
+    return d;
+}
+
+export const formatDate = (d) => {
+    d = new Date(d);
+    let year = d.getFullYear();
+    let month = (d.getMonth() + 1)
+    let day = d.getDate()
+    d = year + "-" + month + "-" + day;
+    return d;
 }
 

@@ -1,16 +1,21 @@
-
-
-
 export type TypeUtilization = {
-     "time": string,
-     "cloudlet": string,
-     "diskMax": number,
-     "diskUsed": number,
-     "memMax": number,
-     "memUsed": number,
-     "operator": string,
-     "vCpuMax": number,
-     "vCpuUsed": number,
+    "time": string,
+    "cloudlet": string,
+    "diskMax": number,
+    "diskUsed": number,
+    "memMax": number,
+    "memUsed": number,
+    "operator": string,
+    "vCpuMax": number,
+    "vCpuUsed": number,
+}
+
+export type TypeGridInstanceList = {
+    "instance": any,
+    "sumCpuUsage": number,
+    "sumMemUsage": number,
+    "sumRecvBytes": number,
+    "sumSendBytes": number,
 }
 
 

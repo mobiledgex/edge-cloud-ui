@@ -1,20 +1,6 @@
-import React, { Fragment } from "react";
-import {
-    Button,
-    Form,
-    Item,
-    Message,
-    Divider,
-    Modal,
-    List,
-    Grid,
-    Card,
-    Dropdown,
-    Input,
-    Popup,
-    Icon
-} from "semantic-ui-react";
-import { Field, reduxForm, initialize, change, reset } from "redux-form";
+import React, {Fragment} from "react";
+import {Button, Divider, Form, Grid, Icon, Input, Modal, Popup} from "semantic-ui-react";
+import {change, Field, reduxForm, reset} from "redux-form";
 import './styles.css';
 import EditMap from '../libs/simpleMaps/with-react-motion/editMap';
 
@@ -30,10 +16,10 @@ const validate = values => {
     if (!values.OperatorName) {
         errors.OperatorName = 'Required'
     }
-    if (values.Latitude === null) {
+    if (values.Latitude == null) {
         errors.Latitude = 'Required'
     }
-    if (values.Longitude === null) {
+    if (values.Longitude == null) {
         errors.Longitude = 'Required'
     }
     if (!values.Num_dynamic_ips) {
@@ -133,7 +119,7 @@ const renderLocationInput = ({ input, placeholder, change, type, error }) => (
         </Form.Field>
         {error && <span className="text-danger">{error}</span>}
     </div>
-   
+
 );
 
 class registNewInput extends React.Component {
@@ -167,16 +153,16 @@ class registNewInput extends React.Component {
         <Popup
             trigger={<Icon name='question circle outline' size='large' style={{lineHeight:'unset', margin:'10px 0'}} />}
             content=
-                {(key==='CloudletName')? 'Name of the cloudlet'
-                    :(key==='OperatorName')? 'Company or Organization name of the operator'
-                        :(key==='CloudletLocation')? 'Latitude: Latitude in WGS 84 coordinates, Longitude: Longitude in WGS 84 coordinates'
-                            :(key==='Ip_support')?
+                {(key=='CloudletName')? 'Name of the cloudlet'
+                    :(key=='OperatorName')? 'Company or Organization name of the operator'
+                        :(key=='CloudletLocation')? 'Latitude: Latitude in WGS 84 coordinates, Longitude: Longitude in WGS 84 coordinates'
+                            :(key=='Ip_support')?
                                 'IpSupport indicates the type of public IP support provided by the Cloudlet. Static IP support indicates a set of static public IPs are available for use, and managed by the Controller. Dynamic indicates the Cloudlet uses a DHCP server to provide public IP addresses, and the controller has no control over which IPs are assigned.\n' +
                                 '\n' +
                                 'IP_SUPPORT_UNKNOWN: Unknown IP support\n' +
                                 'IP_SUPPORT_STATIC: Static IP addresses are provided to and managed by Controller\n' +
                                 'IP_SUPPORT_DYNAMIC: IP addresses are dynamically provided by an Operator\'s DHCP server'
-                                :(key==='Num_dynamic_ips')? 'Number of dynamic IPs available for dynamic IP support'
+                                :(key=='Num_dynamic_ips')? 'Number of dynamic IPs available for dynamic IP support'
                                     : key
                 }
             // content={this.state.tip}
@@ -193,7 +179,7 @@ class registNewInput extends React.Component {
             this.props.initialize(initData);
         }
     }
-    
+
     handleRegionChange = (e) => {
         this.props.getOptionData(e)
         this.props.dispatch(reset('registNewInput'));
@@ -203,7 +189,7 @@ class registNewInput extends React.Component {
         this.handleInitialize();
     }
 
-    componentWillReceiveProps(nextProps) {        
+    componentWillReceiveProps(nextProps) {
         if(nextProps.locationLong || nextProps.locationLat){
             this.props.dispatch(change('registNewInput', 'Latitude', nextProps.locationLat));
             this.props.dispatch(change('registNewInput', 'Longitude', nextProps.locationLong));
@@ -320,11 +306,11 @@ class registNewInput extends React.Component {
                     </Form.Group>
                 </Form>
             </Fragment>
-            
-                
+
+
         );
     }
-    
+
 };
 
 export default reduxForm({

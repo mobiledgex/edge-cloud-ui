@@ -2,10 +2,15 @@ import React from 'react';
 import { Grid, Header, Segment, Container } from "semantic-ui-react";
 import TimeSeries from '../charts/plotly/timeseries';
 import EnvironmentStatus from '../container/envrmentStatus'
+import UsageMaxColumn from '../charts/plotly/usageMaxColumn';
+//import MethodCallChart from "../charts/plotly/methodCallChart";
 import * as d3 from 'd3';
 import './styles.css'
 
+const formatInt = d3.format(".0f");
+const formatComma = d3.format(",");
 const formatFloat = d3.format(".2f");
+const formatPercent = d3.format(".1f",".1f");
 
 export default class MonitoringViewer extends React.Component {
     state = {
@@ -287,6 +292,8 @@ export default class MonitoringViewer extends React.Component {
 
         }
         if(data.length){
+
+
             data.map((val) => {
                 if(val.values['cmsn']['vCpuUsed']) {
                     this.state.mProp['timeseriesDataCPUMEM'][0][this.cpuCnt] = parseFloat(val.values['cmsn']['vCpuUsed']).toFixed(2);
@@ -392,7 +399,7 @@ export default class MonitoringViewer extends React.Component {
         return (
             <Grid.Row className="monitoring">
                 <Grid.Column>
-                    <div className='wrapperPercentage'>
+                    <div className={(this.props.data.page === 'cloudlet')? 'cloudlet wrapperPercentage' : 'wrapperPercentage'}>
                         {
                             this.makeChartContainer((this.props.data.page === 'cloudlet')?"vCPUs" : "CPU", this.state.lastCPU,  this.state.maxCPU, ' Count', 'CPU')
                         }
@@ -495,8 +502,12 @@ export default class MonitoringViewer extends React.Component {
                         //     :
                             <div style={{width:'100%', height:400}}>
                                 <Header>{(this.props.data.page === 'cloudlet')?"vCPUs" : "CPU"}</Header>
-                                <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} showLegend={true} single='0'
-                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                                <TimeSeries style={{width: '100%', height: 200}}
+                                            chartData={this.state.mProp.timeseriesDataCPUMEM}
+                                            series={this.state.mProp.timeseriesCPUMEM} showLegend={true} single='0'
+                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}}
+                                            label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]}
+                                            y2Position={0.94}></TimeSeries>
                             </div>
                     }
 
@@ -507,7 +518,7 @@ export default class MonitoringViewer extends React.Component {
                             <div style={{width:'100%', height:400}}>
                                 <Header>MEM</Header>
                                 <TimeSeries style={{width:'100%', height:200}} chartData={this.state.mProp.timeseriesDataCPUMEM} series={this.state.mProp.timeseriesCPUMEM} showLegend={true} single='1'
-                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94}></TimeSeries>
+                                            margin={{l: 50, r: 10, b: 45, t: 10, pad: 0}} label={this.state.mProp.dataLabel} yRange={[0.001, 0.009]} y2Position={0.94} dataType={(this.props.data.page === 'cloudlet')? 'MEM' : null}></TimeSeries>
                             </div>
                     }
 
