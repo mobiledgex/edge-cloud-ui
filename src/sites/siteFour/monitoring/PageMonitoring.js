@@ -275,13 +275,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             })
 
 
-            //todo: #####################################################
+            //todo: ###################################################################################################################################
             //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA) , Previous 1year data(default)
-            //todo: #####################################################
-            let startTime = moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm')
-            let endTime = moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm');
-            startTime = makeCompleteDateTime(startTime);
-            endTime = makeCompleteDateTime(endTime);
+            //todo: ###################################################################################################################################
+            let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'));
+            let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'));
 
             let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
 
@@ -392,8 +390,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
          * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
          */
         async filterByEachTypes(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
-
-
             let appInstanceList = []
             let allCpuUsageList = []
             let allMemUsageList = []
@@ -454,7 +450,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
 
             //todo: -------------------------------------------
-            //todo: FLITER By pCluster
+            //todo: Filter By pCluster
             //todo: -------------------------------------------
             if (pCluster !== '') {
                 //todo:LeftTop의 Cloudlet위에 올라가는 인스턴스 리스트를 필터링 처리하는 로직.
@@ -485,7 +481,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
             //todo: -------------------------------------------
-            //todo: _gridInstanceList MAXVALUE
+            //todo: GridInstanceList MAXVALUE
             //todo: -------------------------------------------
             let gridInstanceListMemMax = Math.max.apply(Math, filteredGridInstanceList.map(function (o) {
                 return o.sumMemUsage;
@@ -1079,8 +1075,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 format="YYYY-MM-DD HH:mm"
                                 placeholder={[moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
                                 onOk={async (date) => {
-                                    console.log('date===>', date[0].format('YYYY-MM-DD HH:mm'));
-                                    console.log('date===>', date[1].format('YYYY-MM-DD HH:mm'));
                                     let stateTime = date[0].format('YYYY-MM-DD HH:mm')
                                     let endTime = date[1].format('YYYY-MM-DD HH:mm')
                                     await this.setState({
