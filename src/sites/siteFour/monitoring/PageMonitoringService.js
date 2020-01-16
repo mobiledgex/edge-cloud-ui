@@ -1228,7 +1228,6 @@ export const requestAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: a
         headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + store.userToken
-
         },
         timeout: 15 * 1000
     }).then(async response => {
@@ -1240,20 +1239,32 @@ export const requestAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: a
 }
 
 
-export const getUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStateTime = '', pEndTime = '') => {
+/**
+ * 시간을 request요청에 맞게끔 변경 처리
+ * @param date
+ * @returns {string}
+ */
+export const makeCompleteDateTime = (date: string) => {
+    let arrayDate = date.split(" ");
+    let completeDateTimeString = arrayDate[0] + "T" + arrayDate[1] + ":00Z";
+    return completeDateTimeString;
+}
+
+
+export const getUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     let instanceBodyList = []
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
     for (let index = 0; index < appInstanceList.length; index++) {
         //todo: Create a data FORM format for requests
-        let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStateTime, pEndTime)
+        let instanceInfoOneForm = makeFormForAppInstance(appInstanceList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
         instanceBodyList.push(instanceInfoOneForm);
     }
 
-        /*
-        "starttime": "2019-06-11T21:26:00Z",
-        "endtime": "2019-12-31T21:26:00Z"
-        */
+    /*
+    "starttime": "2019-06-11T21:26:00Z",
+    "endtime": "2019-12-31T21:26:00Z"
+    */
     let promiseList = []
     for (let index = 0; index < instanceBodyList.length; index++) {
         promiseList.push(requestAppLevelMetrics(instanceBodyList[index]))

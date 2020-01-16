@@ -24,7 +24,7 @@ import {
     getUsageList,
     instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox,
+    makeClusterListSelectBox, makeCompleteDateTime,
     makeNetworkBarData,
     makeNetworkLineChartData,
     renderBarGraph,
@@ -276,9 +276,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
             //todo: #####################################################
-            //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA)
+            //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA) , Previous 1year data(default)
             //todo: #####################################################
-            let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
+            let startTime = moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm')
+            let endTime = moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm');
+            startTime = makeCompleteDateTime(startTime);
+            endTime = makeCompleteDateTime(endTime);
+
+            let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
 
             //todo: #####################################################
             //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR DEV
@@ -360,7 +365,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
          * bottom Grid InstanceList maker..
          * @returns {[]}
          */
-        makeGridInstanceList(usageList:Array) {
+        makeGridInstanceList(usageList: Array) {
             let allCpuUsageList = usageList[0]
             let allMemUsageList = usageList[1]
             let allDiskUsageList = usageList[2]
@@ -540,24 +545,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             this.props.toggleLoading(false)
         }
 
-        makeCompleteDateTime(date: string) {
-            let arrayDate = date.split(" ");
-            let completeDateTimeString = arrayDate[0] + "T" + arrayDate[1] + ":00Z";
-            return completeDateTimeString;
-        }
-
 
         async filterUsageListByDate() {
             //todo: -------------------------------------------
             //todo: FLITER By startDate, endDate
             //todo: -------------------------------------------
             if (this.state.startTime !== '' && this.state.endTime !== '') {
+                let startTime = makeCompleteDateTime(this.state.startTime);
+                let endTime = makeCompleteDateTime(this.state.endTime);
 
-                console.log('111.startTime===>', this.state.startTime);
-                console.log('111.endTime===>', this.state.endTime);
-
-                let startTime = this.makeCompleteDateTime(this.state.startTime);
-                let endTime = this.makeCompleteDateTime(this.state.endTime);
+                console.log('11111===>', startTime);
+                console.log('11111===>', endTime);
 
                 this.setState({loading: true})
                 let usageList = await getUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
@@ -1033,7 +1031,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                     setTimeout(() => {
                                         this.setState({
-                                            appInstSelectBoxPlaceholder: "Select App Instance"
+                                            appInstSelectBoxPlaceholder: "Select App Instance",
+                                            currentAppInst: '',
                                         })
                                     }, 500)
                                 }}
@@ -1070,17 +1069,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo: Time Range Dropdown       */}
                         {/*todo:---------------------------*/}
                         <div className="page_monitoring_dropdown_box">
-                            {/*<div className="page_monitoring_dropdown_label">*/}
-                            {/*    TimeRange*/}
-                            {/*</div>*/}
+                            {/* <div className="page_monitoring_dropdown_label">
+                                TimeRange
+                            </div>*/}
                             <RangePicker
                                 disabled={this.state.loading}
+                                //disabled={true}
                                 showTime={{format: 'HH:mm'}}
                                 format="YYYY-MM-DD HH:mm"
-                                placeholder={['Start Time', 'End Time']}
-                                onChange={async (date, dateString) => {
-                                    let stateTime = dateString[0]
-                                    let endTime = dateString[1]
+                                placeholder={[moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
+                                onOk={async (date) => {
+                                    console.log('date===>', date[0].format('YYYY-MM-DD HH:mm'));
+                                    console.log('date===>', date[1].format('YYYY-MM-DD HH:mm'));
+                                    let stateTime = date[0].format('YYYY-MM-DD HH:mm')
+                                    let endTime = date[1].format('YYYY-MM-DD HH:mm')
                                     await this.setState({
                                         startTime: stateTime,
                                         endTime: endTime,
@@ -1093,6 +1095,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
                                     'This Month': [moment().startOf('month'), moment().endOf('month')],
                                     'Last Month': [moment().date(-30), moment().date(-1)],
+                                    'Last 365 Days': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
+                                    'Last 730 Days': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
+                                    'Last 1095 Days': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
                                 }}
                                 style={{width: 300}}
                             />
