@@ -20,11 +20,11 @@ import {
     filterInstanceCountOnCloutLetOne,
     filterUsageByType,
     filterUsageListByRegion,
-    getMetricsUtilizationAtAppLevel_TEST,
     getUsageList,
     instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
-    makeClusterListSelectBox, makeCompleteDateTime,
+    makeClusterListSelectBox,
+    makeCompleteDateTime,
     makeNetworkBarData,
     makeNetworkLineChartData,
     renderBarGraph,
@@ -33,8 +33,7 @@ import {
     renderPlaceHolder,
     renderPlaceHolder2,
     renderSixGridInstanceOnCloudletGrid,
-    requestShowAppInstanceList,
-    Styles
+    requestShowAppInstanceList
 } from "./PageMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
@@ -888,9 +887,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <div className='page_monitoring_dual_column'>
                     <div className='page_monitoring_dual_container'>
-
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, networkType, this)}
+                            {this.state.loading ? renderPlaceHolder('network') : renderBarGraph(this.state.filteredNetworkUsageList, networkType, this)}
                         </div>
                     </div>
                     {/*1_column*/}
@@ -898,7 +896,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1_column*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredNetworkUsageList, networkType)}
+                            {this.state.loading ? renderPlaceHolder('network') : renderLineChart(this, this.state.filteredNetworkUsageList, networkType)}
                         </div>
                     </div>
                 </div>
@@ -1401,7 +1399,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             <div className='page_monitoring_title'>
                                                                 Transition Of NETWORK Usage
                                                             </div>
-                                                            <Dropdown
+                                                            {!this.state.loading &&  <Dropdown
                                                                 placeholder='SELECT HARDWARE'
                                                                 selection
                                                                 loading={this.state.loading}
@@ -1422,7 +1420,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 }}
                                                                 value={this.state.currentNetworkType}
                                                                 // style={Styles.dropDown}
-                                                            />
+                                                            />}
                                                         </div>
                                                     </div>
 

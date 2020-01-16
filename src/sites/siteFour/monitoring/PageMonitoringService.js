@@ -463,11 +463,10 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
  * @todo: 로딩이 완료 되기전에 placeholder를 보여준다..
  * @returns {*}
  */
-export const renderPlaceHolder = () => {
+export const renderPlaceHolder = (type: string = '') => {
     // let boxWidth = window.innerWidth / 3 - 50;
     return (
-        <div className='page_monitoring_blank_box'>
-            {/*<CircularProgress style={{zIndex: 999999999, color: '#79BF14', marginTop:-50}}/>*/}
+        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 -10 : '100%'}}>
             <Lottie
                 options={{
                     loop: true,
