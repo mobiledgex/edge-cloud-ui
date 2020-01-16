@@ -3,7 +3,7 @@ import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -495,12 +495,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }));
 
 
-
             ////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////
-
-
 
 
             await this.setState({
@@ -557,12 +554,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 networkChartData: networkChartData,
                 networkBarChartData: networkBarChartData,
             })
-
-
-
-
-
-
 
 
             this.props.toggleLoading(false)
@@ -658,44 +649,39 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderBottomGridArea() {
             return (
-                <div>
-                    <Grid columns={8} padded={true} style={{height: 50}}>
-                        <Row>
-                            <Column color={'grey'}>
+                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+                    <Table.Header className="viewListTableHeader">
+                        <Table.Row>
+                            <Table.HeaderCell width={1}>
                                 index
-                            </Column>
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 NAME
-                            </Column>
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 CPU(%)
-                            </Column>
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 MEM
-                            </Column>
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 DISK
-                            </Column>
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 RECV BYTES
-                            </Column>
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 SEND BYTES
-                            </Column>
-
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 ACTIVE CONNECTIONS
-                            </Column>
-                        </Row>
-                    </Grid>
-                    <div style={{
-                        marginTop: 10,
-                        //overflowY: 'scroll',
-                        //height: 525,
-                    }}
-                         ref={(div) => {
-                             this.messageList = div;
-                         }}
+                            </Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body className="tbBodyList"
+                                ref={(div) => {
+                                    this.messageList = div;
+                                }}
                     >
                         <Grid columns={8} padded={true}
 
@@ -708,68 +694,64 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {/*-----------------------*/}
                             {/*todo:ROW HEADER        */}
                             {/*-----------------------*/}
-                            {!this.state.isReady && <Row columns={1}>
-                                <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
-                                    <div style={{position: 'absolute', top: '-20%', left: '48%'}}>
-                                        <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: -170}}>
-                                            <Lottie
-                                                options={{
-                                                    loop: true,
-                                                    autoplay: true,
-                                                    animationData: require('../../../lotties/loader001'),
-                                                    rendererSettings: {
-                                                        preserveAspectRatio: 'xMidYMid slice'
-                                                    }
-                                                }}
-                                                height={240}
-                                                width={240}
-                                                isStopped={false}
-                                                isPaused={false}
-                                            />
-                                        </div>
-                                    </div>
-                                </Column>
-                            </Row>}
+                            {!this.state.isReady &&
+                            <Table.Row className='page_monitoring_popup_table_empty'>
+                                <Table.Cell>
+                                    <Lottie
+                                        options={{
+                                            loop: true,
+                                            autoplay: true,
+                                            animationData: require('../../../lotties/loader001'),
+                                            rendererSettings: {
+                                                preserveAspectRatio: 'xMidYMid slice'
+                                            }
+                                        }}
+                                        height={240}
+                                        width={240}
+                                        isStopped={false}
+                                        isPaused={false}
+                                    />
+                                </Table.Cell>
+                            </Table.Row>}
                             {this.state.isReady && this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
 
                                 return (
-                                    <Row
-
-                                        style={{
-                                            color: index === this.state.currentGridIndex ? 'white' : 'white',
-                                            backgroundColor: index === this.state.currentGridIndex && '#bea129',
-                                            height: 50
-                                        }}
-                                        onClick={async () => {
-                                            //alert(item.AppName)
-                                            /*await this.setState({
-                                                currentAppInst: item.instance.AppName,
-                                                currentGridIndex: index,
-                                            })
-                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)*/
-                                        }}
+                                    <Table.Row className='page_monitoring_popup_table_row'
+                                        // style={{
+                                        //     color: index === this.state.currentGridIndex ? 'white' : 'white',
+                                        //     backgroundColor: index === this.state.currentGridIndex && '#bea129',
+                                        //     height: 50
+                                        // }}
+                                               onClick={async () => {
+                                                   //alert(item.AppName)
+                                                   /*await this.setState({
+                                                       currentAppInst: item.instance.AppName,
+                                                       currentGridIndex: index,
+                                                   })
+                                                   await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)*/
+                                               }}
                                     >
-                                        <Column>
+                                        <Table.Cell width={10}>
                                             {index}
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             {item.instance.AppName}
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             <div>
                                                 <div>
                                                     {item.sumCpuUsage.toFixed(2) + '%'}
                                                 </div>
                                                 <div>
-                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                    <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
                                                               percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
                                                               strokeColor={'#29a1ff'} status={'normal'}/>
                                                 </div>
 
                                             </div>
 
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             <div>
                                                 <div>
                                                     {(item.sumMemUsage) + ' Byte'}
@@ -781,27 +763,26 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 </div>
 
                                             </div>
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             {item.sumDiskUsage + ' Byte'}
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             {item.sumRecvBytes + ' Byte'}
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             {item.sumSendBytes + ' Byte'}
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             0
-                                        </Column>
-                                    </Row>
+                                        </Table.Cell>
+                                    </Table.Row>
 
                                 )
                             })}
                         </Grid>
-                    </div>
-                </div>
-
+                    </Table.Body>
+                </Table>
             )
         }
 
@@ -1409,46 +1390,47 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo:-----------------------*/}
                                                     {/*todo:  NETWORK HEADER     */}
                                                     {/*todo:-----------------------*/}
-                                                    <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
 
-                                                        <div className='page_monitoring_title_area2'>
+                                                        <div className='page_monitoring_title_area'>
                                                             <div className='page_monitoring_title'>
                                                                 TOP5 of NETWORK Usage
                                                             </div>
                                                         </div>
-                                                        <div className='page_monitoring_title_area3'>
+                                                        <div className='page_monitoring_title_area'>
                                                             <div className='page_monitoring_title'>
                                                                 Transition Of NETWORK Usage
                                                             </div>
+                                                            <Dropdown
+                                                                placeholder='SELECT HARDWARE'
+                                                                selection
+                                                                loading={this.state.loading}
+                                                                options={NETWORK_OPTIONS}
+                                                                defaultValue={NETWORK_OPTIONS[0].value}
+                                                                onChange={async (e, {value}) => {
+
+                                                                    if (value === NETWORK_TYPE.RECV_BYTES) {
+                                                                        this.setState({
+                                                                            networkTabIndex: 0,
+                                                                        })
+                                                                    } else {
+                                                                        this.setState({
+                                                                            networkTabIndex: 1,
+                                                                        })
+                                                                    }
+
+                                                                }}
+                                                                value={this.state.currentNetworkType}
+                                                                // style={Styles.dropDown}
+                                                            />
                                                         </div>
-                                                        <Dropdown
-                                                            placeholder='SELECT HARDWARE'
-                                                            selection
-                                                            loading={this.state.loading}
-                                                            options={NETWORK_OPTIONS}
-                                                            defaultValue={NETWORK_OPTIONS[0].value}
-                                                            onChange={async (e, {value}) => {
-
-                                                                if (value === NETWORK_TYPE.RECV_BYTES) {
-                                                                    this.setState({
-                                                                        networkTabIndex: 0,
-                                                                    })
-                                                                } else {
-                                                                    this.setState({
-                                                                        networkTabIndex: 1,
-                                                                    })
-                                                                }
-
-                                                            }}
-                                                            value={this.state.currentNetworkType}
-                                                            // style={Styles.dropDown}
-                                                        />
                                                     </div>
 
                                                     {/*todo:---------------------------------*/}
                                                     {/*todo: NETWORK TAB PANEL AREA           */}
                                                     {/*todo:---------------------------------*/}
-                                                    <Tabs selectedIndex={this.state.networkTabIndex}>
+                                                    <Tabs selectedIndex={this.state.networkTabIndex}
+                                                          className='page_monitoring_tab'>
                                                         <TabPanel>
                                                             {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
                                                         </TabPanel>
@@ -1494,44 +1476,33 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                           })*/
                                                     }}
                                                 >
-                                                    <div
-                                                        style={{
-                                                            backgroundColor: '#2f2f2f', opacity: 3.0, borderTopRightRadius: 15, borderTopLeftRadius: 15,
-                                                            position: 'absolute', zIndex: 999999, bottom: 50, height: 700, width: '98.0%', left: 23
-                                                        }}
-                                                    >
-                                                        <p
-                                                            style={{
-                                                                display: 'flex',
-                                                                width: '100%',
-                                                                backgroundColor: 'transparent',
-                                                                alignItems: 'center',
-                                                                justifyContent: 'center',
-                                                                marginTop: 20
-                                                            }}
-                                                            onClick={() => {
+                                                    <div className='page_monitoring_popup_column'>
+                                                        <div className='page_monitoring_popup_header_row'
+                                                             onClick={() => {
 
-                                                                this.setState({
-                                                                    isShowBottomGrid: !this.state.isShowBottomGrid,
-                                                                })
+                                                                 this.setState({
+                                                                     isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                                 })
 
-                                                            }}
+                                                             }}
                                                         >
-                                                            <div style={{color: 'white'}}>
-                                                                HIDE APP INSTANCE LIST
+                                                            <div className='page_monitoring_popup_header_title'>
+                                                                Status of App
                                                             </div>
-                                                            <div style={{marginLeft: 15}}>
-                                                                <FA name="chevron-down" style={{fontSize: 15, color: 'white'}}/>
+                                                            <div className='page_monitoring_popup_header_button'>
+                                                                <div>
+                                                                    HIDE APP INSTANCE LIST
+                                                                </div>
+                                                                <div style={{marginLeft: 10}}>
+                                                                    <FA name="chevron-down"/>
+                                                                </div>
                                                             </div>
-                                                        </p>
+                                                            <div/>
+                                                        </div>
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
-                                                        <div style={Styles.header00001}>
-                                                            Status of App
-                                                        </div>
-                                                        <div style={{height: 7}}/>
-                                                        <div className='page_monitoring_column_for_grid2'>
+                                                        <div className='page_monitoring_popup_table'>
                                                             {this.renderBottomGridArea()}
                                                         </div>
                                                     </div>
