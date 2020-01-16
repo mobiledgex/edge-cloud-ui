@@ -24,7 +24,7 @@ import {
     instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
     makeClusterListSelectBox,
-    makeCompleteDateTime,
+    makeCompleteDateTime, makeGridInstanceList,
     makeNetworkBarData,
     makeNetworkLineChartData,
     renderBarGraph,
@@ -282,7 +282,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 endTime
             });
             let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
-
             //todo: #####################################################
             //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR DEV
             //todo:#####################################################
@@ -318,7 +317,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: -------------------------------------------
             //todo: GridInstanceList
             //todo: -------------------------------------------
-            let gridInstanceList = this.makeGridInstanceList(usageList);
+            let gridInstanceList = makeGridInstanceList(usageList);
 
             //todo: -------------------------------------------
             //todo: GridInstanceList MEM,CPU MAX VALUE
@@ -337,6 +336,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredGridInstanceList: gridInstanceList,
                 gridInstanceListMemMax: gridInstanceListMemMax,
                 gridInstanceListCpuMax: gridInstanceListCpuMax,
+            }, ()=>{
+                console.log('filteredGridInstanceList===>', this.state.filteredGridInstanceList);
             });
 
             this.props.toggleLoading(false);
@@ -358,31 +359,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-
-        /**
-         * bottom Grid InstanceList maker..
-         * @returns {[]}
-         */
-        makeGridInstanceList(usageList: Array) {
-            let allCpuUsageList = usageList[0]
-            let allMemUsageList = usageList[1]
-            let allDiskUsageList = usageList[2]
-            let allNetworkUsageList = usageList[3]
-
-            let gridInstanceList = []
-            allCpuUsageList.map((item, index) => {
-                console.log('item===>', item);
-                gridInstanceList.push({
-                    instance: item.instance,
-                    sumCpuUsage: item.sumCpuUsage,
-                    sumDiskUsage: allDiskUsageList[index].sumDiskUsage,
-                    sumMemUsage: allMemUsageList[index].sumMemUsage,
-                    sumRecvBytes: allNetworkUsageList[index].sumRecvBytes,
-                    sumSendBytes: allNetworkUsageList[index].sumSendBytes,
-                })
-            })
-            return gridInstanceList;
-        }
 
 
         /**
@@ -407,7 +383,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allMemUsageList = this.state.usageListByDate[1]
                 allDiskUsageList = this.state.usageListByDate[2]
                 allNetworkUsageList = this.state.usageListByDate[3]
-                allGridInstanceList = this.makeGridInstanceList(this.state.usageListByDate);
+                allGridInstanceList = makeGridInstanceList(this.state.usageListByDate);
             } else {
                 appInstanceList = this.state.allAppInstanceList;
                 allCpuUsageList = this.state.allCpuUsageList

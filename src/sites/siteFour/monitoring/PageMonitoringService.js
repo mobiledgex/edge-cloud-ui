@@ -466,7 +466,7 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
 export const renderPlaceHolder = (type: string = '') => {
     // let boxWidth = window.innerWidth / 3 - 50;
     return (
-        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 -10 : '100%'}}>
+        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
             <Lottie
                 options={{
                     loop: true,
@@ -484,6 +484,32 @@ export const renderPlaceHolder = (type: string = '') => {
         </div>
     )
 }
+
+/**
+ * bottom Grid InstanceList maker..
+ * @returns {[]}
+ */
+export const makeGridInstanceList = (usageList: Array) => {
+    let allCpuUsageList = usageList[0]
+    let allMemUsageList = usageList[1]
+    let allNetworkUsageList = usageList[2]
+    let allDiskUsageList = usageList[3]
+
+    let gridInstanceList = []
+    allCpuUsageList.map((item, index) => {
+        console.log('item===>', item);
+        gridInstanceList.push({
+            instance: item.instance,
+            sumCpuUsage: item.sumCpuUsage,
+            sumDiskUsage: allDiskUsageList[index].sumDiskUsage,
+            sumMemUsage: allMemUsageList[index].sumMemUsage,
+            sumRecvBytes: allNetworkUsageList[index].sumRecvBytes,
+            sumSendBytes: allNetworkUsageList[index].sumSendBytes,
+        })
+    })
+    return gridInstanceList;
+}
+
 
 /**
  * @todo: 로딩이 완료 되기전에 placeholder2를 보여준다..
