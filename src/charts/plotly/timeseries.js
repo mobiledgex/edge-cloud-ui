@@ -35,11 +35,11 @@ class TimeSeries extends React.Component {
     }
     componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.chartData && nextProps.series[0]) {
-            this.reloadChart(nextProps.chartData, nextProps.series[0], nextProps.label, nextProps.single);
+            this.reloadChart(nextProps.chartData, nextProps.series[0], nextProps.label, nextProps.single, nextProps.dataType);
         }
 
     }
-    reloadChart(data, series,names, dataId) {
+    reloadChart(data, series,names, dataId, dataType) {
         let xaxis = series;
 
         let _data = dataId ? data[parseInt(dataId)] : data;
@@ -62,7 +62,7 @@ class TimeSeries extends React.Component {
             let sData = [];
 
             _data.map((dt) => {
-                sData.push(Number(dt))
+                sData.push(Number((dataType !== 'MEM')? dt : dt * 0.001))
             })
             seriesData = [{
                 type: 'scatter',

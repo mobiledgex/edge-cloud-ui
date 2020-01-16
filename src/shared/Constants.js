@@ -1,13 +1,6 @@
 export const API_ENDPOINT_PREFIX = '/api/v1/';
 
-export const HARDWARE_TYPE = {
 
-    CPU: "cpu",
-    MEM: "mem",
-    NETWORK: "network",
-    DISK: "disk"
-
-}
 //rgb(255,0,10)
 
 export const BORDER_CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
@@ -33,9 +26,9 @@ export const USAGE_TYPE = {
 }
 
 export const CLASSIFICATION = {
-    CLOUDLET : 'Cloudlet',
-    APP_NAME : 'AppName',
-    CLUSTER_INST : 'ClusterInst',
+    CLOUDLET: 'Cloudlet',
+    APP_NAME: 'AppName',
+    CLUSTER_INST: 'ClusterInst',
 }
 
 export const RECENT_DATA_LIMIT_COUNT = 100
@@ -62,9 +55,37 @@ export const REGIONS_OPTIONS = [
 
 ]
 
-/*"AppName": "MEXPrometheusAppName",
-    "Cloudlet": "frankfurt-eu",
-    "ClusterInst": "kkkkkkk",*/
+export const NETWORK_OPTIONS = [
+    {text: 'RECV BYTES', value: 'recv_bytes'},
+    {text: 'SEND BYTES', value: 'send_bytes'},
+]
+
+export const NETWORK_TYPE = {
+    RECV_BYTES: 'recv_bytes',
+    SEND_BYTES: 'send_bytes',
+}
+
+
+export const HARDWARE_OPTIONS = [
+    {text: 'FLAVOR', value: 'flavor'},
+    {text: 'CPU', value: 'cpu'},
+    {text: 'MEM', value: 'mem'},
+    {text: 'DISK', value: 'disk'},
+    {text: 'RECV_BYTES', value: 'recv_bytes'},
+    {text: 'SEND_BYTES', value: 'send_bytes'},
+]
+
+export const HARDWARE_TYPE = {
+    FLAVOR: 'flavor',
+    CPU: 'cpu',
+    MEM: 'mem',
+    RECV_BYTE: 'recv_bytes',
+    SEND_BYTE: 'send_bytes',
+    DISK: 'disk',
+
+}
+
+
 export const MOINTORING_FILTER_ITEM_TYPE = {
     REGION: "Region",
     APP_INST: "AppName",
@@ -73,6 +94,15 @@ export const MOINTORING_FILTER_ITEM_TYPE = {
 }
 
 export const SELECT_TYPE_ENUM = "Region" | "AppName" | "Cloudlet" | "ClusterInst"
+
+
+export const MONITORING_CATE_SELECT_TYPE = {
+    REGION: 'Region',
+    APPNAME: 'AppName',
+    CLOUDLET: 'Cloudlet',
+    CLUSTERINST: 'ClusterInst',
+
+}
 
 export const APPINSTANCE_INIT_VALUE = {
     "Region": "",
