@@ -51,7 +51,7 @@ const keys = [
     {
         'Region':{label:'Region', type:'RenderSelect', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
         'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
-        'AddCloudlet':{label:'Add cloudlet', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
+        'AddCloudlet':{label:'Add cloudlet', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true, items:[{headers:['Select Item', 'Selected Item']}]},
         'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
     },
     {
@@ -315,28 +315,6 @@ class SiteFourPoolStepView extends React.Component {
 
     }
     receiveResultCreateMember = (mcRequest) => {
-
-        // old 
-        // if(result.error) {
-        //     //this.setState({clusterInstCreate:false})
-        //     this.props.handleLoadingSpinner(false);
-        //     if(result.error == 'Key already exists'){
-        //         //
-        //     } else {
-        //         this.props.handleAlertInfo('error','Request Failed')
-        //     }
-        // } else {
-        //     if (result.data.error) {
-        //         this.props.handleAlertInfo('error', result.data.error)
-        //     } else {
-        //         this.props.handleAlertInfo('success',result.data.message)
-        //         /** send props to next step **/
-        //         this.setState({selectedRegion:this.state.submitValues.Region, gavePoolName:this.state.submitValues.poolName})
-        //         this.setState({step:2, validateError:null, keysData:[keys[1]], fakeData:[fakes[1]]})
-        //     }
-        // }
-
-
         /// new
         if(this.pauseRender) return;
         if(mcRequest)

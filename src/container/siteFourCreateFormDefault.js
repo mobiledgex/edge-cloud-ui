@@ -165,6 +165,8 @@ const renderDualListInput = (self,data) => (
     />
 
 );
+
+/** If we use the ANT ui should be use this */
 const renderDualListBox = (self, data) => (
     <Transfer
         dataSource={self.getMock(data)}

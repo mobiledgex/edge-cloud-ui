@@ -25,8 +25,8 @@ const keys = [
     //     'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true}
     // }
     {
-        'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
-        'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
+        'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
+        'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
         'AddCloudlet':{label:'Add cloudlet', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
         'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
     }
