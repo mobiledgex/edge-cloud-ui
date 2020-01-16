@@ -121,8 +121,6 @@ type State = {
     isModalOpened: false,
     appInstanceListTop5: Array,
     selectBoxTop5InstanceForMem: Array,
-    startDate: string,
-    endDate: string,
     currentAppInstaceListIndex: number,
     loading777: boolean,
     currentUtilization: TypeUtilization,
@@ -280,7 +278,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: ###################################################################################################################################
             let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'));
             let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'));
-
+            await this.setState({
+                startTime,
+                endTime
+            });
             let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
 
             //todo: #####################################################
@@ -397,6 +398,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let allNetworkUsageList = []
             let allGridInstanceList = []
 
+            console.log('2222===>', this.state.startTime);
+            console.log('2222===>', this.state.endTime);
+
             //@todo: 날짜에 의한 필터링인경우
             if (isDateFiltering) {
                 appInstanceList = this.state.appInstanceList;
@@ -428,6 +432,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
             let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+
             let filteredCpuUsageList = filterUsageListByRegion(pRegion, allCpuUsageList);
             let filteredMemUsageList = filterUsageListByRegion(pRegion, allMemUsageList);
             let filteredDiskUsageList = filterUsageListByRegion(pRegion, allDiskUsageList);
@@ -479,13 +484,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             }
 
-
             //todo: -------------------------------------------
-            //todo: GridInstanceList MAXVALUE
+            //todo: GridInstanceList MEM,CPU MAX VALUE
             //todo: -------------------------------------------
-            let gridInstanceListMemMax = Math.max.apply(Math, filteredGridInstanceList.map(function (o) {
+            let gridInstanceListMemMax = Math.max.apply(Math, allGridInstanceList.map(function (o) {
                 return o.sumMemUsage;
             }));
+            let gridInstanceListCpuMax = Math.max.apply(Math, allGridInstanceList.map(function (o) {
+                return o.sumCpuUsage;
+            }));
+
+
+
+            ////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////
+
+
+
 
             await this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
@@ -494,6 +510,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredNetworkUsageList: filteredNetworkUsageList,
                 filteredGridInstanceList: filteredGridInstanceList,
                 gridInstanceListMemMax: gridInstanceListMemMax,
+                gridInstanceListCpuMax: gridInstanceListCpuMax,
                 appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
@@ -502,6 +519,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCloudLet: pCloudLet,
                 currentCluster: pCluster,
             });
+
+
             //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
             if (pAppInstance === '') {
                 //todo: MAKE TOP5 INSTANCE LIST
@@ -538,6 +557,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 networkChartData: networkChartData,
                 networkBarChartData: networkBarChartData,
             })
+
+
+
+
+
+
+
+
             this.props.toggleLoading(false)
         }
 
@@ -1008,7 +1035,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------*/}
                         {/*todo:Cluster Dropdown         */}
                         {/*todo:---------------------------*/}
-
                         <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
                                 Cluster
