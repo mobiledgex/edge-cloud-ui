@@ -1035,15 +1035,18 @@ class SiteFour extends React.Component {
                                 </Grid.Row>
                                 {
                                     (this.state.headerTitle !== 'Organizations' && this.state.headerTitle !== 'User Roles' && this.state.headerTitle !== 'Accounts' && this.state.headerTitle !== 'Audit Log' && viewMode !== 'detailView' && this.state.page.indexOf('create') == -1 && this.state.page.indexOf('edit') == -1) ?
-                                        (this.state.intoCity) ? <Button onClick={this.onClickBackBtn}>Back</Button> : <Grid.Row style={{ padding: '10px 10px 0 10px', display: 'inline-block' }}>
-                                            <label style={{ padding: '0 10px' }}>Region</label>
-                                            <Dropdown className='selection'
-                                                options={this.state.regions}
-                                                defaultValue={this.state.regions[0].value}
-                                                value={this.props.changeRegion}
-                                                onChange={this.onChangeRegion}
-                                            />
-                                        </Grid.Row>
+                                        (this.state.intoCity) ?
+                                            <Button onClick={this.onClickBackBtn}>Back</Button>
+                                            :
+                                            <Grid.Row style={{ padding: '10px 10px 0 10px', display: 'inline-block' }}>
+                                                <label style={{ padding: '0 10px' }}>Region</label>
+                                                <Dropdown className='selection'
+                                                    options={this.state.regions}
+                                                    defaultValue={this.state.regions[0].value}
+                                                    value={this.props.changeRegion}
+                                                    onChange={this.onChangeRegion}
+                                                />
+                                            </Grid.Row>
                                         : null
                                 }
                                 {

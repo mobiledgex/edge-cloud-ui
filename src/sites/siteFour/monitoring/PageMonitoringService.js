@@ -21,16 +21,13 @@ export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     return newArrayList;
 }
 
-
 export const covertToComparableDate = (paramDate) => {
     let arrayDate = paramDate.toString().split("-");
     let compareableFullDate = arrayDate[0] + arrayDate[1] + arrayDate[2]
     return compareableFullDate
 
 }
-
 export const numberWithCommas = (x) => {
-
     let value = ''
     try {
         value = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -39,13 +36,9 @@ export const numberWithCommas = (x) => {
     } finally {
         return value;
     }
-
-
 }
 
-
 export const makeFormForAppInstance = (instanceDataOne, valid = "*", token, fetchingDataNo = 20) => {
-
     return (
         {
             "token": token,
@@ -83,7 +76,6 @@ export const isEmpty = (value) => {
 
 
 /**
- * todo: 클라우드렛위에 올라와 있는 인스턴스 리스트를 flitering by pCloudlet.
  * @param appInstanceListGroupByCloudlet
  * @param pCloudLet
  * @returns {[]}
@@ -115,18 +107,13 @@ export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
     return filteredUsageList
 }
 
-
 /**
  * todo: Fliter app instace list by cloudlet Value
- * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
- * * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
- * * fixme: (하단 메소드와 함께 공용으로 쓰도록 리펙토링 필요)
  * @param appInstanceList
  * @param pCloudLet
  * @returns {[]}
  */
 export const filterAppInstanceListByCloudLet = (appInstanceList, pCloudLet = '') => {
-
     let instanceListFilteredByCloudlet = []
     appInstanceList.map(item => {
         if (item.Cloudlet === pCloudLet) {
@@ -156,7 +143,6 @@ export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '
 
 
 /**
- * @todo: arrayList에서 중복값을 제거.
  * @todo: Remove duplicates from an array.
  * @param names
  * @returns {string[]}
@@ -206,7 +192,6 @@ export const makeClusterListSelectBox = (appInstanceList, pCloudLet) => {
 }
 
 /**
- * @todo : 클러스터렛 리스트를 셀렉트 박스 형태로 가공
  * @todo : Process clusterlet list into select box
  * @param appInstanceList
  * @returns {[]}
@@ -282,12 +267,10 @@ export const renderUsageByType = (usageOne, hardwareType) => {
         return usageOne.sumDiskUsage
     }
     if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
-        //usageOne.sumSendBytes
         return usageOne.sumRecvBytes
     }
 
     if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
-        //usageOne.sumSendBytes
         return usageOne.sumSendBytes
     }
 }
@@ -316,8 +299,7 @@ export const renderLottie = () => {
 }
 
 /**
- * @todo: Bar Graph Rendering By Google Chart
- * @todo: 바그래프 랜더링 By Google Chart
+ * @todo: Bar Graph Rendering
  * @param usageList
  * @param hardwareType
  * @returns {*}
@@ -337,12 +319,14 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
 
     console.log('chartDataList===>', chartDataList);
 
-    let chartHeight = window.innerHeight / 3;
+
+    //let chartHeight = window.innerHeight / 3;
 
     return (
         <Chart
             width="100%"
-            height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
+            //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
+            height={'100%'}
             chartType="BarChart"
             loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
             data={chartDataList}
@@ -443,117 +427,6 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
     );
 
 }
-
-
-export const renderBarGraphForNetwork = (_this) => {
-
-    console.log('networkBarChartData===>', _this.state.networkBarChartData);
-
-    return (
-        <Chart
-            width={'100%'}
-            height={'100%'}
-            chartType="BarChart"
-            loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
-            data={_this.state.networkBarChartData}
-            options={{
-                annotations: {
-                    style: 'line',
-                    textStyle: {
-                        //fontName: 'Righteous',
-                        fontSize: 12,
-                        //bold: true,
-                        //italic: true,
-                        // The color of the text.
-                        color: '#fff',
-                        // The color of the text outline.
-                        //auraColor: 'black',
-                        // The transparency of the text.
-                        opacity: 1.0
-                    },
-                    boxStyle: {
-                        // Color of the box outline.
-                        stroke: '#ffffff',
-                        // Thickness of the box outline.
-                        strokeWidth: 1,
-                        // x-radius of the corner curvature.
-                        rx: 10,
-                        // y-radius of the corner curvature.
-                        ry: 10,
-                    }
-                },
-
-                is3D: true,
-                title: '',
-                titleTextStyle: {
-                    color: '#fff',
-                    fontSize: 12,
-                    /*fontName: <string>, // i.e. 'Times New Roman'
-                    fontSize: <number>, // 12, 18 whatever you want (don't specify px)
-                     bold: <boolean>,    // true or false
-                      // true of false*/
-                },
-                //titlePosition: 'out',
-                chartArea: {
-                    // left: 20, right: 150, top: 50, bottom: 25,
-                    width: "60%", height: "80%",
-                },
-                legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
-                //xAxis
-                hAxis: {
-                    textPosition: 'none',//HIDE xAxis
-                    title: '',
-                    titleTextStyle: {
-                        //fontName: "Times",
-                        fontSize: 12,
-                        fontStyle: "italic",
-                        color: 'white'
-                    },
-                    minValue: 0,
-                    textStyle: {
-                        color: "white"
-                    },
-                    gridlines: {
-                        color: "grey"
-                    },
-                    format: '0.##\' byte\'',
-                    baselineColor: "grey",
-                    //out', 'in', 'none'.
-                },
-                //Y축
-                vAxis: {
-                    title: '',
-                    titleTextStyle: {
-                        fontSize: 20,
-                        fontStyle: "normal",
-                        color: 'white'
-                    },
-                    textStyle: {
-                        color: "white",
-                        fontSize: 12,
-                    },
-
-                },
-                //colors: ['#FB7A21'],
-                fontColor: 'white',
-                backgroundColor: {
-                    fill: '#1e2124'
-                },
-                /*  animation: {
-                      duration: 300,
-                      easing: 'out',
-                      startup: true
-                  }*/
-                //colors: ['green']
-            }}
-
-            // For tests
-            rootProps={{'data-testid': '1'}}
-        />
-    );
-
-}
-
 
 /**
  * @todo: 로딩이 완료 되기전에 placeholder를 보여준다..
@@ -666,11 +539,6 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
                 backgroundColor: '#1e2124',
                 // marginLeft: 0, marginRight: 0, marginBottom: 10,
             }}>
-                {/* {_this.state.loading777 &&
-                <div className='loaderDiv'>
-                    <CircularProgress style={{marginLeft: 80, marginTop: 120, color: 'green'}}/>
-                </div>
-                }*/}
                 <BubbleChart
                     className='bubbleChart'
                     graph={{
@@ -703,9 +571,7 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
                         color: 'black',
                         weight: 'bold',
                     }}
-                    //Custom bubble/legend click functions such as searching using the label, redirecting to other page
                     bubbleClickFun={async (label, index) => {
-
                         /*  await _this.setState({
                               currentAppInst: label,
                               currentGridIndex: index,
@@ -713,9 +579,7 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
                           await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)*/
 
                     }}
-
                     legendClickFun={async (label, index) => {
-
                         await _this.setState({
                             currentAppInst: label,
                             currentGridIndex: index,
@@ -911,13 +775,7 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
         }
     }
 
-
-    console.log('cpuUsageList===>', hardwareUsageList);
-
-
-    let width = window.innerWidth * 0.28
     let height = 500 + 100;
-
     let options = {
         plugins: {
             zoom: {
@@ -1053,9 +911,6 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
 
     for (let i in filteredNetworkUsageList) {
         let seriesValues = filteredNetworkUsageList[i].values
-
-        console.log('seriesValues===>', seriesValues);
-
         instanceAppName = filteredNetworkUsageList[i].instance.AppName
         let usageList = [];
 
@@ -1063,12 +918,12 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
 
             let usageOne = 0;
             if (pHardwareType === HARDWARE_TYPE.RECV_BYTES) {
-                console.log('pHardwareType===>', pHardwareType);
+                //console.log('pHardwareType===>', pHardwareType);
                 usageOne = seriesValues[j]["12"];//receivceBytes -> index12
 
             } else {
                 usageOne = seriesValues[j]["13"]; //sendBytes -> index13
-                console.log('usageOne===>', usageOne);
+                //console.log('usageOne===>', usageOne);
             }
             usageList.push(usageOne);
             let dateOne = seriesValues[j]["0"];
@@ -1080,8 +935,6 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
         instanceNameList.push(instanceAppName)
         usageSetList.push(usageList);
     }
-
-    console.log('makeNetworkLineChartDatausageList===>', usageSetList);
 
 
     //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
@@ -1120,9 +973,6 @@ export const makeNetworkLineChartData = (filteredNetworkUsageList, pHardwareType
         labels: newDateTimeList,
         datasets: finalSeriesDataSets,
     }
-
-    console.log('instanceNameList===>', instanceNameList);
-    console.log('finalSeriesDataSets===>', finalSeriesDataSets);
 
     return lineChartData;
 
@@ -1180,8 +1030,6 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
 
     let cloudletCountList = []
     for (let i in appInstanceListSortByCloudlet) {
-        console.log('renderGrid===title>', appInstanceListSortByCloudlet[i][0].Cloudlet);
-        console.log('renderGrid===length>', appInstanceListSortByCloudlet[i].length);
         cloudletCountList.push({
             name: appInstanceListSortByCloudlet[i][0].Cloudlet,
             length: appInstanceListSortByCloudlet[i].length,
@@ -1197,10 +1045,6 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
     }
 
     let chunkedArraysOfColSize = toChunkArray(cloudletCountList, 3);
-
-    console.log('chunkedArraysOfColSize_length===>', chunkedArraysOfColSize.length);
-    //console.log('chunkedArraysOfColSize[0]===>', chunkedArraysOfColSize[0].length);
-
     return (
         <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
             {chunkedArraysOfColSize.map((colSizeArray, index) =>
@@ -1291,8 +1135,8 @@ export const filterUsageListByRegion = (pRegion, usageList) => {
 }
 
 
+
 /**
- * @todo 현재 선택된 지역의 인스턴스 리스트를 가지고 온다...
  * @todo : fetch App Instance List BY region
  * @param pArrayRegion
  * @returns {Promise<[]>}
@@ -1531,10 +1375,6 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
     matrixedUsageList.push(memUsageList)
     matrixedUsageList.push(networkUsageList)
     matrixedUsageList.push(diskUsageList)
-
-
-    console.log('networkUsageList===>', networkUsageList);
-
     return matrixedUsageList;
 }
 
@@ -1584,7 +1424,6 @@ export const Styles = {
         alignItems: 'center',
         fontSize: 13
     },
-
     cpuDiskCol001: {
         marginTop: 0, height: 33, width: '100%'
     },

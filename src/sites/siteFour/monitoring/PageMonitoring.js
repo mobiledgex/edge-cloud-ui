@@ -3,8 +3,7 @@ import {SemanticToastContainer, toast} from 'react-semantic-toasts';
 import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
-import FlexBox from "flexbox-react";
+import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -51,22 +50,18 @@ import {
 import Lottie from "react-lottie";
 import type {TypeGridInstanceList} from "../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
-
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import './PageMonitoring.css'
-
 const FA = require('react-fontawesome')
-const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
+const {RangePicker} = DatePicker;
 const {Column, Row} = Grid;
 const {Pane} = Tab
-
 
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
-        userRole: state.showUserRole ? state.showUserRole.role : null,
     }
 };
 const mapDispatchProps = (dispatch) => {
@@ -74,9 +69,6 @@ const mapDispatchProps = (dispatch) => {
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
         }
-        , handleUserRole: (data) => {
-            dispatch(actions.showUserRole(data))
-        },
     };
 };
 
@@ -191,7 +183,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             cloudLetSelectBoxPlaceholder: 'Select CloudLet',
             clusterSelectBoxPlaceholder: 'Select Cluster',
             appInstSelectBoxPlaceholder: 'Select Instance',
-            //@todo: selectbox 초기값
             currentRegion: 'ALL',
             currentCloudLet: '',
             currentCluster: '',
@@ -214,7 +205,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isShowBottomGrid: false,
             isShowBottomGridForMap: false,
             mapZoomLevel: 0,
-            currentHardwareType: HARDWARE_TYPE.FAVOR,
+            currentHardwareType: HARDWARE_TYPE.FLAVOR,
             bubbleChartData: [],
             currentNetworkType: NETWORK_TYPE.RECV_BYTES,
             lineChartData: [],
@@ -319,13 +310,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
 
             //todo: -------------------------------------------
-            //todo: _gridInstanceList _gridInstanceList________
+            //todo: GridInstanceList
             //todo: -------------------------------------------
             let gridInstanceList = this.makeGridInstanceList();
 
-
             //todo: -------------------------------------------
-            //todo: _gridInstanceList MAXVALUE
+            //todo: GridInstanceList MEM,CPU MAX VALUE
             //todo: -------------------------------------------
             let gridInstanceListMemMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
                 return o.sumMemUsage;
@@ -334,7 +324,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let gridInstanceListCpuMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
                 return o.sumCpuUsage;
             }));
-
 
             await this.setState({
                 appInstanceListTop5: appInstanceListTop5,
@@ -431,7 +420,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                 appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
                 clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
-
                 filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredCpuUsageList);
                 filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredMemUsageList);
                 filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredDiskUsageList);
@@ -662,60 +650,46 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderBottomGridArea() {
             return (
-                <div>
-                    <Grid columns={8} padded={true} style={{height: 50}}>
-                        <Row>
-                            <Column color={'grey'}>
-                                index
-                            </Column>
-                            <Column color={'grey'}>
+                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
+                    <Table.Header className="viewListTableHeader">
+                        <Table.Row>
+                            {/*<Table.HeaderCell width={1}>*/}
+                            {/*    index*/}
+                            {/*</Table.HeaderCell>*/}
+                            <Table.HeaderCell>
                                 NAME
-                            </Column>
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 CPU(%)
-                            </Column>
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 MEM
-                            </Column>
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 DISK
-                            </Column>
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 RECV BYTES
-                            </Column>
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 SEND BYTES
-                            </Column>
-
-                            <Column color={'grey'}>
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
                                 ACTIVE CONNECTIONS
-                            </Column>
-                        </Row>
-                    </Grid>
-                    <div style={{
-                        marginTop: 10,
-                        //overflowY: 'scroll',
-                        //height: 525,
-                    }}
+                            </Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body className="tbBodyList"
                          ref={(div) => {
                              this.messageList = div;
                          }}
                     >
-                        <Grid columns={8} padded={true}
-
-                              style={{
-                                  marginTop: 10,
-                                  overflowY: 'auto',//@todo: 스크롤 처리 부분...
-                                  height: this.state.appInstanceList.length * 35 + 110,
-                              }}
-                        >
                             {/*-----------------------*/}
                             {/*todo:ROW HEADER        */}
                             {/*-----------------------*/}
-                            {!this.state.isReady && <Row columns={1}>
-                                <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
-                                    <div style={{position: 'absolute', top: '-20%', left: '48%'}}>
-                                        <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: -170}}>
+                            {!this.state.isReady &&
+                            <Table.Row className='page_monitoring_popup_table_empty'>
+                                <Table.Cell>
                                             <Lottie
                                                 options={{
                                                     loop: true,
@@ -730,20 +704,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 isStopped={false}
                                                 isPaused={false}
                                             />
-                                        </div>
-                                    </div>
-                                </Column>
-                            </Row>}
+                                </Table.Cell>
+                            </Table.Row>}
                             {this.state.isReady && this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
 
                                 return (
-                                    <Row
-
-                                        style={{
-                                            color: index === this.state.currentGridIndex ? 'white' : 'white',
-                                            backgroundColor: index === this.state.currentGridIndex && '#bea129',
-                                            height: 50
-                                        }}
+                                    <Table.Row className='page_monitoring_popup_table_row'
+                                        // style={{
+                                        //     color: index === this.state.currentGridIndex ? 'white' : 'white',
+                                        //     backgroundColor: index === this.state.currentGridIndex && '#bea129',
+                                        //     height: 50
+                                        // }}
                                         onClick={async () => {
                                             //alert(item.AppName)
                                             /*await this.setState({
@@ -753,58 +724,57 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)*/
                                         }}
                                     >
-                                        <Column>
-                                            {index}
-                                        </Column>
-                                        <Column>
+                                        {/*<Table.Cell width={1}>*/}
+                                        {/*    {index}*/}
+                                        {/*</Table.Cell>*/}
+                                        <Table.Cell>
                                             {item.instance.AppName}
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             <div>
                                                 <div>
                                                     {item.sumCpuUsage.toFixed(2) + '%'}
                                                 </div>
                                                 <div>
-                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                    <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
                                                               percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
                                                               strokeColor={'#29a1ff'} status={'normal'}/>
                                                 </div>
 
                                             </div>
 
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             <div>
                                                 <div>
                                                     {(item.sumMemUsage) + ' Byte'}
                                                 </div>
                                                 <div>
-                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                    <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
                                                               percent={(item.sumMemUsage / this.state.gridInstanceListMemMax) * 100}
                                                               strokeColor={'#29a1ff'} status={'normal'}/>
                                                 </div>
 
                                             </div>
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             {item.sumDiskUsage + ' Byte'}
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             {item.sumRecvBytes + ' Byte'}
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             {item.sumSendBytes + ' Byte'}
-                                        </Column>
-                                        <Column>
+                                        </Table.Cell>
+                                        <Table.Cell>
                                             0
-                                        </Column>
-                                    </Row>
+                                        </Table.Cell>
+                                    </Table.Row>
 
                                 )
                             })}
-                        </Grid>
-                    </div>
-                </div>
+                    </Table.Body>
+                </Table>
 
             )
         }
@@ -968,13 +938,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                     </Grid.Row>
                 </div>
-
             )
         }
 
-
         renderSelectBoxRow() {
-
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
@@ -1071,7 +1038,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:---------------------------*/}
                         {/*todo: App Instance Dropdown      */}
                         {/*todo:---------------------------*/}
-
                         <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
                                 App Inst
@@ -1095,12 +1061,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             />
                         </div>
 
-
                         {/*todo:---------------------------*/}
-                        {/*todo:TimeRange   Dropdown       */}
+                        {/*todo: Time Range Dropdown       */}
                         {/*todo:---------------------------*/}
-
-
                         <div className="page_monitoring_dropdown_box">
                             {/*<div className="page_monitoring_dropdown_label">*/}
                             {/*    TimeRange*/}
@@ -1141,7 +1104,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentHardwareType: value,
             });
 
-
             let appInstanceList = this.state.appInstanceList;
             let allCpuUsageList = this.state.allCpuUsageList;
             let allMemUsageList = this.state.allMemUsageList;
@@ -1152,7 +1114,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             if (value === HARDWARE_TYPE.FLAVOR) {
                 appInstanceList.map((item, index) => {
-
                     chartData.push({
                         //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                         index: index,
@@ -1164,7 +1125,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             } else if (value === HARDWARE_TYPE.CPU) {
                 allCpuUsageList.map((item, index) => {
-
                     chartData.push({
                         //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                         index: index,
@@ -1176,7 +1136,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             } else if (value === HARDWARE_TYPE.MEM) {
                 allMemUsageList.map((item, index) => {
-
                     chartData.push({
                         //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                         index: index,
@@ -1188,7 +1147,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             } else if (value === HARDWARE_TYPE.DISK) {
                 allDiskUsageList.map((item, index) => {
-
                     chartData.push({
                         //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
                         index: index,
@@ -1220,14 +1178,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
 
-            console.log('allNetworkUsageList===>', allNetworkUsageList);
-
-
             this.setState({
                 bubbleChartData: chartData,
-            }, () => {
-                console.log('bubbleChartData===>', this.state.bubbleChartData)
-            })
+            });
         }
 
         //@todo:-----------------------
@@ -1265,29 +1218,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
             },
         ]
-
-        NETWORK_TABS = [
-
-            {
-                menuItem: 'RECEIVE BYTES', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'SEND BYTES', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
-                        </Pane>
-                    )
-                }
-            },
-        ]
-
 
         render() {
             {/*todo:-------------------------------------------------------------------------------*/
@@ -1408,9 +1338,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             {/*_____row____2*/}
                                             {/*_____row____2*/}
                                             <div className='page_monitoring_row'>
-                                                {/* ___col___4*/}
-                                                {/* ___col___4*/}
-                                                {/* ___col___4*/}
+                                                {/* ___col___1*/}
+                                                {/* ___col___1*/}
+                                                {/* ___col___1*/}
                                                 <div className='page_monitoring_column'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
@@ -1442,54 +1372,58 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChart(this, this.state.currentHardwareType, this.state.bubbleChartData)}
                                                     </div>
                                                 </div>
+                                                {/* row2___col___2*/}
+                                                {/* row2___col___2*/}
+                                                {/* row2___col___2*/}
                                                 <div className='page_monitoring_column'>
                                                     {/*todo:-----------------------*/}
                                                     {/*todo:  NETWORK HEADER     */}
                                                     {/*todo:-----------------------*/}
-                                                    <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
 
-                                                        <div className='page_monitoring_title_area2'>
+                                                        <div className='page_monitoring_title_area'>
                                                             <div className='page_monitoring_title'>
                                                                 TOP5 of NETWORK Usage
                                                             </div>
                                                         </div>
-                                                        <div className='page_monitoring_title_area3'>
+                                                        <div className='page_monitoring_title_area'>
                                                             <div className='page_monitoring_title'>
                                                                 Transition Of NETWORK Usage
                                                             </div>
+                                                            <Dropdown
+                                                                placeholder='SELECT HARDWARE'
+                                                                selection
+                                                                loading={this.state.loading}
+                                                                options={NETWORK_OPTIONS}
+                                                                defaultValue={NETWORK_OPTIONS[0].value}
+                                                                onChange={async (e, {value}) => {
+
+                                                                    if (value === NETWORK_TYPE.RECV_BYTES) {
+                                                                        this.setState({
+                                                                            networkTabIndex: 0,
+                                                                        })
+                                                                    } else {
+                                                                        this.setState({
+                                                                            networkTabIndex: 1,
+                                                                        })
+                                                                    }
+
+                                                                }}
+                                                                value={this.state.currentNetworkType}
+                                                                // style={Styles.dropDown}
+                                                            />
                                                         </div>
-                                                        <Dropdown
-                                                            placeholder='SELECT HARDWARE'
-                                                            selection
-                                                            loading={this.state.loading}
-                                                            options={NETWORK_OPTIONS}
-                                                            defaultValue={NETWORK_OPTIONS[0].value}
-                                                            onChange={async (e, {value}) => {
-
-                                                                if (value === NETWORK_TYPE.RECV_BYTES) {
-                                                                    this.setState({
-                                                                        networkTabIndex: 0,
-                                                                    })
-                                                                } else {
-                                                                    this.setState({
-                                                                        networkTabIndex: 1,
-                                                                    })
-                                                                }
-
-                                                            }}
-                                                            value={this.state.currentNetworkType}
-                                                            // style={Styles.dropDown}
-                                                        />
                                                     </div>
 
                                                     {/*todo:---------------------------------*/}
                                                     {/*todo: NETWORK TAB PANEL AREA           */}
                                                     {/*todo:---------------------------------*/}
-                                                    <Tabs selectedIndex={this.state.networkTabIndex}>
-                                                        <TabPanel>
+                                                    <Tabs selectedIndex={this.state.networkTabIndex}
+                                                          className='page_monitoring_tab'>
+                                                        <TabPanel style={{height:'100%'}}>
                                                             {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
                                                         </TabPanel>
-                                                        <TabPanel>
+                                                        <TabPanel style={{height:'100%'}}>
                                                             {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
                                                         </TabPanel>
                                                     </Tabs>
@@ -1507,15 +1441,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                          isShowBottomGrid: !this.state.isShowBottomGrid,
                                                      })
                                                  }}
-
-                                                // style={{
-                                                //     display: 'flex',
-                                                //     width: '99.0%', backgroundColor: '#2f2f2f', alignItems: 'center',
-                                                //     justifyContent: 'center',
-                                                //     alignSelf: 'center',
-                                                //     height: 30,
-                                                //     borderRadius: 1,
-                                                // }}
                                             >
                                                 <div className='page_monitoring_table_column'>
                                                     <div className='page_monitoring_title_area'>
@@ -1540,21 +1465,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                           })*/
                                                     }}
                                                 >
-                                                    <div
-                                                        style={{
-                                                            backgroundColor: '#2f2f2f', opacity: 3.0, borderTopRightRadius: 15, borderTopLeftRadius: 15,
-                                                            position: 'absolute', zIndex: 999999, bottom: 50, height: 700, width: '98.0%', left: 23
-                                                        }}
-                                                    >
-                                                        <p
-                                                            style={{
-                                                                display: 'flex',
-                                                                width: '100%',
-                                                                backgroundColor: 'transparent',
-                                                                alignItems: 'center',
-                                                                justifyContent: 'center',
-                                                                marginTop: 20
-                                                            }}
+                                                    <div className='page_monitoring_popup_column'>
+                                                        <div className='page_monitoring_popup_header_row'
                                                             onClick={() => {
 
                                                                 this.setState({
@@ -1563,21 +1475,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                                             }}
                                                         >
-                                                            <div style={{color: 'white'}}>
-                                                                HIDE APP INSTANCE LIST
+                                                            <div className='page_monitoring_popup_header_title'>
+                                                                Status of App
                                                             </div>
-                                                            <div style={{marginLeft: 15}}>
-                                                                <FA name="chevron-down" style={{fontSize: 15, color: 'white'}}/>
+                                                            <div className='page_monitoring_popup_header_button'>
+                                                                <div>
+                                                                    HIDE APP INSTANCE LIST
+                                                                </div>
+                                                                <div style={{marginLeft: 10}}>
+                                                                    <FA name="chevron-down"/>
+                                                                </div>
                                                             </div>
-                                                        </p>
+                                                            <div/>
+                                                        </div>
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
-                                                        <div style={Styles.header00001}>
-                                                            Status of App
-                                                        </div>
-                                                        <div style={{height: 7}}/>
-                                                        <div className='page_monitoring_column_for_grid2'>
+                                                        <div className='page_monitoring_popup_table'>
                                                             {this.renderBottomGridArea()}
                                                         </div>
                                                     </div>
