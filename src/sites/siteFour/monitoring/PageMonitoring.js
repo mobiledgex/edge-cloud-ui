@@ -10,38 +10,53 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker,} from 'antd';
+import {DatePicker, Progress,} from 'antd';
 import * as reducer from "../../../utils";
 import {
+    cutArrayList,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
     filterAppInstOnCloudlet,
     filterInstanceCountOnCloutLetOne,
-    filterUsageByAppInst,
-    filterUsageByCloudLet,
-    filterUsageByCluster,
+    filterUsageByType,
     filterUsageListByRegion,
     getMetricsUtilizationAtAppLevel_TEST,
     getUsageList,
+    instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
     makeClusterListSelectBox,
+    makeNetworkBarData,
+    makeNetworkLineChartData,
     renderBarGraph,
     renderBubbleChart,
-    renderInstanceOnCloudletGrid,
     renderLineChart,
     renderPlaceHolder,
     renderPlaceHolder2,
-    requestShowAppInstanceList
+    renderSixGridInstanceOnCloudletGrid,
+    requestShowAppInstanceList,
+    Styles
 } from "./PageMonitoringService";
-import {APPINSTANCE_INIT_VALUE, CLASSIFICATION, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../shared/Constants";
+import {
+    APPINSTANCE_INIT_VALUE,
+    CLASSIFICATION,
+    HARDWARE_OPTIONS,
+    HARDWARE_TYPE,
+    MONITORING_CATE_SELECT_TYPE,
+    NETWORK_OPTIONS,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGIONS_OPTIONS
+} from "../../../shared/Constants";
 import Lottie from "react-lottie";
+import type {TypeGridInstanceList} from "../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
-import {cutArrayList, Styles} from "../../../services/SharedService";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import './PageMonitoring.css';
+
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
+import {TabPanel, Tabs} from "react-tabs";
+import './PageMonitoring.css'
+
 const FA = require('react-fontawesome')
 const {MonthPicker, RangePicker, WeekPicker} = DatePicker;
 const {Column, Row} = Grid;
@@ -51,6 +66,7 @@ const {Pane} = Tab
 const mapStateToProps = (state) => {
     return {
         isLoading: state.LoadingReducer.isLoading,
+        userRole: state.showUserRole ? state.showUserRole.role : null,
     }
 };
 const mapDispatchProps = (dispatch) => {
@@ -58,6 +74,9 @@ const mapDispatchProps = (dispatch) => {
         toggleLoading: (data) => {
             dispatch(actions.toggleLoading(data))
         }
+        , handleUserRole: (data) => {
+            dispatch(actions.showUserRole(data))
+        },
     };
 };
 
@@ -70,6 +89,7 @@ type Props = {
     loading: boolean,
     isLoading: boolean,
     toggleLoading: Function,
+    userRole: any,
 }
 
 type State = {
@@ -123,6 +143,22 @@ type State = {
     isShowBottomGrid: boolean,
     isShowBottomGridForMap: boolean,
     mapZoomLevel: number,
+    currentHardwareType: string,
+    bubbleChartData: Array,
+    currentNetworkType: string,
+    lineChartData: Array,
+    isReadyNetWorkCharts: boolean,
+    isEnableCloutletDropDown: boolean,
+    isEnableClusterDropDown: boolean,
+    isEnableAppInstDropDown: boolean,
+    currentNetworkTab: number,
+    allGridInstanceList: TypeGridInstanceList,
+    filteredGridInstanceList: any,
+    gridInstanceListMemMax: number,
+    networkTabIndex: number,
+    gridInstanceListCpuMax: number,
+
+
 }
 
 
@@ -178,6 +214,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isShowBottomGrid: false,
             isShowBottomGridForMap: false,
             mapZoomLevel: 0,
+            currentHardwareType: HARDWARE_TYPE.FAVOR,
+            bubbleChartData: [],
+            currentNetworkType: NETWORK_TYPE.RECV_BYTES,
+            lineChartData: [],
+            isReadyNetWorkCharts: false,
+            isEnableCloutletDropDown: true,
+            isEnableClusterDropDown: false,
+            isEnableAppInstDropDown: false,
+            currentNetworkTab: 0,
+            allGridInstanceList: [],
+            filteredGridInstanceList: [],
+            gridInstanceListMemMax: 0,
+            networkTabIndex: 0,
+            gridInstanceListCpuMax: 0,
         };
 
 
@@ -187,20 +237,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-            this.loadInitData();
+            await this.loadInitData();
         }
 
         async loadInitData() {
+            let userRole = localStorage.getItem('selectRole')
+            console.log('userRole====>', userRole);
+
             this.setState({
                 loading: true,
                 loading0: true,
                 isReady: false,
             })
             //todo: REALDATA
-            //let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
+            let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
 
             //todo: FAKE JSON FOR DEV
-            let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
+            //let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({
@@ -219,21 +272,31 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 isAppInstaceDataReady: true,
             })
 
-            //todo: ####################################################################################
+            //todo: -------------------------------------------------------------------------------
+            //todo: make FirstbubbleChartData
+            //todo: -------------------------------------------------------------------------------
+            let bubbleChartData = await this.makeFirstBubbleChartData(appInstanceList);
+            await this.setState({
+                bubbleChartData: bubbleChartData,
+            })
+
+
+            //todo: #####################################################
             //todo: Bring Hardware chart Data with App Instance List. From remote  (REALDATA)
-            //todo: ####################################################################################
+            //todo: #####################################################
             let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT);
 
-            //todo: ################################################################
+            //todo: #####################################################
             //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR DEV
-            //todo: ################################################################
+            //todo:#####################################################
             //let usageList = require('../../../temp/usageAllJsonList2')
+
+            console.log('usageList===>', usageList)
 
             //todo: MAKE SELECTBOX.
             let clusterInstanceGroupList = reducer.groupBy(appInstanceList, CLASSIFICATION.CLUSTER_INST)
             let cloudletList = this.makeSelectBoxList(appInstanceListGroupByCloudlet, CLASSIFICATION.CLOUDLET)
             let clusterList = this.makeSelectBoxList(clusterInstanceGroupList, CLASSIFICATION.CLUSTER_INST)
-
 
             await this.setState({
                 allCpuUsageList: usageList[0],
@@ -246,12 +309,39 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredMemUsageList: usageList[1],
                 filteredNetworkUsageList: usageList[2],
                 filteredDiskUsageList: usageList[3],
+            }, () => {
+                console.log('filteredNetworkUsageList===>', this.state.filteredNetworkUsageList);
             });
 
+            //todo: -------------------------------------------------------------
             //todo: MAKE TOP5 INSTANCE LIST
+            //todo: -------------------------------------------------------------
             let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
+
+            //todo: -------------------------------------------
+            //todo: _gridInstanceList _gridInstanceList________
+            //todo: -------------------------------------------
+            let gridInstanceList = this.makeGridInstanceList();
+
+
+            //todo: -------------------------------------------
+            //todo: _gridInstanceList MAXVALUE
+            //todo: -------------------------------------------
+            let gridInstanceListMemMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
+                return o.sumMemUsage;
+            }));
+
+            let gridInstanceListCpuMax = Math.max.apply(Math, gridInstanceList.map(function (o) {
+                return o.sumCpuUsage;
+            }));
+
+
             await this.setState({
                 appInstanceListTop5: appInstanceListTop5,
+                allGridInstanceList: gridInstanceList,
+                filteredGridInstanceList: gridInstanceList,
+                gridInstanceListMemMax: gridInstanceListMemMax,
+                gridInstanceListCpuMax: gridInstanceListCpuMax,
             });
 
             this.props.toggleLoading(false);
@@ -259,6 +349,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading: false,
                 loading0: false,
                 isReady: true,
+                isReadyNetWorkCharts: true,
             });
 
             toast({
@@ -271,6 +362,33 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
 
         }
+
+
+        /**
+         * bottom Grid InstanceList maker..
+         * @returns {[]}
+         */
+        makeGridInstanceList() {
+            let allCpuUsageList = this.state.allCpuUsageList
+            let allMemUsageList = this.state.allMemUsageList
+            let allDiskUsageList = this.state.allDiskUsageList
+            let allNetworkUsageList = this.state.allNetworkUsageList
+
+            let gridInstanceList = []
+            allCpuUsageList.map((item, index) => {
+                console.log('item===>', item);
+                gridInstanceList.push({
+                    instance: item.instance,
+                    sumCpuUsage: item.sumCpuUsage,
+                    sumDiskUsage: allDiskUsageList[index].sumDiskUsage,
+                    sumMemUsage: allMemUsageList[index].sumMemUsage,
+                    sumRecvBytes: allNetworkUsageList[index].sumRecvBytes,
+                    sumSendBytes: allNetworkUsageList[index].sumSendBytes,
+                })
+            })
+            return gridInstanceList;
+        }
+
 
         /**
          * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
@@ -292,9 +410,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo : fetch data from state
             let appInstanceList = this.state.allAppInstanceList;
 
-            //todo: ##########################################
+            //todo: -------------------------------------------
             //todo: FLITER By pRegion
-            //todo: ##########################################
+            //todo: -------------------------------------------
             appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
             let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
             let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
@@ -302,63 +420,77 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let filteredMemUsageList = filterUsageListByRegion(pRegion, this.state.allMemUsageList);
             let filteredDiskUsageList = filterUsageListByRegion(pRegion, this.state.allDiskUsageList);
             let filteredNetworkUsageList = filterUsageListByRegion(pRegion, this.state.allNetworkUsageList);
+            let filteredGridInstanceList = filterUsageListByRegion(pRegion, this.state.allGridInstanceList);
 
 
-            //todo: ##########################################
+            //todo: -------------------------------------------
             //todo: FLITER  By pCloudLet
-            //todo: ##########################################
+            //todo: -------------------------------------------
             let clusterSelectBoxList = [];
             if (pCloudLet !== '') {
                 appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
                 appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
                 clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
-                filteredCpuUsageList = filterUsageByCloudLet(filteredCpuUsageList, pCloudLet);
-                filteredMemUsageList = filterUsageByCloudLet(filteredMemUsageList, pCloudLet);
-                filteredDiskUsageList = filterUsageByCloudLet(filteredDiskUsageList, pCloudLet);
-                filteredNetworkUsageList = filterUsageByCloudLet(filteredNetworkUsageList, pCloudLet);
 
+                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredCpuUsageList);
+                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredMemUsageList);
+                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredDiskUsageList);
+                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredNetworkUsageList);
+                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredGridInstanceList);
             }
 
-            //todo: ##########################################
+            //todo: -------------------------------------------
             //todo: FLITER By pCluster
-            //todo: ##########################################
+            //todo: -------------------------------------------
             if (pCluster !== '') {
                 //todo:LeftTop의 Cloudlet위에 올라가는 인스턴스 리스트를 필터링 처리하는 로직.
                 appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
                 //todo:app instalce list를 필터링
                 appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
-                filteredCpuUsageList = filterUsageByCluster(filteredCpuUsageList, pCluster);
-                filteredMemUsageList = filterUsageByCluster(filteredMemUsageList, pCluster);
-                filteredDiskUsageList = filterUsageByCluster(filteredDiskUsageList, pCluster);
-                filteredNetworkUsageList = filterUsageByCluster(filteredNetworkUsageList, pCluster);
+                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredCpuUsageList);
+                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredMemUsageList);
+                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredDiskUsageList);
+                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredNetworkUsageList);
+                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredGridInstanceList);
+
             }
 
-            //todo: ##########################################
+            //todo: -------------------------------------------
             //todo: FLITER By pAppInstance
-            //todo: ##########################################
+            //todo: -------------------------------------------
             if (pAppInstance !== '') {
                 //todo:app instalce list를 필터링
                 //appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
-                filteredCpuUsageList = filterUsageByAppInst(filteredCpuUsageList, pAppInstance);
-                filteredMemUsageList = filterUsageByAppInst(filteredMemUsageList, pAppInstance);
-                filteredDiskUsageList = filterUsageByAppInst(filteredDiskUsageList, pAppInstance);
-                filteredNetworkUsageList = filterUsageByAppInst(filteredNetworkUsageList, pAppInstance);
+                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredCpuUsageList);
+                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredMemUsageList);
+                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredDiskUsageList);
+                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredNetworkUsageList);
+                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredGridInstanceList);
+
             }
 
 
-            //todo: ##########################################
+            //todo: -------------------------------------------
             //todo: FLITER By startDate, endDate
-            //todo: ##########################################
+            //todo: -------------------------------------------
             if (this.state.startDate !== '' && this.state.endDate !== '') {
                 //alert(this.state.startDate)
             }
 
+            //todo: -------------------------------------------
+            //todo: _gridInstanceList MAXVALUE
+            //todo: -------------------------------------------
+            let gridInstanceListMemMax = Math.max.apply(Math, filteredGridInstanceList.map(function (o) {
+                return o.sumMemUsage;
+            }));
 
-            this.setState({
+            await this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
                 filteredDiskUsageList: filteredDiskUsageList,
                 filteredNetworkUsageList: filteredNetworkUsageList,
+                filteredGridInstanceList: filteredGridInstanceList,
+                gridInstanceListMemMax: gridInstanceListMemMax,
                 appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
@@ -366,25 +498,60 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 clusterList: clusterSelectBoxList,
                 currentCloudLet: pCloudLet,
                 currentCluster: pCluster,
-            }, async () => {
-
-                //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
-                if (pAppInstance === '') {
-                    //todo: MAKE TOP5 INSTANCE LIST
-                    let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
-                    await this.setState({
-                        appInstanceListTop5: appInstanceListTop5,
-                    });
-                }
-                setTimeout(() => {
-                    this.setState({
-                        cloudLetSelectBoxPlaceholder: 'Select CloudLet',
-                        clusterSelectBoxPlaceholder: 'Select Cluster',
-                    })
-                }, 500)
-                this.props.toggleLoading(false)
+            });
+            //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
+            if (pAppInstance === '') {
+                //todo: MAKE TOP5 INSTANCE LIST
+                let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
+                await this.setState({
+                    appInstanceListTop5: appInstanceListTop5,
+                });
+            }
+            setTimeout(() => {
+                this.setState({
+                    cloudLetSelectBoxPlaceholder: 'Select CloudLet',
+                    clusterSelectBoxPlaceholder: 'Select Cluster',
+                })
+            }, 500)
+            //todo: -------------------------------------------
+            //todo: -------------------------------------------
+            //todo: make FirstbubbleChartData
+            //todo: -------------------------------------------
+            //todo: -------------------------------------------
+            let bubbleChartData = await this.makeFirstBubbleChartData(appInstanceList);
+            await this.setState({
+                bubbleChartData: bubbleChartData,
             })
 
+
+            //todo: -------------------------------------------
+            //todo: -------------------------------------------
+            //todo: NETWORK chart data filtering
+            //todo: -------------------------------------------
+            //todo: -------------------------------------------
+            let networkChartData = makeNetworkLineChartData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
+            let networkBarChartData = makeNetworkBarData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
+            await this.setState({
+                networkChartData: networkChartData,
+                networkBarChartData: networkBarChartData,
+            })
+            this.props.toggleLoading(false)
+        }
+
+        async makeFirstBubbleChartData(appInstanceList: any) {
+            let bubbleChartData = []
+            appInstanceList.map((item, index) => {
+                bubbleChartData.push({
+                    //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                    index: index,
+                    label: item.AppName.toString().substring(0, 10) + "...",
+                    value: instanceFlavorToPerformanceValue(item.Flavor),
+                    favor: item.Flavor,
+                    fullLabel: item.AppName.toString(),
+                })
+            })
+
+            return bubbleChartData;
         }
 
         makeSelectBoxList(arrList, keyName) {
@@ -409,15 +576,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return newArrList;
         }
 
-        componentWillUnmount() {
-            clearInterval(this.intervalHandle)
-        }
-
         async refreshAllData() {
             toast({
                 type: 'success',
                 //icon: 'smile',
-                title: 'Reset All',
+                title: 'REFRESH_ALL_DATA',
                 //description: 'This is a Semantic UI toast wich waits 5 seconds before closing',
                 animation: 'bounce',
                 time: 3 * 1000,
@@ -497,19 +660,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         }
 
-        /*
-        scrollToBottom() {
-            const scrollHeight = this.messageList.scrollHeight;
-            const height = this.messageList.clientHeight;
-            const maxScrollTop = scrollHeight - height;
-            this.messageList.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
-        }
-
-        scrollToUp() {
-            this.messageList.scrollTo(0, 0);
-        }*/
-
-        renderGridForAppInstanceList() {
+        renderBottomGridArea() {
             return (
                 <div>
                     <Grid columns={8} padded={true} style={{height: 50}}>
@@ -524,19 +675,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 CPU(%)
                             </Column>
                             <Column color={'grey'}>
-                                RSS MEM
+                                MEM
                             </Column>
                             <Column color={'grey'}>
-                                RecvBytes
+                                DISK
                             </Column>
                             <Column color={'grey'}>
-                                SendBytes
+                                RECV BYTES
                             </Column>
                             <Column color={'grey'}>
-                                Status
+                                SEND BYTES
                             </Column>
+
                             <Column color={'grey'}>
-                                Start
+                                ACTIVE CONNECTIONS
                             </Column>
                         </Row>
                     </Grid>
@@ -557,16 +709,33 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                   height: this.state.appInstanceList.length * 35 + 110,
                               }}
                         >
-                            {/*todo:ROW HEADER*/}
-                            {/*todo:ROW HEADER*/}
-                            {/*todo:ROW HEADER*/}
+                            {/*-----------------------*/}
+                            {/*todo:ROW HEADER        */}
+                            {/*-----------------------*/}
                             {!this.state.isReady && <Row columns={1}>
                                 <Column style={{justifyContent: "center", alignItems: 'center', alignSelf: 'center'}}>
-                                    <CircularProgress
-                                        style={{color: 'green', justifyContent: "center", alignItems: 'center'}}/>
+                                    <div style={{position: 'absolute', top: '-20%', left: '48%'}}>
+                                        <div style={{marginLeft: -120, display: 'flex', flexDirection: 'row', marginTop: -170}}>
+                                            <Lottie
+                                                options={{
+                                                    loop: true,
+                                                    autoplay: true,
+                                                    animationData: require('../../../lotties/loader001'),
+                                                    rendererSettings: {
+                                                        preserveAspectRatio: 'xMidYMid slice'
+                                                    }
+                                                }}
+                                                height={240}
+                                                width={240}
+                                                isStopped={false}
+                                                isPaused={false}
+                                            />
+                                        </div>
+                                    </div>
                                 </Column>
                             </Row>}
-                            {this.state.isReady && this.state.appInstanceList.map((item: TypeAppInstance, index) => {
+                            {this.state.isReady && this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
+
                                 return (
                                     <Row
 
@@ -577,40 +746,57 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         }}
                                         onClick={async () => {
                                             //alert(item.AppName)
-                                            await this.setState({
-                                                currentAppInst: item.AppName,
+                                            /*await this.setState({
+                                                currentAppInst: item.instance.AppName,
                                                 currentGridIndex: index,
                                             })
-                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.AppName)
+                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)*/
                                         }}
                                     >
-                                        <Column
-
-                                        >
+                                        <Column>
                                             {index}
                                         </Column>
-                                        <Column
+                                        <Column>
+                                            {item.instance.AppName}
+                                        </Column>
+                                        <Column>
+                                            <div>
+                                                <div>
+                                                    {item.sumCpuUsage.toFixed(2) + '%'}
+                                                </div>
+                                                <div>
+                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                              percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
+                                                              strokeColor={'#29a1ff'} status={'normal'}/>
+                                                </div>
 
-                                        >
-                                            {item.AppName}
+                                            </div>
+
                                         </Column>
                                         <Column>
-                                            {this.state.allCpuUsageList[index].sumCpuUsage.toFixed(2) + "%"}
+                                            <div>
+                                                <div>
+                                                    {(item.sumMemUsage) + ' Byte'}
+                                                </div>
+                                                <div>
+                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                              percent={(item.sumMemUsage / this.state.gridInstanceListMemMax) * 100}
+                                                              strokeColor={'#29a1ff'} status={'normal'}/>
+                                                </div>
+
+                                            </div>
                                         </Column>
                                         <Column>
-                                            {this.state.allMemUsageList[index].sumMemUsage.toFixed(0) + ' Byte'}
+                                            {item.sumDiskUsage + ' Byte'}
                                         </Column>
                                         <Column>
-                                            {this.state.allNetworkUsageList[index].sumRecvBytes}
+                                            {item.sumRecvBytes + ' Byte'}
                                         </Column>
                                         <Column>
-                                            {this.state.allNetworkUsageList[index].sumSendBytes}
+                                            {item.sumSendBytes + ' Byte'}
                                         </Column>
                                         <Column>
-                                            Status_NULL
-                                        </Column>
-                                        <Column>
-                                            Start_NULL
+                                            0
                                         </Column>
                                     </Row>
 
@@ -623,50 +809,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        /**###############################
-         MONITORING_TABS
-         ##################################*/
-        MONITORING_TABS = [
 
-            {
-                menuItem: 'CPU', render: () => {
-                    return (
-                        <Pane style={{}}>
-                            {this.renderCpuArea()}
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'MEM', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderMemArea()}
-                        </Pane>
-                    )
-                }
-            },
-            {
-                menuItem: 'DISK', render: () => {
-                    return (
-                        <Pane>
-                            {this.renderDiskArea()}
-                        </Pane>
-                    )
-                }
-            },
-
-
-        ]
-
-        renderCpuArea() {
+        renderCpuTabArea() {
             return (
-                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
+                <div className='page_monitoring_dual_column'>
 
                     {/*1_column*/}
                     {/*1_column*/}
                     {/*1_column*/}
-                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                    <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 TOP5 of CPU Usage
@@ -679,27 +830,27 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*2nd_column*/}
                     {/*2nd_column*/}
                     {/*2nd_column*/}
-                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                    <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 Transition Of CPU Usage
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
                 </div>
             )
         }
 
-        renderMemArea() {
+        renderMemTabArea() {
             return (
-                <div style={{display: 'flex', flexDirection: 'row'}}>
+                <div className='page_monitoring_dual_column'>
                     {/*1st_column*/}
                     {/*1st_column*/}
                     {/*1st_column*/}
-                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                    <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 TOP5 of MEM Usage
@@ -712,14 +863,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*2nd_column*/}
                     {/*2nd_column*/}
                     {/*2nd_column*/}
-                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                    <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 Transition Of MEM Usage
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
 
@@ -727,14 +878,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderDiskArea() {
+        renderDiskTabArea() {
             return (
-                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
-
+                <div className='page_monitoring_dual_column'>
                     {/*1_column*/}
-                    {/*1_column*/}
-                    {/*1_column*/}
-                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                    <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 TOP5 of DISK Usage
@@ -745,73 +893,35 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                     </div>
                     {/*2nd_column*/}
-                    {/*2nd_column*/}
-                    {/*2nd_column*/}
-                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
+                    <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
                                 Transition Of DISK Usage
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                 </div>
             )
         }
 
-        renderNetworkArea() {
+        renderNetworkArea(networkType: string) {
             return (
-                <div style={{display: 'flex', flexDirection: 'row', height: 380,}}>
-                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of NETWORK Usage
-                            </div>
-                        </div>
+                <div className='page_monitoring_dual_column'>
+                    <div className='page_monitoring_dual_container'>
+
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredNetworkUsageList, networkType, this)}
                         </div>
                     </div>
                     {/*1_column*/}
                     {/*1_column*/}
                     {/*1_column*/}
-                    <div className='' style={{marginLeft: 5, marginRight: 5}}>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Transition Of NETWORK Usage
-                            </div>
-                            <div style={{marginLeft: 25,}}>
-                                {this.state.loading ? <div></div> : <Dropdown
-                                    clearable={this.state.regionSelectBoxClearable}
-                                    placeholder='SELECT OPTIONS'
-                                    selection
-                                    options={[
-                                        {value: 'RCV_BTYE', text: 'RCV_BTYE'},
-                                        {value: 'SND_BYTE', text: 'SND_BYTE'},
-                                        {value: 'TCP', text: 'TCP'},
-                                        {value: 'UDP', text: 'UDP'},
-
-                                    ]}
-                                    defaultValue={'RVCV_BTYE'}
-                                    onChange={async (e, {value}) => {
-
-                                        //alert(value)
-                                        //await this.handleSelectBoxChanges(value)
-                                        /*setTimeout(() => {
-                                            this.setState({
-                                                cloudLetSelectBoxPlaceholder: 'Select CloudLet'
-                                            })
-                                        }, 1000)*/
-                                    }}
-                                    value={'RCV_BTYE'}
-                                    style={{width: 220}}
-                                />}
-                            </div>
-                        </div>
+                    <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this.state.filteredNetworkUsageList, HARDWARE_TYPE.NETWORK)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredNetworkUsageList, networkType)}
                         </div>
                     </div>
                 </div>
@@ -821,225 +931,370 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderHeader = () => {
             return (
+
                 <div>
-                    <FlexBox className='' style={{alignItem: 'flex-end'}}>
-                        <Grid.Column className=''
-                                     style={{lineHeight: '36px', fontSize: 30}}>Monitoring</Grid.Column>
+                    <Grid.Row className='content_title'
+                              style={{width: 'fit-content', display: 'inline-block'}}>
+                        <Grid.Column className='title_align'
+                                     style={{lineHeight: '36px'}}>Monitoring</Grid.Column>
                         <div style={{marginLeft: '10px'}}>
                             <button className="ui circular icon button"><i aria-hidden="true"
                                                                            className="info icon"></i></button>
                         </div>
-
-                        {/*todo:REFRESH, RESET BUTTON DIV*/}
-                        {/*todo:REFRESH, RESET BUTTON DIV*/}
-                        {/*todo:REFRESH, RESET BUTTON DIV*/}
-                        <div style={{
-                            display: 'flex',
-                            width: 270,
-                            //backgroundColor: 'red',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginBottom: 5,
-                            marginRight: -25,
-
-                        }}>
-
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    //backgroundColor: 'red',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    marginBottom: 0,
-                                    color: 'white',
-                                    fontSize: 15,
-                                    marginLeft: 0,
-                                    marginRight: 0,
-
-                                }}
-
-                            >
-
-                                <div style={{backgroundColor: 'transparent', marginBottom: 0}} onClick={async () => {
+                        {/*todo:---------------------------*/}
+                        {/*todo:REFRESH, RESET BUTTON DIV  */}
+                        {/*todo:---------------------------*/}
+                        <div style={{marginLeft: '10px'}}>
+                            <Button
+                                onClick={async () => {
                                     this.refreshAllData();
-                                }}>
-                                    <Button>
-                                        REFRESH
-                                    </Button>
-                                </div>
-
-                                <div style={{marginLeft: 10,}}
-                                     onClick={async () => {
-                                         await this.setState({
-                                             currentGridIndex: -1,
-                                             currentTabIndex: 0,
-                                         })
-                                         await this.handleSelectBoxChanges('ALL', '', '', '')
-                                     }}
-                                >
-                                    <Button>RESET_ALL</Button>
-                                </div>
-                            </div>
+                                }}
+                                className="ui circular icon button"
+                            >
+                                <i aria-hidden="true"
+                                   className="sync alternate icon"></i>
+                            </Button>
                         </div>
-                    </FlexBox>
+                        <div style={{marginLeft: '10px'}}>
+                            <Button
+                                onClick={async () => {
+                                    await this.setState({
+                                        currentGridIndex: -1,
+                                        currentTabIndex: 0,
+                                    })
+                                    await this.handleSelectBoxChanges('ALL', '', '', '')
+                                }}
+                            >RESET</Button>
+                        </div>
+                    </Grid.Row>
                 </div>
 
             )
         }
 
+
         renderSelectBoxRow() {
+
             return (
-                <FlexBox>
-                    <div style={Styles.selectBoxRow}>
-                        <div className='page_monitoring_select_area' style={{marginLeft: 0,}}>
-                            {/*todo:##########################*/}
-                            {/*todo:REGION Dropdown           */}
-                            {/*todo:##########################*/}
-                            <div style={{flexDirection: 'row'}}>
-                                <div style={{display: 'flex', flexDirection: 'row'}}>
-                                    <div style={Styles.selectHeader}>
-                                        Region
-                                    </div>
-                                    <Dropdown
-                                        clearable={this.state.regionSelectBoxClearable}
-                                        placeholder='REGION'
-                                        selection
-                                        loading={this.state.loading}
-                                        options={REGIONS_OPTIONS}
-                                        defaultValue={REGIONS_OPTIONS[0].value}
-                                        onChange={async (e, {value}) => {
-                                            await this.handleSelectBoxChanges(value)
-                                            setTimeout(() => {
-                                                this.setState({
-                                                    cloudLetSelectBoxPlaceholder: 'Select CloudLet'
-                                                })
-                                            }, 1000)
-                                        }}
-                                        value={this.state.currentRegion}
-                                        style={Styles.dropDown}
-                                    />
+                <div className='page_monitoring_select_row'>
+                    <div className='page_monitoring_select_area'>
 
-                                    {/*todo:##########################*/}
-                                    {/*todo:CloudLet selectbox       */}
-                                    {/*todo:##########################*/}
-                                    <div style={Styles.selectHeader}>
-                                        CloudLet
-                                    </div>
-                                    <Dropdown
-                                        value={this.state.currentCloudLet}
-                                        clearable={this.state.cloudLetSelectBoxClearable}
-                                        loading={this.state.loading}
-                                        placeholder={this.state.cloudLetSelectBoxPlaceholder}
-                                        selection={true}
-                                        options={this.state.cloudletList}
-                                        style={Styles.dropDown}
-                                        onChange={async (e, {value}) => {
-
-
-                                            await this.handleSelectBoxChanges(this.state.currentRegion, value)
-                                            setTimeout(() => {
-                                                this.setState({
-                                                    clusterSelectBoxPlaceholder: 'Select Cluster'
-                                                })
-                                            }, 1000)
-                                        }}
-                                    />
-
-
-                                    {/*todo:##########################*/}
-                                    {/*todo:Cluster selectbox         */}
-                                    {/*todo:##########################*/}
-                                    <div style={Styles.selectHeader}>
-                                        Cluster
-                                    </div>
-                                    <Dropdown
-                                        value={this.state.currentCluster}
-                                        clearable={this.state.clusterSelectBoxClearable}
-                                        loading={this.state.loading}
-                                        placeholder={this.state.clusterSelectBoxPlaceholder}
-                                        selection
-                                        options={this.state.clusterList}
-                                        style={Styles.dropDown}
-                                        onChange={async (e, {value}) => {
-                                            await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, value)
-
-                                            setTimeout(() => {
-                                                this.setState({
-                                                    appInstSelectBoxPlaceholder: "Select App Instance"
-                                                })
-                                            }, 500)
-                                        }}
-                                    />
-                                    {/*todo:##########################*/}
-                                    {/*todo: App Instance             */}
-                                    {/*todo:##########################*/}
-
-                                    <div style={Styles.selectHeader}>
-                                        App Inst
-                                    </div>
-                                    <div>
-                                        <Dropdown
-                                            clearable={this.state.appInstSelectBoxClearable}
-                                            loading={this.state.loading}
-                                            value={this.state.currentAppInst}
-                                            placeholder='Select App Instance'
-                                            selection
-                                            options={this.state.appInstanceListTop5}
-                                            style={Styles.dropDown}
-                                            onChange={async (e, {value}) => {
-
-                                                await this.setState({
-                                                    currentAppInst: value,
-                                                })
-                                                await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
-                                            }}
-
-                                        />
-                                    </div>
-                                    {/*todo:##########################*/}
-                                    {/*todo:TimeRange                 */}
-                                    {/*todo:##########################*/}
-                                    <div style={Styles.selectHeader}>
-                                        TimeRange
-                                    </div>
-                                    <div style={{marginTop: 0}}>
-                                        <RangePicker
-                                            showTime={{format: 'HH:mm'}}
-                                            format="YYYY-MM-DD HH:mm"
-                                            placeholder={['Start Time', 'End Time']}
-                                            onChange={async (date, dateString) => {
-                                                let startDate = dateString[0]
-                                                let endDate = dateString[1]
-                                                await this.setState({
-                                                    startDate: startDate,
-                                                    endDate: endDate,
-                                                })
-                                                //await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
-                                            }}
-                                            ranges={{
-                                                Today: [moment(), moment()],
-                                                'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(1, 'd')],
-                                                'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
-                                                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                                                'Last Month': [moment().date(-30), moment().date(-1)],
-                                            }}
-                                            style={{width: 300}}
-                                        />
-                                    </div>
-                                </div>
+                        {/*todo:---------------------------*/}
+                        {/*todo:REGION Dropdown           */}
+                        {/*todo:---------------------------*/}
+                        <div className="page_monitoring_dropdown_box">
+                            <div className="page_monitoring_dropdown_label">
+                                Region
                             </div>
+                            <Dropdown
+                                disabled={this.state.loading}
+                                clearable={this.state.regionSelectBoxClearable}
+                                placeholder='REGION'
+                                selection
+                                loading={this.state.loading}
+                                options={REGIONS_OPTIONS}
+                                defaultValue={REGIONS_OPTIONS[0].value}
+                                onChange={async (e, {value}) => {
+                                    await this.handleSelectBoxChanges(value)
+                                    setTimeout(() => {
+                                        this.setState({
+                                            cloudLetSelectBoxPlaceholder: 'Select CloudLet'
+                                        })
+                                    }, 1000)
+                                }}
+                                value={this.state.currentRegion}
+                                // style={Styles.dropDown}
+                            />
 
                         </div>
+
+                        {/*todo:---------------------------*/}
+                        {/*todo:CloudLet Dropdown       */}
+                        {/*todo:---------------------------*/}
+
+                        <div className="page_monitoring_dropdown_box">
+                            <div className="page_monitoring_dropdown_label">
+                                CloudLet
+                            </div>
+                            <Dropdown
+                                disabled={this.state.loading}
+                                value={this.state.currentCloudLet}
+                                clearable={this.state.cloudLetSelectBoxClearable}
+                                loading={this.state.loading}
+                                placeholder={this.state.cloudLetSelectBoxPlaceholder}
+                                selection={true}
+                                options={this.state.cloudletList}
+                                // style={Styles.dropDown}
+                                onChange={async (e, {value}) => {
+
+
+                                    await this.handleSelectBoxChanges(this.state.currentRegion, value)
+                                    setTimeout(() => {
+                                        this.setState({
+                                            clusterSelectBoxPlaceholder: 'Select Cluster'
+                                        })
+                                    }, 1000)
+                                }}
+                            />
+                        </div>
+
+
+                        {/*todo:---------------------------*/}
+                        {/*todo:Cluster Dropdown         */}
+                        {/*todo:---------------------------*/}
+
+                        <div className="page_monitoring_dropdown_box">
+                            <div className="page_monitoring_dropdown_label">
+                                Cluster
+                            </div>
+                            <Dropdown
+                                disabled={this.state.currentCloudLet === ''}
+                                value={this.state.currentCluster}
+                                clearable={this.state.clusterSelectBoxClearable}
+                                loading={this.state.loading}
+                                placeholder={this.state.clusterSelectBoxPlaceholder}
+                                selection
+                                options={this.state.clusterList}
+                                // style={Styles.dropDown}
+                                onChange={async (e, {value}) => {
+                                    await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, value)
+
+                                    setTimeout(() => {
+                                        this.setState({
+                                            appInstSelectBoxPlaceholder: "Select App Instance"
+                                        })
+                                    }, 500)
+                                }}
+                            />
+                        </div>
+
+                        {/*todo:---------------------------*/}
+                        {/*todo: App Instance Dropdown      */}
+                        {/*todo:---------------------------*/}
+
+                        <div className="page_monitoring_dropdown_box">
+                            <div className="page_monitoring_dropdown_label">
+                                App Inst
+                            </div>
+                            <Dropdown
+                                disabled={this.state.currentCluster === '' || this.state.loading}
+                                clearable={this.state.appInstSelectBoxClearable}
+                                loading={this.state.loading}
+                                value={this.state.currentAppInst}
+                                placeholder='Select App Instance'
+                                selection
+                                options={this.state.appInstanceListTop5}
+                                // style={Styles.dropDown}
+                                onChange={async (e, {value}) => {
+
+                                    await this.setState({
+                                        currentAppInst: value,
+                                    })
+                                    await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                }}
+                            />
+                        </div>
+
+
+                        {/*todo:---------------------------*/}
+                        {/*todo:TimeRange   Dropdown       */}
+                        {/*todo:---------------------------*/}
+
+
+                        <div className="page_monitoring_dropdown_box">
+                            {/*<div className="page_monitoring_dropdown_label">*/}
+                            {/*    TimeRange*/}
+                            {/*</div>*/}
+                            <RangePicker
+                                disabled={this.state.loading}
+                                showTime={{format: 'HH:mm'}}
+                                format="YYYY-MM-DD HH:mm"
+                                placeholder={['Start Time', 'End Time']}
+                                onChange={async (date, dateString) => {
+                                    let startDate = dateString[0]
+                                    let endDate = dateString[1]
+                                    await this.setState({
+                                        startDate: startDate,
+                                        endDate: endDate,
+                                    })
+                                    //await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster)
+                                }}
+                                ranges={{
+                                    Today: [moment(), moment()],
+                                    'Last 7 Days': [moment().subtract(7, 'd'), moment().subtract(1, 'd')],
+                                    'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
+                                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                                    'Last Month': [moment().date(-30), moment().date(-1)],
+                                }}
+                                style={{width: 300}}
+                            />
+                        </div>
+
                     </div>
-                </FlexBox>
+                </div>
+
             )
         }
 
+        async handleBubbleChartDropDown(value) {
+            await this.setState({
+                currentHardwareType: value,
+            });
+
+
+            let appInstanceList = this.state.appInstanceList;
+            let allCpuUsageList = this.state.allCpuUsageList;
+            let allMemUsageList = this.state.allMemUsageList;
+            let allDiskUsageList = this.state.allDiskUsageList;
+            let allNetworkUsageList = this.state.allNetworkUsageList;
+
+            let chartData = [];
+
+            if (value === HARDWARE_TYPE.FLAVOR) {
+                appInstanceList.map((item, index) => {
+
+                    chartData.push({
+                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                        index: index,
+                        label: item.AppName.toString().substring(0, 10) + "...",
+                        value: instanceFlavorToPerformanceValue(item.Flavor),
+                        favor: item.Flavor,
+                        fullLabel: item.AppName.toString(),
+                    })
+                })
+            } else if (value === HARDWARE_TYPE.CPU) {
+                allCpuUsageList.map((item, index) => {
+
+                    chartData.push({
+                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                        index: index,
+                        label: item.instance.AppName.toString().substring(0, 10) + "...",
+                        value: (item.sumCpuUsage * 100).toFixed(0),
+                        favor: (item.sumCpuUsage * 100).toFixed(0),
+                        fullLabel: item.instance.AppName.toString(),
+                    })
+                })
+            } else if (value === HARDWARE_TYPE.MEM) {
+                allMemUsageList.map((item, index) => {
+
+                    chartData.push({
+                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                        index: index,
+                        label: item.instance.AppName.toString().substring(0, 10) + "...",
+                        value: item.sumMemUsage,
+                        favor: item.sumMemUsage,
+                        fullLabel: item.instance.AppName.toString(),
+                    })
+                })
+            } else if (value === HARDWARE_TYPE.DISK) {
+                allDiskUsageList.map((item, index) => {
+
+                    chartData.push({
+                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+                        index: index,
+                        label: item.instance.AppName.toString().substring(0, 10) + "...",
+                        value: item.sumDiskUsage,
+                        favor: item.sumDiskUsage,
+                        fullLabel: item.instance.AppName.toString(),
+                    })
+                })
+            } else if (value === NETWORK_TYPE.RECV_BYTES) {
+                allNetworkUsageList.map((item, index) => {
+                    chartData.push({
+                        index: index,
+                        label: item.instance.AppName.toString().substring(0, 10) + "...",
+                        value: item.sumRecvBytes,
+                        favor: item.sumRecvBytes,
+                        fullLabel: item.instance.AppName.toString(),
+                    })
+                })
+            } else if (value === HARDWARE_TYPE.SEND_BYTE) {
+                allNetworkUsageList.map((item, index) => {
+                    chartData.push({
+                        index: index,
+                        label: item.instance.AppName.toString().substring(0, 10) + "...",
+                        value: item.sumSendBytes,
+                        favor: item.sumSendBytes,
+                        fullLabel: item.instance.AppName.toString(),
+                    })
+                })
+            }
+
+            console.log('allNetworkUsageList===>', allNetworkUsageList);
+
+
+            this.setState({
+                bubbleChartData: chartData,
+            }, () => {
+                console.log('bubbleChartData===>', this.state.bubbleChartData)
+            })
+        }
+
+        //@todo:-----------------------
+        //@todo:-----------------------
+        //@todo:    CPU,MEM,DISK TAB
+        //@todo:-----------------------
+        //@todo:-----------------------
+        CPU_MEM_DISK_TABS = [
+
+            {
+                menuItem: 'CPU', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderCpuTabArea()}
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'MEM', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderMemTabArea()}
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'DISK', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderDiskTabArea()}
+                        </Pane>
+                    )
+                }
+            },
+        ]
+
+        NETWORK_TABS = [
+
+            {
+                menuItem: 'RECEIVE BYTES', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'SEND BYTES', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
+                        </Pane>
+                    )
+                }
+            },
+        ]
+
 
         render() {
-            //todo:####################################################################
-            //todo: Components showing when the loading of graph data is not completed.
-            //todo:####################################################################
+            {/*todo:-------------------------------------------------------------------------------*/
+            }
+            // todo: Components showing when the loading of graph data is not completed.
+            {/*todo:-------------------------------------------------------------------------------*/
+            }
             if (!this.state.isAppInstaceDataReady) {
                 return (
                     <Grid.Row className='view_contents'>
@@ -1072,10 +1327,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <Grid.Row className='view_contents'>
-                    {/*todo:#############################*/}
-                    {/*todo: POPUP APP INSTACE LIST DIV  */}
-                    {/*todo:#############################*/}
-
+                    {/*todo:---------------------------------*/}
+                    {/*todo: POPUP APP INSTACE LIST DIV      */}
+                    {/*todo:---------------------------------*/}
                     <Modal
                         closeIcon={true}
                         open={this.state.isModalOpened}
@@ -1087,59 +1341,59 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         }}
                         style={{width: '80%'}}
                     >
-                        <Modal.Header>App Instance List</Modal.Header>
+                        <Modal.Header>Status of App Instance</Modal.Header>
                         <Modal.Content>
-                            {this.renderGridForAppInstanceList()}
+                            {this.renderBottomGridArea()}
                         </Modal.Content>
                     </Modal>
                     <SemanticToastContainer/>
                     <Grid.Column className='contents_body'>
-                        {/*todo:#################### */}
-                        {/*todo:Content Header       */}
-                        {/*todo:#################### */}
+                        {/*todo:---------------------------------*/}
+                        {/*todo:Content Header                   */}
+                        {/*todo:---------------------------------*/}
                         {this.renderHeader()}
-                        <Grid.Row className='site_content_body' style={{overflow: 'hidden'}}>
+                        <Grid.Row className='site_content_body'>
                             <Grid.Column>
                                 <div className="table-no-resized"
                                      style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
 
                                     <div className="page_monitoring">
-                                        {/*todo:#################### */}
+                                        {/*todo:---------------------------------*/}
                                         {/*todo:SELECTBOX_ROW        */}
-                                        {/*todo:#################### */}
+                                        {/*todo:---------------------------------*/}
                                         {this.renderSelectBoxRow()}
-                                        <div className='page_monitoring_dashboard' style={{marginTop: -25, marginLeft: -25}}>
+
+                                        <div className='page_monitoring_dashboard'>
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
                                             {/*_____row____1*/}
-                                            <div className='page_monitoring_row'
-                                                //style={{opacity: !this.state.isShowBottomGrid ? 1.0 : 0.5}}
-                                            >
+                                            <div className='page_monitoring_row'>
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
                                                 {/* ___col___1*/}
-                                                <div className='page_monitoring_column_kj002' style={{}}>
-                                                    <div className=''>
+                                                <div className='page_monitoring_column' style={{}}>
+                                                    <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Status of Launched App Instances on Cloudlet
                                                         </div>
                                                     </div>
-                                                    <div className='page_monitoring_container' style={{width: 800}}>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : renderInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
+                                                    <div className='page_monitoring_container'>
+                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : renderSixGridInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
                                                     </div>
                                                 </div>
 
                                                 {/* ___col___2nd*/}
                                                 {/* ___col___2nd*/}
                                                 {/* ___col___2nd*/}
-                                                <div className='page_monitoring_column_kj003' style={{marginLeft: 0}}>
+                                                <div className='page_monitoring_column'>
 
-                                                    {/*todo: ################*/}
-                                                    {/*todo: RENDER TAB_AREA  */}
-                                                    {/*todo: ################*/}
+                                                    {/*todo:---------------------------------*/}
+                                                    {/*todo: RENDER TAB_AREA                 */}
+                                                    {/*todo:---------------------------------*/}
                                                     <Tab
-                                                        style={{marginLeft: -10}}
-                                                        panes={this.MONITORING_TABS}
+                                                        className='page_monitoring_tab'
+                                                        menu={{secondary: true, pointing: true}}
+                                                        panes={this.CPU_MEM_DISK_TABS}
                                                         activeIndex={this.state.currentTabIndex}
                                                         onTabChange={(e, {activeIndex}) => {
                                                             this.setState({
@@ -1147,79 +1401,143 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             })
                                                         }}
                                                         defaultActiveIndex={this.state.currentTabIndex}
-
                                                     />
                                                 </div>
                                             </div>
-
+                                            {/*_____row____2*/}
+                                            {/*_____row____2*/}
+                                            {/*_____row____2*/}
                                             <div className='page_monitoring_row'>
-
                                                 {/* ___col___4*/}
                                                 {/* ___col___4*/}
                                                 {/* ___col___4*/}
-                                                <div className='page_monitoring_column_kj002'>
+                                                <div className='page_monitoring_column'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
                                                             Engine Performance State Of App instance
                                                         </div>
-                                                    </div>
-                                                    {/*todo:###########################***/}
-                                                    {/*todo: RENDER BUBBLE_CHART          */}
-                                                    {/*todo:###########################***/}
-                                                    <FlexBox>
-                                                        <div>
-                                                            {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChart(this)}
-                                                        </div>
-                                                    </FlexBox>
+                                                        {/*todo:---------------------------------*/}
+                                                        {/*todo: bubbleChart DropDown            */}
+                                                        {/*todo:---------------------------------*/}
+                                                        <Dropdown
+                                                            disabled={this.state.loading}
+                                                            clearable={this.state.regionSelectBoxClearable}
+                                                            placeholder='SELECT HARDWARE'
+                                                            selection
+                                                            loading={this.state.loading}
+                                                            options={HARDWARE_OPTIONS}
+                                                            defaultValue={HARDWARE_OPTIONS[0].value}
+                                                            onChange={async (e, {value}) => {
 
-                                                </div>
-                                                {/*todo:##########################*/}
-                                                {/*todo:NETWORK LIST GRID__4nd_col*/}
-                                                {/*todo:##########################*/}
-                                                <div className='page_monitoring_column_kj003'>
-                                                    <div style={{flexDirection: 'row', display: 'flex'}}>
+                                                                this.handleBubbleChartDropDown(value);
+
+                                                            }}
+                                                            value={this.state.currentHardwareType}
+                                                        />
                                                     </div>
-                                                    {this.renderNetworkArea()}
+                                                    {/*todo:---------------------------------*/}
+                                                    {/*todo: RENDER BUBBLE_CHART          */}
+                                                    {/*todo:---------------------------------*/}
+                                                    <div className='page_monitoring_container'>
+                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChart(this, this.state.currentHardwareType, this.state.bubbleChartData)}
+                                                    </div>
+                                                </div>
+                                                <div className='page_monitoring_column'>
+                                                    {/*todo:-----------------------*/}
+                                                    {/*todo:  NETWORK HEADER     */}
+                                                    {/*todo:-----------------------*/}
+                                                    <div style={{display: 'flex', flexDirection: 'row'}}>
+
+                                                        <div className='page_monitoring_title_area2'>
+                                                            <div className='page_monitoring_title'>
+                                                                TOP5 of NETWORK Usage
+                                                            </div>
+                                                        </div>
+                                                        <div className='page_monitoring_title_area3'>
+                                                            <div className='page_monitoring_title'>
+                                                                Transition Of NETWORK Usage
+                                                            </div>
+                                                        </div>
+                                                        <Dropdown
+                                                            placeholder='SELECT HARDWARE'
+                                                            selection
+                                                            loading={this.state.loading}
+                                                            options={NETWORK_OPTIONS}
+                                                            defaultValue={NETWORK_OPTIONS[0].value}
+                                                            onChange={async (e, {value}) => {
+
+                                                                if (value === NETWORK_TYPE.RECV_BYTES) {
+                                                                    this.setState({
+                                                                        networkTabIndex: 0,
+                                                                    })
+                                                                } else {
+                                                                    this.setState({
+                                                                        networkTabIndex: 1,
+                                                                    })
+                                                                }
+
+                                                            }}
+                                                            value={this.state.currentNetworkType}
+                                                            // style={Styles.dropDown}
+                                                        />
+                                                    </div>
+
+                                                    {/*todo:---------------------------------*/}
+                                                    {/*todo: NETWORK TAB PANEL AREA           */}
+                                                    {/*todo:---------------------------------*/}
+                                                    <Tabs selectedIndex={this.state.networkTabIndex}>
+                                                        <TabPanel>
+                                                            {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
+                                                        </TabPanel>
+                                                        <TabPanel>
+                                                            {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
+                                                        </TabPanel>
+                                                    </Tabs>
                                                 </div>
 
 
                                             </div>
 
-                                            {/*todo: ################################*/}
+                                            {/*todo:---------------------------------*/}
                                             {/*todo: BOTTOM GRID TOGGLE UP BUTTON   */}
-                                            {/*todo: ################################*/}
-                                            <p
-                                                onClick={() => {
-                                                    this.setState({
-                                                        isShowBottomGrid: !this.state.isShowBottomGrid,
-                                                    })
-                                                }}
+                                            {/*todo:---------------------------------*/}
+                                            <div className='page_monitoring_row'
+                                                 onClick={() => {
+                                                     this.setState({
+                                                         isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                     })
+                                                 }}
 
-                                                style={{
-                                                    display: 'flex',
-                                                    width: '99.0%', backgroundColor: '#2f2f2f', alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    alignSelf: 'center',
-                                                    height: 30,
-                                                    borderRadius: 1,
-                                                }}
+                                                // style={{
+                                                //     display: 'flex',
+                                                //     width: '99.0%', backgroundColor: '#2f2f2f', alignItems: 'center',
+                                                //     justifyContent: 'center',
+                                                //     alignSelf: 'center',
+                                                //     height: 30,
+                                                //     borderRadius: 1,
+                                                // }}
                                             >
-                                                <div style={{color: 'white', backgroundColor: 'transparent'}}>SHOW APP INSTANCE LIST
+                                                <div className='page_monitoring_table_column'>
+                                                    <div className='page_monitoring_title_area'>
+                                                        <div className='page_monitoring_title'>
+                                                            SHOW APP INSTANCE LIST
+                                                        </div>
+                                                        <div style={{marginLeft: 10}}>
+                                                            <FA name="chevron-up" style={{fontSize: 15, color: 'white'}}/>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div style={{marginLeft: 15}}>
-                                                    <FA name="chevron-up" style={{fontSize: 15, color: 'white'}}/>
-                                                </div>
-                                            </p>
+                                            </div>
 
-                                            {/*todo: #################################*/}
-                                            {/*todo: BOTTOM_GRID_AREA____SHOW_UP__AREA*/}
-                                            {/*todo: #################################*/}
+                                            {/*todo:---------------------------------*/}
+                                            {/*todo: BOTTOM_GRID_AREA_SHOW_UP_AREA   */}
+                                            {/*todo:---------------------------------*/}
                                             <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
                                                 <OutsideClickHandler
                                                     onOutsideClick={() => {
-                                                        this.setState({
-                                                            isShowBottomGrid: !this.state.isShowBottomGrid,
-                                                        })
+                                                        /*  this.setState({
+                                                              isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                          })*/
                                                     }}
                                                 >
                                                     <div
@@ -1252,15 +1570,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 <FA name="chevron-down" style={{fontSize: 15, color: 'white'}}/>
                                                             </div>
                                                         </p>
-                                                        {/*todo: #################################*/}
-                                                        {/*todo: BOTTOM APP INSTACE LIST      */}
-                                                        {/*todo: #################################*/}
-                                                        <div style={{fontSize: 22, display: 'flex', alignItems: 'center', marginLeft: 10, color: 'white', fontWeight: 'bold'}}>
-                                                            App Instance List
+                                                        {/*todo:---------------------------------*/}
+                                                        {/*todo: BOTTOM APP INSTACE LIST         */}
+                                                        {/*todo:---------------------------------*/}
+                                                        <div style={Styles.header00001}>
+                                                            Status of App
                                                         </div>
                                                         <div style={{height: 7}}/>
                                                         <div className='page_monitoring_column_for_grid2'>
-                                                            {this.renderGridForAppInstanceList()}
+                                                            {this.renderBottomGridArea()}
                                                         </div>
                                                     </div>
                                                 </OutsideClickHandler>
