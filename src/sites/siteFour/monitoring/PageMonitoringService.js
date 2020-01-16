@@ -615,7 +615,7 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
                             currentAppInst: label,
                             currentGridIndex: index,
                         })
-                        await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
+                        await _this.filterByEachTypes(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
 
                     }}
                     data={pBubbleChartData}

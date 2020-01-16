@@ -7,8 +7,9 @@ import {Bar as RBar, BarChart, BarLabel, BarSeries, LinearXAxis, LinearYAxis, Li
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FlexBox from "flexbox-react";
-import {Styles} from "./PageMonitoringService";
+import {getMetricsUtilizationAtAppLevel_TEST, Styles} from "./PageMonitoringService";
 import Plot from "react-plotly.js";
+import type {TypeAppInstance} from "../../../shared/Types";
 
 export const renderBar3333 = (usageList, hardwareType = HARDWARE_TYPE.CPU, _this) => {
 
@@ -600,4 +601,66 @@ export const renderPieGraph = () => {
 
 
 
+/*
 
+async setAppInstanceOne(paramAppName: string) {
+    this.setState({
+        loading777: true,
+        isShowUtilizationArea: false,
+    })
+
+    // this.props.toggleLoading(true);
+    paramAppName = paramAppName.replace("...", "");
+
+    let appInstanceOne: TypeAppInstance = '';
+    let currentIndex = 0;
+    this.state.appInstanceList.map((item: TypeAppInstance, index) => {
+        if (item.AppName.includes(paramAppName)) {
+            appInstanceOne = item;
+            console.log('item_AppName===>', item.AppName);
+            currentIndex = index;
+        }
+
+
+    })
+    this.setState({
+        appInstanceOne: appInstanceOne,
+        currentAppInstaceListIndex: currentIndex,
+    });
+
+    let appInstanceUtilizationOne = ''
+    try {
+        appInstanceUtilizationOne = await getMetricsUtilizationAtAppLevel_TEST(appInstanceOne);
+        let appInstanceCurrentUtilization = appInstanceUtilizationOne.data[0].Series[0].values[0]
+
+        await this.setState({
+            loading777: false,
+            currentUtilization: appInstanceCurrentUtilization,
+        })
+    } catch (e) {
+        await this.setState({
+            loading777: false,
+            currentUtilization: {
+                "time": "",
+                "cloudlet": "",
+                "diskMax": 0,
+                "diskUsed": 0,
+                "memMax": 0,
+                "memUsed": 0,
+                "operator": "",
+                "vCpuMax": 0,
+                "vCpuUsed": 0,
+            },
+        })
+    } finally {
+        await this.setState({
+            loading777: false,
+            isShowUtilizationArea: true,
+        })
+    }
+
+
+}
+
+
+*/
