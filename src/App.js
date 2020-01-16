@@ -1,30 +1,28 @@
-import React, { Component } from 'react';
-import { Grid, Button, Container } from 'semantic-ui-react';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import React, {Component} from 'react';
+import {BrowserRouter as Router, Route} from "react-router-dom";
 import Alert from 'react-s-alert';
 
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'semantic-ui-css/semantic.min.css';
-import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
+import {GridLoader} from "react-spinners";
 //redux
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from './actions';
 import * as serviceMC from './services/serviceMC';
-// API
-
-import { LOCAL_STRAGE_KEY } from './components/utils/Settings'
+import {LOCAL_STRAGE_KEY} from './components/utils/Settings'
 //insert pages
 import EntranceGlob from './sites/entranceGlob';
 import SiteTwo from "./sites/siteTwo";
-import SiteFour from "./sites//siteFour/siteFour";
 import CreateAccount from './components/login/CreateAccont';
 import history from './history';
 import VerifyContent from './container/verifyContent';
 import './css/index.css';
-
+import SiteFour from "./sites/siteFour/siteFour";
 import './css/pages/audit.css';
+import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
+// API
 
 let self = null;
 
@@ -74,7 +72,7 @@ const DashboardContainer = ( props, props2) => {
     const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
     if(self.routed){
         self.profileView();
-    } 
+    }
     let storeData= localStorage.getItem('PROJECT_INIT')
 
 
@@ -249,7 +247,7 @@ class App extends Component {
             }
         }
     }
-    
+
     receiveController = (mcRequest) => {
         if (mcRequest) {
             if (mcRequest.response) {
@@ -286,12 +284,12 @@ class App extends Component {
     }
 
     componentDidMount() {
-        
+
         let pathName = window.location.pathname;
 
         //this.router.history.push(pathName);
-        
-        
+
+
         const storage_data = localStorage.getItem(LOCAL_STRAGE_KEY)
         if (!storage_data) {
             return;

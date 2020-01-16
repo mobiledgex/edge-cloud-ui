@@ -42,28 +42,28 @@ export function clearData(state) {
     };
 }
 
-export function setUser(user) {
+export function setUser(user: string): Action {
     return {
         type: types.SET_USER,
         payload: user,
     };
 }
 
-export function stopVideo(act) {
+export function stopVideo(act: string): Action {
     return {
         type: types.SET_VIDEO,
         status: act,
     };
 }
 
-export function loadedData(act) {
+export function loadedData(act: string): Action {
     return {
         type: types.LOADED_DATA,
         loaded: act,
     };
 }
 
-export function registDeveloper(accountInfo) {
+export function registDeveloper(accountInfo: string): Action {
     return {
         type: types.REGIST_DEVELOPER,
         account: accountInfo,
