@@ -155,6 +155,12 @@
 .page_monitoring_tab {
     height:100%
 }
+
+.page_monitoring_tab .react-tabs__tab-panel.react-tabs__tab-panel--selected {
+    height:100%;
+}
+
+
 .page_monitoring_tab .ui.secondary.pointing.menu {
     border-bottom: 2px solid rgba(255,255,3255,.2);
 }
@@ -551,3 +557,4 @@
 /*.chartjs-render-monitor{*/
 /*    width: 100% !important;*/
 /*}*/
+
