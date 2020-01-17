@@ -1,0 +1,10 @@
+.contents_body .page_cloudletPool_table.ui.celled.table tr th:first-child,
+.contents_body .page_cloudletPool_table.ui.celled.table  tr td:first-child {
+    width:25%;
+}
+
+.contents_body .page_cloudletPool_table.ui.celled.table .cloudletPoolGroup tr th:last-child,
+.contents_body .page_cloudletPool_table.ui.celled.table .cloudletPoolGroup tr td:last-child {
+    width:25%;
+}
+
