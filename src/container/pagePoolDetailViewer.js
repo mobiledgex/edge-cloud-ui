@@ -11,6 +11,7 @@ import * as actions from '../actions';
 import MonitoringViewer from './monitoringViewer';
 import CommandViewer from './commandViewer';
 import './styles.css';
+import '../css/pages/cloudletPool.css';
 
 const ReactGridLayout = WidthProvider(RGL);
 const pane = [
@@ -29,11 +30,11 @@ const panesCommand = [
 const detailViewer = (props, type) => (
     <Fragment>
         {(type === 'detailViewer')?
-            <Table className='detailIn' striped>
+            <Table className='page_cloudletPool_table' celled collapsing style={{ width: '100%', height: '100%', border: 'none', display: 'flex', flexDirection: 'column' }}>
                 <Table.Header>
-                    <Table.Row textAlign='center'>
-                        <Table.HeaderCell width={4}><div>Subject</div></Table.HeaderCell>
-                        <Table.HeaderCell width={12}><div>Value</div></Table.HeaderCell>
+                    <Table.Row>
+                        <Table.HeaderCell><div style={{ display: 'flex', justifyContent: 'center', width:'25%' }}>Subject</div></Table.HeaderCell>
+                        <Table.HeaderCell><div style={{ display: 'flex', justifyContent: 'center' }}>Value</div></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -53,7 +54,7 @@ const detailViewer = (props, type) => (
 const makeCloudletTable = (values, label, i) => (
     (label !== 'Edit' && label !== 'uuid')?
         <Table.Row key={i}>
-            <Table.Cell width={4}>
+            <Table.Cell>
                 
                         {(label == 'CloudletName')?'Cloudlet Name'
                             :(label == 'CloudletLocation')?'Cloudlet Location'
@@ -70,7 +71,7 @@ const makeCloudletTable = (values, label, i) => (
                                                                         :label}
                     
             </Table.Cell>
-            <Table.Cell width={12}>
+            <Table.Cell>
                 {(label === 'Ip_support' && String(values[label]) == '1')?'Static'
                     :(label === 'Ip_support' && String(values[label]) == '2')?'Dynamic' /* Cloudlets */
                         :(label === 'IpAccess' && String(values[label]) == '1')?'Dedicated'
@@ -110,17 +111,17 @@ const jsonView = (jsonObj,_label) => {
 const tableCloudletPool = (jsonObj) => {
 
     return (
-        <Table celled unstackable compact striped fixed>
-            <Table.Header>
+        <Table className="viewListTable cloudletPoolGroup" basic='very' striped celled>
+            <Table.Header className="viewListTableHeader">
                 <Table.Row>
                     <Table.HeaderCell textAlign='left'>Region</Table.HeaderCell>
-                    <Table.HeaderCell textAlign='center'>Operator</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='left'>Operator</Table.HeaderCell>
                     {/*<Table.HeaderCell width={5}>PoolName</Table.HeaderCell>*/}
-                    <Table.HeaderCell textAlign='center'>Cloudlet</Table.HeaderCell>
-                    <Table.HeaderCell textAlign='right'>Delete</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='left'>Cloudlet</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='right'></Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
-            <Table.Body>
+            <Table.Body className="tbBodyList">
                 {jsonObj.map((item, i) => makeCloudletGroup(item, i))}
             </Table.Body>
         </Table>
@@ -134,9 +135,9 @@ const makeDeleteIcon = (_item, _type) => (
 const makeCloudletGroup = (item, i) => (
     <Table.Row key={i}>
         <Table.Cell textAlign='left'>{item.Region}</Table.Cell>
-        <Table.Cell textAlign='center'>{item.Operator}</Table.Cell>
+        <Table.Cell textAlign='left'>{item.Operator}</Table.Cell>
         {/*<Table.Cell width={5}>{item.PoolName}</Table.Cell>*/}
-        <Table.Cell textAlign='center'>{item.Cloudlet}</Table.Cell>
+        <Table.Cell textAlign='left'>{item.Cloudlet}</Table.Cell>
         <Table.Cell textAlign='right'>{makeDeleteIcon(item, 'delete member')}</Table.Cell>
     </Table.Row>
 )
@@ -144,15 +145,15 @@ const makeCloudletGroup = (item, i) => (
 const tableCloudletPoolOrg = (jsonObj) => {
 
     return (
-        <Table celled>
-            <Table.Header>
+        <Table className="viewListTable cloudletPoolGroup" basic='very' striped celled>
+            <Table.Header className="viewListTableHeader">
                 <Table.Row>
-                    <Table.HeaderCell  textAlign='left' width={2}>Region</Table.HeaderCell>
-                    <Table.HeaderCell  textAlign='center'width={12}>Organization</Table.HeaderCell>
-                    <Table.HeaderCell  textAlign='right'width={2}>Delete</Table.HeaderCell>
+                    <Table.HeaderCell  textAlign='left' >Region</Table.HeaderCell>
+                    <Table.HeaderCell  textAlign='left' >Organization</Table.HeaderCell>
+                    <Table.HeaderCell  textAlign='right'></Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
-            <Table.Body>
+            <Table.Body className="tbBodyList">
                 {jsonObj.map((item, i) => makeOrganizGroup(item, i))}
             </Table.Body>
         </Table>
@@ -163,9 +164,9 @@ const tableCloudletPoolOrg = (jsonObj) => {
 
 const makeOrganizGroup = (item, i) => (
     <Table.Row key={i}>
-        <Table.Cell textAlign='left' width={2}>{item.Region}</Table.Cell>
-        <Table.Cell textAlign='center' width={12}>{item.Org}</Table.Cell>
-        <Table.Cell textAlign='right' width={2}>{makeDeleteIcon(item, 'delete link')}</Table.Cell>
+        <Table.Cell textAlign='left' >{item.Region}</Table.Cell>
+        <Table.Cell textAlign='left'>{item.Org}</Table.Cell>
+        <Table.Cell textAlign='right'>{makeDeleteIcon(item, 'delete link')}</Table.Cell>
     </Table.Row>
 )
 
