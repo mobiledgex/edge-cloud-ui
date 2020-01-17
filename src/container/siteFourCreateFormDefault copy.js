@@ -9,7 +9,7 @@ import DualListBox from 'react-dual-listbox';
 import './styles.css';
 //import './react_dualist.css'
 import '../css/components/dualListbox/react-dual-listbox.css';
-
+import '../css/main.less';
 
 const makeOption =(options)=> {
 
@@ -272,7 +272,7 @@ class SiteFourCreateFormDefault extends React.Component {
     getListData = (datas) => {
         const listData = [];
 
-        if(datas && datas.length) {
+        if(datas.length) {
             datas.map((item, i) => {
                 const data = {
                     value: i,
@@ -288,7 +288,7 @@ class SiteFourCreateFormDefault extends React.Component {
         if(regKeys && regKeys.length > 0) {
             regKeys.map((key) => {
                 if(fieldKeys[pId][key]){
-                    if(fieldKeys[pId][key]['type'] === 'RenderDualListBox'){
+                    if(fieldKeys[pId][key]['type'] === 'renderDualListBox'){
                         if(data[key].length) {
                             data[key].map((item, i) => {
                                 const data = {
@@ -454,14 +454,13 @@ class SiteFourCreateFormDefault extends React.Component {
         }
     }
 
-    cancelClick = (e, obj) => {
+    cancelClick = (e) => {
         e.preventDefault();
         let siteNum = 0;
         console.log("cancelClickddd",e,":::",this.props)
         if(localStorage.selectMenu == 'Cloudlets') siteNum = 2
         else if(localStorage.selectMenu == 'Cluster Instances') siteNum = 4
         else if(localStorage.selectMenu == 'Cloudlet Pool') siteNum = 7
-        else if(this.bid === 'skip') siteNum = 7
         this.props.gotoUrl(siteNum)
     }
 
@@ -583,7 +582,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                                             (fieldKeys[pId][key]['type'] === 'RenderDualListBox') ?
                                                             <Grid>
                                                                 <Grid.Row className={'renderDualListBox'}>
-                                                                    {renderDualListInput(this, data[key])}
+                                                                    {renderDualListBox(this, data[key])}
                                                                 </Grid.Row>
                                                             </Grid>
                                                             :
@@ -641,7 +640,7 @@ class SiteFourCreateFormDefault extends React.Component {
                                 {/*<Button onClick={()=>this.onHandleReset()}>Reset</Button>*/}
                                 <span style={{marginRight:'1em'}}>
                                     {(this.props.stepTwo)?
-                                        <Button bid={'skip'}  onClick={this.cancelClick}>
+                                        <Button>
                                             Skip
                                         </Button>
                                         :
