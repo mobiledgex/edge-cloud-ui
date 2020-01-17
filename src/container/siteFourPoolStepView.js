@@ -112,7 +112,8 @@ class SiteFourPoolStepView extends React.Component {
             selectedRegion:null,
             gavePoolName:null,
             submitValues:null,
-            errorClose:false
+            errorClose:false,
+            formValue:[]
         };
         this.pauseRender = false;
 
@@ -233,7 +234,7 @@ class SiteFourPoolStepView extends React.Component {
         console.log('20200104 cloudlet == ', cloudletTest)
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         let _params = {};
-        let selectedNumber = JSON.parse(this.props.formClusterInst.values.invisibleField)
+        let selectedNumber = JSON.parse(this.state.formValue.invisibleField)
         if(selectedNumber.length) {
             let cloudlet = ''
             selectedNumber.map((no) => {
@@ -248,7 +249,7 @@ class SiteFourPoolStepView extends React.Component {
                             }
                         },
                         "pool_key":{
-                            "name":this.props.formClusterInst.values.poolName
+                            "name":this.state.formValue.poolName
                         }
                     },
                     "region":cloudlet.region
@@ -382,7 +383,7 @@ class SiteFourPoolStepView extends React.Component {
             _self.setState({dummyData:_self.state.fakeData, resultData:(!_self.state.resultData)?_devData:_self.state.resultData})
         }
     }
-    componentDidMount(): void {
+    componentDidMount() {
         this.setFildData(this.props.devData);
     }
 
@@ -431,6 +432,8 @@ class SiteFourPoolStepView extends React.Component {
                 serviceBody = {"region":region, "cloudletpool": {"key": {"name": poolName}}};
                 */
                 //{"region":region, "cloudletpool": {"key": {"name": poolName}}}
+                let self = this;
+                self.setState({formValue: nextProps.formClusterInst.values, selectedRegion:nextProps.formClusterInst.values.Region, gavePoolName:nextProps.formClusterInst.values.poolName})
                 let poolName = nextProps.formClusterInst.values.poolName;
                 let region = nextProps.formClusterInst.values.Region;
                 let keyObj = {"region":region, "cloudletpool": {"key": {"name": poolName}}}
