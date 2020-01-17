@@ -627,7 +627,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
                     <Table.Header className="viewListTableHeader">
                         <Table.Row>
-                            <Table.HeaderCell width={1}>
+                            <Table.HeaderCell>
                                 index
                             </Table.HeaderCell>
                             <Table.HeaderCell>
@@ -658,14 +658,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     this.messageList = div;
                                 }}
                     >
-                        <Grid columns={8} padded={true}
-
-                              style={{
-                                  marginTop: 10,
-                                  overflowY: 'auto',//@todo: 스크롤 처리 부분...
-                                  height: this.state.appInstanceList.length * 35 + 110,
-                              }}
-                        >
                             {/*-----------------------*/}
                             {/*todo:ROW HEADER        */}
                             {/*-----------------------*/}
@@ -706,7 +698,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                    await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)*/
                                                }}
                                     >
-                                        <Table.Cell width={10}>
+                                        <Table.Cell>
                                             {index}
                                         </Table.Cell>
                                         <Table.Cell>
@@ -732,7 +724,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {(item.sumMemUsage) + ' Byte'}
                                                 </div>
                                                 <div>
-                                                    <Progress style={{width: 150}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                    <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
                                                               percent={(item.sumMemUsage / this.state.gridInstanceListMemMax) * 100}
                                                               strokeColor={'#29a1ff'} status={'normal'}/>
                                                 </div>
@@ -755,7 +747,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                 )
                             })}
-                        </Grid>
                     </Table.Body>
                 </Table>
             )
@@ -863,6 +854,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
                 <div className='page_monitoring_dual_column'>
                     <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 of NETWORK Usage
+                            </div>
+                        </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder('network') : renderBarGraph(this.state.filteredNetworkUsageList, networkType, this)}
                         </div>
@@ -871,6 +867,35 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1_column*/}
                     {/*1_column*/}
                     <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Transition Of NETWORK Usage
+                            </div>
+                            {!this.state.loading &&
+                            <Dropdown
+                                placeholder='SELECT HARDWARE'
+                                selection
+                                loading={this.state.loading}
+                                options={NETWORK_OPTIONS}
+                                defaultValue={NETWORK_OPTIONS[0].value}
+                                onChange={async (e, {value}) => {
+
+                                    if (value === NETWORK_TYPE.RECV_BYTES) {
+                                        this.setState({
+                                            networkTabIndex: 0,
+                                        })
+                                    } else {
+                                        this.setState({
+                                            networkTabIndex: 1,
+                                        })
+                                    }
+
+                                }}
+                                value={this.state.currentNetworkType}
+                                // style={Styles.dropDown}
+                            />
+                            }
+                        </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder('network') : renderLineChart(this, this.state.filteredNetworkUsageList, networkType)}
                         </div>
@@ -1364,41 +1389,43 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo:-----------------------*/}
                                                     {/*todo:  NETWORK HEADER     */}
                                                     {/*todo:-----------------------*/}
-                                                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                                                    {/*<div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>*/}
 
-                                                        <div className='page_monitoring_title_area'>
-                                                            <div className='page_monitoring_title'>
-                                                                TOP5 of NETWORK Usage
-                                                            </div>
-                                                        </div>
-                                                        <div className='page_monitoring_title_area'>
-                                                            <div className='page_monitoring_title'>
-                                                                Transition Of NETWORK Usage
-                                                            </div>
-                                                            {!this.state.loading &&  <Dropdown
-                                                                placeholder='SELECT HARDWARE'
-                                                                selection
-                                                                loading={this.state.loading}
-                                                                options={NETWORK_OPTIONS}
-                                                                defaultValue={NETWORK_OPTIONS[0].value}
-                                                                onChange={async (e, {value}) => {
+                                                    {/*    <div className='page_monitoring_title_area'>*/}
+                                                    {/*        <div className='page_monitoring_title'>*/}
+                                                    {/*            TOP5 of NETWORK Usage*/}
+                                                    {/*        </div>*/}
+                                                    {/*    </div>*/}
+                                                    {/*    <div className='page_monitoring_title_area'>*/}
+                                                    {/*        <div className='page_monitoring_title'>*/}
+                                                    {/*            Transition Of NETWORK Usage*/}
+                                                    {/*        </div>*/}
+                                                    {/*        {!this.state.loading &&*/}
+                                                    {/*        <Dropdown*/}
+                                                    {/*            placeholder='SELECT HARDWARE'*/}
+                                                    {/*            selection*/}
+                                                    {/*            loading={this.state.loading}*/}
+                                                    {/*            options={NETWORK_OPTIONS}*/}
+                                                    {/*            defaultValue={NETWORK_OPTIONS[0].value}*/}
+                                                    {/*            onChange={async (e, {value}) => {*/}
 
-                                                                    if (value === NETWORK_TYPE.RECV_BYTES) {
-                                                                        this.setState({
-                                                                            networkTabIndex: 0,
-                                                                        })
-                                                                    } else {
-                                                                        this.setState({
-                                                                            networkTabIndex: 1,
-                                                                        })
-                                                                    }
+                                                    {/*                if (value === NETWORK_TYPE.RECV_BYTES) {*/}
+                                                    {/*                    this.setState({*/}
+                                                    {/*                        networkTabIndex: 0,*/}
+                                                    {/*                    })*/}
+                                                    {/*                } else {*/}
+                                                    {/*                    this.setState({*/}
+                                                    {/*                        networkTabIndex: 1,*/}
+                                                    {/*                    })*/}
+                                                    {/*                }*/}
 
-                                                                }}
-                                                                value={this.state.currentNetworkType}
-                                                                // style={Styles.dropDown}
-                                                            />}
-                                                        </div>
-                                                    </div>
+                                                    {/*            }}*/}
+                                                    {/*            value={this.state.currentNetworkType}*/}
+                                                    {/*            // style={Styles.dropDown}*/}
+                                                    {/*        />*/}
+                                                    {/*        }*/}
+                                                    {/*    </div>*/}
+                                                    {/*</div>*/}
 
                                                     {/*todo:---------------------------------*/}
                                                     {/*todo: NETWORK TAB PANEL AREA           */}
@@ -1453,7 +1480,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     <div className='page_monitoring_popup_column'>
                                                         <div className='page_monitoring_popup_header_row'
                                                              onClick={() => {
-
                                                                  this.setState({
                                                                      isShowBottomGrid: !this.state.isShowBottomGrid,
                                                                  })
