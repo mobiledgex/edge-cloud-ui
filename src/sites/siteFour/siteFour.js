@@ -161,7 +161,10 @@ class SiteFour extends React.Component {
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
             { label: 'Audit Log', icon: 'check', pg: 'audits' }
         ]
-        this.auth_three = [this.menuItems[0]] //OperatorManager, OperatorContributor, OperatorViewer
+        this.auth_three = [
+            { label: 'Cloudlets', icon: 'cloud_queue', pg: 2 },
+            { label: 'Audit Log', icon: 'check', pg: 'audits' }
+        ] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
             { role: 'AdminManager', view: [] },
             { role: 'DeveloperManager', view: [2, 3] },
