@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../../css/pages/PageMonitoring.css';
+import './PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
 import {CHART_COLOR_LIST, HARDWARE_TYPE} from "../../../shared/Constants";
 import {HorizontalBar} from "react-chartjs-2";
@@ -7,9 +7,8 @@ import {Bar as RBar, BarChart, BarLabel, BarSeries, LinearXAxis, LinearYAxis, Li
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FlexBox from "flexbox-react";
-import {getMetricsUtilizationAtAppLevel_TEST, Styles} from "./PageMonitoringService";
+import {Styles} from "./PageMonitoringService";
 import Plot from "react-plotly.js";
-import type {TypeAppInstance} from "../../../shared/Types";
 
 export const renderBar3333 = (usageList, hardwareType = HARDWARE_TYPE.CPU, _this) => {
 

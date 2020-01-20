@@ -53,6 +53,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import './PageMonitoring.css'
+import {showToast} from "./PageMonitoringChartService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -879,7 +880,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={NETWORK_OPTIONS}
                                 defaultValue={NETWORK_OPTIONS[0].value}
                                 onChange={async (e, {value}) => {
-
                                     if (value === NETWORK_TYPE.RECV_BYTES) {
                                         this.setState({
                                             networkTabIndex: 0,
@@ -891,7 +891,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     }
 
                                 }}
-                                value={this.state.currentNetworkType}
+                                value={networkType}
                                 // style={Styles.dropDown}
                             />
                             }
