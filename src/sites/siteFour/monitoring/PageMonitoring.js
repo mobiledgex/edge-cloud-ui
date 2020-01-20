@@ -338,7 +338,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredGridInstanceList: gridInstanceList,
                 gridInstanceListMemMax: gridInstanceListMemMax,
                 gridInstanceListCpuMax: gridInstanceListCpuMax,
-            }, ()=>{
+            }, () => {
                 console.log('filteredGridInstanceList===>', this.state.filteredGridInstanceList);
             });
 
@@ -360,7 +360,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
 
         }
-
 
 
         /**
@@ -655,95 +654,90 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     this.messageList = div;
                                 }}
                     >
-                            {/*-----------------------*/}
-                            {/*todo:ROW HEADER        */}
-                            {/*-----------------------*/}
-                            {!this.state.isReady &&
-                            <Table.Row className='page_monitoring_popup_table_empty'>
-                                <Table.Cell>
-                                    <Lottie
-                                        options={{
-                                            loop: true,
-                                            autoplay: true,
-                                            animationData: require('../../../lotties/loader001'),
-                                            rendererSettings: {
-                                                preserveAspectRatio: 'xMidYMid slice'
-                                            }
-                                        }}
-                                        height={240}
-                                        width={240}
-                                        isStopped={false}
-                                        isPaused={false}
-                                    />
-                                </Table.Cell>
-                            </Table.Row>}
-                            {this.state.isReady && this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
+                        {/*-----------------------*/}
+                        {/*todo:ROW HEADER        */}
+                        {/*-----------------------*/}
+                        {!this.state.isReady &&
+                        <Table.Row className='page_monitoring_popup_table_empty'>
+                            <Table.Cell>
+                                <Lottie
+                                    options={{
+                                        loop: true,
+                                        autoplay: true,
+                                        animationData: require('../../../lotties/loader001'),
+                                        rendererSettings: {
+                                            preserveAspectRatio: 'xMidYMid slice'
+                                        }
+                                    }}
+                                    height={240}
+                                    width={240}
+                                    isStopped={false}
+                                    isPaused={false}
+                                />
+                            </Table.Cell>
+                        </Table.Row>}
+                        {this.state.isReady && this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
 
-                                return (
-                                    <Table.Row className='page_monitoring_popup_table_row'
-                                        // style={{
-                                        //     color: index === this.state.currentGridIndex ? 'white' : 'white',
-                                        //     backgroundColor: index === this.state.currentGridIndex && '#bea129',
-                                        //     height: 50
-                                        // }}
-                                               onClick={async () => {
-                                                   //alert(item.AppName)
-                                                   /*await this.setState({
-                                                       currentAppInst: item.instance.AppName,
-                                                       currentGridIndex: index,
-                                                   })
-                                                   await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)*/
-                                               }}
-                                    >
-                                        <Table.Cell>
-                                            {index}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {item.instance.AppName}
-                                        </Table.Cell>
-                                        <Table.Cell>
+                            return (
+                                <Table.Row className='page_monitoring_popup_table_row'
+                                           onClick={async () => {
+                                               //alert(item.AppName)
+                                               /*await this.setState({
+                                                   currentAppInst: item.instance.AppName,
+                                                   currentGridIndex: index,
+                                               })
+                                               await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)*/
+                                           }}
+                                >
+                                    <Table.Cell>
+                                        {index}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {item.instance.AppName}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <div>
                                             <div>
-                                                <div>
-                                                    {item.sumCpuUsage.toFixed(2) + '%'}
-                                                </div>
-                                                <div>
-                                                    <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                              percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
-                                                              strokeColor={'#29a1ff'} status={'normal'}/>
-                                                </div>
-
+                                                {item.sumCpuUsage.toFixed(2) + '%'}
+                                            </div>
+                                            <div>
+                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                          percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
+                                                          strokeColor={'#29a1ff'} status={'normal'}/>
                                             </div>
 
-                                        </Table.Cell>
-                                        <Table.Cell>
+                                        </div>
+
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <div>
                                             <div>
-                                                <div>
-                                                    {(item.sumMemUsage) + ' Byte'}
-                                                </div>
-                                                <div>
-                                                    <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                              percent={(item.sumMemUsage / this.state.gridInstanceListMemMax) * 100}
-                                                              strokeColor={'#29a1ff'} status={'normal'}/>
-                                                </div>
-
+                                                {(item.sumMemUsage) + ' Byte'}
                                             </div>
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {item.sumDiskUsage + ' Byte'}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {item.sumRecvBytes + ' Byte'}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            {item.sumSendBytes + ' Byte'}
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            0
-                                        </Table.Cell>
-                                    </Table.Row>
+                                            <div>
+                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
+                                                          percent={(item.sumMemUsage / this.state.gridInstanceListMemMax) * 100}
+                                                          strokeColor={'#29a1ff'} status={'normal'}/>
+                                            </div>
 
-                                )
-                            })}
+                                        </div>
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {item.sumDiskUsage + ' Byte'}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {item.sumRecvBytes + ' Byte'}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {item.sumSendBytes + ' Byte'}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        0
+                                    </Table.Cell>
+                                </Table.Row>
+
+                            )
+                        })}
                     </Table.Body>
                 </Table>
             )
@@ -1015,7 +1009,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 Cluster
                             </div>
                             <Dropdown
-                                disabled={this.state.currentCloudLet === ''}
+                                disabled={this.state.currentCloudLet === '' || this.state.loading}
                                 value={this.state.currentCluster}
                                 clearable={this.state.clusterSelectBoxClearable}
                                 loading={this.state.loading}
@@ -1381,47 +1375,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* row2___col___2*/}
                                                 {/* row2___col___2*/}
                                                 <div className='page_monitoring_column'>
-                                                    {/*todo:-----------------------*/}
-                                                    {/*todo:  NETWORK HEADER     */}
-                                                    {/*todo:-----------------------*/}
-                                                    {/*<div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>*/}
-
-                                                    {/*    <div className='page_monitoring_title_area'>*/}
-                                                    {/*        <div className='page_monitoring_title'>*/}
-                                                    {/*            TOP5 of NETWORK Usage*/}
-                                                    {/*        </div>*/}
-                                                    {/*    </div>*/}
-                                                    {/*    <div className='page_monitoring_title_area'>*/}
-                                                    {/*        <div className='page_monitoring_title'>*/}
-                                                    {/*            Transition Of NETWORK Usage*/}
-                                                    {/*        </div>*/}
-                                                    {/*        {!this.state.loading &&*/}
-                                                    {/*        <Dropdown*/}
-                                                    {/*            placeholder='SELECT HARDWARE'*/}
-                                                    {/*            selection*/}
-                                                    {/*            loading={this.state.loading}*/}
-                                                    {/*            options={NETWORK_OPTIONS}*/}
-                                                    {/*            defaultValue={NETWORK_OPTIONS[0].value}*/}
-                                                    {/*            onChange={async (e, {value}) => {*/}
-
-                                                    {/*                if (value === NETWORK_TYPE.RECV_BYTES) {*/}
-                                                    {/*                    this.setState({*/}
-                                                    {/*                        networkTabIndex: 0,*/}
-                                                    {/*                    })*/}
-                                                    {/*                } else {*/}
-                                                    {/*                    this.setState({*/}
-                                                    {/*                        networkTabIndex: 1,*/}
-                                                    {/*                    })*/}
-                                                    {/*                }*/}
-
-                                                    {/*            }}*/}
-                                                    {/*            value={this.state.currentNetworkType}*/}
-                                                    {/*            // style={Styles.dropDown}*/}
-                                                    {/*        />*/}
-                                                    {/*        }*/}
-                                                    {/*    </div>*/}
-                                                    {/*</div>*/}
-
                                                     {/*todo:---------------------------------*/}
                                                     {/*todo: NETWORK TAB PANEL AREA           */}
                                                     {/*todo:---------------------------------*/}
