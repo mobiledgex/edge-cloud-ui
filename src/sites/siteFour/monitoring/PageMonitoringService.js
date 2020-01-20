@@ -602,7 +602,7 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
                         // zoom: appInstanceList.length <= 4 ? 0.45 : 0.70,
                         zoom: 0.70,
                         offsetX: 0.15,
-                        offsetY: appInstanceList.length <= 4 ? 0.1 : -0.00,
+                        offsetY: appInstanceList.length <= 4 ? 0.5 : -0.00,
                     }}
                     width={boxWidth}
                     height={'100%'}

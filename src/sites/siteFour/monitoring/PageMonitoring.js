@@ -988,8 +988,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={this.state.cloudletList}
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
-
-
                                     await this.filterByEachTypes(this.state.currentRegion, value)
                                     setTimeout(() => {
                                         this.setState({
