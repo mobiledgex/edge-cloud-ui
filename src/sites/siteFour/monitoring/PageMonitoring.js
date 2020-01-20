@@ -246,6 +246,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             //todo: FAKE JSON FOR DEV
             //let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')
+
             appInstanceList.map(async (item: TypeAppInstance, index) => {
                 if (index === 0) {
                     await this.setState({
@@ -474,8 +475,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             ////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////
-
-
             await this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
@@ -510,7 +509,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }, 500)
             //todo: -------------------------------------------
             //todo: -------------------------------------------
-            //todo: make FirstbubbleChartData
+            //todo: make First BUBBLE CHART DATA
             //todo: -------------------------------------------
             //todo: -------------------------------------------
             let bubbleChartData = await this.makeFirstBubbleChartData(appInstanceList);
@@ -538,14 +537,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         async filterUsageListByDate() {
             //todo: -------------------------------------------
-            //todo: FLITER By startDate, endDate
+            //todo: Filter By startDate, endDate
             //todo: -------------------------------------------
             if (this.state.startTime !== '' && this.state.endTime !== '') {
                 let startTime = makeCompleteDateTime(this.state.startTime);
                 let endTime = makeCompleteDateTime(this.state.endTime);
-
-                console.log('11111===>', startTime);
-                console.log('11111===>', endTime);
 
                 this.setState({loading: true})
                 let usageList = await getUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
@@ -752,7 +748,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 </Table>
             )
         }
-
 
         renderCpuTabArea() {
             return (
