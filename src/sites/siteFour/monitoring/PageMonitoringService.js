@@ -10,6 +10,7 @@ import Lottie from "react-lottie";
 import BubbleChart from "../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../shared/Types";
 import PageMonitoring from "./PageMonitoring";
+import {showToast} from "./PageMonitoringChartService";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -695,7 +696,8 @@ export const getMetricsUtilizationAtAppLevel_TEST = async (appInstanceOne) => {
     }).then(async response => {
         return response.data;
     }).catch(e => {
-        throw new Error(e)
+        //throw new Error(e)
+        showToast(e)
     })
 
     return responseRslt;
