@@ -53,6 +53,7 @@ import PageMonitoring from './monitoring/PageMonitoring'
 
 import PopLegendViewer from '../../container/popLegendViewer';
 import * as serviceMC from '../../services/serviceMC';
+import * as reducer from '../../utils'
 
 import { organizationTutor, CloudletTutor } from '../../tutorial';
 
@@ -162,8 +163,8 @@ class SiteFour extends React.Component {
             { label: 'Audit Log', icon: 'check', pg: 'audits' }
         ]
         this.auth_three = [
-            { label: 'Cloudlets', icon: 'cloud_queue', pg: 2 },
-            { label: 'Audit Log', icon: 'check', pg: 'audits' }
+            reducer.getFindIndex(this.menuItems, 'label', 'Cloudlets'),
+            reducer.getFindIndex(this.menuItems, 'label', 'Audit Log'),
         ] //OperatorManager, OperatorContributor, OperatorViewer
         this.auth_list = [
             { role: 'AdminManager', view: [] },
