@@ -644,7 +644,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 SEND BYTES
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                FAVOR
+                                FLAVOR
                             </Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
