@@ -1099,11 +1099,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
 
             let appInstanceList = this.state.appInstanceList;
-            let allCpuUsageList = this.state.allCpuUsageList;
-            let allMemUsageList = this.state.allMemUsageList;
-            let allDiskUsageList = this.state.allDiskUsageList;
-            let allNetworkUsageList = this.state.allNetworkUsageList;
-
+            let allCpuUsageList = this.state.filteredCpuUsageList;
+            let allMemUsageList = this.state.filteredMemUsageList;
+            let allDiskUsageList = this.state.filteredDiskUsageList;
+            let allNetworkUsageList = this.state.filteredNetworkUsageList;
             let chartData = [];
 
             if (value === HARDWARE_TYPE.FLAVOR) {

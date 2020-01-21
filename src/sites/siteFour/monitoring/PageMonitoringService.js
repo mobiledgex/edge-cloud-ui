@@ -616,11 +616,15 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
             }
         }
 
+
         function renderOffsetY(appInstanceListLength) {
-            if (appInstanceListLength === 1) {
+            console.log('appInstanceListLength===>', appInstanceListLength);
+            if ( appInstanceListLength===0){
+                return 0.05;
+            }else if (appInstanceListLength === 1) {
                 return 0.05;
             } else if (appInstanceListLength <= 4) {
-                return 0.5;
+                return 0.05;
             } else {
                 return 0.00;
             }
