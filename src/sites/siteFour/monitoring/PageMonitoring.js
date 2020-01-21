@@ -26,7 +26,7 @@ import {
     makeClusterListSelectBox,
     makeCompleteDateTime, makeGridInstanceList,
     makeNetworkBarData,
-    makeNetworkLineChartData,
+    makeNetworkLineChartData, numberWithCommas,
     renderBarGraph,
     renderBubbleChart,
     renderLineChart,
@@ -644,7 +644,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 SEND BYTES
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                ACTIVE CONNECTIONS
+                                FAVOR
                             </Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
@@ -704,14 +704,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                           percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
                                                           strokeColor={'#29a1ff'} status={'normal'}/>
                                             </div>
-
                                         </div>
-
                                     </Table.Cell>
                                     <Table.Cell>
                                         <div>
                                             <div>
-                                                {(item.sumMemUsage) + ' Byte'}
+                                                {numberWithCommas(item.sumMemUsage) + ' Byte'}
                                             </div>
                                             <div>
                                                 <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
@@ -722,16 +720,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         </div>
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.sumDiskUsage + ' Byte'}
+                                        {numberWithCommas(item.sumDiskUsage) + ' Byte'}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.sumRecvBytes + ' Byte'}
+                                        {numberWithCommas(item.sumRecvBytes) + ' Byte'}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.sumSendBytes + ' Byte'}
+                                        {numberWithCommas(item.sumSendBytes) + ' Byte'}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        0
+                                        {item.instance.Flavor}
                                     </Table.Cell>
                                 </Table.Row>
 
