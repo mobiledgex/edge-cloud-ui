@@ -117,7 +117,7 @@ export default class BubbleChart extends Component {
             .attr("transform", function (d) {
                 //todo: Bubble chart location setting...
                 //todo: Bubble chart location setting...
-                return "translate(" + (width*5/10) + "," + (width * graph.offsetY) + ")"; //버블차트 위치
+                return "translate(" + (width * 5 / 10) + "," + (width * graph.offsetY) + ")"; //버블차트 위치
             });
         ;
 
@@ -183,7 +183,10 @@ export default class BubbleChart extends Component {
             .text((d) => {
                 //@todo:value를 랜더링 하는 부분..
                 //@todo:value를 랜더링 하는 부분..
-                return d.favor; //@todo:value를 랜더링 하는 부분..
+
+                if (d.value > 0) {
+                    return d.favor; //@todo:value를 랜더링 하는 부분..
+                }
 
             });
 
@@ -319,7 +322,7 @@ export default class BubbleChart extends Component {
             });
 
         texts.append("text")
-            //.style("font-size", `${legendFont.size}px`)
+        //.style("font-size", `${legendFont.size}px`)
             .style("font-size", `12px`)
             /*.style("font-weight", (d) => {
                 return legendFont.weight ? legendFont.weight : 50;
