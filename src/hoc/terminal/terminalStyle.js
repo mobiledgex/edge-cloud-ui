@@ -9,8 +9,8 @@ export const useStyles = makeStyles({
         height: '100%'
     },
     history: {
-        color: 'white'
-        
+        color: 'white',
+        fontSize: 16
     },
     cmdHead: {
         display: 'table',

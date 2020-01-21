@@ -23,7 +23,6 @@ const MexTerminal = (props) => {
         cmdInput.current.focus();
     }
 
-
     return (
             <div onClick={onTerminal} className={classes.terminalBody}>
                 {
