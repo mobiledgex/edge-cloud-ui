@@ -608,6 +608,25 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
 
         let boxWidth = (window.innerWidth - 300) / 3 - 20
 
+        function renderZoomLevel(appInstanceListLength) {
+            if (appInstanceListLength <= 4) {
+                return 0.5;
+            } else {
+                return 0.70;
+            }
+        }
+
+        function renderOffsetY(appInstanceListLength) {
+            if (appInstanceListLength === 1) {
+                return 0.05;
+            } else if (appInstanceListLength <= 4) {
+                return 0.5;
+            } else {
+                return 0.00;
+            }
+        }
+
+
         return (
             <div style={{display: 'flex', flexDirection: 'row'}}>
                 <div style={{
@@ -618,10 +637,10 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
                     <BubbleChart
                         className='bubbleChart'
                         graph={{
-                            // zoom: appInstanceList.length <= 4 ? 0.45 : 0.70,
-                            zoom: 0.70,
+                            zoom: renderZoomLevel(appInstanceList.length),
+                            //zoom: 0.70,
                             offsetX: 0.15,
-                            offsetY: appInstanceList.length <= 4 ? 0.5 : -0.00,
+                            offsetY: renderOffsetY(appInstanceList.length)
                         }}
                         width={boxWidth}
                         height={'100%'}
