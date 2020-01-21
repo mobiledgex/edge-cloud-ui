@@ -33,7 +33,7 @@ import {
     renderPlaceHolder,
     renderPlaceHolder2,
     renderSixGridInstanceOnCloudletGrid,
-    requestShowAppInstanceList
+    requestShowAppInstanceList, Styles
 } from "./PageMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
@@ -1446,7 +1446,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
                                                         <div className='page_monitoring_popup_table'>
-                                                            {this.renderBottomGridArea()}
+                                                            {this.state.filteredGridInstanceList.length === 0 ?
+                                                                <div style={Styles.noData}>
+                                                                    NO DATA
+                                                                </div>
+                                                                : this.renderBottomGridArea()}
                                                         </div>
                                                     </div>
                                                 </OutsideClickHandler>

@@ -338,126 +338,137 @@ export const renderLottie = () => {
  * @returns {*}
  */
 export const renderBarGraph = (usageList, hardwareType, _this) => {
-    let chartDataList = [];
-    chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
-    for (let index = 0; index < usageList.length; index++) {
-        if (index < 5) {
-            let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
-                renderUsageByType(usageList[index], hardwareType),
-                CHART_COLOR_LIST[index],
-                renderUsageLabelByType(usageList[index], hardwareType)]
-            chartDataList.push(barDataOne);
+
+    if (usageList.length === 0) {
+        return (
+            <div style={Styles.noData}>
+                NO DATA
+            </div>
+        )
+    } else {
+
+        let chartDataList = [];
+        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
+        for (let index = 0; index < usageList.length; index++) {
+            if (index < 5) {
+                let barDataOne = [usageList[index].instance.AppName.toString().substring(0, 10) + "...",
+                    renderUsageByType(usageList[index], hardwareType),
+                    CHART_COLOR_LIST[index],
+                    renderUsageLabelByType(usageList[index], hardwareType)]
+                chartDataList.push(barDataOne);
+            }
         }
+
+        console.log('chartDataList===>', chartDataList);
+
+
+        //let chartHeight = window.innerHeight / 3;
+
+        return (
+            <Chart
+                width="100%"
+                //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
+                height={'100%'}
+                chartType="BarChart"
+                loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
+                data={chartDataList}
+                options={{
+                    annotations: {
+                        style: 'line',
+                        textStyle: {
+                            //fontName: 'Righteous',
+                            fontSize: 12,
+                            //bold: true,
+                            //italic: true,
+                            // The color of the text.
+                            color: '#fff',
+                            // The color of the text outline.
+                            //auraColor: 'black',
+                            // The transparency of the text.
+                            opacity: 1.0
+                        },
+                        boxStyle: {
+                            // Color of the box outline.
+                            stroke: '#ffffff',
+                            // Thickness of the box outline.
+                            strokeWidth: 1,
+                            // x-radius of the corner curvature.
+                            rx: 10,
+                            // y-radius of the corner curvature.
+                            ry: 10,
+                        }
+                    },
+
+                    is3D: true,
+                    title: '',
+                    titleTextStyle: {
+                        color: '#fff',
+                        fontSize: 12,
+                        /*fontName: <string>, // i.e. 'Times New Roman'
+                        fontSize: <number>, // 12, 18 whatever you want (don't specify px)
+                         bold: <boolean>,    // true or false
+                          // true of false*/
+                    },
+                    //titlePosition: 'out',
+                    chartArea: {
+                        // left: 20, right: 150, top: 50, bottom: 25,
+                        width: "60%", height: "80%",
+                    },
+                    legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
+                    //xAxis
+                    hAxis: {
+                        textPosition: 'none',//HIDE xAxis
+                        title: '',
+                        titleTextStyle: {
+                            //fontName: "Times",
+                            fontSize: 12,
+                            fontStyle: "italic",
+                            color: 'white'
+                        },
+                        minValue: 0,
+                        textStyle: {
+                            color: "white"
+                        },
+                        gridlines: {
+                            color: "grey"
+                        },
+                        format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '0.##\' byte\'',
+                        baselineColor: "grey",
+                        //out', 'in', 'none'.
+                    },
+                    //Y축
+                    vAxis: {
+                        title: '',
+                        titleTextStyle: {
+                            fontSize: 20,
+                            fontStyle: "normal",
+                            color: 'white'
+                        },
+                        textStyle: {
+                            color: "white",
+                            fontSize: 12,
+                        },
+
+                    },
+                    //colors: ['#FB7A21'],
+                    fontColor: 'white',
+                    backgroundColor: {
+                        fill: '#1e2124'
+                    },
+                    /*  animation: {
+                          duration: 300,
+                          easing: 'out',
+                          startup: true
+                      }*/
+                    //colors: ['green']
+                }}
+
+                // For tests
+                rootProps={{'data-testid': '1'}}
+            />
+        );
     }
 
-    console.log('chartDataList===>', chartDataList);
-
-
-    //let chartHeight = window.innerHeight / 3;
-
-    return (
-        <Chart
-            width="100%"
-            //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
-            height={'100%'}
-            chartType="BarChart"
-            loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
-            data={chartDataList}
-            options={{
-                annotations: {
-                    style: 'line',
-                    textStyle: {
-                        //fontName: 'Righteous',
-                        fontSize: 12,
-                        //bold: true,
-                        //italic: true,
-                        // The color of the text.
-                        color: '#fff',
-                        // The color of the text outline.
-                        //auraColor: 'black',
-                        // The transparency of the text.
-                        opacity: 1.0
-                    },
-                    boxStyle: {
-                        // Color of the box outline.
-                        stroke: '#ffffff',
-                        // Thickness of the box outline.
-                        strokeWidth: 1,
-                        // x-radius of the corner curvature.
-                        rx: 10,
-                        // y-radius of the corner curvature.
-                        ry: 10,
-                    }
-                },
-
-                is3D: true,
-                title: '',
-                titleTextStyle: {
-                    color: '#fff',
-                    fontSize: 12,
-                    /*fontName: <string>, // i.e. 'Times New Roman'
-                    fontSize: <number>, // 12, 18 whatever you want (don't specify px)
-                     bold: <boolean>,    // true or false
-                      // true of false*/
-                },
-                //titlePosition: 'out',
-                chartArea: {
-                    // left: 20, right: 150, top: 50, bottom: 25,
-                    width: "60%", height: "80%",
-                },
-                legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
-                //xAxis
-                hAxis: {
-                    textPosition: 'none',//HIDE xAxis
-                    title: '',
-                    titleTextStyle: {
-                        //fontName: "Times",
-                        fontSize: 12,
-                        fontStyle: "italic",
-                        color: 'white'
-                    },
-                    minValue: 0,
-                    textStyle: {
-                        color: "white"
-                    },
-                    gridlines: {
-                        color: "grey"
-                    },
-                    format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '0.##\' byte\'',
-                    baselineColor: "grey",
-                    //out', 'in', 'none'.
-                },
-                //Y축
-                vAxis: {
-                    title: '',
-                    titleTextStyle: {
-                        fontSize: 20,
-                        fontStyle: "normal",
-                        color: 'white'
-                    },
-                    textStyle: {
-                        color: "white",
-                        fontSize: 12,
-                    },
-
-                },
-                //colors: ['#FB7A21'],
-                fontColor: 'white',
-                backgroundColor: {
-                    fill: '#1e2124'
-                },
-                /*  animation: {
-                      duration: 300,
-                      easing: 'out',
-                      startup: true
-                  }*/
-                //colors: ['green']
-            }}
-
-            // For tests
-            rootProps={{'data-testid': '1'}}
-        />
-    );
 
 }
 
@@ -543,10 +554,6 @@ export const renderPlaceHolder2 = () => {
 }
 
 
-
-
-
-
 /**
  * @todo : app instance(COMPUTER engine) SPEC 더 낳은것이(큰것이) performanceValue 높다....
  * @param flavor
@@ -584,78 +591,88 @@ export const filterAppInstOnCloudlet = (CloudLetOneList, pCluster) => {
 }
 
 /**
- * todo: @weknow/react-bubble-chart-d3로 버블차트를 그린다..
  * todo: render a bubble chart with https://github.com/weknowinc/react-bubble-chart-d3
  * @returns {*}
  */
 export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, pBubbleChartData: any) => {
-    let appInstanceList = _this.state.appInstanceList;
+
+    if (pBubbleChartData.length === 0) {
+        return (
+            <div style={Styles.noData}>
+                NO DATA
+            </div>
+        )
+    } else {
+        let appInstanceList = _this.state.appInstanceList;
 
 
-    let boxWidth = (window.innerWidth - 300) / 3 - 20
+        let boxWidth = (window.innerWidth - 300) / 3 - 20
 
-    return (
-        <div style={{display: 'flex', flexDirection: 'row'}}>
-            <div style={{
-                //backgroundColor: 'blue',
-                backgroundColor: '#1e2124',
-                // marginLeft: 0, marginRight: 0, marginBottom: 10,
-            }}>
-                <BubbleChart
-                    className='bubbleChart'
-                    graph={{
-                        // zoom: appInstanceList.length <= 4 ? 0.45 : 0.70,
-                        zoom: 0.70,
-                        offsetX: 0.15,
-                        offsetY: appInstanceList.length <= 4 ? 0.5 : -0.00,
-                    }}
-                    width={boxWidth}
-                    height={'100%'}
-                    padding={0} // optional value, number that set the padding between bubbles
-                    showLegend={true} // optional value, pass false to disable the legend.
-                    legendPercentage={20} // number that represent the % of with that legend going to use.
-                    legendFont={{
-                        //family: 'Candal',
-                        size: 9,
-                        color: 'black',
-                        weight: 'bold',
-                    }}
-                    valueFont={{
-                        //family: 'Righteous',
-                        size: 12,
-                        color: 'black',
-                        //weight: 'bold',
-                        fontStyle: 'italic',
-                    }}
-                    labelFont={{
-                        //family: 'Righteous',
-                        size: 14,
-                        color: 'black',
-                        weight: 'bold',
-                    }}
-                    bubbleClickFun={async (label, index) => {
-                        /*  await _this.setState({
-                              currentAppInst: label,
-                              currentGridIndex: index,
-                          })
-                          await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)*/
+        return (
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+                <div style={{
+                    //backgroundColor: 'blue',
+                    backgroundColor: '#1e2124',
+                    // marginLeft: 0, marginRight: 0, marginBottom: 10,
+                }}>
+                    <BubbleChart
+                        className='bubbleChart'
+                        graph={{
+                            // zoom: appInstanceList.length <= 4 ? 0.45 : 0.70,
+                            zoom: 0.70,
+                            offsetX: 0.15,
+                            offsetY: appInstanceList.length <= 4 ? 0.5 : -0.00,
+                        }}
+                        width={boxWidth}
+                        height={'100%'}
+                        padding={0} // optional value, number that set the padding between bubbles
+                        showLegend={true} // optional value, pass false to disable the legend.
+                        legendPercentage={20} // number that represent the % of with that legend going to use.
+                        legendFont={{
+                            //family: 'Candal',
+                            size: 9,
+                            color: 'black',
+                            weight: 'bold',
+                        }}
+                        valueFont={{
+                            //family: 'Righteous',
+                            size: 12,
+                            color: 'black',
+                            //weight: 'bold',
+                            fontStyle: 'italic',
+                        }}
+                        labelFont={{
+                            //family: 'Righteous',
+                            size: 14,
+                            color: 'black',
+                            weight: 'bold',
+                        }}
+                        bubbleClickFun={async (label, index) => {
+                            /*  await _this.setState({
+                                  currentAppInst: label,
+                                  currentGridIndex: index,
+                              })
+                              await _this.handleSelectBoxChanges(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)*/
 
-                    }}
-                    legendClickFun={async (label, index) => {
-                        await _this.setState({
-                            currentAppInst: label,
-                            currentGridIndex: index,
-                        })
-                        await _this.filterByEachTypes(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
+                        }}
+                        legendClickFun={async (label, index) => {
+                            await _this.setState({
+                                currentAppInst: label,
+                                currentGridIndex: index,
+                            })
+                            await _this.filterByEachTypes(_this.state.currentRegion, _this.state.currentCloudLet, _this.state.currentCluster, label)
 
-                    }}
-                    data={pBubbleChartData}
-                />
+                        }}
+                        data={pBubbleChartData}
+                    />
+
+                </div>
 
             </div>
+        )
+    }
 
-        </div>
-    )
+
 }
 
 
@@ -752,192 +769,198 @@ export const getMetricsUtilizationAtAtClusterLevel = async (appInstanceOne) => {
  * @returns {*}
  */
 export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array, hardwareType: string) => {
-    console.log('hardwareType===>', hardwareType);
 
-    let instanceAppName = ''
-    let instanceNameList = [];
-    let usageSetList = []
-    let dateTimeList = []
-    for (let i in hardwareUsageList) {
-        let seriesValues = hardwareUsageList[i].values
+    if (hardwareUsageList.length === 0) {
+        return (
+            <div style={Styles.noData}>
+                NO DATA
+            </div>
+        )
+    } else {
+        let instanceAppName = ''
+        let instanceNameList = [];
+        let usageSetList = []
+        let dateTimeList = []
+        for (let i in hardwareUsageList) {
+            let seriesValues = hardwareUsageList[i].values
 
-        instanceAppName = hardwareUsageList[i].instance.AppName
-        let usageList = [];
+            instanceAppName = hardwareUsageList[i].instance.AppName
+            let usageList = [];
 
-        console.log('seriesValues===>', seriesValues);
+            console.log('seriesValues===>', seriesValues);
 
-        for (let j in seriesValues) {
+            for (let j in seriesValues) {
 
-            let usageOne = 0;
-            if (hardwareType === HARDWARE_TYPE.CPU) {
-                usageOne = seriesValues[j]["6"];
-            } else if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
-                usageOne = seriesValues[j]["13"];//receivceBytes
-            } else if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
-                usageOne = seriesValues[j]["12"]; //sendBytes
-            } else if (hardwareType === HARDWARE_TYPE.MEM) {
-                usageOne = seriesValues[j]["10"]; //mem usage
-            } else if (hardwareType === HARDWARE_TYPE.DISK) {
-                usageOne = seriesValues[j]["8"];
-            }
-
-            usageList.push(usageOne);
-            let dateOne = seriesValues[j]["0"];
-            dateOne = dateOne.toString().split("T")
-
-            dateTimeList.push(dateOne[1]);
-        }
-
-        instanceNameList.push(instanceAppName)
-        usageSetList.push(usageList);
-    }
-
-
-    //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
-    let newDateTimeList = []
-    for (let i in dateTimeList) {
-        if (i < RECENT_DATA_LIMIT_COUNT) {
-            let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
-            let timeOne = splitDateTimeArrayList[0].replace("T", "T");
-            newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
-        }
-
-    }
-
-    const lineChartData = (canvas) => {
-
-        let gradientList = makeGradientColor(canvas, height);
-
-        let finalSeriesDataSets = [];
-        for (let i in usageSetList) {
-            //@todo: top5 만을 추린다
-            if (i < 5) {
-                let datasetsOne = {
-                    label: instanceNameList[i],
-                    // backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '',
-                    backgroundColor: '',
-                    borderColor: gradientList[i],
-                    borderWidth: 2,
-                    pointColor: "#fff",
-                    pointStrokeColor: 'white',
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: 'white',
-                    data: usageSetList[i],
-                    radius: 0,
-                    pointRadius: 1,
+                let usageOne = 0;
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    usageOne = seriesValues[j]["6"];
+                } else if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
+                    usageOne = seriesValues[j]["13"];//receivceBytes
+                } else if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+                    usageOne = seriesValues[j]["12"]; //sendBytes
+                } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                    usageOne = seriesValues[j]["10"]; //mem usage
+                } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                    usageOne = seriesValues[j]["8"];
                 }
 
-                finalSeriesDataSets.push(datasetsOne)
+                usageList.push(usageOne);
+                let dateOne = seriesValues[j]["0"];
+                dateOne = dateOne.toString().split("T")
+
+                dateTimeList.push(dateOne[1]);
+            }
+
+            instanceNameList.push(instanceAppName)
+            usageSetList.push(usageList);
+        }
+
+
+        //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
+        let newDateTimeList = []
+        for (let i in dateTimeList) {
+            if (i < RECENT_DATA_LIMIT_COUNT) {
+                let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
+                let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+                newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
             }
 
         }
-        return {
-            labels: newDateTimeList,
-            datasets: finalSeriesDataSets,
-        }
-    }
 
-    let height = 500 + 100;
-    let options = {
-        plugins: {
-            zoom: {
-                pan: {
-                    enabled: true,
-                    mode: 'y'
-                },
+        const lineChartData = (canvas) => {
+
+            let gradientList = makeGradientColor(canvas, height);
+
+            let finalSeriesDataSets = [];
+            for (let i in usageSetList) {
+                //@todo: top5 만을 추린다
+                if (i < 5) {
+                    let datasetsOne = {
+                        label: instanceNameList[i],
+                        // backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '',
+                        backgroundColor: '',
+                        borderColor: gradientList[i],
+                        borderWidth: 2,
+                        pointColor: "#fff",
+                        pointStrokeColor: 'white',
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: 'white',
+                        data: usageSetList[i],
+                        radius: 0,
+                        pointRadius: 1,
+                    }
+
+                    finalSeriesDataSets.push(datasetsOne)
+                }
+
+            }
+            return {
+                labels: newDateTimeList,
+                datasets: finalSeriesDataSets,
+            }
+        }
+
+        let height = 500 + 100;
+        let options = {
+            plugins: {
                 zoom: {
-                    enabled: true,
-                    mode: 'xy'
+                    pan: {
+                        enabled: true,
+                        mode: 'y'
+                    },
+                    zoom: {
+                        enabled: true,
+                        mode: 'xy'
+                    }
                 }
-            }
-        },
-        maintainAspectRatio: true,
-        responsive: true,
-        datasetStrokeWidth: 3,
-        pointDotStrokeWidth: 4,
-        layout: {
-            padding: {
-                left: 0,
-                right: 10,
-                top: 0,
-                bottom: 0
-            }
-        },
-        legend: {
-            position: 'top',
-            labels: {
-                boxWidth: 10,
-                fontColor: 'white'
-            }
-        },
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true,
-                    fontColor: 'white',
-                    callback(value, index, label) {
-                        return numberWithCommas(value);
-
-                    },
-                },
-                gridLines: {
-                    color: "#505050",
-                },
-                //stacked: true
-
-            }],
-            xAxes: [{
-                /*ticks: {
-                    fontColor: 'white'
-                },*/
-                gridLines: {
-                    color: "#505050",
-                },
-                ticks: {
-                    fontSize: 14,
-                    fontColor: 'white',
-                    //maxRotation: 0.05,
-                    //autoSkip: true,
-                    maxRotation: 45,
-                    minRotation: 45,
-                    padding: 10,
-                    labelOffset: 0,
-                    callback(value, index, label) {
-                        return value;
-
-                    },
-                },
-                beginAtZero: false,
-                /* gridLines: {
-                     drawTicks: true,
-                 },*/
-            }],
-            backgroundColor: {
-                fill: "#1e2124"
             },
+            maintainAspectRatio: true,
+            responsive: true,
+            datasetStrokeWidth: 3,
+            pointDotStrokeWidth: 4,
+            layout: {
+                padding: {
+                    left: 0,
+                    right: 10,
+                    top: 0,
+                    bottom: 0
+                }
+            },
+            legend: {
+                position: 'top',
+                labels: {
+                    boxWidth: 10,
+                    fontColor: 'white'
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: 'white',
+                        callback(value, index, label) {
+                            return numberWithCommas(value);
+
+                        },
+                    },
+                    gridLines: {
+                        color: "#505050",
+                    },
+                    //stacked: true
+
+                }],
+                xAxes: [{
+                    /*ticks: {
+                        fontColor: 'white'
+                    },*/
+                    gridLines: {
+                        color: "#505050",
+                    },
+                    ticks: {
+                        fontSize: 14,
+                        fontColor: 'white',
+                        //maxRotation: 0.05,
+                        //autoSkip: true,
+                        maxRotation: 45,
+                        minRotation: 45,
+                        padding: 10,
+                        labelOffset: 0,
+                        callback(value, index, label) {
+                            return value;
+
+                        },
+                    },
+                    beginAtZero: false,
+                    /* gridLines: {
+                         drawTicks: true,
+                     },*/
+                }],
+                backgroundColor: {
+                    fill: "#1e2124"
+                },
+            }
+
         }
 
+
+        let chartWidth = ((window.innerWidth - 300) * 2 / 3 - 50) / 2
+        let chartHeight = window.innerWidth > 1700 ? ((window.innerHeight - 320) / 2 - 80) - 10 : ((window.innerHeight - 370) / 2 - 80) - 10 //(height 사이즈)-(여유공백)
+        // let chartNetHeight = window.innerWidth > 1782 ? (window.innerHeight-320)/2-50 : (window.innerHeight-370)/2-50
+        //todo :#######################
+        //todo : chart rendering part
+        //todo :#######################
+        return (
+            <div style={{width: '100%', height: '100%'}}>
+                <ReactChartJs
+                    width={chartWidth}
+                    height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
+                    data={lineChartData}
+                    options={options}
+
+                />
+            </div>
+        );
     }
-
-
-    let chartWidth = ((window.innerWidth - 300) * 2 / 3 - 50) / 2
-    let chartHeight = window.innerWidth > 1700 ? ((window.innerHeight - 320) / 2 - 80) - 10 : ((window.innerHeight - 370) / 2 - 80) - 10 //(height 사이즈)-(여유공백)
-    // let chartNetHeight = window.innerWidth > 1782 ? (window.innerHeight-320)/2-50 : (window.innerHeight-370)/2-50
-
-    //todo :#######################
-    //todo : chart rendering part
-    //todo :#######################
-    return (
-        <div style={{width: '100%', height: '100%'}}>
-            <ReactChartJs
-                width={chartWidth}
-                height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
-                data={lineChartData}
-                options={options}
-
-            />
-        </div>
-    );
 
 
 }
@@ -1081,6 +1104,20 @@ export const makeGradientColor = (canvas, height) => {
     return gradientList;
 }
 
+function isEmptyObject(obj) {
+    //Loop through and check if a property
+    //exists
+    for (var property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            //Property exists, object is not empty,
+            //so return FALSE.
+            return false;
+        }
+    }
+    //No properties were found, so return TRUE
+    return true;
+}
+
 
 /**
  * @desc: Render the number of instances on the cloudlet at the top left of the monitoring page ...
@@ -1088,73 +1125,88 @@ export const makeGradientColor = (canvas, height) => {
  * @returns {*}
  */
 export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudlet, _this) => {
-    // let boxWidth = window.innerWidth / 10 * 2.55;
 
-    let cloudletCountList = []
-    for (let i in appInstanceListSortByCloudlet) {
-        cloudletCountList.push({
-            name: appInstanceListSortByCloudlet[i][0].Cloudlet,
-            length: appInstanceListSortByCloudlet[i].length,
-        })
-    }
+    console.log('appInstanceListSortByCloudlet====>', typeof appInstanceListSortByCloudlet);
 
-    function toChunkArray(myArray, chunkSize) {
-        let results = [];
-        while (myArray.length) {
-            results.push(myArray.splice(0, chunkSize));
+    if (isEmptyObject(appInstanceListSortByCloudlet)) {
+        //do something
+        return (
+            <div style={Styles.noData}>
+                NO DATA
+            </div>
+        )
+
+    } else {
+
+        let cloudletCountList = []
+        for (let i in appInstanceListSortByCloudlet) {
+            cloudletCountList.push({
+                name: appInstanceListSortByCloudlet[i][0].Cloudlet,
+                length: appInstanceListSortByCloudlet[i].length,
+            })
         }
-        return results;
-    }
 
-    let chunkedArraysOfColSize = toChunkArray(cloudletCountList, 3);
-    return (
-        <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-            {chunkedArraysOfColSize.map((colSizeArray, index) =>
-                <div className='page_monitoring_grid' key={index.toString()}>
-                    {colSizeArray.map((item, index) =>
+        function toChunkArray(myArray, chunkSize) {
+            let results = [];
+            while (myArray.length) {
+                results.push(myArray.splice(0, chunkSize));
+            }
+            return results;
+        }
 
-                        <div className='page_monitoring_grid_box_layout'
-                            /* onClick={async () => {
-                                 //alert(item.name)
-                                 await _this.handleSelectBoxChanges(_this.state.currentRegion, item.name)
-                                 setTimeout(() => {
-                                     _this.setState({
-                                         clusterSelectBoxPlaceholder: 'Select Cluster'
-                                     })
-                                 }, 1000)
-                             }}*/
-                        >
-                            <div className='page_monitoring_grid_box'>
-                                <div className='page_monitoring_grid_box_name'>
-                                    {item.name}
-                                    {/*{item.name.toString().substring(0, 19) + "..."}*/}
+        let chunkedArraysOfColSize = toChunkArray(cloudletCountList, 3);
+        return (
+            <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+                {chunkedArraysOfColSize.map((colSizeArray, index) =>
+                    <div className='page_monitoring_grid' key={index.toString()}>
+                        {colSizeArray.map((item, index) =>
+
+                            <div className='page_monitoring_grid_box_layout'
+                                /* onClick={async () => {
+                                     //alert(item.name)
+                                     await _this.handleSelectBoxChanges(_this.state.currentRegion, item.name)
+                                     setTimeout(() => {
+                                         _this.setState({
+                                             clusterSelectBoxPlaceholder: 'Select Cluster'
+                                         })
+                                     }, 1000)
+                                 }}*/
+                            >
+                                <div className='page_monitoring_grid_box'>
+                                    <div className='page_monitoring_grid_box_name'>
+                                        {item.name}
+                                        {/*{item.name.toString().substring(0, 19) + "..."}*/}
+                                    </div>
+                                    <div className='page_monitoring_grid_box_num'>
+                                        {item.length}
+                                    </div>
+
                                 </div>
-                                <div className='page_monitoring_grid_box_num'>
-                                    {item.length}
-                                </div>
-
                             </div>
+                        )}
+                    </div>
+                )}
+
+                {/*@todo:------------------------------------------------------------------*/}
+                {/*@todo:Logic to fill 2nd row with blank if only first row exists           */}
+                {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직                     */}
+                {/*@todo:------------------------------------------------------------------*/}
+                {chunkedArraysOfColSize.length === 1 &&
+                <div className='page_monitoring_grid'>
+                    {[1, 2, 3].map((item, index) =>
+                        <div className='page_monitoring_grid_box_layout'>
+
                         </div>
                     )}
                 </div>
-            )}
 
-            {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
-            {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
-            {/*@todo:first row만 존재할경우 2nd row를 공백으로 채워주는 로직*/}
-            {chunkedArraysOfColSize.length === 1 &&
-            <div className='page_monitoring_grid'>
-                {[1, 2, 3].map((item, index) =>
-                    <div className='page_monitoring_grid_box_layout'>
+                }
 
-                    </div>
-                )}
             </div>
+        );
+    }
 
-            }
 
-        </div>
-    );
 }
 
 
@@ -1232,20 +1284,20 @@ export const requestShowAppInstanceList = async (pArrayRegion = ['EU', 'US']) =>
             timeout: 15 * 1000
         }).then(async response => {
             let parseData = JSON.parse(JSON.stringify(response));
-            if (parseData.data===''){
+            if (parseData.data === '') {
                 return null;
-            }else{
+            } else {
                 let finalizedJSON = formatData(parseData, serviceBody)
                 return finalizedJSON;
             }
 
         }).catch(e => {
             showToast(e.toString())
-        }).finally(()=>{
+        }).finally(() => {
 
         })
 
-        if (responseResult!==null){
+        if (responseResult !== null) {
             let mergedList = mergedAppInstanceList.concat(responseResult);
             mergedAppInstanceList = mergedList;
         }
@@ -1311,10 +1363,10 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
     }
     //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
 
-    let appInstanceHealthCheckList=[]
-    try{
+    let appInstanceHealthCheckList = []
+    try {
         appInstanceHealthCheckList = await Promise.all(promiseList);
-    }catch (e) {
+    } catch (e) {
         alert(e)
     }
 
@@ -1507,6 +1559,10 @@ export const Styles = {
         flex: .4,
         alignItems: 'center',
         fontSize: 13,
+    },
+    noData: {
+        fontSize: 30,
+        display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: '100%'
     },
     cell001: {
         marginLeft: 0,
