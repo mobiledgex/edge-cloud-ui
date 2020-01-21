@@ -273,7 +273,7 @@ export default class BubbleChart extends Component {
         const legend = d3.select(this.svg).append("g")
             .attr("transform", function () {
                 // return `translate(${offset},${(bubbleHeight) * 0.18})`;
-                return `translate(450,${(bubbleHeight) * 0.12})`;
+                return `translate(450,${(bubbleHeight) * 0.30})`;
             })
             .attr("class", "legend")//.style("marginLeft", `-100px`)
 
