@@ -1228,16 +1228,24 @@ export const requestShowAppInstanceList = async (pArrayRegion = ['EU', 'US']) =>
             timeout: 15 * 1000
         }).then(async response => {
             let parseData = JSON.parse(JSON.stringify(response));
-            let finalizedJSON = formatData(parseData, serviceBody)
-            return finalizedJSON;
+            if (parseData.data===''){
+                return null;
+            }else{
+                let finalizedJSON = formatData(parseData, serviceBody)
+                return finalizedJSON;
+            }
+
         }).catch(e => {
             showToast(e.toString())
         }).finally(()=>{
 
         })
 
-        let mergedList = mergedAppInstanceList.concat(responseResult);
-        mergedAppInstanceList = mergedList;
+        if (responseResult!==null){
+            let mergedList = mergedAppInstanceList.concat(responseResult);
+            mergedAppInstanceList = mergedList;
+        }
+
     }
     return mergedAppInstanceList;
 }
@@ -1298,7 +1306,13 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
         promiseList.push(requestAppLevelMetrics(instanceBodyList[index]))
     }
     //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
-    let appInstanceHealthCheckList = await Promise.all(promiseList);
+
+    let appInstanceHealthCheckList=[]
+    try{
+        appInstanceHealthCheckList = await Promise.all(promiseList);
+    }catch (e) {
+        alert(e)
+    }
 
     let usageListForAllInstance = []
     appInstanceList.map((item, index) => {
