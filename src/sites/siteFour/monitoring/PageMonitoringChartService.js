@@ -162,7 +162,6 @@ export const renderBarGraph002 = (usageList, hardwareType = HARDWARE_TYPE.CPU, _
 
     let chartDataList = [];
     for (let index = 0; index < usageList.length; index++) {
-
         if (index < 5) {
             let barDataOne = {
                 key: usageList[index].instance.AppName.toString().substring(0, 10) + "...",
@@ -171,8 +170,6 @@ export const renderBarGraph002 = (usageList, hardwareType = HARDWARE_TYPE.CPU, _
 
             chartDataList.push(barDataOne);
         }
-
-        console.log('chartDataList===>', chartDataList);
 
     }
 
