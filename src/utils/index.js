@@ -126,6 +126,19 @@ export const filterSearch = (data, searchValue, searchType) => {
 
 }
 
+export const getFindIndex = (items, key, value) => {
+
+    items.filter((item) => {
+        if (item[key] === value) {
+            items = item
+        }
+    })
+
+    console.log('test00002', items)
+    return items;
+
+}
+
 export const getTodayDate = () => {
     let d = Date.now();
     d = new Date(d);
