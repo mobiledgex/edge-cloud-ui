@@ -10,6 +10,7 @@ import Lottie from "react-lottie";
 import BubbleChart from "../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../shared/Types";
 import PageMonitoring from "./PageMonitoring";
+import {showToast} from "./PageMonitoringChartService";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -1230,9 +1231,10 @@ export const requestShowAppInstanceList = async (pArrayRegion = ['EU', 'US']) =>
             let finalizedJSON = formatData(parseData, serviceBody)
             return finalizedJSON;
         }).catch(e => {
-            throw new Error(e)
-        })
+            showToast(e.toString())
+        }).finally(()=>{
 
+        })
 
         let mergedList = mergedAppInstanceList.concat(responseResult);
         mergedAppInstanceList = mergedList;

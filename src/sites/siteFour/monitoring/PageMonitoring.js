@@ -300,7 +300,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allCpuUsageList: usageList[0],
                 allMemUsageList: usageList[1],
                 allNetworkUsageList: usageList[2],//networkUsage
-                allDiskUsageList: usageList[3],//diskUsage
+                allDiskUsageList: usageList[3],//disk is last array
                 cloudletList: cloudletList,
                 clusterList: clusterList,
                 filteredCpuUsageList: usageList[0],
@@ -382,8 +382,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceList = this.state.appInstanceList;
                 allCpuUsageList = this.state.usageListByDate[0]
                 allMemUsageList = this.state.usageListByDate[1]
-                allDiskUsageList = this.state.usageListByDate[2]
-                allNetworkUsageList = this.state.usageListByDate[3]
+                allNetworkUsageList = this.state.usageListByDate[2]
+                allDiskUsageList = this.state.usageListByDate[3]
                 allGridInstanceList = makeGridInstanceList(this.state.usageListByDate);
             } else {
                 appInstanceList = this.state.allAppInstanceList;
@@ -597,8 +597,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             toast({
                 type: 'success',
                 //icon: 'smile',
-                title: 'REFRESH_ALL_DATA',
-                //description: 'This is a Semantic UI toast wich waits 5 seconds before closing',
+                title: 'REFRESH ALL DATA',
                 animation: 'bounce',
                 time: 3 * 1000,
                 color: 'black',
