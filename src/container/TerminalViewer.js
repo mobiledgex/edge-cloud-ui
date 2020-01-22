@@ -146,9 +146,14 @@ class MexTerminal extends Component {
             this.sendChannel.onmessage = e => { this.onRemoteMessage(e) }
 
             this.localConnection.oniceconnectionstatechange = e => {
-                this.setState({
-                    history: [this.localConnection.iceConnectionState]
-                })
+
+                let connectionState = this.localConnection.iceConnectionState
+                if(connectionState !== 'connected')
+                {
+                    this.setState({
+                        history: [connectionState]
+                    })
+                }
             }
 
             this.localConnection.onnegotiationneeded = e =>
