@@ -174,6 +174,16 @@ export const filterAppInstanceListByClusterInst = (appInstanceList, pCluster = '
     return instanceListFilteredByClusterInst;
 }
 
+export const filterAppInstanceListByAppInst = (appInstanceList, pAppInstName = '') => {
+    let filteredInstanceList = []
+    appInstanceList.map(item => {
+        if (item.AppName === pAppInstName) {
+            filteredInstanceList.push(item);
+        }
+    })
+
+    return filteredInstanceList;
+}
 
 /**
  * @todo: Remove duplicates from an array.

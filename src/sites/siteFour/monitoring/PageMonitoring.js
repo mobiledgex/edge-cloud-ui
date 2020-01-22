@@ -12,7 +12,7 @@ import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
 import * as reducer from "../../../utils";
 import {
-    cutArrayList,
+    cutArrayList, filterAppInstanceListByAppInst,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
@@ -268,7 +268,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: -------------------------------------------------------------------------------
             //todo: make FirstbubbleChartData
             //todo: -------------------------------------------------------------------------------
-            let bubbleChartData = await this.makeFirstBubbleChartData(appInstanceList);
+            let bubbleChartData = await this.makeBubbleChartData(appInstanceList);
             await this.setState({
                 bubbleChartData: bubbleChartData,
             })
@@ -450,8 +450,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: FLITER By pAppInstance
             //todo: -------------------------------------------
             if (pAppInstance !== '') {
-                //todo:app instalce list를 필터링
-                //appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
+                appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
                 filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredCpuUsageList);
                 filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredMemUsageList);
                 filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredDiskUsageList);
@@ -511,7 +510,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             //todo: make First BUBBLE CHART DATA
             //todo: -------------------------------------------
             //todo: -------------------------------------------
-            let bubbleChartData = await this.makeFirstBubbleChartData(appInstanceList);
+            console.log('appInstanceListappInstanceList===>', appInstanceList);
+
+
+            let bubbleChartData = await this.makeBubbleChartData(appInstanceList);
             await this.setState({
                 bubbleChartData: bubbleChartData,
             })
@@ -555,7 +557,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }
         }
 
-        async makeFirstBubbleChartData(appInstanceList: any) {
+        async makeBubbleChartData(appInstanceList: any) {
             let bubbleChartData = []
             appInstanceList.map((item, index) => {
                 bubbleChartData.push({
@@ -1171,6 +1173,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
 
+            //todo: bubbleChart
+            //todo: bubbleChart
+            //todo: bubbleChart
             this.setState({
                 bubbleChartData: chartData,
             });
