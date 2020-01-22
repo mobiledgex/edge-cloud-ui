@@ -111,7 +111,6 @@ class MexTerminal extends Component {
         }
         var textDecoder = new TextDecoder("utf-8");
         let arr = textDecoder.decode(event.data);
-        console.log('Rahul1234', arr)
         arr = stripAnsi(arr).trim();
         arr = this.pathExist(arr);
         if (arr.length > 0) {
