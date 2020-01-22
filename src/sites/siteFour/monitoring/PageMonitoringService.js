@@ -359,11 +359,6 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
             }
         }
 
-        console.log('chartDataList===>', chartDataList);
-
-
-        //let chartHeight = window.innerHeight / 3;
-
         return (
             <Chart
                 width="100%"
@@ -510,7 +505,6 @@ export const makeGridInstanceList = (usageList: Array) => {
 
     let gridInstanceList = []
     allCpuUsageList.map((item, index) => {
-        console.log('item===>', item);
         gridInstanceList.push({
             instance: item.instance,
             sumCpuUsage: item.sumCpuUsage,
@@ -618,7 +612,6 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
 
 
         function renderOffsetY(appInstanceListLength) {
-            console.log('appInstanceListLength===>', appInstanceListLength);
             if ( appInstanceListLength===0){
                 return 0.05;
             }else if (appInstanceListLength === 1) {
@@ -701,7 +694,6 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
 
 export const getMetricsUtilizationAtAppLevel_TEST = async (appInstanceOne) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    console.log('appInstanceOne====>', appInstanceOne);
     let responseRslt = await axios({
         url: '/api/v1/auth/metrics/app',
         method: 'post',
@@ -751,7 +743,6 @@ export const getMetricsUtilizationAtAppLevel_TEST = async (appInstanceOne) => {
 export const getMetricsUtilizationAtAtClusterLevel = async (appInstanceOne) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
-    console.log('appInstanceOne====>', appInstanceOne);
     let responseRslt = await axios({
         url: '/api/v1/auth/metrics/cloudlet',
         method: 'post',
@@ -809,8 +800,6 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
 
             instanceAppName = hardwareUsageList[i].instance.AppName
             let usageList = [];
-
-            console.log('seriesValues===>', seriesValues);
 
             for (let j in seriesValues) {
 
@@ -1004,7 +993,6 @@ export const makeNetworkBarData = (networkUsageList, hwType) => {
         }
     }
 
-    console.log('BarchartDataList===>', chartDataList);
 
     return chartDataList;
 
@@ -1148,8 +1136,6 @@ function isEmptyObject(obj) {
  * @returns {*}
  */
 export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudlet, _this) => {
-
-    console.log('appInstanceListSortByCloudlet====>', typeof appInstanceListSortByCloudlet);
 
     if (isEmptyObject(appInstanceListSortByCloudlet)) {
         //do something
@@ -1488,8 +1474,6 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
                 values: networkSeries.values,
                 appName: appName,
             })
-
-            console.log('networkSeries===>', networkSeries.values)
 
         } else {//@todo: If series data is null
             cpuUsageList.push({
