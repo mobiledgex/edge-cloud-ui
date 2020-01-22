@@ -23,6 +23,7 @@ import './css/pages/audit.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 import Test001 from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test001";
+import Test002 from "./TEMP_KYUNGJOOON_FOR_TEST/Pages/Test002";
 // API
 
 let self = null;
@@ -331,6 +332,7 @@ class App extends Component {
                     <Route exact path='/passwordreset' component={DashboardContainer.bind(this, {mainPath:'/passwordreset'})} />
                     <Route exact path='/verify' component={DashboardContainer.bind(this, {mainPath:'/verify'})} />
                     <Route exact path='/Test001' component={Test001} />
+                    <Route exact path='/Test002' component={Test002} />
 
                 </div>
             </Router>
