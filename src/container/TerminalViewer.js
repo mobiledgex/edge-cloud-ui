@@ -1,9 +1,10 @@
 
 import React, { Component } from 'react';
-import Terminal from '../hoc/terminal/mex-terminal'
+import Terminal from '../hoc/terminal/mexTerminal'
 import * as serviceMC from '../services/serviceMC'
 import stripAnsi from 'strip-ansi'
-import { Button, Paper } from '@material-ui/core';
+import Options from '../hoc/terminal/options/terminalOptions'
+
 
 const CMD_CLEAR = 'clear';
 const CMD_CLOSE = 'close';
@@ -13,8 +14,7 @@ class MexTerminal extends Component {
     constructor(props) {
         super(props)
         this.containerIds = [];
-        if(props.data.data.Runtime.container_ids)
-        {
+        if (props.data.data.Runtime.container_ids) {
             this.containerIds = props.data.data.Runtime.container_ids;
         }
         this.state = ({
@@ -22,11 +22,11 @@ class MexTerminal extends Component {
             history: [],
             path: '#',
             open: false,
-            containerId: (this.containerIds.length>0 ? this.containerIds[0] : ''),
+            containerId: (this.containerIds.length > 0 ? this.containerIds[0] : ''),
             cmd: '',
             optionView: true,
         })
-        this.success=false;
+        this.success = false;
         this.localConnection = null;
         this.sendChannel = null;
 
@@ -89,12 +89,12 @@ class MexTerminal extends Component {
         let dataList = data.split('\r\n')
         dataList.map(arr => {
             if (!arr.includes('/') && !arr.includes(' #')) {
-                newData += arr;
+                newData += arr + '\r\n';
             }
             else {
-                this.setState(prevState=>({
+                this.setState({
                     path: arr
-                }))
+                })
             }
             return null;
         })
@@ -103,16 +103,15 @@ class MexTerminal extends Component {
 
     onRemoteMessage = (event) => {
 
-        if(!this.success)
-        {
+        if (!this.success) {
             this.success = true;
             this.setState({
                 history: ['Connected Successfully']
             })
         }
         var textDecoder = new TextDecoder("utf-8");
-        var decodedText = textDecoder.decode(event.data);
-        let arr = decodedText.replace(/\/ #/g, '');
+        let arr = textDecoder.decode(event.data);
+        console.log('Rahul1234', arr)
         arr = stripAnsi(arr).trim();
         arr = this.pathExist(arr);
         if (arr.length > 0) {
@@ -142,7 +141,7 @@ class MexTerminal extends Component {
                 //this.close();
             }
             this.sendChannel.onopen = () => {
-                
+
             }
 
             this.sendChannel.onmessage = e => { this.onRemoteMessage(e) }
@@ -158,7 +157,7 @@ class MexTerminal extends Component {
                     this.localConnection.setLocalDescription(d)
                 }).catch(this.log)
 
-            
+
             setTimeout(() => { this.sendRequest() }, 1000);
         }
         catch (e) {
@@ -187,7 +186,7 @@ class MexTerminal extends Component {
 
         this.setState({
             optionView: true,
-            path:'#',
+            path: '#',
             history: ['Connection Closed']
         })
     }
@@ -229,42 +228,26 @@ class MexTerminal extends Component {
         this.openTerminal()
     }
 
-    
+
 
     render() {
         return (
-            this.containerIds.length>0 ?
-            <div style={{ backgroundColor: 'black', height: '100%' }}>
-                {this.state.optionView ?
-                    <div style={{lineHeight:50, height:300, textAlign:"center"}}>
-                    <div open={this.state.optionView} onClose={this.onDialogClose} style={{lineHeight:1.5,display:'inline-block', verticalAlign:"middle"}}>
-                        <Paper variant="outlined" style={{ backgroundColor: 'black', borderColor: 'white', padding: 20 }}>
-                            <div>
-                                <label style={{ color: 'white', marginRight: 30 }}>CONTAINER</label>
-                                <select onChange={this.onContainerSelect} value={this.state.containerId} style={{ marginRight: 20, color: 'white', borderColor: 'white', backgroundColor: 'black', width: 200, height: 30 }}>
-                                    {
-                                        this.containerIds.map((item, i) => {
-                                            return <option key={i} value={item}>{item}</option>
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div>
-                                <label style={{ color: 'white', marginRight: 30 }}>COMMAND</label>
-                                <input value={this.state.cmd} onChange={this.onCmd} style={{ color: 'white', borderRight: 'none', borderLeft: 'none', borderTop: 'none', width: 200, height: 40, backgroundColor: 'black', marginRight: 20 }} />
-                            </div>
-                            <div>
-                                <Button variant="outlined" style={{ color: 'white', borderColor: 'white', marginTop: 20 }} onClick={this.connect}>CONNECT</Button>
-                            </div>
-                        </Paper>
-                    </div>
-                  </div>
-                    :
-                    <div style={{ paddingLeft: 20, paddingTop: 30, height: '100%' }}>
-                        <Terminal open={this.state.open} close={this.close} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
-                    </div>
-                }
-            </div> : 'Container not found')
+            this.containerIds.length > 0 ?
+                <div style={{ backgroundColor: 'black', height: '100%' }}>
+                    {this.state.optionView ?
+                        <Options
+                            connect={this.connect}
+                            onCmd={this.onCmd}
+                            onContainerSelect={this.onContainerSelect}
+                            containerIds={this.containerIds}
+                            containerId={this.state.containerId}
+                            cmd={this.state.cmd} />
+                        :
+                        <div style={{ paddingLeft: 20, paddingTop: 30, height: '100%' }}>
+                            <Terminal open={this.state.open} close={this.close} path={this.state.path} onEnter={this.onEnter} history={this.state.history} />
+                        </div>
+                    }
+                </div> : 'Container not found')
     }
 
 
