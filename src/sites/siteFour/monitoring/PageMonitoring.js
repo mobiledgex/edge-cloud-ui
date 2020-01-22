@@ -469,10 +469,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return o.sumCpuUsage;
             }));
 
-
-            ////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////
             await this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
@@ -505,24 +501,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     clusterSelectBoxPlaceholder: 'Select Cluster',
                 })
             }, 500)
-            //todo: -------------------------------------------
-            //todo: -------------------------------------------
-            //todo: make First BUBBLE CHART DATA
-            //todo: -------------------------------------------
-            //todo: -------------------------------------------
-            console.log('appInstanceListappInstanceList===>', appInstanceList);
 
-
+            //todo: -------------------------------------------
+            //todo: make BUBBLE CHART DATA
+            //todo: -------------------------------------------
             let bubbleChartData = await this.makeBubbleChartData(appInstanceList);
             await this.setState({
                 bubbleChartData: bubbleChartData,
             })
 
-
-            //todo: -------------------------------------------
             //todo: -------------------------------------------
             //todo: NETWORK chart data filtering
-            //todo: -------------------------------------------
             //todo: -------------------------------------------
             let networkChartData = makeNetworkLineChartData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
             let networkBarChartData = makeNetworkBarData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
