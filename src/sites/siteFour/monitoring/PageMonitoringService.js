@@ -1413,77 +1413,90 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
         let series = item.appInstanceHealth.data["0"].Series;
 
         if (series !== null) {
-            let cpuSeries = series["3"]
 
-            //@todo###########################
-            //@todo makeCpuSeriesList
-            //@todo###########################
-            cpuSeries.values.map(item => {
-                let cpuUsage = item[6];//cpuUsage..index
-                sumCpuUsage += cpuUsage;
-            })
+            if ( series["3"]!==undefined){
+                let cpuSeries = series["3"]
 
-            cpuUsageList.push({
-                instance: item.instanceData,
-                columns: cpuSeries.columns,
-                sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
-                values: cpuSeries.values,
-                appName: appName,
+                //@todo###########################
+                //@todo makeCpuSeriesList
+                //@todo###########################
+                cpuSeries.values.map(item => {
+                    let cpuUsage = item[6];//cpuUsage..index
+                    sumCpuUsage += cpuUsage;
+                })
 
-            })
-            //@todo###########################
-            //@todo MemSeriesList
-            //@todo###########################
-            let memSeries = series["1"]
-            memSeries.values.map(item => {
-                let usageOne = item[10];//memUsage..index
-                sumMemUsage += usageOne;
-            })
+                cpuUsageList.push({
+                    instance: item.instanceData,
+                    columns: cpuSeries.columns,
+                    sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
+                    values: cpuSeries.values,
+                    appName: appName,
 
-            memUsageList.push({
-                instance: item.instanceData,
-                columns: memSeries.columns,
-                sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
-                values: memSeries.values,
-                appName: appName,
-            })
+                })
+            }
 
-            //@todo###########################
-            //@todo DiskSeriesList
-            //@todo###########################
-            let diskSeries = series["2"]
-            diskSeries.values.map(item => {
-                let usageOne = item[8];//diskUsage..index
-                sumDiskUsage += usageOne;
-            })
 
-            diskUsageList.push({
-                instance: item.instanceData,
-                columns: diskSeries.columns,
-                sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
-                values: diskSeries.values,
-                appName: appName,
-            })
+            if ( series["1"]!==undefined){
 
-            //@todo###############################
-            //@todo NetworkUSageList
-            //@todo##############################
-            let networkSeries = series["0"]
-            networkSeries.values.map(item => {
-                let recvBytesOne = item[12];//recvBytesOne
-                sumRecvBytes += recvBytesOne;
-                let sendBytesOne = item[13];//sendBytesOne
-                sumSendBytes += sendBytesOne;
-            })
+                //@todo###########################
+                //@todo MemSeriesList
+                //@todo###########################
+                let memSeries = series["1"]
+                memSeries.values.map(item => {
+                    let usageOne = item[10];//memUsage..index
+                    sumMemUsage += usageOne;
+                })
 
-            networkUsageList.push({
-                instance: item.instanceData,
-                columns: networkSeries.columns,
-                sumRecvBytes: Math.ceil(sumRecvBytes / RECENT_DATA_LIMIT_COUNT),
-                sumSendBytes: Math.ceil(sumSendBytes / RECENT_DATA_LIMIT_COUNT),
-                values: networkSeries.values,
-                appName: appName,
-            })
+                memUsageList.push({
+                    instance: item.instanceData,
+                    columns: memSeries.columns,
+                    sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
+                    values: memSeries.values,
+                    appName: appName,
+                })
+            }
+
+            if ( series["2"]!==undefined){
+                //@todo###########################
+                //@todo DiskSeriesList
+                //@todo###########################
+                let diskSeries = series["2"]
+                diskSeries.values.map(item => {
+                    let usageOne = item[8];//diskUsage..index
+                    sumDiskUsage += usageOne;
+                })
+
+                diskUsageList.push({
+                    instance: item.instanceData,
+                    columns: diskSeries.columns,
+                    sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
+                    values: diskSeries.values,
+                    appName: appName,
+                })
+
+            }
+
+            if ( series["0"]!==undefined){
+                //@todo###############################
+                //@todo NetworkUSageList
+                //@todo##############################
+                let networkSeries = series["0"]
+                networkSeries.values.map(item => {
+                    let recvBytesOne = item[12];//recvBytesOne
+                    sumRecvBytes += recvBytesOne;
+                    let sendBytesOne = item[13];//sendBytesOne
+                    sumSendBytes += sendBytesOne;
+                })
+
+                networkUsageList.push({
+                    instance: item.instanceData,
+                    columns: networkSeries.columns,
+                    sumRecvBytes: Math.ceil(sumRecvBytes / RECENT_DATA_LIMIT_COUNT),
+                    sumSendBytes: Math.ceil(sumSendBytes / RECENT_DATA_LIMIT_COUNT),
+                    values: networkSeries.values,
+                    appName: appName,
+                })
+            }
 
         } else {//@todo: If series data is null
             cpuUsageList.push({

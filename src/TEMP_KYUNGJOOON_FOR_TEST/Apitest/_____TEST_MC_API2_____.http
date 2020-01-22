@@ -47,26 +47,26 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzgwMTE4N
 
 ###selector( cpu, mem, disk, network )사용량 요청....matrix...
 
-POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/app
+POST https://console-qa.mobiledgex.net:443/api/v1/auth/metrics/app
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzkxNzQwMjUsImlhdCI6MTU3OTA4NzYyNSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.0YoP7YBgq2QuaPYkp3UpGwtt80xXKF7VrD6xVHUg5hil1rvaPKL6p9JXBbUpX9oub9638OjJlYo50Pjm6TUM_g
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1Nzk4MDgzODgsImlhdCI6MTU3OTcyMTk4OCwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.SXZI23G4-oqwAkPfysNSABd-5TPmcDx3LkdQwSvFfRpasH4I4hDFVVf8vWNmSNTO7dUsDxQPgkVY0jst9rdpbQ
 
 {
     "region": "EU",
     "appinst": {
         "app_key": {
             "developer_key": {
-                "name": "testaaa"
+                "name": "MobiledgeX"
             },
-            "name": "jjjkkk",
+            "name": "MEXPrometheusAppName",
             "version": "1.0"
         },
         "cluster_inst_key": {
             "cluster_key": {
-                "name": "kkkkkkk"
+                "name": "cluster1579698573-5601797"
             },
             "cloudlet_key": {
-                "name": "frankfurt-eu",
+                "name": "automationBonnCloudlet",
                 "operator_key": {
                     "name": "TDG"
                 }
@@ -74,9 +74,9 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzkxNzQwM
         }
     },
     "selector": "*",
-    "starttime": "2019-10-19T01:44:59.371999979Z",
+    "starttime": "2017-10-19T01:44:59.371999979Z",
     "endtime": "2019-10-22T01:44:59.371999979Z",
-    "last": 1
+    "last": 5
 }
 
 ### http --verify=false --auth-type=jwt --auth=$SUPERPASS POST https://127.0.0.1:9900/api/v1/auth/metrics/cloudlet <<< '{"region":"local","cloudlet":{"operator_key":{"name":"mexdev"},"name":"localtest"},"selector":"utilization","last":1}'

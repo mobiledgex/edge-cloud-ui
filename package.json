@@ -68,8 +68,6 @@
     "react-circular-progressbar": "^1.0.0",
     "react-container-dimensions": "^1.4.1",
     "react-date-range": "^1.0.0-beta",
-    "react-dnd": "^10.0.2",
-    "react-dnd-html5-backend": "^10.0.2",
     "react-dom": "^16.6.3",
     "react-draggable": "^4.2.0",
     "react-dual-listbox": "^2.0.0",
