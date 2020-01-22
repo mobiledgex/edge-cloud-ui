@@ -1443,7 +1443,7 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
                 //@todo###########################
                 let memSeries = series["1"]
                 memSeries.values.map(item => {
-                    let usageOne = item[10];//memUsage..index
+                    let usageOne = item[7];//memUsage..index
                     sumMemUsage += usageOne;
                 })
 
