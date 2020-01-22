@@ -900,7 +900,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div style={{marginLeft: '10px'}}>
                             <Button
                                 onClick={async () => {
-                                    this.refreshAllData();
+                                    if (!this.state.loading){
+                                        this.refreshAllData();
+                                    }else{
+                                        showToast('Currently loading, you can\'t request again.')
+                                    }
+
                                 }}
                                 className="ui circular icon button"
                             >
