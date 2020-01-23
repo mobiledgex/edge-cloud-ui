@@ -1,27 +1,28 @@
+
 //Grouping objects by a property
 export const groupBy = (objectArray, property) => (
     objectArray.reduce((accumulator, obj) => {
         let key = obj[property];
-        if (!accumulator[key]) {
+        if(!accumulator[key]) {
             accumulator[key] = [];
         }
         accumulator[key].push(obj);
         return accumulator;
-    }, {})
+    },{})
 )
 
 export const groupByCompare = (objectArray, properties) => (
     objectArray.reduce((accumulator, obj) => {
         let key1 = obj[properties[0]];
         let key2 = obj[properties[1]];
-        let key = [properties[0]] + ':' + key1 + [properties[1]] + ':' + key2
+        let key = [properties[0]]+':'+key1 + [properties[1]]+':'+key2
         // console.log('reduce key-', key)
-        if (!accumulator[key]) {
+        if(!accumulator[key]) {
             accumulator[key] = [];
         }
         accumulator[key].push(obj);
         return accumulator;
-    }, {})
+    },{})
 )
 
 //Counting instances of values in an object
@@ -29,11 +30,12 @@ export const countedNames = (objectArray) => (
     objectArray.reduce((allNames, name) => {
         if (name in allNames) {
             allNames[name]++;
-        } else {
+        }
+        else {
             allNames[name] = 1;
         }
         return allNames;
-    }, {})
+    },{})
 )
 
 
