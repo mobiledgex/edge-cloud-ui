@@ -1,6 +1,6 @@
 import 'react-hot-loader'
 import React from 'react';
-import { Button, Dropdown, Modal } from 'semantic-ui-react';
+import {Button, Dropdown, Icon, Modal} from 'semantic-ui-react';
 import * as moment from 'moment';
 import ReactJson from 'react-json-view';
 import { connect } from 'react-redux';
@@ -13,13 +13,15 @@ import View from "react-flexbox";
 import FlexBox from "flexbox-react";
 import HorizontalTimelineKJ from "../components/horizontal_timeline_kj/Components/HorizontalTimeline";
 import { hot } from "react-hot-loader/root";
+// import {hot} from "react-hot-loader/root";
+import CalendarTimeline from "../components/timeline/calendarTimeline";
 
 const countryOptions = [
-    { key: '24', value: '24', flag: '24', text: 'Last 24hours' },
-    { key: '18', value: '18', flag: '18', text: 'Last 18hours' },
-    { key: '12', value: '12', flag: '12', text: 'Last 12hours' },
-    { key: '6', value: '6', flag: '6', text: 'Last 6hours' },
-    { key: '1', value: '1', flag: '1', text: 'Last an hour' },
+    { key: '24', value: '24', flag: '24', text: 'Last 24 hours' },
+    { key: '18', value: '18', flag: '18', text: 'Last 18 hours' },
+    { key: '12', value: '12', flag: '12', text: 'Last 12 hours' },
+    { key: '6', value: '6', flag: '6', text: 'Last 6 hours' },
+    { key: '1', value: '1', flag: '1', text: 'Last hour' },
 
 ]
 let timesList = [];
@@ -97,6 +99,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             tasksList: [],
             currentTask: '',
             currentTaskTime: '',
+            closeMap:false,
         };
         jsonViewProps = {
             name: null,
@@ -118,6 +121,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
             _self = this;
             this.sameTime = '0';
             this.addCount = 0;
+
+            this.mapzoneStyle = [
+                {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', flexDirection:'column', width:'100%', overflow:'scroll'},
+                {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', flexDirection:'column', height:'28px', width:'100%'}
+                // {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', display:'flex', flexDirection:'column'},
+                // {margin:'0 0 10px 0', padding: '5px 15px 15px', alignItems:'center', display:'flex', flexDirection:'column', height:'28px'}
+            ]
         }
 
         componentWillMount() {
@@ -314,7 +324,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
         submitSendEmail = () => {
             alert('submit')
         }
-        close = () => this.setState({ openSendEmail: false })
+
+        onItemSelect = (item, i) => {
+            let value = '';
+            let times = this.state.timesList
+            times.map((time, index) => {
+                if(new Date(time).getTime() === item){
+                    this.setState({"timeLineIndex" : i})
+                    this.onHandleIndexClick({"value" : i})
+                }
+            })
+        }
+
+
+        onPopupEmail = () => {
+            this.setState({openSendEmail: true})
+        }
+
+        onCloseMap =()=> {
+            let close = !this.state.closeMap;
+            this.setState({closeMap:close})
+        }
+
+        close = () => this.setState({openSendEmail: false})
 
 
         render() {
@@ -347,7 +379,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                                     marginBottom: 100,
                                     //backgroundColor: 'blue',
                                     display: 'block',
-
                                 }}>
 
                                 {this.props.isLoading &&
@@ -420,6 +451,18 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
 
                         </div>
                     </div>
+
+                    <div className="round_panel" style={(!this.state.closeMap)?this.mapzoneStyle[0]:this.mapzoneStyle[1]}>
+                        {/*<div className="round_panel" style={{width:'100%'}}>*/}
+                        <div style={{margin:'0 0 5px 0', cursor:'pointer', display:'flex', alignItems:'column', justifyContent:'center'}} onClick={this.onCloseMap}>
+                            <span style={{color:'#c8c9cb'}}>{(this.state.closeMap)?'Show timeline':'Hide timeline'}</span>
+                            <Icon name={(this.state.closeMap)?'angle down':'angle up'}/>
+                        </div>
+                        <div>
+                            {(this.state.timesList.length > 0) ?<CalendarTimeline timesList={this.state.timesList} tasksList={this.state.tasksList} callback={this.onItemSelect} timelineDataOne={(this.state.rawViewData) ? this.state.rawViewData : null}/>:null}
+                        </div>
+                    </div>
+
                     <div className="page_audit_code">
                         <div className="page_audit_code_left">
                             <div className="page_audit_code_rawviewer">
@@ -456,8 +499,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(
                             </div>
                         </div>
                     </div>
+                    {/*<Button onClick={this.onPopupEmail}>*/}
+                    {/*    Email*/}
+                    {/*</Button>*/}
                     <SendEmailView dimmer={true} open={this.state.openSendEmail} close={this.close}
-                        callback={this.submitSendEmail}> </SendEmailView>
+                                   callback={this.submitSendEmail} rawViewData={this.state.rawViewData}> </SendEmailView>
                 </div>
             )
         }
@@ -477,14 +523,14 @@ class SendEmailView extends React.Component {
     }
 
     render() {
-        let { dimmer, open, close, callback } = this.props;
+        let {dimmer, open, close, callback, rawViewData} = this.props;
         return (
             <Modal dimmer={dimmer} open={open} onClose={close} closeIcon>
-                <Modal.Header>New Email</Modal.Header>
+                <Modal.Header>New E-mail</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
                         <PopSendEmailView ref={form => this.formReference = form} submitState={this.state.submitState}
-                            clearState={this.state.clearState}></PopSendEmailView>
+                                          clearState={this.state.clearState} rawViewData={rawViewData}></PopSendEmailView>
                     </Modal.Description>
                 </Modal.Content>
                 <Modal.Actions>
