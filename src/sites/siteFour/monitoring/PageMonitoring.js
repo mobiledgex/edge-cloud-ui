@@ -153,7 +153,8 @@ type State = {
     userType: string,
     placeHolderStateTime: string,
     placeHolderEndTime: string,
-
+    allConnectionsUsageList: Array,
+    filteredConnectionsUsageList: Array,
 
 }
 
@@ -227,6 +228,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             userType: '',
             placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
             placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
+            allConnectionsUsageList: [],
+            filteredConnectionsUsageList: [],
         };
 
 
@@ -254,7 +257,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     filteredDiskUsageList: [],
                     appInstanceListTop5: [],
                     allGridInstanceList: [],
-                    filteredGridInstanceList:[],
+                    filteredGridInstanceList: [],
                     gridInstanceListMemMax: 0,
                     gridInstanceListCpuMax: 0,
                 })
@@ -338,12 +341,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allMemUsageList: usageList[1],
                 allNetworkUsageList: usageList[2],//networkUsage
                 allDiskUsageList: usageList[3],//disk is last array
+                allConnectionsUsageList: usageList[4],
                 cloudletList: cloudletList,
                 clusterList: clusterList,
                 filteredCpuUsageList: usageList[0],
                 filteredMemUsageList: usageList[1],
                 filteredNetworkUsageList: usageList[2],
                 filteredDiskUsageList: usageList[3],
+                filteredConnectionsUsageList: usageList[4],
             }, () => {
                 console.log('filteredNetworkUsageList===>', this.state.filteredNetworkUsageList);
             });
@@ -409,6 +414,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let allMemUsageList = []
             let allDiskUsageList = []
             let allNetworkUsageList = []
+            let allConnectionsUsageList = []
             let allGridInstanceList = []
 
             console.log('2222===>', this.state.startTime);
@@ -421,6 +427,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allMemUsageList = this.state.usageListByDate[1]
                 allNetworkUsageList = this.state.usageListByDate[2]
                 allDiskUsageList = this.state.usageListByDate[3]
+                allConnectionsUsageList = this.usageListByDate[4]
                 allGridInstanceList = makeGridInstanceList(this.state.usageListByDate);
             } else {
                 appInstanceList = this.state.allAppInstanceList;
@@ -428,6 +435,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allMemUsageList = this.state.allMemUsageList
                 allDiskUsageList = this.state.allDiskUsageList
                 allNetworkUsageList = this.state.allNetworkUsageList
+                allConnectionsUsageList = this.state.allConnectionsUsageList
                 allGridInstanceList = this.state.allGridInstanceList;
             }
 
@@ -450,6 +458,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let filteredMemUsageList = filterUsageListByRegion(pRegion, allMemUsageList);
             let filteredDiskUsageList = filterUsageListByRegion(pRegion, allDiskUsageList);
             let filteredNetworkUsageList = filterUsageListByRegion(pRegion, allNetworkUsageList);
+            let filteredConnectionsUsageList = filterUsageListByRegion(pRegion, allConnectionsUsageList);
+
             let filteredGridInstanceList = filterUsageListByRegion(pRegion, allGridInstanceList);
 
             //todo: -------------------------------------------
@@ -464,6 +474,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredMemUsageList);
                 filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredDiskUsageList);
                 filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredNetworkUsageList);
+                filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredConnectionsUsageList);
+
+
                 filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredGridInstanceList);
             }
 
@@ -479,6 +492,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredMemUsageList);
                 filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredDiskUsageList);
                 filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredNetworkUsageList);
+                filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCloudLet, filteredConnectionsUsageList);
+
+
                 filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredGridInstanceList);
 
             }
@@ -492,6 +508,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredMemUsageList);
                 filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredDiskUsageList);
                 filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredNetworkUsageList);
+                filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredConnectionsUsageList);
+
                 filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredGridInstanceList);
 
             }
@@ -511,6 +529,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 filteredMemUsageList: filteredMemUsageList,
                 filteredDiskUsageList: filteredDiskUsageList,
                 filteredNetworkUsageList: filteredNetworkUsageList,
+                filteredConnectionsUsageList: filteredConnectionsUsageList,
                 filteredGridInstanceList: filteredGridInstanceList,
                 gridInstanceListMemMax: gridInstanceListMemMax,
                 gridInstanceListCpuMax: gridInstanceListCpuMax,
@@ -678,6 +697,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <Table.HeaderCell>
                                 FLAVOR
                             </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                ACTIVE CONN.
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                HANDLED CONN.
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>
+                                ACCEPTS CONN.
+                            </Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body className="tbBodyList"
@@ -762,6 +790,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     </Table.Cell>
                                     <Table.Cell>
                                         {item.instance.Flavor}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {item.sumActiveConnection}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {item.sumHandledConnection}
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        {item.sumAcceptsConnection}
                                     </Table.Cell>
                                 </Table.Row>
 
