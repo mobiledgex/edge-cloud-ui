@@ -1612,7 +1612,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
                                                         <div className='page_monitoring_popup_table'>
-                                                            {this.state.filteredGridInstanceList.length === 0 ?
+                                                            {this.state.filteredGridInstanceList.length && this.state.isReady=== 0 ?
                                                                 <div style={Styles.noData}>
                                                                     NO DATA
                                                                 </div>
