@@ -910,9 +910,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         renderConnectionsArea(connectionsType: string) {
 
-
-            console.log('connectionsType===>', connectionsType);
-
             return (
                 <div className='page_monitoring_dual_column'>
                     <div className='page_monitoring_dual_container'>
