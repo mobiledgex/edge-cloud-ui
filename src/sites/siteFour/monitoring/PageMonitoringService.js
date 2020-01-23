@@ -1345,7 +1345,7 @@ export const requestAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: a
         return response.data;
     }).catch(e => {
         //throw new Error(e)
-        showToast(e.toString())
+        //showToast(e.toString())
     })
     return result;
 }
@@ -1387,7 +1387,7 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
     try {
         appInstanceHealthCheckList = await Promise.all(promiseList);
     } catch (e) {
-        alert(e)
+        //alert(e)
     }
 
     let usageListForAllInstance = []
@@ -1417,171 +1417,170 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
         let sumHandledConnection = 0
         let sumAcceptsConnection = 0
 
+        if ( item.appInstanceHealth!==undefined){
 
-        let series = item.appInstanceHealth.data["0"].Series;
+            let series = item.appInstanceHealth.data["0"].Series;
+            if (series !== null) {
+                //@todo###########################
+                //@todo makeCpuSeriesList
+                //@todo###########################
+                if ( series["3"]!==undefined){
+                    let cpuSeries = series["3"]
+                    cpuSeries.values.map(item => {
+                        let cpuUsage = item[6];//cpuUsage..index
+                        sumCpuUsage += cpuUsage;
+                    })
 
-        if (series !== null) {
+                    cpuUsageList.push({
+                        instance: item.instanceData,
+                        columns: cpuSeries.columns,
+                        sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
+                        values: cpuSeries.values,
+                        appName: appName,
+
+                    })
+                }
 
 
-            //@todo###########################
-            //@todo makeCpuSeriesList
-            //@todo###########################
-            if ( series["3"]!==undefined){
-                let cpuSeries = series["3"]
-                cpuSeries.values.map(item => {
-                    let cpuUsage = item[6];//cpuUsage..index
-                    sumCpuUsage += cpuUsage;
-                })
+                //@todo###########################
+                //@todo MemSeriesList
+                //@todo###########################
+                if ( series["1"]!==undefined){
+                    let memSeries = series["1"]
+                    memSeries.values.map(item => {
+                        let usageOne = item[7];//memUsage..index
+                        sumMemUsage += usageOne;
+                    })
 
+                    memUsageList.push({
+                        instance: item.instanceData,
+                        columns: memSeries.columns,
+                        sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
+                        values: memSeries.values,
+                        appName: appName,
+                    })
+                }
+
+
+                //@todo###########################
+                //@todo DiskSeriesList
+                //@todo###########################
+                if ( series["2"]!==undefined){
+                    let diskSeries = series["2"]
+                    diskSeries.values.map(item => {
+                        let usageOne = item[8];//diskUsage..index
+                        sumDiskUsage += usageOne;
+                    })
+
+                    diskUsageList.push({
+                        instance: item.instanceData,
+                        columns: diskSeries.columns,
+                        sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
+                        values: diskSeries.values,
+                        appName: appName,
+                    })
+
+                }
+
+                //@todo###############################
+                //@todo NetworkUSageList
+                //@todo##############################
+                if ( series["0"]!==undefined){
+                    let networkSeries = series["0"]
+                    networkSeries.values.map(item => {
+                        let recvBytesOne = item[12];//recvBytesOne
+                        sumRecvBytes += recvBytesOne;
+                        let sendBytesOne = item[13];//sendBytesOne
+                        sumSendBytes += sendBytesOne;
+                    })
+
+                    networkUsageList.push({
+                        instance: item.instanceData,
+                        columns: networkSeries.columns,
+                        sumRecvBytes: Math.ceil(sumRecvBytes / RECENT_DATA_LIMIT_COUNT),
+                        sumSendBytes: Math.ceil(sumSendBytes / RECENT_DATA_LIMIT_COUNT),
+                        values: networkSeries.values,
+                        appName: appName,
+                    })
+                }
+
+
+
+
+                /*let sumActiveConnection = 0;
+                let sumHandledConnection = 0
+                let sumAcceptsConnection = 0*/
+                //@todo###############################
+                //@todo connectionsUsageList [4]
+                //@todo##############################
+                if ( series["4"]!==undefined){
+                    let connectionsSeries = series["0"]
+                    connectionsSeries.values.map(item => {
+                        let connection1One = item[7];//1
+                        sumActiveConnection += connection1One;
+                        let connection2One = item[8];//2
+                        sumHandledConnection += connection2One;
+                        let connection3One = item[9];//3
+                        sumAcceptsConnection += connection3One;
+                    })
+
+                    connectionsUsageList.push({
+                        instance: item.instanceData,
+                        columns: connectionsSeries.columns,
+                        sumConnection1: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
+                        sumConnection2: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
+                        sumConnection3: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
+                        values: connectionsSeries.values,
+                        appName: appName,
+                    })
+                }
+
+            } else {//@todo: If series data is null
                 cpuUsageList.push({
                     instance: item.instanceData,
-                    columns: cpuSeries.columns,
-                    sumCpuUsage: sumCpuUsage / RECENT_DATA_LIMIT_COUNT,
-                    values: cpuSeries.values,
+                    columns: "",
+                    sumCpuUsage: 0,
+                    values: [],
                     appName: appName,
 
-                })
-            }
-
-
-            //@todo###########################
-            //@todo MemSeriesList
-            //@todo###########################
-            if ( series["1"]!==undefined){
-                let memSeries = series["1"]
-                memSeries.values.map(item => {
-                    let usageOne = item[7];//memUsage..index
-                    sumMemUsage += usageOne;
                 })
 
                 memUsageList.push({
                     instance: item.instanceData,
-                    columns: memSeries.columns,
-                    sumMemUsage: Math.ceil(sumMemUsage / RECENT_DATA_LIMIT_COUNT),
-                    values: memSeries.values,
+                    columns: "",
+                    sumMemUsage: 0,
+                    values: [],
                     appName: appName,
-                })
-            }
 
-
-            //@todo###########################
-            //@todo DiskSeriesList
-            //@todo###########################
-            if ( series["2"]!==undefined){
-                let diskSeries = series["2"]
-                diskSeries.values.map(item => {
-                    let usageOne = item[8];//diskUsage..index
-                    sumDiskUsage += usageOne;
                 })
 
                 diskUsageList.push({
                     instance: item.instanceData,
-                    columns: diskSeries.columns,
-                    sumDiskUsage: Math.ceil(sumDiskUsage / RECENT_DATA_LIMIT_COUNT),
-                    values: diskSeries.values,
+                    columns: "",
+                    sumDiskUsage: 0,
+                    values: [],
                     appName: appName,
-                })
-
-            }
-
-            //@todo###############################
-            //@todo NetworkUSageList
-            //@todo##############################
-            if ( series["0"]!==undefined){
-                let networkSeries = series["0"]
-                networkSeries.values.map(item => {
-                    let recvBytesOne = item[12];//recvBytesOne
-                    sumRecvBytes += recvBytesOne;
-                    let sendBytesOne = item[13];//sendBytesOne
-                    sumSendBytes += sendBytesOne;
                 })
 
                 networkUsageList.push({
                     instance: item.instanceData,
-                    columns: networkSeries.columns,
-                    sumRecvBytes: Math.ceil(sumRecvBytes / RECENT_DATA_LIMIT_COUNT),
-                    sumSendBytes: Math.ceil(sumSendBytes / RECENT_DATA_LIMIT_COUNT),
-                    values: networkSeries.values,
+                    columns: "",
+                    sumRecvBytes: 0,
+                    sumSendBytes: 0,
+                    values: [],
                     appName: appName,
-                })
-            }
-
-
-
-
-            /*let sumActiveConnection = 0;
-            let sumHandledConnection = 0
-            let sumAcceptsConnection = 0*/
-            //@todo###############################
-            //@todo connectionsUsageList [4]
-            //@todo##############################
-            if ( series["4"]!==undefined){
-                let connectionsSeries = series["0"]
-                connectionsSeries.values.map(item => {
-                    let connection1One = item[7];//1
-                    sumActiveConnection += connection1One;
-                    let connection2One = item[8];//2
-                    sumHandledConnection += connection2One;
-                    let connection3One = item[9];//3
-                    sumAcceptsConnection += connection3One;
                 })
 
                 connectionsUsageList.push({
                     instance: item.instanceData,
-                    columns: connectionsSeries.columns,
-                    sumConnection1: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
-                    sumConnection2: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
-                    sumConnection3: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
-                    values: connectionsSeries.values,
+                    columns: "",
+                    sumConnection1: 0,
+                    sumConnection2: 0,
+                    sumConnection3: 0,
+                    values: [],
                     appName: appName,
                 })
             }
-
-        } else {//@todo: If series data is null
-            cpuUsageList.push({
-                instance: item.instanceData,
-                columns: "",
-                sumCpuUsage: 0,
-                values: [],
-                appName: appName,
-
-            })
-
-            memUsageList.push({
-                instance: item.instanceData,
-                columns: "",
-                sumMemUsage: 0,
-                values: [],
-                appName: appName,
-
-            })
-
-            diskUsageList.push({
-                instance: item.instanceData,
-                columns: "",
-                sumDiskUsage: 0,
-                values: [],
-                appName: appName,
-            })
-
-            networkUsageList.push({
-                instance: item.instanceData,
-                columns: "",
-                sumRecvBytes: 0,
-                sumSendBytes: 0,
-                values: [],
-                appName: appName,
-            })
-
-            connectionsUsageList.push({
-                instance: item.instanceData,
-                columns: "",
-                sumConnection1: 0,
-                sumConnection2: 0,
-                sumConnection3: 0,
-                values: [],
-                appName: appName,
-            })
         }
 
     })

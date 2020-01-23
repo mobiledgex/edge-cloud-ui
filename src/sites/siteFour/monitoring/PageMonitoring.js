@@ -236,7 +236,30 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-            await this.loadInitData();
+            try {
+                await this.loadInitData();
+            } catch (e) {
+                showToast(e)
+                this.setState({
+                    loading: false,
+                    allCpuUsageList: [],
+                    allMemUsageList: [],
+                    allNetworkUsageList: [],
+                    allDiskUsageList: [],
+                    cloudletList: [],
+                    clusterList: [],
+                    filteredCpuUsageList: [],
+                    filteredMemUsageList: [],
+                    filteredNetworkUsageList: [],
+                    filteredDiskUsageList: [],
+                    appInstanceListTop5: [],
+                    allGridInstanceList: [],
+                    filteredGridInstanceList:[],
+                    gridInstanceListMemMax: 0,
+                    gridInstanceListCpuMax: 0,
+                })
+            }
+
         }
 
         async loadInitData() {
@@ -291,7 +314,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 startTime,
                 endTime
             });
-            let usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+            let usageList = [];
+            try {
+                usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+            } catch (e) {
+                showToast(e.toString())
+            }
+
             //todo: #####################################################
             //todo: (last xx datas FOR MATRIC) - FAKE JSON FOR DEV
             //todo:#####################################################
@@ -937,7 +966,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             >RESET</Button>
                         </div>
-                       {/* <div style={{marginLeft: 50}}>
+                        {/* <div style={{marginLeft: 50}}>
                             {this.state.userType}
                         </div>*/}
                     </Grid.Row>
