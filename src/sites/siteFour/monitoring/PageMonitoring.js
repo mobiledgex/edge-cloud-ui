@@ -918,7 +918,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                TOP5 of Connections Usage
+                                TOP5 of Connections
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -928,7 +928,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div style={{display: 'flex', flexDirection: 'row'}}>
                             <div className='page_monitoring_title_select'>
-                                Transition Of Connections Usage
+                                Transition Of Connections
                             </div>
                             {!this.state.loading &&
                             <Dropdown
