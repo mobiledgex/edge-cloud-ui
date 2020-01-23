@@ -54,6 +54,7 @@ import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import './PageMonitoring.css'
 import {showToast} from "./PageMonitoringChartService";
+import {Icon,} from 'semantic-ui-react'
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -149,6 +150,7 @@ type State = {
     networkTabIndex: number,
     gridInstanceListCpuMax: number,
     usageListByDate: Array,
+    userType: string,
 
 
 }
@@ -219,7 +221,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             gridInstanceListMemMax: 0,
             networkTabIndex: 0,
             gridInstanceListCpuMax: 0,
-            usageListByDate: []
+            usageListByDate: [],
+            userType: '',
         };
 
 
@@ -233,13 +236,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async loadInitData() {
-            let userRole = localStorage.getItem('selectRole')
-            console.log('userRole====>', userRole);
+            let userType = localStorage.getItem('selectRole')
+            console.log('userRole====>', userType);
 
             this.setState({
                 loading: true,
                 loading0: true,
                 isReady: false,
+                userType: userType,
             })
             //todo: REALDATA
             let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
@@ -883,6 +887,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         renderHeader = () => {
+
             return (
 
                 <div>
@@ -900,9 +905,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div style={{marginLeft: '10px'}}>
                             <Button
                                 onClick={async () => {
-                                    if (!this.state.loading){
+                                    if (!this.state.loading) {
                                         this.refreshAllData();
-                                    }else{
+                                    } else {
                                         showToast('Currently loading, you can\'t request again.')
                                     }
 
@@ -924,12 +929,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             >RESET</Button>
                         </div>
+                       {/* <div>
+                            {this.state.userType}
+                        </div>*/}
                     </Grid.Row>
                 </div>
             )
         }
 
         renderSelectBoxRow() {
+
+
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
@@ -971,6 +981,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <div className="page_monitoring_dropdown_label">
                                 CloudLet
                             </div>
+
                             <Dropdown
                                 disabled={this.state.loading}
                                 value={this.state.currentCloudLet}
@@ -1000,7 +1011,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 Cluster
                             </div>
                             <Dropdown
-                                disabled={this.state.currentCloudLet === '' || this.state.loading}
+                                disabled={ this.state.loading}
                                 value={this.state.currentCluster}
                                 clearable={this.state.clusterSelectBoxClearable}
                                 loading={this.state.loading}
@@ -1029,7 +1040,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 App Inst
                             </div>
                             <Dropdown
-                                disabled={this.state.currentCluster === '' || this.state.loading}
+                                disabled={ this.state.loading}
                                 clearable={this.state.appInstSelectBoxClearable}
                                 loading={this.state.loading}
                                 value={this.state.currentAppInst}
@@ -1402,7 +1413,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                         <div className='page_monitoring_popup_header_button'>
                                                             SHOW APP INSTANCE LIST
-                                                            <div style={{display:'inline-block', marginLeft:10}}>
+                                                            <div style={{display: 'inline-block', marginLeft: 10}}>
                                                                 <FA name="chevron-up"/>
                                                             </div>
                                                         </div>
