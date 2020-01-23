@@ -60,6 +60,9 @@ export const NETWORK_OPTIONS = [
     {text: 'SEND BYTES', value: 'send_bytes'},
 ]
 
+
+
+
 export const NETWORK_TYPE = {
     RECV_BYTES: 'recv_bytes',
     SEND_BYTES: 'send_bytes',
@@ -88,6 +91,13 @@ export const HARDWARE_TYPE = {
     ACCEPTS_CONNECTION: 'accepts_connection',//14 (index)
 
 }
+
+export const CONNECTIONS_OPTIONS = [
+    {text: 'ACTIVE CONN', value: 'active_connection'},
+    {text: 'HANDLED CONN', value: 'handled_connection'},
+    {text: 'ACCEPTS CONN', value: 'accepts_connection'},
+    //ACCEPTS_CONNECTION
+]
 
 
 export const MOINTORING_FILTER_ITEM_TYPE = {

@@ -298,9 +298,19 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
         return numberWithCommas(usageOne.sumSendBytes) + " Byte";
     }
 
+    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+        return usageOne.sumActiveConnection
+    }
+
     if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
         return usageOne.sumHandledConnection
     }
+
+    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+        return usageOne.sumAcceptsConnection
+    }
+
+
 }
 
 export const renderUsageByType = (usageOne, hardwareType) => {
@@ -321,8 +331,16 @@ export const renderUsageByType = (usageOne, hardwareType) => {
         return usageOne.sumSendBytes
     }
 
+    if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+        return usageOne.sumActiveConnection
+    }
+
     if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
         return usageOne.sumHandledConnection
+    }
+
+    if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+        return usageOne.sumAcceptsConnection
     }
 }
 
@@ -838,10 +856,13 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
                     usageOne = seriesValues[j]["10"]; //mem usage
                 } else if (hardwareType === HARDWARE_TYPE.DISK) {
                     usageOne = seriesValues[j]["8"];
+                } else if (hardwareType === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                    usageOne = seriesValues[j]["12"];
                 } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
                     usageOne = seriesValues[j]["13"];
+                } else if (hardwareType === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+                    usageOne = seriesValues[j]["14"];
                 }
-
 
                 usageList.push(usageOne);
                 let dateOne = seriesValues[j]["0"];
@@ -1545,7 +1566,7 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
                         values: connectionsSeries.values,
                         appName: appName,
                     })
-                }else{
+                } else {
                     connectionsUsageList.push({
                         instance: item.instanceData,
                         columns: "",
@@ -1653,7 +1674,10 @@ export const Styles = {
     },
     dropDown: {
         //minWidth: 150,
-        width: 190,
+        height: '20px',
+        minWidth: '140px',
+        fontSize: '12px',
+        verticalAlign: 'middle',
     },
     cell000: {
         marginLeft: 0,

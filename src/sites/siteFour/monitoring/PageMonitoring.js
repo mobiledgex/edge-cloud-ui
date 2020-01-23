@@ -37,7 +37,7 @@ import {
 } from "./PageMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
-    CLASSIFICATION,
+    CLASSIFICATION, CONNECTIONS_OPTIONS,
     HARDWARE_OPTIONS,
     HARDWARE_TYPE,
     MONITORING_CATE_SELECT_TYPE,
@@ -155,6 +155,7 @@ type State = {
     placeHolderEndTime: string,
     allConnectionsUsageList: Array,
     filteredConnectionsUsageList: Array,
+    connectionsTabIndex: number,
 
 }
 
@@ -230,6 +231,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
             allConnectionsUsageList: [],
             filteredConnectionsUsageList: [],
+            connectionsTabIndex: 0,
         };
 
 
@@ -906,29 +908,59 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        renderConnectionsArea() {
+        renderConnectionsArea(connectionsType: string) {
+
+
+            console.log('connectionsType===>', connectionsType);
+
             return (
                 <div className='page_monitoring_dual_column'>
-                    {/*1_column*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                TOP5 of CONNECTIONS
+                                TOP5 of Connections Usage
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredConnectionsUsageList, HARDWARE_TYPE.HANDLED_CONNECTION)}
+                            {this.state.loading ? renderPlaceHolder('network') : renderBarGraph(this.state.filteredConnectionsUsageList, connectionsType, this)}
                         </div>
                     </div>
-                    {/*2nd_column*/}
                     <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Transition Of CONNECTIONS
+                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                            <div className='page_monitoring_title_select'>
+                                Transition Of Connections Usage
                             </div>
+                            {!this.state.loading &&
+                            <Dropdown
+                                placeholder='SELECT CONN'
+                                selection
+                                loading={this.state.loading}
+                                options={CONNECTIONS_OPTIONS}
+                                //defaultValue={CONNECTIONS_OPTIONS[0].value}
+                                onChange={async (e, {value}) => {
+
+                                    if (value === HARDWARE_TYPE.ACTIVE_CONNECTION) {
+                                        this.setState({
+                                            connectionsTabIndex: 0,
+                                        })
+                                    } else if (value === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                                        this.setState({
+                                            connectionsTabIndex: 1,
+                                        })
+                                    } else if (value === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
+                                        this.setState({
+                                            connectionsTabIndex: 2,
+                                        })
+                                    }
+
+                                }}
+                                value={connectionsType}
+                                style={Styles.dropDown}
+                            />
+                            }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredConnectionsUsageList, HARDWARE_TYPE.HANDLED_CONNECTION)}
+                            {this.state.loading ? renderPlaceHolder('network') : renderLineChart(this, this.state.filteredConnectionsUsageList, connectionsType)}
                         </div>
                     </div>
                 </div>
@@ -948,9 +980,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.state.loading ? renderPlaceHolder('network') : renderBarGraph(this.state.filteredNetworkUsageList, networkType, this)}
                         </div>
                     </div>
-                    {/*1_column*/}
-                    {/*1_column*/}
-                    {/*1_column*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title_select'>
@@ -1295,7 +1324,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         //@todo:    CPU,MEM,DISK TAB
         //@todo:-----------------------
         //@todo:-----------------------
-        CPU_MEM_DISK_TABS = [
+        CPU_MEM_DISK_CONN_TABS = [
 
             {
                 menuItem: 'CPU', render: () => {
@@ -1328,7 +1357,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 menuItem: 'CONNECTIONS', render: () => {
                     return (
                         <Pane>
-                            {this.renderConnectionsArea()}
+
+                            <Tabs selectedIndex={this.state.connectionsTabIndex}
+                                  className='page_monitoring_tab'>
+                                <TabPanel>
+                                    {this.renderConnectionsArea(HARDWARE_TYPE.ACTIVE_CONNECTION)}
+                                </TabPanel>
+                                <TabPanel>
+                                    {this.renderConnectionsArea(HARDWARE_TYPE.HANDLED_CONNECTION)}
+                                </TabPanel>
+                                <TabPanel>
+                                    {this.renderConnectionsArea(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
+                                </TabPanel>
+                            </Tabs>
+
+
                         </Pane>
                     )
                 }
@@ -1439,7 +1482,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     <Tab
                                                         className='page_monitoring_tab'
                                                         menu={{secondary: true, pointing: true}}
-                                                        panes={this.CPU_MEM_DISK_TABS}
+                                                        panes={this.CPU_MEM_DISK_CONN_TABS}
                                                         activeIndex={this.state.currentTabIndex}
                                                         onTabChange={(e, {activeIndex}) => {
                                                             this.setState({
