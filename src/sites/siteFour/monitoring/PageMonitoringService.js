@@ -297,6 +297,10 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
     if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
         return numberWithCommas(usageOne.sumSendBytes) + " Byte";
     }
+
+    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+        return usageOne.sumHandledConnection
+    }
 }
 
 export const renderUsageByType = (usageOne, hardwareType) => {
@@ -315,6 +319,10 @@ export const renderUsageByType = (usageOne, hardwareType) => {
 
     if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
         return usageOne.sumSendBytes
+    }
+
+    if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+        return usageOne.sumHandledConnection
     }
 }
 
@@ -348,6 +356,8 @@ export const renderLottie = () => {
  * @returns {*}
  */
 export const renderBarGraph = (usageList, hardwareType, _this) => {
+
+    console.log('usageList===>', usageList);
 
     if (usageList.length === 0) {
         return (
@@ -828,7 +838,10 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
                     usageOne = seriesValues[j]["10"]; //mem usage
                 } else if (hardwareType === HARDWARE_TYPE.DISK) {
                     usageOne = seriesValues[j]["8"];
+                } else if (hardwareType === HARDWARE_TYPE.HANDLED_CONNECTION) {
+                    usageOne = seriesValues[j]["13"];
                 }
+
 
                 usageList.push(usageOne);
                 let dateOne = seriesValues[j]["0"];
@@ -1509,9 +1522,6 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
                 }
 
 
-                /*let sumActiveConnection = 0;
-                let sumHandledConnection = 0
-                let sumAcceptsConnection = 0*/
                 //@todo###############################
                 //@todo connectionsUsageList [4]
                 //@todo##############################

@@ -698,13 +698,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 FLAVOR
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                ACTIVE CONN.
+                                ACTIVE CONN
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                HANDLED CONN.
+                                HANDLED CONN
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                ACCEPTS CONN.
+                                ACCEPTS CONN
                             </Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
@@ -900,6 +900,35 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                         <div className='page_monitoring_container'>
                             {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+        renderConnectionsArea() {
+            return (
+                <div className='page_monitoring_dual_column'>
+                    {/*1_column*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 of CONNECTIONS
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredConnectionsUsageList, HARDWARE_TYPE.HANDLED_CONNECTION)}
+                        </div>
+                    </div>
+                    {/*2nd_column*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Transition Of CONNECTIONS
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredConnectionsUsageList, HARDWARE_TYPE.HANDLED_CONNECTION)}
                         </div>
                     </div>
                 </div>
@@ -1291,6 +1320,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     return (
                         <Pane>
                             {this.renderDiskTabArea()}
+                        </Pane>
+                    )
+                }
+            },
+            {
+                menuItem: 'CONNECTIONS', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderConnectionsArea()}
                         </Pane>
                     )
                 }

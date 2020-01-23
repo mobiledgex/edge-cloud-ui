@@ -82,6 +82,10 @@ export const HARDWARE_TYPE = {
     RECV_BYTE: 'recv_bytes',
     SEND_BYTE: 'send_bytes',
     DISK: 'disk',
+    CONNECTIONS: 'connections',
+    ACTIVE_CONNECTION:'active_connection',//12
+    HANDLED_CONNECTION: 'handled_connection',//13
+    ACCEPTS_CONNECTION: 'accepts_connection',//14 (index)
 
 }
 
