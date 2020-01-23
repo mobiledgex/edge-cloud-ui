@@ -419,8 +419,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let allConnectionsUsageList = []
             let allGridInstanceList = []
 
-            console.log('2222===>', this.state.startTime);
-            console.log('2222===>', this.state.endTime);
 
             //@todo: 날짜에 의한 필터링인경우
             if (isDateFiltering) {
@@ -429,7 +427,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allMemUsageList = this.state.usageListByDate[1]
                 allNetworkUsageList = this.state.usageListByDate[2]
                 allDiskUsageList = this.state.usageListByDate[3]
-                allConnectionsUsageList = this.usageListByDate[4]
+                allConnectionsUsageList = this.state.usageListByDate[4];
                 allGridInstanceList = makeGridInstanceList(this.state.usageListByDate);
             } else {
                 appInstanceList = this.state.allAppInstanceList;
@@ -598,7 +596,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     loading: false
                 })
 
-                // pRegion?: string = '',     pCloudLet?: string = '',     pCluster?: string = '',     pAppInstance?: string = '',     isDateFiltering?: boolean = false): Promise<void>
                 this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, this.state.currentAppInst, true)
 
             }
@@ -924,7 +921,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </div>
                     <div className='page_monitoring_dual_container'>
                         <div style={{display: 'flex', flexDirection: 'row'}}>
-                            <div className='page_monitoring_title_select' style={{marginTop:7}}>
+                            <div className='page_monitoring_title_select' style={{marginTop: 7}}>
                                 Transition Of Connections
                             </div>
                             {!this.state.loading &&
