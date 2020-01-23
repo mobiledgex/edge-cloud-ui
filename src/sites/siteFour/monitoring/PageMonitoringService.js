@@ -1403,6 +1403,7 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
     let memUsageList = [];
     let diskUsageList = [];
     let networkUsageList = [];
+    let connectionsUsageList = [];
     let matrixedUsageList = []
     usageListForAllInstance.map((item, index) => {
         let appName = item.instanceData.AppName;
@@ -1411,16 +1412,22 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
         let sumRecvBytes = 0;
         let sumSendBytes = 0;
         let sumCpuUsage = 0;
+
+        let sumActiveConnection = 0;
+        let sumHandledConnection = 0
+        let sumAcceptsConnection = 0
+
+
         let series = item.appInstanceHealth.data["0"].Series;
 
         if (series !== null) {
 
+
+            //@todo###########################
+            //@todo makeCpuSeriesList
+            //@todo###########################
             if ( series["3"]!==undefined){
                 let cpuSeries = series["3"]
-
-                //@todo###########################
-                //@todo makeCpuSeriesList
-                //@todo###########################
                 cpuSeries.values.map(item => {
                     let cpuUsage = item[6];//cpuUsage..index
                     sumCpuUsage += cpuUsage;
@@ -1437,11 +1444,10 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
             }
 
 
+            //@todo###########################
+            //@todo MemSeriesList
+            //@todo###########################
             if ( series["1"]!==undefined){
-
-                //@todo###########################
-                //@todo MemSeriesList
-                //@todo###########################
                 let memSeries = series["1"]
                 memSeries.values.map(item => {
                     let usageOne = item[7];//memUsage..index
@@ -1457,10 +1463,11 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
                 })
             }
 
+
+            //@todo###########################
+            //@todo DiskSeriesList
+            //@todo###########################
             if ( series["2"]!==undefined){
-                //@todo###########################
-                //@todo DiskSeriesList
-                //@todo###########################
                 let diskSeries = series["2"]
                 diskSeries.values.map(item => {
                     let usageOne = item[8];//diskUsage..index
@@ -1477,10 +1484,10 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
 
             }
 
+            //@todo###############################
+            //@todo NetworkUSageList
+            //@todo##############################
             if ( series["0"]!==undefined){
-                //@todo###############################
-                //@todo NetworkUSageList
-                //@todo##############################
                 let networkSeries = series["0"]
                 networkSeries.values.map(item => {
                     let recvBytesOne = item[12];//recvBytesOne
@@ -1495,6 +1502,37 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
                     sumRecvBytes: Math.ceil(sumRecvBytes / RECENT_DATA_LIMIT_COUNT),
                     sumSendBytes: Math.ceil(sumSendBytes / RECENT_DATA_LIMIT_COUNT),
                     values: networkSeries.values,
+                    appName: appName,
+                })
+            }
+
+
+
+
+            /*let sumActiveConnection = 0;
+            let sumHandledConnection = 0
+            let sumAcceptsConnection = 0*/
+            //@todo###############################
+            //@todo connectionsUsageList [4]
+            //@todo##############################
+            if ( series["4"]!==undefined){
+                let connectionsSeries = series["0"]
+                connectionsSeries.values.map(item => {
+                    let connection1One = item[7];//1
+                    sumActiveConnection += connection1One;
+                    let connection2One = item[8];//2
+                    sumHandledConnection += connection2One;
+                    let connection3One = item[9];//3
+                    sumAcceptsConnection += connection3One;
+                })
+
+                connectionsUsageList.push({
+                    instance: item.instanceData,
+                    columns: connectionsSeries.columns,
+                    sumConnection1: Math.ceil(sumActiveConnection / RECENT_DATA_LIMIT_COUNT),
+                    sumConnection2: Math.ceil(sumHandledConnection / RECENT_DATA_LIMIT_COUNT),
+                    sumConnection3: Math.ceil(sumAcceptsConnection / RECENT_DATA_LIMIT_COUNT),
+                    values: connectionsSeries.values,
                     appName: appName,
                 })
             }
@@ -1534,6 +1572,16 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
                 values: [],
                 appName: appName,
             })
+
+            connectionsUsageList.push({
+                instance: item.instanceData,
+                columns: "",
+                sumConnection1: 0,
+                sumConnection2: 0,
+                sumConnection3: 0,
+                values: [],
+                appName: appName,
+            })
         }
 
     })
@@ -1545,10 +1593,12 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
     memUsageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
     networkUsageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes)
     diskUsageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
+    connectionsUsageList.sort((a, b) => b.sumConnection1 - a.sumConnection1);
     matrixedUsageList.push(cpuUsageList)
     matrixedUsageList.push(memUsageList)
     matrixedUsageList.push(networkUsageList)
     matrixedUsageList.push(diskUsageList)
+    matrixedUsageList.push(connectionsUsageList)
     return matrixedUsageList;
 }
 

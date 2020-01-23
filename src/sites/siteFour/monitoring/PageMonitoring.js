@@ -151,6 +151,8 @@ type State = {
     gridInstanceListCpuMax: number,
     usageListByDate: Array,
     userType: string,
+    placeHolderStateTime: string,
+    placeHolderEndTime: string,
 
 
 }
@@ -223,6 +225,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             gridInstanceListCpuMax: 0,
             usageListByDate: [],
             userType: '',
+            placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
+            placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
         };
 
 
@@ -597,12 +601,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 time: 3 * 1000,
                 color: 'black',
             });
-
+            await this.setState({
+                placeHolderStateTime: moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'),
+                placeHolderEndTime: moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'),
+            })
             await this.setState({
                 cloudLetSelectBoxClearable: true,
             })
 
             await this.loadInitData();
+
             await this.setState({
                 currentRegion: 'ALL',
                 currentCloudLet: '',
@@ -929,7 +937,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             >RESET</Button>
                         </div>
-                       {/* <div>
+                       {/* <div style={{marginLeft: 50}}>
                             {this.state.userType}
                         </div>*/}
                     </Grid.Row>
@@ -1011,7 +1019,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 Cluster
                             </div>
                             <Dropdown
-                                disabled={ this.state.loading}
+                                disabled={this.state.loading}
                                 value={this.state.currentCluster}
                                 clearable={this.state.clusterSelectBoxClearable}
                                 loading={this.state.loading}
@@ -1040,7 +1048,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 App Inst
                             </div>
                             <Dropdown
-                                disabled={ this.state.loading}
+                                disabled={this.state.loading}
                                 clearable={this.state.appInstSelectBoxClearable}
                                 loading={this.state.loading}
                                 value={this.state.currentAppInst}
@@ -1086,6 +1094,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
                                     'This Month': [moment().startOf('month'), moment().endOf('month')],
                                     'Last Month': [moment().date(-30), moment().date(-1)],
+                                    'Last 182 Days': [moment().subtract(181, 'd'), moment().subtract(0, 'd')],
                                     'Last 365 Days': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
                                     'Last 730 Days': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
                                     'Last 1095 Days': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
