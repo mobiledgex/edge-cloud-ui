@@ -1,3 +1,9 @@
 node_modules/
 /.idea/
 !/package-lock.json
+/build/
+/report.20200122.101608.32468.0.001.json
+/report.20200122.102157.32635.0.001.json
+/report.20200122.102410.32671.0.001.json
+/report.20200122.102852.32845.0.001.json
+/report.20200122.103103.32970.0.001.json

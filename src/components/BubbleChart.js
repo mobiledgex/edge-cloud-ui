@@ -104,20 +104,15 @@ export default class BubbleChart extends Component {
             labelFont,
         } = this.props;
 
-        /*  let newNodes=[]
-          nodes.map(item=>{
-              if ( item.data.value >0){
-                  newNodes.push(item)
-              }
-          })*!/*/
 
+        console.log('renderBubbles===>', data);
 
         const bubbleChart = d3.select(this.svg).append("g")
             .attr("class", "bubble-chart")
             .attr("transform", function (d) {
                 //todo: Bubble chart location setting...
                 //todo: Bubble chart location setting...
-                return "translate(" + (width*5/10) + "," + (width * graph.offsetY) + ")"; //버블차트 위치
+                return "translate(" + (width * 5 / 10) + "," + (width * graph.offsetY) + ")"; //버블차트 위치
             });
         ;
 
@@ -183,7 +178,10 @@ export default class BubbleChart extends Component {
             .text((d) => {
                 //@todo:value를 랜더링 하는 부분..
                 //@todo:value를 랜더링 하는 부분..
-                return d.favor; //@todo:value를 랜더링 하는 부분..
+
+                if (d.value > 0) {
+                    return d.favor; //@todo:value를 랜더링 하는 부분..
+                }
 
             });
 
@@ -270,10 +268,12 @@ export default class BubbleChart extends Component {
         const bubble = d3.select('.bubble-chart');
         const bubbleHeight = bubble.node().getBBox().height;
 
+        console.log(' bubbleHeight===>', bubbleHeight * 0.30);
+
         const legend = d3.select(this.svg).append("g")
             .attr("transform", function () {
                 // return `translate(${offset},${(bubbleHeight) * 0.18})`;
-                return `translate(450,${(bubbleHeight) * 0.12})`;
+                return `translate(450,40.000)`;
             })
             .attr("class", "legend")//.style("marginLeft", `-100px`)
 
@@ -319,7 +319,7 @@ export default class BubbleChart extends Component {
             });
 
         texts.append("text")
-            //.style("font-size", `${legendFont.size}px`)
+        //.style("font-size", `${legendFont.size}px`)
             .style("font-size", `12px`)
             /*.style("font-weight", (d) => {
                 return legendFont.weight ? legendFont.weight : 50;
