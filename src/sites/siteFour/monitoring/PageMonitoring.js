@@ -12,7 +12,8 @@ import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
 import * as reducer from "../../../utils";
 import {
-    cutArrayList, filterAppInstanceListByAppInst,
+    cutArrayList,
+    filterAppInstanceListByAppInst,
     filterAppInstanceListByCloudLet,
     filterAppInstanceListByClusterInst,
     filterAppInstanceListByRegion,
@@ -24,20 +25,24 @@ import {
     instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
     makeClusterListSelectBox,
-    makeCompleteDateTime, makeGridInstanceList,
+    makeCompleteDateTime,
+    makeGridInstanceList,
     makeNetworkBarData,
-    makeNetworkLineChartData, numberWithCommas,
+    makeNetworkLineChartData,
+    numberWithCommas,
     renderBarGraph,
     renderBubbleChart,
     renderLineChart,
     renderPlaceHolder,
     renderPlaceHolder2,
     renderSixGridInstanceOnCloudletGrid,
-    requestShowAppInstanceList, Styles
+    requestShowAppInstanceList,
+    Styles
 } from "./PageMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
-    CLASSIFICATION, CONNECTIONS_OPTIONS,
+    CLASSIFICATION,
+    CONNECTIONS_OPTIONS,
     HARDWARE_OPTIONS,
     HARDWARE_TYPE,
     MONITORING_CATE_SELECT_TYPE,
@@ -54,7 +59,6 @@ import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import './PageMonitoring.css'
 import {showToast} from "./PageMonitoringChartService";
-import {Icon,} from 'semantic-ui-react'
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -1308,18 +1312,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
 
+            //@todo:-----------------------
             //todo: bubbleChart
-            //todo: bubbleChart
-            //todo: bubbleChart
+            //@todo:-----------------------
             this.setState({
                 bubbleChartData: chartData,
             });
         }
 
         //@todo:-----------------------
-        //@todo:-----------------------
         //@todo:    CPU,MEM,DISK TAB
-        //@todo:-----------------------
         //@todo:-----------------------
         CPU_MEM_DISK_CONN_TABS = [
 
@@ -1376,11 +1378,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         ]
 
         render() {
-            {/*todo:-------------------------------------------------------------------------------*/
-            }
             // todo: Components showing when the loading of graph data is not completed.
-            {/*todo:-------------------------------------------------------------------------------*/
-            }
             if (!this.state.isAppInstaceDataReady) {
                 return (
                     <Grid.Row className='view_contents'>
@@ -1612,7 +1610,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
                                                         <div className='page_monitoring_popup_table'>
-                                                            {this.state.filteredGridInstanceList.length && this.state.isReady=== 0 ?
+                                                            {this.state.filteredGridInstanceList.length && this.state.isReady === 0 ?
                                                                 <div style={Styles.noData}>
                                                                     NO DATA
                                                                 </div>
