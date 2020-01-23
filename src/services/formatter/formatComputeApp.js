@@ -51,7 +51,6 @@ let newRegistKey = [
 
 export const formatData = (datas, body) => {
     let values = [];
-
     if (datas.data && datas.data.length > 0) {
         let toArray = null;
         let toJson = [];
