@@ -50,21 +50,10 @@ const renderField = ({
         </div>
     </div>
 )
-
-const renderTextArea = ({textarea, meta: { touched, error, warning }}) => (
-    <div>
-        <label>Content</label>
-        <div>
-            <span>{textarea}</span>
-            <textarea {...textarea} placeholder="Content" rows="10" cols="40" >Dear MobiledgeX Support team, Please investigate Trace ID : </textarea>
-            {touched && ((error && <span>{error}</span>) || (warning && <span>{warning}</span>))}
-        </div>
-    </div>
-);
 const renderLabel = ({
                          input,
                          label,
-                         value,
+                            value,
                          type,
                          meta: { touched, error, warning }
                      }) => (
@@ -79,12 +68,6 @@ const submit = () => {
 
 }
 class PopSendEmailView extends React.Component {
-    componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.props.initialize({ subject: 'traceID ' + this.props.rawViewData.traceid, to: 'support@mobiledgex.com', from: store.email, content: 'asdfljas'});
-        // set the value individually
-        // this.props.dispatch(change('myFormName', 'anotherField', 'value'));
-    }
     componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.submitState !== this.props.submitState) {
             console.log('20191030 nextprops,.., ', nextProps.submitState, " : ", this.props.handleSubmit)
@@ -97,39 +80,42 @@ class PopSendEmailView extends React.Component {
     }
 
     render() {
-        let { handleSubmit, pristine, reset, submitting, rawViewData } = this.props;
+        let { handleSubmit, pristine, reset, submitting } = this.props;
         return (
             <form id={'eSendForm'} onSubmit={handleSubmit(submit)}>
                 <Field
-                    name="to"
+                    name="email"
                     type="email"
                     component={renderField}
-                    label="To"
+                    label="Email"
                     validate={email}
                     warn={aol}
                 />
                 <Field
-                    name="subject"
+                    name="username"
                     type="text"
-                    label="Subject"
-                    validate={required}
-                    component={renderField}
-
-                />
-                <Field
-                    name="from"
-                    type="email"
-                    component={renderField}
-                    label="From"
-                    validate={email}
+                    value={'support@mobiledgex.com'}
+                    component={renderLabel}
+                    label="Username"
+                    validate={[required, maxLength15, minLength2]}
                     warn={alphaNumeric}
                 />
-                <div>
-                    <label>Content</label>
-                    <div>
-                        <textarea name="content" placeholder="Content" rows="10" cols="40" >{"Dear MobiledgeX Support team,\nPlease investigate Trace ID : " + rawViewData.traceid}</textarea>
-                    </div>
-                </div>
+
+                <Field
+                    name="age"
+                    type="number"
+                    component={renderField}
+                    label="Age"
+                    validate={[required, number, minValue13]}
+                    warn={tooYoung}
+                />
+                <Field
+                    name="phone"
+                    type="number"
+                    component={renderField}
+                    label="Phone number"
+                    validate={[required, phoneNumber]}
+                />
                 <div style={{display:'none'}}>
                     <button id={'popSendEmailSubmit'} type="submit" disabled={submitting}>
                         Submit
