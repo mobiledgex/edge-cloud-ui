@@ -433,7 +433,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allMemUsageList = this.state.usageListByDate[1]
                 allNetworkUsageList = this.state.usageListByDate[2]
                 allDiskUsageList = this.state.usageListByDate[3]
-                allConnectionsUsageList = this.usageListByDate[4]
+                allConnectionsUsageList = this.state.usageListByDate[4]
                 allGridInstanceList = makeGridInstanceList(this.state.usageListByDate);
             } else {
                 appInstanceList = this.state.allAppInstanceList;
