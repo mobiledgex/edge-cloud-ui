@@ -1,276 +1,508 @@
 0 info it worked if it ends with ok
 1 verbose cli [ '/Users/kyungjoon/.nvm/v0.10.32/bin/node',
-1 verbose cli   '/Users/kyungjoon/.nvm/v0.10.32/lib/node_modules/npm/bin/npm-cli.js',
-1 verbose cli   'install',
-1 verbose cli   'classnames',
-1 verbose cli   '--save' ]
+1 verbose cli   '/Users/kyungjoon/.nvm/v0.10.32/bin/npm',
+1 verbose cli   'i' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.32
-4 warn package.json babel-plugin-named-asset-import@0.3.5 No README data
-5 warn package.json bp_event@1.2.0 No README data
-6 warn package.json bp_statemachine@1.0.14 No README data
-7 warn package.json bp_logger@1.1.1 No README data
-8 warn package.json camel-case@3.0.0 No README data
-9 warn package.json copy-descriptor@0.1.1 No README data
-10 warn package.json core-js@1.2.7 No README data
-11 warn package.json eslint-module-utils@2.4.1 No README data
-12 warn package.json get-value@2.0.6 No README data
-13 warn package.json http@0.0.0 http is also the name of a node core module.
-14 warn package.json http@0.0.0 No description
-15 warn package.json http@0.0.0 No repository field.
-16 warn package.json http@0.0.0 No README data
-17 warn package.json https@1.0.0 https is also the name of a node core module.
-18 warn package.json https@1.0.0 No repository field.
-19 warn package.json https@1.0.0 No README data
-20 warn package.json jest-config@24.9.0 No description
-21 warn package.json jest-config@24.9.0 No README data
-22 warn package.json jest-diff@24.9.0 No description
-23 warn package.json jest-diff@24.9.0 No README data
-24 warn package.json jest-environment-jsdom@24.9.0 No description
-25 warn package.json jest-environment-jsdom@24.9.0 No README data
-26 warn package.json jest-get-type@24.9.0 No README data
-27 warn package.json jest-environment-node@24.9.0 No description
-28 warn package.json jest-environment-node@24.9.0 No README data
-29 warn package.json jest-haste-map@24.9.0 No description
-30 warn package.json jest-haste-map@24.9.0 No README data
-31 warn package.json jest-jasmine2@24.9.0 No description
-32 warn package.json jest-jasmine2@24.9.0 No README data
+4 verbose readDependencies using package.json deps
+5 verbose install where, deps [ '/Users/kyungjoon/current_working_dir/current_working_edge_client_only',
+5 verbose install   [ '@material-ui/core',
+5 verbose install     '@material-ui/icons',
+5 verbose install     'agentkeepalive',
+5 verbose install     'antd',
+5 verbose install     'axios',
+5 verbose install     'axios-cancel',
+5 verbose install     'axios-https-proxy-fix',
+5 verbose install     'axios-jsonp',
+5 verbose install     'axios-jsonp-pro',
+5 verbose install     'babel-polyfill',
+5 verbose install     'billboard.js',
+5 verbose install     'britecharts',
+5 verbose install     'chart.js',
+5 verbose install     'circle-progress-bar',
+5 verbose install     'classnames',
+5 verbose install     'clsx',
+5 verbose install     'd3',
+5 verbose install     'd3-scale',
+5 verbose install     'd3-selection',
+5 verbose install     'datamaps',
+5 verbose install     'date-fns',
+5 verbose install     'env-cmd',
+5 verbose install     'es6-tween',
+5 verbose install     'express',
+5 verbose install     'faker',
+5 verbose install     'fetch-jsonp',
+5 verbose install     'file-system',
+5 verbose install     'flexbox-react',
+5 verbose install     'fs',
+5 verbose install     'fs-es6',
+5 verbose install     'gsap',
+5 verbose install     'highcharts',
+5 verbose install     'highcharts-drilldown',
+5 verbose install     'highcharts-more',
+5 verbose install     'history',
+5 verbose install     'http',
+5 verbose install     'http-proxy-middleware',
+5 verbose install     'https',
+5 verbose install     'influx',
+5 verbose install     'influxdb-nodejs',
+5 verbose install     'interactjs',
+5 verbose install     'intro.js',
+5 verbose install     'intro.js-react',
+5 verbose install     'json-server',
+5 verbose install     'lodash',
+5 verbose install     'material-icons-react',
+5 verbose install     'moment',
+5 verbose install     'mongodb',
+5 verbose install     'node-influx',
+5 verbose install     'nodemailer',
+5 verbose install     'plotly.js',
+5 verbose install     'prop-types',
+5 verbose install     'public-ip',
+5 verbose install     'qs',
+5 verbose install     'randomcolor',
+5 verbose install     'react',
+5 verbose install     'react-addons-shallow-compare',
+5 verbose install     'react-addons-transition-group',
+5 verbose install     'react-app-env',
+5 verbose install     'react-bootstrap',
+5 verbose install     'react-calendar-timeline',
+5 verbose install     'react-chartjs-2',
+5 verbose install     'react-circular-progressbar',
+5 verbose install     'react-container-dimensions',
+5 verbose install     'react-date-range',
+5 verbose install     'react-dom',
+5 verbose install     'react-draggable',
+5 verbose install     'react-dual-listbox',
+5 verbose install     'react-faux-dom',
+5 verbose install     'react-flexbox',
+5 verbose install     'react-fontawesome',
+5 verbose install     'react-giojs',
+5 verbose install     'react-google-charts',
+5 verbose install     'react-grid-layout',
+5 verbose install     'react-gsap-enhancer',
+5 verbose install     'react-highcharts',
+5 verbose install     'react-horizontal-timeline',
+5 verbose install     'react-hot-loader',
+5 verbose install     'react-html5video',
+5 verbose install     'react-iframe',
+5 verbose install     'react-image-filter',
+5 verbose install     'react-json-view',
+5 verbose install     'react-live-clock',
+5 verbose install     'react-lottie',
+5 verbose install     'react-material-icons',
+5 verbose install     'react-motion',
+5 verbose install     'react-motion-ui-pack',
+5 verbose install     'react-native-rsa',
+5 verbose install     'react-outside-click-handler',
+5 verbose install     'react-player',
+5 verbose install     'react-plotly.js',
+5 verbose install     'react-popper-tooltip',
+5 verbose install     'react-progressbar',
+5 verbose install     'react-redux',
+5 verbose install     'react-router',
+5 verbose install     'react-router-dom',
+5 verbose install     'react-s-alert',
+5 verbose install     'react-scrollbar',
+5 verbose install     'react-semantic-toasts',
+5 verbose install     'react-simple-maps',
+5 verbose install     'react-sizeme',
+5 verbose install     'react-sparklines',
+5 verbose install     'react-spinners',
+5 verbose install     'react-svg-pan-zoom',
+5 verbose install     'react-sweet-progress',
+5 verbose install     'react-tabs',
+5 verbose install     'react-textarea-autosize',
+5 verbose install     'react-toggle-display',
+5 verbose install     'react-tooltip',
+5 verbose install     'reaviz',
+5 verbose install     'redux',
+5 verbose install     'redux-form',
+5 verbose install     'request',
+5 verbose install     'semantic-ui-css',
+5 verbose install     'semantic-ui-react',
+5 verbose install     'shortid',
+5 verbose install     'socket.io-client',
+5 verbose install     'speak-tts',
+5 verbose install     'streamedian',
+5 verbose install     'three',
+5 verbose install     'three-orbitcontrols',
+5 verbose install     'topojson',
+5 verbose install     'ua-parser-js',
+5 verbose install     'url-search-params',
+5 verbose install     'urlencode',
+5 verbose install     'uuid',
+5 verbose install     'vue-tabulator',
+5 verbose install     'cross-env',
+5 verbose install     'flow-bin',
+5 verbose install     'react-scripts' ] ]
+6 info preinstall mex-monitoring-sys@0.1.0
+7 warn package.json babel-plugin-named-asset-import@0.3.5 No README data
+8 warn package.json bp_event@1.2.0 No README data
+9 warn package.json bp_statemachine@1.0.14 No README data
+10 warn package.json bp_logger@1.1.1 No README data
+11 warn package.json camel-case@3.0.0 No README data
+12 warn package.json copy-descriptor@0.1.1 No README data
+13 warn package.json core-js@1.2.7 No README data
+14 warn package.json eslint-module-utils@2.4.1 No README data
+15 warn package.json get-value@2.0.6 No README data
+16 warn package.json http@0.0.0 http is also the name of a node core module.
+17 warn package.json http@0.0.0 No description
+18 warn package.json http@0.0.0 No repository field.
+19 warn package.json http@0.0.0 No README data
+20 warn package.json https@1.0.0 https is also the name of a node core module.
+21 warn package.json https@1.0.0 No repository field.
+22 warn package.json https@1.0.0 No README data
+23 warn package.json jest-diff@24.9.0 No description
+24 warn package.json jest-diff@24.9.0 No README data
+25 warn package.json jest-config@24.9.0 No description
+26 warn package.json jest-config@24.9.0 No README data
+27 warn package.json jest-environment-jsdom@24.9.0 No description
+28 warn package.json jest-environment-jsdom@24.9.0 No README data
+29 warn package.json jest-environment-node@24.9.0 No description
+30 warn package.json jest-environment-node@24.9.0 No README data
+31 warn package.json jest-haste-map@24.9.0 No description
+32 warn package.json jest-haste-map@24.9.0 No README data
 33 warn package.json jest-message-util@24.9.0 No description
 34 warn package.json jest-message-util@24.9.0 No README data
 35 warn package.json jest-regex-util@24.9.0 No description
 36 warn package.json jest-regex-util@24.9.0 No README data
-37 warn package.json jest-resolve@24.9.0 No description
-38 warn package.json jest-resolve@24.9.0 No README data
-39 warn package.json jest-matcher-utils@24.9.0 No README data
-40 warn package.json jest-resolve-dependencies@24.9.0 No description
-41 warn package.json jest-resolve-dependencies@24.9.0 No README data
-42 warn package.json jest-runner@24.9.0 No description
-43 warn package.json jest-runner@24.9.0 No README data
-44 warn package.json jest-runtime@24.9.0 No description
-45 warn package.json jest-runtime@24.9.0 No README data
-46 warn package.json jest-snapshot@24.9.0 No description
-47 warn package.json jest-snapshot@24.9.0 No README data
-48 warn package.json jest-util@24.9.0 No description
-49 warn package.json jest-util@24.9.0 No README data
-50 warn package.json jest-watcher@24.9.0 No README data
-51 warn package.json loader-fs-cache@1.0.2 No repository field.
-52 warn package.json loader-fs-cache@1.0.2 No README data
-53 warn package.json mamacro@0.0.3 No description
-54 warn package.json mamacro@0.0.3 No repository field.
-55 warn package.json mamacro@0.0.3 No README data
-56 warn package.json object-copy@0.1.0 No README data
-57 warn package.json path-is-inside@1.0.2 No README data
-58 warn package.json setimmediate@1.0.5 No README data
-59 warn package.json static-extend@0.1.2 No README data
-60 warn package.json validate.io-string-primitive@1.0.1 No README data
-61 warn package.json assert@1.4.1 assert is also the name of a node core module.
-62 warn package.json buffer@5.4.3 buffer is also the name of a node core module.
-63 warn package.json callsite@1.0.0 No repository field.
-64 warn package.json circle-progress-bar@1.0.0 No repository field.
-65 warn package.json dotenv-expand@5.1.0 No repository field.
-66 warn package.json events@1.1.1 events is also the name of a node core module.
-67 warn package.json framer-motion@1.6.7 No repository field.
-68 warn package.json fs@0.0.1-security fs is also the name of a node core module.
-69 warn package.json has-binary2@1.0.3 No repository field.
-70 warn package.json highcharts-drilldown@0.1.7 No repository field.
-71 warn package.json highcharts-more@0.1.7 No repository field.
-72 warn package.json indexof@0.0.1 No repository field.
-73 warn package.json mini-store@2.0.0 No repository field.
-74 warn package.json minipass-collect@1.0.2 No repository field.
-75 warn package.json minipass-pipeline@1.2.2 No repository field.
-76 warn package.json object-component@0.0.3 No repository field.
-77 warn package.json punycode@2.1.1 punycode is also the name of a node core module.
-78 warn package.json querystring@0.2.0 querystring is also the name of a node core module.
-79 warn package.json quickselect@2.0.0 No repository field.
-80 warn package.json react-giojs@0.0.5 No repository field.
-81 warn package.json rework-visit@1.0.0 No repository field.
-82 warn package.json sharkdown@0.1.1 No repository field.
-83 warn package.json speak-tts@2.0.8 No repository field.
-84 warn package.json string_decoder@1.1.1 string_decoder is also the name of a node core module.
-85 warn package.json typed-styles@0.0.7 No repository field.
-86 warn package.json url@0.11.0 url is also the name of a node core module.
-87 warn package.json util@0.10.3 util is also the name of a node core module.
-88 verbose readDependencies using package.json deps
-89 verbose cache add [ 'classnames', null ]
-90 verbose cache add name=undefined spec="classnames" args=["classnames",null]
-91 verbose parsed url { protocol: null,
-91 verbose parsed url   slashes: null,
-91 verbose parsed url   auth: null,
-91 verbose parsed url   host: null,
-91 verbose parsed url   port: null,
-91 verbose parsed url   hostname: null,
-91 verbose parsed url   hash: null,
-91 verbose parsed url   search: null,
-91 verbose parsed url   query: null,
-91 verbose parsed url   pathname: 'classnames',
-91 verbose parsed url   path: 'classnames',
-91 verbose parsed url   href: 'classnames' }
-92 silly lockFile ea2580a1-classnames classnames
-93 verbose lock classnames /Users/kyungjoon/.npm/ea2580a1-classnames.lock
-94 silly lockFile ea2580a1-classnames classnames
-95 silly lockFile ea2580a1-classnames classnames
-96 verbose addNamed [ 'classnames', '' ]
-97 verbose addNamed [ null, '*' ]
-98 silly lockFile 0b89a9a6-classnames classnames@
-99 verbose lock classnames@ /Users/kyungjoon/.npm/0b89a9a6-classnames.lock
-100 silly addNameRange { name: 'classnames', range: '*', hasData: false }
-101 verbose request where is /classnames
-102 verbose request registry https://registry.npmjs.org/
-103 verbose request id cb6e4bbbedf3d9da
-104 verbose url raw /classnames
-105 verbose url resolving [ 'https://registry.npmjs.org/', './classnames' ]
-106 verbose url resolved https://registry.npmjs.org/classnames
-107 verbose request where is https://registry.npmjs.org/classnames
-108 info trying registry request attempt 1 at 15:39:25
-109 verbose etag W/"fa0d1528053f044da414379d6d987582"
-110 http GET https://registry.npmjs.org/classnames
-111 http 304 https://registry.npmjs.org/classnames
-112 silly registry.get cb [ 304,
-112 silly registry.get   { date: 'Wed, 15 Jan 2020 06:39:25 GMT',
-112 silly registry.get     connection: 'keep-alive',
-112 silly registry.get     'set-cookie': [ '__cfduid=d4f52afffe1b7ee1c052e208d6e76894c1579070365; expires=Fri, 14-Feb-20 06:39:25 GMT; path=/; domain=.npmjs.org; HttpOnly; SameSite=Lax' ],
-112 silly registry.get     'cf-ray': '5555da3a78bea1c5-ICN',
-112 silly registry.get     age: '113',
-112 silly registry.get     'cache-control': 'public, max-age=300',
-112 silly registry.get     etag: '"fa0d1528053f044da414379d6d987582"',
-112 silly registry.get     'last-modified': 'Tue, 01 Jan 2019 13:37:39 GMT',
-112 silly registry.get     vary: 'Accept-Encoding',
-112 silly registry.get     'cf-cache-status': 'HIT',
-112 silly registry.get     'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
-112 silly registry.get     server: 'cloudflare' } ]
-113 verbose etag https://registry.npmjs.org/classnames from cache
-114 silly addNameRange number 2 { name: 'classnames', range: '*', hasData: true }
-115 silly addNameRange versions [ 'classnames',
-115 silly addNameRange   [ '1.0.0',
-115 silly addNameRange     '1.1.0',
-115 silly addNameRange     '1.1.1',
-115 silly addNameRange     '1.1.2',
-115 silly addNameRange     '1.1.3',
-115 silly addNameRange     '1.1.4',
-115 silly addNameRange     '1.2.0',
-115 silly addNameRange     '1.2.1',
-115 silly addNameRange     '1.2.2',
-115 silly addNameRange     '2.0.0',
-115 silly addNameRange     '2.1.0',
-115 silly addNameRange     '2.1.1',
-115 silly addNameRange     '2.1.2',
-115 silly addNameRange     '2.1.3',
-115 silly addNameRange     '2.1.4',
-115 silly addNameRange     '2.1.5',
-115 silly addNameRange     '2.2.0',
-115 silly addNameRange     '2.2.1',
-115 silly addNameRange     '2.2.2',
-115 silly addNameRange     '2.2.3',
-115 silly addNameRange     '2.2.4',
-115 silly addNameRange     '2.2.5',
-115 silly addNameRange     '2.2.6' ] ]
-116 verbose addNamed [ 'classnames', '2.2.6' ]
-117 verbose addNamed [ '2.2.6', '2.2.6' ]
-118 silly lockFile 531374b8-classnames-2-2-6 classnames@2.2.6
-119 verbose lock classnames@2.2.6 /Users/kyungjoon/.npm/531374b8-classnames-2-2-6.lock
-120 silly lockFile 531374b8-classnames-2-2-6 classnames@2.2.6
-121 silly lockFile 531374b8-classnames-2-2-6 classnames@2.2.6
-122 silly lockFile 0b89a9a6-classnames classnames@
-123 silly lockFile 0b89a9a6-classnames classnames@
-124 silly resolved [ { name: 'classnames',
-124 silly resolved     version: '2.2.6',
-124 silly resolved     description: 'A simple utility for conditionally joining classNames together',
-124 silly resolved     main: 'index.js',
-124 silly resolved     author: { name: 'Jed Watson' },
-124 silly resolved     license: 'MIT',
-124 silly resolved     repository:
-124 silly resolved      { type: 'git',
-124 silly resolved        url: 'git+https://github.com/JedWatson/classnames.git' },
-124 silly resolved     scripts:
-124 silly resolved      { benchmarks: 'node ./benchmarks/run',
-124 silly resolved        'benchmarks-browserify': 'browserify ./benchmarks/runInBrowser.js >./benchmarks/runInBrowser.bundle.js',
-124 silly resolved        'benchmarks-in-browser': 'opn ./benchmarks/benchmarks.html',
-124 silly resolved        test: 'mocha tests/*.js' },
-124 silly resolved     keywords:
-124 silly resolved      [ 'react',
-124 silly resolved        'css',
-124 silly resolved        'classes',
-124 silly resolved        'classname',
-124 silly resolved        'classnames',
-124 silly resolved        'util',
-124 silly resolved        'utility' ],
-124 silly resolved     devDependencies:
-124 silly resolved      { benchmark: '^1.0.0',
-124 silly resolved        browserify: '^14.1.0',
-124 silly resolved        mocha: '^2.1.0',
-124 silly resolved        'opn-cli': '^3.1.0' },
-124 silly resolved     gitHead: '30bd487050de10a016ed2abfd6e602619d166ddc',
-124 silly resolved     bugs: { url: 'https://github.com/JedWatson/classnames/issues' },
-124 silly resolved     homepage: 'https://github.com/JedWatson/classnames#readme',
-124 silly resolved     _id: 'classnames@2.2.6',
-124 silly resolved     _npmVersion: '5.3.0',
-124 silly resolved     _nodeVersion: '8.4.0',
-124 silly resolved     _npmUser: { name: 'jedwatson', email: 'jed.watson@me.com' },
-124 silly resolved     dist:
-124 silly resolved      { integrity: 'sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==',
-124 silly resolved        shasum: '43935bffdd291f326dad0a205309b38d00f650ce',
-124 silly resolved        tarball: 'https://registry.npmjs.org/classnames/-/classnames-2.2.6.tgz',
-124 silly resolved        fileCount: 7,
-124 silly resolved        unpackedSize: 16331,
-124 silly resolved        'npm-signature': '-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJbGjnLCRA9TVsSAnZWagAARkYP/36ihciBH940vK8XCh40\nlXnGjtUMWnSE6/TCot8K++08Rfv5FlqME8ZsYmQpuzNTygtbHirqB+Te9rLh\n/dDuU+g9BZBG7gArKVA5nhXhcwlaXGvFWr5G8cWR+ekrlfF6r0Rux8wo7OUU\nbAryLmORFd9ULH3+tAWHbYtbaNnsq59qM+dSzAApSgAKTCl0pCDizDUNfhI3\nGPXNlPKjDYx1+/VT4a9sKjrVPAa5gIfzonNDPGtBmHP2aJ/5fmbdDr5466ct\nCTkUCKbZnekGErQ2FMBhp3W4lPY4BRBP4S0fcx+0byqeP1GNca7IYrlwwR1+\nI8iHmq1lBVoIeulN2pdO3blxOyPlEdD3wUNO6inhhyNu4DK709S6/Kqoeo/h\nI0/upt4X100h1mSFteBcS/1Oc8YvnvwG2X6nwYELUAG22cBTlngjbcv2WH8S\ngyHw689b51H74MiAunTfQIqqC6aSFKOQahDLxHWGO7cscBkjOSokApDX9pgv\nOm9CA0EVal6k/AMGIWNiZBIfmSemkciQiFNSarhCuvUkzXkJ5loyML6bGyrn\nfveWA4cexRr7z+r+8ojJzHck1cFAfEA626Oaxi6h7dH1U7idfHrJ59/sjdxY\nUkl5C3Y+15O42XuJICvCHncJ2p4IXY68kNINPqgsxNYz0Yw9Jz2jiLr2gYux\naxWj\r\n=9eSy\r\n-----END PGP SIGNATURE-----\r\n' },
-124 silly resolved     maintainers: [ [Object] ],
-124 silly resolved     directories: {},
-124 silly resolved     _npmOperationalInternal:
-124 silly resolved      { host: 's3://npm-registry-packages',
-124 silly resolved        tmp: 'tmp/classnames_2.2.6_1528445386221_0.11433562694791388' },
-124 silly resolved     _hasShrinkwrap: false,
-124 silly resolved     _shasum: '43935bffdd291f326dad0a205309b38d00f650ce',
-124 silly resolved     _from: 'classnames@',
-124 silly resolved     _resolved: 'https://registry.npmjs.org/classnames/-/classnames-2.2.6.tgz',
-124 silly resolved     readme: 'ERROR: No README data found!' } ]
-125 info install classnames@2.2.6 into /Users/kyungjoon/current_working_dir/current_working_edge_client_only
-126 info installOne classnames@2.2.6
-127 verbose node_modules/classnames unbuild
-128 info preuninstall classnames@2.2.6
-129 info uninstall classnames@2.2.6
-130 verbose true,/Users/kyungjoon/current_working_dir/current_working_edge_client_only/node_modules,/Users/kyungjoon/current_working_dir/current_working_edge_client_only/node_modules unbuild classnames@2.2.6
-131 info postuninstall classnames@2.2.6
-132 verbose tar unpack /Users/kyungjoon/.npm/classnames/2.2.6/package.tgz
-133 silly lockFile b4b49b35-ent-only-node-modules-classnames tar:///Users/kyungjoon/current_working_dir/current_working_edge_client_only/node_modules/classnames
-134 verbose lock tar:///Users/kyungjoon/current_working_dir/current_working_edge_client_only/node_modules/classnames /Users/kyungjoon/.npm/b4b49b35-ent-only-node-modules-classnames.lock
-135 silly lockFile 9176f5bf-npm-classnames-2-2-6-package-tgz tar:///Users/kyungjoon/.npm/classnames/2.2.6/package.tgz
-136 verbose lock tar:///Users/kyungjoon/.npm/classnames/2.2.6/package.tgz /Users/kyungjoon/.npm/9176f5bf-npm-classnames-2-2-6-package-tgz.lock
-137 silly gunzTarPerm modes [ '755', '644' ]
-138 silly gunzTarPerm extractEntry package.json
-139 silly gunzTarPerm extractEntry README.md
-140 silly gunzTarPerm extractEntry LICENSE
-141 silly gunzTarPerm extractEntry bind.js
-142 silly gunzTarPerm extractEntry dedupe.js
-143 silly gunzTarPerm extractEntry index.js
-144 silly gunzTarPerm extractEntry HISTORY.md
-145 silly lockFile b4b49b35-ent-only-node-modules-classnames tar:///Users/kyungjoon/current_working_dir/current_working_edge_client_only/node_modules/classnames
-146 silly lockFile b4b49b35-ent-only-node-modules-classnames tar:///Users/kyungjoon/current_working_dir/current_working_edge_client_only/node_modules/classnames
-147 silly lockFile 9176f5bf-npm-classnames-2-2-6-package-tgz tar:///Users/kyungjoon/.npm/classnames/2.2.6/package.tgz
-148 silly lockFile 9176f5bf-npm-classnames-2-2-6-package-tgz tar:///Users/kyungjoon/.npm/classnames/2.2.6/package.tgz
-149 info preinstall classnames@2.2.6
-150 verbose readDependencies using package.json deps
-151 verbose readDependencies using package.json deps
-152 silly resolved []
-153 verbose about to build /Users/kyungjoon/current_working_dir/current_working_edge_client_only/node_modules/classnames
-154 info build /Users/kyungjoon/current_working_dir/current_working_edge_client_only/node_modules/classnames
-155 verbose linkStuff [ false,
-155 verbose linkStuff   false,
-155 verbose linkStuff   false,
-155 verbose linkStuff   '/Users/kyungjoon/current_working_dir/current_working_edge_client_only/node_modules' ]
-156 info linkStuff classnames@2.2.6
-157 verbose linkBins classnames@2.2.6
-158 verbose linkMans classnames@2.2.6
-159 verbose rebuildBundles classnames@2.2.6
-160 info install classnames@2.2.6
-161 info postinstall classnames@2.2.6
-162 warn unmet dependency /Users/kyungjoon/current_working_dir/current_working_edge_client_only/node_modules/babel-preset-react-app/node_modules/babel-plugin-macros requires @babel/runtime@'^7.7.2' but will load
-162 warn unmet dependency undefined,
-162 warn unmet dependency which is version undefined
-163 error peerinvalid The package acorn does not satisfy its siblings' peerDependencies requirements!
-164 error System Darwin 19.0.0
-165 error command "/Users/kyungjoon/.nvm/v0.10.32/bin/node" "/Users/kyungjoon/.nvm/v0.10.32/lib/node_modules/npm/bin/npm-cli.js" "install" "classnames" "--save"
-166 error cwd /Users/kyungjoon/current_working_dir/current_working_edge_client_only
-167 error node -v v0.10.32
-168 error npm -v 1.4.28
-169 error code EPEERINVALID
-170 verbose exit [ 1, true ]
+37 warn package.json jest-matcher-utils@24.9.0 No README data
+38 warn package.json jest-resolve@24.9.0 No description
+39 warn package.json jest-resolve@24.9.0 No README data
+40 warn package.json jest-get-type@24.9.0 No README data
+41 warn package.json jest-resolve-dependencies@24.9.0 No description
+42 warn package.json jest-resolve-dependencies@24.9.0 No README data
+43 warn package.json jest-snapshot@24.9.0 No description
+44 warn package.json jest-snapshot@24.9.0 No README data
+45 warn package.json jest-runtime@24.9.0 No description
+46 warn package.json jest-runtime@24.9.0 No README data
+47 warn package.json jest-util@24.9.0 No description
+48 warn package.json jest-util@24.9.0 No README data
+49 warn package.json jest-jasmine2@24.9.0 No description
+50 warn package.json jest-jasmine2@24.9.0 No README data
+51 warn package.json jest-runner@24.9.0 No description
+52 warn package.json jest-runner@24.9.0 No README data
+53 warn package.json jest-watcher@24.9.0 No README data
+54 warn package.json loader-fs-cache@1.0.2 No repository field.
+55 warn package.json loader-fs-cache@1.0.2 No README data
+56 warn package.json mamacro@0.0.3 No description
+57 warn package.json mamacro@0.0.3 No repository field.
+58 warn package.json mamacro@0.0.3 No README data
+59 warn package.json object-copy@0.1.0 No README data
+60 warn package.json path-is-inside@1.0.2 No README data
+61 warn package.json setimmediate@1.0.5 No README data
+62 warn package.json static-extend@0.1.2 No README data
+63 warn package.json validate.io-string-primitive@1.0.1 No README data
+64 warn package.json assert@1.4.1 assert is also the name of a node core module.
+65 warn package.json buffer@5.4.3 buffer is also the name of a node core module.
+66 warn package.json callsite@1.0.0 No repository field.
+67 warn package.json circle-progress-bar@1.0.0 No repository field.
+68 warn package.json dotenv-expand@5.1.0 No repository field.
+69 warn package.json events@1.1.1 events is also the name of a node core module.
+70 warn package.json framer-motion@1.6.7 No repository field.
+71 warn package.json fs@0.0.1-security fs is also the name of a node core module.
+72 warn package.json has-binary2@1.0.3 No repository field.
+73 warn package.json highcharts-drilldown@0.1.7 No repository field.
+74 warn package.json highcharts-more@0.1.7 No repository field.
+75 warn package.json indexof@0.0.1 No repository field.
+76 warn package.json mini-store@2.0.0 No repository field.
+77 warn package.json minipass-collect@1.0.2 No repository field.
+78 warn package.json minipass-pipeline@1.2.2 No repository field.
+79 warn package.json object-component@0.0.3 No repository field.
+80 warn package.json punycode@2.1.1 punycode is also the name of a node core module.
+81 warn package.json querystring@0.2.0 querystring is also the name of a node core module.
+82 warn package.json quickselect@2.0.0 No repository field.
+83 warn package.json react-giojs@0.0.5 No repository field.
+84 warn package.json rework-visit@1.0.0 No repository field.
+85 warn package.json sharkdown@0.1.1 No repository field.
+86 warn package.json speak-tts@2.0.8 No repository field.
+87 warn package.json string_decoder@1.1.1 string_decoder is also the name of a node core module.
+88 warn package.json typed-styles@0.0.7 No repository field.
+89 warn package.json url@0.11.0 url is also the name of a node core module.
+90 warn package.json util@0.10.3 util is also the name of a node core module.
+91 verbose readDependencies using package.json deps
+92 verbose already installed skipping react-outside-click-handler@^1.3.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+93 verbose already installed skipping react-player@^1.5.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+94 verbose already installed skipping react-plotly.js@^2.2.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+95 verbose already installed skipping react-popper-tooltip@^2.7.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+96 verbose already installed skipping react-progressbar@^15.4.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+97 verbose already installed skipping react-redux@^6.0.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+98 verbose already installed skipping react-router@^4.2.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+99 verbose already installed skipping react-router-dom@^4.2.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+100 verbose already installed skipping react-s-alert@^1.4.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+101 verbose already installed skipping react-scrollbar@^0.5.4 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+102 verbose already installed skipping react-semantic-toasts@^0.6.5 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+103 verbose already installed skipping react-simple-maps@^0.12.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+104 verbose already installed skipping react-sizeme@^2.5.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+105 verbose already installed skipping react-sparklines@^1.7.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+106 verbose already installed skipping react-spinners@^0.4.7 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+107 verbose already installed skipping react-svg-pan-zoom@^2.18.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+108 verbose already installed skipping react-sweet-progress@^1.1.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+109 verbose already installed skipping react-tabs@^3.1.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+110 verbose already installed skipping react-textarea-autosize@^7.1.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+111 verbose already installed skipping react-toggle-display@^2.2.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+112 verbose already installed skipping react-tooltip@^3.9.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+113 verbose already installed skipping reaviz@^7.2.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+114 verbose already installed skipping redux@^4.0.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+115 verbose already installed skipping redux-form@^8.2.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+116 verbose already installed skipping request@^2.88.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+117 verbose already installed skipping semantic-ui-css@^2.2.12 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+118 verbose already installed skipping semantic-ui-react@^0.83.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+119 verbose already installed skipping shortid@^2.2.14 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+120 verbose already installed skipping socket.io-client@^2.3.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+121 verbose already installed skipping speak-tts@^2.0.6 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+122 verbose already installed skipping streamedian@^0.3.13 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+123 verbose already installed skipping three@^0.99.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+124 verbose already installed skipping three-orbitcontrols@^2.99.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+125 verbose already installed skipping topojson@^3.0.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+126 verbose already installed skipping ua-parser-js@^0.7.20 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+127 verbose already installed skipping url-search-params@^1.1.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+128 verbose already installed skipping urlencode@^1.1.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+129 verbose already installed skipping uuid@^3.3.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+130 verbose already installed skipping vue-tabulator@^1.2.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+131 verbose already installed skipping cross-env@^6.0.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+132 verbose already installed skipping flow-bin@^0.115.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+133 verbose already installed skipping react-scripts@^3.3.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+134 verbose cache add [ '@material-ui/core@^4.8.1', null ]
+135 verbose cache add name=undefined spec="@material-ui/core@^4.8.1" args=["@material-ui/core@^4.8.1",null]
+136 verbose parsed url { protocol: null,
+136 verbose parsed url   slashes: null,
+136 verbose parsed url   auth: null,
+136 verbose parsed url   host: null,
+136 verbose parsed url   port: null,
+136 verbose parsed url   hostname: null,
+136 verbose parsed url   hash: null,
+136 verbose parsed url   search: null,
+136 verbose parsed url   query: null,
+136 verbose parsed url   pathname: '@material-ui/core@^4.8.1',
+136 verbose parsed url   path: '@material-ui/core@^4.8.1',
+136 verbose parsed url   href: '@material-ui/core@^4.8.1' }
+137 verbose cache add [ '@material-ui/icons@^3.0.2', null ]
+138 verbose cache add name=undefined spec="@material-ui/icons@^3.0.2" args=["@material-ui/icons@^3.0.2",null]
+139 verbose parsed url { protocol: null,
+139 verbose parsed url   slashes: null,
+139 verbose parsed url   auth: null,
+139 verbose parsed url   host: null,
+139 verbose parsed url   port: null,
+139 verbose parsed url   hostname: null,
+139 verbose parsed url   hash: null,
+139 verbose parsed url   search: null,
+139 verbose parsed url   query: null,
+139 verbose parsed url   pathname: '@material-ui/icons@^3.0.2',
+139 verbose parsed url   path: '@material-ui/icons@^3.0.2',
+139 verbose parsed url   href: '@material-ui/icons@^3.0.2' }
+140 verbose already installed skipping agentkeepalive@^4.1.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+141 verbose cache add name="" spec="material-ui/core@^4.8.1" args=["","material-ui/core@^4.8.1"]
+142 verbose parsed url { protocol: null,
+142 verbose parsed url   slashes: null,
+142 verbose parsed url   auth: null,
+142 verbose parsed url   host: null,
+142 verbose parsed url   port: null,
+142 verbose parsed url   hostname: null,
+142 verbose parsed url   hash: null,
+142 verbose parsed url   search: null,
+142 verbose parsed url   query: null,
+142 verbose parsed url   pathname: 'material-ui/core@^4.8.1',
+142 verbose parsed url   path: 'material-ui/core@^4.8.1',
+142 verbose parsed url   href: 'material-ui/core@^4.8.1' }
+143 verbose cache add name="" spec="material-ui/icons@^3.0.2" args=["","material-ui/icons@^3.0.2"]
+144 verbose parsed url { protocol: null,
+144 verbose parsed url   slashes: null,
+144 verbose parsed url   auth: null,
+144 verbose parsed url   host: null,
+144 verbose parsed url   port: null,
+144 verbose parsed url   hostname: null,
+144 verbose parsed url   hash: null,
+144 verbose parsed url   search: null,
+144 verbose parsed url   query: null,
+144 verbose parsed url   pathname: 'material-ui/icons@^3.0.2',
+144 verbose parsed url   path: 'material-ui/icons@^3.0.2',
+144 verbose parsed url   href: 'material-ui/icons@^3.0.2' }
+145 verbose cache add name="material-ui/core" spec="^4.8.1" args=["material-ui/core","^4.8.1"]
+146 verbose parsed url { protocol: null,
+146 verbose parsed url   slashes: null,
+146 verbose parsed url   auth: null,
+146 verbose parsed url   host: null,
+146 verbose parsed url   port: null,
+146 verbose parsed url   hostname: null,
+146 verbose parsed url   hash: null,
+146 verbose parsed url   search: null,
+146 verbose parsed url   query: null,
+146 verbose parsed url   pathname: '^4.8.1',
+146 verbose parsed url   path: '^4.8.1',
+146 verbose parsed url   href: '^4.8.1' }
+147 verbose addNamed [ 'material-ui/core', '^4.8.1' ]
+148 verbose addNamed [ null, '>=4.8.1-0 <5.0.0-0' ]
+149 verbose cache add name="material-ui/icons" spec="^3.0.2" args=["material-ui/icons","^3.0.2"]
+150 verbose parsed url { protocol: null,
+150 verbose parsed url   slashes: null,
+150 verbose parsed url   auth: null,
+150 verbose parsed url   host: null,
+150 verbose parsed url   port: null,
+150 verbose parsed url   hostname: null,
+150 verbose parsed url   hash: null,
+150 verbose parsed url   search: null,
+150 verbose parsed url   query: null,
+150 verbose parsed url   pathname: '^3.0.2',
+150 verbose parsed url   path: '^3.0.2',
+150 verbose parsed url   href: '^3.0.2' }
+151 verbose addNamed [ 'material-ui/icons', '^3.0.2' ]
+152 verbose addNamed [ null, '>=3.0.2-0 <4.0.0-0' ]
+153 verbose already installed skipping antd@^3.26.6 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+154 silly lockFile 88f17134-material-ui-core-4-8-1 material-ui/core@^4.8.1
+155 verbose lock material-ui/core@^4.8.1 /Users/kyungjoon/.npm/88f17134-material-ui-core-4-8-1.lock
+156 silly lockFile 8d917183-material-ui-icons-3-0-2 material-ui/icons@^3.0.2
+157 verbose lock material-ui/icons@^3.0.2 /Users/kyungjoon/.npm/8d917183-material-ui-icons-3-0-2.lock
+158 verbose already installed skipping axios@^0.18.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+159 verbose already installed skipping axios-cancel@^0.2.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+160 silly addNameRange { name: 'material-ui/core',
+160 silly addNameRange   range: '>=4.8.1-0 <5.0.0-0',
+160 silly addNameRange   hasData: false }
+161 verbose already installed skipping axios-https-proxy-fix@^0.17.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+162 silly addNameRange { name: 'material-ui/icons',
+162 silly addNameRange   range: '>=3.0.2-0 <4.0.0-0',
+162 silly addNameRange   hasData: false }
+163 verbose already installed skipping axios-jsonp@^1.0.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+164 verbose request where is /material-ui/icons
+165 verbose request registry https://registry.npmjs.org/
+166 verbose request id 582790bc4a6f5c60
+167 verbose url raw /material-ui/icons
+168 verbose url resolving [ 'https://registry.npmjs.org/', './material-ui/icons' ]
+169 verbose url resolved https://registry.npmjs.org/material-ui/icons
+170 verbose request where is https://registry.npmjs.org/material-ui/icons
+171 info trying registry request attempt 1 at 17:24:12
+172 http GET https://registry.npmjs.org/material-ui/icons
+173 verbose request where is /material-ui/core
+174 verbose request registry https://registry.npmjs.org/
+175 verbose url raw /material-ui/core
+176 verbose url resolving [ 'https://registry.npmjs.org/', './material-ui/core' ]
+177 verbose url resolved https://registry.npmjs.org/material-ui/core
+178 verbose request where is https://registry.npmjs.org/material-ui/core
+179 info trying registry request attempt 1 at 17:24:12
+180 http GET https://registry.npmjs.org/material-ui/core
+181 verbose already installed skipping axios-jsonp-pro@^1.0.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+182 verbose already installed skipping babel-polyfill@^6.26.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+183 verbose already installed skipping billboard.js@^1.7.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+184 verbose already installed skipping britecharts@^2.9.8 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+185 verbose already installed skipping chart.js@^2.9.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+186 verbose already installed skipping circle-progress-bar@^1.0.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+187 verbose already installed skipping classnames@^2.2.6 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+188 verbose already installed skipping clsx@^1.0.4 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+189 verbose already installed skipping d3@4.10.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+190 verbose already installed skipping d3-scale@^2.1.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+191 verbose already installed skipping d3-selection@^1.3.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+192 verbose already installed skipping datamaps@^0.5.9 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+193 verbose already installed skipping date-fns@^1.30.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+194 verbose already installed skipping env-cmd@^10.0.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+195 verbose already installed skipping es6-tween@^5.3.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+196 verbose already installed skipping express@^4.16.4 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+197 verbose already installed skipping faker@^4.1.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+198 verbose already installed skipping fetch-jsonp@^1.1.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+199 verbose already installed skipping file-system@^2.2.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+200 verbose already installed skipping flexbox-react@^4.4.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+201 verbose already installed skipping fs@0.0.1-security /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+202 verbose already installed skipping fs-es6@0.0.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+203 verbose already installed skipping gsap@^2.0.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+204 verbose already installed skipping highcharts@^6.2.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+205 verbose already installed skipping highcharts-drilldown@^0.1.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+206 verbose already installed skipping highcharts-more@^0.1.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+207 verbose already installed skipping history@^4.7.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+208 verbose already installed skipping http@0.0.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+209 verbose already installed skipping http-proxy-middleware@^0.20.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+210 verbose already installed skipping https@^1.0.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+211 verbose already installed skipping influx@^5.0.7 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+212 verbose already installed skipping influxdb-nodejs@^2.11.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+213 verbose already installed skipping interactjs@^1.6.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+214 verbose already installed skipping intro.js@^2.9.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+215 verbose already installed skipping intro.js-react@^0.2.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+216 verbose already installed skipping json-server@^0.14.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+217 verbose already installed skipping lodash@^4.17.11 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+218 verbose already installed skipping material-icons-react@^1.0.4 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+219 verbose already installed skipping moment@^2.23.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+220 verbose already installed skipping mongodb@^3.1.13 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+221 verbose already installed skipping node-influx@^1.0.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+222 verbose already installed skipping nodemailer@^6.3.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+223 verbose already installed skipping plotly.js@^1.43.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+224 verbose already installed skipping prop-types@^15.6.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+225 verbose already installed skipping public-ip@^4.0.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+226 verbose already installed skipping qs@^6.6.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+227 verbose already installed skipping randomcolor@^0.5.4 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+228 verbose already installed skipping react@^16.6.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+229 verbose already installed skipping react-addons-shallow-compare@^15.6.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+230 verbose already installed skipping react-addons-transition-group@^15.6.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+231 verbose already installed skipping react-app-env@^1.2.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+232 verbose already installed skipping react-bootstrap@^1.0.0-beta.16 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+233 verbose already installed skipping react-calendar-timeline@^0.26.6 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+234 verbose already installed skipping react-chartjs-2@^2.8.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+235 verbose already installed skipping react-circular-progressbar@^1.0.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+236 verbose already installed skipping react-container-dimensions@^1.4.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+237 verbose already installed skipping react-date-range@^1.0.0-beta /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+238 verbose already installed skipping react-dom@^16.6.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+239 verbose already installed skipping react-draggable@^4.2.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+240 verbose already installed skipping react-dual-listbox@^2.0.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+241 verbose already installed skipping react-faux-dom@^4.1.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+242 verbose already installed skipping react-flexbox@^3.1.4 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+243 verbose already installed skipping react-fontawesome@^1.7.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+244 verbose already installed skipping react-giojs@0.0.5 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+245 verbose already installed skipping react-google-charts@^3.0.15 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+246 verbose already installed skipping react-grid-layout@^0.16.6 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+247 verbose already installed skipping react-gsap-enhancer@^0.3.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+248 verbose already installed skipping react-highcharts@^16.0.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+249 verbose already installed skipping react-horizontal-timeline@^1.5.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+250 verbose already installed skipping react-hot-loader@^4.12.18 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+251 verbose already installed skipping react-html5video@^2.5.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+252 verbose already installed skipping react-iframe@^1.1.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+253 verbose already installed skipping react-image-filter@^0.1.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+254 verbose already installed skipping react-json-view@^1.19.1 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+255 verbose already installed skipping react-live-clock@^3.0.0 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+256 verbose already installed skipping react-lottie@^1.2.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+257 verbose already installed skipping react-material-icons@^1.0.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+258 verbose already installed skipping react-motion@^0.5.2 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+259 verbose already installed skipping react-motion-ui-pack@^0.10.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+260 verbose already installed skipping react-native-rsa@0.0.3 /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+261 http 405 https://registry.npmjs.org/material-ui/icons
+262 silly registry.get cb [ 405,
+262 silly registry.get   { date: 'Tue, 21 Jan 2020 08:24:12 GMT',
+262 silly registry.get     'content-type': 'application/json',
+262 silly registry.get     'content-length': '63',
+262 silly registry.get     connection: 'keep-alive',
+262 silly registry.get     'set-cookie': [ '__cfduid=d4629b6fcae70df36dd3b9f8a95c532de1579595052; expires=Thu, 20-Feb-20 08:24:12 GMT; path=/; domain=.npmjs.org; HttpOnly; SameSite=Lax' ],
+262 silly registry.get     'cf-ray': '5587e3f47dfdea00-ICN',
+262 silly registry.get     allow: 'PUT',
+262 silly registry.get     'cf-cache-status': 'DYNAMIC',
+262 silly registry.get     'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+262 silly registry.get     vary: 'Accept-Encoding',
+262 silly registry.get     server: 'cloudflare' } ]
+263 silly lockFile 8d917183-material-ui-icons-3-0-2 material-ui/icons@^3.0.2
+264 silly lockFile 8d917183-material-ui-icons-3-0-2 material-ui/icons@^3.0.2
+265 http 405 https://registry.npmjs.org/material-ui/core
+266 silly registry.get cb [ 405,
+266 silly registry.get   { date: 'Tue, 21 Jan 2020 08:24:12 GMT',
+266 silly registry.get     'content-type': 'application/json',
+266 silly registry.get     'content-length': '63',
+266 silly registry.get     connection: 'keep-alive',
+266 silly registry.get     'set-cookie': [ '__cfduid=d89df407bf93b329e31a4cac27e1606981579595052; expires=Thu, 20-Feb-20 08:24:12 GMT; path=/; domain=.npmjs.org; HttpOnly; SameSite=Lax' ],
+266 silly registry.get     'cf-ray': '5587e3f46819a1a1-ICN',
+266 silly registry.get     allow: 'PUT',
+266 silly registry.get     'cf-cache-status': 'DYNAMIC',
+266 silly registry.get     'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+266 silly registry.get     vary: 'Accept-Encoding',
+266 silly registry.get     server: 'cloudflare' } ]
+267 silly lockFile 88f17134-material-ui-core-4-8-1 material-ui/core@^4.8.1
+268 silly lockFile 88f17134-material-ui-core-4-8-1 material-ui/core@^4.8.1
+269 error Error: Method Not Allowed
+269 error     at errorResponse (/Users/kyungjoon/.nvm/v0.10.32/lib/node_modules/npm/lib/cache/add-named.js:260:10)
+269 error     at /Users/kyungjoon/.nvm/v0.10.32/lib/node_modules/npm/lib/cache/add-named.js:203:12
+269 error     at saved (/Users/kyungjoon/.nvm/v0.10.32/lib/node_modules/npm/node_modules/npm-registry-client/lib/get.js:167:7)
+269 error     at Object.oncomplete (fs.js:107:15)
+270 error If you need help, you may report this *entire* log,
+270 error including the npm and node versions, at:
+270 error     <http://github.com/npm/npm/issues>
+271 error System Darwin 19.0.0
+272 error command "/Users/kyungjoon/.nvm/v0.10.32/bin/node" "/Users/kyungjoon/.nvm/v0.10.32/bin/npm" "i"
+273 error cwd /Users/kyungjoon/current_working_dir/current_working_edge_client_only
+274 error node -v v0.10.32
+275 error npm -v 1.4.28
+276 error code E405
+277 verbose exit [ 1, true ]
