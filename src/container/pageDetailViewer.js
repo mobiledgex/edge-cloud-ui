@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import MonitoringViewer from './monitoringViewer';
 import CommandViewer from './commandViewer';
+import TerminalViewer from './TerminalViewer';
 import './styles.css';
 
 const pane = [
@@ -19,7 +20,8 @@ const panes = [
 const panesCommand = [
     { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> },
     { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props} /></Tab.Pane> },
-    { menuItem: 'Command', render: (props) => <Tab.Pane><CommandViewer data={props} /></Tab.Pane> }
+    // { menuItem: 'Command', render: (props) => <Tab.Pane><CommandViewer data={props} /></Tab.Pane> },
+    { menuItem: 'Terminal', render: (props) => <Tab.Pane><TerminalViewer data={props} /></Tab.Pane> }
 ]
 const detailViewer = (props, type) => (
     <Fragment>
