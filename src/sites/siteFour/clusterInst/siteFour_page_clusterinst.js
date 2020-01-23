@@ -132,9 +132,12 @@ class SiteFourPageClusterInst extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                _self.props.handleLoadingSpinner();
-                _self.props.handleLoadingSpinner(false);
-                _self.groupJoin(response.data, 'clusterInst')
+                if (response.data.length > 0) {
+                    _self.groupJoin(response.data, 'clusterInst')
+                }
+                else {
+                    _self.props.handleAlertInfo('error', 'Requested data is empty')
+                }
             }
         }
     }
@@ -143,7 +146,6 @@ class SiteFourPageClusterInst extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                _self.props.handleLoadingSpinner();
                 _self.groupJoin(response.data, 'cloudlet')
             }
         }
@@ -229,14 +231,10 @@ class SiteFourPageClusterInst extends React.Component {
         this.getDataDeveloper(_region);
     }
     render() {
-        const {shouldShowBox, shouldShowCircle, devData} = this.state;
-        const { activeItem, viewMode } = this.state;
+        const { devData, viewMode } = this.state;
         let randomValue = Math.round(Math.random() * 100);
         return (
-
-            //<DeveloperListView devData={this.state.devData} headerLayout={this.headerLayout}></DeveloperListView>
             (viewMode === 'listView')?
-
                 <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
                 :
                 <PageDetailViewer className="ttt" data={this.state.detailData} page='clusterInst'/>
@@ -269,7 +267,7 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };
 export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInst)));

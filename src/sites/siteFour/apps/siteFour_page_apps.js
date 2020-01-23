@@ -119,16 +119,21 @@ class SiteFourPageApps extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                let join = null;
-                if (response.data[0]['Edit']) {
-                    join = _self.state.devData.concat(response.data);
-                } else {
-                    join = _self.state.devData;
+                if (response.data.length > 0) {
+                    let join = null;
+                    if (response.data[0]['Edit']) {
+                        join = _self.state.devData.concat(response.data);
+                    } else {
+                        join = _self.state.devData;
+                    }
+                    _self.setState({ devData: join })
+                    _self.loadCount++;
+                    if (rgn.length == _self.loadCount) {
+                        return
+                    }
                 }
-                _self.setState({ devData: join })
-                _self.loadCount++;
-                if (rgn.length == _self.loadCount) {
-                    return
+                else {
+                    this.props.handleAlertInfo('error', 'Requested data is empty')
                 }
             }
         }

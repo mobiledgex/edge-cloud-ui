@@ -72,6 +72,8 @@ function responseError(self, request, response, callback) {
     }
 }
 
+
+
 export function sendWSRequest(request, callback) {
     let url = process.env.REACT_APP_API_ENDPOINT;
     url = url.replace('http','ws');
@@ -161,8 +163,7 @@ export function sendRequest(self, request, callback) {
             headers: getHeader(request)
         })
         .then(function (response) { 
-           
-            
+            showSpinner(self, false)
             callback(EP.formatData(request, response));
         })
         .catch(function (error) {
