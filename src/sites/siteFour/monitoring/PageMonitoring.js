@@ -423,9 +423,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let allConnectionsUsageList = []
             let allGridInstanceList = []
 
-            console.log('2222===>', this.state.startTime);
-            console.log('2222===>', this.state.endTime);
-
             //@todo: 날짜에 의한 필터링인경우
             if (isDateFiltering) {
                 appInstanceList = this.state.appInstanceList;
