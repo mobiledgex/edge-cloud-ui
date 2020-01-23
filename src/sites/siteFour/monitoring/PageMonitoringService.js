@@ -1344,7 +1344,8 @@ export const requestAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: a
     }).then(async response => {
         return response.data;
     }).catch(e => {
-        throw new Error(e)
+        //throw new Error(e)
+        showToast(e.toString())
     })
     return result;
 }

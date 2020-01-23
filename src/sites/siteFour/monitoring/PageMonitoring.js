@@ -846,7 +846,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     {/*1_column*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
+                            <div className='page_monitoring_title_select'>
                                 Transition Of NETWORK Usage
                             </div>
                             {!this.state.loading &&
@@ -1335,7 +1335,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 {/* ___col___1*/}
                                                 <div className='page_monitoring_column'>
                                                     <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title'>
+                                                        <div className='page_monitoring_title_select'>
                                                             Engine Performance State Of App instance
                                                         </div>
                                                         {/*todo:---------------------------------*/}
@@ -1400,9 +1400,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         <div className='page_monitoring_title'>
                                                             SHOW APP INSTANCE LIST
                                                         </div>
-                                                        <div style={{marginLeft: 10}}>
-                                                            <FA name="chevron-up" style={{fontSize: 15, color: 'white'}}/>
+                                                        <div className='page_monitoring_popup_header_button'>
+                                                            SHOW APP INSTANCE LIST
+                                                            <div style={{display:'inline-block', marginLeft:10}}>
+                                                                <FA name="chevron-up"/>
+                                                            </div>
                                                         </div>
+                                                        <div/>
                                                     </div>
                                                 </div>
                                             </div>
