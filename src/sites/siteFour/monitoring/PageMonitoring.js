@@ -928,7 +928,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </div>
                     <div className='page_monitoring_dual_container'>
                         <div style={{display: 'flex', flexDirection: 'row'}}>
-                            <div className='page_monitoring_title_select'>
+                            <div className='page_monitoring_title_select' style={{marginTop: 5}}>
                                 Transition Of Connections
                             </div>
                             {!this.state.loading &&
