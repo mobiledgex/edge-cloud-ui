@@ -764,8 +764,8 @@ body, button, input, textarea, optgroup, select, textarea,
     height: 70px;
 }
 .gnb_header .navbar_left .brand {
-    width: 250px;
-    height: 33px;
+    width: 200px;
+    height: 27px;
     /* background-image: url("/assets/brand/logo_mex.svg"); */
     background-image: url("/assets/brand/MobiledgeX_Logo_tm_white.svg");
     background-repeat: no-repeat;
