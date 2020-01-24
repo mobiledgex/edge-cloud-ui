@@ -175,6 +175,7 @@ class SiteFour extends React.Component {
         this.auth_three = [
             reducer.getFindIndex(this.menuItems, 'label', 'Cloudlets'),
             reducer.getFindIndex(this.menuItems, 'label', 'Audit Log'),
+            reducer.getFindIndex(this.menuItems, 'label', 'Monitoring'),
         ] //OperatorManager, OperatorContributor, OperatorViewer
 
         this.auth_list = [
@@ -413,7 +414,7 @@ class SiteFour extends React.Component {
 
             enable = true;
         } else if (this.props.params.subPath === "pg=2") {
-            //Cloudlets  
+            //Cloudlets
             currentStep = cloudletSteps.stepsCloudlet;
             enable = true;
         } else if (this.props.params.subPath === "pg=3") {

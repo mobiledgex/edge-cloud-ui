@@ -72,6 +72,7 @@ export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
 export const DELETE_CLOUDLET_POOL_MEMBER = "DeleteCloudletPoolMember";
 export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const SHOW_ORG_CLOUDLET = "orgcloudlet";
+export const RUN_COMMAND = "RunCommand";
 
 export function getPath(request) {
     switch (request.method) {
@@ -124,13 +125,13 @@ export function getPath(request) {
         case CREATE_APP_INST:
         case DELETE_APP_INST:
         case STREAM_APP_INST:
-            return `/api/v1/auth/ctrl/${request.method}`;
         case SHOW_CLOUDLET_POOL:
         case SHOW_CLOUDLET_MEMBER:
         case DELETE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL_MEMBER:
         case DELETE_CLOUDLET_POOL_MEMBER:
+        case RUN_COMMAND:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
