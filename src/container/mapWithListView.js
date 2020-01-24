@@ -330,6 +330,19 @@ class MapWithListView extends React.Component {
         }
     }
 
+    requestLastResponse = (data)=>    
+    {
+        if(this.state.uuid === 0)
+        {
+            let type = 'error'
+            if(data.code === 200)
+            {
+                type = 'success'
+            }
+            this.props.handleAlertInfo(type, data.message)
+        }
+    }
+
     requestResponse = (mcRequest) => {
         let request = mcRequest.request;
         let responseData = null;
@@ -340,6 +353,10 @@ class MapWithListView extends React.Component {
                         responseData = item;
                     }
                     else {
+                        if(item.steps && item.steps.length > 1)
+                        {    
+                            this.requestLastResponse(item.steps[item.steps.length-1]);
+                        }
                         if (item.steps.length >= 1 && item.steps[0].code === 200) {
                             item.steps.push({ code: CODE_FINISH })
                             this.props.dataRefresh();
@@ -436,11 +453,6 @@ class MapWithListView extends React.Component {
                                     (value === 'Edit') ?
                                         String(item[value]) === 'null' ? <Table.Cell /> :
                                             <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i) ? { whiteSpace: 'nowrap', background: '#444' } : { whiteSpace: 'nowrap' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                {/* {
-                                                this.props.diffRev.map((_diff) => (
-                                                    (String(item[value]).indexOf('Editable') > -1 && _diff.AppName == item['AppName'] && _diff.Region == item['Region'] && _diff.OrganizationName == item['OrganizationName'] && _diff.Operator == item['Operator'] && _diff.Cloudlet == item['Cloudlet'] && _diff.ClusterInst == item['ClusterInst'] && item['State'] != 7) ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleEdit(item)}>Update</Button> : null
-                                                ))
-                                            } */}
                                                 <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({ openDelete: true, selected: item })}><Icon name={'trash alternate'} /></Button>
                                             </Table.Cell>
                                         :
@@ -607,7 +619,7 @@ class MapWithListView extends React.Component {
             this.setState({ changeRegion: null })
         }
         if (nextProps.clickCity.length == 0) {
-            if (nextProps.devData.length > 0 && this.state.dummyData !== nextProps.devData) {
+            if (this.state.dummyData !== nextProps.devData) {
                 nextProps.devData.map(_item => {
                     if (_item.State !== 5) {
                         this.sendWSRequest(_item)
@@ -706,7 +718,6 @@ class MapWithListView extends React.Component {
         cols: 12,
         width: 1600,
         isDraggable: false,
-        diffRev: [],
         dataSort: false
     };
 }

@@ -1,10 +1,10 @@
 export const getKey = (data) => {
     let userArr = [];
     Object.values(data).map((item) => { userArr.push(item); })
-    return ({ 
-        org: userArr[1], 
-        username: userArr[0], 
-        role: userArr[2] 
+    return ({
+        org: userArr[1],
+        username: userArr[0],
+        role: userArr[2]
     })
 }
 /*
@@ -41,28 +41,27 @@ export const getKey = (data) => {
  */
 
 
-export const formatData = (datas) => {
-    let result = datas;
+export const formatData = (result) => {
     let values = [];
-    let toJson = result.data;
-    if (toJson) {
-        toJson.map((dataResult, i) => {
-            if (dataResult.message) {
+    if (result.data && result.data.length > 0) {
+        let toJson = result.data;
+        if (toJson) {
+            toJson.map((dataResult, i) => {
+                if (dataResult.message) {
 
-            } else {
-                let Index = i;
-                let Organization = dataResult.org || '-';
-                let Username = dataResult.username || '-';
-                let RoleType = dataResult.role || '-';
-                //let Email = dataResult.email || '-';
-                let newRegistKey = ['Organization', 'Username', 'Role Type'];
+                } else {
+                    let Index = i;
+                    let Organization = dataResult.org || '-';
+                    let Username = dataResult.username || '-';
+                    let RoleType = dataResult.role || '-';
+                    //let Email = dataResult.email || '-';
+                    let newRegistKey = ['Organization', 'Username', 'Role Type'];
 
-                values.push({ Username: Username, Organization: Organization, 'Role Type': RoleType, Edit: newRegistKey })
-            }
+                    values.push({ Username: Username, Organization: Organization, 'Role Type': RoleType, Edit: newRegistKey })
+                }
 
-        })
-    } else {
-        console.log('there is no result')
+            })
+        }
     }
     return values
 }
