@@ -68,6 +68,11 @@ const VerticalStepper = (props) => {
     const classes = useStyles();
     const body = useRef();
 
+    if(body.current && props.uuid!==0)
+    {
+        body.current.scrollTop =  body.current.scrollHeight;
+    }
+
     return (
         (props.uuid && props.uuid !== 0 && props.stepsArray && props.stepsArray.length > 0) ?
             <div>
