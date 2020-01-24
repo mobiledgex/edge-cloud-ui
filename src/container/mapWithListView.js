@@ -330,6 +330,19 @@ class MapWithListView extends React.Component {
         }
     }
 
+    requestLastResponse = (data)=>    
+    {
+        if(this.state.uuid === 0)
+        {
+            let type = 'error'
+            if(data.code === 200)
+            {
+                type = 'success'
+            }
+            this.props.handleAlertInfo(type, data.message)
+        }
+    }
+
     requestResponse = (mcRequest) => {
         let request = mcRequest.request;
         let responseData = null;
@@ -340,6 +353,10 @@ class MapWithListView extends React.Component {
                         responseData = item;
                     }
                     else {
+                        if(item.steps && item.steps.length > 1)
+                        {    
+                            this.requestLastResponse(item.steps[item.steps.length-1]);
+                        }
                         if (item.steps.length >= 1 && item.steps[0].code === 200) {
                             item.steps.push({ code: CODE_FINISH })
                             this.props.dataRefresh();
