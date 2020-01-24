@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useRef} from 'react'
 import { Stepper, Popover, Step, StepLabel, CircularProgress } from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import Check from "@material-ui/icons/Check";
@@ -66,14 +66,18 @@ const useStyles = makeStyles(theme => ({
 
 const VerticalStepper = (props) => {
     const classes = useStyles();
+    const body = useRef();
+
     return (
         (props.uuid && props.uuid !== 0 && props.stepsArray && props.stepsArray.length > 0) ?
             <div>
                 {props.stepsArray.map(item => {
                     return (
                         props.uuid === item.uuid ?
-                            <Popover style={{ width: 400, maxHeight: 400 }}
+                            <Popover
+                                style={{width:400}}
                                 anchorReference="anchorPosition"
+                                onEnter={()=>{body.current.scrollTop=body.current.scrollHeight}}
                                 anchorPosition={{ top: 0, left: window.innerWidth }}
                                 onClose={() => { props.onClose() }}
                                 open={props.uuid !== 0}
@@ -85,32 +89,34 @@ const VerticalStepper = (props) => {
                                     vertical: 'top',
                                     horizontal: 'left',
                                 }}>
-                                <Stepper className={classes.stepper} activeStep={item.steps[item.steps.length - 1].code === CODE_FINISH ? item.steps.length : item.steps.length - 1} orientation="vertical">
-                                    {item.steps.map((step, index) => {
-                                        return (
-                                            step.message ?
-                                                <Step key={index}>
-                                                    <StepLabel StepIconComponent={(stepperProps) => {
-                                                        return (<div className={classes.root}>
-                                                            {
-                                                                stepperProps.completed ?
-                                                                    item.steps[stepperProps.icon - 1].code === CODE_FAILED ?
-                                                                        <ErrorIcon className={classes.error} /> :
-                                                                        <Check className={classes.success} /> :
-                                                                    <div className={classes.wrapper}>
-                                                                        <p className={classes.iconLabel}>{stepperProps.icon}</p>
-                                                                        <CircularProgress className={classes.progress} size={25} thickness={3} />
-                                                                    </div>
-                                                            }
-                                                        </div>)
+                                <div ref={body} style={{backgroundColor:'#616161', overflowY:'auto', maxHeight: 400 }}>
+                                    <Stepper className={classes.stepper} activeStep={item.steps[item.steps.length - 1].code === CODE_FINISH ? item.steps.length : item.steps.length - 1} orientation="vertical">
+                                        {item.steps.map((step, index) => {
+                                            return (
+                                                step.message ?
+                                                    <Step key={index}>
+                                                        <StepLabel StepIconComponent={(stepperProps) => {
+                                                            return (<div className={classes.root}>
+                                                                {
+                                                                    stepperProps.completed ?
+                                                                        item.steps[stepperProps.icon - 1].code === CODE_FAILED ?
+                                                                            <ErrorIcon className={classes.error} /> :
+                                                                            <Check className={classes.success} /> :
+                                                                        <div className={classes.wrapper}>
+                                                                            <p className={classes.iconLabel}>{stepperProps.icon}</p>
+                                                                            <CircularProgress className={classes.progress} size={25} thickness={3} />
+                                                                        </div>
+                                                                }
+                                                            </div>)
 
-                                                    }}><p className={classes.label}>{step.message}</p></StepLabel>
-                                                </Step>
-                                                :
-                                                null
-                                        )
-                                    })}
-                                </Stepper>
+                                                        }}><p className={classes.label}>{step.message}</p></StepLabel>
+                                                    </Step>
+                                                    :
+                                                    null
+                                            )
+                                        })}
+                                    </Stepper>
+                                </div>
                             </Popover>
                             :
                             null
