@@ -98,7 +98,7 @@ class SiteFourPageOrganization extends React.Component {
                 if (response.data.length == 0) {
                     _self.setState({ devData: [] })
                     _self.props.handleDataExist(false)
-                    _self.props.handleAlertInfo('error', 'There is no data')
+                    _self.props.handleAlertInfo('error', 'Requested data is empty')
                 } else {
                     _self.setState({ devData: response.data })
                     _self.props.handleDataExist(true)

@@ -18,22 +18,24 @@ class SiteFourPageApps extends React.Component {
         this.state = {
             shouldShowBox: true,
             shouldShowCircle: false,
-            contHeight:0,
-            contWidth:0,
-            bodyHeight:0,
+            contHeight: 0,
+            contWidth: 0,
+            bodyHeight: 0,
             activeItem: 'Developers',
-            devData:[],
-            detailData:[],
-            viewMode:'listView',
-            randomId:0,
-            regionToggle:false
+            devData: [],
+            detailData: [],
+            viewMode: 'listView',
+            randomId: 0,
+            regionToggle: false
         };
+        this.requestCount = 0;
+        this.multiRequestData = [];
         this.headerH = 70;
         this.hgap = 0;
         this.loadCount = 0;
 
-        this.headerLayout = [1,3,3,1,3,1,3,4];
-        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster','AuthPublicKey','DefaultFQDN','PackageName','ScaleWithCluster','Revision']
+        this.headerLayout = [1, 3, 3, 1, 3, 1, 3, 4];
+        this.hiddenKeys = ['ImagePath', 'DeploymentMF', 'ImageType', 'Command', 'Cluster', 'AuthPublicKey', 'DefaultFQDN', 'PackageName', 'ScaleWithCluster', 'Revision']
         this.userToken = null;
 
     }
@@ -44,12 +46,11 @@ class SiteFourPageApps extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
 
     }
     //go to
     gotoPreview(site) {
-        //브라우져 입력창에 주소 기록
         let mainPath = site;
         let subPath = 'pg=0';
         _self.props.history.push({
@@ -58,7 +59,7 @@ class SiteFourPageApps extends React.Component {
             state: { some: 'state' }
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
 
     }
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -67,101 +68,101 @@ class SiteFourPageApps extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+        this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
+        this.setState({ contHeight: (window.innerHeight - this.headerH) / 2 - this.hgap })
     }
-    componentDidMount() {
-        // let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        // if(store && store.userToken) {
-        //     this.getDataDeveloper(store.userToken, this.props.region.value);
-        //     this.userToken = store.userToken;
-        // }
-    }
+   
     componentWillUnmount() {
-        this.setState({devData:[]})
+        this.setState({ devData: [] })
     }
 
 
     componentWillReceiveProps(nextProps) {
-        console.log("nextPropsnextProps",nextProps.regionInfo)
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
+        console.log("nextPropsnextProps", nextProps.regionInfo)
+        this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
+        this.setState({ contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap })
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(nextProps.receiveNewReg && nextProps.receiveNewReg.values) {
+        if (nextProps.receiveNewReg && nextProps.receiveNewReg.values) {
             //services.createNewApp('CreateApp', {params:nextProps.receiveNewReg.values, token:store.userToken, region:'US'}, _self.receiveResult)
         }
-        if(this.props.region.value !== nextProps.region.value){
+        if (this.props.region.value !== nextProps.region.value) {
             this.getDataDeveloper(store ? store.userToken : 'null', nextProps.region.value);
         }
 
-        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
-            _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
-            this.getDataDeveloper(store ? store.userToken : 'null',nextProps.region.value,nextProps.regionInfo.region);
+        if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
+            _self.setState({ regionToggle: true, regions: nextProps.regionInfo.region })
+            this.getDataDeveloper(store ? store.userToken : 'null', nextProps.region.value, nextProps.regionInfo.region);
         }
-        if(nextProps.computeRefresh.compute) {
-            this.getDataDeveloper(store ? store.userToken : 'null',nextProps.region.value);
+        if (nextProps.computeRefresh.compute) {
+            this.getDataDeveloper(store ? store.userToken : 'null', nextProps.region.value);
             this.props.handleComputeRefresh(false);
         }
-        if(nextProps.viewMode) {
-            if(nextProps.viewMode === 'listView') {
-                this.setState({viewMode:nextProps.viewMode});
-                setTimeout(() => this.setState({devData:this.state.devData, randomId:Math.random()*1000}), 300)
+        if (nextProps.viewMode) {
+            if (nextProps.viewMode === 'listView') {
+                this.setState({ viewMode: nextProps.viewMode });
+                setTimeout(() => this.setState({ devData: this.state.devData, randomId: Math.random() * 1000 }), 300)
             } else {
-                this.setState({detailData:nextProps.detailData})
+                this.setState({ detailData: nextProps.detailData })
                 this.forceUpdate()
-                setTimeout(() => this.setState({viewMode:nextProps.viewMode}), 600)
+                setTimeout(() => this.setState({ viewMode: nextProps.viewMode }), 600)
             }
 
         }
     }
 
     receiveResult = (mcRequest) => {
+        _self.requestCount -= 1;
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                let join = null;
-                if (response.data[0]['Edit']) {
-                    join = _self.state.devData.concat(response.data);
-                } else {
-                    join = _self.state.devData;
-                }
-                _self.setState({ devData: join })
-                _self.loadCount++;
-                if (rgn.length == _self.loadCount) {
-                    return
+                if (response.data.length > 0) {
+                    _self.multiRequestData = [..._self.multiRequestData, ...response.data]
                 }
             }
         }
-        _self.props.handleLoadingSpinner(false);
+
+        if (_self.requestCount === 0) {
+            if (_self.multiRequestData.length > 0) {
+                _self.setState({
+                    devData: _self.multiRequestData
+                })
+            } else {
+                _self.props.handleComputeRefresh(false);
+                _self.props.handleAlertInfo('error', 'Requested data is empty')
+            }
+        }
     }
 
     getDataDeveloper = (token, region, regionArr) => {
-        this.props.handleLoadingSpinner(true);
-        let serviceBody = {}
-        _self.loadCount = 0;
-        this.setState({devData:[]})
-        if(region !== 'All'){
+        this.setState({ devData: [] }) 
+        this.requestCount = 0;
+        this.multiRequestData = [];
+
+        if (region !== 'All') {
             rgn = [region]
         } else {
-            rgn = (regionArr)?regionArr:this.props.regionInfo.region;
+            rgn = (regionArr) ? regionArr : this.props.regionInfo.region;
         }
-        if(localStorage.selectRole == 'AdminManager') {
-            rgn.map((item) => {
-                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP,data:{region:item}}, _self.receiveResult)
-            })
-        } else {
-            rgn.map((item) => {
-                let data = {
-                        "region":item,
-                        "app":{
-                            "key":{
-                                "developer_key":{"name":localStorage.selectOrg},
+
+        if (rgn && rgn.length > 0) {
+            this.requestCount = rgn.length;
+            if (localStorage.selectRole == 'AdminManager') {
+                rgn.map((item) => {
+                    serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP, data: { region: item } }, _self.receiveResult)
+                })
+            } else {
+                rgn.map((item) => {
+                    let data = {
+                        "region": item,
+                        "app": {
+                            "key": {
+                                "developer_key": { "name": localStorage.selectOrg },
                             }
                         }
-                }
-                // org별 show app
-                serviceMC.sendRequest(_self, {token:token,method:serviceMC.getEP().SHOW_APP,data:data}, _self.receiveResult);
-            })
+                    }
+                    serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_APP, data: data }, _self.receiveResult);
+                })
+            }
         }
 
     }
@@ -174,8 +175,8 @@ class SiteFourPageApps extends React.Component {
     render() {
         const { viewMode, detailData, devData, randomId } = this.state;
         return (
-            (viewMode === 'listView')?
-            <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} randomId={randomId} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
+            (viewMode === 'listView') ?
+                <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'App'} randomId={randomId} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
                 :
                 <ListDetailViewer data={detailData} dimmer={false} open={this.state.openDetail} siteId={'App'} close={this.closeDetail} siteId={this.props.siteId}></ListDetailViewer>
         );
@@ -184,7 +185,7 @@ class SiteFourPageApps extends React.Component {
 };
 
 const mapStateToProps = (state) => {
-    let registNew= state.form.registNewListInput
+    let registNew = state.form.registNewListInput
         ? {
             values: state.form.registNewListInput.values,
             submitSucceeded: state.form.registNewListInput.submitSucceeded
@@ -197,30 +198,30 @@ const mapStateToProps = (state) => {
         : {};
     let viewMode = null;
     let detailData = null;
-    if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+    if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
         viewMode = state.changeViewMode.mode.viewMode;
         detailData = state.changeViewMode.mode.data;
     }
-    let regionInfo = (state.regionInfo)?state.regionInfo:null;
+    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     return {
-        receiveNewReg:registNew,
-        region:region,
-        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
-        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
-        userRole : state.showUserRole?state.showUserRole.role:null,
-        viewMode : viewMode, detailData:detailData,
+        receiveNewReg: registNew,
+        region: region,
+        computeRefresh: (state.computeRefresh) ? state.computeRefresh : null,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
+        userRole: state.showUserRole ? state.showUserRole.role : null,
+        viewMode: viewMode, detailData: detailData,
         regionInfo: regionInfo
     }
 };
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
+        handleInjectData: (data) => { dispatch(actions.injectData(data)) },
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data)) },
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data)) },
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
     };
 };
 

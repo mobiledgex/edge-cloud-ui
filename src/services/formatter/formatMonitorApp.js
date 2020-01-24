@@ -97,7 +97,7 @@ columns =
 export const formatData = (datas) => {
     let values = [];
     try {
-        if (datas.data) {
+        if (datas.data && datas.data.length > 0) {
             if (datas.data.data.length > 0) {
                 if (datas.data.data[0].Series.length > 0) {
                     let result = datas.data.data[0].Series[0];
