@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import DeveloperListView from '../../../container/developerListView';
@@ -101,9 +102,11 @@ class SiteFourPageFlavor extends React.Component {
 
         if (_self.requestCount === 0) {
             if (_self.multiRequestData.length > 0) {
+                let sortedData = _.orderBy(_self.multiRequestData, ['Region', 'FlavorName'])
                 _self.setState({
-                    devData: _self.multiRequestData
+                    devData: sortedData
                 })
+                _self.multiRequestData = [];
             } else {
                 _self.props.handleComputeRefresh(false);
                 _self.props.handleAlertInfo('error', 'Requested data is empty')
