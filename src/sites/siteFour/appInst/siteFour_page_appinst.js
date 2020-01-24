@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import sizeMe from 'react-sizeme';
@@ -145,9 +146,11 @@ class SiteFourPageAppInst extends React.Component {
 
         if (_self.requestCount === 0) {
             if (_self.multiRequestData.length > 0) {
+                let sortedData = _.orderBy(_self.multiRequestData, ['Region', 'AppName'])
                 _self.setState({
-                    devData: _self.multiRequestData
+                    devData: sortedData
                 })
+                _self.multiRequestData = [];
             } else {
                 _self.props.handleComputeRefresh(false);
                 _self.props.handleAlertInfo('error', 'Requested data is empty')

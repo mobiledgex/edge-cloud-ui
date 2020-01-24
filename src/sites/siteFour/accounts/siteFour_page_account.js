@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import AccountListView from '../../../container/accountsListView';
@@ -95,8 +96,8 @@ class SiteFourPageAccount extends React.Component {
             if (mcRequest.response) {
                 let response = mcRequest.response;
                 if (response.data.length > 0) {
-                    let reverseResult = response.data.reverse();
-                    _self.setState({ devData: reverseResult })
+                    let sortedData = _.orderBy(response.data, ['Username'])
+                    _self.setState({ devData: sortedData })
                 }
                 else {
                     _self.props.handleAlertInfo('error', 'Requested data is empty')
