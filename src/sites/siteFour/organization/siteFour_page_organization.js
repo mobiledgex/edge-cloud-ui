@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import DeveloperListView from '../../../container/developerListView';
@@ -100,7 +101,8 @@ class SiteFourPageOrganization extends React.Component {
                     _self.props.handleDataExist(false)
                     _self.props.handleAlertInfo('error', 'Requested data is empty')
                 } else {
-                    _self.setState({ devData: response.data })
+                    let sortedData = _.orderBy(response.data, ['Organization'])
+                    _self.setState({ devData: sortedData })
                     _self.props.handleDataExist(true)
                 }
             }

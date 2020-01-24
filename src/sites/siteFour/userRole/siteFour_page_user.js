@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import DeveloperListView from '../../../container/developerListView';
@@ -81,8 +82,8 @@ class SiteFourPageUser extends React.Component {
             if (mcRequest.response) {
                 let response = mcRequest.response;
                 if (response.data.length > 0) {
-                    let reverseResult = response.data.reverse();
-                    _self.setState({ devData: reverseResult })
+                    let sortedData = _.orderBy(response.data, ['Username'])
+                    _self.setState({ devData: sortedData })
                     _self.props.handleLoadingSpinner(false);
                 }
                 else {
