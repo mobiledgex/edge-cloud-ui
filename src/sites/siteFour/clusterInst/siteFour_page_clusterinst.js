@@ -110,14 +110,24 @@ class SiteFourPageClusterInst extends React.Component {
    
     receiveClusterInstResult = (mcRequestList) => {
         _self.requestCount -= 1;
-        if (mcRequestList) {
+        if (mcRequestList && mcRequestList.length) {
             let cloudletDataList = [];
             let clusterDataList = [];
             mcRequestList.map(mcRequest => {
                 if (mcRequest.response) {
-                    if (mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET) {
-                        cloudletDataList = mcRequest.response.data;
+                    
+                    //
+                    let requestData = null;
+                    if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+                        if (mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET) {
+                            cloudletDataList = mcRequest.response.data;
+                        }
+                    } else {
+                        if (mcRequest.request.method === serviceMC.getEP().SHOW_ORG_CLOUDLET) {
+                            cloudletDataList = mcRequest.response.data;
+                        }
                     }
+                    //
                     if (mcRequest.request.method === serviceMC.getEP().SHOW_CLUSTER_INST) {
                         clusterDataList = mcRequest.response.data;
                     }
