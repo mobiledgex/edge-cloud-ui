@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
@@ -8,7 +9,6 @@ import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
 import PageDetailViewer from '../../../container/pageDetailViewer';
 import MapWithListView from "../../../container/mapWithListView";
-import * as reducer from '../../../utils'
 
 let _self = null;
 let rgn = [];
@@ -19,23 +19,23 @@ class SiteFourPageClusterInst extends React.Component {
         this.state = {
             shouldShowBox: true,
             shouldShowCircle: false,
-            contHeight:0,
-            contWidth:0,
-            bodyHeight:0,
-            devData:[],
-            viewMode:'listView',
-            detailData:null,
-            regionToggle:false,
-            dataSort:false
+            contHeight: 0,
+            contWidth: 0,
+            bodyHeight: 0,
+            devData: [],
+            viewMode: 'listView',
+            detailData: null,
+            regionToggle: false,
+            dataSort: false
         };
-        this.clusterInstDummy = [];
-        this.cloudletDummy = [];
+        this.requestCount = 0;
+        this.multiRequestData = [];
         this.headerH = 70;
         this.hgap = 0;
         this.loadCount = 0;
         this.countObject = {};
-        this.headerLayout = [1,2,2,2,2,1,2,2,1,2];
-        this.hiddenKeys = ['Status','Deployment']
+        this.headerLayout = [1, 2, 2, 2, 2, 1, 2, 2, 1, 2];
+        this.hiddenKeys = ['Status', 'Deployment']
 
     }
     gotoUrl(site, subPath) {
@@ -45,7 +45,7 @@ class SiteFourPageClusterInst extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
     }
     //go to
     gotoPreview(site) {
@@ -58,7 +58,7 @@ class SiteFourPageClusterInst extends React.Component {
             state: { some: 'state' }
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
 
     }
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -67,209 +67,186 @@ class SiteFourPageClusterInst extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+        this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
+        this.setState({ contHeight: (window.innerHeight - this.headerH) / 2 - this.hgap })
         rgn.map((region) => {
             this.countObject[region] = []
         })
     }
 
-    componentWillUnmount() {
-        this.clusterInstDummy = [];
-        this.cloudletDummy = [];
-        this.setState({devData:[]})
-    }
-
-
     componentWillReceiveProps(nextProps) {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
+        this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
 
-        if(nextProps.computeRefresh.compute) {
+        if (nextProps.computeRefresh.compute) {
             this.getDataDeveloper(nextProps.changeRegion);
             this.props.handleComputeRefresh(false);
-            this.setState({dataSort:true});
+            this.setState({ dataSort: true });
         }
-        if(this.props.changeRegion !== nextProps.changeRegion){
+        if (this.props.changeRegion !== nextProps.changeRegion) {
             this.getDataDeveloper(nextProps.changeRegion);
         }
-        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
-            _self.setState({regionToggle:true,regions:nextProps.regionInfo.region})
-            this.getDataDeveloper(nextProps.changeRegion,nextProps.regionInfo.region);
+        if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
+            _self.setState({ regionToggle: true, regions: nextProps.regionInfo.region })
+            this.getDataDeveloper(nextProps.changeRegion, nextProps.regionInfo.region);
         }
-        if(nextProps.viewMode) {
-            if(nextProps.viewMode === 'listView') {
-                this.setState({viewMode:nextProps.viewMode})
+        if (nextProps.viewMode) {
+            if (nextProps.viewMode === 'listView') {
+                this.setState({ viewMode: nextProps.viewMode })
             } else {
-                this.setState({detailData:nextProps.detailData})
+                this.setState({ detailData: nextProps.detailData })
                 this.forceUpdate()
-                setTimeout(() => this.setState({viewMode:nextProps.viewMode}), 600)
+                setTimeout(() => this.setState({ viewMode: nextProps.viewMode }), 600)
             }
 
         }
         //make hidden key
         let tbHeader = nextProps.headerFilter;
-        if(tbHeader) {
+        if (tbHeader) {
             this.setHiddenKey(tbHeader)
         }
         setTimeout(() => this.forceUpdate(), 1000)
     }
-    receiveResult(result) {
-        let join = null;
-        if(result[0]['Edit']) {
-            join = this.state.devData.concat(result);
-        } else {
-            join = this.state.devData;
-        }
 
-        if(result.error) {
-            this.props.handleAlertInfo('error',result.error)
-        } else {
-            _self.setState({devData:join})
-        }
-    }
+   
+    receiveClusterInstResult = (mcRequestList) => {
+        _self.requestCount -= 1;
+        if (mcRequestList) {
+            let cloudletDataList = [];
+            let clusterDataList = [];
+            mcRequestList.map(mcRequest => {
+                if (mcRequest.response) {
+                    if (mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET) {
+                        cloudletDataList = mcRequest.response.data;
+                    }
+                    if (mcRequest.request.method === serviceMC.getEP().SHOW_CLUSTER_INST) {
+                        clusterDataList = mcRequest.response.data;
+                    }
+                }
+                return null;
+            })
 
-    receiveResultClusterInst(mcRequest) {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                _self.props.handleLoadingSpinner();
-                _self.props.handleLoadingSpinner(false);
-                _self.groupJoin(response.data, 'clusterInst')
-            }
-        }
-    }
-
-    receiveResultCloudlet(mcRequest) {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                _self.props.handleLoadingSpinner();
-                _self.groupJoin(response.data, 'cloudlet')
-            }
-        }
-    }
-
-    groupJoin(result,cmpt){
-        let regionGroup = (!result.error) ? reducer.groupBy(result, 'Region'):{};
-        if(Object.keys(regionGroup)[0]) {
-            if(cmpt == 'clusterInst') this.clusterInstDummy = _self.clusterInstDummy.concat(result)
-            else if(cmpt == 'cloudlet') this.cloudletDummy = _self.cloudletDummy.concat(result)
-        }
-        _self.loadCount ++;
-        if(rgn.length*2 == this.loadCount){
-            _self.countJoin()
-        }
-        
-
-    }
-    countJoin() {
-        let clusterInst = this.clusterInstDummy;
-        let cloudlet = this.cloudletDummy;
-        this.props.handleLoadingSpinner(false);
-        if(clusterInst && clusterInst.length) {
-            try{
-                clusterInst.map((itemCinst,i) => {
-                    cloudlet.map((itemClet,j) => {
-                        if(itemCinst.Cloudlet === itemClet.CloudletName) {
-                            itemCinst.CloudletLocation = itemClet.CloudletLocation;
+            if(clusterDataList.length > 0)
+            {
+                clusterDataList.map(clusterData =>{
+                    cloudletDataList.map(cloudletData=>{
+                        if (clusterData.Cloudlet === cloudletData.CloudletName) {
+                            clusterData.CloudletLocation = cloudletData.CloudletLocation;
                         }
                     })
                 })
-                _self.setState({devData:clusterInst,dataSort:false})
-            } catch(e) {
-
+                _self.multiRequestData = [..._self.multiRequestData, ...clusterDataList]
             }
 
+            if (_self.requestCount === 0) {
+                if (_self.multiRequestData.length > 0) {
+                    let sortedData = _.orderBy(_self.multiRequestData, ['Region', 'ClusterName'])
+                    _self.setState({
+                        devData: sortedData
+                    })
+                    _self.multiRequestData = [];
+                } else {
+                    _self.props.handleComputeRefresh(false);
+                    _self.props.handleAlertInfo('error', 'Requested data is empty')
+                }
+            } 
         }
-
-
     }
-    
-    getDataDeveloper = (region,regionArr) => {
+
+    getDataDeveloper = (region, regionArr) => {
+
         _self.props.handleLoadingSpinner(true);
         _self.loadCount = 0;
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        _self.clusterInstDummy = [];
-        _self.cloudletDummy = [];
-        _self.setState({devData:[]})
-        //TODO: region에 대한 데이터를  DB에서 가져와야 함.
+        this.multiRequestData = [];
+        _self.setState({ devData: [] })
 
         let serviceBody = {}
-        _self.setState({devData:[], cloudletData:[], clusterInstData:[]})
-        if(region !== 'All'){
+        _self.setState({ devData: [], cloudletData: [], clusterInstData: [] })
+        if (region !== 'All') {
             rgn = [region];
         } else {
-            rgn = (regionArr)?regionArr:this.props.regionInfo.region;
-        }
-        
-        let token = store ? store.userToken : 'null';
-        if (localStorage.selectRole == 'AdminManager') {
-            rgn.map((item) => {
-                //serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
-                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
-                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: item } }, _self.receiveResultClusterInst)
-            })
-        } else {
-            rgn.map((item) => {
-                let data = {
-                    region: item,
-                    clusterinst: {
-                        key: {
-                            developer: localStorage.selectOrg
-                        }
-                    }
-                }
-                //serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResultCloudlet)
-                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org:_self.props.selectOrg || localStorage.selectOrg } }, _self.receiveResultCloudlet)
-                serviceMC.sendRequest(_self, { token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: data }, _self.receiveResultClusterInst)
-            })
+            rgn = (regionArr) ? regionArr : this.props.regionInfo.region;
         }
 
+        
+        if (rgn && rgn.length > 0) {
+            this.requestCount = rgn.length;
+            let token = store ? store.userToken : 'null';
+            if (localStorage.selectRole == 'AdminManager') {
+                rgn.map((item) => {
+                    let requestList = [];
+                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } })
+                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: item } })
+                    serviceMC.sendMultiRequest(_self, requestList, _self.receiveClusterInstResult)
+                })
+            } else {
+                rgn.map((item) => {
+                    let data = {
+                        region: item,
+                        clusterinst: {
+                            key: {
+                                developer: localStorage.selectOrg
+                            }
+                        }
+                    }
+                    let requestList = [];
+                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item } })
+                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: data })
+                    serviceMC.sendMultiRequest(_self, requestList, _self.receiveClusterInstResult)
+                })
+            }
+        }
     }
-    getDataDeveloperSub = (region) => {
-        let _region = (region)?region:'All';
-        this.getDataDeveloper(_region);
-    }
-    render() {
-        const {shouldShowBox, shouldShowCircle, devData} = this.state;
-        const { activeItem, viewMode } = this.state;
-        let randomValue = Math.round(Math.random() * 100);
-        return (
-            (viewMode === 'listView')?
+    
+getDataDeveloperSub = (region) => {
+    let _region = (region) ? region : 'All';
+    this.getDataDeveloper(_region);
+}
+render() {
+    const { devData, viewMode } = this.state;
+    let randomValue = Math.round(Math.random() * 100);
+    return (
+        (viewMode === 'listView') ?
             <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
             :
-            <PageDetailViewer className="ttt" data={this.state.detailData} page='clusterInst'/>
-        );
-    }
+            <PageDetailViewer className="ttt" data={this.state.detailData} page='clusterInst' />
+    );
+}
+
+componentWillUnmount() {
+    this.multiRequestData = [];
+    this.setState({ devData: [] })
+}
+
 
 };
 
 const mapStateToProps = (state) => {
     let viewMode = null;
     let detailData = null;
-    if(state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
+    if (state.changeViewMode.mode && state.changeViewMode.mode.viewMode) {
         viewMode = state.changeViewMode.mode.viewMode;
         detailData = state.changeViewMode.mode.data;
     }
-    let regionInfo = (state.regionInfo)?state.regionInfo:null;
+    let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     return {
-        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null,
-        changeRegion : state.changeRegion.region?state.changeRegion.region:null,
-        selectOrg : state.selectOrg.org?state.selectOrg.org:null,
-        userRole : state.showUserRole?state.showUserRole.role:null,
-        viewMode : viewMode, detailData:detailData,
+        computeRefresh: (state.computeRefresh) ? state.computeRefresh : null,
+        changeRegion: state.changeRegion.region ? state.changeRegion.region : null,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
+        userRole: state.showUserRole ? state.showUserRole.role : null,
+        viewMode: viewMode, detailData: detailData,
         regionInfo: regionInfo,
-        selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : null
+        //selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : null
     }
 };
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
+        handleInjectData: (data) => { dispatch(actions.injectData(data)) },
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data)) },
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data)) },
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) }
     };
 };
 export default withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({ monitorHeight: true })(SiteFourPageClusterInst)));
