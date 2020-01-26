@@ -1015,60 +1015,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
 
 
-                        {/*todo:---------------------------*/}
-                        {/*todo:Cluster Dropdown         */}
-                        {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box">
-                            <div className="page_monitoring_dropdown_label">
-                                Cluster
-                            </div>
-                            <Dropdown
-                                disabled={this.state.loading}
-                                value={this.state.currentCluster}
-                                clearable={this.state.clusterSelectBoxClearable}
-                                loading={this.state.loading}
-                                placeholder={this.state.clusterSelectBoxPlaceholder}
-                                selection
-                                options={this.state.clusterList}
-                                // style={Styles.dropDown}
-                                onChange={async (e, {value}) => {
-                                    await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, value)
-
-                                    setTimeout(() => {
-                                        this.setState({
-                                            appInstSelectBoxPlaceholder: "Select App Instance",
-                                            currentAppInst: '',
-                                        })
-                                    }, 500)
-                                }}
-                            />
-                        </div>
-
-                        {/*todo:---------------------------*/}
-                        {/*todo: App Instance Dropdown      */}
-                        {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box">
-                            <div className="page_monitoring_dropdown_label">
-                                App Inst
-                            </div>
-                            <Dropdown
-                                disabled={this.state.loading}
-                                clearable={this.state.appInstSelectBoxClearable}
-                                loading={this.state.loading}
-                                value={this.state.currentAppInst}
-                                placeholder='Select App Instance'
-                                selection
-                                options={this.state.appInstanceListTop5}
-                                // style={Styles.dropDown}
-                                onChange={async (e, {value}) => {
-
-                                    await this.setState({
-                                        currentAppInst: value,
-                                    })
-                                    await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
-                                }}
-                            />
-                        </div>
 
                         {/*todo:---------------------------*/}
                         {/*todo: Time Range Dropdown       */}
