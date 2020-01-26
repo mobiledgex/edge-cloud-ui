@@ -20,8 +20,8 @@ import {
     filterAppInstOnCloudlet,
     filterInstanceCountOnCloutLetOne,
     filterUsageByType,
-    filterUsageListByRegion, getCloudletLevelMatric,
-    getUsageList,
+    filterUsageListByRegion, getClusterList,
+    getAppLevelUsageList,
     instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
     makeClusterListSelectBox,
@@ -37,7 +37,7 @@ import {
     renderPlaceHolder2,
     renderSixGridInstanceOnCloudletGrid, getAppLevelMetrics,
     requestShowAppInstanceList,
-    Styles
+    Styles, getClouletLevelUsageList
 } from "./PageMonitoringService";
 import {
     APPINSTANCE_INIT_VALUE,
@@ -253,41 +253,50 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let token = store ? store.userToken : 'null';
             console.log('token===>', token);
 
-
-            try {
-                await this.loadInitData();
-            } catch (e) {
-                showToast(e)
-                this.setState({
-                    loading: false,
-                    allCpuUsageList: [],
-                    allMemUsageList: [],
-                    allNetworkUsageList: [],
-                    allDiskUsageList: [],
-                    cloudletList: [],
-                    clusterList: [],
-                    filteredCpuUsageList: [],
-                    filteredMemUsageList: [],
-                    filteredNetworkUsageList: [],
-                    filteredDiskUsageList: [],
-                    appInstanceListTop5: [],
-                    allGridInstanceList: [],
-                    filteredGridInstanceList: [],
-                    gridInstanceListMemMax: 0,
-                    gridInstanceListCpuMax: 0,
-                })
-            }
+            await this.loadInitData();
+            this.setState({
+                loading: false,
+                allCpuUsageList: [],
+                allMemUsageList: [],
+                allNetworkUsageList: [],
+                allDiskUsageList: [],
+                cloudletList: [],
+                clusterList: [],
+                filteredCpuUsageList: [],
+                filteredMemUsageList: [],
+                filteredNetworkUsageList: [],
+                filteredDiskUsageList: [],
+                appInstanceListTop5: [],
+                allGridInstanceList: [],
+                filteredGridInstanceList: [],
+                gridInstanceListMemMax: 0,
+                gridInstanceListCpuMax: 0,
+            })
 
         }
 
         async loadInitData() {
 
-            let results= await getCloudletLevelMatric();
-            console.log('getCloudletLevelMatric===>', results);
+            let results = await getClusterList();
+            console.log('getClusterList===>', results);
 
-            this.setState({
-                isAppInstaceDataReady: true,
+            let cloudletList = [];
+            results.map(item => {
+                /*{text: 'FLAVOR', value: 'flavor'},*/
+                cloudletList.push({
+                    text: item.CloudletName,
+                    value: item.CloudletName,
+                })
             })
+
+
+            await this.setState({
+                isAppInstaceDataReady: true,
+                cloudletList: cloudletList,
+            })
+
+            //let usageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
+
 
         }
 
@@ -475,7 +484,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let endTime = makeCompleteDateTime(this.state.endTime);
 
                 this.setState({loading: true})
-                let usageList = await getUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                let usageList = await getAppLevelUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                 this.setState({
                     usageListByDate: usageList,
                     loading: false
@@ -942,7 +951,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             >RESET</Button>
                         </div>
                         <div style={{marginLeft: 50}}>
-                            {this.state.userType}2222====>Page FOr Opertator(고경준 천재님이십니다)..
+                            {this.state.userType}2222====>Page FOr Opertator()..
                         </div>
                     </Grid.Row>
                 </div>
@@ -1004,16 +1013,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={this.state.cloudletList}
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
-                                    await this.filterByEachTypes(this.state.currentRegion, value)
-                                    setTimeout(() => {
-                                        this.setState({
-                                            clusterSelectBoxPlaceholder: 'Select Cluster'
-                                        })
-                                    }, 1000)
+
+                                    this.setState({
+                                        currentCloudLet: value,
+                                    })
+                                    /*   await this.filterByEachTypes(this.state.currentRegion, value)
+                                       setTimeout(() => {
+                                           this.setState({
+                                               clusterSelectBoxPlaceholder: 'Select Cluster'
+                                           })
+                                       }, 1000)*/
                                 }}
                             />
                         </div>
-
 
 
                         {/*todo:---------------------------*/}
@@ -1044,6 +1056,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     'Last 30 Days': [moment().subtract(30, 'd'), moment().subtract(1, 'd')],
                                     'This Month': [moment().startOf('month'), moment().endOf('month')],
                                     'Last Month': [moment().date(-30), moment().date(-1)],
+                                    'Last 90 Days': [moment().subtract(89, 'd'), moment().subtract(0, 'd')],
                                     'Last 182 Days': [moment().subtract(181, 'd'), moment().subtract(0, 'd')],
                                     'Last 365 Days': [moment().subtract(364, 'd'), moment().subtract(0, 'd')],
                                     'Last 730 Days': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],

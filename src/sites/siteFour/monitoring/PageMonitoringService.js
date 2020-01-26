@@ -1259,7 +1259,7 @@ export const filterUsageListByRegion = (pRegion, usageList) => {
     }
 }
 
-export const getCloudletLevelMatric = async () => {
+export const getClusterList = async () => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
     let requestData = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
@@ -1379,7 +1379,7 @@ export const makeCompleteDateTime = (date: string) => {
 }
 
 
-export const getUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     let instanceBodyList = []
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
@@ -1620,6 +1620,33 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
     matrixedUsageList.push(diskUsageList)
     matrixedUsageList.push(connectionsUsageList)
     return matrixedUsageList;
+}
+
+
+
+export const getClouletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+
+    let instanceBodyList = []
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+    for (let index = 0; index < cloudletList.length; index++) {
+        //todo: Create a data FORM format for requests
+        let instanceInfoOneForm = makeFormForAppInstance(cloudletList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
+        instanceBodyList.push(instanceInfoOneForm);
+    }
+
+    /*
+    "starttime": "2019-06-11T21:26:00Z",
+    "endtime": "2019-12-31T21:26:00Z"
+    */
+    let promiseList = []
+    for (let index = 0; index < instanceBodyList.length; index++) {
+        promiseList.push(getClusterList(instanceBodyList[index]))
+    }
+
+    let appInstanceHealthCheckList = []
+    appInstanceHealthCheckList = await Promise.all(promiseList);
+
+
 }
 
 

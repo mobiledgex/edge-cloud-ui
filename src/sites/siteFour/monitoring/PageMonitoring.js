@@ -21,7 +21,7 @@ import {
     filterInstanceCountOnCloutLetOne,
     filterUsageByType,
     filterUsageListByRegion,
-    getUsageList,
+    getAppLevelUsageList,
     instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
     makeClusterListSelectBox,
@@ -332,7 +332,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             });
             let usageList = [];
             try {
-                usageList = await getUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                usageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
             } catch (e) {
                 showToast(e.toString())
             }
@@ -600,7 +600,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 let endTime = makeCompleteDateTime(this.state.endTime);
 
                 this.setState({loading: true})
-                let usageList = await getUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+                let usageList = await getAppLevelUsageList(this.state.appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
                 this.setState({
                     usageListByDate: usageList,
                     loading: false
