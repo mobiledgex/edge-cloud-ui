@@ -11,6 +11,8 @@ import BubbleChart from "../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../shared/Types";
 import PageMonitoring from "./PageMonitoring";
 import {showToast} from "./PageMonitoringChartService";
+import {SHOW_CLOUDLET} from "../../../services/endPointTypes";
+import {sendSyncRequest} from "../../../services/serviceMC";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -734,54 +736,6 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
 }
 
 
-export const getMetricsUtilizationAtAppLevel_TEST = async (appInstanceOne) => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    let responseRslt = await axios({
-        url: '/api/v1/auth/metrics/app',
-        method: 'post',
-        data: {
-            "region": "EU",
-            "appinst": {
-                "app_key": {
-                    "developer_key": {
-                        "name": "MobiledgeX"
-                    },
-                    "name": "bicTestApp1112-01",
-                    "version": "1.0"
-                },
-                "cluster_inst_key": {
-                    "cluster_key": {
-                        "name": "qqqaaa"
-                    },
-                    "cloudlet_key": {
-                        "operator_key": {
-                            "name": ""
-                        }
-                    }
-                }
-            },
-            "starttime": "2019-09-11T21:26:04Z",
-            "endtime": "2020-01-02T21:26:10Z",
-            "last": 1,
-            "selector": "cpu"
-        },
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + store.userToken
-
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        throw new Error(e)
-    })
-
-    return responseRslt;
-
-}
-
-
 export const getMetricsUtilizationAtAtClusterLevel = async (appInstanceOne) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
 
@@ -1305,6 +1259,34 @@ export const filterUsageListByRegion = (pRegion, usageList) => {
     }
 }
 
+export const getCloudletLevelMatric = async () => {
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+    let requestData = {token: token, method: SHOW_CLOUDLET, data: {region: 'EU'}};
+    let requestData2 = {token: token, method: SHOW_CLOUDLET, data: {region: 'US'}};
+    let promiseList = []
+    promiseList.push(sendSyncRequest(this, requestData))
+    promiseList.push(sendSyncRequest(this, requestData2))
+    let showCloudletList = await Promise.all(promiseList);
+    /*console.log('results===EU>', showCloudletList[0].response.data);
+    console.log('results===US>', showCloudletList[1].response.data);*/
+
+    let resultList = [];
+    showCloudletList.map(item => {
+        //@todo : null check
+        if ( item.response.data["0"].Region!==''){
+            let cloudletList  = item.response.data;
+            cloudletList.map(item=>{
+                resultList.push(item);
+            })
+        }
+
+    })
+
+    return resultList;
+
+}
+
 
 /**
  * @todo : fetch App Instance List BY region
@@ -1368,7 +1350,7 @@ export const requestShowAppInstanceList = async (pArrayRegion = ['EU', 'US']) =>
  * @param serviceBodyForAppInstanceOneInfo
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const requestAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) => {
+export const getAppLevelMetrics = async (serviceBodyForAppInstanceOneInfo: any) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let result = await axios({
         url: '/api/v1/auth/metrics/app',
@@ -1417,7 +1399,7 @@ export const getUsageList = async (appInstanceList, pHardwareType, recentDataLim
     */
     let promiseList = []
     for (let index = 0; index < instanceBodyList.length; index++) {
-        promiseList.push(requestAppLevelMetrics(instanceBodyList[index]))
+        promiseList.push(getAppLevelMetrics(instanceBodyList[index]))
     }
     //todo: Bring health check list(cpu,mem,network,disk..) to the number of apps instance, by parallel request
 
