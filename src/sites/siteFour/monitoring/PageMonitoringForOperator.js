@@ -282,11 +282,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         async loadInitData() {
 
-
             let results= await getCloudletLevelMatric();
-
-            console.log('resultsresults===>', results);
-
+            console.log('getCloudletLevelMatric===>', results);
 
             this.setState({
                 isAppInstaceDataReady: true,
