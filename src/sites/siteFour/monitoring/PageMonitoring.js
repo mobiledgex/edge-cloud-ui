@@ -262,7 +262,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     allMemUsageList: [],
                     allNetworkUsageList: [],
                     allDiskUsageList: [],
-                    cloudletList: [],
+                    dropdownCloudletList: [],
                     clusterList: [],
                     filteredCpuUsageList: [],
                     filteredMemUsageList: [],
@@ -355,7 +355,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allNetworkUsageList: usageList[2],//networkUsage
                 allDiskUsageList: usageList[3],//disk is last array
                 allConnectionsUsageList: usageList[4],
-                cloudletList: cloudletList,
+                dropdownCloudletList: cloudletList,
                 clusterList: clusterList,
                 filteredCpuUsageList: usageList[0],
                 filteredMemUsageList: usageList[1],
@@ -454,7 +454,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading0: true,
                 appInstanceListSortByCloudlet: [],
                 currentRegion: pRegion,
-                cloudletList: [],
+                dropdownCloudletList: [],
             })
 
             //todo: -------------------------------------------
@@ -546,7 +546,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
-                cloudletList: cloudletSelectBoxList,
+                dropdownCloudletList: cloudletSelectBoxList,
                 clusterList: clusterSelectBoxList,
                 currentCloudLet: pCloudLet,
                 currentCluster: pCluster,

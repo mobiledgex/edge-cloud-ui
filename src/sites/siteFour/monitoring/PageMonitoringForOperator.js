@@ -20,7 +20,7 @@ import {
     filterAppInstOnCloudlet,
     filterInstanceCountOnCloutLetOne,
     filterUsageByType,
-    filterUsageListByRegion, getClusterList,
+    filterUsageListByRegion, getCloudletList,
     getAppLevelUsageList,
     instanceFlavorToPerformanceValue,
     makeCloudletListSelectBox,
@@ -101,7 +101,7 @@ type State = {
     appInstanceListGroupByCloudlet: any,
     loading: boolean,
     loading0: boolean,
-    cloudletList: any,
+    dropdownCloudletList: any,
     clusterInstanceGroupList: any,
     startTime: string,
     endTime: string,
@@ -260,7 +260,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allMemUsageList: [],
                 allNetworkUsageList: [],
                 allDiskUsageList: [],
-                cloudletList: [],
+                dropdownCloudletList: [],
                 clusterList: [],
                 filteredCpuUsageList: [],
                 filteredMemUsageList: [],
@@ -277,13 +277,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         async loadInitData() {
 
-            let results = await getClusterList();
-            console.log('getClusterList===>', results);
+            let cloudletList = await getCloudletList();
+            console.log('getClusterList===>', cloudletList);
 
-            let cloudletList = [];
-            results.map(item => {
+            let cloudletListForDropdown = [];
+            cloudletListForDropdown.map(item => {
                 /*{text: 'FLAVOR', value: 'flavor'},*/
-                cloudletList.push({
+                cloudletListForDropdown.push({
                     text: item.CloudletName,
                     value: item.CloudletName,
                 })
@@ -292,10 +292,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             await this.setState({
                 isAppInstaceDataReady: true,
-                cloudletList: cloudletList,
+                dropdownCloudletList: cloudletListForDropdown,
             })
 
-            //let usageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
+            let usageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
 
 
         }
@@ -338,7 +338,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading0: true,
                 appInstanceListSortByCloudlet: [],
                 currentRegion: pRegion,
-                cloudletList: [],
+                dropdownCloudletList: [],
             })
 
             //todo: -------------------------------------------
@@ -430,7 +430,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
-                cloudletList: cloudletSelectBoxList,
+                dropdownCloudletList: cloudletSelectBoxList,
                 clusterList: clusterSelectBoxList,
                 currentCloudLet: pCloudLet,
                 currentCluster: pCluster,
@@ -994,15 +994,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                         </div>
 
-                        {/*todo:---------------------------*/}
-                        {/*todo:CloudLet Dropdown       */}
-                        {/*todo:---------------------------*/}
-
+                        {/*todo:##########################*/}
+                        {/*todo:CloudLet Dropdown         */}
+                        {/*todo:##########################*/}
                         <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
                                 CloudLet
                             </div>
-
                             <Dropdown
                                 disabled={this.state.loading}
                                 value={this.state.currentCloudLet}
@@ -1010,10 +1008,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 loading={this.state.loading}
                                 placeholder={this.state.cloudLetSelectBoxPlaceholder}
                                 selection={true}
-                                options={this.state.cloudletList}
+                                options={this.state.dropdownCloudletList}
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
-
                                     this.setState({
                                         currentCloudLet: value,
                                     })
@@ -1028,9 +1025,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
 
 
-                        {/*todo:---------------------------*/}
+                        {/*todo:##########################*/}
                         {/*todo: Time Range Dropdown       */}
-                        {/*todo:---------------------------*/}
+                        {/*todo:##########################*/}
                         <div className="page_monitoring_dropdown_box">
                             {/* <div className="page_monitoring_dropdown_label">
                                 TimeRange

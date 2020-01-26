@@ -41,25 +41,25 @@ export const numberWithCommas = (x) => {
     }
 }
 
-export const makeFormForAppInstance = (instanceDataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
     if (pStartTime !== '' && pEndTime !== '') {
         return (
             {
                 "token": token,
                 "params": {
-                    "region": instanceDataOne.Region,
+                    "region": dataOne.Region,
                     "appinst": {
                         "app_key": {
-                            "developer_key": {"name": instanceDataOne.OrganizationName},
-                            "name": instanceDataOne.AppName.toLowerCase().replace(/\s+/g, ''),
-                            "version": instanceDataOne.Version
+                            "developer_key": {"name": dataOne.OrganizationName},
+                            "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
+                            "version": dataOne.Version
                         },
                         "cluster_inst_key": {
-                            "cluster_key": {"name": instanceDataOne.ClusterInst},
+                            "cluster_key": {"name": dataOne.ClusterInst},
                             "cloudlet_key": {
-                                "name": instanceDataOne.Cloudlet,
-                                "operator_key": {"name": instanceDataOne.Operator}
+                                "name": dataOne.Cloudlet,
+                                "operator_key": {"name": dataOne.Operator}
                             }
                         }
                     },
@@ -75,18 +75,18 @@ export const makeFormForAppInstance = (instanceDataOne, valid = "*", token, fetc
             {
                 "token": token,
                 "params": {
-                    "region": instanceDataOne.Region,
+                    "region": dataOne.Region,
                     "appinst": {
                         "app_key": {
-                            "developer_key": {"name": instanceDataOne.OrganizationName},
-                            "name": instanceDataOne.AppName.toLowerCase().replace(/\s+/g, ''),
-                            "version": instanceDataOne.Version
+                            "developer_key": {"name": dataOne.OrganizationName},
+                            "name": dataOne.AppName.toLowerCase().replace(/\s+/g, ''),
+                            "version": dataOne.Version
                         },
                         "cluster_inst_key": {
-                            "cluster_key": {"name": instanceDataOne.ClusterInst},
+                            "cluster_key": {"name": dataOne.ClusterInst},
                             "cloudlet_key": {
-                                "name": instanceDataOne.Cloudlet,
-                                "operator_key": {"name": instanceDataOne.Operator}
+                                "name": dataOne.Cloudlet,
+                                "operator_key": {"name": dataOne.Operator}
                             }
                         }
                     },
@@ -97,9 +97,29 @@ export const makeFormForAppInstance = (instanceDataOne, valid = "*", token, fetc
             }
         )
     }
-
-
 }
+
+
+export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
+
+    return (
+        {
+            "token": token,
+            "params": {
+                "region": dataOne.Region,
+                "cloudlet": {
+                    "operator_key": {
+                        "name": dataOne.Operator
+                    },
+                    "name": dataOne.CloudletName,
+                },
+                "last": fetchingDataNo,
+                "selector": "*"
+            }
+        }
+    )
+}
+
 
 export const isEmpty = (value) => {
     if (value == "" || value == null || value == undefined || (value != null && typeof value == "object" && !Object.keys(value).length)) {
@@ -1259,7 +1279,7 @@ export const filterUsageListByRegion = (pRegion, usageList) => {
     }
 }
 
-export const getClusterList = async () => {
+export const getCloudletList = async () => {
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
     let requestData = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
@@ -1623,30 +1643,63 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 }
 
 
-
 export const getClouletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     let instanceBodyList = []
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+
     for (let index = 0; index < cloudletList.length; index++) {
-        //todo: Create a data FORM format for requests
-        let instanceInfoOneForm = makeFormForAppInstance(cloudletList[index], pHardwareType, store.userToken, recentDataLimitCount, pStartTime, pEndTime)
+        let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
         instanceBodyList.push(instanceInfoOneForm);
     }
 
-    /*
-    "starttime": "2019-06-11T21:26:00Z",
-    "endtime": "2019-12-31T21:26:00Z"
-    */
     let promiseList = []
     for (let index = 0; index < instanceBodyList.length; index++) {
-        promiseList.push(getClusterList(instanceBodyList[index]))
+        promiseList.push(getCloudletLevelMatric(instanceBodyList[index]))
     }
 
-    let appInstanceHealthCheckList = []
-    appInstanceHealthCheckList = await Promise.all(promiseList);
+   /* console.log('instanceBodyList===>', instanceBodyList[1]['params'])
+    let result=await axios({
+        url: '/api/v1/auth/metrics/cloudlet',
+        method: 'post',
+        data: instanceBodyList[1]['params'],
+        //data: serviceBody['params'],
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAxNTkzOTksImlhdCI6MTU4MDA3Mjk5OSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.ZbdOT1TWFAz9wTpiAxvMGPaO6L6pM9dEOU7tAktGccIO-F6P9vtYAqLTFDkt8OCKtb4srysQ2WLTj6UX7fr8hw'
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        showToast(e.toString())
+    })*/
 
 
+    let result = await Promise.all(promiseList);
+    console.log('clusterLevelHealthCheckList===>', result);
+
+
+}
+
+export const getCloudletLevelMatric = async (serviceBody: any) => {
+    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+    let result = await axios({
+        url: '/api/v1/auth/metrics/cloudlet',
+        method: 'post',
+        data: serviceBody['params'],
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAxNTkzOTksImlhdCI6MTU4MDA3Mjk5OSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.ZbdOT1TWFAz9wTpiAxvMGPaO6L6pM9dEOU7tAktGccIO-F6P9vtYAqLTFDkt8OCKtb4srysQ2WLTj6UX7fr8hw'
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        showToast(e.toString())
+    })
+    return result;
 }
 
 

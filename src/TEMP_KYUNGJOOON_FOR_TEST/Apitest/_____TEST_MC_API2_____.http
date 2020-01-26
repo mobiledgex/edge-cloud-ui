@@ -276,5 +276,24 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAxNTkzO
 ###
 
 
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/metrics/cloudlet
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAxNjg5OTIsImlhdCI6MTU4MDA4MjU5MiwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.Ntc1lIU9CixL03GkG_F-mADcXDOgdsa65m_lVT3DbOsumVtnXHBQ5AEkna4XnJQ4vBiM-dBTRMx4RmHnA-Fp2A
+
+{
+  "region": "EU",
+  "cloudlet": {
+    "operator_key": {
+      "name": "TDG"
+    },
+    "name":"berlin-staging"
+  },
+  "last": 100,
+  "selector": "*"
+}
+
+###
+
+
 
 
