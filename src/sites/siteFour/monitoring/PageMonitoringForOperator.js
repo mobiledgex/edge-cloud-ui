@@ -297,6 +297,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             let usageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
 
+            //console.log('usageList===>', usageList)
+
 
         }
 

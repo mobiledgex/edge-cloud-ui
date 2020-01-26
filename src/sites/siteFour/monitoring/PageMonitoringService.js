@@ -1658,28 +1658,30 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
     for (let index = 0; index < instanceBodyList.length; index++) {
         promiseList.push(getCloudletLevelMatric(instanceBodyList[index]))
     }
+    /* console.log('instanceBodyList===>', instanceBodyList[1]['params'])
+     let result=await axios({
+         url: '/api/v1/auth/metrics/cloudlet',
+         method: 'post',
+         data: instanceBodyList[1]['params'],
+         //data: serviceBody['params'],
+         headers: {
+             'Content-Type': 'application/json',
+             Authorization: 'Bearer ' + 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAxNTkzOTksImlhdCI6MTU4MDA3Mjk5OSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.ZbdOT1TWFAz9wTpiAxvMGPaO6L6pM9dEOU7tAktGccIO-F6P9vtYAqLTFDkt8OCKtb4srysQ2WLTj6UX7fr8hw'
+         },
+         timeout: 15 * 1000
+     }).then(async response => {
+         return response.data;
+     }).catch(e => {
+         showToast(e.toString())
+     })*/
 
-   /* console.log('instanceBodyList===>', instanceBodyList[1]['params'])
-    let result=await axios({
-        url: '/api/v1/auth/metrics/cloudlet',
-        method: 'post',
-        data: instanceBodyList[1]['params'],
-        //data: serviceBody['params'],
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAxNTkzOTksImlhdCI6MTU4MDA3Mjk5OSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.ZbdOT1TWFAz9wTpiAxvMGPaO6L6pM9dEOU7tAktGccIO-F6P9vtYAqLTFDkt8OCKtb4srysQ2WLTj6UX7fr8hw'
-        },
-        timeout: 15 * 1000
-    }).then(async response => {
-        return response.data;
-    }).catch(e => {
-        showToast(e.toString())
-    })*/
+
+    let cloudletLevelMatricUsageList = await Promise.all(promiseList);
+
+    console.log('cloudletLevelMatricUsageList===>', cloudletLevelMatricUsageList);
 
 
-    let result = await Promise.all(promiseList);
-    console.log('clusterLevelHealthCheckList===>', result);
-
+    //return result;
 
 }
 
