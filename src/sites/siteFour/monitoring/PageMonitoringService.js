@@ -1675,7 +1675,6 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
          showToast(e.toString())
      })*/
 
-
     let cloudletLevelMatricUsageList = await Promise.all(promiseList);
 
     console.log('cloudletLevelMatricUsageList===>', cloudletLevelMatricUsageList);
