@@ -1,5 +1,4 @@
 import React from 'react';
-import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 //redux
 import { connect } from 'react-redux';
@@ -25,8 +24,8 @@ const keys = [
     //     'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true}
     // }
     {
-        'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, items:[]},
-        'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, items:[]},
+        'Region':{label:'Region', type:'RenderInput', necessary:true, tip:'Select region where you want to deploy.', active:true, readOnly:true, items:[]},
+        'poolName':{label:'Pool Name', type:'RenderInput', necessary:true, tip:'Name of the cloudlet pool.', active:true, readOnly:true, items:[]},
         'AddCloudlet':{label:'Add cloudlet', type:'RenderDualListBox', necessary:true, tip:'select a cloudlet', active:true},
         'invisibleField':{label:'invisible field', type:'InvisibleField', necessary:true, tip:'', active:true},
     }
@@ -54,12 +53,15 @@ class SiteFourPageCloudletPoolUpdate extends React.Component {
             updateType: 'cloudlet',
             orgaName:'',
             gavePoolName:'',
-            keys: keys
+            keys: keys,
+            filterOldData: []
         };
         this.headerH = 70;
         this.hgap = 0;
         this.userToken = null;
         this.pauseRender = false;
+        this.renderTotalCount = 0;
+        this.renderCount = 0;
     }
 
     //go to
@@ -77,25 +79,27 @@ class SiteFourPageCloudletPoolUpdate extends React.Component {
 
     }
     receiveResultCloudlet = (result) => {
-        console.log('20200107 result -- ',JSON.stringify(result))
+        console.log('20200107 result -- ',JSON.stringify(result.response), ":renderCount=", this.renderCount,":total=", this.renderTotalCount)
 
-        if(result.error) {
-            //this.setState({clusterInstCreate:false})
-            this.props.handleLoadingSpinner(false);
-            if(result.error == 'Key already exists'){
 
+        if(result.response) {
+            if (result.response.data && result.response.data.error) {
+                this.props.handleAlertInfo('error', result.response.data.error)
             } else {
-                this.props.handleAlertInfo('error','Request Failed')
+                this.props.handleAlertInfo('success',result.response.data.message || 'Created successfully')
+            
             }
         } else {
-            if (result.data.error) {
-                this.props.handleAlertInfo('error', result.data.error)
-            } else {
-                this.props.handleAlertInfo('success',result.data.message)
-                setTimeout(()=> this.gotoUrl(), 3000);
-            }
+            this.props.handleAlertInfo('error', result['message']|| 'Request fail')
         }
-        this.pauseRender = false;
+        this.renderCount ++;
+        
+        if(this.renderCount === this.renderTotalCount) {
+            this.pauseRender = false;
+            this.renderCount = 0;
+            setTimeout(()=> this.gotoUrl(), 3000);
+        }
+        
     }
 
     componentWillMount() {
@@ -132,28 +136,41 @@ class SiteFourPageCloudletPoolUpdate extends React.Component {
             console.log('20200106 create link pool org.. ', region,":", cloudletPool, ":", selectedNumber)
             if(selectedNumber.length) {
                 this.pauseRender = true;
-                let cloudlet = ''
+                this.renderTotalCount = selectedNumber.length;
+                let cloudlet = '';
+                let hasOldData = false;
+                
                 selectedNumber.map((no) => {
                     cloudlet = nextProps.formClusterInst.values.AddCloudlet[no];
                     // _params = {"poolName":cloudletPool,"cloudlet":cloudlets['cloudlet'],"region":region}
-
-                    _params = {
-                        "cloudletpoolmember":{
-                            "cloudlet_key":{
-                                "name":cloudlet.cloudlet,
-                                "operator_key":{
-                                    "name":cloudlet.orgaName
+                    
+                    this.state.filterOldData.map((old) => {
+                        if(cloudlet['cloudlet'] === old) hasOldData = true;
+                    })
+                    
+                    if(hasOldData){
+                        this.renderCount ++;
+                        hasOldData = false;
+                        
+                    } else {
+                        _params = {
+                            "cloudletpoolmember":{
+                                "cloudlet_key":{
+                                    "name":cloudlet.cloudlet,
+                                    "operator_key":{
+                                        "name":cloudlet.orgaName
+                                    }
+                                },
+                                "pool_key":{
+                                    "name":nextProps.formClusterInst.values.poolName
                                 }
                             },
-                            "pool_key":{
-                                "name":nextProps.formClusterInst.values.poolName
-                            }
-                        },
-                        "region":cloudlet.region
+                            "region":cloudlet.region
+                        }
+                        // servicePool.createCloudletPoolMember('CreateCloudletPoolMember',{token:store.userToken, params:_params}, _self.receiveResultCloudlet, 0)
+                        let requestDataCreateCloudletPoolMember = {token:store.userToken, method:serviceMC.getEP().CREATE_CLOUDLET_POOL_MEMBER, data : _params};
+                        serviceMC.sendRequest(_self, requestDataCreateCloudletPoolMember, _self.receiveResultCloudlet)
                     }
-                    // servicePool.createCloudletPoolMember('CreateCloudletPoolMember',{token:store.userToken, params:_params}, _self.receiveResultCloudlet, 0)
-                    let requestDataCreateCloudletPoolMember = {token:store.userToken, method:serviceMC.getEP().CREATE_CLOUDLET_POOL_MEMBER, data : _params};
-                    serviceMC.sendRequest(_self, requestDataCreateCloudletPoolMember, _self.receiveResultCloudlet)
                 })
             }
         }
@@ -173,6 +190,9 @@ class SiteFourPageCloudletPoolUpdate extends React.Component {
 
     }
 
+    getFilterOldData(data) {
+        _self.setState({filterOldData: data})
+    }
 
     /*
      */
@@ -183,7 +203,7 @@ class SiteFourPageCloudletPoolUpdate extends React.Component {
         return (
             <div className="round_panel">
                 <div className="grid_table" style={{overflow:'auto'}}>
-                    <SiteFourPoolUpdateView onSubmit={() => console.log('Form was submitted')} type={typeOperator} org={orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:this.props.appLaunch.data.Region, poolName:gavePoolName}} changeOrg={this.changeOrg} keys={this.state.keys} updateType={this.state.updateType}></SiteFourPoolUpdateView>
+                    <SiteFourPoolUpdateView onSubmit={() => console.log('Form was submitted')} type={typeOperator} org={orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:this.props.appLaunch.data.Region, poolName:gavePoolName}} filterOldData={this.getFilterOldData} changeOrg={this.changeOrg} keys={this.state.keys} updateType={this.state.updateType}></SiteFourPoolUpdateView>
                 </div>
             </div>
 

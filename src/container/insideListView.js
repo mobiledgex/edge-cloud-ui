@@ -354,9 +354,9 @@ class InsideListView extends React.Component {
      ** *****/
     onHandlePopMenu = (a, b) => {
         //cloudlet pool
-        this.state.item.State = b.children;
+
         this.setState({ isOpen: false })
-        console.log('20200104 ... on handle pop menu.. ', a, b.children, ': orgName=', this.state.orgName)
+        
         if(b.children === 'Launch') {
             this.appLaunch(this.state.item)
         } else if(b.children === 'Update') {
@@ -364,6 +364,8 @@ class InsideListView extends React.Component {
         } else if(b.children === 'Delete') {
             this.setState({openDelete: true, selected:this.state.item})
         }
+
+        /** cloudlet pool */
         if(b.children === 'Add Cloudlet') {
             this.addCloudlet(this.state.item)
         } else if(b.children === 'Link Organization') {
@@ -373,6 +375,7 @@ class InsideListView extends React.Component {
         }
 
     }
+
     makeActionButton = (target) => (
         <Button.Group vertical className="table_actions_popup_group">
             {
@@ -383,8 +386,8 @@ class InsideListView extends React.Component {
                         </Button>
                     ))
                     :
-                    appssEdit.map((option)=> (
-                        <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
+                    appssEdit.map((option, i)=> (
+                        <Button key={i} onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
                             {option.text}
                         </Button>
                     ))
@@ -514,13 +517,12 @@ class InsideListView extends React.Component {
         const { hiddenKeys } = this.props;
         return (
             <div style={{display:'flex', overflowY:'auto', overflowX:'hidden', width:'100%'}}>
-                <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
-                
                 <DeleteItem open={this.state.openDelete}
                             selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                             refresh={this.props.dataRefresh}
                 ></DeleteItem>
-                
+                <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
+
                 <div
                     {...this.props}
                     style={{width:'100%'}}

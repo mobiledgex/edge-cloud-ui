@@ -1,13 +1,11 @@
 import React, { Fragment } from "react";
-import {Button, Form, Item, Message, List, Grid, Card, Header, Image, Input} from "semantic-ui-react";
-import {Field, reduxForm, initialize, reset, stopSubmit} from "redux-form";
+import {Grid} from "semantic-ui-react";
+import {stopSubmit} from "redux-form";
 import SiteFourCreatePoolForm  from './siteFourCreatePoolForm';
 import * as serviceMC from '../services/serviceMC';
 import './styles.css';
-import * as reducer from "../utils";
 
 let _self = null;
-let rgn = [];
 class SiteFourPoolUpdateView extends React.Component {
     constructor(props) {
         super(props);
@@ -58,8 +56,8 @@ class SiteFourPoolUpdateView extends React.Component {
                 })
             }
         }
-
-        this.state.selectListData = cloudletData
+        this.setState({selectListData: cloudletData});
+        this.props.filterOldData(cloudletData);
     }
 
     receiveResultLinkOrg = (result) => {
@@ -74,7 +72,8 @@ class SiteFourPoolUpdateView extends React.Component {
                 })
             }
         }
-        this.state.selectListData = orgData
+        this.setState({selectListData: orgData});
+        this.props.filterOldData(orgData);
     }
 
     getDataList = () => {
@@ -154,10 +153,7 @@ class SiteFourPoolUpdateView extends React.Component {
         }
     }
 
-    //data:data, keys:keysData, region:region
-    // data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}
     render (){
-        const { handleSubmit, reset, org, type } = this.props;
         return (
             <Fragment>
                 <Grid>

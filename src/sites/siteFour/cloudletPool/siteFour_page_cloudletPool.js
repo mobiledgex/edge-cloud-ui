@@ -1,11 +1,6 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
-import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 import { connect } from 'react-redux';
-import Alert from "react-s-alert";
-import InstanceListView from '../../../container/instanceListView';
 import PagePoolDetailViewer from '../../../container/pagePoolDetailViewer';
 //redux
 import * as actions from '../../../actions';
@@ -265,6 +260,7 @@ class SiteFourPageCloudletPool extends React.Component {
 
         console.log('20200103 ..cloudlet member count join---', cloneData)
         this.setState({ devData: cloneData })
+        this.forceUpdate();
         this._memberDummy = [];
         this._cloudletDummy = [];
         this._linkDummy = [];
@@ -274,13 +270,13 @@ class SiteFourPageCloudletPool extends React.Component {
 
     getDataDeveloper = (region, regionArr) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.setState({ devData: [] })
-        this._cloudletDummy = [];
+        _self.setState({ devData: [] })
+        _self._cloudletDummy = [];
         _self.loadCount = 0;
         if (region !== 'All') {
             rgn = [region]
         } else {
-            rgn = (regionArr) ? regionArr : this.props.regionInfo.region;
+            rgn = (regionArr) ? regionArr : _self.props.regionInfo.region;
         }
 
         rgn.map((item, i) => {
@@ -299,7 +295,7 @@ class SiteFourPageCloudletPool extends React.Component {
         //new
         let requestDataOrg = { token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET_LINKORG, data: {} };
         serviceMC.sendRequest(_self, requestDataOrg, _self.receiveResultLinkOrg)
-        this.props.handleLoadingSpinner(true);
+        _self.props.handleLoadingSpinner(true);
 
     }
 
@@ -319,7 +315,7 @@ class SiteFourPageCloudletPool extends React.Component {
             (viewMode === 'listView') ?
                 <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet Pool'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
                 :
-                <PagePoolDetailViewer data={this.state.detailData} page='cloudletPool' />
+                <PagePoolDetailViewer data={this.state.detailData} page='cloudletPool' refreshData={this.getDataDeveloper} />
         );
     }
 
