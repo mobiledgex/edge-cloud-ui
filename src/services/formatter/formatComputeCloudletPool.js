@@ -57,7 +57,4 @@ export const formatData = (datas, body) => {
         }
     }
     return values
-
 }
-
-

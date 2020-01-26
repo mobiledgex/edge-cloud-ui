@@ -2,12 +2,12 @@ import React, { Fragment } from "react";
 
 import {Button, Form, Grid, Header, Item, Popup, Icon, Input} from "semantic-ui-react";
 import { Transfer } from 'antd';
-import { Field, reduxForm, change,stopSubmit } from "redux-form";
+import { Field, reduxForm, change,stopSubmit, initialize, reset } from "redux-form";
 import * as serviceMC from '../services/serviceMC';
 import SankeyDiagram from '../charts/plotly/SankeyDiagram';
 import DualListBox from 'react-dual-listbox';
 import './styles.css';
-import './react_dualist.css'
+//import './react_dualist.css'
 import '../css/components/dualListbox/react-dual-listbox.css';
 
 
@@ -146,6 +146,18 @@ const options = [
 const renderDualListInput = (self,data) => (
     <DualListBox
         // style={{width:500}}
+        icons={{
+            moveLeft: <Icon name="angle left" />,
+            moveAllLeft: [
+                <Icon key={0} name="angle double left" />,
+            ],
+            moveRight: <Icon name="angle right" />,
+            moveAllRight: [
+                <Icon key={0} name="angle double right" />,
+            ],
+            moveDown: <span className="fa fa-chevron-down" />,
+            moveUp: <span className="fa fa-chevron-up" />,
+        }}
         canFilter
         options={self.getListData(data)}
         selected={self.state.selected}
@@ -153,6 +165,8 @@ const renderDualListInput = (self,data) => (
     />
 
 );
+
+/** If we use the ANT ui should be use this */
 const renderDualListBox = (self, data) => (
     <Transfer
         dataSource={self.getMock(data)}
@@ -203,7 +217,7 @@ class SiteFourCreateFormDefault extends React.Component {
             _mockData: [],
             targetKeys: [],
             invisibleValue:[],
-            submitButton:'Create'
+            submitButton:'Create',
         };
 
     }
@@ -258,7 +272,7 @@ class SiteFourCreateFormDefault extends React.Component {
     getListData = (datas) => {
         const listData = [];
 
-        if(datas.length) {
+        if(datas && datas.length) {
             datas.map((item, i) => {
                 const data = {
                     value: i,
@@ -379,7 +393,8 @@ class SiteFourCreateFormDefault extends React.Component {
             inverted
         />
     )
-    onHandleSubmit=(a,b)=> {
+    onHandleSubmit=(result,dispatch)=> {
+        
         this.props.handleSubmit();
     }
     onFormState=(a,b)=> {
@@ -439,13 +454,14 @@ class SiteFourCreateFormDefault extends React.Component {
         }
     }
 
-    cancelClick = (e) => {
+    cancelClick = (e, obj) => {
         e.preventDefault();
         let siteNum = 0;
         console.log("cancelClickddd",e,":::",this.props)
         if(localStorage.selectMenu == 'Cloudlets') siteNum = 2
         else if(localStorage.selectMenu == 'Cluster Instances') siteNum = 4
         else if(localStorage.selectMenu == 'Cloudlet Pool') siteNum = 7
+        else if(this.bid === 'skip') siteNum = 7
         this.props.gotoUrl(siteNum)
     }
 
@@ -624,8 +640,8 @@ class SiteFourCreateFormDefault extends React.Component {
                             <Form.Group inline>
                                 {/*<Button onClick={()=>this.onHandleReset()}>Reset</Button>*/}
                                 <span style={{marginRight:'1em'}}>
-                                    {(this.props.changeNext === 2)?
-                                        <Button>
+                                    {(this.props.stepTwo)?
+                                        <Button bid={'skip'}  onClick={this.cancelClick}>
                                             Skip
                                         </Button>
                                         :
@@ -636,7 +652,7 @@ class SiteFourCreateFormDefault extends React.Component {
 
                                 </span>
                                 {
-                                    (parseInt(this.props.changeNext) === 201) ?
+                                    (this.props.stepTwo)?
                                         <Button
                                             primary
                                             positive
@@ -666,4 +682,7 @@ class SiteFourCreateFormDefault extends React.Component {
 export default reduxForm({
     form: "createAppFormDefault",
     enableReinitialize: true,
+    onSubmitSuccess (result, dispatch) {
+        setTimeout(() => dispatch( reset( "createAppFormDefault" ) ), 1000 );
+    }
 })(SiteFourCreateFormDefault);
