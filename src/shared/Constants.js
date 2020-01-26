@@ -118,6 +118,12 @@ export const MONITORING_CATE_SELECT_TYPE = {
 
 }
 
+export const USER_ROLE = {
+    ADMIN_MANAGER : 'AdminManager',
+    OPERATOR_MANAGER : 'OperatorManager',
+    //ADMIN_MANAGER : 'AdminManager',
+}
+
 export const APPINSTANCE_INIT_VALUE = {
     "Region": "",
     "OrganizationName": "",

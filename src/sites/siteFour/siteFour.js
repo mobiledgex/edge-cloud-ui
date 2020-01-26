@@ -61,6 +61,7 @@ import Alert from 'react-s-alert';
 
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
+import PageMonitoringMain from "./monitoring/PageMonitoringMain";
 
 let devOptions = [{ key: 'af', value: 'af', text: 'SK Telecom' }]
 const locationOptions = [
@@ -993,7 +994,7 @@ class SiteFour extends React.Component {
                     </Grid.Row>
                 </Container>
                 <Container className='contents_body_container' style={{ top: this.headerH, left: this.menuW }}>
-                    {(this.state.page === 'pg=Monitoring') ? <PageMonitoring /> :
+                    {(this.state.page === 'pg=Monitoring') ? <PageMonitoringMain/> :
                         <Grid.Row className='view_contents'>
                             <Grid.Column className='contents_body'>
                                 <Grid.Row className='content_title' style={{ width: 'fit-content', display: 'inline-block' }}>

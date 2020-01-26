@@ -165,7 +165,7 @@ type State = {
 
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
-    class PageMonitoring extends Component<Props, State> {
+    class PageMonitoringForOperator extends Component<Props, State> {
         state = {
             date: '',
             time: '',
@@ -248,7 +248,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             let store = JSON.parse(localStorage.PROJECT_INIT);
             let token = store ? store.userToken : 'null';
-
             console.log('token===>', token);
 
 
@@ -279,14 +278,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async loadInitData() {
-            let userRole = localStorage.getItem('selectRole')
-            console.log('userRole====>', userRole);
+            let userType = localStorage.getItem('selectRole')
+            console.log('userRole====>', userType);
 
             this.setState({
                 loading: true,
                 loading0: true,
                 isReady: false,
-                userType: userRole,
+                userType: userType,
             })
             //todo: REALDATA
             let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
@@ -1066,9 +1065,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             >RESET</Button>
                         </div>
-                        {/* <div style={{marginLeft: 50}}>
-                            {this.state.userType}
-                        </div>*/}
+                        <div style={{marginLeft: 50}}>
+                            {this.state.userType}2222====>Page FOr Opertator(고경준 천재님이십니다)..
+                        </div>
                     </Grid.Row>
                 </div>
             )
