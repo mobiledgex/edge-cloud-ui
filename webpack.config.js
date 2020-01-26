@@ -1,3 +1,4 @@
+import darkTheme from '@ant-design/dark-theme';
 module.exports = {
     module: {
         rules: [
@@ -12,6 +13,9 @@ module.exports = {
                     },
                     {
                         loader: 'less-loader', // compiles Less to CSS
+                        options: {
+                            modifyVars: darkTheme,
+                          }
                     },
                 ],
             },
