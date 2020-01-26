@@ -20,6 +20,7 @@ import VerifyContent from './container/verifyContent';
 import './css/index.css';
 import SiteFour from "./sites//siteFour/siteFour";
 import './css/pages/audit.css';
+import './css/pages/cloudletPool.css';
 import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
 // API
