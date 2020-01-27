@@ -1649,6 +1649,8 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
 
+    console.log('sdlkfsldkflksdflksdlfk===>', token);
+
     for (let index = 0; index < cloudletList.length; index++) {
         let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
         instanceBodyList.push(instanceInfoOneForm);
@@ -1656,27 +1658,28 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
 
     let promiseList = []
     for (let index = 0; index < instanceBodyList.length; index++) {
-        promiseList.push(getCloudletLevelMatric(instanceBodyList[index]))
+        promiseList.push(getCloudletLevelMatric(instanceBodyList[index], token))
     }
-    /* console.log('instanceBodyList===>', instanceBodyList[1]['params'])
-     let result=await axios({
-         url: '/api/v1/auth/metrics/cloudlet',
-         method: 'post',
-         data: instanceBodyList[1]['params'],
-         //data: serviceBody['params'],
-         headers: {
-             'Content-Type': 'application/json',
-             Authorization: 'Bearer ' + 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAxNTkzOTksImlhdCI6MTU4MDA3Mjk5OSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.ZbdOT1TWFAz9wTpiAxvMGPaO6L6pM9dEOU7tAktGccIO-F6P9vtYAqLTFDkt8OCKtb4srysQ2WLTj6UX7fr8hw'
-         },
-         timeout: 15 * 1000
-     }).then(async response => {
-         return response.data;
-     }).catch(e => {
-         showToast(e.toString())
-     })*/
+    console.log('instanceBodyList===>', instanceBodyList)
+   /* let result = await axios({
+        url: '/api/v1/auth/metrics/cloudlet',
+        method: 'post',
+        data: instanceBodyList[2]['params'],
+        //data: serviceBody['params'],
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAyNDE0MTYsImlhdCI6MTU4MDE1NTAxNiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.ye8wh5Ie2BYK2BhSBXAhoSpdwSkFnKYRQ0oP6LzUdcbgXMuI_xldg8TDg-2r-WQerAbiqZpaOxNzkOI3WgRpvw'
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        showToast(e.toString())
+    })
+
+    console.log('result===>', result);*/
 
     let cloudletLevelMatricUsageList = await Promise.all(promiseList);
-
     console.log('cloudletLevelMatricUsageList===>', cloudletLevelMatricUsageList);
 
 
@@ -1690,15 +1693,15 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
  * @param serviceBody
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const getCloudletLevelMatric = async (serviceBody: any) => {
-    let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+export const getCloudletLevelMatric = async (serviceBody: any, pToken:string) => {
+    console.log('token2===>', pToken);
     let result = await axios({
         url: '/api/v1/auth/metrics/cloudlet',
         method: 'post',
         data: serviceBody['params'],
         headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAxNTkzOTksImlhdCI6MTU4MDA3Mjk5OSwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.ZbdOT1TWFAz9wTpiAxvMGPaO6L6pM9dEOU7tAktGccIO-F6P9vtYAqLTFDkt8OCKtb4srysQ2WLTj6UX7fr8hw'
+            Authorization: 'Bearer ' + pToken
         },
         timeout: 15 * 1000
     }).then(async response => {
