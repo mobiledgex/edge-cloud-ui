@@ -239,6 +239,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allConnectionsUsageList: [],
             filteredConnectionsUsageList: [],
             connectionsTabIndex: 0,
+            dropdownCloudletList: [],
         };
 
 
@@ -249,39 +250,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         componentDidMount = async () => {
 
-            let store = JSON.parse(localStorage.PROJECT_INIT);
+            /*let store = JSON.parse(localStorage.PROJECT_INIT);
             let token = store ? store.userToken : 'null';
-            console.log('token===>', token);
-
+            console.log('token===>', token);*/
             await this.loadInitData();
-            this.setState({
-                loading: false,
-                allCpuUsageList: [],
-                allMemUsageList: [],
-                allNetworkUsageList: [],
-                allDiskUsageList: [],
-                dropdownCloudletList: [],
-                clusterList: [],
-                filteredCpuUsageList: [],
-                filteredMemUsageList: [],
-                filteredNetworkUsageList: [],
-                filteredDiskUsageList: [],
-                appInstanceListTop5: [],
-                allGridInstanceList: [],
-                filteredGridInstanceList: [],
-                gridInstanceListMemMax: 0,
-                gridInstanceListCpuMax: 0,
-            })
 
         }
 
         async loadInitData() {
 
             let cloudletList = await getCloudletList();
-            console.log('getClusterList===>', cloudletList);
+            console.log('cloudletList===>', cloudletList);
 
             let cloudletListForDropdown = [];
-            cloudletListForDropdown.map(item => {
+            cloudletList.map(item => {
                 /*{text: 'FLAVOR', value: 'flavor'},*/
                 cloudletListForDropdown.push({
                     text: item.CloudletName,
@@ -293,12 +275,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 isAppInstaceDataReady: true,
                 dropdownCloudletList: cloudletListForDropdown,
+            }, () => {
+                console.log('dropdownCloudletList===>', this.state.dropdownCloudletList);
             })
 
             let usageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
-
-            //console.log('usageList===>', usageList)
-
+            console.log('usageList===>', usageList)
 
         }
 
