@@ -433,6 +433,18 @@ class MapWithListView extends React.Component {
         return row;
     }
 
+    sendWSRequest = (data) => {
+        let state = data.State;
+        if (state === 3 || state === 2 || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 14) {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            let requestData = serviceMC.getEP().getKey(this.props.siteId, data);
+            let method = serviceMC.getEP().getStreamMethod(this.props.siteId);
+            if (requestData) {
+                serviceMC.sendWSRequest({ uuid: data.uuid, token: store.userToken, method: method, data: requestData }, this.requestResponse)
+            }
+        }
+    }
+
     getStateStatus = (id) => {
         switch (id) {
             case 0:
@@ -660,9 +672,7 @@ class MapWithListView extends React.Component {
         if (nextProps.clickCity.length == 0) {
             if (this.state.dummyData !== nextProps.devData) {
                 nextProps.devData.map(_item => {
-                    if (_item.State !== 5) {
-                        this.sendWSRequest(_item)
-                    }
+                    this.sendWSRequest(_item)
                 })
                 this.setState({ dummyData: nextProps.devData })
             }
@@ -708,17 +718,6 @@ class MapWithListView extends React.Component {
             }
         }
         })
-    }
-
-    sendWSRequest = (data) =>
-    {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let requestData = serviceMC.getEP().getKey(this.props.siteId, data);
-        let method = serviceMC.getEP().getStreamMethod(this.props.siteId);
-        if(requestData)
-        {
-            serviceMC.sendWSRequest({ uuid: data.uuid, token: store.userToken, method: method, data: requestData }, this.requestResponse) 
-        }
     }
 
     render() {
