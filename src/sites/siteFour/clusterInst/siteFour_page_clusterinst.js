@@ -110,7 +110,7 @@ class SiteFourPageClusterInst extends React.Component {
    
     receiveClusterInstResult = (mcRequestList) => {
         _self.requestCount -= 1;
-        if (mcRequestList) {
+        if (mcRequestList && mcRequestList.length>0) {
             let cloudletDataList = [];
             let clusterDataList = [];
             mcRequestList.map(mcRequest => {
