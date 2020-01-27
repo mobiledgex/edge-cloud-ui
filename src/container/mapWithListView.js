@@ -524,7 +524,7 @@ class MapWithListView extends React.Component {
                                                                     {`Latitude : ${item[value].latitude}`} <br />
                                                                     {`Longitude : ${item[value].longitude}`}
 
-                                                                </div> : 'NA'}
+                                                                </div> : ''}
                                                     </Table.Cell>
                                                     :
                                                     (value === 'IpAccess' && item[value]) ?
