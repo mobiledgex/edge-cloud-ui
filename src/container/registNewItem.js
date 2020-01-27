@@ -331,6 +331,7 @@ class RegistNewItem extends React.Component {
             const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, Number_of_Master, Number_of_Node} = this.props.submitData.registNewInput.values
             // this.props.handleLoadingSpinner(true);
             serviceBody = {
+                uuid: serviceMC.generateUniqueId(),
                 method: serviceMC.getEP().CREATE_CLUSTER_INST,
                 token: store ? store.userToken : 'null',
                 data: {
@@ -348,7 +349,7 @@ class RegistNewItem extends React.Component {
                     }
                 }
             }
-            //this.props.handleLoadingSpinner(true);
+            this.props.handleLoadingSpinner(true);
             serviceMC.sendWSRequest(serviceBody, this.receiveSubmit)
         } else if(localStorage.selectMenu === 'Cloudlets') {
             const cloudlet = ['Region','CloudletName','OperatorName','Latitude','Longitude','Num_dynamic_ips']
@@ -362,6 +363,7 @@ class RegistNewItem extends React.Component {
             const {CloudletName, OperatorName, Latitude, Longitude, IpSupport, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
             
             serviceBody = {
+                uuid:serviceMC.generateUniqueId(),
                 method: serviceMC.getEP().CREATE_CLOUDLET,
                 token: store ? store.userToken : 'null',
                 data: {

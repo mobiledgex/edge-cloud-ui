@@ -104,28 +104,6 @@ class MapWithListView extends React.Component {
         _self.props.handleChangeSite({ mainPath: site, subPath: subPath });
     }
 
-    onHandleEdit(data) {
-        this.props.handleLoadingSpinner(true);
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let serviceBody = {
-            token: store ? store.userToken : null,
-            method: serviceMC.getEP().UPDATE_APP_INST,
-            data: {
-                region: data['Region'],
-                appinst: {
-                    key: {
-                        app_key: { developer_key: { name: data['OrganizationName'] }, name: data['AppName'], version: data['Version'] },
-                        cluster_inst_key: {
-                            cluster_key: { name: data['ClusterInst'] },
-                            cloudlet_key: { operator_key: { name: data['Operator'] }, name: data['Cloudlet'] }
-                        }
-                    }
-                }
-            }
-        }
-        serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
-    }
-
     receiveResult = (mcRequest) => {
         this.props.handleLoadingSpinner(false);
         this.props.dataRefresh()
@@ -476,7 +454,7 @@ class MapWithListView extends React.Component {
             case 13:
                 return "CRM Init"
             case 14:
-                return "Creating Dependencies"
+                return "Creating"
             default:
                 return id
         }
@@ -530,7 +508,6 @@ class MapWithListView extends React.Component {
                                                     (value === 'IpAccess' && item[value]) ?
                                                         <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
                                                             {(item[value] == 0) ? "IpAccessUnknown" : (item[value] == 1) ? "Dedicated" : (item[value] == 2) ? "IpAccessDedicatedOrShared" : (item[value] == 3) ? "Shared" : item[value]}
-                                                            {/*{item[value]}*/}
                                                         </Table.Cell>
                                                         :
                                                         (value === 'State' && item[value]) ?

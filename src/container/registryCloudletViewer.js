@@ -237,7 +237,6 @@ class RegistryCloudletViewer extends React.Component {
             if(!this.pauseRender && nextProps.formClusterInst.submitSucceeded && error.length == 0){
                 this.setState({toggleSubmit:true,validateError:error,regSuccess:true});
                 this.props.handleLoadingSpinner(true);
-                console.log('20191119 create cloudlet....',nextProps.submitValues)
                 serviceMC.sendWSRequest({ uuid:serviceMC.generateUniqueId(),token: store.userToken, method: serviceMC.getEP().CREATE_CLOUDLET, data: nextProps.submitValues }, this.receiveSubmit)
                 setTimeout(() => {
                     this.props.handleLoadingSpinner(false);
