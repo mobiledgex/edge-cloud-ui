@@ -291,6 +291,28 @@ class RegistryInstViewer extends React.Component {
         this.setState({fakeData:assObj})
 
     }
+
+    createAutoClusterName = (multiData)=>
+    {
+        let appName = multiData.AppName.replace(/(\s*)/g, "");
+        appName = appName.replace(/[&!, ]/g,'');
+        appName = appName.replace(/[_]/g,'-');
+        appName = appName.toLowerCase();
+        return ['autocluster' + appName];
+    }
+
+    autoClusterInstance = (serviceBody, submitData, itemCloudlet, itemCluster)=>
+    {
+        let data = JSON.parse(JSON.stringify(submitData));
+        data.appinst.key.cluster_inst_key.cloudlet_key.name = itemCloudlet;
+        data.appinst.key.cluster_inst_key.cluster_key.name = itemCluster;
+        data.appinst.key.cluster_inst_key.developer = data.appinst.key.app_key.developer_key.name;
+        
+        serviceBody.data = data;
+        
+        this.wsRequestCount = this.wsRequestCount + 1;
+        serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
+    }
     componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
@@ -341,19 +363,13 @@ class RegistryInstViewer extends React.Component {
                 multiData.Cloudlet.map((itemCloudlet) => {
                     if (vmCheck) multiData.ClusterInst = ['']
                     if (multiData.AutoClusterInst) {
-                        multiData.ClusterInst = ['autocluster' + multiData.AppName.replace(/(\s*)/g, "")];
+                        multiData.ClusterInst = this.createAutoClusterName(multiData)
                     }
                     if (filterData[itemCloudlet] && filterData[itemCloudlet].length > 0) {
                         filterData[itemCloudlet].map((items) => {
                             multiData.ClusterInst.map((itemCluster) => {
                                 if (items.ClusterName == itemCluster || itemCluster == '' || itemCluster.indexOf('autocluster') > -1) {
-                                    let data = JSON.parse(JSON.stringify(submitData));
-                                    data.appinst.key.cluster_inst_key.cloudlet_key.name = itemCloudlet;
-                                    data.appinst.key.cluster_inst_key.cluster_key.name = itemCluster;
-                                    serviceBody.data = data;
-
-                                    this.wsRequestCount = this.wsRequestCount + 1;
-                                    serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
+                                    this.autoClusterInstance(serviceBody,submitData, itemCloudlet, itemCluster)
                                 }
                             })
                             if (String(multiData.ClusterInst[0]).indexOf('autocluster') > -1 || multiData.ClusterInst[0] == "") {
@@ -364,13 +380,7 @@ class RegistryInstViewer extends React.Component {
                     else if (!filterData[itemCloudlet]) {
                         multiData.ClusterInst.map((itemCluster) => {
                             if (itemCluster == '' || itemCluster.indexOf('autocluster') > -1) {
-                                let data = JSON.parse(JSON.stringify(submitData));
-                                data.appinst.key.cluster_inst_key.cloudlet_key.name = itemCloudlet;
-                                data.appinst.key.cluster_inst_key.cluster_key.name = itemCluster;
-                                serviceBody.data = data;
-
-                                this.wsRequestCount = this.wsRequestCount + 1;
-                                serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
+                                this.autoClusterInstance(serviceBody,submitData, itemCloudlet, itemCluster)
                             }
                         })
                         if (String(multiData.ClusterInst[0]).indexOf('autocluster') > -1 || multiData.ClusterInst[0] == "") {
