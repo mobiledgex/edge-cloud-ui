@@ -165,9 +165,7 @@ class MapWithListView extends React.Component {
 
         _self.setState({ sideVisible: detailMode })
     }
-    //this.props.parentProps.resetMap(false, 'fromDetail')
     handleSort = clickedColumn => (a) => {
-        console.log('20190819 handle sort..', a)
         _self.setState({ sorting: true });
         const { column, dummyData, direction } = _self.state
         this.stateSort(dummyData)
@@ -435,6 +433,43 @@ class MapWithListView extends React.Component {
         return row;
     }
 
+    getStateStatus = (id) => {
+        switch (id) {
+            case 0:
+                return "Tracked State Unknown"
+            case 1:
+                return "Not Present"
+            case 2:
+                return "Create Requested"
+            case 3:
+                return "Creating"
+            case 4:
+                return "Create Error"
+            case 5:
+                return "Ready"
+            case 6:
+                return "Update Requested"
+            case 7:
+                return "Updating"
+            case 8:
+                return "Update Error"
+            case 9:
+                return "Delete Requested"
+            case 10:
+                return "Deleting"
+            case 11:
+                return "Delete Error"
+            case 12:
+                return "Delete Prepare"
+            case 13:
+                return "CRM Init"
+            case 14:
+                return "Creating Dependencies"
+            default:
+                return id
+        }
+    }
+
     TableExampleVeryBasic = (headL, hidden, dummyData) => (
         <Table className="viewListTable" basic='very' striped celled sortable ref={ref => this.viewListTable = ref} style={{ width: '100%' }}>
             <Table.Header className="viewListTableHeader" style={{ width: '100%' }}>
@@ -470,10 +505,14 @@ class MapWithListView extends React.Component {
                                                 :
                                                 (value === 'CloudletLocation' && item[value]) ?
                                                     <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                        <div>
-                                                            {`Latitude : ${item[value].latitude}`} <br />
-                                                            {`Longitude : ${item[value].longitude}`}
-                                                        </div>
+                                                        {
+                                                            item[value].latitude && item[value].longitude ?
+                                                                <div>
+
+                                                                    {`Latitude : ${item[value].latitude}`} <br />
+                                                                    {`Longitude : ${item[value].longitude}`}
+
+                                                                </div> : 'NA'}
                                                     </Table.Cell>
                                                     :
                                                     (value === 'IpAccess' && item[value]) ?
@@ -484,7 +523,7 @@ class MapWithListView extends React.Component {
                                                         :
                                                         (value === 'State' && item[value]) ?
                                                             <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectedItem === i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                                {(item[value] === 0) ? "Tracked State Unknown" : (item[value] === 1) ? "Not Present" : (item[value] === 2) ? "Create Requested" : (item[value] === 3) ? "Creating" : (item[value] == 4) ? "Create Error" : (item[value] == 5) ? "Ready" : (item[value] == 6) ? "Update Requested" : (item[value] == 7) ? "Updating" : (item[value] == 8) ? "Update Error" : (item[value] == 9) ? "Delete Requested" : (item[value] == 10) ? "Deleting" : (item[value] == 11) ? "Delete Error" : (item[value] == 12) ? "Delete Prepare" : (item[value] == 13) ? "CRM Init" : item[value]}
+                                                                {this.getStateStatus(item[value])}
                                                             </Table.Cell>
                                                             :
                                                             (value === 'Progress' && (item['State'] === 3 || item['State'] === 7 || item['State'] === 14)) ?
