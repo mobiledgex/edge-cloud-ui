@@ -18,6 +18,7 @@ import * as FormatComputeCloudletPoolMemberDelete from './formatter/formatComput
 import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
 import * as FormatComputeLinkPoolOrgDelete from './formatter/formatComputeLinkPoolOrgDelete';
 
+
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
 export const DELETE_ORG = "deleteOrg";
@@ -70,8 +71,8 @@ export const CREATE_CLOUDLET_POOL_MEMBER = "CreateCloudletPoolMember";
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
 export const DELETE_CLOUDLET_POOL_MEMBER = "DeleteCloudletPoolMember";
-export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const SHOW_ORG_CLOUDLET = "orgcloudlet";
+export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
 export const RUN_COMMAND = "RunCommand";
 
 export function getPath(request) {
@@ -130,7 +131,6 @@ export function getPath(request) {
         case DELETE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL_MEMBER:
-        case DELETE_CLOUDLET_POOL_MEMBER:
         case RUN_COMMAND:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:

@@ -57,38 +57,4 @@ export const formatData = (datas, body) => {
         }
     }
     return values
-
 }
-
-
-/*
-
-{
-        "config": {}, 
-        "flavor": {}, 
-        "ip_support": 2, 
-        "key": {
-            "name": "mexplat-stage-hamburg-cloudlet", 
-            "operator_key": {
-                "name": "TDG"
-            }
-        }, 
-        "location": {
-            "latitude": 55, 
-            "longitude": 44, 
-            "timestamp": {}
-        }, 
-        "num_dynamic_ips": 5, 
-        "state": 13, 
-        "status": {}, 
-        "time_limits": {
-            "create_app_inst_timeout": 1800000000000, 
-            "create_cluster_inst_timeout": 1800000000000, 
-            "delete_app_inst_timeout": 1200000000000, 
-            "delete_cluster_inst_timeout": 1200000000000, 
-            "update_app_inst_timeout": 1200000000000, 
-            "update_cluster_inst_timeout": 1200000000000
-        }
-    }
-    
-*/

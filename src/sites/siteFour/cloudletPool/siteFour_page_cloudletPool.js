@@ -1,11 +1,6 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
-import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 import { connect } from 'react-redux';
-import Alert from "react-s-alert";
-import InstanceListView from '../../../container/instanceListView';
 import PagePoolDetailViewer from '../../../container/pagePoolDetailViewer';
 //redux
 import * as actions from '../../../actions';

@@ -12,7 +12,7 @@ import {
     Item,
     Input,
     Segment,
-    Table, Icon,
+    Icon,
     Container
 } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
