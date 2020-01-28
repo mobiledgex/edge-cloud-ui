@@ -48,7 +48,7 @@ const detailViewer = (props, type) => (
 )
 
 const makeTable = (values, label, i) => (
-    (label !== 'Edit') ?
+    (label !== 'Edit' && label !== 'uuid') ?
         <Table.Row key={i}>
             <Table.Cell>
                 <Header as='h4' image>
