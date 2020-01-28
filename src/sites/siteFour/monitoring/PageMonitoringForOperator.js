@@ -235,11 +235,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-            await this.loadInitData();
+            await this.loadInitDataForCloudlet();
         }
 
 
-        async loadInitData() {
+        async loadInitDataForCloudlet() {
             this.setState({
                 loading: true,
             })
@@ -326,7 +326,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 cloudLetSelectBoxClearable: true,
             })
 
-            await this.loadInitData();
+            await this.loadInitDataForCloudlet();
 
             await this.setState({
                 currentRegion: 'ALL',
@@ -337,7 +337,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-        renderBottomGridArea() {
+        renderBottomGridAreaForCloudlet() {
             return (
                 <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
                     <Table.Header className="viewListTableHeader">
@@ -835,7 +835,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         async handleBubbleChartDropDownForCloudlet(hwType) {
-
             await this.setState({
                 currentHardwareType: hwType,
             });
@@ -1027,7 +1026,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     >
                         <Modal.Header>Status of App Instance</Modal.Header>
                         <Modal.Content>
-                            {this.renderBottomGridArea()}
+                            {this.renderBottomGridAreaForCloudlet()}
                         </Modal.Content>
                     </Modal>
                     <SemanticToastContainer/>
@@ -1214,7 +1213,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                                 <div style={Styles.noData}>
                                                                     NO DATA
                                                                 </div>
-                                                                : this.renderBottomGridArea()}
+                                                                : this.renderBottomGridAreaForCloudlet()}
                                                         </div>
                                                     </div>
                                                 </OutsideClickHandler>
