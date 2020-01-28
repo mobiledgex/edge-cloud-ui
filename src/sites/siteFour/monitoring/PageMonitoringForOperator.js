@@ -700,7 +700,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             >RESET</Button>
                         </div>
                         <div style={{marginLeft: 50}}>
-                            {this.state.userType}2222====>Page FOr Opertator()..
+                            {this.state.userType}FOR OPERTATOR..
                         </div>
                     </Grid.Row>
                 </div>
@@ -1046,7 +1046,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_column' style={{}}>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
-                                                            Status of Launched App Instances on Cloudlet
+                                                            Status of Launched Cloudlet
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
