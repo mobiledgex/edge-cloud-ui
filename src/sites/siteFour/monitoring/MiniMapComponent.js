@@ -21,16 +21,25 @@ type Props = {
 
 type State = {
     date: string,
+    zoom: number,
 
 
 }
 
 
 export default class MiniMapComponent extends Component<Props, State> {
-    state = {
-        zoom: 0.45,
-        cloudletList: [],
+
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            zoom: 0.45,
+            cloudletList: [],
+        }
+
+        this.handleWheel = this.handleWheel.bind(this);
     }
+
 
     async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
         if (this.props.cloudletList !== nextProps.cloudletList) {
@@ -46,6 +55,22 @@ export default class MiniMapComponent extends Component<Props, State> {
         }
     }
 
+    handleWheel(event) {
+        event.preventDefault();
+        console.log("scroll detected");
+        console.log(event.deltaY);
+
+        if (event.deltaY > 0) {
+            this.setState({
+                zoom: this.state.zoom / 1.1
+            });
+        }
+        if (event.deltaY < 0) {
+            this.setState({
+                zoom: this.state.zoom * 1.1
+            });
+        }
+    }
 
     render() {
         return (
@@ -74,10 +99,16 @@ export default class MiniMapComponent extends Component<Props, State> {
                         })
 
                     }}>
-                        <Geographies geography={geoUrl}>
+                        <Geographies
+                            geography={geoUrl}
+
+                        >
                             {(geographies, projection) => geographies.map((geography, i) => geography.id !== "ATA" && (
                                 <Geography
                                     key={i}
+                                    onWheel={(e)=>{
+                                        this.handleWheel(e)
+                                    }}
                                     geography={geography}
                                     projection={projection}
                                     style={{
@@ -87,15 +118,15 @@ export default class MiniMapComponent extends Component<Props, State> {
                                             strokeWidth: 0.75,
                                             outline: "none",
                                         },
-                                        hover: {
+                                      /*  hover: {
                                             fill: "#607D8B",
                                             stroke: "#607D8B",
                                             strokeWidth: 0.75,
                                             outline: "none",
-                                        },
+                                        },*/
                                         pressed: {
                                             fill: "#FF5722",
-                                            stroke: "#607D8B",
+                                            stroke: "#1d5a10",
                                             strokeWidth: 0.75,
                                             outline: "none",
                                         },
@@ -107,14 +138,14 @@ export default class MiniMapComponent extends Component<Props, State> {
                             {this.state.cloudletList.map(item => {
 
                                 return (
-                                    <Marker marker={{coordinates: [item.CloudletLocation.longitude, item.CloudletLocation.latitude]}} style={{
+                                    <Marker marker={{coordinates: [item.CloudletLocation.latitude, item.CloudletLocation.longitude,]}} style={{
                                         hidden: {opacity: 0},
                                     }}>
                                         <svg width="35" height="35">
                                             <image href="https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png" style={{color: 'red'}} height="35" width="35"/>
                                         </svg>
 
-                                        <text textAnchor="middle" fill="#77BD25" style={{fontSize: 20, fontFamily: "Roboto, sans-serif", fontWeight: 'bold'}}>
+                                        <text textAnchor="middle" fill="#1d5a10" style={{fontSize: 20, fontFamily: "Roboto, sans-serif", fontWeight: 'bold'}}>
                                             {item.CloudletName.toString().substring(0, 17) + "..."}
                                         </text>
                                     </Marker>

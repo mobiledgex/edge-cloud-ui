@@ -970,10 +970,10 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
 export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType: string, pBubbleChartData: any) => {
 
 
-    console.log('pBubbleChartData====>',pBubbleChartData);
+    console.log('pBubbleChartData====>', pBubbleChartData);
 
 
-    if (pBubbleChartData.length === 0) {
+    if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
             <div style={Styles.noData}>
                 NO DATA

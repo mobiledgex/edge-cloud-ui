@@ -1112,7 +1112,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo: RENDER BUBBLE_CHART          */}
                                                     {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
+                                                        {this.state.loading ? renderPlaceHolder() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
                                                     </div>
                                                 </div>
                                                 {/* row2___col___2*/}
