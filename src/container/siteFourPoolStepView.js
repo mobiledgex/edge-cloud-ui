@@ -13,6 +13,7 @@ import * as reducer from '../utils'
 import SiteFourPoolOne from "./siteFourPoolStepOne";
 import SiteFourPoolTwo from "./siteFourPoolStepTwo";
 import SiteFourPoolThree from "./siteFourPoolStepThree";
+import Alert from 'react-s-alert';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -89,7 +90,7 @@ class SiteFourPoolStepView extends React.Component {
     constructor(props) {
         super(props);
         _self = this;
-
+        this.step = 1; //default is 1
         const layout = this.generateLayout();
         this.state = {
             layout,
@@ -104,9 +105,9 @@ class SiteFourPoolStepView extends React.Component {
             typeOperator:'Developer',
             orgaName:'',
             validateError:[],
-            step:1, //default is 1
-            keysData: [keys[0]],
-            fakeData: [fakes[0]],
+            step:this.step, 
+            keysData: [keys[this.step-1]],
+            fakeData: [fakes[this.step-1]],
             devData: [],
             region:[],
             selectedRegion:null,
@@ -161,7 +162,7 @@ class SiteFourPoolStepView extends React.Component {
             pathname: '/site4',
             search: 'pg=7'
         });
-        this.props.history.location.search = 'pg=0';
+        this.props.history.location.search = 'pg=7';
         this.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
     }
     onSkipClick = () => {
@@ -169,7 +170,7 @@ class SiteFourPoolStepView extends React.Component {
             pathname: '/site4',
             search: 'pg=7'
         });
-        this.props.history.location.search = 'pg=0';
+        this.props.history.location.search = 'pg=7';
         this.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
     }
 
@@ -466,7 +467,8 @@ class SiteFourPoolStepView extends React.Component {
                  */
                 console.log('21091231 create link pool org.. ')
                 let _params = {};
-                let selectedNumber = JSON.parse(nextProps.formClusterInst.values.invisibleField);
+                let _selectedItems = nextProps.formClusterInst.values.invisibleField;
+                let selectedNumber = (_selectedItems !== "") ? JSON.parse(_selectedItems) : [];
                 let cloudletPool = nextProps.formClusterInst.values.poolName;
                 let region = nextProps.formClusterInst.values.Region;
                 if(selectedNumber.length) {
@@ -481,6 +483,20 @@ class SiteFourPoolStepView extends React.Component {
                         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
                         serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_LINK_POOL_ORG, data : _params }, _self.receiveResultLinkOrg)
                     })
+                } else {
+                    //_self.props.handleAlertInfo('error', 'Select the organization')
+                    Alert.warning('Select the organization', {
+                        position: 'top-right',
+                        effect: 'scale',
+                        onShow: function () {
+                            console.log('aye!')
+                        },
+                        beep: false,
+                        timeout: 5,
+                        offset: 100
+                    });
+                    setTimeout(() => Alert.closeAll(), 3000)
+                    _self.setState({submitValues: {noData:''} })
                 }
 
                 //TEST goto step 3 -test-test-test-test-
