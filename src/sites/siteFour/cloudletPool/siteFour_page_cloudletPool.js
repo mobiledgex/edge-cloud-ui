@@ -25,7 +25,7 @@ class SiteFourPageCloudletPool extends React.Component {
             activeItem: 'Developers',
             devData: [],
             viewMode: 'listView',
-            regions: [],
+            regions: null,
             regionToggle: false,
             dataSort: false,
             changeRegion: null
@@ -78,30 +78,32 @@ class SiteFourPageCloudletPool extends React.Component {
         this.setState({ contHeight: (window.innerHeight - this.headerH) / 2 - this.hgap })
     }
     componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.getDataDeveloper(this.props.changeRegion);
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
+        if(!this.state.regions) this.setState({regions : savedRegion})
+        this.getDataDeveloper(this.props.changeRegion, this.state.regions || savedRegion);
         this.userToken = store.userToken;
 
     }
     componentWillUnmount() {
         this._devData = [];
         this._cloudletDummy = [];
+
     }
 
     componentWillReceiveProps(nextProps) {
         console.log("20200106 ..page cloudlet pool -", nextProps.viewMode)
-        if (nextProps.viewMode) {
+        if (nextProps.viewMode !== this.props.viewMode) {
             if (nextProps.viewMode === 'listView') {
-                this.getDataDeveloper(this.props.changeRegion, this.state.regions)
                 this.setState({ viewMode: nextProps.viewMode })
+                this.getDataDeveloper(nextProps.changeRegion, this.state.regions);
             } else {
                 this.setState({ viewMode: nextProps.viewMode })
-                // setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
                 this.setState({ detailData: nextProps.detailData })
             }
-
         }
-        if (this.state.changeRegion !== nextProps.changeRegion) {
+        /** selected item from the Region-Select-Box there positioned top header on page */
+        if (this.props.changeRegion !== nextProps.changeRegion) {
             console.log("20191119 ..cloudlet 22 nextProps.changeRegion = ", nextProps.changeRegion, "-- : --", this.props.changeRegion)
             this.setState({ changeRegion: nextProps.changeRegion })
             this.getDataDeveloper(nextProps.changeRegion, this.state.regions);
@@ -116,16 +118,6 @@ class SiteFourPageCloudletPool extends React.Component {
             this.props.handleComputeRefresh(false);
             this.setState({ dataSort: true });
         }
-
-        if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
-            //{ key: 1, text: 'All', value: 'All' }
-            console.log("20191119 ..cloudlet 33 region info in page cloudlet")
-            _self.setState({ regionToggle: true, regions: nextProps.regionInfo.region })
-            this.getDataDeveloper(nextProps.changeRegion, nextProps.regionInfo.region);
-        }
-
-
-
 
     }
     /* example code : should delete it
