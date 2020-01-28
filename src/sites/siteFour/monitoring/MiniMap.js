@@ -33,18 +33,33 @@ export default class MiniMap extends Component<Props, State> {
     }
 
 
-    async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
-        if (this.props.cloudletList !== nextProps.cloudletList) {
-            await this.setState({
+    /* async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+         if (this.props.cloudletList !== nextProps.cloudletList) {
+             await this.setState({
+                 cloudletList: nextProps.cloudletList,
+             });
+
+             //this.state.cloudletList["0"].CloudletLocation.latitude
+             //this.state.cloudletList["0"].CloudletLocation.longitude
+             //this.state.cloudletList["0"].CloudletName
+             console.log('cloudletList===>', this.state.cloudletList);
+         }
+     }*/
+
+    static async getDerivedStateFromProps(nextProps, prevState) {
+        if (prevState.cloudletList !== nextProps.cloudletList) {
+            return {
                 cloudletList: nextProps.cloudletList,
-            });
+            }
 
             //this.state.cloudletList["0"].CloudletLocation.latitude
             //this.state.cloudletList["0"].CloudletLocation.longitude
             //this.state.cloudletList["0"].CloudletName
-            console.log('cloudletList===>', this.state.cloudletList);
+            //console.log('cloudletList===>', this.state.cloudletList);
+
         }
     }
+
 
     handleWheel(event) {
         event.preventDefault();

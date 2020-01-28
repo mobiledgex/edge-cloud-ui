@@ -30,6 +30,7 @@ import {TabPanel, Tabs} from "react-tabs";
 import './PageMonitoring.css'
 import {showToast} from "./PageMonitoringChartService";
 import MiniMap from "./MiniMap";
+import {CircularProgress} from "@material-ui/core";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -135,6 +136,8 @@ type State = {
     cloudletList: Array,
     maxCpu: number,
     maxMem: number,
+    intervalLoading: boolean,
+    isRequesting: false,
 
 }
 
@@ -215,7 +218,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allUsageList: [],
             maxCpu: 0,
             maxMem: 0,
+            intervalLoading: false,
+            isRequesting: false,
         };
+
+        interval = null;
 
 
         constructor(props) {
@@ -224,18 +231,37 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
+            this.setState({
+                loading: true,
+            })
             await this.loadInitDataForCloudlet();
+            this.setState({
+                loading: false,
+                isReady: true,
+            })
+
+            this.interval = setInterval(async () => {
+                this.setState({
+                    intervalLoading: true,
+                })
+                await this.loadInitDataForCloudlet();
+                this.setState({
+                    intervalLoading: false,
+                })
+
+            }, 1000 * 15)
+        }
+
+        componentWillUnmount(): void {
+            clearInterval(this.interval)
         }
 
 
         async loadInitDataForCloudlet() {
             this.setState({
-                loading: true,
+                isRequesting: true,
             })
             let cloudletList = await getCloudletList();
-
-            console.log('cloudletList====>', cloudletList);
-
             let cloudletListForDropdown = [];
             cloudletList.map(item => {
                 /*{text: 'FLAVOR', value: 'flavor'},*/
@@ -268,17 +294,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return o.avgMemUsed;
             }));
 
-            this.setState({
+            await this.setState({
                 allUsageList: allUsageList,
                 cloudletList: cloudletList,
                 maxCpu: maxCpu,
                 maxMem: maxMem,
-            }, () => {
-                this.setState({
-                    loading: false,
-                    isReady: true,
-                })
-            })
+                isRequesting: false,
+            });
 
         }
 
@@ -299,6 +321,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
         async refreshAllData() {
+
             toast({
                 type: 'success',
                 //icon: 'smile',
@@ -314,8 +337,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 cloudLetSelectBoxClearable: true,
             })
-
+            this.setState({
+                loading: true,
+            })
             await this.loadInitDataForCloudlet();
+            this.setState({
+                loading: false,
+            })
 
             await this.setState({
                 currentRegion: 'ALL',
@@ -323,6 +351,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: '',
                 currentAppInst: '',
             })
+
         }
 
 
@@ -702,13 +731,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         <div style={{marginLeft: 50}}>
                             {this.state.userType}FOR OPERTATOR..
                         </div>
+                        {this.state.intervalLoading &&
+                        <div style={{marginLeft: 50}}>
+                            <CircularProgress/>
+                        </div>
+                        }
                     </Grid.Row>
                 </div>
             )
         }
 
         renderSelectBoxRow() {
-
 
             return (
                 <div className='page_monitoring_select_row'>
@@ -831,7 +864,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let allUsageList = this.state.allUsageList;
             let bubbleChartData = [];
 
-            console.log('sldkflskdflksdlfklsdkfk====>',allUsageList);
+            console.log('sldkflskdflksdlfklsdkfk====>', allUsageList);
 
             if (hwType === 'vCPU') {
                 allUsageList.map((item, index) => {
@@ -905,7 +938,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 })
             }
 
-            console.log('1111bubbleChartData====>',bubbleChartData);
+            console.log('1111bubbleChartData====>', bubbleChartData);
 
             this.setState({
                 bubbleChartData: bubbleChartData,
