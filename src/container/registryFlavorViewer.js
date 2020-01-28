@@ -50,7 +50,8 @@ class RegistryFlavorViewer extends React.Component {
                     'FlavorName':{label:'Flavor Name', type:'RenderInput', necessary:true, tip:'Name of the flavor', active:true},
                     'RAM':{label:'RAM Size', type:'renderInputNum', unit:'MB', necessary:true, tip:'RAM in megabytes', active:true},
                     'vCPUs':{label:'Number of vCPUs', type:'renderInputNum', necessary:true, tip:'Number of virtual CPUs', active:true},
-                    'Disk':{label:'Disk Space', type:'renderInputNum', unit:'GB', necessary:true, tip:'Amount of disk space in gigabytes', active:true}
+                    'Disk':{label:'Disk Space', type:'renderInputNum', unit:'GB', necessary:true, tip:'Amount of disk space in gigabytes', active:true},
+                    'GPU':{label:'GPU', type:'renderCheckbox', necessary:false, tip:'Enable GPU', active:true}
                 },
                 {
                     
@@ -62,7 +63,8 @@ class RegistryFlavorViewer extends React.Component {
                     'FlavorName':'',
                     'RAM':'',
                     'vCPUs':'',
-                    'Disk':''
+                    'Disk':'',
+                    'GPU' : false,
                 }
             ]
 
@@ -76,7 +78,6 @@ class RegistryFlavorViewer extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let request = mcRequest.request;
-                _self.props.handleLoadingSpinner(false);
                 this.props.handleAlertInfo('success', 'Flavor ' + request.data.flavor.key.name + ' created successfully.')
                 this.gotoUrl('submit');
             }
@@ -163,7 +164,6 @@ class RegistryFlavorViewer extends React.Component {
             if (nextProps.formAppInst.submitSucceeded && error.length == 0) {
                 let submitData = nextProps.submitValues
                 this.setState({ toggleSubmit: true, validateError: error });
-                this.props.handleLoadingSpinner(true);
                 serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().CREATE_FLAVOR, data: submitData }, this.receiveResult)
             } else {
                 this.setState({ validateError: error, toggleSubmit: true })
@@ -199,13 +199,14 @@ class RegistryFlavorViewer extends React.Component {
 
 const createFormat = (data) => (
     {
-        "region":data['Region'],
-        "flavor":{
-            "key":{"name":data['FlavorName']},
-            "ram":Number(data['RAM']),
-            "vcpus":Number(data['vCPUs']),
-            "disk":Number(data['Disk'])
-        }
+        region:data['Region'],
+        flavor:{
+            key:{name:data['FlavorName']},
+            ram:Number(data['RAM']),
+            vcpus:Number(data['vCPUs']),
+            disk:Number(data['Disk']),
+            opt_res_map:{gpu:data['GPU'] ? "gpu:1" : undefined}
+        } 
     }
 )
 const mapStateToProps = (state) => {
