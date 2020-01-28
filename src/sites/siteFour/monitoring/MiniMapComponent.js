@@ -3,17 +3,47 @@ import {
     ComposableMap,
     ZoomableGroup,
     Geographies,
-    Geography, Markers, Marker
+    Geography, Markers, Marker, Annotation, Annotations
 } from "react-simple-maps"
 import {Button, Icon} from "semantic-ui-react";
+import type {TypeAppInstance, TypeGridInstanceList, TypeUtilization} from "../../../shared/Types";
+import {CircularProgress} from "@material-ui/core";
+import Lottie from "react-lottie";
 
 const geoUrl =
     "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json"
 
-export default class Test001 extends React.Component {
 
+type Props = {
+    cloudletList: Array,
+
+}
+
+type State = {
+    date: string,
+
+
+}
+
+
+export default class MiniMapComponent extends Component<Props, State> {
     state = {
-        zoom: 0.6,
+        zoom: 0.45,
+        cloudletList: [],
+    }
+
+    async componentWillReceiveProps(nextProps: Props, nextContext: any): void {
+        if (this.props.cloudletList !== nextProps.cloudletList) {
+            await this.setState({
+                cloudletList: nextProps.cloudletList,
+            });
+
+            //this.state.cloudletList["0"].CloudletLocation.latitude
+            //this.state.cloudletList["0"].CloudletLocation.longitude
+            //this.state.cloudletList["0"].CloudletName
+
+            console.log('cloudletList===>', this.state.cloudletList);
+        }
     }
 
 
@@ -21,7 +51,7 @@ export default class Test001 extends React.Component {
         return (
             <div style={{
                 width: "100%",
-                backgroundColor: 'black',
+                backgroundColor: '#23252c',
                 maxWidth: 1200,
                 margin: "0 auto",
             }}>
@@ -74,27 +104,45 @@ export default class Test001 extends React.Component {
                             ))}
                         </Geographies>
                         <Markers>
-                            <Marker marker={{ coordinates: [ 121.4747, 31.25516 ] }} style={{
-                                hidden: {opacity: 0},
-                            }}>
-                                <svg width="25" height="25">
+                            {this.state.cloudletList.map(item => {
 
-                                    <image href="https://image.flaticon.com/icons/svg/252/252116.svg" height="25" width="25"/>
-                                </svg>
-                            </Marker>
-                            <Marker marker={{ coordinates: [ 50.4747, 25.25516 ] }} style={{
-                                hidden: {opacity: 0},
-                            }}>
-                                <svg width="35" height="35">
+                                return (
+                                    <Marker marker={{coordinates: [item.CloudletLocation.longitude, item.CloudletLocation.latitude]}} style={{
+                                        hidden: {opacity: 0},
+                                    }}>
+                                        <svg width="35" height="35">
+                                            <image href="https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png" style={{color: 'red'}} height="35" width="35"/>
+                                        </svg>
 
-                                    <image href="https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png" style={{color:'red'}} height="35" width="35"/>
-                                </svg>
-                            </Marker>
+                                        <text textAnchor="middle" fill="#77BD25" style={{fontSize: 20, fontFamily: "Roboto, sans-serif", fontWeight: 'bold'}}>
+                                            {item.CloudletName.toString().substring(0, 17) + "..."}
+                                        </text>
+                                    </Marker>
+                                )
+                            })}
                         </Markers>
                     </ZoomableGroup>
 
                 </ComposableMap>
-                <div className="controls" style={{marginTop: -100}}>
+                {this.props.loading &&
+                <div style={{left: '39%', top: '32%', position: 'absolute'}}>
+                    <Lottie
+                        options={{
+                            loop: true,
+                            autoplay: true,
+                            animationData: require('../../../lotties/pinjump'),
+                            rendererSettings: {
+                                preserveAspectRatio: 'xMidYMid slice'
+                            }
+                        }}
+                        height={150}
+                        width={150}
+                        isStopped={false}
+                        isPaused={false}
+                    />
+                </div>
+                }
+                <div className="controls" style={{marginTop: -190}}>
                     <Button id="mapZoomCtl" size='larges' icon onClick={() => {
 
                         this.setState({

@@ -13,26 +13,15 @@ import {DatePicker, Progress,} from 'antd';
 import {
     getCloudletList,
     getClouletLevelUsageList,
-    instanceFlavorToPerformanceValue,
     numberWithCommas,
     renderBarGraphForCloutdlet,
-    renderBubbleChart, renderBubbleChartForCloudlet,
+    renderBubbleChartForCloudlet,
     renderLineChartForCloudlet,
     renderPlaceHolder,
     renderPlaceHolder2,
-    renderSixGridInstanceOnCloudletGrid,
     Styles
 } from "./PageMonitoringService";
-import {
-    HARDWARE_OPTIONS,
-    HARDWARE_OPTIONS_FOR_CLOUDLET,
-    HARDWARE_TYPE,
-    HARDWARE_TYPE_FOR_CLOUDLET,
-    NETWORK_OPTIONS2,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGIONS_OPTIONS
-} from "../../../shared/Constants";
+import {HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, NETWORK_OPTIONS2, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
@@ -41,6 +30,7 @@ import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import './PageMonitoring.css'
 import {showToast} from "./PageMonitoringChartService";
+import MiniMapComponent from "./MiniMapComponent";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -1061,7 +1051,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : renderSixGridInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
+                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : <MiniMapComponent loading={this.state.loading} cloudletList={this.state.cloudletList}/>}
                                                     </div>
                                                 </div>
 
