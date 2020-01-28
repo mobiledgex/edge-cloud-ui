@@ -9,7 +9,7 @@ import {Line as ReactChartJs} from 'react-chartjs-2';
 import Lottie from "react-lottie";
 import BubbleChart from "../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../shared/Types";
-import PageMonitoring from "./PageMonitoring";
+import PageMonitoring from "./PageMonitoringForAdmin";
 import {showToast} from "./PageMonitoringChartService";
 import {SHOW_CLOUDLET} from "../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../services/serviceMC";

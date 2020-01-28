@@ -49,7 +49,7 @@ import SiteFourPageCloudletPool from './cloudletPool/siteFour_page_cloudletPool'
 import SiteFourPageCloudletPoolReg from './cloudletPool/siteFour_page_cloudletPoolReg';
 import SiteFourPageLinkOrganizeReg from './cloudletPool/siteFour_page_linkOrganizeReg';
 import SiteFourPageCloudletPoolUpdate from './cloudletPool/siteFour_page_cloudletPoolUpdate';
-import PageMonitoring from './monitoring/PageMonitoring'
+import PageMonitoring from './monitoring/PageMonitoringForAdmin'
 
 import PopLegendViewer from '../../container/popLegendViewer';
 import * as serviceMC from '../../services/serviceMC';

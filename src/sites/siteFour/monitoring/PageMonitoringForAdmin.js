@@ -165,7 +165,7 @@ type State = {
 
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
-    class PageMonitoring extends Component<Props, State> {
+    class PageMonitoringForAdmin extends Component<Props, State> {
         state = {
             date: '',
             time: '',

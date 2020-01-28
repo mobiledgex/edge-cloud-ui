@@ -149,9 +149,8 @@ type State = {
 
 }
 
-
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
-    class PageMonitoringForOperator extends Component<Props, State> {
+    class PageMonitoringForDeveloper extends Component<Props, State> {
         state = {
             date: '',
             time: '',
@@ -711,7 +710,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             >RESET</Button>
                         </div>
                         <div style={{marginLeft: 50}}>
-                            {this.state.userType}2222====>Page FOr Opertator()..
+                            {this.state.userType}33333====>Page FOr dev()..
                         </div>
                     </Grid.Row>
                 </div>
@@ -1011,224 +1010,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <Grid.Row className='view_contents'>
-                    {/*todo:---------------------------------*/}
-                    {/*todo: POPUP APP INSTACE LIST DIV      */}
-                    {/*todo:---------------------------------*/}
-                    <Modal
-                        closeIcon={true}
-                        open={this.state.isModalOpened}
-                        closeOnDimmerClick={true}
-                        onClose={() => {
-                            this.setState({
-                                isModalOpened: false,
-                            })
-                        }}
-                        style={{width: '80%'}}
-                    >
-                        <Modal.Header>Status of App Instance</Modal.Header>
-                        <Modal.Content>
-                            {this.renderBottomGridArea()}
-                        </Modal.Content>
-                    </Modal>
-                    <SemanticToastContainer/>
-                    <Grid.Column className='contents_body'>
-                        {/*todo:---------------------------------*/}
-                        {/*todo:Content Header                   */}
-                        {/*todo:---------------------------------*/}
-                        {this.renderHeader()}
-                        <Grid.Row className='site_content_body'>
-                            <Grid.Column>
-                                <div className="table-no-resized"
-                                     style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
-
-                                    <div className="page_monitoring">
-                                        {/*todo:---------------------------------*/}
-                                        {/*todo:SELECTBOX_ROW        */}
-                                        {/*todo:---------------------------------*/}
-                                        {this.renderSelectBoxRow()}
-
-                                        <div className='page_monitoring_dashboard'>
-                                            {/*_____row____1*/}
-                                            {/*_____row____1*/}
-                                            {/*_____row____1*/}
-                                            <div className='page_monitoring_row'>
-                                                {/* ___col___1*/}
-                                                {/* ___col___1*/}
-                                                {/* ___col___1*/}
-                                                <div className='page_monitoring_column' style={{}}>
-                                                    <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title'>
-                                                            Status of Launched App Instances on Cloudlet
-                                                        </div>
-                                                    </div>
-                                                    <div className='page_monitoring_container'>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : renderSixGridInstanceOnCloudletGrid(this.state.appInstanceListGroupByCloudlet, this)}
-                                                    </div>
-                                                </div>
-
-                                                {/* ___col___2nd*/}
-                                                {/* ___col___2nd*/}
-                                                {/* ___col___2nd*/}
-                                                <div className='page_monitoring_column'>
-
-                                                    {/*todo:---------------------------------*/}
-                                                    {/*todo: RENDER TAB_AREA                 */}
-                                                    {/*todo:---------------------------------*/}
-                                                    <Tab
-                                                        className='page_monitoring_tab'
-                                                        menu={{secondary: true, pointing: true}}
-                                                        panes={this.CPU_MEM_DISK_CONN_TABS}
-                                                        activeIndex={this.state.currentTabIndex}
-                                                        onTabChange={(e, {activeIndex}) => {
-                                                            this.setState({
-                                                                currentTabIndex: activeIndex,
-                                                            })
-                                                        }}
-                                                        defaultActiveIndex={this.state.currentTabIndex}
-                                                    />
-                                                </div>
-                                            </div>
-                                            {/*_____row____2*/}
-                                            {/*_____row____2*/}
-                                            {/*_____row____2*/}
-                                            <div className='page_monitoring_row'>
-                                                {/* ___col___1*/}
-                                                {/* ___col___1*/}
-                                                {/* ___col___1*/}
-                                                <div className='page_monitoring_column'>
-                                                    <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title_select'>
-                                                            Performance State Of Cloudlet
-                                                        </div>
-                                                        {/*todo:---------------------------------*/}
-                                                        {/*todo: bubbleChart DropDown            */}
-                                                        {/*todo:---------------------------------*/}
-                                                        <Dropdown
-                                                            disabled={this.state.loading}
-                                                            clearable={this.state.regionSelectBoxClearable}
-                                                            placeholder='SELECT HARDWARE'
-                                                            selection
-                                                            loading={this.state.loading}
-                                                            options={HARDWARE_OPTIONS_FOR_CLOUDLET}
-                                                            defaultValue={HARDWARE_OPTIONS_FOR_CLOUDLET[0].value}
-                                                            onChange={async (e, {value}) => {
-
-                                                                this.handleBubbleChartDropDownForCloudlet(value);
-
-                                                            }}
-                                                            value={this.state.currentHardwareType}
-                                                        />
-                                                    </div>
-                                                    {/*todo:---------------------------------*/}
-                                                    {/*todo: RENDER BUBBLE_CHART          */}
-                                                    {/*todo:---------------------------------*/}
-                                                    <div className='page_monitoring_container'>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
-                                                    </div>
-                                                </div>
-                                                {/* row2___col___2*/}
-                                                {/* row2___col___2*/}
-                                                {/* row2___col___2*/}
-                                                <div className='page_monitoring_column'>
-                                                    {/*todo:---------------------------------*/}
-                                                    {/*todo: NETWORK TAB PANEL AREA           */}
-                                                    {/*todo:---------------------------------*/}
-                                                    <Tabs selectedIndex={this.state.networkTabIndex}
-                                                          className='page_monitoring_tab'>
-                                                        <TabPanel>
-                                                            {this.renderNetSendRevcArea(NETWORK_TYPE.NET_SEND)}
-                                                        </TabPanel>
-                                                        <TabPanel>
-                                                            {this.renderNetSendRevcArea(NETWORK_TYPE.NET_RECV)}
-                                                        </TabPanel>
-                                                    </Tabs>
-                                                </div>
-
-
-                                            </div>
-
-                                            {/*todo:---------------------------------*/}
-                                            {/*todo: BOTTOM GRID TOGGLE UP BUTTON   */}
-                                            {/*todo:---------------------------------*/}
-                                            <div className='page_monitoring_row'
-                                                 onClick={() => {
-                                                     this.setState({
-                                                         isShowBottomGrid: !this.state.isShowBottomGrid,
-                                                     })
-                                                 }}
-                                            >
-                                                <div className='page_monitoring_table_column'>
-                                                    <div className='page_monitoring_title_area'>
-                                                        <div className='page_monitoring_title'>
-                                                            SHOW CLOUDLET LIST
-                                                        </div>
-                                                        <div className='page_monitoring_popup_header_button'>
-                                                            SHOW CLOUDLET LIST
-                                                            <div style={{display: 'inline-block', marginLeft: 10}}>
-                                                                <FA name="chevron-up"/>
-                                                            </div>
-                                                        </div>
-                                                        <div/>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/*todo:---------------------------------*/}
-                                            {/*todo: BOTTOM_GRID_AREA_SHOW_UP_AREA   */}
-                                            {/*todo:---------------------------------*/}
-                                            <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
-                                                <OutsideClickHandler
-                                                    onOutsideClick={() => {
-                                                        /*  this.setState({
-                                                              isShowBottomGrid: !this.state.isShowBottomGrid,
-                                                          })*/
-                                                    }}
-                                                >
-                                                    <div className='page_monitoring_popup_column'>
-                                                        <div className='page_monitoring_popup_header_row'
-                                                             onClick={() => {
-                                                                 this.setState({
-                                                                     isShowBottomGrid: !this.state.isShowBottomGrid,
-                                                                 })
-
-                                                             }}
-                                                        >
-                                                            <div className='page_monitoring_popup_header_title'>
-                                                                Status of App
-                                                            </div>
-                                                            <div className='page_monitoring_popup_header_button'>
-                                                                <div>
-                                                                    HIDE CLOUDLET LIST
-                                                                </div>
-                                                                <div style={{marginLeft: 10}}>
-                                                                    <FA name="chevron-down"/>
-                                                                </div>
-                                                            </div>
-                                                            <div/>
-                                                        </div>
-                                                        {/*todo:---------------------------------*/}
-                                                        {/*todo: BOTTOM APP INSTACE LIST         */}
-                                                        {/*todo:---------------------------------*/}
-                                                        <div className='page_monitoring_popup_table'>
-                                                            {this.state.cloudletList.length && this.state.isReady === 0 ?
-                                                                <div style={Styles.noData}>
-                                                                    NO DATA
-                                                                </div>
-                                                                : this.renderBottomGridArea()}
-                                                        </div>
-                                                    </div>
-                                                </OutsideClickHandler>
-                                            </ToggleDisplay>
-
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </Grid.Column>
-                        </Grid.Row>
-
-                    </Grid.Column>
+                    <div>
+                        Develippoeorpeorrrrrrrrr
+                    </div>
 
                 </Grid.Row>
 

@@ -8,9 +8,10 @@ import * as actions from '../../../actions';
 import {hot} from "react-hot-loader/root";
 import './PageMonitoring.css'
 import {USER_ROLE} from "../../../shared/Constants";
-import PageMonitoring from "./PageMonitoring";
 import PageMonitoringForOperator from "./PageMonitoringForOperator";
 import {Grid} from "semantic-ui-react";
+import PageMonitoringForDeveloper from "./PageMonitoringForDeveloper";
+import PageMonitoringForAdmin from "./PageMonitoringForAdmin";
 
 const mapStateToProps = (state) => {
     return {
@@ -70,18 +71,28 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
         componentDidMount = async () => {
 
-
         }
 
+        renderMainPage() {
+            if (this.state.userRole.includes('Admin')) {
+                return (
+                    <PageMonitoringForAdmin/>
+                )
+            } else if (this.state.userRole.includes('Operator')) {
+                return (
+                    <PageMonitoringForOperator/>
+                )
+            } else {//DeveloperManager
+                return (
+                    <PageMonitoringForDeveloper/>
+                )
+            }
+        }
 
         render() {
-
             return (
-
                 <Grid.Row className='view_contents'>
-
-                    {this.state.userRole === USER_ROLE.ADMIN_MANAGER ? <PageMonitoring/> : <PageMonitoringForOperator/>}
-
+                    {this.renderMainPage()}
                 </Grid.Row>
 
             );

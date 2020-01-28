@@ -107,8 +107,8 @@ export const HARDWARE_OPTIONS_FOR_CLOUDLET = [
     {text: 'vCPU', value: 'vCPU'},
     {text: 'MEM', value: 'MEM'},
     {text: 'DISK', value: 'DISK'},
-    {text: 'RECV BYTES', value: 'RECV BYTES'},
-    {text: 'SEND BYTES', value: 'SEND BYTES'},
+    {text: 'RECV BYTES', value: 'RECV_BYTES'},
+    {text: 'SEND BYTES', value: 'SEND_BYTES'},
     {text: 'FLOATING_IPS', value: 'FLOATING_IPS'},
     {text: 'IPV4', value: 'IPV4'},
 ]
@@ -117,8 +117,8 @@ export const HARDWARE_TYPE_FOR_CLOUDLET = {
     vCPU : 'vCPU',
     MEM: 'MEM',
     DISK: 'DISK',
-    RECV : 'RECV',
-    SEND : 'SEND',
+    RECV_BYTES : 'RECV_BYTES',
+    SEND_BYTES : 'SEND_BYTES',
     FLOATING_IPS: 'FLOATING_IPS',
     IPV4: 'IPV4',
 }
