@@ -60,12 +60,36 @@ export const NETWORK_OPTIONS = [
     {text: 'SEND BYTES', value: 'send_bytes'},
 ]
 
+export const NETWORK_OPTIONS2 = [
+    {text: 'NET_SEND', value: 'NET_SEND'},
+    {text: 'NET_RECV', value: 'NET_RECV'},
+]
 
+
+export const USAGE_INDEX = {
+    TIME: 0,
+    CLOUDLET: 1,
+    OPERATOR: 2,
+    NETSEND: 3,
+    NETRECV: 4,
+    VCPUUSED: 5,
+    VCPUMAX: 6,
+    MEMUSED: 7,
+    MEMMAX: 8,
+    DISKUSED: 9,
+    DISKMAX: 10,
+    FLOATINGIPSUSED: 11,
+    FLOATINGIPSMAX: 12,
+    IPV4USED: 13,
+    IPV4MAX: 14,
+}
 
 
 export const NETWORK_TYPE = {
     RECV_BYTES: 'recv_bytes',
     SEND_BYTES: 'send_bytes',
+    NET_SEND: 'NET_SEND',
+    NET_RECV: 'NET_RECV',
 }
 
 
@@ -78,15 +102,54 @@ export const HARDWARE_OPTIONS = [
     {text: 'SEND_BYTES', value: 'send_bytes'},
 ]
 
+
+export const HARDWARE_OPTIONS_FOR_CLOUDLET = [
+    {text: 'vCPU', value: 'vCPU'},
+    {text: 'MEM', value: 'MEM'},
+    {text: 'DISK', value: 'DISK'},
+    {text: 'RECV BYTES', value: 'RECV BYTES'},
+    {text: 'SEND BYTES', value: 'SEND BYTES'},
+    {text: 'FLOATING_IPS', value: 'FLOATING_IPS'},
+    {text: 'IPV4', value: 'IPV4'},
+]
+
+export const HARDWARE_TYPE_FOR_CLOUDLET = {
+    vCPU : 'vCPU',
+    MEM: 'MEM',
+    DISK: 'DISK',
+    RECV : 'RECV',
+    SEND : 'SEND',
+    FLOATING_IPS: 'FLOATING_IPS',
+    IPV4: 'IPV4',
+}
+
 export const HARDWARE_TYPE = {
     FLAVOR: 'flavor',
     CPU: 'cpu',
+    VCPU: 'vCPU',
+    VCPU_MAX: 'VCPU_MAX',
+    NET_SEND: 'NET_SEND',
+    NET_RECV: 'NET_RECV',
+    VCPU_USED: 'VCPU_USED',
+
+    MEM_USED: 'MEM_USED',
+    MEM_MAX: 'MEM_MAX',
+    DISK_USED: 'DISK_USED',
+    DISK_MAX: 'DISK_MAX',
+    FLOATING_IPS_USED: 'FLOATING_IPS_USED',
+    FLOATING_IPS_MAX: 'FLOATING_IPS_MAX',
+    FLOATING_IPS: 'FLOATING_IPS',
+    IPV4_USED: 'IPV4_USED',
+    IPV4_MAX: 'IPV4_MAX',
+    IPV4: 'IPV4',
+
+
     MEM: 'mem',
     RECV_BYTE: 'recv_bytes',
     SEND_BYTE: 'send_bytes',
     DISK: 'disk',
     CONNECTIONS: 'connections',
-    ACTIVE_CONNECTION:'active_connection',//12
+    ACTIVE_CONNECTION: 'active_connection',//12
     HANDLED_CONNECTION: 'handled_connection',//13
     ACCEPTS_CONNECTION: 'accepts_connection',//14 (index)
 
@@ -119,8 +182,8 @@ export const MONITORING_CATE_SELECT_TYPE = {
 }
 
 export const USER_ROLE = {
-    ADMIN_MANAGER : 'AdminManager',
-    OPERATOR_MANAGER : 'OperatorManager',
+    ADMIN_MANAGER: 'AdminManager',
+    OPERATOR_MANAGER: 'OperatorManager',
     //ADMIN_MANAGER : 'AdminManager',
 }
 

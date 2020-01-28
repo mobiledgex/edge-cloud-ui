@@ -18,6 +18,25 @@ export type TypeGridInstanceList = {
     "sumSendBytes": number,
 }
 
+export type TypeCloudletUsageList = {
+    avgVCpuUsed: number,
+    avgVCpuMax: number,
+    avgMemUsed: number,
+    avgMemMax: number,
+    avgDiskUsed: number,
+    avgDiskMax: number,
+    avgNetSend: number,
+    avgNetRecv: number,
+    avgFloatingIpsUsed: number,
+    avgFloatingIpsMax: number,
+    avgIpv4Used: number,
+    avgIpv4Max: number,
+    columns: Array,
+    series: Array,
+    cloudlet: string,
+    operator: string,
+}
+
 
 export type TypeAppInstance = {
     "Region": string,

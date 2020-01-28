@@ -10,58 +10,37 @@ import {connect} from 'react-redux';
 import * as actions from '../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
-import * as reducer from "../../../utils";
 import {
-    cutArrayList,
-    filterAppInstanceListByAppInst,
-    filterAppInstanceListByCloudLet,
-    filterAppInstanceListByClusterInst,
-    filterAppInstanceListByRegion,
-    filterAppInstOnCloudlet,
-    filterInstanceCountOnCloutLetOne,
-    filterUsageByType,
-    filterUsageListByRegion, getCloudletList,
-    getAppLevelUsageList,
+    getCloudletList,
+    getClouletLevelUsageList,
     instanceFlavorToPerformanceValue,
-    makeCloudletListSelectBox,
-    makeClusterListSelectBox,
-    makeCompleteDateTime,
-    makeGridInstanceList,
-    makeNetworkBarData,
-    makeNetworkLineChartData,
     numberWithCommas,
-    renderBarGraph,
-    renderBubbleChart,
-    renderLineChart,
+    renderBarGraphForCloutdlet,
+    renderBubbleChart, renderBubbleChartForCloudlet,
+    renderLineChartForCloudlet,
     renderPlaceHolder,
     renderPlaceHolder2,
-    renderSixGridInstanceOnCloudletGrid, getAppLevelMetrics,
-    requestShowAppInstanceList,
-    Styles, getClouletLevelUsageList
+    renderSixGridInstanceOnCloudletGrid,
+    Styles
 } from "./PageMonitoringService";
 import {
-    APPINSTANCE_INIT_VALUE,
-    CLASSIFICATION,
-    CONNECTIONS_OPTIONS,
     HARDWARE_OPTIONS,
+    HARDWARE_OPTIONS_FOR_CLOUDLET,
     HARDWARE_TYPE,
-    MONITORING_CATE_SELECT_TYPE,
-    NETWORK_OPTIONS,
+    HARDWARE_TYPE_FOR_CLOUDLET,
+    NETWORK_OPTIONS2,
     NETWORK_TYPE,
     RECENT_DATA_LIMIT_COUNT,
     REGIONS_OPTIONS
 } from "../../../shared/Constants";
 import Lottie from "react-lottie";
-import type {TypeGridInstanceList} from "../../../shared/Types";
+import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import './PageMonitoring.css'
 import {showToast} from "./PageMonitoringChartService";
-import * as serviceMC from "../../../services/serviceMC";
-import {sendSyncRequest} from "../../../services/serviceMC";
-import {SHOW_AUDIT_ORG, SHOW_CLOUDLET} from "../../../services/endPointTypes";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -115,6 +94,7 @@ type State = {
     allAppInstanceList: Array<TypeAppInstance>,
     appInstanceOne: TypeAppInstance,
     currentRegion: string,
+    allUsageList: Array,
     allCpuUsageList: Array,
     allMemUsageList: Array,
     allDiskUsageList: Array,
@@ -163,6 +143,9 @@ type State = {
     allConnectionsUsageList: Array,
     filteredConnectionsUsageList: Array,
     connectionsTabIndex: number,
+    cloudletList: Array,
+    maxCpu: number,
+    maxMem: number,
 
 }
 
@@ -218,7 +201,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isShowBottomGrid: false,
             isShowBottomGridForMap: false,
             mapZoomLevel: 0,
-            currentHardwareType: HARDWARE_TYPE.FLAVOR,
+            currentHardwareType: HARDWARE_TYPE.VCPU,
             bubbleChartData: [],
             currentNetworkType: NETWORK_TYPE.RECV_BYTES,
             lineChartData: [],
@@ -240,6 +223,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             filteredConnectionsUsageList: [],
             connectionsTabIndex: 0,
             dropdownCloudletList: [],
+            allUsageList: [],
+            maxCpu: 0,
+            maxMem: 0,
         };
 
 
@@ -252,11 +238,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.loadInitData();
         }
 
-        async loadInitData() {
 
+        async loadInitData() {
+            this.setState({
+                loading: true,
+            })
             let cloudletList = await getCloudletList();
 
-            console.log('cloudletList====>',cloudletList);
+            console.log('cloudletList====>', cloudletList);
 
             let cloudletListForDropdown = [];
             cloudletList.map(item => {
@@ -274,181 +263,49 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             }, () => {
                 console.log('dropdownCloudletList===>', this.state.dropdownCloudletList);
             })
-
             //let cloudletLevelUsageList: Array<TypeAppInstance> = require('./cloutletLevelMatric')
+            let allUsageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
 
-            let cloudletLevelUsageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
-            console.log('cloudletLevelUsageList===>', cloudletLevelUsageList)
-
-        }
-
-        async filterByEachTypes(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
-            let appInstanceList = []
-            let allCpuUsageList = []
-            let allMemUsageList = []
-            let allDiskUsageList = []
-            let allNetworkUsageList = []
-            let allConnectionsUsageList = []
-            let allGridInstanceList = []
-
-            //@todo: 날짜에 의한 필터링인경우
-            if (isDateFiltering) {
-                appInstanceList = this.state.appInstanceList;
-                allCpuUsageList = this.state.usageListByDate[0]
-                allMemUsageList = this.state.usageListByDate[1]
-                allNetworkUsageList = this.state.usageListByDate[2]
-                allDiskUsageList = this.state.usageListByDate[3]
-                allConnectionsUsageList = this.state.usageListByDate[4]
-                allGridInstanceList = makeGridInstanceList(this.state.usageListByDate);
-            } else {
-                appInstanceList = this.state.allAppInstanceList;
-                allCpuUsageList = this.state.allCpuUsageList
-                allMemUsageList = this.state.allMemUsageList
-                allDiskUsageList = this.state.allDiskUsageList
-                allNetworkUsageList = this.state.allNetworkUsageList
-                allConnectionsUsageList = this.state.allConnectionsUsageList
-                allGridInstanceList = this.state.allGridInstanceList;
-            }
-
-            this.props.toggleLoading(true)
-            await this.setState({
-                loading0: true,
-                appInstanceListSortByCloudlet: [],
-                currentRegion: pRegion,
-                dropdownCloudletList: [],
-            })
-
-            //todo: -------------------------------------------
-            //todo: FLITER By pRegion
-            //todo: -------------------------------------------
-            appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
-            let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
-            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
-
-            let filteredCpuUsageList = filterUsageListByRegion(pRegion, allCpuUsageList);
-            let filteredMemUsageList = filterUsageListByRegion(pRegion, allMemUsageList);
-            let filteredDiskUsageList = filterUsageListByRegion(pRegion, allDiskUsageList);
-            let filteredNetworkUsageList = filterUsageListByRegion(pRegion, allNetworkUsageList);
-            let filteredConnectionsUsageList = filterUsageListByRegion(pRegion, allConnectionsUsageList);
-
-            let filteredGridInstanceList = filterUsageListByRegion(pRegion, allGridInstanceList);
-
-            //todo: -------------------------------------------
-            //todo: FLITER  By pCloudLet
-            //todo: -------------------------------------------
-            let clusterSelectBoxList = [];
-            if (pCloudLet !== '') {
-                appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
-                appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
-                clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
-                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredCpuUsageList);
-                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredMemUsageList);
-                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredDiskUsageList);
-                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredNetworkUsageList);
-                filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredConnectionsUsageList);
-
-
-                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredGridInstanceList);
-            }
-
-            //todo: -------------------------------------------
-            //todo: Filter By pCluster
-            //todo: -------------------------------------------
-            if (pCluster !== '') {
-                //todo:LeftTop의 Cloudlet위에 올라가는 인스턴스 리스트를 필터링 처리하는 로직.
-                appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
-                //todo:app instalce list를 필터링
-                appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
-                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredCpuUsageList);
-                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredMemUsageList);
-                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredDiskUsageList);
-                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredNetworkUsageList);
-                filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCloudLet, filteredConnectionsUsageList);
-
-
-                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredGridInstanceList);
-
-            }
-
-            //todo: -------------------------------------------
-            //todo: FLITER By pAppInstance
-            //todo: -------------------------------------------
-            if (pAppInstance !== '') {
-                appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
-                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredCpuUsageList);
-                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredMemUsageList);
-                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredDiskUsageList);
-                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredNetworkUsageList);
-                filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredConnectionsUsageList);
-
-                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredGridInstanceList);
-
-            }
-
-            //todo: -------------------------------------------
-            //todo: GridInstanceList MEM,CPU MAX VALUE
-            //todo: -------------------------------------------
-            let gridInstanceListMemMax = Math.max.apply(Math, allGridInstanceList.map(function (o) {
-                return o.sumMemUsage;
-            }));
-            let gridInstanceListCpuMax = Math.max.apply(Math, allGridInstanceList.map(function (o) {
-                return o.sumCpuUsage;
-            }));
-
-            await this.setState({
-                filteredCpuUsageList: filteredCpuUsageList,
-                filteredMemUsageList: filteredMemUsageList,
-                filteredDiskUsageList: filteredDiskUsageList,
-                filteredNetworkUsageList: filteredNetworkUsageList,
-                filteredConnectionsUsageList: filteredConnectionsUsageList,
-                filteredGridInstanceList: filteredGridInstanceList,
-                gridInstanceListMemMax: gridInstanceListMemMax,
-                gridInstanceListCpuMax: gridInstanceListCpuMax,
-                appInstanceList: appInstanceList,
-                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
-                loading0: false,
-                dropdownCloudletList: cloudletSelectBoxList,
-                clusterList: clusterSelectBoxList,
-                currentCloudLet: pCloudLet,
-                currentCluster: pCluster,
-            });
-
-
-            //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
-            if (pAppInstance === '') {
-                //todo: MAKE TOP5 INSTANCE LIST
-                let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
-                await this.setState({
-                    appInstanceListTop5: appInstanceListTop5,
-                });
-            }
-            setTimeout(() => {
-                this.setState({
-                    cloudLetSelectBoxPlaceholder: 'Select CloudLet',
-                    clusterSelectBoxPlaceholder: 'Select Cluster',
-                })
-            }, 500)
-
-            //todo: -------------------------------------------
-            //todo: make BUBBLE CHART DATA
-            //todo: -------------------------------------------
-            let bubbleChartData = await this.makeBubbleChartData(appInstanceList);
+            let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allUsageList);
             await this.setState({
                 bubbleChartData: bubbleChartData,
             })
 
-            //todo: -------------------------------------------
-            //todo: NETWORK chart data filtering
-            //todo: -------------------------------------------
-            let networkChartData = makeNetworkLineChartData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
-            let networkBarChartData = makeNetworkBarData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
-            await this.setState({
-                networkChartData: networkChartData,
-                networkBarChartData: networkBarChartData,
+            let maxCpu = Math.max.apply(Math, allUsageList.map(function (o) {
+                return o.avgVCpuUsed;
+            }));
+
+            let maxMem = Math.max.apply(Math, allUsageList.map(function (o) {
+                return o.avgMemUsed;
+            }));
+
+            this.setState({
+                allUsageList: allUsageList,
+                cloudletList: cloudletList,
+                maxCpu: maxCpu,
+                maxMem: maxMem,
+            }, () => {
+                this.setState({
+                    loading: false,
+                    isReady: true,
+                })
             })
 
+        }
 
-            this.props.toggleLoading(false)
+        async makeBubbleChartDataForCloudlet(usageList: any) {
+            let bubbleChartData = []
+            usageList.map((item, index) => {
+                bubbleChartData.push({
+                    index: index,
+                    label: item.cloudlet.toString().substring(0, 10) + "...",
+                    value: item.avgVCpuMax,
+                    favor: item.avgVCpuMax,
+                    fullLabel: item.cloudlet.toString(),
+                })
+            })
+
+            return bubbleChartData;
         }
 
 
@@ -489,10 +346,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 index
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                NAME
+                                CLOUDLET
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                CPU(%)
+                                vCPU(%)
                             </Table.HeaderCell>
                             <Table.HeaderCell>
                                 MEM
@@ -507,17 +364,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 SEND BYTES
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                FLAVOR
+                                FLOATING IPS
                             </Table.HeaderCell>
                             <Table.HeaderCell>
-                                ACTIVE CONN
+                                IPV4
                             </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                HANDLED CONN
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                ACCEPTS CONN
-                            </Table.HeaderCell>
+
                         </Table.Row>
                     </Table.Header>
                     <Table.Body className="tbBodyList"
@@ -547,33 +399,26 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 />
                             </Table.Cell>
                         </Table.Row>}
-                        {this.state.isReady && this.state.filteredGridInstanceList.map((item: TypeGridInstanceList, index) => {
+                        {this.state.isReady && this.state.allUsageList.map((item: TypeCloudletUsageList, index) => {
 
                             return (
-                                <Table.Row className='page_monitoring_popup_table_row'
-                                           onClick={async () => {
-                                               //alert(item.AppName)
-                                               /*await this.setState({
-                                                   currentAppInst: item.instance.AppName,
-                                                   currentGridIndex: index,
-                                               })
-                                               await this.handleSelectBoxChanges(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, item.instance.AppName)*/
-                                           }}
-                                >
+                                <Table.Row className='page_monitoring_popup_table_row'>
+
                                     <Table.Cell>
                                         {index}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.instance.AppName}
+                                        {item.cloudlet}
                                     </Table.Cell>
                                     <Table.Cell>
                                         <div>
                                             <div>
-                                                {item.sumCpuUsage.toFixed(2) + '%'}
+                                                {item.avgVCpuUsed.toFixed(2) + '%'} + {this.state.maxCpu}
                                             </div>
                                             <div>
                                                 <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                          percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
+                                                          percent={(item.avgVCpuUsed / this.state.maxCpu * 100)}
+                                                    //percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
                                                           strokeColor={'#29a1ff'} status={'normal'}/>
                                             </div>
                                         </div>
@@ -581,36 +426,30 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <Table.Cell>
                                         <div>
                                             <div>
-                                                {numberWithCommas(item.sumMemUsage) + ' Byte'}
+                                                {numberWithCommas(item.avgMemUsed) + ' Byte'}
                                             </div>
                                             <div>
                                                 <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                          percent={(item.sumMemUsage / this.state.gridInstanceListMemMax) * 100}
+                                                          percent={(item.avgMemUsed / this.state.maxMem * 100)}
                                                           strokeColor={'#29a1ff'} status={'normal'}/>
                                             </div>
 
                                         </div>
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {numberWithCommas(item.sumDiskUsage) + ' Byte'}
+                                        {numberWithCommas(item.avgDiskUsed) + ' Byte'}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {numberWithCommas(item.sumRecvBytes) + ' Byte'}
+                                        {numberWithCommas(item.avgNetRecv) + ' Byte'}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {numberWithCommas(item.sumSendBytes) + ' Byte'}
+                                        {numberWithCommas(item.avgNetSend) + ' Byte'}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.instance.Flavor}
+                                        {item.avgFloatingIpsUsed}
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {item.sumActiveConnection}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.sumHandledConnection}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.sumAcceptsConnection}
+                                        {item.avgIpv4Used}
                                     </Table.Cell>
                                 </Table.Row>
 
@@ -635,7 +474,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloutdlet(this.state.allUsageList, HARDWARE_TYPE.VCPU)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -648,7 +487,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredCpuUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allUsageList, HARDWARE_TYPE.VCPU)}
                         </div>
                     </div>
                 </div>
@@ -668,7 +507,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloutdlet(this.state.allUsageList, HARDWARE_TYPE.MEM_USED)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -681,7 +520,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredMemUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allUsageList, HARDWARE_TYPE.MEM_USED)}
                         </div>
                     </div>
 
@@ -700,7 +539,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraph(this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloutdlet(this.state.allUsageList, HARDWARE_TYPE.DISK_USED)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -711,70 +550,73 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChart(this, this.state.filteredDiskUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allUsageList, HARDWARE_TYPE.DISK_USED)}
                         </div>
                     </div>
                 </div>
             )
         }
 
-        renderConnectionsArea(connectionsType: string) {
-
+        renderFloatingIpsTabArea() {
             return (
                 <div className='page_monitoring_dual_column'>
+                    {/*1_column*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                TOP5 of Connections
+                                TOP5 Counts of FLOATING IPS
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderBarGraph(this.state.filteredConnectionsUsageList, connectionsType, this)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloutdlet(this.state.allUsageList, HARDWARE_TYPE.FLOATING_IPS_USED)}
                         </div>
                     </div>
+                    {/*2nd_column*/}
                     <div className='page_monitoring_dual_container'>
-                        <div style={{display: 'flex', flexDirection: 'row'}}>
-                            <div className='page_monitoring_title_select' style={{marginTop: 5}}>
-                                Transition Of Connections
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Transition Of FLOATING IPS
                             </div>
-                            {!this.state.loading &&
-                            <Dropdown
-                                placeholder='SELECT CONN'
-                                selection
-                                loading={this.state.loading}
-                                options={CONNECTIONS_OPTIONS}
-                                //defaultValue={CONNECTIONS_OPTIONS[0].value}
-                                onChange={async (e, {value}) => {
-
-                                    if (value === HARDWARE_TYPE.ACTIVE_CONNECTION) {
-                                        this.setState({
-                                            connectionsTabIndex: 0,
-                                        })
-                                    } else if (value === HARDWARE_TYPE.HANDLED_CONNECTION) {
-                                        this.setState({
-                                            connectionsTabIndex: 1,
-                                        })
-                                    } else if (value === HARDWARE_TYPE.ACCEPTS_CONNECTION) {
-                                        this.setState({
-                                            connectionsTabIndex: 2,
-                                        })
-                                    }
-
-                                }}
-                                value={connectionsType}
-                                style={Styles.dropDown}
-                            />
-                            }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderLineChart(this, this.state.filteredConnectionsUsageList, connectionsType)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allUsageList, HARDWARE_TYPE.FLOATING_IPS_USED)}
                         </div>
                     </div>
                 </div>
             )
         }
 
-        renderNetworkArea(networkType: string) {
+        renderIPV4TabArea() {
+            return (
+                <div className='page_monitoring_dual_column'>
+                    {/*1_column*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 Counts of IP V4
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloutdlet(this.state.allUsageList, HARDWARE_TYPE.IPV4_USED)}
+                        </div>
+                    </div>
+                    {/*2nd_column*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                Transition Of IP V4
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allUsageList, HARDWARE_TYPE.IPV4_USED)}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+
+        renderNetSendRevcArea(networkType: string) {
             return (
                 <div className='page_monitoring_dual_column'>
                     <div className='page_monitoring_dual_container'>
@@ -784,7 +626,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderBarGraph(this.state.filteredNetworkUsageList, networkType, this)}
+                            {this.state.loading ? renderPlaceHolder('network') : renderBarGraphForCloutdlet(this.state.allUsageList, networkType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -794,13 +636,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                             {!this.state.loading &&
                             <Dropdown
-                                placeholder='SELECT HARDWARE'
+                                placeholder='SELECT NET TYPE'
                                 selection
                                 loading={this.state.loading}
-                                options={NETWORK_OPTIONS}
-                                defaultValue={NETWORK_OPTIONS[0].value}
+                                options={NETWORK_OPTIONS2}
+                                defaultValue={NETWORK_OPTIONS2[0].value}
                                 onChange={async (e, {value}) => {
-                                    if (value === NETWORK_TYPE.RECV_BYTES) {
+                                    if (value === NETWORK_TYPE.NET_SEND) {
                                         this.setState({
                                             networkTabIndex: 0,
                                         })
@@ -817,7 +659,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderLineChart(this, this.state.filteredNetworkUsageList, networkType)}
+                            {this.state.loading ? renderPlaceHolder('network') : renderLineChartForCloudlet(this, this.state.allUsageList, networkType)}
                         </div>
                     </div>
                 </div>
@@ -864,7 +706,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         currentGridIndex: -1,
                                         currentTabIndex: 0,
                                     })
-                                    await this.filterByEachTypes('ALL', '', '', '')
+                                    //await this.filterByEachTypes('ALL', '', '', '')
                                 }}
                             >RESET</Button>
                         </div>
@@ -968,7 +810,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         startTime: stateTime,
                                         endTime: endTime,
                                     })
-                                    this.filterUsageListByDate()
+                                    //this.filterUsageListByDate()
                                 }}
                                 ranges={{
                                     Today: [moment(), moment()],
@@ -992,89 +834,93 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        async handleBubbleChartDropDown(value) {
+        async handleBubbleChartDropDownForCloudlet(hwType) {
+
             await this.setState({
-                currentHardwareType: value,
+                currentHardwareType: hwType,
             });
 
-            let appInstanceList = this.state.appInstanceList;
-            let allCpuUsageList = this.state.filteredCpuUsageList;
-            let allMemUsageList = this.state.filteredMemUsageList;
-            let allDiskUsageList = this.state.filteredDiskUsageList;
-            let allNetworkUsageList = this.state.filteredNetworkUsageList;
-            let chartData = [];
+            let allUsageList = this.state.allUsageList;
+            let bubbleChartData = [];
 
-            if (value === HARDWARE_TYPE.FLAVOR) {
-                appInstanceList.map((item, index) => {
-                    chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+            console.log('sldkflskdflksdlfklsdkfk====>',allUsageList);
+
+            if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.VCPU) {
+                allUsageList.map((item, index) => {
+                    bubbleChartData.push({
                         index: index,
-                        label: item.AppName.toString().substring(0, 10) + "...",
-                        value: instanceFlavorToPerformanceValue(item.Flavor),
-                        favor: item.Flavor,
-                        fullLabel: item.AppName.toString(),
+                        label: item.cloudlet.toString().substring(0, 10) + "...",
+                        value: (item.avgVCpuUsed * 100).toFixed(0),
+                        favor: (item.avgVCpuUsed * 100).toFixed(0),
+                        fullLabel: item.cloudlet,
                     })
                 })
-            } else if (value === HARDWARE_TYPE.CPU) {
-                allCpuUsageList.map((item, index) => {
-                    chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.MEM) {
+                allUsageList.map((item, index) => {
+                    bubbleChartData.push({
                         index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: (item.sumCpuUsage * 100).toFixed(0),
-                        favor: (item.sumCpuUsage * 100).toFixed(0),
-                        fullLabel: item.instance.AppName.toString(),
+                        label: item.cloudlet.toString().substring(0, 10) + "...",
+                        value: item.avgMemUsed,
+                        favor: item.avgMemUsed,
+                        fullLabel: item.cloudlet,
                     })
                 })
-            } else if (value === HARDWARE_TYPE.MEM) {
-                allMemUsageList.map((item, index) => {
-                    chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.DISK) {
+                allUsageList.map((item, index) => {
+                    bubbleChartData.push({
                         index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumMemUsage,
-                        favor: item.sumMemUsage,
-                        fullLabel: item.instance.AppName.toString(),
+                        label: item.cloudlet.toString().substring(0, 10) + "...",
+                        value: item.avgDiskUsed,
+                        favor: item.avgDiskUsed,
+                        fullLabel: item.cloudlet,
                     })
                 })
-            } else if (value === HARDWARE_TYPE.DISK) {
-                allDiskUsageList.map((item, index) => {
-                    chartData.push({
-                        //label: item.Flavor+ "-"+ item.AppName.substring(0,5),
+            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.RECV_BYTES) {
+                allUsageList.map((item, index) => {
+                    bubbleChartData.push({
                         index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumDiskUsage,
-                        favor: item.sumDiskUsage,
-                        fullLabel: item.instance.AppName.toString(),
+                        label: item.cloudlet.toString().substring(0, 10) + "...",
+                        value: item.avgNetRecv,
+                        favor: item.avgNetRecv,
+                        fullLabel: item.cloudlet,
                     })
                 })
-            } else if (value === NETWORK_TYPE.RECV_BYTES) {
-                allNetworkUsageList.map((item, index) => {
-                    chartData.push({
+            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.SEND_BYTE) {
+                allUsageList.map((item, index) => {
+                    bubbleChartData.push({
                         index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumRecvBytes,
-                        favor: item.sumRecvBytes,
-                        fullLabel: item.instance.AppName.toString(),
+                        label: item.cloudlet.toString().substring(0, 10) + "...",
+                        value: item.avgNetSend,
+                        favor: item.avgNetSend,
+                        fullLabel: item.cloudlet,
                     })
                 })
-            } else if (value === HARDWARE_TYPE.SEND_BYTE) {
-                allNetworkUsageList.map((item, index) => {
-                    chartData.push({
+            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.FLOATING_IPS) {
+                allUsageList.map((item, index) => {
+                    bubbleChartData.push({
                         index: index,
-                        label: item.instance.AppName.toString().substring(0, 10) + "...",
-                        value: item.sumSendBytes,
-                        favor: item.sumSendBytes,
-                        fullLabel: item.instance.AppName.toString(),
+                        label: item.cloudlet.toString().substring(0, 10) + "...",
+                        value: item.avgFloatingIpsUsed,
+                        favor: item.avgFloatingIpsUsed,
+                        fullLabel: item.cloudlet,
+                    })
+                })
+            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.IPV4) {
+                allUsageList.map((item, index) => {
+                    bubbleChartData.push({
+                        index: index,
+                        label: item.cloudlet.toString().substring(0, 10) + "...",
+                        value: item.avgIpv4Used,
+                        favor: item.avgIpv4Used,
+                        fullLabel: item.cloudlet,
                     })
                 })
             }
 
-            //@todo:-----------------------
-            //todo: bubbleChart
-            //@todo:-----------------------
+            console.log('1111bubbleChartData====>',bubbleChartData);
+
             this.setState({
-                bubbleChartData: chartData,
+                bubbleChartData: bubbleChartData,
             });
         }
 
@@ -1084,7 +930,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         CPU_MEM_DISK_CONN_TABS = [
 
             {
-                menuItem: 'CPU', render: () => {
+                menuItem: 'vCPU', render: () => {
                     return (
                         <Pane>
                             {this.renderCpuTabArea()}
@@ -1111,28 +957,24 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
             },
             {
-                menuItem: 'CONNECTIONS', render: () => {
+                menuItem: 'FLOATING IPS', render: () => {
                     return (
                         <Pane>
-
-                            <Tabs selectedIndex={this.state.connectionsTabIndex}
-                                  className='page_monitoring_tab'>
-                                <TabPanel>
-                                    {this.renderConnectionsArea(HARDWARE_TYPE.ACTIVE_CONNECTION)}
-                                </TabPanel>
-                                <TabPanel>
-                                    {this.renderConnectionsArea(HARDWARE_TYPE.HANDLED_CONNECTION)}
-                                </TabPanel>
-                                <TabPanel>
-                                    {this.renderConnectionsArea(HARDWARE_TYPE.ACCEPTS_CONNECTION)}
-                                </TabPanel>
-                            </Tabs>
-
-
+                            {this.renderFloatingIpsTabArea()}
                         </Pane>
                     )
                 }
             },
+            {
+                menuItem: 'IPV4', render: () => {
+                    return (
+                        <Pane>
+                            {this.renderIPV4TabArea()}
+                        </Pane>
+                    )
+                }
+            },
+
         ]
 
         render() {
@@ -1256,7 +1098,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_column'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title_select'>
-                                                            Engine Performance State Of App instance
+                                                            Performance State Of Cloudlet
                                                         </div>
                                                         {/*todo:---------------------------------*/}
                                                         {/*todo: bubbleChart DropDown            */}
@@ -1267,11 +1109,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             placeholder='SELECT HARDWARE'
                                                             selection
                                                             loading={this.state.loading}
-                                                            options={HARDWARE_OPTIONS}
-                                                            defaultValue={HARDWARE_OPTIONS[0].value}
+                                                            options={HARDWARE_OPTIONS_FOR_CLOUDLET}
+                                                            defaultValue={HARDWARE_OPTIONS_FOR_CLOUDLET[0].value}
                                                             onChange={async (e, {value}) => {
 
-                                                                this.handleBubbleChartDropDown(value);
+                                                                this.handleBubbleChartDropDownForCloudlet(value);
 
                                                             }}
                                                             value={this.state.currentHardwareType}
@@ -1281,7 +1123,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     {/*todo: RENDER BUBBLE_CHART          */}
                                                     {/*todo:---------------------------------*/}
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChart(this, this.state.currentHardwareType, this.state.bubbleChartData)}
+                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder2() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
                                                     </div>
                                                 </div>
                                                 {/* row2___col___2*/}
@@ -1294,10 +1136,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     <Tabs selectedIndex={this.state.networkTabIndex}
                                                           className='page_monitoring_tab'>
                                                         <TabPanel>
-                                                            {this.renderNetworkArea(NETWORK_TYPE.RECV_BYTES)}
+                                                            {this.renderNetSendRevcArea(NETWORK_TYPE.NET_SEND)}
                                                         </TabPanel>
                                                         <TabPanel>
-                                                            {this.renderNetworkArea(NETWORK_TYPE.SEND_BYTES)}
+                                                            {this.renderNetSendRevcArea(NETWORK_TYPE.NET_RECV)}
                                                         </TabPanel>
                                                     </Tabs>
                                                 </div>
@@ -1318,10 +1160,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                 <div className='page_monitoring_table_column'>
                                                     <div className='page_monitoring_title_area'>
                                                         <div className='page_monitoring_title'>
-                                                            SHOW APP INSTANCE LIST
+                                                            SHOW CLOUDLET LIST
                                                         </div>
                                                         <div className='page_monitoring_popup_header_button'>
-                                                            SHOW APP INSTANCE LIST
+                                                            SHOW CLOUDLET LIST
                                                             <div style={{display: 'inline-block', marginLeft: 10}}>
                                                                 <FA name="chevron-up"/>
                                                             </div>
@@ -1356,7 +1198,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             </div>
                                                             <div className='page_monitoring_popup_header_button'>
                                                                 <div>
-                                                                    HIDE APP INSTANCE LIST
+                                                                    HIDE CLOUDLET LIST
                                                                 </div>
                                                                 <div style={{marginLeft: 10}}>
                                                                     <FA name="chevron-down"/>
@@ -1368,7 +1210,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo: BOTTOM APP INSTACE LIST         */}
                                                         {/*todo:---------------------------------*/}
                                                         <div className='page_monitoring_popup_table'>
-                                                            {this.state.filteredGridInstanceList.length && this.state.isReady === 0 ?
+                                                            {this.state.cloudletList.length && this.state.isReady === 0 ?
                                                                 <div style={Styles.noData}>
                                                                     NO DATA
                                                                 </div>
