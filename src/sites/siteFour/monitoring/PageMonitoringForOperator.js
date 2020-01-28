@@ -255,7 +255,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitData() {
 
             let cloudletList = await getCloudletList();
-            console.log('cloudletList===>', cloudletList);
+
+            console.log('cloudletList====>',cloudletList);
+
             let cloudletListForDropdown = [];
             cloudletList.map(item => {
                 /*{text: 'FLAVOR', value: 'flavor'},*/
@@ -273,7 +275,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 console.log('dropdownCloudletList===>', this.state.dropdownCloudletList);
             })
 
-            //let usageList: Array<TypeAppInstance> = require('./cloutletLevelMatric')
+            //let cloudletLevelUsageList: Array<TypeAppInstance> = require('./cloutletLevelMatric')
 
             let cloudletLevelUsageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
             console.log('cloudletLevelUsageList===>', cloudletLevelUsageList)

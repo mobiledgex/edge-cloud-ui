@@ -1300,7 +1300,15 @@ export const getCloudletList = async () => {
             })
         }
     })
-    return resultList;
+
+    let newCloudletList = []
+    resultList.map(item => {
+        if (item.Operator === localStorage.selectOrg) {
+            newCloudletList.push(item)
+        }
+    })
+
+    return newCloudletList;
 }
 
 
@@ -1409,10 +1417,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
         instanceBodyList.push(instanceInfoOneForm);
     }
 
-    /*
-    "starttime": "2019-06-11T21:26:00Z",
-    "endtime": "2019-12-31T21:26:00Z"
-    */
     let promiseList = []
     for (let index = 0; index < instanceBodyList.length; index++) {
         promiseList.push(getAppLevelMetrics(instanceBodyList[index]))
@@ -1661,31 +1665,123 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
         promiseList.push(getCloudletLevelMatric(instanceBodyList[index], token))
     }
     console.log('instanceBodyList===>', instanceBodyList)
-    /* let result = await axios({
-         url: '/api/v1/auth/metrics/cloudlet',
-         method: 'post',
-         data: instanceBodyList[2]['params'],
-         //data: serviceBody['params'],
-         headers: {
-             'Content-Type': 'application/json',
-             Authorization: 'Bearer ' + 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAyNDE0MTYsImlhdCI6MTU4MDE1NTAxNiwidXNlcm5hbWUiOiJtZXhhZG1pbiIsImVtYWlsIjoibWV4YWRtaW5AbW9iaWxlZGdleC5uZXQiLCJraWQiOjJ9.ye8wh5Ie2BYK2BhSBXAhoSpdwSkFnKYRQ0oP6LzUdcbgXMuI_xldg8TDg-2r-WQerAbiqZpaOxNzkOI3WgRpvw'
-         },
-         timeout: 15 * 1000
-     }).then(async response => {
-         return response.data;
-     }).catch(e => {
-         showToast(e.toString())
-     })
-
-     console.log('result===>', result);*/
 
     let cloudletLevelMatricUsageList = await Promise.all(promiseList);
 
+    ////////////////////////
+    /////////////////////////////
+    ////////////////////////////////////
 
-    console.log('cloudletLevelMatricUsageList===>', cloudletLevelMatricUsageList);
+
+    /*[
+        "time",0
+        "cloudlet",1
+        "operator",2
+        "netSend",3
+        "netRecv",4
+        "vCpuUsed",5
+        "vCpuMax",6
+        "memUsed",7
+        "memMax",8
+        "diskUsed",9
+        "diskMax",10
+        "floatingIpsUsed",11
+        "floatingIpsMax",12
+        "ipv4Used",13
+        "ipv4Max"14
+    ]*/
 
 
-    //return result;
+    let networkUsageList = [];
+    let usageList = []
+    let memUsageList = [];
+    let floatIpUsageList = [];
+    let floatIpV4UsageList = [];
+    let matrixedUsageList = []
+    cloudletLevelMatricUsageList.map(item => {
+
+        let series = item.data["0"].Series["0"].values
+        let columns = item.data["0"].Series["0"].columns
+
+
+        let sumVirtualCpuUsed = 0;
+        let sumVirtualCpuMax = 0;
+        let sumMemUsed = 0;
+        let sumMemMax = 0;
+        let sumDiskUsed = 0;
+        let sumDiskMax = 0;
+
+        let sumNetSend = 0;
+        let sumNetRecv = 0;
+
+        let sumFloatingIpsUsed= 0;
+        let sumFloatingIpsMax=0
+
+        let sumIpv4Used=0;
+        let sumIpv4Max=0;
+
+        let cloudlet = "";
+        let operator = "";
+        series.map(item => {
+            cloudlet = item[1]
+            operator = item[2]
+
+            //todo: CPU
+            let vCpuUsed = item["5"];
+            let vCpuMax = item["6"];
+            sumVirtualCpuUsed += vCpuUsed;
+            sumVirtualCpuMax += vCpuMax;
+
+            //todo: MEM
+            sumMemUsed += item["7"];
+            sumMemMax += item["8"];
+
+            //todo: DISK
+            sumDiskUsed += item["9"];
+            sumDiskMax += item["10"];
+
+            //todo: NETWORK(RECV,SEND)
+            sumNetSend += item["3"];
+            sumNetRecv += item["4"];
+
+            //todo: FLOATIP
+            sumFloatingIpsUsed += item["11"];
+            sumFloatingIpsMax += item["12"];
+
+
+            //todo: IPV4
+            sumIpv4Used += item["13"];
+            sumIpv4Max += item["14"];
+
+
+        })
+
+        usageList.push({
+            avgVCpuUsed: sumVirtualCpuUsed / RECENT_DATA_LIMIT_COUNT,
+            avgVCpuMax: sumVirtualCpuMax / RECENT_DATA_LIMIT_COUNT,
+            avgMemUsed: sumMemUsed / RECENT_DATA_LIMIT_COUNT,
+            avgMemMax: sumMemMax / RECENT_DATA_LIMIT_COUNT,
+            avgDiskUsed: sumDiskUsed / RECENT_DATA_LIMIT_COUNT,
+            avgDiskMax: sumDiskMax / RECENT_DATA_LIMIT_COUNT,
+            avgNetSend: sumNetSend / RECENT_DATA_LIMIT_COUNT,
+            avgNetRecv: sumNetRecv / RECENT_DATA_LIMIT_COUNT,
+            avgFloatingIpsUsed: sumFloatingIpsUsed / RECENT_DATA_LIMIT_COUNT,
+            avgFloatingIpsMax: sumFloatingIpsMax / RECENT_DATA_LIMIT_COUNT,
+            avgIpv4Used: sumIpv4Used / RECENT_DATA_LIMIT_COUNT,
+            avgIpv4Max: sumIpv4Max / RECENT_DATA_LIMIT_COUNT,
+            columns: columns,
+            series: series,
+            cloudlet: cloudlet,
+            operator: operator,
+
+        })
+
+    })
+
+    console.log('usageList====>', usageList);
+
+
+    return cloudletLevelMatricUsageList;
 
 }
 

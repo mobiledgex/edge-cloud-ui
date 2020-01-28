@@ -31,7 +31,7 @@ export const CLASSIFICATION = {
     CLUSTER_INST: 'ClusterInst',
 }
 
-export const RECENT_DATA_LIMIT_COUNT = 100
+export const RECENT_DATA_LIMIT_COUNT = 10
 
 export const APP_PERFORMANCE_VALUES = {
     M4_MEDIUM: {
