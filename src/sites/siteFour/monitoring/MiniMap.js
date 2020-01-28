@@ -66,6 +66,12 @@ export default class MiniMap extends Component<Props, State> {
         }
     }
 
+    handleDoubleClick = evt => {
+        this.setState({
+            zoom: this.state.zoom * 1.3
+        })
+    }
+
     render() {
         return (
             <div style={{
@@ -73,7 +79,9 @@ export default class MiniMap extends Component<Props, State> {
                 backgroundColor: '#23252c',
                 maxWidth: 1200,
                 margin: "0 auto",
-            }}>
+            }}
+                 onDoubleClick={this.handleDoubleClick}
+            >
                 <ComposableMap
                     projectionConfig={{
                         scale: 500,
