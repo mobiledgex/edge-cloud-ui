@@ -211,7 +211,6 @@ class RegistryInstViewer extends React.Component {
 
     gotoUrl(msg, state) {
         let pg = 'pg=6'
-        let pgname = '';
         if(_self.props.location.goBack && msg !== 'submit') {
             pg = 'pg=5'
             localStorage.setItem('selectMenu', 'Apps')
@@ -223,7 +222,6 @@ class RegistryInstViewer extends React.Component {
             search: pg,
         });
         _self.props.history.location.search = pg;
-        console.log('20191119 getState pgnameData --- ', _self.props.submitData, ":  submitValues=", _self.props.submitValues)
         if(state !== 'error' && _self.props.submitData.createAppFormDefault.values && _self.props.submitData.createAppFormDefault.values.AutoClusterInst){
             _self.props.history.location.pgname = 'appinst';
             _self.props.history.location.pgnameData = {
@@ -291,6 +289,30 @@ class RegistryInstViewer extends React.Component {
         this.setState({fakeData:assObj})
 
     }
+
+    createAutoClusterName = (multiData)=>
+    {
+        let appName = multiData.AppName.replace(/(\s*)/g, "");
+        appName = appName.replace(/[&!, ]/g,'');
+        appName = appName.replace(/[_]/g,'-');
+        appName = appName.toLowerCase();
+        return ['autocluster' + appName];
+    }
+
+    autoClusterInstance = (serviceBody, submitData, itemCloudlet, itemCluster)=>
+    {   
+            serviceBody = JSON.parse(JSON.stringify(serviceBody));
+            let data = JSON.parse(JSON.stringify(submitData));
+            data.appinst.key.cluster_inst_key.cloudlet_key.name = itemCloudlet;
+            data.appinst.key.cluster_inst_key.cluster_key.name = itemCluster;
+            data.appinst.key.cluster_inst_key.developer = data.appinst.key.app_key.developer_key.name;
+            serviceBody.uuid = serviceMC.generateUniqueId()
+            serviceBody.data = data;
+            
+            this.wsRequestCount = this.wsRequestCount + 1;
+            this.props.handleLoadingSpinner(true);
+            serviceMC.sendWSRequest(serviceBody, _self.receiveResult) 
+    }
     componentWillReceiveProps(nextProps, nextContext) {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
@@ -341,19 +363,13 @@ class RegistryInstViewer extends React.Component {
                 multiData.Cloudlet.map((itemCloudlet) => {
                     if (vmCheck) multiData.ClusterInst = ['']
                     if (multiData.AutoClusterInst) {
-                        multiData.ClusterInst = ['autocluster' + multiData.AppName.replace(/(\s*)/g, "")];
+                        multiData.ClusterInst = this.createAutoClusterName(multiData)
                     }
                     if (filterData[itemCloudlet] && filterData[itemCloudlet].length > 0) {
                         filterData[itemCloudlet].map((items) => {
                             multiData.ClusterInst.map((itemCluster) => {
                                 if (items.ClusterName == itemCluster || itemCluster == '' || itemCluster.indexOf('autocluster') > -1) {
-                                    let data = JSON.parse(JSON.stringify(submitData));
-                                    data.appinst.key.cluster_inst_key.cloudlet_key.name = itemCloudlet;
-                                    data.appinst.key.cluster_inst_key.cluster_key.name = itemCluster;
-                                    serviceBody.data = data;
-
-                                    this.wsRequestCount = this.wsRequestCount + 1;
-                                    serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
+                                    this.autoClusterInstance(serviceBody,submitData, itemCloudlet, itemCluster)
                                 }
                             })
                             if (String(multiData.ClusterInst[0]).indexOf('autocluster') > -1 || multiData.ClusterInst[0] == "") {
@@ -364,13 +380,7 @@ class RegistryInstViewer extends React.Component {
                     else if (!filterData[itemCloudlet]) {
                         multiData.ClusterInst.map((itemCluster) => {
                             if (itemCluster == '' || itemCluster.indexOf('autocluster') > -1) {
-                                let data = JSON.parse(JSON.stringify(submitData));
-                                data.appinst.key.cluster_inst_key.cloudlet_key.name = itemCloudlet;
-                                data.appinst.key.cluster_inst_key.cluster_key.name = itemCluster;
-                                serviceBody.data = data;
-
-                                this.wsRequestCount = this.wsRequestCount + 1;
-                                serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
+                                this.autoClusterInstance(serviceBody,submitData, itemCloudlet, itemCluster)
                             }
                         })
                         if (String(multiData.ClusterInst[0]).indexOf('autocluster') > -1 || multiData.ClusterInst[0] == "") {
@@ -383,6 +393,8 @@ class RegistryInstViewer extends React.Component {
                             data.appinst.key.cluster_inst_key.cloudlet_key.name = item;
                             data.appinst.key.cluster_inst_key.cluster_key.name = '';
                             serviceBody.data = data;
+                            serviceBody.uuid = serviceMC.generateUniqueId()
+                            this.props.handleLoadingSpinner(true);
                             serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
                         })
                     }
@@ -397,7 +409,6 @@ class RegistryInstViewer extends React.Component {
          * set list of Region
          * **********/
         if(nextProps.selectedRegion && nextProps.selectedRegion !== this.props.selectedRegion){
-            console.log("nextProps.selectedRegionnextProps.selectedRegion",nextProps.selectedRegion,":::",this.props.selectedRegion)
             this.getDataDeveloper(store ? store.userToken : 'null',nextProps.formAppInst.values.Region);
         }
 
@@ -456,7 +467,6 @@ class RegistryInstViewer extends React.Component {
                 let keys = Object.keys(this.state.clustinst);
                 let arr = []
                 let assObj = Object.assign([], this.state.keysData);
-                console.log("20191119 dfdfdfdgsgsdg",nextProps.submitData.createAppFormDefault.values.Cloudlet)
                 keys.map((item,i) => {
                     this.state.clustinst[item].map((items,j) => {
                         nextProps.submitData.createAppFormDefault.values.Cloudlet.map((cItem) => {
@@ -481,12 +491,16 @@ class RegistryInstViewer extends React.Component {
         if (mcRequest) {
             this.wsRequestResponse.push(mcRequest);
             if (this.wsRequestCount === 0) {
+                this.props.handleLoadingSpinner(false);
                 let valid = true;
                 this.wsRequestResponse.map(mcRequest => {
-                    let data = mcRequest.response.data
-                    messageArray.push(data.data.message)
-                    if (data.code !== 200) {
-                        valid = false;
+                    if(mcRequest.response && mcRequest.response.data)
+                    {
+                        let data = mcRequest.response.data
+                        messageArray.push(data.data.message)
+                        if (data.code !== 200) {
+                            valid = false;
+                        }
                     }
                 })
                 if (valid) {
@@ -499,7 +513,6 @@ class RegistryInstViewer extends React.Component {
                 }
             }
         }
-        this.props.handleLoadingSpinner(false);
     }
 
     closeDialog = ()=>{
@@ -610,7 +623,6 @@ const mapStateToProps = (state) => {
 
         if(state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
             let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
-            console.log('20191119 createformat ...', enableValue)
             submitVal = createFormat(enableValue);
             validateValue = state.form.createAppFormDefault.values;
         }

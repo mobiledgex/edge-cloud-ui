@@ -2,9 +2,9 @@ import _ from 'lodash'
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
+import PageDetailViewer from '../../../container/pageDetailViewer';
 //redux
 import { connect } from 'react-redux';
-import PageDetailViewer from '../../../container/pageDetailViewer';
 import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
@@ -170,6 +170,32 @@ class SiteFourPageCloudlet extends React.Component {
         }
 
     }
+
+    getDataDeveloper = (region, regionArr) => {
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        this.setState({ devData: [] })
+        this.multiRequestData = [];
+        this.requestCount = 0;
+        if (region !== 'All') {
+            rgn = [region]
+        } else {
+            rgn = (regionArr) ? regionArr : this.props.regionInfo.region;
+        }
+        if (rgn && rgn.length > 0) {
+            this.requestCount = rgn.length;
+
+            rgn.map(item => {
+                let requestData = { token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET};
+                if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+                    requestData.data = {region:item}
+                } else {
+                    requestData.data = {region:item, org:_self.props.selectOrg || localStorage.selectOrg}
+                }
+                serviceMC.sendRequest(_self, requestData, _self.receiveResult)
+            })
+        }
+
+    }
     getDataDeveloperSub = (region) => {
         let _region = (region) ? region : 'All';
         this.getDataDeveloper(_region);
@@ -208,8 +234,7 @@ const mapStateToProps = (state) => {
         computeRefresh: (state.computeRefresh) ? state.computeRefresh : null,
         changeRegion: state.changeRegion ? state.changeRegion.region : null,
         viewMode: viewMode, detailData: detailData,
-        regionInfo: regionInfo,
-        selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : localStorage.selectOrg,
+        regionInfo: regionInfo
     }
 };
 const mapDispatchProps = (dispatch) => {

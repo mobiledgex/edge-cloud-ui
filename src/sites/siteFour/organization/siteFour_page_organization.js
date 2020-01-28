@@ -10,9 +10,6 @@ import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
 
-
-let devOptions = [ { key: 'af', value: 'af', text: 'SK Telecom' } ]
-
 let _self = null;
 class SiteFourPageOrganization extends React.Component {
     constructor(props) {

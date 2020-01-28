@@ -2,12 +2,12 @@ import _ from 'lodash'
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
+import PageDetailViewer from '../../../container/pageDetailViewer';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
 import * as serviceMC from '../../../services/serviceMC';
 import '../../siteThree.css';
-import PageDetailViewer from '../../../container/pageDetailViewer';
 import MapWithListView from "../../../container/mapWithListView";
 
 let _self = null;
@@ -110,24 +110,14 @@ class SiteFourPageClusterInst extends React.Component {
    
     receiveClusterInstResult = (mcRequestList) => {
         _self.requestCount -= 1;
-        if (mcRequestList && mcRequestList.length) {
+        if (mcRequestList && mcRequestList.length>0) {
             let cloudletDataList = [];
             let clusterDataList = [];
             mcRequestList.map(mcRequest => {
                 if (mcRequest.response) {
-                    
-                    //
-                    let requestData = null;
-                    if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
-                        if (mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET) {
-                            cloudletDataList = mcRequest.response.data;
-                        }
-                    } else {
-                        if (mcRequest.request.method === serviceMC.getEP().SHOW_ORG_CLOUDLET) {
-                            cloudletDataList = mcRequest.response.data;
-                        }
+                    if (mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET) {
+                        cloudletDataList = mcRequest.response.data;
                     }
-                    //
                     if (mcRequest.request.method === serviceMC.getEP().SHOW_CLUSTER_INST) {
                         clusterDataList = mcRequest.response.data;
                     }
@@ -200,7 +190,7 @@ class SiteFourPageClusterInst extends React.Component {
                         }
                     }
                     let requestList = [];
-                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item } })
+                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } })
                     requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: data })
                     serviceMC.sendMultiRequest(_self, requestList, _self.receiveClusterInstResult)
                 })
@@ -245,8 +235,7 @@ const mapStateToProps = (state) => {
         selectOrg: state.selectOrg.org ? state.selectOrg.org : null,
         userRole: state.showUserRole ? state.showUserRole.role : null,
         viewMode: viewMode, detailData: detailData,
-        regionInfo: regionInfo,
-        //selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : null
+        regionInfo: regionInfo
     }
 };
 const mapDispatchProps = (dispatch) => {
