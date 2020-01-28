@@ -152,15 +152,7 @@ class SiteFour extends React.Component {
             { label: 'User Roles', icon: 'dvr', pg: 1 },
             { label: 'Accounts', icon: 'dvr', pg: 101 }
         ]
-        this.menuItems = [
-            { label: 'Cloudlets', icon: 'cloud_queue', pg: 2 },
-            { label: 'Flavors', icon: 'free_breakfast', pg: 3 },
-            { label: 'Cluster Instances', icon: 'storage', pg: 4 },
-            { label: 'Apps', icon: 'apps', pg: 5 },
-            { label: 'App Instances', icon: 'storage', pg: 6 },
-            { label: 'Audit Log', icon: 'check', pg: 'audits' }
-        ]
-        this.menuItemsAll = [
+        this.menuItemsAll = [ //admin menu
             { label: 'Cloudlets', icon: 'cloud_queue', pg: 2 },
             { label: 'Cloudlet Pool', icon: 'pool', pg: 7 },
             { label: 'Flavors', icon: 'free_breakfast', pg: 3 },
@@ -170,12 +162,21 @@ class SiteFour extends React.Component {
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
             { label: 'Audit Log', icon: 'check', pg: 'audits' }
         ]
+        this.menuItems = [ //developer menu
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Flavors'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Cluster Instances'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Apps'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'App Instances'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Log'),
+        ]
 
         this.menuArr = ['Organization', 'User Roles', 'Cloudlets', 'Cloudlet Pool', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances']
-        this.auth_three = [
-            reducer.getFindIndex(this.menuItems, 'label', 'Cloudlets'),
-            reducer.getFindIndex(this.menuItems, 'label', 'Audit Log'),
-            reducer.getFindIndex(this.menuItems, 'label', 'Monitoring'),
+        this.auth_three = [ //operator menu
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Log'),
         ] //OperatorManager, OperatorContributor, OperatorViewer
 
         this.auth_list = [

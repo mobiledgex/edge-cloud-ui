@@ -135,8 +135,6 @@ export const getFindIndex = (items, key, value) => {
             items = item
         }
     })
-
-    console.log('test00002', items)
     return items;
 
 }
