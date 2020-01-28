@@ -733,7 +733,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
                         {this.state.intervalLoading &&
                         <div style={{marginLeft: 50}}>
-                            <CircularProgress/>
+                            <CircularProgress size={9} style={{fontSize: 9}}/>
                         </div>
                         }
                     </Grid.Row>
