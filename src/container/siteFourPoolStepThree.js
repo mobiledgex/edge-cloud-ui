@@ -131,7 +131,7 @@ class SiteFourPoolThree extends React.Component {
         this.headerLayout = [1,1,1];
         this.hiddenKeys = [];
     }
-    changeOrg = () => {
+    gotoUrl = () => {
         this.props.changeOrg()
     }
 
@@ -216,7 +216,7 @@ class SiteFourPoolThree extends React.Component {
 
                                     </Grid.Row>
                                 </Grid>
-                                <Button className="newOrg3-4" onClick={this.changeOrg} type='submit' positive style={{width:'100%'}}>Check your Cloudlet Pool</Button>
+                                <Button className="newOrg3-4" onClick={this.gotoUrl} type='submit' positive style={{width:'100%'}}>Check your Cloudlet Pool</Button>
                     </Grid.Column>
                 </Grid>
             </Fragment>
