@@ -1,44 +1,20 @@
 import 'react-hot-loader'
-import {SemanticToastContainer, toast} from 'react-semantic-toasts';
-import OutsideClickHandler from 'react-outside-click-handler';
+import {toast} from 'react-semantic-toasts';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Modal, Tab, Table} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Tab, Table} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
-import {
-    getCloudletList,
-    getClouletLevelUsageList,
-    instanceFlavorToPerformanceValue,
-    numberWithCommas,
-    renderBarGraphForCloutdlet,
-    renderBubbleChart, renderBubbleChartForCloudlet,
-    renderLineChartForCloudlet,
-    renderPlaceHolder,
-    renderPlaceHolder2,
-    renderSixGridInstanceOnCloudletGrid,
-    Styles
-} from "./PageMonitoringService";
-import {
-    HARDWARE_OPTIONS,
-    HARDWARE_OPTIONS_FOR_CLOUDLET,
-    HARDWARE_TYPE,
-    HARDWARE_TYPE_FOR_CLOUDLET,
-    NETWORK_OPTIONS2,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGIONS_OPTIONS
-} from "../../../shared/Constants";
+import {getCloudletList, getClouletLevelUsageList, numberWithCommas, renderBarGraphForCloutdlet, renderLineChartForCloudlet, renderPlaceHolder} from "./PageMonitoringService";
+import {HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, NETWORK_OPTIONS2, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
 import moment from "moment";
-import ToggleDisplay from 'react-toggle-display';
-import {TabPanel, Tabs} from "react-tabs";
 import './PageMonitoring.css'
 import {showToast} from "./PageMonitoringChartService";
 
