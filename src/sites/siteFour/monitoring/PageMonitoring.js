@@ -1105,7 +1105,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                         <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
-                                CloudLet
+                                Cloudlet
                             </div>
 
                             <Dropdown
