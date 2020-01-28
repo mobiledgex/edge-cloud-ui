@@ -1228,10 +1228,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     'Last 730 Days': [moment().subtract(729, 'd'), moment().subtract(0, 'd')],
                                     'Last 1095 Days': [moment().subtract(1094, 'd'), moment().subtract(0, 'd')],
                                 }}
-                                style={{width: 300}}
+                                // style={{width: 300}}
                             />
                         </div>
-
                     </div>
                 </div>
 
