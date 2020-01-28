@@ -1,13 +1,6 @@
 import React, {Component} from "react"
-import {
-    ComposableMap,
-    ZoomableGroup,
-    Geographies,
-    Geography, Markers, Marker, Annotation, Annotations
-} from "react-simple-maps"
+import {ComposableMap, Geographies, Geography, Marker, Markers, ZoomableGroup} from "react-simple-maps"
 import {Button, Icon} from "semantic-ui-react";
-import type {TypeAppInstance, TypeGridInstanceList, TypeUtilization} from "../../../shared/Types";
-import {CircularProgress} from "@material-ui/core";
 import Lottie from "react-lottie";
 
 const geoUrl =
@@ -22,8 +15,7 @@ type Props = {
 type State = {
     date: string,
     zoom: number,
-
-
+    cloudletList: Array,
 }
 
 
@@ -50,7 +42,6 @@ export default class MiniMapComponent extends Component<Props, State> {
             //this.state.cloudletList["0"].CloudletLocation.latitude
             //this.state.cloudletList["0"].CloudletLocation.longitude
             //this.state.cloudletList["0"].CloudletName
-
             console.log('cloudletList===>', this.state.cloudletList);
         }
     }
@@ -106,7 +97,7 @@ export default class MiniMapComponent extends Component<Props, State> {
                             {(geographies, projection) => geographies.map((geography, i) => geography.id !== "ATA" && (
                                 <Geography
                                     key={i}
-                                    onWheel={(e)=>{
+                                    onWheel={(e) => {
                                         this.handleWheel(e)
                                     }}
                                     geography={geography}
@@ -118,12 +109,12 @@ export default class MiniMapComponent extends Component<Props, State> {
                                             strokeWidth: 0.75,
                                             outline: "none",
                                         },
-                                      /*  hover: {
-                                            fill: "#607D8B",
-                                            stroke: "#607D8B",
-                                            strokeWidth: 0.75,
-                                            outline: "none",
-                                        },*/
+                                        /*  hover: {
+                                              fill: "#607D8B",
+                                              stroke: "#607D8B",
+                                              strokeWidth: 0.75,
+                                              outline: "none",
+                                          },*/
                                         pressed: {
                                             fill: "#FF5722",
                                             stroke: "#1d5a10",
@@ -201,42 +192,4 @@ export default class MiniMapComponent extends Component<Props, State> {
             </div>
         )
     }
-}
-
-
-const styles = {
-    geoBackground: {
-        color: "transparent",
-    },
-    geography: {
-        default: {
-            fill: "rgba(71,82,102,0.65)",
-            stroke: "rgba(255,255,255,0.3)",
-            strokeWidth: 0.1,
-            outline: "none"
-        },
-        hover: {
-            fill: "rgba(96,106,128,0.9)",
-            stroke: "rgba(255,255,255,0.5)",
-            strokeWidth: 0.1,
-            outline: "none",
-        },
-        pressed: {
-            fill: "rgba(71,82,102,0.3)",
-            stroke: "rgba(255,255,255,0.5)",
-            strokeWidth: 0.1,
-            outline: "none",
-        }
-    },
-    marker: {
-        levelColors: ["rgba(255,87,34,0.8)", "rgba(45,255,34,0.8)", "rgba(44,87,255,0.8)", "rgba(255,255,34,0.8)", "rgba(255,87,255,0.8)"],
-        stroke: "rgba(255,255,255,0)",
-        strokeWidth: 0,
-        strokeOpacity: 0,
-        second: {
-            fill: "rgba(0,204,68,1)",
-            stroke: "rgba(255,255,255,1)",
-            strokeWidth: 0.4,
-        },
-    },
 }
