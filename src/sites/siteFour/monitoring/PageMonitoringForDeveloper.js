@@ -710,7 +710,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             >RESET</Button>
                         </div>
                         <div style={{marginLeft: 50}}>
-                            {this.state.userType}33333====>Page FOr dev()..
+                            {this.state.userType}Page FOr dev()..
                         </div>
                     </Grid.Row>
                 </div>
