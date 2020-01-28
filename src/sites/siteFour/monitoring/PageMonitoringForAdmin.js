@@ -842,7 +842,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                Transition Of CPU Usage
+                                CPU Usage
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -875,7 +875,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                Transition Of MEM Usage
+                                MEM Usage
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -905,7 +905,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                Transition Of DISK Usage
+                                DISK Usage
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
@@ -932,8 +932,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     </div>
                     <div className='page_monitoring_dual_container'>
                         <div style={{display: 'flex', flexDirection: 'row'}}>
-                            <div className='page_monitoring_title_select' style={{marginTop: 5}}>
-                                Transition Of Connections
+                            <div className='page_monitoring_title_select' style={{marginTop: 7}}>
+                                Connections
                             </div>
                             {!this.state.loading &&
                             <Dropdown
@@ -988,7 +988,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title_select'>
-                                Transition Of NETWORK Usage
+                                NETWORK Usage
                             </div>
                             {!this.state.loading &&
                             <Dropdown

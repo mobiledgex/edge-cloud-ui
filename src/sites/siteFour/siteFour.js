@@ -49,7 +49,7 @@ import SiteFourPageCloudletPool from './cloudletPool/siteFour_page_cloudletPool'
 import SiteFourPageCloudletPoolReg from './cloudletPool/siteFour_page_cloudletPoolReg';
 import SiteFourPageLinkOrganizeReg from './cloudletPool/siteFour_page_linkOrganizeReg';
 import SiteFourPageCloudletPoolUpdate from './cloudletPool/siteFour_page_cloudletPoolUpdate';
-import PageMonitoring from './monitoring/PageMonitoring'
+import PageMonitoringMain from './monitoring/PageMonitoringMain'
 
 import PopLegendViewer from '../../container/popLegendViewer';
 import * as serviceMC from '../../services/serviceMC';
@@ -1006,7 +1006,7 @@ class SiteFour extends React.Component {
                     </Grid.Row>
                 </Container>
                 <Container className='contents_body_container' style={{ top: this.headerH, left: this.menuW }}>
-                    {(this.state.page === 'pg=Monitoring') ? <PageMonitoring /> :
+                    {(this.state.page === 'pg=Monitoring') ? <PageMonitoringMain /> :
                         <Grid.Row className='view_contents'>
                             <Grid.Column className='contents_body'>
                                 <Grid.Row className='content_title' style={{ width: 'fit-content', display: 'inline-block' }}>
