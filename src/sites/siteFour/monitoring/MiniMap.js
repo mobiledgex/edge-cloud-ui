@@ -68,7 +68,7 @@ export default class MiniMap extends Component<Props, State> {
 
     handleDoubleClick = evt => {
         this.setState({
-            zoom: this.state.zoom * 1.3
+            zoom: this.state.zoom * 1.4
         })
     }
 
@@ -127,8 +127,8 @@ export default class MiniMap extends Component<Props, State> {
                                             outline: "none",
                                         },
                                         pressed: {
-                                            fill: "#FF5722",
-                                            stroke: "#1d5a10",
+                                            fill: "#607D8B",
+                                            stroke: "#607D8B",
                                             strokeWidth: 0.75,
                                             outline: "none",
                                         },
