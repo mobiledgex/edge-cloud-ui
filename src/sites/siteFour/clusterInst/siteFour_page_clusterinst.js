@@ -115,7 +115,7 @@ class SiteFourPageClusterInst extends React.Component {
             let clusterDataList = [];
             mcRequestList.map(mcRequest => {
                 if (mcRequest.response) {
-                    if (mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET) {
+                    if (mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET || mcRequest.request.method === serviceMC.getEP().SHOW_ORG_CLOUDLET) {
                         cloudletDataList = mcRequest.response.data;
                     }
                     if (mcRequest.request.method === serviceMC.getEP().SHOW_CLUSTER_INST) {
@@ -190,7 +190,7 @@ class SiteFourPageClusterInst extends React.Component {
                         }
                     }
                     let requestList = [];
-                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } })
+                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item } })
                     requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: data })
                     serviceMC.sendMultiRequest(_self, requestList, _self.receiveClusterInstResult)
                 })
