@@ -431,7 +431,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     <Table.Cell>
                                         <div>
                                             <div>
-                                                {item.avgVCpuUsed.toFixed(2) + '%'} + {this.state.maxCpu}
+                                                {item.avgVCpuUsed.toFixed(2) + '%'}
                                             </div>
                                             <div>
                                                 <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
