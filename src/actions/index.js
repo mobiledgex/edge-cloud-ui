@@ -220,13 +220,6 @@ export function changeLoginMode(mode) {
     }
 }
 
-export function creatingSpinner(creating) {
-    return {
-        type: types.CREATING_SPINNER,
-        creating
-    }
-}
-
 export function alertMsg(msg) {
     return {
         type: types.ALERT_MSG,
@@ -359,5 +352,12 @@ export function resetMap(region) {
     return {
         type: types.RESET_MAP,
         region
+    }
+}
+
+export function changeNext(next) {
+    return {
+        type: types.CHANGE_NEXT,
+        next
     }
 }

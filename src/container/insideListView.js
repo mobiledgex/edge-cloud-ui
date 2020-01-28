@@ -1,9 +1,9 @@
 import React from 'react';
-import {Button, Header, Icon, Input, Popup, Table} from 'semantic-ui-react';
-import {withRouter} from 'react-router-dom';
-import {connect} from 'react-redux';
+import { Modal, Grid, Header, Button, Table, Popup, Icon, Input, Dropdown, Container } from 'semantic-ui-react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import * as actions from '../actions';
-import RGL, {WidthProvider} from "react-grid-layout";
+import RGL, { WidthProvider } from "react-grid-layout";
 import SelectFromTo from '../components/selectFromTo';
 import RegistNewListItem from './registNewListItem';
 import PopDetailViewer from './popDetailViewer';
@@ -11,9 +11,10 @@ import PopUserViewer from './popUserViewer';
 import PopAddUserViewer from './popAddUserViewer';
 import DeleteItem from './deleteItem';
 import './styles.css';
+import ContainerDimensions from 'react-container-dimensions'
 import _ from "lodash";
 import * as reducer from '../utils'
-
+import MaterialIcon from "material-icons-react";
 const ReactGridLayout = WidthProvider(RGL);
 
 const appssEdit = [
@@ -22,10 +23,9 @@ const appssEdit = [
     {key: 'delete', text:'Delete', icon:'trash alternate'},
 ]
 const cloudletPoolEdit = [
-    {key: 'add', text:'Add', icon:null},
-    {key: 'link', text:'Link', icon:null},
-    {key: 'update', text:'Update', icon:null},
-    {key: 'delete', text:'Delete', icon:'trash alternate'},
+    {key: 'add', text:'Add Cloudlet', icon:null},
+    {key: 'link', text:'Link Organization', icon:null},
+    {key: 'delete', text:'Delete CloudletPool', icon:'trash alternate'},
 ]
 const headerStyle = {
     backgroundImage: 'url()'
@@ -108,9 +108,9 @@ class InsideListView extends React.Component {
             console.log('Error: There is no orgData')
         }
 
-
+        
     }
-
+    
     show = (dim) => this.setState({ dimmer:dim, openDetail: true })
     close = () => {
         this.setState({ open: false, openDelete: false, selected:{} })
@@ -255,9 +255,7 @@ class InsideListView extends React.Component {
         ));
     }
 
-    onLayoutChange(layout) {
-        //this.props.onLayoutChange(layout);
-    }
+   
     onPortClick() {
 
     }
@@ -302,8 +300,16 @@ class InsideListView extends React.Component {
         // this.props.handleChangeComputeItem('App Instances')
         localStorage.setItem('selectMenu', 'App Instances')
     }
+    handleOpen = () => {
+        this.setState({ isOpen: true })
+
+        // this.timeout = setTimeout(() => {
+        //     this.setState({ isOpen: false })
+        // }, timeoutLength)
+    }
+
     addCloudlet = (data) => {
-        this.gotoUrl('/site4', 'pg=createCloudletPool','pg=7')
+        this.gotoUrl('/site4', 'pg=updateCloudletPool','pg=7')
         this.props.handleAppLaunch(data)
         // this.props.handleChangeComputeItem('App Instances')
         localStorage.setItem('selectMenu', 'Cloudlet Pool')
@@ -313,13 +319,6 @@ class InsideListView extends React.Component {
         this.props.handleAppLaunch(data)
         // this.props.handleChangeComputeItem('App Instances')
         localStorage.setItem('selectMenu', 'Cloudlet Pool')
-    }
-    handleOpen = () => {
-        this.setState({ isOpen: true })
-
-        // this.timeout = setTimeout(() => {
-        //     this.setState({ isOpen: false })
-        // }, timeoutLength)
     }
 
     handleClose = () => {
@@ -354,8 +353,10 @@ class InsideListView extends React.Component {
      * If you click the buttons that are grouped
      ** *****/
     onHandlePopMenu = (a, b) => {
+        //cloudlet pool
+
         this.setState({ isOpen: false })
-        console.log('20191104 ... on handle pop menu.. ', a, b.children, ': orgName=', this.state.orgName)
+        
         if(b.children === 'Launch') {
             this.appLaunch(this.state.item)
         } else if(b.children === 'Update') {
@@ -363,29 +364,33 @@ class InsideListView extends React.Component {
         } else if(b.children === 'Delete') {
             this.setState({openDelete: true, selected:this.state.item})
         }
-        //cloudlet pool
-        if(b.children === 'Add') {
+
+        /** cloudlet pool */
+        if(b.children === 'Add Cloudlet') {
             this.addCloudlet(this.state.item)
-        } else if(b.children === 'Link') {
+        } else if(b.children === 'Link Organization') {
             this.linkOrganize(this.state.item)
+        } else if(b.children === 'Delete CloudletPool') {
+            this.setState({openDelete: true, selected:this.state.item})
         }
 
     }
+
     makeActionButton = (target) => (
         <Button.Group vertical className="table_actions_popup_group">
             {
                 (this.props.siteId === "Cloudlet Pool")?
-                cloudletPoolEdit.map((option)=> (
-                    <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
-                        {option.text}
-                    </Button>
-                ))
+                    cloudletPoolEdit.map((option, i)=> (
+                        <Button key={i} onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
+                            {option.text}
+                        </Button>
+                    ))
                     :
-                appssEdit.map((option)=> (
-                    <Button onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
-                        {option.text}
-                    </Button>
-                ))
+                    appssEdit.map((option, i)=> (
+                        <Button key={i} onClick={this.onHandlePopMenu} className="table_actions_popup_group_button">
+                            {option.text}
+                        </Button>
+                    ))
             }
         </Button.Group>
     )
@@ -447,7 +452,7 @@ class InsideListView extends React.Component {
                                         <Icon name='user circle' size='big' style={{marginRight:"6px"}} ></Icon> {item[value]}
                                         </div>
                                     </Table.Cell>
-                                :
+                                :   
                                 (value === 'Role Type')?
                                     <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={{cursor:'pointer'}} >
                                         <div className="markBox">{this.roleMark(item[value])}</div>
@@ -485,7 +490,7 @@ class InsideListView extends React.Component {
                     ))
                 }
             </Table.Body>
-
+            
         </Table>
     )
     componentDidMount() {
@@ -512,15 +517,13 @@ class InsideListView extends React.Component {
         const { hiddenKeys } = this.props;
         return (
             <div style={{display:'flex', overflowY:'auto', overflowX:'hidden', width:'100%'}}>
-                <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
-
                 <DeleteItem open={this.state.openDelete}
                             selected={this.state.selected} close={this.close} siteId={this.props.siteId}
                             refresh={this.props.dataRefresh}
                 ></DeleteItem>
+                <RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close} refresh={this.props.dataRefresh}/>
 
                 <div
-                    onLayoutChange={this.onLayoutChange}
                     {...this.props}
                     style={{width:'100%'}}
                 >
@@ -581,7 +584,7 @@ const mapStateToProps = (state) => {
         userRole : state.showUserRole?state.showUserRole.role:null,
         roleInfo : state.roleInfo?state.roleInfo.role:null,
     }
-
+    
     // return (dimm) ? {
     //     dimmInfo : dimm
     // } : (account)? {

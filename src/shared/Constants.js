@@ -1,20 +1,11 @@
 export const API_ENDPOINT_PREFIX = '/api/v1/';
 
 
-export const HARDWARE_TYPE = {
-
-    CPU: "cpu",
-    MEM: "mem",
-    NETWORK: "network",
-    DISK: "disk"
-
-}
 //rgb(255,0,10)
 
 export const BORDER_CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
 
 export const CHART_COLOR_LIST = ['rgb(222,0,0)', 'rgb(255,150,0)', 'rgb(255,246,0)', 'rgb(91,203,0)', 'rgb(0,150,255)']
-
 //export const CHART_COLOR_LIST = ["rgb(112,0,28)", "rgb(255,94,29)", "rgb(227,220,57)", "rgb(18,135,2)", "rgb(28,34,255)"]
 
 export const CHART_COLOR_LIST2 = ["rgba(112,0,28, 0.25)", "rgba(255,94,29,0.25)", "rgba(227,220,57,0.25)", "rgba(18,135,2,0.25)", "rgba(28,34,255,0.25)"]
@@ -27,7 +18,20 @@ export const REGION = {
     EU: 'EU',
 }
 
-export const RECENT_DATA_LIMIT_COUNT = 25
+export const USAGE_TYPE = {
+    SUM_CPU_USAGE: 'sumCpuUsage',
+    SUM_MEM_USAGE: 'sumMemUsage',
+    SUM_RECV_BYTES: 'sumRecvBytes',
+    SUM_DISK_USAGE: 'sumDiskUsage',
+}
+
+export const CLASSIFICATION = {
+    CLOUDLET: 'Cloudlet',
+    APP_NAME: 'AppName',
+    CLUSTER_INST: 'ClusterInst',
+}
+
+export const RECENT_DATA_LIMIT_COUNT = 100
 
 export const APP_PERFORMANCE_VALUES = {
     M4_MEDIUM: {
@@ -51,16 +55,93 @@ export const REGIONS_OPTIONS = [
 
 ]
 
-/*"AppName": "MEXPrometheusAppName",
-    "Cloudlet": "frankfurt-eu",
-    "ClusterInst": "kkkkkkk",*/
+export const NETWORK_OPTIONS = [
+    {text: 'RECV BYTES', value: 'recv_bytes'},
+    {text: 'SEND BYTES', value: 'send_bytes'},
+]
+
+
+
+
+export const NETWORK_TYPE = {
+    RECV_BYTES: 'recv_bytes',
+    SEND_BYTES: 'send_bytes',
+}
+
+
+export const HARDWARE_OPTIONS = [
+    {text: 'FLAVOR', value: 'flavor'},
+    {text: 'CPU', value: 'cpu'},
+    {text: 'MEM', value: 'mem'},
+    {text: 'DISK', value: 'disk'},
+    {text: 'RECV_BYTES', value: 'recv_bytes'},
+    {text: 'SEND_BYTES', value: 'send_bytes'},
+]
+
+export const HARDWARE_TYPE = {
+    FLAVOR: 'flavor',
+    CPU: 'cpu',
+    MEM: 'mem',
+    RECV_BYTE: 'recv_bytes',
+    SEND_BYTE: 'send_bytes',
+    DISK: 'disk',
+    CONNECTIONS: 'connections',
+    ACTIVE_CONNECTION:'active_connection',//12
+    HANDLED_CONNECTION: 'handled_connection',//13
+    ACCEPTS_CONNECTION: 'accepts_connection',//14 (index)
+
+}
+
+export const CONNECTIONS_OPTIONS = [
+    {text: 'ACTIVE CONN', value: 'active_connection'},
+    {text: 'HANDLED CONN', value: 'handled_connection'},
+    {text: 'ACCEPTS CONN', value: 'accepts_connection'},
+    //ACCEPTS_CONNECTION
+]
+
+
 export const MOINTORING_FILTER_ITEM_TYPE = {
-    REGION : "Region",
+    REGION: "Region",
     APP_INST: "AppName",
     CLOUDLET: "Cloudlet",
     CLUSTERINST: "ClusterInst",
 }
 
-export const SELECT_TYPE_ENUM = "Region"| "AppName" | "Cloudlet" | "ClusterInst"
+export const SELECT_TYPE_ENUM = "Region" | "AppName" | "Cloudlet" | "ClusterInst"
+
+
+export const MONITORING_CATE_SELECT_TYPE = {
+    REGION: 'Region',
+    APPNAME: 'AppName',
+    CLOUDLET: 'Cloudlet',
+    CLUSTERINST: 'ClusterInst',
+
+}
+
+export const APPINSTANCE_INIT_VALUE = {
+    "Region": "",
+    "OrganizationName": "",
+    "AppName": "",
+    "Version": "",
+    "Operator": "",
+    "Cloudlet": "",
+    "ClusterInst": "",
+    "CloudletLocation": {
+        "latitude": 0,
+        "longitude": 0,
+    },
+    "URI": "",
+    "Liveness": "",
+    "Mapped_port": "",
+    "Flavor": "",
+    "State": 0,
+    "Error": "",
+    "Runtime": "",
+    "Created": "",
+    "Progress": "",
+    "Edit": "",
+    "Status": "",
+    "Revision": 0,
+}
 
 

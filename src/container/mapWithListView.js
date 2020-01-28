@@ -104,28 +104,6 @@ class MapWithListView extends React.Component {
         _self.props.handleChangeSite({ mainPath: site, subPath: subPath });
     }
 
-    onHandleEdit(data) {
-        this.props.handleLoadingSpinner(true);
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let serviceBody = {
-            token: store ? store.userToken : null,
-            method: serviceMC.getEP().UPDATE_APP_INST,
-            data: {
-                region: data['Region'],
-                appinst: {
-                    key: {
-                        app_key: { developer_key: { name: data['OrganizationName'] }, name: data['AppName'], version: data['Version'] },
-                        cluster_inst_key: {
-                            cluster_key: { name: data['ClusterInst'] },
-                            cloudlet_key: { operator_key: { name: data['Operator'] }, name: data['Cloudlet'] }
-                        }
-                    }
-                }
-            }
-        }
-        serviceMC.sendWSRequest(serviceBody, _self.receiveResult)
-    }
-
     receiveResult = (mcRequest) => {
         this.props.handleLoadingSpinner(false);
         this.props.dataRefresh()
@@ -165,9 +143,7 @@ class MapWithListView extends React.Component {
 
         _self.setState({ sideVisible: detailMode })
     }
-    //this.props.parentProps.resetMap(false, 'fromDetail')
     handleSort = clickedColumn => (a) => {
-        console.log('20190819 handle sort..', a)
         _self.setState({ sorting: true });
         const { column, dummyData, direction } = _self.state
         this.stateSort(dummyData)
@@ -292,8 +268,14 @@ class MapWithListView extends React.Component {
     }
     detailView(item) {
         //change popup to page view
-        _self.setState({ viewMode: 'detailView' })
-        _self.props.handleDetail({ data: item, viewMode: 'detailView' })
+        if ((localStorage.selectRole === 'OperatorManager' || localStorage.selectRole === 'OperatorContributor' || localStorage.selectRole === 'OperatorViewer') && item.Operator !== localStorage.selectOrg) {
+            _self.setState({ viewMode: 'listView' })
+            _self.props.handleDetail({ data: item, viewMode: 'listView' })
+        } else {
+            _self.setState({ viewMode: 'detailView' })
+            _self.props.handleDetail({ data: item, viewMode: 'detailView' })
+
+        }
     }
     jsonView = (jsonObj) => (
         <ReactJson src={jsonObj} {...this.jsonViewProps} />
@@ -324,6 +306,19 @@ class MapWithListView extends React.Component {
         }
     }
 
+    requestLastResponse = (data)=>    
+    {
+        if(this.state.uuid === 0)
+        {
+            let type = 'error'
+            if(data.code === 200)
+            {
+                type = 'success'
+            }
+            this.props.handleAlertInfo(type, data.message)
+        }
+    }
+
     requestResponse = (mcRequest) => {
         let request = mcRequest.request;
         let responseData = null;
@@ -334,6 +329,10 @@ class MapWithListView extends React.Component {
                         responseData = item;
                     }
                     else {
+                        if(item.steps && item.steps.length > 1)
+                        {    
+                            this.requestLastResponse(item.steps[item.steps.length-1]);
+                        }
                         if (item.steps.length >= 1 && item.steps[0].code === 200) {
                             item.steps.push({ code: CODE_FINISH })
                             this.props.dataRefresh();
@@ -412,6 +411,55 @@ class MapWithListView extends React.Component {
         return row;
     }
 
+    sendWSRequest = (data) => {
+        let state = data.State;
+        if (state === 3 || state === 2 || state === 3 || state === 6 || state === 7 || state === 9 || state === 10 || state === 12 || state === 14) {
+            let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+            let requestData = serviceMC.getEP().getKey(this.props.siteId, data);
+            let method = serviceMC.getEP().getStreamMethod(this.props.siteId);
+            if (requestData) {
+                serviceMC.sendWSRequest({ uuid: data.uuid, token: store.userToken, method: method, data: requestData }, this.requestResponse)
+            }
+        }
+    }
+
+    getStateStatus = (id) => {
+        switch (id) {
+            case 0:
+                return "Tracked State Unknown"
+            case 1:
+                return "Not Present"
+            case 2:
+                return "Create Requested"
+            case 3:
+                return "Creating"
+            case 4:
+                return "Create Error"
+            case 5:
+                return "Ready"
+            case 6:
+                return "Update Requested"
+            case 7:
+                return "Updating"
+            case 8:
+                return "Update Error"
+            case 9:
+                return "Delete Requested"
+            case 10:
+                return "Deleting"
+            case 11:
+                return "Delete Error"
+            case 12:
+                return "Delete Prepare"
+            case 13:
+                return "CRM Init"
+            case 14:
+                return "Creating"
+            default:
+                return id
+        }
+    }
+
     TableExampleVeryBasic = (headL, hidden, dummyData) => (
         <Table className="viewListTable" basic='very' striped celled sortable ref={ref => this.viewListTable = ref} style={{ width: '100%' }}>
             <Table.Header className="viewListTableHeader" style={{ width: '100%' }}>
@@ -430,11 +478,6 @@ class MapWithListView extends React.Component {
                                     (value === 'Edit') ?
                                         String(item[value]) === 'null' ? <Table.Cell /> :
                                             <Table.Cell key={j} textAlign='center' style={(this.state.selectedItem == i) ? { whiteSpace: 'nowrap', background: '#444' } : { whiteSpace: 'nowrap' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                {/* {
-                                                this.props.diffRev.map((_diff) => (
-                                                    (String(item[value]).indexOf('Editable') > -1 && _diff.AppName == item['AppName'] && _diff.Region == item['Region'] && _diff.OrganizationName == item['OrganizationName'] && _diff.Operator == item['Operator'] && _diff.Cloudlet == item['Cloudlet'] && _diff.ClusterInst == item['ClusterInst'] && item['State'] != 7) ? <Button key={`key_${j}`} color='teal' onClick={() => this.onHandleEdit(item)}>Update</Button> : null
-                                                ))
-                                            } */}
                                                 <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({ openDelete: true, selected: item })}><Icon name={'trash alternate'} /></Button>
                                             </Table.Cell>
                                         :
@@ -452,21 +495,24 @@ class MapWithListView extends React.Component {
                                                 :
                                                 (value === 'CloudletLocation' && item[value]) ?
                                                     <Table.Cell key={j} textAlign='left' onClick={() => this.detailView(item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                        <div>
-                                                            {`Latitude : ${item[value].latitude}`} <br />
-                                                            {`Longitude : ${item[value].longitude}`}
-                                                        </div>
+                                                        {
+                                                            item[value].latitude && item[value].longitude ?
+                                                                <div>
+
+                                                                    {`Latitude : ${item[value].latitude}`} <br />
+                                                                    {`Longitude : ${item[value].longitude}`}
+
+                                                                </div> : ''}
                                                     </Table.Cell>
                                                     :
                                                     (value === 'IpAccess' && item[value]) ?
                                                         <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
                                                             {(item[value] == 0) ? "IpAccessUnknown" : (item[value] == 1) ? "Dedicated" : (item[value] == 2) ? "IpAccessDedicatedOrShared" : (item[value] == 3) ? "Shared" : item[value]}
-                                                            {/*{item[value]}*/}
                                                         </Table.Cell>
                                                         :
                                                         (value === 'State' && item[value]) ?
                                                             <Table.Cell key={j} textAlign='center' onClick={() => this.detailView(item)} style={(this.state.selectedItem === i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                                                                {(item[value] === 0) ? "Tracked State Unknown" : (item[value] === 1) ? "Not Present" : (item[value] === 2) ? "Create Requested" : (item[value] === 3) ? "Creating" : (item[value] == 4) ? "Create Error" : (item[value] == 5) ? "Ready" : (item[value] == 6) ? "Update Requested" : (item[value] == 7) ? "Updating" : (item[value] == 8) ? "Update Error" : (item[value] == 9) ? "Delete Requested" : (item[value] == 10) ? "Deleting" : (item[value] == 11) ? "Delete Error" : (item[value] == 12) ? "Delete Prepare" : (item[value] == 13) ? "CRM Init" : item[value]}
+                                                                {this.getStateStatus(item[value])}
                                                             </Table.Cell>
                                                             :
                                                             (value === 'Progress' && (item['State'] === 3 || item['State'] === 7 || item['State'] === 14)) ?
@@ -601,11 +647,9 @@ class MapWithListView extends React.Component {
             this.setState({ changeRegion: null })
         }
         if (nextProps.clickCity.length == 0) {
-            if (nextProps.devData.length > 0 && this.state.dummyData !== nextProps.devData) {
+            if (this.state.dummyData !== nextProps.devData) {
                 nextProps.devData.map(_item => {
-                    if (_item.State !== 5) {
-                        this.sendWSRequest(_item)
-                    }
+                    this.sendWSRequest(_item)
                 })
                 this.setState({ dummyData: nextProps.devData })
             }
@@ -653,17 +697,6 @@ class MapWithListView extends React.Component {
         })
     }
 
-    sendWSRequest = (data) =>
-    {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        let requestData = serviceMC.getEP().getKey(this.props.siteId, data);
-        let method = serviceMC.getEP().getStreamMethod(this.props.siteId);
-        if(requestData)
-        {
-            serviceMC.sendWSRequest({ uuid: data.uuid, token: store.userToken, method: method, data: requestData }, this.requestResponse) 
-        }
-    }
-
     render() {
         const { open, dimmer, dummyData, resize, _resetMap } = this.state;
 
@@ -700,7 +733,6 @@ class MapWithListView extends React.Component {
         cols: 12,
         width: 1600,
         isDraggable: false,
-        diffRev: [],
         dataSort: false
     };
 }

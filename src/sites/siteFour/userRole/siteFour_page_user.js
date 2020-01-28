@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react';
 import sizeMe from 'react-sizeme';
 import DeveloperListView from '../../../container/developerListView';
@@ -15,15 +16,15 @@ class SiteFourPageUser extends React.Component {
         this.state = {
             shouldShowBox: true,
             shouldShowCircle: false,
-            contHeight:0,
-            contWidth:0,
-            bodyHeight:0,
+            contHeight: 0,
+            contWidth: 0,
+            bodyHeight: 0,
             activeItem: 'Developers',
-            devData:[]
+            devData: []
         };
         this.headerH = 70;
         this.hgap = 0;
-        this.headerLayout = [4,4,4,3]
+        this.headerLayout = [4, 4, 4, 3]
     }
 
     //go to
@@ -37,7 +38,7 @@ class SiteFourPageUser extends React.Component {
             state: { some: 'state' }
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
 
     }
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -46,22 +47,22 @@ class SiteFourPageUser extends React.Component {
         this.props.handleInjectDeveloper('userInfo');
     }
     componentWillMount() {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(window.innerHeight-this.headerH)/2 - this.hgap})
+        this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
+        this.setState({ contHeight: (window.innerHeight - this.headerH) / 2 - this.hgap })
     }
     componentDidMount() {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        if(store && store.userToken) {
+        if (store && store.userToken) {
             this.getDataDeveloper(store.userToken);
         }
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({bodyHeight : (window.innerHeight - this.headerH)})
-        this.setState({contHeight:(nextProps.size.height-this.headerH)/2 - this.hgap})
+        this.setState({ bodyHeight: (window.innerHeight - this.headerH) })
+        this.setState({ contHeight: (nextProps.size.height - this.headerH) / 2 - this.hgap })
 
-        if(nextProps.computeRefresh.compute) {
+        if (nextProps.computeRefresh.compute) {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-            if(store && store.userToken) this.getDataDeveloper(store.userToken);
+            if (store && store.userToken) this.getDataDeveloper(store.userToken);
             this.props.handleComputeRefresh(false);
         }
     }
@@ -72,17 +73,23 @@ class SiteFourPageUser extends React.Component {
             search: subPath
         });
         _self.props.history.location.search = subPath;
-        _self.props.handleChangeSite({mainPath:mainPath, subPath: subPath})
-        _self.setState({ page:subPath})
+        _self.props.handleChangeSite({ mainPath: mainPath, subPath: subPath })
+        _self.setState({ page: subPath })
     }
 
     receiveResult = (mcRequest) => {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                let reverseResult = response.data.reverse();
-                _self.setState({ devData: reverseResult })
-                _self.props.handleLoadingSpinner(false);
+                if (response.data.length > 0) {
+                    let sortedData = _.orderBy(response.data, ['Username'])
+                    _self.setState({ devData: sortedData })
+                    _self.props.handleLoadingSpinner(false);
+                }
+                else {
+                    _self.setState({ devData: [] })
+                    _self.props.handleAlertInfo('error', 'Requested data is empty')
+                }
             }
         }
         _self.props.handleLoadingSpinner(false);
@@ -102,18 +109,18 @@ class SiteFourPageUser extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        computeRefresh : (state.computeRefresh) ? state.computeRefresh: null
+        computeRefresh: (state.computeRefresh) ? state.computeRefresh : null
     }
 };
 
 const mapDispatchProps = (dispatch) => {
     return {
-        handleChangeSite: (data) => { dispatch(actions.changeSite(data))},
-        handleInjectData: (data) => { dispatch(actions.injectData(data))},
-        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
-        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data))},
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
-        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
+        handleChangeSite: (data) => { dispatch(actions.changeSite(data)) },
+        handleInjectData: (data) => { dispatch(actions.injectData(data)) },
+        handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data)) },
+        handleComputeRefresh: (data) => { dispatch(actions.computeRefresh(data)) },
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data)) },
+        handleAlertInfo: (mode, msg) => { dispatch(actions.alertInfo(mode, msg)) },
     };
 };
 

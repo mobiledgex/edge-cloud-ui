@@ -8,6 +8,16 @@ import * as FormatComputeFlavor from './formatter/formatComputeFlavor';
 import * as FormatComputeApp from './formatter/formatComputeApp';
 import * as FormatComputeInst from './formatter/formatComputeInstance';
 import * as FormatComputeCluster from './formatter/formatComputeCluster';
+import * as FormatMonitorCloudlet from "./formatter/formatMonitorCloudlet";
+import * as FormatMonitorCluster from "./formatter/formatMonitorCluster";
+import * as FormatMonitorApp from "./formatter/formatMonitorApp";
+import * as FormatComputeCloudletPool from './formatter/formatComputeCloudletPool';
+import * as FormatComputeCloudletPoolDelete from './formatter/formatComputeCloudletPoolDelete';
+import * as FormatComputeCloudletPoolMember from './formatter/formatComputeCloudletPoolMember';
+import * as FormatComputeCloudletPoolMemberDelete from './formatter/formatComputeCloudletPoolMemberDelete';
+import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
+import * as FormatComputeLinkPoolOrgDelete from './formatter/formatComputeLinkPoolOrgDelete';
+
 
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
@@ -44,11 +54,26 @@ export const CURRENT_USER = "current";
 export const VERIFY_EMAIL = "verifyemail";
 export const RESEND_VERIFY = "resendverify";
 export const RESET_PASSWORD = "passwordreset";
-export const CREATE_USER = "createUser";
+export const CREATE_USER = "usercreate";
 export const ADD_USER_ROLE = "addUserRole";
 export const STREAM_CLUSTER_INST = "StreamClusterInst";
 export const STREAM_CLOUDLET = "StreamCloudlet";
 export const STREAM_APP_INST = "StreamAppInst";
+export const CLOUDLET_METRICS_APP = "CloudletMetricsApp";
+export const CLUSTER_INST_METRICS_APP = "ClusterInstMetricsApp";
+export const APP_INST_METRICS_APP = "AppInstMetricsApp";
+export const SHOW_CLOUDLET_POOL = "ShowCloudletPool";
+export const SHOW_CLOUDLET_MEMBER = "ShowCloudletPoolMember";
+export const SHOW_CLOUDLET_LINKORG = "orgcloudletpool";
+export const SHOW_LINK_POOL_ORG = "orgcloudletpool";
+export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
+export const CREATE_CLOUDLET_POOL_MEMBER = "CreateCloudletPoolMember";
+export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
+export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
+export const DELETE_CLOUDLET_POOL_MEMBER = "DeleteCloudletPoolMember";
+export const SHOW_ORG_CLOUDLET = "orgcloudlet";
+export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
+export const RUN_COMMAND = "RunCommand";
 
 export function getPath(request) {
     switch (request.method) {
@@ -101,6 +126,12 @@ export function getPath(request) {
         case CREATE_APP_INST:
         case DELETE_APP_INST:
         case STREAM_APP_INST:
+        case SHOW_CLOUDLET_POOL:
+        case SHOW_CLOUDLET_MEMBER:
+        case DELETE_CLOUDLET_POOL:
+        case CREATE_CLOUDLET_POOL:
+        case CREATE_CLOUDLET_POOL_MEMBER:
+        case RUN_COMMAND:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
@@ -108,6 +139,18 @@ export function getPath(request) {
         case RESET_PASSWORD:
         case CREATE_USER:
             return `/api/v1/${request.method}`;
+        case CLOUDLET_METRICS_APP:
+        case CLUSTER_INST_METRICS_APP:
+        case APP_INST_METRICS_APP:
+            return '/api/v1/auth/metrics/app';
+        case SHOW_CLOUDLET_LINKORG:
+            return `/api/v1/auth/orgcloudletpool/show`;
+        case CREATE_LINK_POOL_ORG:
+            return `/api/v1/auth/orgcloudletpool/create`;
+        case DELETE_LINK_POOL_ORG:
+            return `/api/v1/auth/orgcloudletpool/delete`;
+        case SHOW_ORG_CLOUDLET:
+            return `/api/v1/auth/orgcloudlet/show`;
         default:
             return null;
     }
@@ -143,6 +186,24 @@ export function formatData(request, response) {
         case SHOW_APP_INST:
             data = FormatComputeInst.formatData(response, request.data)
             break;
+        case CLOUDLET_METRICS_APP:
+            data = FormatMonitorCloudlet.formatData(response, request.data)
+            break;
+        case CLUSTER_INST_METRICS_APP:
+            data = FormatMonitorCluster.formatData(response, request.data)
+            break;
+        case APP_INST_METRICS_APP:
+            data = FormatMonitorApp.formatData(response, request.data)
+            break;
+        case SHOW_CLOUDLET_POOL:
+            data = FormatComputeCloudletPool.formatData(response, request.data)
+            break;
+        case SHOW_CLOUDLET_MEMBER:
+            data = FormatComputeCloudletPoolMember.formatData(response, request.data)
+            break;
+        case SHOW_ORG_CLOUDLET:
+            data = FormatComputeOrgCloudlet.formatData(response, request.data)
+            break;
         default:
             data = undefined;
     }
@@ -170,6 +231,12 @@ export function getKey(keyId, data) {
             return FormatComputeUsers.getKey(data)
         case 'Account':
             return FormatComputeAccounts.getKey(data)
+        case 'Cloudlet Pool':
+            return FormatComputeCloudletPoolDelete.getKey(data)
+        case 'delete member':
+            return FormatComputeCloudletPoolMemberDelete.getKey(data)
+        case 'delete link':
+            return FormatComputeLinkPoolOrgDelete.getKey(data)
         default:
             return null;
     }
@@ -193,6 +260,12 @@ export function getDeleteMethod(keyId) {
             return DELETE_USER;
         case 'Account':
             return DELETE_ACCOUNT;
+        case 'Cloudlet Pool':
+            return DELETE_CLOUDLET_POOL;
+        case 'delete member':
+            return DELETE_CLOUDLET_POOL_MEMBER;
+        case 'delete link':
+            return DELETE_LINK_POOL_ORG;
         default:
             return null;
     }
@@ -207,4 +280,4 @@ export function getStreamMethod(keyId) {
         case 'appinst':
             return STREAM_APP_INST;
     }
-}
+}   

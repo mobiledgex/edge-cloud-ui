@@ -4,7 +4,6 @@ import SiteFourCreateFormDefault from './siteFourCreateFormDefault';
 import BubbleGroup from '../charts/bubbleGroup';
 import EditMap from '../libs/simpleMaps/with-react-motion/editMap';
 import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
-import * as services from "../services/service_compute_service";
 import * as aggregate from "../utils";
 import * as actions from "../actions";
 import {connect} from "react-redux";
@@ -179,7 +178,7 @@ class SiteFourCreatePoolForm extends React.Component {
 
             let cloudletDataReady = this.state.cloudletData.filter((item) => {return item.State === 5});
             this.setState({cloudletData : cloudletDataReady.concat(result)});
-            
+
             // this.setState({cloudletData : this.state.cloudletData.concat(result)});
         }
         else if(cmpt == 'flavor') {
@@ -386,7 +385,6 @@ class SiteFourCreatePoolForm extends React.Component {
                 //this.getDataDeveloper(nextProps.data.region,nextProps.regionInfo.region)
             }
         }
-        console.log('20191223 props dev data nextProps.data=', nextProps.data)
         if(nextProps.data) this.setState({devData: nextProps.data, keys:nextProps.keys, regionInfo:nextProps.regionInfo})
         //reset cluster and node count
         if(nextProps.nodeNumber || nextProps.selectedFlavor) {
@@ -411,6 +409,9 @@ class SiteFourCreatePoolForm extends React.Component {
     }
 
     gotoUrl(num) {
+        if(num === 'skip') {
+            return;
+        }
         _self.props.history.push({
             pathname: '/site4',
             search: 'pg='+num
@@ -427,7 +428,7 @@ class SiteFourCreatePoolForm extends React.Component {
         if(value === 'Kubernetes' && panes.length == 1){
             panes.push({ menuItem: 'Show Cluster', render: (props) => <Tab.Pane>{clusterNode(props)}</Tab.Pane> });
             this.setState({clusterShow:true})
-        } 
+        }
     }
     handleChangeLong = (e, {value}) => {
         // if(value == '-') {
@@ -447,7 +448,7 @@ class SiteFourCreatePoolForm extends React.Component {
 
         if(onlyNum != 0) {
             onlyNum = onlyNum.replace(/(^0+)/, "")
-        } 
+        }
 
         this.setState({ locationLong: onlyNum, longerror:'' })
         this.locationValue(onlyNum,this.state.locationLat)
@@ -463,10 +464,10 @@ class SiteFourCreatePoolForm extends React.Component {
             e.target.value=null;
             return
         }
-        
+
         if(onlyNum != 0) {
             onlyNum = onlyNum.replace(/(^0+)/, "")
-        } 
+        }
         this.setState({ locationLat: onlyNum, laterror:'' })
         this.locationValue(this.state.locationLong,onlyNum)
     }
@@ -488,12 +489,13 @@ class SiteFourCreatePoolForm extends React.Component {
 
     render() {
         const { activeIndex, clusterName } = this.state;
-        let {data, dimmer, selected} = this.props;
+        let {data, dimmer, changeNext} = this.props;
+        console.log('20200106 props data in Form -- ', this.props.data)
         let randomState = Math.random()*100;
         return (
-            <Grid>
-                <Grid.Row className="grid_map_container">
-                    <Grid.Column className="left">
+            <Grid.Column>
+                {/*<Grid.Row className="grid_map_container">*/}
+                {/*    <Grid.Column className="left">*/}
                         <SiteFourCreateFormDefault data={data} pId={0} getUserRole={this.props.getUserRole}
                                                    gotoUrl={this.gotoUrl} clusterHide={this.clusterHide}
                                                    randomState = {randomState}
@@ -503,16 +505,20 @@ class SiteFourCreatePoolForm extends React.Component {
                                                    selected={this.props.selectedRegion}
                                                    regionInfo={this.state.regionInfo}
                                                    dimmer={dimmer}
+                                                   changeNext={changeNext}
+                                                   stepTwo={this.props.stepTwo? this.props.stepTwo : null}
+                                                   editMode={this.props.editMode ? this.props.editMode : null}
                                                    handleChangeLat={this.handleChangeLat}
                                                    handleChangeLong={this.handleChangeLong}
                                                    onChangeState={this.onChangeFormState}
+                                                   selectListData={this.props.selectListData}
                                                    latError={this.state.laterror}
                                                    longError={this.state.longerror}>
 
                         </SiteFourCreateFormDefault>
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+                {/*    </Grid.Column>*/}
+                {/*</Grid.Row>*/}
+            </Grid.Column>
         )
     }
 }
@@ -534,6 +540,7 @@ const mapStateToProps = (state) => {
     let nodeNumber = null;
     let getRegion = (state.getRegion)?state.getRegion.region:null
     let regionInfo = (state.regionInfo)?state.regionInfo:null;
+    let changeNext = state.changeNext ? state.changeNext.next:null;
     if(state.form.createAppFormDefault) {
         formValues = state.form.createAppFormDefault.values;
         if(state.form.createAppFormDefault.values.Region !== "") {
@@ -560,7 +567,7 @@ const mapStateToProps = (state) => {
 
     return {
         selectedRegion, selectedOperator, clusterName, formValues, selectedFlavor, masterNumber, nodeNumber, getRegion,
-        regionInfo: regionInfo
+        regionInfo: regionInfo, changeNext
     }
 };
 const mapDispatchProps = (dispatch) => {
@@ -569,6 +576,7 @@ const mapDispatchProps = (dispatch) => {
         handleInjectDeveloper: (data) => { dispatch(actions.registDeveloper(data))},
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleGetRegion: (data) => { dispatch(actions.getRegion(data)) },
+        handleChangeNext: (data) => { dispatch(actions.changeNext(data)) },
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))}
     };
 };

@@ -329,8 +329,9 @@ class RegistNewItem extends React.Component {
         //TODO: 20190410 메뉴 별 구분 필요
         if(localStorage.selectMenu === 'Cluster Instances'){
             const {Cloudlet, Flavor, ClusterName, OrganizationName, Operator, Region, IpAccess, Number_of_Master, Number_of_Node} = this.props.submitData.registNewInput.values
-            // this.props.handleCreatingSpinner(true);
+            // this.props.handleLoadingSpinner(true);
             serviceBody = {
+                uuid: serviceMC.generateUniqueId(),
                 method: serviceMC.getEP().CREATE_CLUSTER_INST,
                 token: store ? store.userToken : 'null',
                 data: {
@@ -348,7 +349,7 @@ class RegistNewItem extends React.Component {
                     }
                 }
             }
-            //this.props.handleLoadingSpinner(true);
+            this.props.handleLoadingSpinner(true);
             serviceMC.sendWSRequest(serviceBody, this.receiveSubmit)
         } else if(localStorage.selectMenu === 'Cloudlets') {
             const cloudlet = ['Region','CloudletName','OperatorName','Latitude','Longitude','Num_dynamic_ips']
@@ -362,6 +363,7 @@ class RegistNewItem extends React.Component {
             const {CloudletName, OperatorName, Latitude, Longitude, IpSupport, Num_dynamic_ips, Region} = this.props.submitData.registNewInput.values
             
             serviceBody = {
+                uuid:serviceMC.generateUniqueId(),
                 method: serviceMC.getEP().CREATE_CLOUDLET,
                 token: store ? store.userToken : 'null',
                 data: {
@@ -408,7 +410,12 @@ class RegistNewItem extends React.Component {
         if(localStorage.selectMenu === "Cluster Instances") {
             let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
             // operator, cloudlet
-            serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
+            if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: region } }, _self.receiveOper)
+            } else {
+                serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: region, org: _self.props.selectOrg || localStorage.selectOrg } }, _self.receiveOper)
+            }
+            
             // Flavor
             setTimeout(() => serviceMC.sendRequest(_self,{ token: store.userToken, method: serviceMC.getEP().SHOW_FLAVOR, data: { region: region } }, _self.receiveCF), 500);
         }
@@ -474,7 +481,8 @@ const mapStateToProps = (state) => {
         computeItem : state.computeItem?state.computeItem.item:null,
         selectOrg : state.selectOrg.org?state.selectOrg.org:null,
         userRole : state.showUserRole?state.showUserRole.role:null,
-        cloudletValue:formCloudlet
+        cloudletValue:formCloudlet,
+        selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : null,
     }
 };
 
@@ -485,7 +493,7 @@ const mapDispatchProps = (dispatch) => {
         handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
         handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
 
-        // handleCreatingSpinner: (data) => { dispatch(actions.creatingSpinner(data))}
+        // handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
     };
 };
 

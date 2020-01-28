@@ -1,31 +1,29 @@
-import React, { Component } from 'react';
-import { Grid, Button, Container } from 'semantic-ui-react';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import React, {Component} from 'react';
+import {BrowserRouter as Router, Route} from "react-router-dom";
 import Alert from 'react-s-alert';
 
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'semantic-ui-css/semantic.min.css';
-import {GridLoader, PulseLoader, ClipLoader} from "react-spinners";
+import {GridLoader} from "react-spinners";
 //redux
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import * as actions from './actions';
 import * as serviceMC from './services/serviceMC';
-// API
-
-import { LOCAL_STRAGE_KEY } from './components/utils/Settings'
+import {LOCAL_STRAGE_KEY} from './components/utils/Settings'
 //insert pages
 import EntranceGlob from './sites/entranceGlob';
 import SiteTwo from "./sites/siteTwo";
-import SiteThree from "./sites/siteThree";
-import SiteFour from "./sites/siteFour/siteFour";
 import CreateAccount from './components/login/CreateAccont';
 import history from './history';
 import VerifyContent from './container/verifyContent';
 import './css/index.css';
-
+import SiteFour from "./sites//siteFour/siteFour";
 import './css/pages/audit.css';
+import './css/pages/cloudletPool.css';
+import './css/pages/monitoring.css';
 import './css/components/timelineH.css';
+// API
 
 let self = null;
 
@@ -170,22 +168,21 @@ const DashboardContainer = ( props, props2) => {
                 {props.mainPath === '/' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} />}
                 {props.mainPath === '/site1' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/site2' && <SiteTwo params={_params} history={(props2.history)?props2.history:null}/>}
-                {props.mainPath === '/site3' && <SiteThree params={_params} history={(props2.history)?props2.history:null} selectedCloudlet={self.state.selectedCloudlet}/>}
                 {props.mainPath === '/site4' && <SiteFour params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/createAccount' && <CreateAccount params={_params} history={(props2.history)?props2.history:null}/>}
                 {props.mainPath === '/passwordreset' && <EntranceGlob params={_params} history={(props2.history)?props2.history:null} reset={true}/>}
                 {props.mainPath === '/verify' && <VerifyContent params={_params} history={(props2.history)?props2.history:null}/>}
             <Alert stack={{limit: 3}} />
-            {(self.props.creatingSpinner==true)?
+            {(self.props.loadingSpinner==true)?
             <div className="loadingBox" style={{zIndex:99999}}>
                 <GridLoader
                     sizeUnit={"px"}
                     size={25}
                     color={'#70b2bc'}
-                    loading={self.props.creatingSpinner}
+                    loading={self.props.loadingSpinner}
                     //loading={true}
                 />
-                <span className={self.props.creatingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
+                <span className={self.props.loadingSpinner ? '' : 'loading'} style={{fontSize:'22px', color:'#70b2bc'}}>Creating...</span>
             </div>:null}
 
         </div>
@@ -352,7 +349,7 @@ const mapStateToProps = (state) => {
         siteName: (state.siteChanger)?state.siteChanger.site:null,
         tab: (state.tabChanger.tab)?state.tabChanger.tab:null,
         clickTab: (state.tabClick.clickTab)?state.tabClick.clickTab:null,
-        creatingSpinner : state.creatingSpinner.creating?state.creatingSpinner.creating:null,
+        loadingSpinner : state.loadingSpinner.creating?state.loadingSpinner.creating:null,
 
     };
 };

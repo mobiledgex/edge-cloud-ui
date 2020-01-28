@@ -71,14 +71,23 @@ export default class BubbleChart extends Component {
                     d.label = '' + d.data.label; //todo:라벨 셋팅 부분..
                     d.id = d.data.label.toLowerCase().replace(/ |\//g, "-");
                     d.favor = d.data.favor;
-                    d.fullLabel= d.data.fullLabel;
+                    d.fullLabel = d.data.fullLabel;
+                    d.index = d.data.index;
                 }
             });
 
         // Pass the data to the pack layout to calculate the distribution.
         const nodes = pack(root).leaves();
 
-        // Call to the function that draw the bubbles.
+        /*  let newNodes=[]
+          nodes.map(item=>{
+              if ( item.data.value >0){
+                  newNodes.push(item)
+              }
+          })*/
+
+        // console.log('nodes===>', nodes)
+
         this.renderBubbles(bubblesWidth, nodes, color);
         // Call to the function that draw the legend.
         if (showLegend) {
@@ -95,23 +104,27 @@ export default class BubbleChart extends Component {
             labelFont,
         } = this.props;
 
+
+        console.log('renderBubbles===>', data);
+
         const bubbleChart = d3.select(this.svg).append("g")
             .attr("class", "bubble-chart")
             .attr("transform", function (d) {
-                return "translate(" + (width * graph.offsetX) + "," + (width * graph.offsetY) + ")";
+                //todo: Bubble chart location setting...
+                //todo: Bubble chart location setting...
+                return "translate(" + (width * 5 / 10) + "," + (width * graph.offsetY) + ")"; //버블차트 위치
             });
         ;
 
-        const node = bubbleChart.selectAll(".node")
-            .data(nodes)
-            .enter().append("g")
+        const node = bubbleChart.selectAll(".node").data(nodes).enter().append("g")
             .attr("class", "node")
             .attr("transform", function (d) {
                 return "translate(" + d.x + "," + d.y + ")";
             })
             .on("click", function (d) {
-                bubbleClickFun(d.label);
+                bubbleClickFun(d.fullLabel, d.index);
             })
+
 
         node.append("circle")
             .attr("id", function (d) {
@@ -165,7 +178,10 @@ export default class BubbleChart extends Component {
             .text((d) => {
                 //@todo:value를 랜더링 하는 부분..
                 //@todo:value를 랜더링 하는 부분..
-                return d.favor; //@todo:value를 랜더링 하는 부분..
+
+                if (d.value > 0) {
+                    return d.favor; //@todo:value를 랜더링 하는 부분..
+                }
 
             });
 
@@ -227,7 +243,6 @@ export default class BubbleChart extends Component {
             });
 
 
-
         node.append("title")
             .text(function (d) {
                 return d.label;
@@ -253,9 +268,12 @@ export default class BubbleChart extends Component {
         const bubble = d3.select('.bubble-chart');
         const bubbleHeight = bubble.node().getBBox().height;
 
+        console.log(' bubbleHeight===>', bubbleHeight * 0.30);
+
         const legend = d3.select(this.svg).append("g")
             .attr("transform", function () {
-                return `translate(${offset},${(bubbleHeight) * 0.18})`;
+                // return `translate(${offset},${(bubbleHeight) * 0.18})`;
+                return `translate(450,40.000)`;
             })
             .attr("class", "legend")//.style("marginLeft", `-100px`)
 
@@ -268,8 +286,9 @@ export default class BubbleChart extends Component {
             .attr("transform", (d, i) => {
                 const offset = textOffset;
                 textOffset += legendFont.size + 10;
-                //todo: first param is x-axis
-                return `translate(-40,${offset})`;
+                //todo: first param is x-axis .renderLegend
+                //todo: first param is x-axis .renderLegend
+                return `translate(-430,${offset})`;
             })
             .on('mouseover', function (d) {
                 // d3.select('#' + d.id).attr("r", d.r * 1.04);
@@ -279,8 +298,7 @@ export default class BubbleChart extends Component {
                   d3.select('#' + d.id).attr("r", r);*/
             })
             .on("click", function (d) {
-                legendClickFun(d.label);
-                //alert('sdlfksldkf')
+                legendClickFun(d.fullLabel, d.index);
             });
         ;
 
@@ -301,13 +319,13 @@ export default class BubbleChart extends Component {
             });
 
         texts.append("text")
-            //.style("font-size", `${legendFont.size}px`)
-            .style("font-size", `17px`)
+        //.style("font-size", `${legendFont.size}px`)
+            .style("font-size", `12px`)
             /*.style("font-weight", (d) => {
                 return legendFont.weight ? legendFont.weight : 50;
             })*/
             //.style("font-family", legendFont.family)
-            .style("font-family", 'Righteous')
+            //.style("font-family", 'Righteous')
             /*.style("fill", () => {
                 return legendFont.color ? legendFont.color : '#000';
             })*/
@@ -389,10 +407,10 @@ BubbleChart.defaultProps = {
         color: '#fff',
         weight: 'normal',
     },
-    bubbleClickFun: (label) => {
+    bubbleClickFun: (label, index) => {
         console.log(`Bubble ${label} is clicked ...`)
     },
-    legendClickFun: (label) => {
+    legendClickFun: (label, index) => {
         console.log(`Legend ${label} is clicked ...`)
     }
 }
