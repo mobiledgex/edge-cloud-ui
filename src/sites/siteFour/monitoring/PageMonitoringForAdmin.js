@@ -355,7 +355,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allNetworkUsageList: usageList[2],//networkUsage
                 allDiskUsageList: usageList[3],//disk is last array
                 allConnectionsUsageList: usageList[4],
-                dropdownCloudletList: cloudletList,
+                cloudletList: cloudletList,
                 clusterList: clusterList,
                 filteredCpuUsageList: usageList[0],
                 filteredMemUsageList: usageList[1],
@@ -454,7 +454,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading0: true,
                 appInstanceListSortByCloudlet: [],
                 currentRegion: pRegion,
-                dropdownCloudletList: [],
+                cloudletList: [],
             })
 
             //todo: -------------------------------------------
@@ -546,7 +546,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceList: appInstanceList,
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
-                dropdownCloudletList: cloudletSelectBoxList,
+                cloudletList: cloudletSelectBoxList,
                 clusterList: clusterSelectBoxList,
                 currentCloudLet: pCloudLet,
                 currentCluster: pCluster,
@@ -1118,7 +1118,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             <div className="page_monitoring_dropdown_label">
                                 CloudLet
                             </div>
-
                             <Dropdown
                                 disabled={this.state.loading}
                                 value={this.state.currentCloudLet}
@@ -1151,7 +1150,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 disabled={this.state.loading}
                                 value={this.state.currentCluster}
                                 clearable={this.state.clusterSelectBoxClearable}
-                                loading={this.state.loading}
+                                disabled={this.state.currentCloudLet === '' || this.state.loading}
                                 placeholder={this.state.clusterSelectBoxPlaceholder}
                                 selection
                                 options={this.state.clusterList}
@@ -1177,7 +1176,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 App Inst
                             </div>
                             <Dropdown
-                                disabled={this.state.loading}
+                                disabled={this.state.currentCluster === '' || this.state.loading}
                                 clearable={this.state.appInstSelectBoxClearable}
                                 loading={this.state.loading}
                                 value={this.state.currentAppInst}
