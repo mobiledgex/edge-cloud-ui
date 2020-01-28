@@ -82,7 +82,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 return (
                     <PageMonitoringForOperator/>
                 )
-            } else {//DeveloperManager
+            } else {//Developer***
                 return (
                     <PageMonitoringForDeveloper/>
                 )
