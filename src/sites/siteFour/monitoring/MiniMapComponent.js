@@ -109,12 +109,12 @@ export default class MiniMapComponent extends Component<Props, State> {
                                             strokeWidth: 0.75,
                                             outline: "none",
                                         },
-                                        /*  hover: {
-                                              fill: "#607D8B",
-                                              stroke: "#607D8B",
-                                              strokeWidth: 0.75,
-                                              outline: "none",
-                                          },*/
+                                        hover: {
+                                            fill: "#607D8B",
+                                            stroke: "#607D8B",
+                                            strokeWidth: 0.75,
+                                            outline: "none",
+                                        },
                                         pressed: {
                                             fill: "#FF5722",
                                             stroke: "#1d5a10",
