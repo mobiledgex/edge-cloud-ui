@@ -2173,11 +2173,9 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 
 
 export const getClouletLevelUsageList = async (cloudletList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
-
     let instanceBodyList = []
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
-
 
     for (let index = 0; index < cloudletList.length; index++) {
         let instanceInfoOneForm = makeFormForCloudletLevelMatric(cloudletList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
@@ -2191,7 +2189,6 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
     console.log('instanceBodyList===>', instanceBodyList)
 
     let cloudletLevelMatricUsageList = await Promise.all(promiseList);
-
     /*
     [
         "time",0
@@ -2213,12 +2210,7 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
     */
 
 
-    let networkUsageList = [];
     let usageList = []
-    let memUsageList = [];
-    let floatIpUsageList = [];
-    let floatIpV4UsageList = [];
-    let matrixedUsageList = []
     cloudletLevelMatricUsageList.map(item => {
 
         let series = item.data["0"].Series["0"].values
@@ -2231,13 +2223,10 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
         let sumMemMax = 0;
         let sumDiskUsed = 0;
         let sumDiskMax = 0;
-
         let sumNetSend = 0;
         let sumNetRecv = 0;
-
         let sumFloatingIpsUsed = 0;
         let sumFloatingIpsMax = 0
-
         let sumIpv4Used = 0;
         let sumIpv4Max = 0;
 
@@ -2268,7 +2257,6 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
             //todo: FLOATIP
             sumFloatingIpsUsed += item["11"];
             sumFloatingIpsMax += item["12"];
-
 
             //todo: IPV4
             sumIpv4Used += item["13"];
