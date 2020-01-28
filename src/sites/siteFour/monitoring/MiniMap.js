@@ -19,7 +19,7 @@ type State = {
 }
 
 
-export default class MiniMapComponent extends Component<Props, State> {
+export default class MiniMap extends Component<Props, State> {
 
 
     constructor(props) {
@@ -104,7 +104,7 @@ export default class MiniMapComponent extends Component<Props, State> {
                                     projection={projection}
                                     style={{
                                         default: {
-                                            fill: "#ECEFF1",
+                                            fill: "#607D8B",
                                             stroke: "#607D8B",
                                             strokeWidth: 0.75,
                                             outline: "none",
@@ -136,7 +136,7 @@ export default class MiniMapComponent extends Component<Props, State> {
                                             <image href="https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png" style={{color: 'red'}} height="35" width="35"/>
                                         </svg>
 
-                                        <text textAnchor="middle" fill="#1d5a10" style={{fontSize: 20, fontFamily: "Roboto, sans-serif", fontWeight: 'bold'}}>
+                                        <text textAnchor="middle" fill="#fff" style={{fontSize: 15, fontFamily: "Roboto, sans-serif", fontStyle: 'italic'}}>
                                             {item.CloudletName.toString().substring(0, 17) + "..."}
                                         </text>
                                     </Marker>
@@ -166,12 +166,11 @@ export default class MiniMapComponent extends Component<Props, State> {
                 }
                 <div className="controls" style={{marginTop: -190}}>
                     <Button id="mapZoomCtl" size='larges' icon onClick={() => {
-
                         this.setState({
-                            zoom: 1,
+                            zoom: 0.45,
                         })
                     }}>
-                        <Icon name="expand"/>
+                        <Icon name="refresh"/>
                     </Button>
                     <Button id="mapZoomCtl" size='large' icon onClick={() => {
                         this.setState({

@@ -18,7 +18,6 @@ import {
     renderBubbleChartForCloudlet,
     renderLineChartForCloudlet,
     renderPlaceHolder,
-    renderPlaceHolder2,
     Styles
 } from "./PageMonitoringService";
 import {HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, NETWORK_OPTIONS2, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../shared/Constants";
@@ -30,7 +29,7 @@ import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import './PageMonitoring.css'
 import {showToast} from "./PageMonitoringChartService";
-import MiniMapComponent from "./MiniMapComponent";
+import MiniMap from "./MiniMap";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -1051,7 +1050,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : <MiniMapComponent loading={this.state.loading} cloudletList={this.state.cloudletList}/>}
+                                                        {!this.state.isAppInstaceDataReady ? renderPlaceHolder() : <MiniMap loading={this.state.loading} cloudletList={this.state.cloudletList}/>}
                                                     </div>
                                                 </div>
 
