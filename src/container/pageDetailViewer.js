@@ -7,19 +7,24 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import MonitoringViewer from './monitoringViewer';
 import CommandViewer from './commandViewer';
+import TerminalViewer from './TerminalViewer';
 import './styles.css';
 
 const pane = [
     { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> }
 ]
-const panes = [
-    { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> },
-    { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props} /></Tab.Pane> }
-]
+
+/** This is for old monitoring tab **/
+// const panes = [
+//     { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> },
+//     { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props} /></Tab.Pane> }
+// ]
+
 const panesCommand = [
     { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> },
-    { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props} /></Tab.Pane> },
-    { menuItem: 'Command', render: (props) => <Tab.Pane><CommandViewer data={props} /></Tab.Pane> }
+    // { menuItem: 'Monitoring', render: (props) => <Tab.Pane><MonitoringViewer data={props} /></Tab.Pane> }, // <- this is for old monitoring tab
+    // { menuItem: 'Command', render: (props) => <Tab.Pane><CommandViewer data={props} /></Tab.Pane> },
+    { menuItem: 'Terminal', render: (props) => <Tab.Pane><TerminalViewer data={props} /></Tab.Pane> }
 ]
 const detailViewer = (props, type) => (
     <Fragment>
@@ -46,7 +51,7 @@ const detailViewer = (props, type) => (
 )
 
 const makeTable = (values, label, i) => (
-    (label !== 'Edit') ?
+    (label !== 'Edit' && label !== 'uuid') ?
         <Table.Row key={i}>
             <Table.Cell>
                 <Header as='h4' image>
@@ -216,7 +221,8 @@ class PageDetailViewer extends React.Component {
 
                     <div className="grid_table tabs">
                         <Tab className="grid_tabs" menu={{ secondary: true, pointing: true, inverted: true, attached: false, tabular: false }}
-                            panes={(this.state.userRole === 'AdminManager' && page === 'appInst') ? panesCommand : ((this.state.userRole === 'DeveloperManager' || this.state.userRole === 'DeveloperContributor' || this.state.userRole === 'DeveloperViewer') && page === 'cloudlet') ? pane : (page === 'appInst') ? panesCommand : panes}{...panelParams}
+                             panes={(page === 'appInst') ? panesCommand : pane}{...panelParams}
+                             // panes={(this.state.userRole === 'AdminManager' && page === 'appInst') ? panesCommand : ((this.state.userRole === 'DeveloperManager' || this.state.userRole === 'DeveloperContributor' || this.state.userRole === 'DeveloperViewer') && page === 'cloudlet') ? pane : (page === 'appInst') ? panesCommand : panes}{...panelParams} <- this is for old Monitoring Tab
                             gotoUrl={this.gotoUrl} toggleSubmit={this.state.toggleSubmit} error={this.state.validateError} onTabChange={this.onChangeTab} />
                     </div>
                 </div>

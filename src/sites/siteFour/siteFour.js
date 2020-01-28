@@ -12,7 +12,7 @@ import {
     Item,
     Input,
     Segment,
-    Table, Icon,
+    Icon,
     Container
 } from 'semantic-ui-react';
 import sizeMe from 'react-sizeme';
@@ -49,7 +49,7 @@ import SiteFourPageCloudletPool from './cloudletPool/siteFour_page_cloudletPool'
 import SiteFourPageCloudletPoolReg from './cloudletPool/siteFour_page_cloudletPoolReg';
 import SiteFourPageLinkOrganizeReg from './cloudletPool/siteFour_page_linkOrganizeReg';
 import SiteFourPageCloudletPoolUpdate from './cloudletPool/siteFour_page_cloudletPoolUpdate';
-import PageMonitoring from './monitoring/PageMonitoringForAdmin'
+import PageMonitoring from './monitoring/PageMonitoring'
 
 import PopLegendViewer from '../../container/popLegendViewer';
 import * as serviceMC from '../../services/serviceMC';
@@ -61,7 +61,6 @@ import Alert from 'react-s-alert';
 
 import '../../css/introjs.css';
 import '../../css/introjs-dark.css';
-import PageMonitoringMain from "./monitoring/PageMonitoringMain";
 
 let devOptions = [{ key: 'af', value: 'af', text: 'SK Telecom' }]
 const locationOptions = [
@@ -153,7 +152,7 @@ class SiteFour extends React.Component {
             { label: 'User Roles', icon: 'dvr', pg: 1 },
             { label: 'Accounts', icon: 'dvr', pg: 101 }
         ]
-        this.menuItems = [
+        this.menuItemsAll = [ //admin menu
             { label: 'Cloudlets', icon: 'cloud_queue', pg: 2 },
             { label: 'Cloudlet Pool', icon: 'pool', pg: 7 },
             { label: 'Flavors', icon: 'free_breakfast', pg: 3 },
@@ -163,16 +162,28 @@ class SiteFour extends React.Component {
             { label: 'Monitoring', icon: 'tv', pg: 'Monitoring' },
             { label: 'Audit Log', icon: 'check', pg: 'audits' }
         ]
-        this.auth_three = [
-            reducer.getFindIndex(this.menuItems, 'label', 'Cloudlets'),
-            reducer.getFindIndex(this.menuItems, 'label', 'Audit Log'),
-            reducer.getFindIndex(this.menuItems, 'label', 'Monitoring'),
+        this.menuItems = [ //developer menu
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Flavors'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Cluster Instances'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Apps'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'App Instances'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Log'),
+        ]
+
+        this.menuArr = ['Organization', 'User Roles', 'Cloudlets', 'Cloudlet Pool', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances']
+        this.auth_three = [ //operator menu
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Cloudlets'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Monitoring'),
+            reducer.getFindIndex(this.menuItemsAll, 'label', 'Audit Log'),
         ] //OperatorManager, OperatorContributor, OperatorViewer
+
         this.auth_list = [
             { role: 'AdminManager', view: [] },
             { role: 'DeveloperManager', view: [2, 3] },
             { role: 'DeveloperContributor', view: [1, 2, 3] },
-            { role: 'DeveloperViewer', view: [1, 2, 3, 4, 5, 6] },
+            { role: 'DeveloperViewer', view: [1, 2, 3, 5, 6, 7] },
             { role: 'OperatorManager', view: [] },
             { role: 'OperatorContributor', view: [1] },
             { role: 'OperatorViewer', view: [1, 2] }
@@ -501,7 +512,9 @@ class SiteFour extends React.Component {
         } catch (e) {
 
         }
-
+        if(nextProps.selectedOrg) {
+            this.setState({selectOrg: nextProps.selectedOrg})
+        }
 
         if (nextProps.params && nextProps.params.subPath) {
             let subPaths = nextProps.params.subPath;
@@ -708,11 +721,10 @@ class SiteFour extends React.Component {
         this.props.handleComputeRefresh(true);
     }
     disableBtn = () => {
-        const menuArr = ['Organization', 'User Roles', 'Cloudlets', 'Flavors', 'Cluster Instances', 'Apps', 'App Instances']
         this.auth_list.map((item, i) => {
             if (item.role == localStorage.selectRole) {
-                item.view.map((item) => {
-                    if (menuArr[item] == localStorage.selectMenu) {
+                item.view.map((view) => {
+                    if (this.menuArr[view] == localStorage.selectMenu) {
                         this.props.handleChangeViewBtn(true);
                     }
                 })
@@ -966,7 +978,7 @@ class SiteFour extends React.Component {
                                 <div className='menuPart'>
                                     {
                                         (localStorage.selectRole == 'AdminManager') ?
-                                            this.menuItems.map((item, i) => (
+                                            this.menuItemsAll.map((item, i) => (
                                                 this.menuItemView(item, i, localStorage.selectMenu)
                                             ))
                                             :
@@ -994,7 +1006,7 @@ class SiteFour extends React.Component {
                     </Grid.Row>
                 </Container>
                 <Container className='contents_body_container' style={{ top: this.headerH, left: this.menuW }}>
-                    {(this.state.page === 'pg=Monitoring') ? <PageMonitoringMain/> :
+                    {(this.state.page === 'pg=Monitoring') ? <PageMonitoring /> :
                         <Grid.Row className='view_contents'>
                             <Grid.Column className='contents_body'>
                                 <Grid.Row className='content_title' style={{ width: 'fit-content', display: 'inline-block' }}>
@@ -1121,6 +1133,7 @@ const mapStateToProps = (state) => {
     let submitInfo = (state.submitInfo) ? state.submitInfo : null;
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let checkedAudit = (state.checkedAudit) ? state.checkedAudit.audit : null;
+    let selectedOrg = (state.selectOrganiz) ? state.selectOrganiz.org : null;
 
     return {
         viewBtn: state.btnMnmt ? state.btnMnmt : null,
@@ -1148,6 +1161,7 @@ const mapStateToProps = (state) => {
         regionInfo: regionInfo,
         audit: checkedAudit,
         clickCity: state.clickCityList.list,
+        selectedOrg
     }
 };
 

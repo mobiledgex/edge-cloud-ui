@@ -11,6 +11,7 @@ import * as actions from '../actions';
 import MonitoringViewer from './monitoringViewer';
 import CommandViewer from './commandViewer';
 import './styles.css';
+import '../css/pages/cloudletPool.css';
 
 const ReactGridLayout = WidthProvider(RGL);
 const pane = [
@@ -29,11 +30,11 @@ const panesCommand = [
 const detailViewer = (props, type) => (
     <Fragment>
         {(type === 'detailViewer')?
-            <Table celled collapsing style={{width:'100%', height:'100%', border:'none', display:'flex', flexDirection:'column'}}>
+            <Table className='page_cloudletPool_table' celled collapsing style={{ width: '100%', height: '100%', border: 'none', display: 'flex', flexDirection: 'column' }}>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell width={6}><div style={{display:'flex', justifyContent:'center'}}>Subject</div></Table.HeaderCell>
-                        <Table.HeaderCell width={10}><div style={{display:'flex', justifyContent:'center'}}>Value</div></Table.HeaderCell>
+                        <Table.HeaderCell><div style={{ display: 'flex', justifyContent: 'center', width:'25%' }}>Subject</div></Table.HeaderCell>
+                        <Table.HeaderCell><div style={{ display: 'flex', justifyContent: 'center' }}>Value</div></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -51,12 +52,10 @@ const detailViewer = (props, type) => (
 )
 
 const makeCloudletTable = (values, label, i) => (
-    (label !== 'Edit')?
+    (label !== 'Edit' && label !== 'uuid')?
         <Table.Row key={i}>
             <Table.Cell>
-                <Header as='h4' image>
-                    <Icon name={'dot'} />
-                    <Header.Content>
+                
                         {(label == 'CloudletName')?'Cloudlet Name'
                             :(label == 'CloudletLocation')?'Cloudlet Location'
                                 :(label == 'Ip_support')?'IP Support'
@@ -70,8 +69,7 @@ const makeCloudletTable = (values, label, i) => (
                                                                 :(label == 'Physical_name')?'Physical Name'
                                                                     :(label == 'Platform_type')?'Platform Type'
                                                                         :label}
-                    </Header.Content>
-                </Header>
+                    
             </Table.Cell>
             <Table.Cell>
                 {(label === 'Ip_support' && String(values[label]) == '1')?'Static'
@@ -113,17 +111,17 @@ const jsonView = (jsonObj,_label) => {
 const tableCloudletPool = (jsonObj) => {
 
     return (
-        <Table celled>
-            <Table.Header>
-
+        <Table className="viewListTable cloudletPoolGroup" basic='very' striped celled>
+            <Table.Header className="viewListTableHeader">
                 <Table.Row>
-                    <Table.HeaderCell width={2}>Region</Table.HeaderCell>
-                    <Table.HeaderCell width={7}>Operator</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='left'>Region</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='left'>Operator</Table.HeaderCell>
                     {/*<Table.HeaderCell width={5}>PoolName</Table.HeaderCell>*/}
-                    <Table.HeaderCell width={7}>Cloudlet</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='left'>Cloudlet</Table.HeaderCell>
+                    <Table.HeaderCell textAlign='right'></Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
-            <Table.Body>
+            <Table.Body className="tbBodyList">
                 {jsonObj.map((item, i) => makeCloudletGroup(item, i))}
             </Table.Body>
         </Table>
@@ -131,29 +129,31 @@ const tableCloudletPool = (jsonObj) => {
     )
 
 }
-
+const makeDeleteIcon = (_item, _type) => (
+    <Button onClick={_self.onHandleDelete} item={_item} type={_type} size='mini'><Icon name='trash' style={{cursor:'pointer'}}></Icon></Button>
+)
 const makeCloudletGroup = (item, i) => (
     <Table.Row key={i}>
-        <Table.Cell width={2}>{item.Region}</Table.Cell>
-        <Table.Cell width={7}>{item.Operator}</Table.Cell>
+        <Table.Cell textAlign='left'>{item.Region}</Table.Cell>
+        <Table.Cell textAlign='left'>{item.Operator}</Table.Cell>
         {/*<Table.Cell width={5}>{item.PoolName}</Table.Cell>*/}
-        <Table.Cell width={7}>{item.Cloudlet}</Table.Cell>
+        <Table.Cell textAlign='left'>{item.Cloudlet}</Table.Cell>
+        <Table.Cell textAlign='right'>{makeDeleteIcon(item, 'delete member')}</Table.Cell>
     </Table.Row>
 )
 
 const tableCloudletPoolOrg = (jsonObj) => {
 
     return (
-        <Table celled>
-            <Table.Header>
-
+        <Table className="viewListTable cloudletPoolGroup" basic='very' striped celled>
+            <Table.Header className="viewListTableHeader">
                 <Table.Row>
-                    <Table.HeaderCell width={2}>Region</Table.HeaderCell>
-                    <Table.HeaderCell width={14}>Organization</Table.HeaderCell>
-                    {/*<Table.HeaderCell width={7}>CloudletPool</Table.HeaderCell>*/}
+                    <Table.HeaderCell  textAlign='left' >Region</Table.HeaderCell>
+                    <Table.HeaderCell  textAlign='left' >Organization</Table.HeaderCell>
+                    <Table.HeaderCell  textAlign='right'></Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
-            <Table.Body>
+            <Table.Body className="tbBodyList">
                 {jsonObj.map((item, i) => makeOrganizGroup(item, i))}
             </Table.Body>
         </Table>
@@ -164,9 +164,9 @@ const tableCloudletPoolOrg = (jsonObj) => {
 
 const makeOrganizGroup = (item, i) => (
     <Table.Row key={i}>
-        <Table.Cell width={2}>{item.Region}</Table.Cell>
-        <Table.Cell width={14}>{item.Org}</Table.Cell>
-        {/*<Table.Cell width={7}>{item.CloudletPool}</Table.Cell>*/}
+        <Table.Cell textAlign='left' >{item.Region}</Table.Cell>
+        <Table.Cell textAlign='left'>{item.Org}</Table.Cell>
+        <Table.Cell textAlign='right'>{makeDeleteIcon(item, 'delete link')}</Table.Cell>
     </Table.Row>
 )
 
@@ -236,7 +236,8 @@ class PagePoolDetailViewer extends React.Component {
             clusterName:null,
             activeIndex:0,
             page:'',
-            user:'AdminManager'
+            user:'AdminManager',
+            refreshId:0
         }
         _self = this;
         this.initData = null;
@@ -268,6 +269,8 @@ class PagePoolDetailViewer extends React.Component {
 
         }
 
+        this.selectedItems = [];
+
     }
     generateLayout() {
 
@@ -279,16 +282,77 @@ class PagePoolDetailViewer extends React.Component {
     onChangeTab = (e, data) => {
         console.log('20190923 on change tab ..data --- ',data)
         if(data.activeIndex === 1 && _self.state.page) {
-            _self.getInstanceHealth(_self.state.page, _self.state.listData)
-            _self.props.handleLoadingSpinner(true);
+
         } else {
             _self.clearInterval();
             _self.props.handleLoadingSpinner(false)
         }
     }
-    generateDOM(open, dimmer, data, mData, keysData, hideHeader, region, page) {
+    removeSelectedItems = () => {
+        _self.selectedItems.map((item) => {
+            // 데이터에서 아이템 제거
+            let groupData = null;
+            let filterDefine = null;
+            let cloneListData = Object.assign([], _self.state.listData)
+            if(item.type === 'delete member') {
+                groupData = _self.state.listData['cloudletGroup'];
+                filterDefine = groupData.filter( data => data['Cloudlet'] !== item.item['Cloudlet']);
+                cloneListData['cloudletGroup'] = filterDefine;
+                cloneListData['Cloudlets'] -= 1;
+            } else if(item.type === 'delete link') {
+                groupData = _self.state.listData['OrganizGroup'];
+                filterDefine = groupData.filter( data => data['Org'] !== item.item['Org']);
+                cloneListData['OrganizGroup'] = filterDefine;
+                cloneListData['Organizations'] -= 1;
+            }
+            
+            
+            if(filterDefine){
+                _self.setState({listData: cloneListData})
+            }
+        })
+    }
+    httpResponse = (result) => {
+        if(result) {
+            console.log(JSON.stringify(result))
+            if(result.response && result.response.data) {
+                _self.props.handleAlertInfo('success', result.response.data.message ? result.response.data.message : 'Created successfully')
+            }
+            /** remove item from list */
+            this.removeSelectedItems();
 
-        let panelParams = {data:data, mData:mData, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole}
+        } else {
+            _self.props.handleAlertInfo('error', 'View the audit log')
+        }
+        _self.props.handleLoadingSpinner(false)
+    }
+    onHandleDelete = (e, _data) => {
+        console.log('on handle delete ...', e, _data)
+        // TODO: delete cloudlet in pool
+        if(_data.type === 'delete member') {
+
+        } else if(_data.type === 'delete link') {
+            
+        }
+        //////
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        let method = serviceMC.getEP().getDeleteMethod(_data.type);
+        let data = serviceMC.getEP().getKey(_data.type, _data.item);
+        if (method && data) {
+            let serviceBody = {
+                token: store ? store.userToken : null,
+                method: method,
+                data: data
+            }
+            _self.selectedItems.push(_data)
+            this.props.handleLoadingSpinner(true);
+            serviceMC.sendRequest(_self, serviceBody, this.httpResponse)
+        }
+    }
+
+    generateDOM(open, dimmer, data, keysData, hideHeader, region, page, rfId) {
+
+        let panelParams = {data:data, keys:keysData, page:page, region:region, handleLoadingSpinner:this.props.handleLoadingSpinner, userrole:localStorage.selectRole, rfId:rfId}
         return layout.map((item, i) => (
 
             (i === 0)?
@@ -308,61 +372,10 @@ class PagePoolDetailViewer extends React.Component {
 
         ))
     }
-    receiveInstanceInfo(mcRequestList) {
-        let dataList = [];
-        if (mcRequestList && mcRequestList.length > 0) {
-            mcRequestList.map(mcRequest => {
-                dataList = dataList.concat(mcRequest.response.data);
-            })
-            _self.setState({ monitorData: dataList })
-        }
-    }
-    getParams = (page, data, store) => (
-        (page === 'appInst' && _self.resources[page].length)?
-            _self.resources[page].map((valid) => this.makeFormApp(data, valid, store.userToken)) :
-            (page === 'cloudlet' && _self.resources[page].length)?
-                _self.resources[page].map((valid) => this.makeFormCloudlet(data, valid, store.userToken)) :
-            _self.resources[page].map((valid) => this.makeFormCluster(data, valid, store.userToken))
-    )
-    loopGetHealth (page, data, store) {
-        let method = serviceMC.getEP().CLUSTER_INST_METRICS_APP;
-        let dataList = _self.resources[page].map((valid) => {
-            if (page === 'appInst') {
-                method = serviceMC.getEP().APP_INST_METRICS_APP;
-                return this.makeFormApp(data, valid, store.userToken)
-            }
-            else if (page === 'cloudlet') {
-                method = serviceMC.getEP().CLOUDLET_METRICS_APP;
-                return this.makeFormCloudlet(data, valid, store.userToken)
-            }
-            else {
-                return this.makeFormCluster(data, valid, store.userToken)
-            }
-        })
-
-        let requestDataList = [];
-        dataList.map(data => {
-            requestDataList.push({ token: store.userToken, method: method, data: data })
-        })
-        serviceMC.sendMultiRequest(_self, requestDataList, _self.receiveInstanceInfo)
-    }
-
-    getInstanceHealth (page, data) {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
-        _self.activeInterval = setInterval(
-            () => {
-                _self.loopGetHealth(page, data, store);
-
-            },
-            15000
-        )
-        _self.loopGetHealth(page, data, store);
-    }
 
     clearInterval() {
         if(_self.activeInterval) clearInterval(_self.activeInterval);
     }
-
 
     makeFormCluster = (inst, valid, store) => (
         {
@@ -384,9 +397,6 @@ class PagePoolDetailViewer extends React.Component {
 
         }
     )
-
-
-
 
     getAppName = (name) => {
         let lowerCaseName = name.toLowerCase()
@@ -441,15 +451,20 @@ class PagePoolDetailViewer extends React.Component {
 
     }
     componentWillReceiveProps(nextProps, nextContext) {
+        let regKeys = [];
+        let component = null;
+        let data = [];
+        if(nextProps.data && !this.initData){
+            setTimeout(() => this.setState({listData:nextProps.data, page:nextProps.page}), 2000)
+            this.initData = true;
+            this.props.handleLoadingSpinner(false)
+        }
 
-            let regKeys = [];
-            let component = null;
-            let data = [];
-            if(nextProps.data && !this.initData){
-                this.setState({listData:nextProps.data, page:nextProps.page})
-                this.initData = true;
-                this.props.handleLoadingSpinner(false)
-            }
+        if(nextProps.loading) {
+            console.log('20200113 refresh view')
+            this.setState({refreshId: Math.random() * 300})
+            this.forceUpdate();
+        }
 
     }
     componentWillUnmount() {
@@ -470,16 +485,6 @@ class PagePoolDetailViewer extends React.Component {
         </Grid.Row>
     )
 
-    setCloudletList = (operNm) => {
-        let cl = [];
-        _self.state.cloudletResult[operNm].map((oper, i) => {
-            if(i === 0) _self.setState({dropdownValueThree: oper.CloudletName})
-            cl.push({ key: i, value: oper.CloudletName, text: oper.CloudletName })
-        })
-
-        _self.setState({devOptionsThree: cl})
-    }
-
     close() {
         this.setState({ open: false })
         this.clearInterval();
@@ -487,11 +492,11 @@ class PagePoolDetailViewer extends React.Component {
     }
 
     render() {
-        let { listData, monitorData, clusterName, open, dimmer, hiddenKeys, userRole } = this.state;
+        let { listData, clusterName, open, dimmer, hiddenKeys, userRole, refreshId } = this.state;
         let { loading } = this.props;
         return (
             <div className="regis_container">
-                {this.generateDOM(open, dimmer, listData, monitorData, this.state.keysData, hiddenKeys, this.props.region, this.props.page)}
+                {this.generateDOM(open, dimmer, listData, this.state.keysData, hiddenKeys, this.props.region, this.props.page, refreshId={refreshId})}
             </div>
 
         )
@@ -510,7 +515,8 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchProps = (dispatch) => {
     return {
-        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))}
+        handleLoadingSpinner: (data) => { dispatch(actions.loadingSpinner(data))},
+        handleAlertInfo: (mode,msg) => { dispatch(actions.alertInfo(mode,msg))},
     };
 };
 

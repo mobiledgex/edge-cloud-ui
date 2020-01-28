@@ -1,11 +1,6 @@
 import React from 'react';
-import { Grid, Image, Header, Menu, Dropdown, Button } from 'semantic-ui-react';
-import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
-import MaterialIcon from 'material-icons-react';
 import { connect } from 'react-redux';
-import Alert from "react-s-alert";
-import InstanceListView from '../../../container/instanceListView';
 import PagePoolDetailViewer from '../../../container/pagePoolDetailViewer';
 //redux
 import * as actions from '../../../actions';
@@ -30,7 +25,7 @@ class SiteFourPageCloudletPool extends React.Component {
             activeItem: 'Developers',
             devData: [],
             viewMode: 'listView',
-            regions: [],
+            regions: null,
             regionToggle: false,
             dataSort: false,
             changeRegion: null
@@ -83,8 +78,10 @@ class SiteFourPageCloudletPool extends React.Component {
         this.setState({ contHeight: (window.innerHeight - this.headerH) / 2 - this.hgap })
     }
     componentDidMount() {
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.getDataDeveloper(this.props.changeRegion);
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null;
+        let savedRegion = localStorage.regions ? localStorage.regions.split(",") : null;
+        if(!this.state.regions) this.setState({regions : savedRegion})
+        this.getDataDeveloper(this.props.changeRegion, this.state.regions || savedRegion);
         this.userToken = store.userToken;
 
     }
@@ -95,18 +92,17 @@ class SiteFourPageCloudletPool extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         console.log("20200106 ..page cloudlet pool -", nextProps.viewMode)
-        if (nextProps.viewMode) {
+        if (nextProps.viewMode !== this.props.viewMode) {
             if (nextProps.viewMode === 'listView') {
-                this.getDataDeveloper(this.props.changeRegion, this.state.regions)
                 this.setState({ viewMode: nextProps.viewMode })
+                this.getDataDeveloper(nextProps.changeRegion, this.state.regions);
             } else {
                 this.setState({ viewMode: nextProps.viewMode })
-                // setTimeout(() => this.setState({detailData:nextProps.detailData}), 300)
                 this.setState({ detailData: nextProps.detailData })
             }
-
         }
-        if (this.state.changeRegion !== nextProps.changeRegion) {
+        /** selected item from the Region-Select-Box there positioned top header on page */
+        if (this.props.changeRegion !== nextProps.changeRegion) {
             console.log("20191119 ..cloudlet 22 nextProps.changeRegion = ", nextProps.changeRegion, "-- : --", this.props.changeRegion)
             this.setState({ changeRegion: nextProps.changeRegion })
             this.getDataDeveloper(nextProps.changeRegion, this.state.regions);
@@ -121,16 +117,6 @@ class SiteFourPageCloudletPool extends React.Component {
             this.props.handleComputeRefresh(false);
             this.setState({ dataSort: true });
         }
-
-        if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
-            //{ key: 1, text: 'All', value: 'All' }
-            console.log("20191119 ..cloudlet 33 region info in page cloudlet")
-            _self.setState({ regionToggle: true, regions: nextProps.regionInfo.region })
-            this.getDataDeveloper(nextProps.changeRegion, nextProps.regionInfo.region);
-        }
-
-
-
 
     }
     /* example code : should delete it
@@ -265,6 +251,7 @@ class SiteFourPageCloudletPool extends React.Component {
 
         console.log('20200103 ..cloudlet member count join---', cloneData)
         this.setState({ devData: cloneData })
+        this.forceUpdate();
         this._memberDummy = [];
         this._cloudletDummy = [];
         this._linkDummy = [];
@@ -274,13 +261,13 @@ class SiteFourPageCloudletPool extends React.Component {
 
     getDataDeveloper = (region, regionArr) => {
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-        this.setState({ devData: [] })
-        this._cloudletDummy = [];
+        _self.setState({ devData: [] })
+        _self._cloudletDummy = [];
         _self.loadCount = 0;
         if (region !== 'All') {
             rgn = [region]
         } else {
-            rgn = (regionArr) ? regionArr : this.props.regionInfo.region;
+            rgn = (regionArr) ? regionArr : _self.props.regionInfo.region;
         }
 
         rgn.map((item, i) => {
@@ -299,7 +286,7 @@ class SiteFourPageCloudletPool extends React.Component {
         //new
         let requestDataOrg = { token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET_LINKORG, data: {} };
         serviceMC.sendRequest(_self, requestDataOrg, _self.receiveResultLinkOrg)
-        this.props.handleLoadingSpinner(true);
+        _self.props.handleLoadingSpinner(true);
 
     }
 
@@ -319,7 +306,7 @@ class SiteFourPageCloudletPool extends React.Component {
             (viewMode === 'listView') ?
                 <InsideListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet Pool'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub}></InsideListView>
                 :
-                <PagePoolDetailViewer data={this.state.detailData} page='cloudletPool' />
+                <PagePoolDetailViewer data={this.state.detailData} page='cloudletPool' refreshData={this.getDataDeveloper} />
         );
     }
 

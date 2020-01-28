@@ -1,7 +1,6 @@
-import {generateUniqueId} from '../serviceMC';
+import { generateUniqueId } from '../serviceMC';
 
-export const getKey = (data)=>
-{
+export const getKey = (data) => {
     const { CloudletName, Operator, Region } = data
     return ({
         region: Region,
@@ -14,57 +13,55 @@ export const getKey = (data)=>
     })
 }
 
-export const formatData = (datas,body) => {
+export const formatData = (datas, body) => {
     let values = [];
-    let toArray = null;
-    let toJson = [];
-    if(datas.data) {
-        if(typeof datas.data === 'object') {
-            if(datas.data == null) {
+    if (datas.data && datas.data.length > 0) {
+        let toArray = null;
+        let toJson = [];
+        if (typeof datas.data === 'object') {
+            if (datas.data == null) {
                 toJson = null;
             } else {
-                toJson.push((datas.data)?datas.data:{});
+                toJson.push((datas.data) ? datas.data : {});
             }
         } else {
             toArray = datas.data.split('\n')
             toArray.pop();
-            toJson = toArray.map((str)=>(JSON.parse(str)))
+            toJson = toArray.map((str) => (JSON.parse(str)))
         }
-    }else {
-        toJson = null;
+
+        /*
+        pool_key: {name: "cloudletPool_bictest_1223-01"}
+        cloudlet_key:
+            operator_key:
+            name: "TDG"
+        name: "automationBerlinCloudletStage"
+         */
+        let newRegistKey = ['Region', 'PoolName', 'OperatorName'];
+        if (toJson && toJson.length) {
+            toJson.map((dataResult, i) => {
+                if (dataResult.error || dataResult.message || !dataResult.data) {
+                    values.push({
+                        Index: i,
+                        Operator: '',
+                        PoolName: '',
+                        Clouldet: ''
+                    })
+                } else {
+                    let Index = i;
+                    let Operator = dataResult.data.cloudlet_key.operator_key.name || '-';
+                    let PoolName = dataResult.data.pool_key.name || '-';
+                    let Cloudlet = dataResult.data.cloudlet_key.name || '-';
+                    let Region = body.region || '-';
+
+                    values.push({ uuid: generateUniqueId(), Region: Region, Operator: Operator, PoolName: PoolName, Cloudlet: Cloudlet })
+                }
+
+            })
+        } else {
+            values.push({ Operator: '', PoolName: '', Cloudlet: '' })
+        }
     }
-    /*
-    pool_key: {name: "cloudletPool_bictest_1223-01"}
-    cloudlet_key:
-        operator_key:
-        name: "TDG"
-    name: "automationBerlinCloudletStage"
-     */
-    let newRegistKey = ['Region', 'PoolName', 'OperatorName'];
-    if(toJson && toJson.length){
-        toJson.map((dataResult, i) => {
-            if(dataResult.error || dataResult.message || !dataResult.data) {
-                values.push({
-                    Index:i,
-                    Operator:'',
-                    PoolName:'',
-                    Clouldet:''
-                })
-            } else {
-                let Index = i;
-                let Operator = dataResult.data.cloudlet_key.operator_key.name || '-';
-                let PoolName = dataResult.data.pool_key.name || '-';
-                let Cloudlet = dataResult.data.cloudlet_key.name || '-';
-                let Region = body.region || '-';
-
-                values.push({uuid:generateUniqueId(), Region:Region, Operator:Operator,  PoolName:PoolName, Cloudlet:Cloudlet})
-            }
-
-        })
-    } else {
-        values.push({Operator:'',PoolName:'', Cloudlet:''})
-    }
-
     return values
 
 }

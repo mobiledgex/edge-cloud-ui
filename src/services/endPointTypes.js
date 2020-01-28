@@ -14,6 +14,10 @@ import * as FormatMonitorApp from "./formatter/formatMonitorApp";
 import * as FormatComputeCloudletPool from './formatter/formatComputeCloudletPool';
 import * as FormatComputeCloudletPoolDelete from './formatter/formatComputeCloudletPoolDelete';
 import * as FormatComputeCloudletPoolMember from './formatter/formatComputeCloudletPoolMember';
+import * as FormatComputeCloudletPoolMemberDelete from './formatter/formatComputeCloudletPoolMemberDelete';
+import * as FormatComputeOrgCloudlet from './formatter/formatComputeOrgCloudlet';
+import * as FormatComputeLinkPoolOrgDelete from './formatter/formatComputeLinkPoolOrgDelete';
+
 
 export const SHOW_ORG = "showOrg";
 export const CREATE_ORG = "createOrg";
@@ -66,7 +70,10 @@ export const CREATE_CLOUDLET_POOL = "CreateCloudletPool";
 export const CREATE_CLOUDLET_POOL_MEMBER = "CreateCloudletPoolMember";
 export const CREATE_LINK_POOL_ORG = "CreateLinkPoolOrg";
 export const DELETE_CLOUDLET_POOL = "DeleteCloudletPool";
+export const DELETE_CLOUDLET_POOL_MEMBER = "DeleteCloudletPoolMember";
 export const SHOW_ORG_CLOUDLET = "orgcloudlet";
+export const DELETE_LINK_POOL_ORG = "DeleteLinkPoolOrg";
+export const RUN_COMMAND = "RunCommand";
 
 export function getPath(request) {
     switch (request.method) {
@@ -119,12 +126,12 @@ export function getPath(request) {
         case CREATE_APP_INST:
         case DELETE_APP_INST:
         case STREAM_APP_INST:
-            return `/api/v1/auth/ctrl/${request.method}`;
         case SHOW_CLOUDLET_POOL:
         case SHOW_CLOUDLET_MEMBER:
         case DELETE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL_MEMBER:
+        case RUN_COMMAND:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
         case RESEND_VERIFY:
@@ -140,6 +147,8 @@ export function getPath(request) {
             return `/api/v1/auth/orgcloudletpool/show`;
         case CREATE_LINK_POOL_ORG:
             return `/api/v1/auth/orgcloudletpool/create`;
+        case DELETE_LINK_POOL_ORG:
+            return `/api/v1/auth/orgcloudletpool/delete`;
         case SHOW_ORG_CLOUDLET:
             return `/api/v1/auth/orgcloudlet/show`;
         default:
@@ -192,6 +201,9 @@ export function formatData(request, response) {
         case SHOW_CLOUDLET_MEMBER:
             data = FormatComputeCloudletPoolMember.formatData(response, request.data)
             break;
+        case SHOW_ORG_CLOUDLET:
+            data = FormatComputeOrgCloudlet.formatData(response, request.data)
+            break;
         default:
             data = undefined;
     }
@@ -221,6 +233,10 @@ export function getKey(keyId, data) {
             return FormatComputeAccounts.getKey(data)
         case 'Cloudlet Pool':
             return FormatComputeCloudletPoolDelete.getKey(data)
+        case 'delete member':
+            return FormatComputeCloudletPoolMemberDelete.getKey(data)
+        case 'delete link':
+            return FormatComputeLinkPoolOrgDelete.getKey(data)
         default:
             return null;
     }
@@ -246,6 +262,10 @@ export function getDeleteMethod(keyId) {
             return DELETE_ACCOUNT;
         case 'Cloudlet Pool':
             return DELETE_CLOUDLET_POOL;
+        case 'delete member':
+            return DELETE_CLOUDLET_POOL_MEMBER;
+        case 'delete link':
+            return DELETE_LINK_POOL_ORG;
         default:
             return null;
     }

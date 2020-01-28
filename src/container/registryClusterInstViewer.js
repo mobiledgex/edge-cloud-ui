@@ -155,6 +155,7 @@ class RegistryClusterInstViewer extends React.Component {
         if (mcRequest) {
             this.wsRequestResponse.push(mcRequest);
             if (this.wsRequestCount === 0) {
+                this.props.handleLoadingSpinner(false);
                 let valid = true;
                 this.wsRequestResponse.map(mcRequest => {
                     let method = mcRequest.request.method;
@@ -175,7 +176,6 @@ class RegistryClusterInstViewer extends React.Component {
                 }
             }
         }
-        this.props.handleLoadingSpinner(false);
     }
 
     componentDidMount() {
@@ -222,6 +222,7 @@ class RegistryClusterInstViewer extends React.Component {
                 this.setState({ toggleSubmit: true, validateError: error, regSuccess: true });
                 this.wsRequestResponse = [];
                 this.wsRequestCount = nextProps.validateValue.Cloudlet.length;
+                this.props.handleLoadingSpinner(true);
                 nextProps.validateValue.Cloudlet.map((item) => {
                     let data = nextProps.submitValues;
                     data.clusterinst.key.cloudlet_key.name = item;
@@ -231,22 +232,7 @@ class RegistryClusterInstViewer extends React.Component {
             } else {
                 this.setState({ validateError: error, toggleSubmit: true })
             }
-
         }
-
-        /************
-         * set list of flavors
-         * **********/
-        // if(nextProps.flavors) {
-        //     let flavorGroup = reducer.groupBy(nextProps.flavors, 'FlavorName');
-        //     let flavorKeys = Object.keys(flavorGroup);
-        //     let assObj = Object.assign([], this.state.keysData);
-        //     assObj[0].MasterFlavor.items = flavorKeys;
-        //     assObj[0].NodeFlavor.items = flavorKeys;
-        //     this.setState({keysData:assObj})
-        //
-        // }
-
     }
 
     closeDialog = ()=>{

@@ -149,6 +149,12 @@ class SiteFourPoolThree extends React.Component {
                         }
                     })
                 }
+                if(createdState.length === 0) {
+                    //Not update data yet, so refresh again.
+                    this.loadData();
+                } else {
+                    console.log('20200115 find success made data...')
+                }
                 this.setState({ devData: createdState })
             }
         }
@@ -156,8 +162,11 @@ class SiteFourPoolThree extends React.Component {
 
     componentDidMount() {
         console.log('20191231 props info --', this.props.selectedData)
-        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
+        this.loadData();   
+    }
+    loadData() {
         this.setState({devData:[]})
+        let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         serviceMC.sendRequest(this, { token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET_LINKORG, data: null }, this.receiveResultShow)
     }
     makeTable = (data) => (
