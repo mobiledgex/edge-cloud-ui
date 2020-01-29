@@ -30,6 +30,7 @@ export const DELETE_ACCOUNT = "DeleteAccount";
 export const SHOW_ROLE = "ShowRole";
 export const SHOW_CONTROLLER = "showController"
 export const SHOW_CLOUDLET = "ShowCloudlet";
+export const SHOW_CLOUDLET_INFO = "ShowCloudletInfo";
 export const DELETE_CLOUDLET = "DeleteCloudlet";
 export const CREATE_CLOUDLET = "CreateCloudlet";
 export const SHOW_CLUSTER_INST = "ShowClusterInst";
@@ -106,6 +107,7 @@ export function getPath(request) {
         case CREATE_ORG:
             return '/api/v1/auth/org/create';
         case SHOW_CLOUDLET:
+        case SHOW_CLOUDLET_INFO:
         case CREATE_CLOUDLET:
         case DELETE_CLOUDLET:
         case STREAM_CLOUDLET:
