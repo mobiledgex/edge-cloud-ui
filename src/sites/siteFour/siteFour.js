@@ -1069,6 +1069,7 @@ class SiteFour extends React.Component {
                                         {/* {(this.state.enable)?this.getGuidePopup(this.state.headerTitle):null} */}
                                         {
                                             (
+                                                this.state.page !== 'pg=editApp' &&
                                                 this.props.viewMode !== 'detailView' &&
                                                 this.state.headerTitle !== 'User Roles' &&
                                                 this.state.headerTitle !== 'Accounts' &&
