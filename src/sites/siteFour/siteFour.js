@@ -636,7 +636,15 @@ class SiteFour extends React.Component {
             this.setState({ intoCity: false })
         }
 
+        //set category
+        if(nextProps.detailData !== this.props.detailData) {
+            // alert(JSON.stringify(nextProps.detailData))
+            this.setState({detailData:nextProps.detailData})
+        }
+
     }
+
+
 
     componentDidUpdate() {
         if (localStorage.selectRole && this.state.menuClick) {
@@ -1023,7 +1031,28 @@ class SiteFour extends React.Component {
                                     {
                                         (viewMode === 'detailView') ?
                                             <Grid.Column className='title_align' style={{ marginLeft: 20 }}>
-                                                <Button onClick={() => this.props.handleDetail({ data: null, viewMode: 'listView' })}>Close Details</Button>
+                                                <Item className={'stepOrg2'} style={{marginLeft: 20, marginRight:20}}>
+                                                    <Button onClick={() => this.props.handleDetail({
+                                                        data: null,
+                                                        viewMode: 'listView'
+                                                    })}>Close Details</Button>
+                                                </Item>
+                                                <div style={{
+                                                    lineHeight:'38px',
+                                                    fontSize:'18px',
+                                                    overflow: 'hidden',
+                                                    whiteSpace: 'nowrap',
+                                                    textOverflow: 'ellipsis',
+                                                    maxWidth: '540px'
+                                                }}>
+                                                    {"["}
+                                                    {this.state.detailData.Region}
+                                                    {(this.state.headerTitle === "Cloudlets") ? " / " + this.state.detailData.Operator + " / " + this.state.detailData.CloudletName: null}
+                                                    {(this.state.headerTitle === 'Cluster Instances') ? " / " + this.state.detailData.OrganizationName + " / " +  this.state.detailData.Cloudlet + " / " + this.state.detailData.ClusterName : null}
+                                                    {(this.state.headerTitle === 'App Instances') ? " / " + this.state.detailData.OrganizationName + " / " + this.state.detailData.Cloudlet + " / " + this.state.detailData.ClusterInst + " / " + this.state.detailData.AppName : null}
+                                                    {"]"}
+
+                                                </div>
                                             </Grid.Column>
                                             : null
                                     }
@@ -1133,7 +1162,9 @@ const mapStateToProps = (state) => {
     let submitInfo = (state.submitInfo) ? state.submitInfo : null;
     let regionInfo = (state.regionInfo) ? state.regionInfo : null;
     let checkedAudit = (state.checkedAudit) ? state.checkedAudit.audit : null;
+    let detailData = (state.changeViewMode && state.changeViewMode.mode)?state.changeViewMode.mode.data : null;
     let selectedOrg = (state.selectOrganiz) ? state.selectOrganiz.org : null;
+
 
     return {
         viewBtn: state.btnMnmt ? state.btnMnmt : null,
@@ -1161,6 +1192,7 @@ const mapStateToProps = (state) => {
         regionInfo: regionInfo,
         audit: checkedAudit,
         clickCity: state.clickCityList.list,
+        detailData:detailData,
         selectedOrg
     }
 };
