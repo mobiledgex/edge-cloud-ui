@@ -41,9 +41,6 @@ const clusterNode = (props) => (
                 </div>
             </Grid.Row>
         </Grid>
-        {/*<div style={{display:'flex', justifyContent:'center', width:'100%',backgroundColor:'rgba(0,0,0,.3)'}}  onClick={()=>console.log('45433',props)}>*/}
-        {/*    <BubbleGroup data={props.flavorConfig}></BubbleGroup>*/}
-        {/*</div>*/}
     </Fragment>
 )
 const cloudletMap = (props, type) => (
@@ -247,12 +244,8 @@ class SiteFourCreateInstForm extends React.PureComponent {
                             (aa) => cloudletKeys.push(aa.CloudletName)
                         )
                         _self.resetDevData(cloudletKeys, 'Cloudlet');
-                    } else {
-                        //this.props.handleAlertInfo('error','There is no Cloudlets in the Region')
-                    }
+                    } 
 
-                } else {
-                    //this.props.handleAlertInfo('error','There is no operators in')
                 }
             }, 500)
             _self.setState({activeIndex:0})
@@ -355,9 +348,7 @@ class SiteFourCreateInstForm extends React.PureComponent {
         this.setState({ activeIndex })
         if(this.state.locData.length) this.props.handleGetRegion(this.state.locData)
     }
-    componentDidMount() {
-        // if(localStorage.selectMenu == 'Cluster Instances') this.getDataDeveloper(this.props.data.region)
-    }
+    
     componentWillUnmount(){
         this.props.handleGetRegion(null);
     }
@@ -385,9 +376,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
                 locationLat:nextProps.getRegion.lat,
                 locationLong:nextProps.getRegion.long
             })
-            // if(nextProps.getRegion.lat == '' && nextProps.getRegion.long == ''){
-            //     this.setState({locData:[]})
-            // }
             this.props.handleGetRegion(null);
         }
 
@@ -413,10 +401,6 @@ class SiteFourCreateInstForm extends React.PureComponent {
         } 
     }
     handleChangeLong = (e, {value}) => {
-        // if(value == '-') {
-        //     this.setState({ locationLong: value })
-        //     return
-        // }
         let onlyNum = value;
         let count = [];
         if(onlyNum.match(/[.]/g) != null) {
@@ -513,7 +497,7 @@ const mapStateToProps = (state) => {
     let nodeNumber = null;
     let getRegion = (state.getRegion)?state.getRegion.region:null
     let regionInfo = (state.regionInfo)?state.regionInfo:null;
-    if (state.form.createAppFormDefault) {
+    if (state.form && state.form.createAppFormDefault) {
         formValues = state.form.createAppFormDefault.values;
         if (formValues) {
             if (formValues.Region !== "") {
