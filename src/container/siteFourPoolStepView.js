@@ -38,7 +38,7 @@ const stepData = [
     },
     {
         step:"Step 3",
-        description:""
+        description:"Review your Cloudlet Pool"
     },
 ]
 const createFormat = (data) => (
@@ -192,8 +192,8 @@ class SiteFourPoolStepView extends React.Component {
                 }
             </Step.Group>
             {
-                (this.state.step ==1) ? <SiteFourPoolOne onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} toggleSubmit={this.props.toggleSubmit} data={data} changeOrg={this.changeOrg}></SiteFourPoolOne> :
-                    (this.state.step ==2) ? <SiteFourPoolTwo onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:this.state.selectedRegion, poolName:this.state.gavePoolName}} changeOrg={this.changeOrg} onSkipClick={this.onSkipClick}></SiteFourPoolTwo> :
+                (this.state.step ==1) ? <SiteFourPoolOne onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} toggleSubmit={this.props.toggleSubmit} data={data} changeOrg={this.changeOrg} step={this.state.step}></SiteFourPoolOne> :
+                    (this.state.step ==2) ? <SiteFourPoolTwo onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName} toggleSubmitTwo={this.props.toggleSubmitTwo} selectedData={{region:this.state.selectedRegion, poolName:this.state.gavePoolName}} changeOrg={this.changeOrg} step={this.state.step} onSkipClick={this.onSkipClick}></SiteFourPoolTwo> :
                         (this.state.step ==3) ? <SiteFourPoolThree onSubmit={() => console.log('Form was submitted')} type={this.state.typeOperator} org={this.state.orgaName} data={data} selectedData={{region:this.state.selectedRegion, poolName:this.state.gavePoolName}} changeOrg={this.changeOrg}></SiteFourPoolThree> : null
             }
         </Item>
