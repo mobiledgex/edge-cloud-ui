@@ -42,6 +42,7 @@ class SiteFourPageCloudletPool extends React.Component {
         this._cloudletDummy = [];
         this._memberDummy = [];
         this._linkDummy = [];
+        this.doing = false;
     }
     gotoUrl(site, subPath) {
         let mainPath = site;
@@ -92,6 +93,7 @@ class SiteFourPageCloudletPool extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         console.log("20200106 ..page cloudlet pool -", nextProps.viewMode)
+        if(this.doing) return;
         if (nextProps.viewMode !== this.props.viewMode) {
             if (nextProps.viewMode === 'listView') {
                 this.setState({ viewMode: nextProps.viewMode })
@@ -218,6 +220,7 @@ class SiteFourPageCloudletPool extends React.Component {
         this.loadCount = 0;
         this.loadCountM = 0;
         this.loadCountLink = 0;
+        this.doing = false;
         let cloudlet = Object.assign([], this._memberDummy);
         /** cloudlet pool join member data */
         let cloneData = Object.assign([], this._cloudletDummy);
@@ -260,9 +263,12 @@ class SiteFourPageCloudletPool extends React.Component {
 
 
     getDataDeveloper = (region, regionArr) => {
+        if(this.doing) return;
         let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
         _self.setState({ devData: [] })
         _self._cloudletDummy = [];
+        _self._memberDummy = [];
+        _self._linkDummy = [];
         _self.loadCount = 0;
         if (region !== 'All') {
             rgn = [region]
@@ -287,7 +293,7 @@ class SiteFourPageCloudletPool extends React.Component {
         let requestDataOrg = { token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET_LINKORG, data: {} };
         serviceMC.sendRequest(_self, requestDataOrg, _self.receiveResultLinkOrg)
         _self.props.handleLoadingSpinner(true);
-
+        this.doing = true;
     }
 
     /*

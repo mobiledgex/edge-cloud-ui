@@ -142,8 +142,8 @@ class SiteFourPageLinkOrganizeReg extends React.Component {
             pathname: '/site4',
             search: 'pg=7'
         });
-        _self.props.history.location.search = 'pg=7';
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
+        //_self.props.history.location.search = 'pg=7';
+        //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
     }
 
     changeOrg() {

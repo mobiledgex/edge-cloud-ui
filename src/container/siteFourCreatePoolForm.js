@@ -7,6 +7,7 @@ import ClustersMap from '../libs/simpleMaps/with-react-motion/index_clusters';
 import * as aggregate from "../utils";
 import * as actions from "../actions";
 import {connect} from "react-redux";
+import _ from 'lodash';
 import {scaleLinear} from "d3-scale";
 import {Field} from "redux-form";
 import './styles.css';
@@ -114,13 +115,13 @@ class SiteFourCreatePoolForm extends React.Component {
             longerror:'',
             locData:[],
             regionToggle:false,
-            selectedRegion:null
         }
         _self = this;
         this.loopReqCount = 3; //cloudlet(operators), cluster, flavor
         this.regionCount = 2; // US, EU
         this.cloudlets = [];
         this.devDataDummy = {};
+        this.selectedRegion = null;
     }
     zoomIn(detailMode) {
 
@@ -211,18 +212,26 @@ class SiteFourCreatePoolForm extends React.Component {
     }
 
 
-    makeFilteringCloudlet = (propsData, selectedRegion) => {
-        alert(JSON.stringify(propsData))
-        if(propsData.data[0]['AddCloudlet'] && propsData.data[0]['AddCloudlet'].length) {
-            let tempData = propsData.data[0];
+    makeFilteringCloudlet = (propsData, selectedRegion, selectKey) => {
+        //alert("state cloudelts ==    "+JSON.stringify(propsData))
+        if(propsData.data[0][selectKey] && propsData.data[0][selectKey].length) {
+            let tempData = _.cloneDeep(propsData.data[0]);
+            let newData = _.cloneDeep(propsData);
             let filtered = [];
-            let newData = propsData;
             
-            tempData['AddCloudlet'].map(data => {
+            
+            tempData[selectKey].map(data => {
                 if(data['region'] === selectedRegion) filtered.push(data);
             })
             
-            newData.data[0]['AddCloudlet'] = filtered.length > 0 ? filtered : tempData['AddCloudlet'];
+            //
+            if(filtered.length > 0) {
+                newData.data[0][selectKey] = filtered;
+            } else {
+                newData.data[0][selectKey] = tempData[selectKey];
+                //alert('newData === '+ JSON.stringify(newData))
+            }
+
             this.setState({devData: newData})
             this.forceUpdate();
         }
@@ -232,28 +241,22 @@ class SiteFourCreatePoolForm extends React.Component {
         console.log(this.props.data)
     }
     componentWillUnmount(){
-        this.props.handleGetRegion(null);
+        //this.props.handleGetRegion(null);
     }
     componentWillReceiveProps(nextProps, nextContext) {
 
-        if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
-            _self.setState({regionToggle:true, regionInfo:nextProps.getRegion})
-
-            if(localStorage.selectMenu == 'Cluster Instances'){
-                _self.setState({clusterShow: false});
-                //this.getDataDeveloper(nextProps.data.region,nextProps.regionInfo.region)
-            }
-        }
-
-        if(nextProps.selectedRegion && (nextProps.selectedRegion !== this.state.selectedRegion)) {
-            this.setState({selectedRegion: nextProps.selectedRegion})
+        if(nextProps.selectedRegion && (nextProps.selectedRegion !== this.selectedRegion)) {
+            this.selectedRegion = nextProps.selectedRegion
             
         }
+        let cloneData = null;
+        let findKeys = ['AddCloudlet', 'LinktoOrganization'];
+        let selectKey = findKeys[0];
         // when selected region from the region select box
-        if(Object.keys(this.devDataDummy).length && nextProps.selectedRegion && typeof nextProps.selectedRegion === 'string') {
-            console.log('20200104 changed region = ', nextProps.selectedRegion)
+        if(Object.keys(this.devDataDummy).length && this.selectedRegion && typeof this.selectedRegion === 'string') {
             if(nextProps.selectedRegion !== 'All') {
-                this.makeFilteringCloudlet(this.devDataDummy, nextProps.selectedRegion);
+                cloneData =  _.cloneDeep(nextProps.data);
+                this.makeFilteringCloudlet(cloneData, nextProps.selectedRegion,selectKey);
 
             }
 
@@ -262,15 +265,21 @@ class SiteFourCreatePoolForm extends React.Component {
         }
 
         if(nextProps.data && nextProps.data.data) {
+            //if(nextProps.data.data === this.devDataDummy.data) alert('same')
             if(Object.keys(this.devDataDummy).length && (nextProps.data.data === this.devDataDummy.data)) {
                 return;
             }
-            if(nextProps.data.data[0]['AddCloudlet'].length){
+            let region = 'All'
+            if(nextProps.data.data[0]){
+                let actionKey = Object.keys(nextProps.data.data[0]);
+                let findIdx = actionKey.findIndex( (key) => (key === findKeys[1] ))
+                if(findIdx > -1 && nextProps.data.data[0][findKeys[1]].length) selectKey = findKeys[1];
                 /** copy data as immutable */
                 this.devDataDummy = nextProps.data;
-                this.setState({cloudlets: Object.assign({}, nextProps.data)})
+                cloneData =  _.cloneDeep(nextProps.data);
+                if(nextProps.data.region) region = nextProps.data.region;
             } 
-            if(Object.keys(this.devDataDummy).length) this.makeFilteringCloudlet(this.devDataDummy, 'All');
+            if(cloneData) this.makeFilteringCloudlet(cloneData, region, selectKey);
         }
 
         
