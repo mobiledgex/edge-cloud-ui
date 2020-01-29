@@ -113,11 +113,14 @@ class SiteFourCreatePoolForm extends React.Component {
             laterror:'',
             longerror:'',
             locData:[],
-            regionToggle:false
+            regionToggle:false,
+            selectedRegion:null
         }
         _self = this;
         this.loopReqCount = 3; //cloudlet(operators), cluster, flavor
         this.regionCount = 2; // US, EU
+        this.cloudlets = [];
+        this.devDataDummy = {};
     }
     zoomIn(detailMode) {
 
@@ -202,180 +205,36 @@ class SiteFourCreatePoolForm extends React.Component {
 
         }
     }
-    resetDevData(keys,field) {
-        let tabNo = 0;
-        let filteredKeys = aggregate.removeDuplicate(keys)
-        let _keys = Object.assign({},_self.state.devData.keys[tabNo]);
-        if(_keys[field]) {
-            _keys[field].items = filteredKeys;
-            _self.setState({keys: _keys})
-        }
-
-    }
-    resetDevInputData(keys,field) {
-        let tabNo = 0;
-
-    }
 
     onChangeFormState = (state,value) => {
-        let organizKeys = [];
-        let flavorKeys = [];
-        let regions = aggregate.groupBy(_self.state.cloudletData, 'Region')
-        if(state === 'Region') {
-            let organiz = _self.state.organizeData;
-            organiz.map(
-                (aa) => organizKeys.push(aa.Organization)
-            )
-            _self.resetDevData(organizKeys, 'OrganizationName');
-            //
-            let operatorKeys = [];
-            setTimeout(() => {
-                let flavor = aggregate.groupBy(_self.state.flavorData, 'Region');
-                if(flavor) {
-                    if(flavor[_self.props.selectedRegion]) flavor[_self.props.selectedRegion].map((ff) => flavorKeys.push(ff.FlavorName));
-                    _self.resetDevData(flavorKeys, 'Flavor')
-                    let operators = regions[_self.props.selectedRegion];
-                    if(operators) {
-                        operators.map(
-                            (aa) => operatorKeys.push(aa.Operator)
-                        )
-                        _self.resetDevData(operatorKeys, 'Operator');
-                    } else {
-                        _self.resetDevData(operatorKeys, 'Operator');
-                    }
-                } else {
-                    _self.resetDevData(flavorKeys, 'Flavor');
-                }
-
-            }, 500)
+        
+    }
 
 
-        } else if(state === 'OrganizationName') {
-            let operatorKeys = [];
-            setTimeout(() => {
-                let operators = regions[_self.props.selectedRegion];
-                if(operators) {
-                    operators.map(
-                        (aa) => operatorKeys.push(aa.Operator)
-                    )
-                    _self.resetDevData(operatorKeys, 'Operator');
-                    _self.setState({activeIndex:0})
-                    //TODO: 20190521 display cloudlet positioned on map
-
-                }
-            }, 500)
-        } else if(state === 'Operator') {
-            let cloudletKeys = [];
-            setTimeout(() => {
-                let regionArray = regions[_self.props.selectedRegion];
-                if(regionArray) {
-                    let cloudlets = aggregate.groupBy(regionArray, 'Operator')
-                    if(cloudlets && cloudlets[_self.props.selectedOperator]){
-                        cloudlets[_self.props.selectedOperator].map(
-                            (aa) => cloudletKeys.push(aa.CloudletName)
-                        )
-                        _self.resetDevData(cloudletKeys, 'Cloudlet');
-                    } else {
-                        //this.props.handleAlertInfo('error','There is no Cloudlets in the Region')
-                    }
-
-                } else {
-                    //this.props.handleAlertInfo('error','There is no operators in')
-                }
-            }, 500)
-            _self.setState({activeIndex:0})
-        } else if(state === 'Flavor') {
-
-            setTimeout(() => {
-                _self.setFlavorNode([_self.props.masterNumber,_self.props.nodeNumber]);
-                //change TAB
-                if(this.state.clusterShow) _self.setState({activeIndex:1})
-            }, 500)
-        } else if(state === 'NumberOfNode') {
-            setTimeout(() => {
-                //create node as inserted number
-                _self.setFlavorNode([_self.props.masterNumber,_self.props.nodeNumber]);
-                if(_self.state.activeIndex !== 1) _self.setState({activeIndex:1})
-            }, 500)
-        } else if(state === 'DeploymentType') {
-            _self.setState({activeIndex:0})
-        } else if(state === 'Cloudlet'){
-            this.state.cloudletData.map((item) => {
-                if(item.Region === this.props.selectedRegion && item.Operator === this.props.selectedOperator){
-                    value.map((_item) => {
-                        if(_item == item.CloudletName){
-                            let location = {region:'',name:'', lat:String(item.CloudletLocation.latitude), long:String(item.CloudletLocation.longitude)};
-                            this.props.handleGetRegion(location);
-                        }
-                    })
-                    if(value.length == 0) this.setState({locData:[]})
-                }
+    makeFilteringCloudlet = (propsData, selectedRegion) => {
+        alert(JSON.stringify(propsData))
+        if(propsData.data[0]['AddCloudlet'] && propsData.data[0]['AddCloudlet'].length) {
+            let tempData = propsData.data[0];
+            let filtered = [];
+            let newData = propsData;
+            
+            tempData['AddCloudlet'].map(data => {
+                if(data['region'] === selectedRegion) filtered.push(data);
             })
+            
+            newData.data[0]['AddCloudlet'] = filtered.length > 0 ? filtered : tempData['AddCloudlet'];
+            this.setState({devData: newData})
+            this.forceUpdate();
         }
-    }
-    setFlavorNode(keys, flavor) {
-        let master = [];
-        for( var i=0; i<Number(keys[0]); i++) {
-            master.push(i)
-        }
-        let nodes = [];
-        for( var j=0; j<Number(keys[1])+1; j++) {
-            nodes.push(j)
-        }
-        const getChild = (value, idx) => (
-            {
-                "name": value,
-                "value": idx === 0 ? 200 : 200,
-                "color": idx === 0 ? "#ff7d77" : "#a2cbff"
-            }
-        )
-        let flconfig = {
-            "name": 'NO Name',
-            "children": [
-                {
-                    "name": "Master",
-                    "children": nodes.map((node, i) => getChild(flavor,i))
-                }
-
-            ]
-        }
-
-        _self.setState({flavorConfig:flconfig, clusterName:_self.props.clusterName})
-        _self.forceUpdate();
-
-
-    }
-
-    // getDataDeveloper = (region,regionArr) => {
-    //     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    //     let rgn = [];
-    //     //this.setState({devData:[]})
-    //     if(region !== 'All'){
-    //         rgn = [region]
-    //     } else {
-    //         rgn = (regionArr)?regionArr:this.props.regionInfo.region;
-    //     }
-    //
-    //     rgn.map((item) => {
-    //         services.getMCService('ShowCloudlet',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultCloudlet)
-    //         services.getMCService('ShowFlavor',{token:store ? store.userToken : 'null', region:item}, _self.receiveResultFlavor)
-    //
-    //     })
-    //
-    //     services.getMCService('showOrg',{token:store ? store.userToken : 'null'}, _self.receiveResultOrg, _self)
-    // }
-    handleTabChange = (e, { activeIndex }) => {
-        this.setState({ activeIndex })
-        if(this.state.locData.length) this.props.handleGetRegion(this.state.locData)
     }
     componentDidMount() {
         // if(localStorage.selectMenu == 'Cluster Instances') this.getDataDeveloper(this.props.data.region)
+        console.log(this.props.data)
     }
     componentWillUnmount(){
         this.props.handleGetRegion(null);
     }
     componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps.regionInfo === this.state.regionInfo) return;
 
         if(nextProps.regionInfo.region.length && !this.state.regionToggle) {
             _self.setState({regionToggle:true, regionInfo:nextProps.getRegion})
@@ -385,27 +244,36 @@ class SiteFourCreatePoolForm extends React.Component {
                 //this.getDataDeveloper(nextProps.data.region,nextProps.regionInfo.region)
             }
         }
-        if(nextProps.data) this.setState({devData: nextProps.data, keys:nextProps.keys, regionInfo:nextProps.regionInfo})
-        //reset cluster and node count
-        if(nextProps.nodeNumber || nextProps.selectedFlavor) {
-            this.setFlavorNode([nextProps.masterNumber,nextProps.nodeNumber],nextProps.selectedFlavor);
+
+        if(nextProps.selectedRegion && (nextProps.selectedRegion !== this.state.selectedRegion)) {
+            this.setState({selectedRegion: nextProps.selectedRegion})
+            
+        }
+        // when selected region from the region select box
+        if(Object.keys(this.devDataDummy).length && nextProps.selectedRegion && typeof nextProps.selectedRegion === 'string') {
+            console.log('20200104 changed region = ', nextProps.selectedRegion)
+            if(nextProps.selectedRegion !== 'All') {
+                this.makeFilteringCloudlet(this.devDataDummy, nextProps.selectedRegion);
+
+            }
+
+        } else {
+
         }
 
-        // case click a region on the map
-        if(nextProps.getRegion) {
-            let data = {CloudletLocation: {latitude: Number(nextProps.getRegion.lat), longitude: Number(nextProps.getRegion.long)}};
-            this.setState({
-                regionInfo:nextProps.getRegion,
-                locData:(localStorage.selectMenu == 'Cluster Instances')?this.state.locData.concat(data):[data],
-                locationLat:nextProps.getRegion.lat,
-                locationLong:nextProps.getRegion.long
-            })
-            // if(nextProps.getRegion.lat == '' && nextProps.getRegion.long == ''){
-            //     this.setState({locData:[]})
-            // }
-            this.props.handleGetRegion(null);
+        if(nextProps.data && nextProps.data.data) {
+            if(Object.keys(this.devDataDummy).length && (nextProps.data.data === this.devDataDummy.data)) {
+                return;
+            }
+            if(nextProps.data.data[0]['AddCloudlet'].length){
+                /** copy data as immutable */
+                this.devDataDummy = nextProps.data;
+                this.setState({cloudlets: Object.assign({}, nextProps.data)})
+            } 
+            if(Object.keys(this.devDataDummy).length) this.makeFilteringCloudlet(this.devDataDummy, 'All');
         }
 
+        
     }
 
     gotoUrl(num) {
@@ -488,17 +356,14 @@ class SiteFourCreatePoolForm extends React.Component {
     }
 
     render() {
-        const { activeIndex, clusterName } = this.state;
-        let {data, dimmer, changeNext} = this.props;
-        console.log('20200106 props data in Form -- ', this.props.data)
-        let randomState = Math.random()*100;
+        const { devData } = this.state;
+        let {dimmer, changeNext} = this.props;
         return (
             <Grid.Column>
                 {/*<Grid.Row className="grid_map_container">*/}
                 {/*    <Grid.Column className="left">*/}
-                        <SiteFourCreateFormDefault data={data} pId={0} getUserRole={this.props.getUserRole}
+                        <SiteFourCreateFormDefault data={devData} pId={0} getUserRole={this.props.getUserRole}
                                                    gotoUrl={this.gotoUrl} clusterHide={this.clusterHide}
-                                                   randomState = {randomState}
                                                    toggleSubmit={this.props.toggleSubmit}
                                                    validError={this.props.validError}
                                                    onSubmit={() => console.log('submit form')}
@@ -529,7 +394,7 @@ const mapStateToProps = (state) => {
     let accountInfo = account ? account + Math.random()*10000 : null;
     let dimmInfo = dimm ? dimm : null;
     let submitVal = null;
-    let selectedRegion = null;
+    let selectedRegion = state.form.createAppFormDefault ? state.form.createAppFormDefault.values.Region : null;
     let selectedCloudlet = null;
     let selectedOperator = null;
     let selectedFlavor = null;
@@ -544,7 +409,7 @@ const mapStateToProps = (state) => {
     if(state.form.createAppFormDefault) {
         formValues = state.form.createAppFormDefault.values;
         if(state.form.createAppFormDefault.values.Region !== "") {
-            selectedRegion = state.form.createAppFormDefault.values.Region;
+            selectedRegion = _self.state.selectedRegion !== selectedRegion ? selectedRegion : null ;
             //하위 오퍼레이터 리스트 아이템 변경
         }
         if(state.form.createAppFormDefault.values.Cloudlet !== "") {
