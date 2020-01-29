@@ -506,14 +506,16 @@ class SiteFourCreatePoolForm extends React.Component {
                                                    regionInfo={this.state.regionInfo}
                                                    dimmer={dimmer}
                                                    changeNext={changeNext}
-                                                   stepTwo={this.props.stepTwo? this.props.stepTwo : null}
                                                    editMode={this.props.editMode ? this.props.editMode : null}
                                                    handleChangeLat={this.handleChangeLat}
                                                    handleChangeLong={this.handleChangeLong}
                                                    onChangeState={this.onChangeFormState}
                                                    selectListData={this.props.selectListData}
                                                    latError={this.state.laterror}
-                                                   longError={this.state.longerror}>
+                                                   longError={this.state.longerror}
+                                                   step={this.props.step?this.props.step:null}
+
+                        >
 
                         </SiteFourCreateFormDefault>
                 {/*    </Grid.Column>*/}
