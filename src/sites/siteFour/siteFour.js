@@ -1058,7 +1058,6 @@ class SiteFour extends React.Component {
                                             <Dropdown className='selection'
                                                 options={this.state.regions}
                                                 defaultValue={this.state.regions[0].value}
-                                                value={this.props.changeRegion}
                                                 onChange={this.onChangeRegion}
                                             />
                                         </Grid.Row>
