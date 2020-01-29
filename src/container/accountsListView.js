@@ -115,7 +115,7 @@ class AccountListView extends React.Component {
             (i === 0)?
                 <div className="round_panel" key={i} style={{ display:'flex', flexDirection:'column'}} >
                     <div className={'grid_table '+this.props.siteId} style={{overflow:'hidden'}}>
-                        {this.TableExampleVeryBasic(this.props.headerLayout, this.props.hiddenKeys, this.state.dummyData)}
+                        {this.TableExampleVeryBasic(this.props.headerlayout, this.props.hiddenKeys, this.state.dummyData)}
                     </div>
 
                     {/* <Table.Footer className='listPageContainer'>
@@ -191,10 +191,6 @@ class AccountListView extends React.Component {
                     {(key === 'EmailVerified')?'Email Verified':key}
                 </Table.HeaderCell>
         ));
-    }
-
-    onLayoutChange(layout) {
-        //this.props.onLayoutChange(layout);
     }
 
     detailView(item) {
@@ -306,11 +302,6 @@ class AccountListView extends React.Component {
         </Table>
     )
     successfully(msg) {
-        //reload data of dummyData that defined props devData
-
-        //_self.props.handleRefreshData({params:{state:'refresh'}})
-        //refresh the list
-
         _self.props.dataRefresh();
     }
 
@@ -321,11 +312,11 @@ class AccountListView extends React.Component {
         if(nextProps.accountInfo){
             this.setState({ dimmer:'blurring', open: true })
         }
-        if(nextProps.devData) {
-            this.setState({dummyData:nextProps.devData, resultData:(!this.state.resultData)?nextProps.devData:this.state.resultData})
+        if(nextProps.devdata) {
+            this.setState({dummyData:nextProps.devdata, resultData:(!this.state.resultData)?nextProps.devdata:this.state.resultData})
         }
         if(nextProps.searchValue) {
-            let searchData  = reducer.filterSearch(nextProps.devData,nextProps.searchValue);
+            let searchData  = reducer.filterSearch(nextProps.devdata,nextProps.searchValue);
             this.setState({dummyData:searchData})
         }
     }
@@ -347,7 +338,6 @@ class AccountListView extends React.Component {
                         
                         <div
                             layout={this.state.layout}
-                            onLayoutChange={this.onLayoutChange}
                             {...this.props}
                             useCSSTransforms={false}
                             style={{width:'100%'}}
