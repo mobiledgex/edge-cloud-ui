@@ -375,7 +375,13 @@ class SiteFourCreateFormDefault extends React.Component {
             }, 5000)
             this.getSelectedListData(nextProps.data.data[0], nextProps.pId, keys, nextProps.data.keys, nextProps.selectListData)
         }
-        if(nextProps.editMode) this.setState({submitButton:'Update'})
+        if(nextProps.editMode){
+            this.setState({submitButton:'Update'})
+        } else if(nextProps.step && nextProps.step == 1) {
+            this.setState({submitButton:'Create Cloudlet Pool'})
+        } else if(nextProps.step && nextProps.step == 2) {
+            this.setState({submitButton:'Link Organization'})
+        }
     }
 
     getLabel (key, pId) {
@@ -640,7 +646,7 @@ class SiteFourCreateFormDefault extends React.Component {
                             <Form.Group inline>
                                 {/*<Button onClick={()=>this.onHandleReset()}>Reset</Button>*/}
                                 <span style={{marginRight:'1em'}}>
-                                    {(this.props.stepTwo)?
+                                    {(this.props.step == 2)?
                                         <Button bid={'skip'}  onClick={this.cancelClick}>
                                             Skip
                                         </Button>
@@ -652,21 +658,13 @@ class SiteFourCreateFormDefault extends React.Component {
 
                                 </span>
                                 {
-                                    (this.props.stepTwo)?
-                                        <Button
-                                            primary
-                                            positive
-                                            icon='checkmark'
-                                            labelPosition='right'
-                                            content="Submit"
-                                        /> :
-                                        <Button
-                                            primary
-                                            positive
-                                            icon='checkmark'
-                                            labelPosition='right'
-                                            content={this.state.submitButton}
-                                        />
+                                    <Button
+                                        primary
+                                        positive
+                                        icon='checkmark'
+                                        labelPosition='right'
+                                        content={this.state.submitButton}
+                                    />
                                 }
                             </Form.Group>
 

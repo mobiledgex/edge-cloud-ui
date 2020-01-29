@@ -48,12 +48,12 @@ class SiteFourPoolOne extends React.Component {
 //data:data, keys:keysData, region:region
     // data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} onSubmit={() => console.log('submit form')}
     render (){
-        const { handleSubmit, reset, org, type } = this.props;
+        const { handleSubmit, reset, org, type, step } = this.props;
         return (
             <Fragment>
                 <Grid>
                     {/*<Grid.Column width={11}>*/}
-                        <SiteFourCreatePoolForm data={this.state.data}  pId={0} getUserRole={this.props.userrole} gotoUrl={this.props.gotoUrl} toggleSubmit={this.props.toggleSubmit} validError={this.props.error || []} onSubmit={() => console.log('submit form')}/>
+                        <SiteFourCreatePoolForm data={this.state.data} step={step} pId={0} getUserRole={this.props.userrole} gotoUrl={this.props.gotoUrl} toggleSubmit={this.props.toggleSubmit} validError={this.props.error || []} onSubmit={() => console.log('submit form')}/>
                     {/*</Grid.Column>*/}
                 </Grid>
             </Fragment>
