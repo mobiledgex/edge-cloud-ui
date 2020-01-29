@@ -513,27 +513,25 @@ const mapStateToProps = (state) => {
     let nodeNumber = null;
     let getRegion = (state.getRegion)?state.getRegion.region:null
     let regionInfo = (state.regionInfo)?state.regionInfo:null;
-    if(state.form.createAppFormDefault) {
+    if (state.form.createAppFormDefault) {
         formValues = state.form.createAppFormDefault.values;
-        if(state.form.createAppFormDefault.values.Region !== "") {
-            selectedRegion = state.form.createAppFormDefault.values.Region;
-            //하위 오퍼레이터 리스트 아이템 변경
-        }
-        if(state.form.createAppFormDefault.values.Operator !== "") {
-            selectedOperator = state.form.createAppFormDefault.values.Operator;
-        }
-        if(state.form.createAppFormDefault.values.Flavor !== "") {
-            selectedFlavor = state.form.createAppFormDefault.values.Flavor;
-        }
-        if(state.form.createAppFormDefault.values.NumberOfNode !== "") {
-            nodeNumber = state.form.createAppFormDefault.values.NumberOfNode;
-            masterNumber = 1;
+        if (formValues) {
+            if (formValues.Region !== "") {
+                selectedRegion = formValues.Region;
+            }
+            if (formValues.Operator !== "") {
+                selectedOperator = formValues.Operator;
+            }
+            if (formValues.Flavor !== "") {
+                selectedFlavor = formValues.Flavor;
+            }
+            if (formValues.NumberOfNode !== "") {
+                nodeNumber = formValues.NumberOfNode;
+                masterNumber = 1;
+            }
         }
 
     }
-
-
-
     return {
         selectedRegion, selectedOperator, clusterName, formValues, selectedFlavor, masterNumber, nodeNumber, getRegion,
         regionInfo: regionInfo,selectOrg: state.selectOrg.org ? state.selectOrg.org['Organization'] : null,
