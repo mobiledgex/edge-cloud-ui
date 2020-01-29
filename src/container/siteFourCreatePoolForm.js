@@ -419,21 +419,21 @@ const mapStateToProps = (state) => {
     let changeNext = state.changeNext ? state.changeNext.next:null;
     if(state.form.createAppFormDefault) {
         formValues = state.form.createAppFormDefault.values;
-        if(state.form.createAppFormDefault.values.Region !== "") {
+        if(formValues && formValues.Region !== "") {
             selectedRegion = _self.state.selectedRegion !== selectedRegion ? selectedRegion : null ;
             //하위 오퍼레이터 리스트 아이템 변경
         }
-        if(state.form.createAppFormDefault.values.Cloudlet !== "") {
-            selectedCloudlet = state.form.createAppFormDefault.values.Cloudlet;
+        if(formValues && formValues.Cloudlet !== "") {
+            selectedCloudlet = formValues.Cloudlet;
         }
-        if(state.form.createAppFormDefault.values.Operator !== "") {
-            selectedOperator = state.form.createAppFormDefault.values.Operator;
+        if(formValues && formValues.Operator !== "") {
+            selectedOperator = formValues.Operator;
         }
-        if(state.form.createAppFormDefault.values.Flavor !== "") {
-            selectedFlavor = state.form.createAppFormDefault.values.Flavor;
+        if(formValues && formValues.Flavor !== "") {
+            selectedFlavor = formValues.Flavor;
         }
-        if(state.form.createAppFormDefault.values.NumberOfNode !== "") {
-            nodeNumber = state.form.createAppFormDefault.values.NumberOfNode;
+        if(formValues && formValues.NumberOfNode !== "") {
+            nodeNumber = formValues.NumberOfNode;
             masterNumber = 1;
         }
 
