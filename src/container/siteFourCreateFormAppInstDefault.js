@@ -54,7 +54,41 @@ const renderSelect = ({ input, label, options, placeholder, error, disabled }) =
     </div>
 );
 
-const renderDropDown = field => (
+const filterCloudlet = (data)=>{
+    let options = [];
+    if(data && data.length>0)
+    {
+        (data.map(option=>{
+            if(option)
+            {
+                let value = option.CloudletName
+                options.push({key: value, text: value, value: value, disabled: option.CloudletStateInfo ? false : true})
+            }
+        })) 
+    }
+    return options;
+}
+
+const renderCloudletDropDown = field => {
+    let options = filterCloudlet(field.options)
+    return(
+    <div>
+        <Form.Dropdown
+            {...field.input}
+            placeholder={field.placeholder}
+            fluid
+            multiple
+            selection
+            options={options}
+            onChange={(e, { value }) => field.input.onChange(value)}
+            disabled={field.disabled}
+        />
+        {field.error && <span className="text-danger">{field.error}</span>}
+    </div>
+)};
+
+const renderDropDown = field => {
+    return(
     <div>
         <Form.Dropdown
             {...field.input}
@@ -64,11 +98,11 @@ const renderDropDown = field => (
             selection
             options={makeOption(field.options)}
             onChange={(e, { value }) => field.input.onChange(value)}
-            disabled = {field.disabled}
+            disabled={field.disabled}
         />
         {field.error && <span className="text-danger">{field.error}</span>}
     </div>
-);
+)};
 
 const renderInput = ({ input, placeholder, label, type, error, disabled }) => (
     <div>
@@ -270,7 +304,7 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
                                                             (fieldKeys[pId][key]['type'] === 'RenderDropDown') ?
                                                             <Field
                                                                 placeholder={'Select '+fieldKeys[pId][key]['label'] }
-                                                                component={renderDropDown}
+                                                                component={renderCloudletDropDown}
                                                                 options={fieldKeys[pId][key]['items']}
                                                                 name={key}
                                                                 error={(this.props.validError.indexOf(key) !== -1)?'Required':''}

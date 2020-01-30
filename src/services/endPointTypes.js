@@ -3,6 +3,7 @@ import * as FormatComputeOrganization from './formatter/formatComputeOrganizatio
 import * as FormatComputeUsers from './formatter/formatComputeUsers';
 import * as FormatComputeAccounts from './formatter/formatComputeAccounts';
 import * as FormatComputeCloudlet from './formatter/formatComputeCloudlet';
+import * as FormatComputeCloudletInfo from './formatter/formatComputeCloudletInfo';
 import * as FormatComputeClstInst from './formatter/formatComputeClstInstance';
 import * as FormatComputeFlavor from './formatter/formatComputeFlavor';
 import * as FormatComputeApp from './formatter/formatComputeApp';
@@ -174,6 +175,9 @@ export function formatData(request, response) {
         case SHOW_CLOUDLET:
             data = FormatComputeCloudlet.formatData(response, request.data)
             break;
+        case SHOW_CLOUDLET_INFO:
+            data = FormatComputeCloudletInfo.formatData(response, request.data)
+            break;    
         case SHOW_CLUSTER_INST:
             data = FormatComputeClstInst.formatData(response, request.data)
             break;
