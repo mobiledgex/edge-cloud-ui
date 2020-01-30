@@ -35,7 +35,19 @@ class SiteFourPageClusterInst extends React.Component {
         this.loadCount = 0;
         this.countObject = {};
         this.headerLayout = [1, 2, 2, 2, 2, 1, 2, 2, 1, 2];
-        this.hiddenKeys = ['Status', 'Deployment']
+        this.headerInfo = [
+            { field: 'Region', label: 'Region', sortable: true },
+            { field: 'ClusterName', label: 'Cluster Name', sortable: true },
+            { field: 'OrganizationName', label: 'Organization Name', sortable: true },
+            { field: 'Operator', label: 'Operator', sortable: true },
+            { field: 'Cloudlet', label: 'Cloudlet', sortable: true },
+            { field: 'Flavor', label: 'Flavor', sortable: true },
+            { field: 'IpAccess', label: 'IP Access', sortable: true },
+            { field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false},
+            { field: 'State', label: 'State', sortable: true},
+            { field: 'Progress', label: 'Progress', sortable: false},
+            { field: 'Actions', label: 'Actions', sortable: false },
+        ]
 
     }
     gotoUrl(site, subPath) {
@@ -207,7 +219,7 @@ render() {
     let randomValue = Math.round(Math.random() * 100);
     return (
         (viewMode === 'listView') ?
-            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
+            <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} headerInfo = {this.headerInfo} siteId={'ClusterInst'} region='US' dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
             :
             <PageDetailViewer className="ttt" data={this.state.detailData} page='clusterInst' />
     );

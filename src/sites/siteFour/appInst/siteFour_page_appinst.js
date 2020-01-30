@@ -24,7 +24,6 @@ class SiteFourPageAppInst extends React.Component {
             devData: [],
             viewMode: 'listView',
             detailData: null,
-            hiddenKeys: ['Error', 'URI', 'Mapped_port', 'Runtime', 'Created', 'Liveness', 'Flavor', 'Status', 'Revision'],
             AppRevision: [],
             regionToggle: false,
             dataSort: false
@@ -38,6 +37,20 @@ class SiteFourPageAppInst extends React.Component {
         this.headerLayout = [2, 2, 2, 1, 1, 2, 2, 2, 1, 4];
         this._AppInstDummy = [];
         this._diffRev = []
+
+        this.headerInfo = [
+            { field: 'Region', label: 'Region', sortable: true },
+            { field: 'OrganizationName', label: 'Organization Name', sortable: true },
+            { field: 'AppName', label: 'App Name', sortable: true },
+            { field: 'Version', label: 'Version', sortable: true },
+            { field: 'Operator', label: 'Operator', sortable: true },
+            { field: 'Cloudlet', label: 'Cloudlet', sortable: true },
+            { field: 'ClusterInst', label: 'Cluster Instance', sortable: true },
+            { field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false},
+            { field: 'State', label: 'State', sortable: true},
+            { field: 'Progress', label: 'Progress', sortable: false},
+            { field: 'Actions', label: 'Actions', sortable: false },
+        ]
     }
     gotoUrl(site, subPath) {
         let mainPath = site;
@@ -205,7 +218,7 @@ class SiteFourPageAppInst extends React.Component {
         const { viewMode, devData, detailData } = this.state;
         return (
             (viewMode === 'listView') ?
-                <MapWithListView devData={devData} headerLayout={this.headerLayout} hiddenKeys={this.state.hiddenKeys} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort}></MapWithListView>
+                <MapWithListView devData={devData} headerLayout={this.headerLayout} headerInfo={this.headerInfo} siteId='appinst' dataRefresh={this.getDataDeveloperSub} diffRev={this._diffRev} dataSort={this.state.dataSort}></MapWithListView>
                 :
                 <PageDetailViewer data={detailData} page='appInst' />
         );

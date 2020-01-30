@@ -50,6 +50,7 @@ export const formatData = (datas, body) => {
                         State: '',
                         Progress: '',
                         Status: '',
+                        CloudletInfoState:-1,
                         Edit: null
                     })
                 } else {
@@ -63,7 +64,8 @@ export const formatData = (datas, body) => {
                     let Platform_type = dataResult.data.platform_type || '-';
                     let State = dataResult.data.state || '-';
                     let Status = dataResult.data.status;
-                    values.push({ uuid: generateUniqueId(), Region: Region, CloudletName: CloudletName, Operator: Operator, CloudletLocation: CloudletLocation, Ip_support: Ip_support, Num_dynamic_ips: Num_dynamic_ips, Physical_name: Physical_name, Platform_type: Platform_type, State: State, Progress: '', Status: Status, Edit: newRegistKey })
+                    let CloudletInfoState = -1;
+                    values.push({ uuid: generateUniqueId(), CloudletInfoState:CloudletInfoState, Region: Region, CloudletName: CloudletName, Operator: Operator, CloudletLocation: CloudletLocation, Ip_support: Ip_support, Num_dynamic_ips: Num_dynamic_ips, Physical_name: Physical_name, Platform_type: Platform_type, State: State,Progress: '', Status: Status, Edit: newRegistKey })
                 }
             })
         } else {

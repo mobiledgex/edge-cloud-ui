@@ -1,9 +1,7 @@
 import React, { Fragment } from "react";
 
-import {Button, Form, Table, List, Grid, Card, Header, Divider, Tab, Item, Popup, Icon, Input, Dropdown} from "semantic-ui-react";
-
-import { Field, reduxForm, initialize, reset, stopSubmit, change } from "redux-form";
-import MaterialIcon from "material-icons-react";
+import {Button, Form, Grid, Header, Item, Popup, Icon} from "semantic-ui-react";
+import { Field, reduxForm, stopSubmit } from "redux-form";
 import * as serviceMC from '../services/serviceMC';
 import './styles.css';
 
@@ -59,10 +57,10 @@ const filterCloudlet = (data)=>{
     if(data && data.length>0)
     {
         (data.map(option=>{
-            if(option)
+            if(option && option.CloudletInfoState === 2)
             {
                 let value = option.CloudletName
-                options.push({key: value, text: value, value: value, disabled: option.CloudletStateInfo ? false : true})
+                options.push({key: value, text: value, value: value})
             }
         })) 
     }
@@ -406,6 +404,4 @@ class SiteFourCreateFormAppInstDefault extends React.Component {
 
 export default reduxForm({
     form: "createAppFormDefault",
-    // validate
-    // enableReinitialize: true
 })(SiteFourCreateFormAppInstDefault);

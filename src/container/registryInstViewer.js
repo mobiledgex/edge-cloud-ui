@@ -63,9 +63,7 @@ class RegistryInstViewer extends React.Component {
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Which operator do you want to deploy this applicaton? Please select one.', active:true, items:[null]},
                     'Cloudlet':{label:'Cloudlet', type:'RenderDropDown', necessary:true, tip:'Which cloudlet(s) do you want to deploy this application?', active:true, items:[null]},
                     'AutoClusterInst':{label:'Auto Cluster Instance', type:'RenderCheckbox', necessary:false, tip:'If you have yet to create a cluster, you can select this to auto create cluster instance.'},
-                    'ClusterInst':{label:'Cluster Instance', type:'RenderClusterDisabled', necessary:true,
-                        tip:'Name of cluster instance to deploy this application.',
-                        active:true, items:[null]},
+                    'ClusterInst':{label:'Cluster Instance', type:'RenderClusterDisabled', necessary:true, tip:'Name of cluster instance to deploy this application.', active:true, items:[null]},
                 },
                 {
                     
@@ -138,6 +136,7 @@ class RegistryInstViewer extends React.Component {
                     }
                 }
             }
+            
             if (cloudletList) {
                 let operatorGroup = reducer.groupBy(cloudletList, 'Operator')
                 //let cloudletGroup = reducer.groupBy(result, 'CloudletName')
