@@ -162,16 +162,16 @@ class SiteFourPoolStepView extends React.Component {
             pathname: '/site4',
             search: 'pg=7'
         });
-        this.props.history.location.search = 'pg=7';
-        this.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
+        //this.props.history.location.search = 'pg=7';
+        //this.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
     }
     onSkipClick = () => {
         this.props.history.push({
             pathname: '/site4',
             search: 'pg=7'
         });
-        this.props.history.location.search = 'pg=7';
-        this.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
+        //this.props.history.location.search = 'pg=7';
+        //this.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
     }
 
     makeSteps = (data) => (

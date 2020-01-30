@@ -133,6 +133,7 @@ export function getPath(request) {
         case DELETE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL:
         case CREATE_CLOUDLET_POOL_MEMBER:
+        case DELETE_CLOUDLET_POOL_MEMBER:
         case RUN_COMMAND:
             return `/api/v1/auth/ctrl/${request.method}`;
         case LOGIN:
