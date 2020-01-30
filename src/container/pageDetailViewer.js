@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import TerminalViewer from './TerminalViewer';
 import './styles.css';
+import TextareaAutosize from "react-textarea-autosize";
 
 const pane = [
     { menuItem: 'Details', render: (props) => <Tab.Pane>{detailViewer(props, 'detailViewer')}</Tab.Pane> }
@@ -21,7 +22,7 @@ const detailViewer = (props, type) => (
             <Table celled collapsing style={{ width: '100%', height: '100%', border: 'none', display: 'flex', flexDirection: 'column' }}>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell width={6}><div style={{ display: 'flex', justifyContent: 'center' }}>Subject</div></Table.HeaderCell>
+                        <Table.HeaderCell width={6}><div style={{ display: 'flex', justifyContent: 'center' }}>Key</div></Table.HeaderCell>
                         <Table.HeaderCell width={10}><div style={{ display: 'flex', justifyContent: 'center' }}>Value</div></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
@@ -58,6 +59,19 @@ const makeTable = (values, label, i) => (
                                                             : (label == 'ClusterInst') ? 'Cluster Instance'
                                                                 : (label == 'Physical_name') ? 'Physical Name'
                                                                     : (label == 'Platform_type') ? 'Platform Type'
+                                                                        :(label === 'FlavorName')?'Flavor Name'
+                                                                            :(label == 'RAM')?'RAM Size'
+                                                                                :(label == 'vCPUs')?'Number of vCPUs'
+                                                                                    :(label == 'Disk')?'Disk Space' /* 여기까지 Flavors*/
+                                                                                        :(label == 'DeploymentType')?'Deployment Type'
+                                                                                            :(label == 'ImageType')?'Image Type'
+                                                                                                :(label == 'ImagePath')?'Image Path'
+                                                                                                    :(label == 'DefaultFlavor')?'Default Flavor'
+                                                                                                        :(label == 'DeploymentMF')?'Deployment Manifest' /* 여기까지 Apps*/
+                                                                                                            :(label == 'AuthPublicKey')?'Auth Public Key'
+                                                                                                                : (label === 'DefaultFQDN')? 'Official FQDN'
+                                                                                                                    : (label === 'PackageName')? 'Package Name'
+                                                                                                                        : (label === 'ScaleWithCluster')? 'Scale With Cluster'
                                                                         : label}
                     </Header.Content>
                 </Header>
@@ -72,10 +86,31 @@ const makeTable = (values, label, i) => (
                                         : (label === 'Liveness') ? _liveness[values[label]]
                                             : (typeof values[label] === 'object') ? jsonView(values[label], label)
                                                 : (label === 'Platform_type') ? String(makePFT(values[label]))
+                                                    :(label == 'DeploymentType' && String(values[label]) === 'docker')?"Docker"
+                                                        :(label == 'DeploymentType' && String(values[label]) === 'vm')?"VM"
+                                                            :(label == 'DeploymentType' && String(values[label]) === 'kubernetes')?"Kubernetes"
+                                                                :(label == 'DeploymentType' && String(values[label]) === 'helm')?"Helm"
+                                                                    :(label == 'Ports')?String(values[label]).toUpperCase()
+                                                                        :(label == 'DeploymentMF')? makeTextBox(values[label])
+                                                                            :(label == 'ImageType' && String(values[label]) === '1')?"Docker"
+                                                                                :(label == 'ImageType' && String(values[label]) === '2')?"Qcow" /* 여기까지 Apps*/
+                                                                                    :(label == 'Created')? String("time is ==  "+values[label])
+                                                                                        :(label == 'ScaleWithCluster' && String(values[label]) === 'false')?"False"
+                                                                                            :(label == 'ScaleWithCluster' && String(values[label]) === 'true')?"True"
+                                                                                                :(typeof values[label] === 'object')? JSON.stringify(values[label])
                                                     : String(values[label])}
             </Table.Cell>
         </Table.Row> : null
 )
+
+const makeTextBox = (value) => (
+    <TextareaAutosize
+        minRows={3}
+        maxRows={10}
+        style={{width:'100%', resize:'none', padding:'5px 10px', backgroundColor:'rgba(0,0,0,.2)', borderColor:'rgba(255,255,255,.1)', color:'rgba(255,255,255,.5)' }}
+        defaultValue={value}></TextareaAutosize>
+)
+
 const jsonView = (jsonObj, _label) => {
     if (_label === 'Mapped_port') {
         jsonObj.map((item) => {
