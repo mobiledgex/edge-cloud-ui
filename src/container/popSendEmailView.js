@@ -80,42 +80,39 @@ class PopSendEmailView extends React.Component {
     }
 
     render() {
-        let { handleSubmit, pristine, reset, submitting } = this.props;
+        let { handleSubmit, pristine, reset, submitting, rawViewData } = this.props;
         return (
             <form id={'eSendForm'} onSubmit={handleSubmit(submit)}>
                 <Field
-                    name="email"
+                    name="to"
                     type="email"
                     component={renderField}
-                    label="Email"
+                    label="to"
                     validate={email}
                     warn={aol}
                 />
                 <Field
-                    name="username"
+                    name="subject"
                     type="text"
-                    value={'support@mobiledgex.com'}
-                    component={renderLabel}
-                    label="Username"
-                    validate={[required, maxLength15, minLength2]}
+                    label="Subject"
+                    validate={required}
+                    component={renderField}
+
+                />
+                <Field
+                    name="from"
+                    type="email"
+                    component={renderField}
+                    label="From"
+                    validate={email}
                     warn={alphaNumeric}
                 />
-
-                <Field
-                    name="age"
-                    type="number"
-                    component={renderField}
-                    label="Age"
-                    validate={[required, number, minValue13]}
-                    warn={tooYoung}
-                />
-                <Field
-                    name="phone"
-                    type="number"
-                    component={renderField}
-                    label="Phone number"
-                    validate={[required, phoneNumber]}
-                />
+                <div>
+                    <label>Content</label>
+                    <div>
+                        <textarea name="content" placeholder="Content" rows="10" cols="40" >{"Dear MobiledgeX Support team,\nPlease investigate Trace ID : " + rawViewData.traceid}</textarea>
+                    </div>
+                </div>
                 <div style={{display:'none'}}>
                     <button id={'popSendEmailSubmit'} type="submit" disabled={submitting}>
                         Submit

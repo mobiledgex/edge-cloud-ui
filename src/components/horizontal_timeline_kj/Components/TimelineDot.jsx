@@ -20,9 +20,9 @@ const dots = {
      */
     base: {
         position: 'absolute',
-        bottom: -5,
-        height: 12,
-        width: 12,
+        bottom: -12,
+        height: 30,
+        width: 30,
         borderRadius: '50%',
         transition: 'background-color 0.3s, border-color 0.3s',
         ':hover': {}, // We need this to track the hover state of this element
@@ -81,6 +81,8 @@ class TimelineDot extends React.Component {
 
     render() {
         let dotType = 'future';
+        let selectedTime = localStorage.getItem("selectedTime")
+        console.log("20200130_1 " + selectedTime)
         if (this.props.index < this.props.selected) {
             dotType = 'past';
         } else if (this.props.index === this.props.selected) {
@@ -107,7 +109,9 @@ class TimelineDot extends React.Component {
                 <span
                     key='dot-dot'
                     style={this.__getDotStyles__(dotType, this.props.date)}
-                />
+                >
+                    {/*<div style={{color:'black'}}>{console.log("20200130 " + this.props.date + " ///////////////// " + new Date(selectedTime[0])) }</div>*/}
+                </span>
             </li>
         );
     }

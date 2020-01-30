@@ -217,3 +217,14 @@
     background: #1e2124 !important;
     overflow: auto;
 }
+.page_audit_timeline .events {
+    margin-top:0 !important;
+}
+.page_audit_timeline .events-bar li.dot-label {
+    top:0;
+    padding-bottom:0 !important;
+    papping-top:15px !important;
+}
+.page_audit_timeline .events-bar li.dot-label>div>span {
+    top:-5px !important;
+}
