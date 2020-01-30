@@ -169,31 +169,7 @@ class SiteFourPageCloudletPoolReg extends React.Component {
             this.getDataCloudetList(nextProps.changeRegion,nextProps.regionInfo.region);
         }
 
-        if(nextProps.changedRegion && this.state.devData && this.state.devData.length) {
-
-            console.log('20200104 changed region = ', nextProps.changedRegion)
-            if(nextProps.changedRegion !== 'All' && this.state.devData) {
-                if(this.state.devData[0]['AddCloudlet'] && this.state.devData[0]['AddCloudlet'].length) {
-                    let tempData = this.cloudlets[0];
-                    let filtered = [];
-                    let newData = Object.assign([], this.state.devData[0]);
-                    if(nextProps.changedRegion) {
-                        /* filtering cloudlet by region */
-                        tempData['AddCloudlet'].map(data => {
-                            if(data['region'] === nextProps.changedRegion) filtered.push(data);
-                        })
-                    }
-                    newData['AddCloudlet'] = filtered;
-                    this.setState({devData: [newData]})
-                }
-
-            } else {
-                //alert('Try again')
-            }
-
-        } else {
-
-        }
+        
 
 
 
@@ -204,16 +180,15 @@ class SiteFourPageCloudletPoolReg extends React.Component {
             pathname: '/site4',
             search: 'pg=7'
         });
-        _self.props.history.location.search = 'pg=7';
-        _self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
+        // _self.props.history.location.search = 'pg=7';
+        //_self.props.handleChangeSite({mainPath:'/site4', subPath: 'pg=7'})
     }
 
 
     /*
      */
     render() {
-        const {shouldShowBox, shouldShowCircle, devData} = this.state;
-        const { activeItem } = this.state;
+        const {devData} = this.state;
         return (<SiteFourPoolStepViewer devData={devData} stepMove={this.state.step} gotoUrl={this.gotoUrl}/>)
     }
 

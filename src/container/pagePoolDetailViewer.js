@@ -345,8 +345,8 @@ class PagePoolDetailViewer extends React.Component {
                 data: data
             }
             _self.selectedItems.push(_data)
-            this.props.handleLoadingSpinner(true);
-            serviceMC.sendRequest(_self, serviceBody, this.httpResponse)
+            _self.props.handleLoadingSpinner(true);
+            serviceMC.sendRequest(_self, serviceBody, _self.httpResponse)
         }
     }
 
