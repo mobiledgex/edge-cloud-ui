@@ -68,6 +68,9 @@ const makeCloudletTable = (values, label, i) => (
                                                             :(label == 'ClusterInst')?'Cluster Instance'
                                                                 :(label == 'Physical_name')?'Physical Name'
                                                                     :(label == 'Platform_type')?'Platform Type'
+                                                                    :(label == 'PoolName')?'Pool Name'
+                                                                    :(label == 'Cloudlets')?'Number of Cloudlets'
+                                                                    :(label == 'Organizations')?'Number of Organizations'
                                                                         :label}
                     
             </Table.Cell>
