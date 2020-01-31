@@ -38,6 +38,17 @@ class SiteFourPageCloudlet extends React.Component {
         this.hiddenKeys = ['Ip_support', 'Num_dynamic_ips', 'Status', 'Physical_name', 'Platform_type'];
         this.headerLayout = [1, 3, 3, 3, 2, 2, 2];
         this.userToken = null;
+
+        this.headerInfo = [
+            { field: 'Region', label: 'Region', sortable: true, visible: true },
+            { field: 'CloudletName', label: 'Cloudlet Name', sortable: true, visible: true },
+            { field: 'Operator', label: 'Operator', sortable: true, visible: true },
+            { field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false, visible: false },
+            { field: 'State', label: 'State', sortable: true, visible: false },
+            { field: 'Progress', label: 'Progress', sortable: false, visible: true },
+            { field: 'CloudletInfoState', label: 'Status', sortable: false, visible: true },
+            { field: 'Actions', label: 'Actions', sortable: false, visible: true },
+        ]
     }
 
     gotoUrl(site, subPath) {
@@ -110,8 +121,6 @@ class SiteFourPageCloudlet extends React.Component {
         }
 
         if (nextProps.regionInfo.region.length && !this.state.regionToggle) {
-            //{ key: 1, text: 'All', value: 'All' }
-            console.log("20191119 ..cloudlet 33 region info in page cloudlet")
             _self.setState({ regionToggle: true, regions: nextProps.regionInfo.region })
             this.getDataDeveloper(nextProps.changeRegion, nextProps.regionInfo.region);
         }
@@ -119,17 +128,47 @@ class SiteFourPageCloudlet extends React.Component {
 
     }
 
-    receiveResult = (mcRequest) => {
-        _self.requestCount -= 1;
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                if (response.data.length > 0) {
-                    _self.multiRequestData = [..._self.multiRequestData, ...response.data]
-                }
-            }
-        }
+   
 
+    receiveResult = (mcRequestList) => {
+        _self.requestCount -= 1;
+        if (mcRequestList && mcRequestList.length > 0) {
+            let cloudletList = [];
+            let cloudletInfoList = [];
+            mcRequestList.map(mcRequest => {
+                let request = mcRequest.request;
+                if (request.method === serviceMC.getEP().SHOW_CLOUDLET || request.method === serviceMC.getEP().SHOW_ORG_CLOUDLET) {
+                    for (let i = 0; i < this.headerInfo.length > 0; i++) {
+                        let headerInfo = this.headerInfo[i];
+                        if (headerInfo.field === 'CloudletInfoState') {
+                            headerInfo.visible = request.method === serviceMC.getEP().SHOW_ORG_CLOUDLET ? false : true;
+                            break;
+                        }
+                    }
+                    
+                    cloudletList = mcRequest.response.data
+                }
+                else if (request.method === serviceMC.getEP().SHOW_CLOUDLET_INFO) {
+                    cloudletInfoList = mcRequest.response.data
+                }
+            })
+
+            if (cloudletList && cloudletList.length > 0) {
+                for (let i = 0; i < cloudletList.length; i++) {
+                    let cloudlet = cloudletList[i]
+                    for (let j = 0; j < cloudletInfoList.length; j++) {
+                        let cloudletInfo = cloudletInfoList[j]
+                        if (cloudlet.CloudletName === cloudletInfo.CloudletName) {
+                            cloudlet.CloudletInfoState = cloudletInfo.State
+                            break;
+                        }
+                    }
+                }
+                _self.multiRequestData = [..._self.multiRequestData, ...cloudletList]
+            }
+
+        }
+        
         if (_self.requestCount === 0) {
             if (_self.multiRequestData.length > 0) {
                 let sortedData = _.orderBy(_self.multiRequestData, ['Region', 'CloudletName'])
@@ -158,44 +197,20 @@ class SiteFourPageCloudlet extends React.Component {
         if (rgn && rgn.length > 0) {
             this.requestCount = rgn.length;
             rgn.map(item => {
-                //let requestData = { token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } };
-                let requestData = null;
-                if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
-                    requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_CLOUDLET, data : {region:item}}
+                let requestList = []
+                if (localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
+                    requestList.push({ token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } })
+                    requestList.push({ token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: { region: item } })
                 } else {
-                    requestData = {token:store.userToken, method:serviceMC.getEP().SHOW_ORG_CLOUDLET, data : {region:item, org:_self.props.selectOrg || localStorage.selectOrg}}
+                    let data = { region: item, org: localStorage.selectOrg };
+                    requestList.push({ token: store.userToken, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: data })
                 }
-                serviceMC.sendRequest(_self, requestData, _self.receiveResult)
+                serviceMC.sendMultiRequest(_self, requestList, _self.receiveResult)
             })
         }
-
     }
 
-    // getDataDeveloper = (region, regionArr) => {
-    //     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
-    //     this.setState({ devData: [] })
-    //     this.multiRequestData = [];
-    //     this.requestCount = 0;
-    //     if (region !== 'All') {
-    //         rgn = [region]
-    //     } else {
-    //         rgn = (regionArr) ? regionArr : this.props.regionInfo.region;
-    //     }
-    //     if (rgn && rgn.length > 0) {
-    //         this.requestCount = rgn.length;
 
-    //         rgn.map(item => {
-    //             let requestData = { token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET};
-    //             if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
-    //                 requestData.data = {region:item}
-    //             } else {
-    //                 requestData.data = {region:item, org:_self.props.selectOrg || localStorage.selectOrg}
-    //             }
-    //             serviceMC.sendRequest(_self, requestData, _self.receiveResult)
-    //         })
-    //     }
-
-    // }
     getDataDeveloperSub = (region) => {
         let _region = (region) ? region : 'All';
         this.getDataDeveloper(_region);
@@ -208,7 +223,7 @@ class SiteFourPageCloudlet extends React.Component {
         let randomValue = Math.round(Math.random() * 100);
         return (
             (viewMode === 'listView') ?
-                <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
+                <MapWithListView devData={devData} randomValue={randomValue} headerLayout={this.headerLayout} headerInfo = {this.headerInfo} hiddenKeys={this.hiddenKeys} siteId={'Cloudlet'} userToken={this.userToken} dataRefresh={this.getDataDeveloperSub} dataSort={this.state.dataSort}></MapWithListView>
                 :
                 <PageDetailViewer data={detailData} page='cloudlet' />
         );

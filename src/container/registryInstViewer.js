@@ -15,29 +15,10 @@ import {withRouter} from "react-router-dom";
 import MexMessageDialog from '../hoc/mexDialogMessage';
 
 
-const headerStyle = {
-    backgroundImage: 'url()'
-}
-var horizon = 6;
-var vertical = 20;
 var layout = [
     {"w":19,"h":20,"x":0,"y":0,"i":"0","minW":5,"minH":5,"moved":false,"static":false, "title":"Developer"}
 ]
 let _self = null;
-const colors = [
-    'red',
-    'orange',
-    'yellow',
-    'olive',
-    'green',
-    'teal',
-    'blue',
-    'violet',
-    'purple',
-    'pink',
-    'brown',
-    'grey',
-]
 
 const panes = [
     { menuItem: 'App Instance Deployment', render: (props) => <Tab.Pane style={{overflow:'auto'}} attached={false}><SiteFourCreateFormAppInstDefault data={props} pId={0} getUserRole={props.userrole} gotoUrl={props.gotoUrl} toggleSubmit={props.toggleSubmit} validError={props.error} autoClusterDisable={props.autoClusterDisable} onSubmit={props.onSubmit}/></Tab.Pane> },
@@ -82,9 +63,7 @@ class RegistryInstViewer extends React.Component {
                     'Operator':{label:'Operator', type:'RenderSelect', necessary:true, tip:'Which operator do you want to deploy this applicaton? Please select one.', active:true, items:[null]},
                     'Cloudlet':{label:'Cloudlet', type:'RenderDropDown', necessary:true, tip:'Which cloudlet(s) do you want to deploy this application?', active:true, items:[null]},
                     'AutoClusterInst':{label:'Auto Cluster Instance', type:'RenderCheckbox', necessary:false, tip:'If you have yet to create a cluster, you can select this to auto create cluster instance.'},
-                    'ClusterInst':{label:'Cluster Instance', type:'RenderClusterDisabled', necessary:true,
-                        tip:'Name of cluster instance to deploy this application.',
-                        active:true, items:[null]},
+                    'ClusterInst':{label:'Cluster Instance', type:'RenderClusterDisabled', necessary:true, tip:'Name of cluster instance to deploy this application.', active:true, items:[null]},
                 },
                 {
                     
@@ -110,42 +89,66 @@ class RegistryInstViewer extends React.Component {
 
     onHandleClick(dim, data) {
         this.setState({ dimmer:dim, open: true, selected:data })
-        //this.props.handleChangeSite(data.children.props.to)
     }
     onHandleClicAdd(dim, data) {
         this.setState({ dimmer:dim, openAdd: true, selected:data })
-        //this.props.handleChangeSite(data.children.props.to)
     }
     getDataDeveloper(token,_region) {
         serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_APP, data: { region: _region } }, this.receiveResultApp)
         setTimeout(() => {
-            //serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } }, this.receiveResultCloudlet)
-            
+            let requestList = [];
             if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
-                serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } }, _self.receiveResultCloudlet)
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } })
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: { region: _region } })
             } else {
-                serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: _region, org:_self.props.selectOrg || localStorage.selectOrg } }, _self.receiveResultCloudlet)
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: _region, org:localStorage.selectOrg } })
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: { region: _region } })
             }
+            serviceMC.sendMultiRequest(_self, requestList, _self.receiveResultCloudlet)
         }, 200);
             
         setTimeout(() => serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: _region } }, this.receiveResultClusterInst), 400);
 
     }
-    receiveResultCloudlet = (mcRequest) => {
-        if (mcRequest) {
-            if (mcRequest.response) {
-                let response = mcRequest.response;
-                let operatorGroup = reducer.groupBy(response.data, 'Operator')
+    receiveResultCloudlet = (mcRequestList) => {
+        if(mcRequestList && mcRequestList.length>0)
+        {
+            let cloudletList = null;
+            let cloudletInfoList = null;
+            mcRequestList.map(mcRequest=>{
+                if(mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET ||  mcRequest.request.method === serviceMC.getEP().SHOW_ORG_CLOUDLET)
+                {
+                    cloudletList = mcRequest.response.data
+                }
+                else if(mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET_INFO)
+                {
+                    cloudletInfoList = mcRequest.response.data
+                }
+            })
+            
+            for (let i = 0; i < cloudletList.length; i++) {
+                let cloudlet = cloudletList[i]
+                for (let j = 0; j < cloudletInfoList.length; j++) {
+                    let cloudletInfo = cloudletInfoList[j]
+                    if(cloudlet.CloudletName === cloudletInfo.CloudletName)
+                    {
+                        cloudlet.CloudletInfoState = cloudletInfo.State
+                        break;
+                    }
+                }
+            }
+            
+            if (cloudletList) {
+                let operatorGroup = reducer.groupBy(cloudletList, 'Operator')
                 //let cloudletGroup = reducer.groupBy(result, 'CloudletName')
                 let keys = Object.keys(operatorGroup);
                 let assObj = Object.assign([], this.state.keysData);
-                if (response.data[0].Operator) {
+                if (cloudletList[0].Operator) {
                     assObj[0].Operator.items = keys;
                 } else {
                     assObj[0].Operator.items = [];
                 }
                 this.setState({ keysData: assObj, operators: operatorGroup })
-
 
                 // set list of operators
                 if (this.props.devData.length > 0) {
@@ -154,7 +157,8 @@ class RegistryInstViewer extends React.Component {
                     this.setState({ dummyData: this.state.fakeData, resultData: (!this.state.resultData) ? this.props.devData : this.state.resultData })
                 }
                 this.props.handleLoadingSpinner(false);
-            }
+            }   
+            
         }
     }
     receiveResultApp = (mcRequest) => {
@@ -417,7 +421,7 @@ class RegistryInstViewer extends React.Component {
             let assObj = Object.assign([], this.state.keysData);
             assObj[0].Cloudlet.items = [];
             assObj[0].ClusterInst.items = [];
-            assObj[0].Cloudlet.items = this.state.operators[nextProps.selectedOperator].map((cld) => (cld.CloudletName));
+            assObj[0].Cloudlet.items = this.state.operators[nextProps.selectedOperator].map(cld =>cld);
             assObj[0].Cloudlet.items = reducer.removeDuplicate(assObj[0].Cloudlet.items)
             this.setState({keysData:assObj})
         }
@@ -530,7 +534,6 @@ class RegistryInstViewer extends React.Component {
         const { hiddenKeys } = this.props;
         return (
             <div className="regis_container">
-                {/*<RegistNewListItem data={this.state.dummyData} resultData={this.state.resultData} dimmer={this.state.dimmer} open={this.state.open} selected={this.state.selected} close={this.close}/>*/}
                 <div
                     draggableHandle
                     layout={this.state.layout}
@@ -556,22 +559,7 @@ class RegistryInstViewer extends React.Component {
         width: 1600
     };
 }
-/*
-{
-    "region":"US",
-    "appinst":
-    {
-        "key":{
-            "app_key":{"developer_key":{"name":"bicinkiOrg"},"name":"myapp","version":"1.0.0"},
-            "cloudlet_key":{"operator_key":{"name":"TDG"},"name":"bonn-mexdemo"}
-        },
-        "cluster_inst_key":{
-            "cluster_key":{"name":"mexdemo-app-cluster"},
-            "cloudlet_key":{"operator_key":{"name":"TDG"},"name":"bonn-mexdemo"}
-        }
-    }
-}
- */
+
 const createFormat = (data) => (
     {
         "region":data['Region'],
