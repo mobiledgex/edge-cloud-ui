@@ -645,7 +645,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:##########################*/}
                         <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
-                                Cluster
+                                Cluster | Cloudlet
                             </div>
                             <Dropdown
                                 value={this.state.currentCluster}
