@@ -133,7 +133,7 @@ class RegistryInstViewer extends React.Component {
     }
     receiveResultCloudlet = (mcRequest) => {
         if (mcRequest) {
-            if (mcRequest.response) {
+            if (mcRequest.response && mcRequest.response.data) {
                 let response = mcRequest.response;
                 let cloudletDataReady = response.data.filter((item) => {return item.State === 5});
                 let operatorGroup = reducer.groupBy(cloudletDataReady, 'Operator')
@@ -160,7 +160,7 @@ class RegistryInstViewer extends React.Component {
     }
     receiveResultApp = (mcRequest) => {
         if (mcRequest) {
-            if (mcRequest.response) {
+            if (mcRequest.response && mcRequest.response.data) {
                 let response = mcRequest.response;
                 let appGroup = reducer.groupBy(response.data, 'OrganizationName')
                 let keys = Object.keys(appGroup);
@@ -174,7 +174,7 @@ class RegistryInstViewer extends React.Component {
     }
     receiveResultClusterInst = (mcRequest) => {
         if (mcRequest) {
-            if (mcRequest.response) {
+            if (mcRequest.response && mcRequest.response.data) {
                 let response = mcRequest.response;
 
                 let clinstGroup = reducer.groupBy(response.data, 'ClusterName')
