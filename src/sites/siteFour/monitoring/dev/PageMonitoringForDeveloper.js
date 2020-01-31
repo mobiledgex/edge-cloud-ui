@@ -590,9 +590,9 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             >RESET</Button>
                         </div>
-                        <div style={{marginLeft: 50, color: 'green', fontWeight: 'bold'}}>
+                        <div style={{marginLeft: 50, color: 'green', fontWeight: 'bold', fontFamily:'Righteous'}}>
                             {this.state.userType}
-                            FOR DEV_DEVDEVDEV..
+                            [ This is Developer View ]
                         </div>
                         {this.state.intervalLoading &&
                         <div style={{marginLeft: 50}}>
