@@ -444,7 +444,7 @@ export const renderBarGraph = (usageList, hardwareType, _this) => {
 
     if (usageList.length === 0) {
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )
@@ -592,8 +592,6 @@ export const sortUsageListByType = (usageList, hardwareType) => {
 }
 
 
-
-
 /**
  * bottom Grid InstanceList maker..
  * @returns {[]}
@@ -697,7 +695,7 @@ export const renderBubbleChart = (_this: PageMonitoring, hardwareType: string, p
 
     if (pBubbleChartData.length === 0) {
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )
@@ -802,7 +800,7 @@ export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType
 
     if (pBubbleChartData.length === 0 && _this.loading === false) {
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )
@@ -948,7 +946,7 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
 
     if (hardwareUsageList.length === 0) {
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )
@@ -1146,7 +1144,7 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
 }
 
 
-export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) =>{
+export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) => {
     const lineChartData = (canvas) => {
 
         let gradientList = makeGradientColor(canvas, height);
@@ -1450,7 +1448,7 @@ export const renderSixGridInstanceOnCloudletGrid = (appInstanceListSortByCloudle
     if (isEmptyObject(appInstanceListSortByCloudlet)) {
         //do something
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )
@@ -2057,7 +2055,6 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
 }
 
 
-
 export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) => {
     console.log('token2===>', pToken);
     let result = await axios({
@@ -2078,7 +2075,7 @@ export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) =
 }
 
 
-export const Styles = {
+export const StylesForMonitoring = {
     selectBoxRow: {
         alignItems: 'flex-start', justifyContent: 'flex-start', width: '100%', alignSelf: 'center', marginRight: 300,
     },
@@ -2107,10 +2104,10 @@ export const Styles = {
     },
     dropDown: {
         //minWidth: 150,
-        height: '20px',
-        minWidth: '140px',
-        fontSize: '12px',
-        verticalAlign: 'middle',
+        minWidth: '350px',
+        //fontSize: '12px',
+        minHeight: '40px'
+        //height: '50px',
     },
     cell000: {
         marginLeft: 0,

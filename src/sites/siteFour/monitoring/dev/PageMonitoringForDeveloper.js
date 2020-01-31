@@ -13,7 +13,7 @@ import {DatePicker,} from 'antd';
 import {
     getClusterLevelUsageList,
     getClusterList,
-    makeSelectBoxListForClusterList,
+    makeSelectBoxListForClusterList, makeSelectBoxListForClusterList2,
     renderBarGraphForCluster,
     renderBubbleChartForCloudlet,
     renderLineChartForCluster,
@@ -28,7 +28,7 @@ import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
 import {makeBubbleChartDataForCluster, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
-import {getCloudletList} from "../admin/PageMonitoringServiceForAdmin";
+import {getCloudletList, StylesForMonitoring} from "../admin/PageMonitoringServiceForAdmin";
 import MiniMapForDevMon from "./MiniMapForDevMon";
 
 const FA = require('react-fontawesome')
@@ -228,6 +228,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             super(props);
 
         }
+
         componentDidMount = async () => {
 
             this.setState({
@@ -253,7 +254,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             console.log('clusterList===>', clusterList);
 
-            let clusterDropdownList = makeSelectBoxListForClusterList(clusterList, 'ClusterName')
+            let clusterDropdownList = makeSelectBoxListForClusterList2(clusterList, 'ClusterName', 'Cloudlet')
             await this.setState({
                 isReady: true,
                 clusterDropdownList: clusterDropdownList,
@@ -653,7 +654,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 placeholder={this.state.clusterSelectBoxPlaceholder}
                                 selection
                                 options={this.state.clusterDropdownList}
-                                // style={Styles.dropDown}
+                                style={StylesForMonitoring.dropDown}
                                 onChange={async (e, {value}) => {
 
 

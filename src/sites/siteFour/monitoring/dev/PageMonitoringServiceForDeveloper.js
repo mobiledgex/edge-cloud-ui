@@ -1537,6 +1537,17 @@ export const makeSelectBoxListForClusterList = (arrList, keyName) => {
     return newArrList;
 }
 
+export const makeSelectBoxListForClusterList2 = (arrList, keyName, valueName) => {
+    let newArrList = [];
+    for (let i in arrList) {
+        newArrList.push({
+            value: arrList[i][keyName],
+            text: arrList[i][keyName]+ " | "+ arrList[i][valueName],
+        })
+    }
+    return newArrList;
+}
+
 export const makeSelectBoxListWithKeyValueCombination = (arrList, key, value) => {
     let newArrList = [];
     for (let i in arrList) {

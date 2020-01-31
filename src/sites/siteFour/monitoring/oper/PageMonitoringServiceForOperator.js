@@ -1,6 +1,6 @@
 import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, USAGE_INDEX} from "../../../../shared/Constants";
 import React from "react";
-import {renderLineChartCore, renderUsageByType, renderUsageLabelByType, sortUsageListByType, Styles} from "../admin/PageMonitoringServiceForAdmin";
+import {renderLineChartCore, renderUsageByType, renderUsageLabelByType, sortUsageListByType, StylesForMonitoring} from "../admin/PageMonitoringServiceForAdmin";
 import PageMonitoring from "../admin/PageMonitoringForAdmin";
 import {renderBarChartCore} from "../PageMonitoringCommonService";
 
@@ -14,7 +14,7 @@ export const renderBarGraphForCloutdlet = (usageList, hardwareType, _this) => {
 
     if (usageList.length === 0) {
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )
@@ -46,7 +46,7 @@ export const renderLineChartForCloudlet = (_this: PageMonitoring, pUsageList: Ar
 
     if (pUsageList.length === 0) {
         return (
-            <div style={Styles.noData}>
+            <div style={StylesForMonitoring.noData}>
                 NO DATA
             </div>
         )

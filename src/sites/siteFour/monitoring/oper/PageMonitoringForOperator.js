@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
-import {getCloudletList, getClouletLevelUsageList, renderBubbleChartForCloudlet, Styles} from "../admin/PageMonitoringServiceForAdmin";
+import {getCloudletList, getClouletLevelUsageList, renderBubbleChartForCloudlet, StylesForMonitoring} from "../admin/PageMonitoringServiceForAdmin";
 import {HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, NETWORK_OPTIONS2, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
@@ -1224,7 +1224,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         {/*todo:---------------------------------*/}
                                                         <div className='page_monitoring_popup_table'>
                                                             {this.state.cloudletList.length && this.state.isReady === 0 ?
-                                                                <div style={Styles.noData}>
+                                                                <div style={StylesForMonitoring.noData}>
                                                                     NO DATA
                                                                 </div>
                                                                 : this.renderBottomGridAreaForCloudlet()}
