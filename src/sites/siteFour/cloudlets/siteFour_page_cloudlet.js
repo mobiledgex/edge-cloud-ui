@@ -202,7 +202,7 @@ class SiteFourPageCloudlet extends React.Component {
                 } else {
                     let data = { region: item, org: _self.props.selectOrg || localStorage.selectOrg };
                     requestList.push({ token: store.userToken, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: data })
-                    requestList.push({ token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: data })
+                    requestList.push({ token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: { region: item } })
                 }
                 serviceMC.sendMultiRequest(_self, requestList, _self.receiveResult)
             })

@@ -96,14 +96,15 @@ class RegistryInstViewer extends React.Component {
     getDataDeveloper(token,_region) {
         serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_APP, data: { region: _region } }, this.receiveResultApp)
         setTimeout(() => {
+            let requestList = [];
             if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
-                let requestList = [];
                 requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } })
                 requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: { region: _region } })
-                serviceMC.sendMultiRequest(_self, requestList, _self.receiveResultCloudlet)
             } else {
-                serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: _region, org:_self.props.selectOrg || localStorage.selectOrg } }, _self.receiveResultCloudlet)
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: _region, org:_self.props.selectOrg || localStorage.selectOrg } })
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: { region: _region } })
             }
+            serviceMC.sendMultiRequest(_self, requestList, _self.receiveResultCloudlet)
         }, 200);
             
         setTimeout(() => serviceMC.sendRequest(_self,{ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: { region: _region } }, this.receiveResultClusterInst), 400);
