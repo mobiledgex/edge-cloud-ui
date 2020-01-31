@@ -39,7 +39,39 @@ const detailViewer = (props, type) => (
 
     </Fragment>
 )
+const returnReWord = (label) => {
+    let newName = '';
+    switch (label) {
+        case 'CloudletName' : newName = 'Cloudlet Name'; break;
+        case 'CloudletLocation' : newName = 'Cloudlet Location'; break;
+        case 'Ip_support' : newName = 'IP Support'; break;
+        case 'Num_dynamic_ips' : newName = 'Number of Dynamic IPs'; break;
+        case 'ClusterName' : newName =  'Cluster Name'; break;
+        case 'OrganizationName' : newName = 'Organization Name'; break;
+        case 'IpAccess' : newName = 'IP Access'; break;
+        case 'Mapped_port' : newName = 'Mapped Port'; break;
+        case 'AppName' : newName = 'App Name'; break;
+        case 'ClusterInst' : newName = 'Cluster Instance'; break;
+        case 'Physical_name' : newName = 'Physical Name'; break;
+        case 'Platform_type' : newName = 'Platform Type'; break;
+        case 'FlavorName' : newName = 'Flavor Name'; break;
+        case 'RAM' : newName = 'RAM Size'; break;
+        case 'vCPUs' : newName = 'Number of vCPUs'; break;
+        case 'Disk' : newName = 'Disk Space'; break;
+        case 'DeploymentType' : newName = 'Deployment Type'; break;
+        case 'ImageType' : newName = 'Image Type'; break;
+        case 'ImagePath' : newName = 'Image Path'; break;
+        case 'DefaultFlavor' : newName = 'Default Flavor'; break;
+        case 'DeploymentMF' : newName = 'Deployment Manifest'; break;
+        case 'AuthPublicKey' : newName = 'Auth Public Key'; break;
+        case 'DefaultFQDN' : newName = 'Official FQDN'; break;
+        case 'PackageName' : newName = 'Package Name'; break;
+        case 'ScaleWithCluster' : newName = 'Scale With Cluster'; break;
+        default: newName = label; break;
+    }
+    return newName;
 
+}
 const makeTable = (values, label, i) => (
     (label !== 'Edit' && label !== 'uuid') ?
         <Table.Row key={i}>
@@ -47,32 +79,7 @@ const makeTable = (values, label, i) => (
                 <Header as='h4' image>
                     <Icon name={'dot'} />
                     <Header.Content>
-                        {(label == 'CloudletName') ? 'Cloudlet Name'
-                            : (label == 'CloudletLocation') ? 'Cloudlet Location'
-                                : (label == 'Ip_support') ? 'IP Support'
-                                    : (label == 'Num_dynamic_ips') ? 'Number of Dynamic IPs' /* Cloudlets */
-                                        : (label == 'ClusterName') ? 'Cluster Name'
-                                            : (label == 'OrganizationName') ? 'Organization Name'
-                                                : (label == 'IpAccess') ? 'IP Access' /* Cluster Inst */
-                                                    : (label == 'Mapped_port') ? 'Mapped Port' /* Cluster Inst */
-                                                        : (label == 'AppName') ? 'App Name'
-                                                            : (label == 'ClusterInst') ? 'Cluster Instance'
-                                                                : (label == 'Physical_name') ? 'Physical Name'
-                                                                    : (label == 'Platform_type') ? 'Platform Type'
-                                                                        :(label === 'FlavorName')?'Flavor Name'
-                                                                            :(label == 'RAM')?'RAM Size'
-                                                                                :(label == 'vCPUs')?'Number of vCPUs'
-                                                                                    :(label == 'Disk')?'Disk Space' /* 여기까지 Flavors*/
-                                                                                        :(label == 'DeploymentType')?'Deployment Type'
-                                                                                            :(label == 'ImageType')?'Image Type'
-                                                                                                :(label == 'ImagePath')?'Image Path'
-                                                                                                    :(label == 'DefaultFlavor')?'Default Flavor'
-                                                                                                        :(label == 'DeploymentMF')?'Deployment Manifest' /* 여기까지 Apps*/
-                                                                                                            :(label == 'AuthPublicKey')?'Auth Public Key'
-                                                                                                                : (label === 'DefaultFQDN')? 'Official FQDN'
-                                                                                                                    : (label === 'PackageName')? 'Package Name'
-                                                                                                                        : (label === 'ScaleWithCluster')? 'Scale With Cluster'
-                                                                        : label}
+                        {returnReWord(label)}
                     </Header.Content>
                 </Header>
             </Table.Cell>
@@ -84,20 +91,19 @@ const makeTable = (values, label, i) => (
                                 : (label === 'Created') ? String(makeUTC(values[label]))
                                     : (label === 'State') ? _status[values[label]]
                                         : (label === 'Liveness') ? _liveness[values[label]]
-                                            : (typeof values[label] === 'object') ? jsonView(values[label], label)
-                                                : (label === 'Platform_type') ? String(makePFT(values[label]))
-                                                    :(label == 'DeploymentType' && String(values[label]) === 'docker')?"Docker"
-                                                        :(label == 'DeploymentType' && String(values[label]) === 'vm')?"VM"
-                                                            :(label == 'DeploymentType' && String(values[label]) === 'kubernetes')?"Kubernetes"
-                                                                :(label == 'DeploymentType' && String(values[label]) === 'helm')?"Helm"
-                                                                    :(label == 'Ports')?String(values[label]).toUpperCase()
-                                                                        :(label == 'DeploymentMF')? makeTextBox(values[label])
-                                                                            :(label == 'ImageType' && String(values[label]) === '1')?"Docker"
-                                                                                :(label == 'ImageType' && String(values[label]) === '2')?"Qcow" /* 여기까지 Apps*/
-                                                                                    :(label == 'Created')? String("time is ==  "+values[label])
-                                                                                        :(label == 'ScaleWithCluster' && String(values[label]) === 'false')?"False"
-                                                                                            :(label == 'ScaleWithCluster' && String(values[label]) === 'true')?"True"
-                                                                                                :(typeof values[label] === 'object')? JSON.stringify(values[label])
+                                            : (label === 'Platform_type') ? String(makePFT(values[label]))
+                                                :(label == 'DeploymentType' && String(values[label]) === 'docker')?"Docker"
+                                                    :(label == 'DeploymentType' && String(values[label]) === 'vm')?"VM"
+                                                        :(label == 'DeploymentType' && String(values[label]) === 'kubernetes')?"Kubernetes"
+                                                            :(label == 'DeploymentType' && String(values[label]) === 'helm')?"Helm"
+                                                                :(label == 'Ports')?String(values[label]).toUpperCase()
+                                                                    :(label == 'DeploymentMF')? makeTextBox(values[label])
+                                                                        :(label == 'ImageType' && String(values[label]) === '1')?"Docker"
+                                                                            :(label == 'ImageType' && String(values[label]) === '2')?"Qcow" /* 여기까지 Apps*/
+                                                                                :(label == 'Created')? String("time is ==  "+values[label])
+                                                                                    :(label == 'ScaleWithCluster' && String(values[label]) === 'false')?"False"
+                                                                                        :(label == 'ScaleWithCluster' && String(values[label]) === 'true')?"True"
+                                                                                            : (typeof values[label] === 'object') ? jsonView(values[label], label)
                                                     : String(values[label])}
             </Table.Cell>
         </Table.Row> : null
