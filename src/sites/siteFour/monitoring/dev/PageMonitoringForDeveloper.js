@@ -893,7 +893,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             options={HARDWARE_OPTIONS_FOR_CLUSTER}
                                                             defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
                                                             onChange={async (e, {value}) => {
-                                                                await handleBubbleChartDropDownForCluster(value, this);
+                                                              /*  try{
+                                                                    await handleBubbleChartDropDownForCluster(value, this);
+                                                                }catch (e) {
+                                                                }*/
+
                                                             }}
                                                             value={this.state.currentHardwareType}
                                                         />

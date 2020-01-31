@@ -6,6 +6,7 @@ import Lottie from "react-lottie";
 import {removeDuplication} from "./dev/PageMonitoringServiceForDeveloper";
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import PageMonitoringForDeveloper from "./dev/PageMonitoringForDeveloper";
 
 export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
