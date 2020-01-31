@@ -196,6 +196,7 @@ class SiteFourOrgaThree extends React.Component {
                                                     <div>
                                                         If you image is VM, please upload your image with your MobiledgeX Account Credentials to our VM registry using the following curl command.
                                                     </div>
+                                                    <br />
                                                     <div>
                                                         {`$ curl -u<username> -T <path_to_file> "https://artifactory.mobiledgex.net/artifactory/repo-` + org + `/<target_file_path>" --progress-bar -o`}
                                                     </div>
