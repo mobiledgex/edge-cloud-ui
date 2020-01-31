@@ -153,8 +153,7 @@ export default class PopDetailViewer extends React.Component {
                                         </div>
                                         <br></br>
                                         <div>
-                                            If you image is VM, please upload to our VM registry with your MobiledgeX
-                                            Account Credentials.
+                                            If you image is VM, please upload your image with your MobiledgeX Account Credentials to our VM registry using the following curl command.
                                         </div>
                                         <div>
                                             {`curl -u<username> -T <path_to_file> `}<span
