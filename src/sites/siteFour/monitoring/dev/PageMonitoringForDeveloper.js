@@ -227,6 +227,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             clusterDropdownList: [],
             currentLevelType: 'Cluster',
             filteredUsageList: [],
+            selectOrg: '',
         };
 
         interval = null;
@@ -236,10 +237,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             super(props);
 
         }
-
         componentDidMount = async () => {
+
             this.setState({
                 loading: true,
+                selectOrg: localStorage.selectOrg.toString(),
             })
             await this.loadInitDataForCluster();
 
@@ -590,9 +592,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             >RESET</Button>
                         </div>
-                        <div style={{marginLeft: 50, color: 'green', fontWeight: 'bold', fontFamily:'Righteous'}}>
+                        <div style={{marginLeft: 50, color: 'green', fontWeight: 'bold', fontFamily: 'Righteous'}}>
                             {this.state.userType}
                             [ This is Developer View ]
+                        </div>
+                        <div style={{marginLeft: 50, color: '#6de1ff', fontWeight: 'bold', fontFamily: 'Encode Sans Condensed'}}>
+                            {this.state.selectOrg}
                         </div>
                         {this.state.intervalLoading &&
                         <div style={{marginLeft: 50}}>
