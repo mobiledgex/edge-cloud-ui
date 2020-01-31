@@ -11,14 +11,12 @@ import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
 import {
-    filterAppInstanceListByAppInst,
     getAppLevelUsageList,
     getInstaceListByCurrentOrg,
-    renderBarChartForAppInst,
     makeCompleteDateTime,
     makeLineChartDataForAppInst,
-    makeSelectBoxListForClusterList,
     makeSelectBoxListWithKeyValueCombination,
+    renderBarChartForAppInst,
     renderBottomGridArea,
     renderBubbleChartForCloudlet,
 } from "./PageMonitoringServiceForDeveloper";
@@ -30,7 +28,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {handleBubbleChartDropDownForCluster, makeUniqCloudletList, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {makeUniqCloudletList, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
 import MiniMapForDevMon from "./MiniMapForDevMon";
 
@@ -576,10 +574,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 defaultValue={REGIONS_OPTIONS[0].value}
                                 onChange={async (e, {value}) => {
 
-                                    this.setState({
-                                        currentRegion: value,
-                                    })
-
+                                    //alert(value)
+                                    /*  this.setState({
+                                          currentRegion: value,
+                                      })
+  */
                                     /* await this.filterByEachTypes(value)
                                      setTimeout(() => {
                                          this.setState({
@@ -609,27 +608,27 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={this.state.dropDownAppInstanceList}
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
-                                   /* try {
-                                        let _data = value.toString().split("|")
-                                        let appInstOne = _data[0]
-                                        let filteredClusterList = filterAppInstanceListByAppInst(this.state.appInstanceList, appInstOne);
-                                        let dropDownClusterList = makeSelectBoxListForClusterList(filteredClusterList, 'ClusterInst')
+                                    /* try {
+                                         let _data = value.toString().split("|")
+                                         let appInstOne = _data[0]
+                                         let filteredClusterList = filterAppInstanceListByAppInst(this.state.appInstanceList, appInstOne);
+                                         let dropDownClusterList = makeSelectBoxListForClusterList(filteredClusterList, 'ClusterInst')
 
-                                        await this.setState({
-                                            dropDownClusterList: [],
-                                            currentCluster: '',
-                                            currentAppInst: value,
-                                        }, () => {
-                                            this.setState({
-                                                dropDownClusterList: dropDownClusterList,
-                                                clusterSelectBoxPlaceholder: 'Select Cluster'
-                                            })
-                                        })
+                                         await this.setState({
+                                             dropDownClusterList: [],
+                                             currentCluster: '',
+                                             currentAppInst: value,
+                                         }, () => {
+                                             this.setState({
+                                                 dropDownClusterList: dropDownClusterList,
+                                                 clusterSelectBoxPlaceholder: 'Select Cluster'
+                                             })
+                                         })
 
-                                        await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
-                                    } catch (e) {
+                                         await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                     } catch (e) {
 
-                                    }*/
+                                     }*/
 
                                 }}
                             />
@@ -674,12 +673,12 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 format="YYYY-MM-DD HH:mm"
                                 placeholder={[moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
                                 onOk={async (date) => {
-                                    let stateTime = date[0].format('YYYY-MM-DD HH:mm')
+                                   /* let stateTime = date[0].format('YYYY-MM-DD HH:mm')
                                     let endTime = date[1].format('YYYY-MM-DD HH:mm')
                                     await this.setState({
                                         startTime: stateTime,
                                         endTime: endTime,
-                                    })
+                                    })*/
                                     //this.filterUsageListByDate()
                                 }}
                                 ranges={{
@@ -893,10 +892,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             options={HARDWARE_OPTIONS_FOR_CLUSTER}
                                                             defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
                                                             onChange={async (e, {value}) => {
-                                                              /*  try{
-                                                                    await handleBubbleChartDropDownForCluster(value, this);
-                                                                }catch (e) {
-                                                                }*/
+                                                                /*  try{
+                                                                      await handleBubbleChartDropDownForCluster(value, this);
+                                                                  }catch (e) {
+                                                                  }*/
 
                                                             }}
                                                             value={this.state.currentHardwareType}
