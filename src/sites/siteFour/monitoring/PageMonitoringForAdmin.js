@@ -1075,8 +1075,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
 
-
-
         renderSelectBoxRow() {
             return (
                 <div className='page_monitoring_select_row'>
