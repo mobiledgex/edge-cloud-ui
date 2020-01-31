@@ -23,6 +23,19 @@ export const USAGE_TYPE = {
     SUM_MEM_USAGE: 'sumMemUsage',
     SUM_RECV_BYTES: 'sumRecvBytes',
     SUM_DISK_USAGE: 'sumDiskUsage',
+    SUM_TCP_CONNS: 'sumTcpConns'
+
+  /*  sumUdpSent: 6827
+    sumUdpRecv: 1087
+    sumUdpRecvErr: 0
+    sumTcpConns: 196
+    sumTcpRetrans: 865
+    sumSendBytes: 435582.3
+    sumRecvBytes: 136609.3
+    sumMemUsage: 29.078074012239632
+    sumDiskUsage: 10.561762070574607
+    sumCpuUsage: 4.878710078764074*/
+
 }
 
 export const CLASSIFICATION = {
@@ -56,8 +69,8 @@ export const REGIONS_OPTIONS = [
 ]
 
 export const NETWORK_OPTIONS = [
-    {text: 'RECV BYTES', value: 'recv_bytes'},
-    {text: 'SEND BYTES', value: 'send_bytes'},
+    {text: 'RECV BYTES', value: 'RECV_BYTES'},
+    {text: 'SEND BYTES', value: 'SEND_BYTES'},
 ]
 
 export const NETWORK_OPTIONS2 = [
@@ -104,20 +117,20 @@ export const USAGE_INDEX_FOR_CLUSTER = {
 
 
 export const NETWORK_TYPE = {
-    RECV_BYTES: 'recv_bytes',
-    SEND_BYTES: 'send_bytes',
+    RECV_BYTES: 'RECV_BYTES',
+    SEND_BYTES: 'SEND_BYTES',
     NET_SEND: 'NET_SEND',
     NET_RECV: 'NET_RECV',
 }
 
 
 export const HARDWARE_OPTIONS = [
-    {text: 'FLAVOR', value: 'flavor'},
-    {text: 'CPU', value: 'cpu'},
-    {text: 'MEM', value: 'mem'},
-    {text: 'DISK', value: 'disk'},
-    {text: 'RECV_BYTES', value: 'recv_bytes'},
-    {text: 'SEND_BYTES', value: 'send_bytes'},
+    {text: 'FLAVOR', value: 'FLAVOR'},
+    {text: 'CPU', value: 'CPU'},
+    {text: 'MEM', value: 'MEM'},
+    {text: 'DISK', value: 'DISK'},
+    {text: 'RECV_BYTES', value: 'RECV_BYTES'},
+    {text: 'SEND_BYTES', value: 'SEND_BYTES'},
 ]
 
 
@@ -156,8 +169,8 @@ export const HARDWARE_TYPE_FOR_CLOUDLET = {
 }
 
 export const HARDWARE_TYPE = {
-    FLAVOR: 'flavor',
-    CPU: 'cpu',
+    FLAVOR: 'FLAVOR',
+    CPU: 'CPU',
     VCPU: 'vCPU',
     VCPU_MAX: 'VCPU_MAX',
     NET_SEND: 'NET_SEND',
@@ -188,22 +201,22 @@ export const HARDWARE_TYPE = {
     RECVBYTES: 'RECV_BYTES',
 
 
-    MEM: 'mem',
+    MEM: 'MEM',
     MEM2: 'MEM',
-    RECV_BYTE: 'recv_bytes',
-    SEND_BYTE: 'send_bytes',
-    DISK: 'disk',
-    CONNECTIONS: 'connections',
-    ACTIVE_CONNECTION: 'active_connection',//12
-    HANDLED_CONNECTION: 'handled_connection',//13
-    ACCEPTS_CONNECTION: 'accepts_connection',//14 (index)
+    RECV_BYTES: 'RECV_BYTES',
+    SEND_BYTES: 'SEND_BYTES',
+    DISK: 'DISK',
+    CONNECTIONS: 'CONNECTIONS',
+    ACTIVE_CONNECTION: 'ACTIVE_CONNECTION',//12
+    HANDLED_CONNECTION: 'HANDLED_CONNECTION',//13
+    ACCEPTS_CONNECTION: 'ACCEPTS_CONNECTION',//14 (index)
 
 }
 
 export const CONNECTIONS_OPTIONS = [
-    {text: 'ACTIVE CONN', value: 'active_connection'},
-    {text: 'HANDLED CONN', value: 'handled_connection'},
-    {text: 'ACCEPTS CONN', value: 'accepts_connection'},
+    {text: 'ACTIVE CONN', value: 'ACTIVE_CONNECTION'},
+    {text: 'HANDLED CONN', value: 'HANDLED_CONNECTION'},
+    {text: 'ACCEPTS CONN', value: 'ACCEPTS_CONNECTION'},
     //ACCEPTS_CONNECTION
 ]
 

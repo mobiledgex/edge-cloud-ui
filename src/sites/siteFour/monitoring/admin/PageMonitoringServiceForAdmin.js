@@ -330,11 +330,11 @@ export const renderUsageLabelByType = (usageOne, hardwareType) => {
         return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
     }
 
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
         return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
     }
 
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
         return numberWithCommas(usageOne.sumSendBytes) + " Byte";
     }
 
@@ -393,11 +393,11 @@ export const renderUsageByType = (usageOne, hardwareType) => {
     if (hardwareType === HARDWARE_TYPE.DISK) {
         return usageOne.sumDiskUsage
     }
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
         return usageOne.sumRecvBytes
     }
 
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
         return usageOne.sumSendBytes
     }
 
@@ -968,9 +968,9 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
                 let usageOne = 0;
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     usageOne = seriesValues[j]["6"];
-                } else if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
+                } else if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
                     usageOne = seriesValues[j]["13"];//receivceBytes
-                } else if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+                } else if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
                     usageOne = seriesValues[j]["12"]; //sendBytes
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
                     usageOne = seriesValues[j]["10"]; //mem usage
@@ -1146,7 +1146,7 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
 }
 
 
-export const renderLineChartCore = (instanceNameList, usageSetList, newDateTimeList, hardwareType) =>{
+export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDateTimeList, hardwareType) =>{
     const lineChartData = (canvas) => {
 
         let gradientList = makeGradientColor(canvas, height);
@@ -1156,7 +1156,7 @@ export const renderLineChartCore = (instanceNameList, usageSetList, newDateTimeL
             //@todo: top5 만을 추린다
             if (i < 5) {
                 let datasetsOne = {
-                    label: instanceNameList[i],
+                    label: paramLevelTypeNameList[i],
                     //backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '',
                     backgroundColor: '',
                     borderColor: gradientList[i],
@@ -1295,9 +1295,9 @@ export const makeNetworkBarData = (networkUsageList, hwType) => {
         if (index < 5) {
             let barDataOne = [
                 networkUsageList[index].instance.AppName.toString().substring(0, 10) + "...",
-                hwType === HARDWARE_TYPE.RECV_BYTE ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
+                hwType === HARDWARE_TYPE.RECV_BYTES ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
                 CHART_COLOR_LIST[index],
-                hwType === HARDWARE_TYPE.RECV_BYTE ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
+                hwType === HARDWARE_TYPE.RECV_BYTES ? networkUsageList[index].sumRecvBytes : networkUsageList[index].sumSendBytes,
             ]
             chartDataList.push(barDataOne);
         }

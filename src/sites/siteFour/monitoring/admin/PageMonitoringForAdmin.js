@@ -261,7 +261,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     allNetworkUsageList: [],
                     allDiskUsageList: [],
                     dropdownCloudletList: [],
-                    clusterList: [],
+                    clusterDropdownList: [],
                     filteredCpuUsageList: [],
                     filteredMemUsageList: [],
                     filteredNetworkUsageList: [],
@@ -354,7 +354,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allDiskUsageList: usageList[3],//disk is last array
                 allConnectionsUsageList: usageList[4],
                 cloudletList: cloudletList,
-                clusterList: clusterList,
+                clusterDropdownList: clusterList,
                 filteredCpuUsageList: usageList[0],
                 filteredMemUsageList: usageList[1],
                 filteredNetworkUsageList: usageList[2],
@@ -419,7 +419,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
          * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
          * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
          */
-        async filterByEachTypes(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
+        async fliterOnCluster(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
             let appInstanceList = []
             let allCpuUsageList = []
             let allMemUsageList = []
@@ -545,7 +545,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
                 cloudletList: cloudletSelectBoxList,
-                clusterList: clusterSelectBoxList,
+                clusterDropdownList: clusterSelectBoxList,
                 currentCloudLet: pCloudLet,
                 currentCluster: pCluster,
             });
@@ -1327,7 +1327,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         fullLabel: item.instance.AppName.toString(),
                     })
                 })
-            } else if (value === HARDWARE_TYPE.SEND_BYTE) {
+            } else if (value === HARDWARE_TYPE.SEND_BYTES) {
                 allNetworkUsageList.map((item, index) => {
                     chartData.push({
                         index: index,

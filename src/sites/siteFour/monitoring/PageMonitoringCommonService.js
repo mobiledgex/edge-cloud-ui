@@ -1,7 +1,7 @@
 import React from 'react';
 import './PageMonitoring.css';
 import {toast} from "react-semantic-toasts";
-import {HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET,} from "../../../shared/Constants";
+import {HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, USAGE_TYPE,} from "../../../shared/Constants";
 import Lottie from "react-lottie";
 import {removeDuplication} from "./dev/PageMonitoringServiceForDeveloper";
 import {Chart} from "react-google-charts";
@@ -65,7 +65,7 @@ export const renderPlaceHolder = (type: string = '') => {
 }
 
 
-export const renderBarChartCore = (chartDataList, hardwareType) =>{
+export const renderBarChartCore = (chartDataList, hardwareType) => {
     return (
         <Chart
             width="100%"
@@ -436,11 +436,11 @@ export const renderUsageLabelByTypeForAppInst = (usageOne, hardwareType, userTyp
         return numberWithCommas(usageOne.sumDiskUsage) + " Byte"
     }
 
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
         return numberWithCommas(usageOne.sumRecvBytes) + " Byte";
     }
 
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
         return numberWithCommas(usageOne.sumSendBytes) + " Byte";
     }
 
@@ -469,11 +469,11 @@ export const renderUsageByTypeForAppInst = (usageOne, hardwareType, role = '',) 
     if (hardwareType === HARDWARE_TYPE.DISK) {
         return usageOne.sumDiskUsage
     }
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
         return usageOne.sumRecvBytes
     }
 
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
         return usageOne.sumSendBytes
     }
 
@@ -490,15 +490,48 @@ export const renderUsageByTypeForAppInst = (usageOne, hardwareType, role = '',) 
     }
 }
 
-export const makeBubbleChartDataForCluster = (usageList: any) => {
+export const hardwareTypeToUsageKey = (hwType: string) => {
+    if (hwType === HARDWARE_TYPE.CPU.toUpperCase()) {
+        return USAGE_TYPE.SUM_CPU_USAGE
+    }
+
+    if (hwType === HARDWARE_TYPE.MEM.toUpperCase()) {
+        return "sumMemUsage"
+    }
+
+    if (hwType === HARDWARE_TYPE.DISK.toUpperCase()) {
+        return "sumDiskUsage"
+    }
+
+    if (hwType === HARDWARE_TYPE.TCPCONNS.toUpperCase()) {
+        return "sumTcpConns"
+    }
+
+}
+export const NumberToFixed = (value: number, fixedLength: number) => {
+    try {
+        Number(value).toFixed(fixedLength)
+    } catch (e) {
+        return 0;
+    }
+}
+
+export const makeBubbleChartDataForCluster = (usageList: any, paramHWType) => {
+
+    console.log('makeBubbleChartDataForCluster===>', usageList)
+
     let bubbleChartData = []
     usageList.map((item, index) => {
+
+        let usageValue :number = item[hardwareTypeToUsageKey(paramHWType)]
+        usageValue =usageValue.toFixed(2)
+
         bubbleChartData.push({
             index: index,
-            label: item.cloudlet.toString().substring(0, 10) + "...",
-            value: item.sumCpuUsage.toFixed(2),
-            favor: item.sumCpuUsage.toFixed(2),
-            fullLabel: item.cloudlet.toString(),
+            label: item.cluster.toString().substring(0, 10) + "...",
+            value: usageValue,
+            favor: usageValue,
+            fullLabel: item.cluster.toString(),
         })
     })
 
@@ -546,7 +579,7 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
         allUsageList.map((item, index) => {
             bubbleChartData.push({
                 index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
+                label: item.cluster.toString().substring(0, 10) + "...",
                 value: item.sumMemUsage.toFixed(0),
                 favor: item.sumMemUsage.toFixed(0),
                 fullLabel: item.cluster,
@@ -556,7 +589,7 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
         allUsageList.map((item, index) => {
             bubbleChartData.push({
                 index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
+                label: item.cluster.toString().substring(0, 10) + "...",
                 value: item.sumDiskUsage.toFixed(0),
                 favor: item.sumDiskUsage.toFixed(0),
                 fullLabel: item.cluster,
@@ -566,9 +599,9 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
         allUsageList.map((item, index) => {
             bubbleChartData.push({
                 index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.sumNetRecv,
-                favor: item.sumNetRecv,
+                label: item.cluster.toString().substring(0, 10) + "...",
+                value: item.sumRecvBytes,
+                favor: item.sumRecvBytes,
                 fullLabel: item.cluster,
             })
         })
@@ -576,7 +609,7 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
         allUsageList.map((item, index) => {
             bubbleChartData.push({
                 index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
+                label: item.cluster.toString().substring(0, 10) + "...",
                 value: item.sumNetSend,
                 favor: item.sumNetSend,
                 fullLabel: item.cluster,
@@ -586,7 +619,7 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
         allUsageList.map((item, index) => {
             bubbleChartData.push({
                 index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
+                label: item.cluster.toString().substring(0, 10) + "...",
                 value: item.sumTcpConns.toFixed(0),
                 favor: item.sumTcpConns.toFixed(0),
                 fullLabel: item.cluster,
@@ -596,7 +629,7 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
         allUsageList.map((item, index) => {
             bubbleChartData.push({
                 index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
+                label: item.cluster.toString().substring(0, 10) + "...",
                 value: item.sumUdpSent,
                 favor: item.sumUdpSent,
                 fullLabel: item.cluster,
@@ -606,7 +639,7 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
         allUsageList.map((item, index) => {
             bubbleChartData.push({
                 index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
+                label: item.cluster.toString().substring(0, 10) + "...",
                 value: item.sumSendBytes,
                 favor: item.sumSendBytes,
                 fullLabel: item.cluster,
@@ -616,7 +649,7 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
         allUsageList.map((item, index) => {
             bubbleChartData.push({
                 index: index,
-                label: item.cloudlet.toString().substring(0, 10) + "...",
+                label: item.cluster.toString().substring(0, 10) + "...",
                 value: item.sumRecvBytes,
                 favor: item.sumRecvBytes,
                 fullLabel: item.cluster,

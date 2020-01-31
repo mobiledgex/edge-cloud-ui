@@ -38,7 +38,7 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
     let store = JSON.parse(localStorage.PROJECT_INIT);
     let token = store ? store.userToken : 'null';
 
-    console.log('cloudletList====>', clusterList);
+    console.log('getClusterLevelUsageList====>clusterList', clusterList);
 
     for (let index = 0; index < clusterList.length; index++) {
         let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
@@ -102,11 +102,6 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
               14: "udpRecvErr"*/
 
             udpSeriesList.map(item => {
-
-                cluster = item[1];
-                dev = item[2];
-                cloudlet = item[3];
-                operator = item[4];
                 sumUdpSent += item[12];
                 sumUdpRecv += item[13];
                 sumUdpRecvErr += item[14];
@@ -136,10 +131,10 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
 
 
             newClusterLevelUsageList.push({
-                cluster,
-                dev,
-                cloudlet,
-                operator,
+                cluster : clusterList[index].ClusterName,
+                dev: clusterList[index].Region,
+                cloudlet: clusterList[index].Cloudlet,
+                operator: clusterList[index].Operator,
                 sumUdpSent: sumUdpSent / 10,
                 sumUdpRecv: sumUdpRecv / 10,
                 sumUdpRecvErr: sumUdpRecvErr / 10,
@@ -161,6 +156,37 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
 
             })
 
+        }else{//Seires is null
+            newClusterLevelUsageList.push({
+                /*Region: "EU"
+                ClusterName: "hackathon-alex-cluster"
+                OrganizationName: "MobiledgeX"
+                Operator: "mex"
+                Cloudlet: "hackathon-alex"*/
+                cluster : clusterList[index].ClusterName,
+                dev: clusterList[index].Region,
+                cloudlet: clusterList[index].Cloudlet,
+                operator: clusterList[index].Operator,
+                sumUdpSent: 0,
+                sumUdpRecv: 0,
+                sumUdpRecvErr: 0,
+                sumTcpConns: 0,
+                sumTcpRetrans: 0,
+                sumSendBytes: 0,
+                sumRecvBytes: 0,
+                sumMemUsage: 0,
+                sumDiskUsage: 0,
+                sumCpuUsage: 0,
+                columns: 0,
+                udpSeriesList:[],
+                tcpSeriesList:[],
+                networkSeriesList:[],
+                memSeriesList:[],
+                diskSeriesList:[],
+                cpuSeriesList:[],
+
+
+            })
         }
 
     })
@@ -221,7 +247,7 @@ export const getClusterList = async () => {
     let mergedClusterList = [];
     showClusterList.map(item => {
         //@todo : null check
-        if (item.response.data["0"].Region !== '') {
+        if (item.response.data.length !== 0) {
             let clusterList = item.response.data;
             clusterList.map(item => {
                 mergedClusterList.push(item);
@@ -229,18 +255,17 @@ export const getClusterList = async () => {
         }
     })
 
-
     //todo: 현재 속한 조직의 것만을 가져오도록 필터링
-    /*let orgClusterList = []
+    let orgClusterList = []
     mergedClusterList.map(item => {
         if (item.OrganizationName === localStorage.selectOrg) {
             orgClusterList.push(item)
         }
     })
 
-    console.log('orgClusterList====>',orgClusterList);*/
+    console.log('orgClusterList====>', orgClusterList);
 
-    return mergedClusterList;
+    return orgClusterList;
 }
 
 
@@ -380,6 +405,11 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
         return usageOne.avgFloatingIpsUsed;
     }
 
+    if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
+        return usageOne.sumTcpConns;
+    }
+
+
     if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
         return usageOne.avgIpv4Used;
     }
@@ -401,11 +431,11 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
     if (hardwareType === HARDWARE_TYPE.DISK) {
         return usageOne.sumDiskUsage
     }
-    if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
         return usageOne.sumRecvBytes
     }
 
-    if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+    if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
         return usageOne.sumSendBytes
     }
 
@@ -474,19 +504,19 @@ export const sortUsageListByType = (usageList, hardwareType) => {
 
 export const sortUsageListByTypeForCluster = (usageList, hardwareType) => {
     if (hardwareType === HARDWARE_TYPE.CPU) {
-        usageList.sort((a, b) => b.avgCpuUsed - a.avgCpuUsed);
+        usageList.sort((a, b) => b.sumCpuUsage - a.sumCpuUsage);
     } else if (hardwareType === HARDWARE_TYPE.MEM) {
-        usageList.sort((a, b) => b.avgMemUsed - a.avgMemUsed);
+        usageList.sort((a, b) => b.sumMemUsage - a.sumMemUsage);
     } else if (hardwareType === HARDWARE_TYPE.DISK) {
-        usageList.sort((a, b) => b.avgDiskUsed - a.avgDiskUsed);
+        usageList.sort((a, b) => b.sumDiskUsage - a.sumDiskUsage);
     } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-        usageList.sort((a, b) => b.avgTcpConns - a.avgTcpConns);
+        usageList.sort((a, b) => b.sumTcpConns - a.sumTcpConns);
     } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-        usageList.sort((a, b) => b.avgUdpSent - a.avgUdpSent);
+        usageList.sort((a, b) => b.sumUdpSent - a.sumUdpSent);
     } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        usageList.sort((a, b) => b.avgSendBytes - a.avgSendBytes);
+        usageList.sort((a, b) => b.sumSendBytes - a.sumSendBytes);
     } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        usageList.sort((a, b) => b.avgRecvBytes - a.avgRecvBytes);
+        usageList.sort((a, b) => b.sumRecvBytes - a.sumRecvBytes);
     }
 
     return usageList;
@@ -556,7 +586,7 @@ export const renderBarChartForAppInst = (usageList, hardwareType, _this) => {
 
 export const renderBarGraphForCluster = (usageList, hardwareType, _this) => {
 
-    console.log('renderBarGraph2===>', usageList);
+    console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
 
     usageList = sortUsageListByTypeForCluster(usageList, hardwareType)
 
@@ -734,9 +764,9 @@ export const makeLineChartDataForAppInst = (_this: PageMonitoring, hardwareUsage
                 let usageOne = 0;
                 if (hardwareType === HARDWARE_TYPE.CPU) {
                     usageOne = seriesValues[j]["6"];
-                } else if (hardwareType === HARDWARE_TYPE.RECV_BYTE) {
+                } else if (hardwareType === HARDWARE_TYPE.RECV_BYTES) {
                     usageOne = seriesValues[j]["13"];//receivceBytes
-                } else if (hardwareType === HARDWARE_TYPE.SEND_BYTE) {
+                } else if (hardwareType === HARDWARE_TYPE.SEND_BYTES) {
                     usageOne = seriesValues[j]["12"]; //sendBytes
                 } else if (hardwareType === HARDWARE_TYPE.MEM) {
                     usageOne = seriesValues[j]["10"]; //mem usage
@@ -792,7 +822,7 @@ export const renderLineChartForCluster = (_this: PageMonitoring, pUsageList: Arr
         )
     } else {
         let name = ''
-        let instanceNameList = [];
+        let levelTypeNameList = [];
         let usageSetList = []
         let dateTimeList = []
         let series = []
@@ -847,7 +877,7 @@ export const renderLineChartForCluster = (_this: PageMonitoring, pUsageList: Arr
                 dateTimeList.push(dateOne[1]);
             }
 
-            instanceNameList.push(name)
+            levelTypeNameList.push(name)
             usageSetList.push(usageList);
         }
 
@@ -865,7 +895,7 @@ export const renderLineChartForCluster = (_this: PageMonitoring, pUsageList: Arr
 
         }
 
-        return renderLineChartCore(usageSetList, instanceNameList, newDateTimeList, hardwareType)
+        return renderLineChartCore(levelTypeNameList, usageSetList, newDateTimeList, hardwareType)
     }
 
 }
