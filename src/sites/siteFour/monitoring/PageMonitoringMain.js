@@ -8,10 +8,10 @@ import * as actions from '../../../actions';
 import {hot} from "react-hot-loader/root";
 import './PageMonitoring.css'
 import {USER_ROLE} from "../../../shared/Constants";
-import PageMonitoringForOperator from "./PageMonitoringForOperator";
+import PageMonitoringForOperator from "./oper/PageMonitoringForOperator";
 import {Grid} from "semantic-ui-react";
-import PageMonitoringForDeveloper from "./PageMonitoringForDeveloper";
-import PageMonitoringForAdmin from "./PageMonitoringForAdmin";
+import PageMonitoringForDeveloper from "./dev/PageMonitoringForDeveloper";
+import PageMonitoringForAdmin from "./admin/PageMonitoringForAdmin";
 
 const mapStateToProps = (state) => {
     return {

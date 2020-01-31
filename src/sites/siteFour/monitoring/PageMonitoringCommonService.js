@@ -7,7 +7,7 @@ import {Bar as RBar, BarChart, BarLabel, BarSeries, LinearXAxis, LinearYAxis, Li
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FlexBox from "flexbox-react";
-import {Styles} from "./PageMonitoringService";
+import {Styles} from "./admin/PageMonitoringServiceForAdmin";
 import Plot from "react-plotly.js";
 
 export const renderBar3333 = (usageList, hardwareType = HARDWARE_TYPE.CPU, _this) => {

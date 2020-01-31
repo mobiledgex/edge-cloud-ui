@@ -6,17 +6,18 @@ import {Button, Dropdown, Grid, Tab, Table} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import * as actions from '../../../actions';
+import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
-import {getCloudletList, getClouletLevelUsageList, numberWithCommas, renderBarGraphForCloutdlet, renderLineChartForCloudlet, renderPlaceHolder} from "./PageMonitoringService";
-import {HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, NETWORK_OPTIONS2, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../shared/Constants";
+import {getCloudletList, getClouletLevelUsageList, numberWithCommas,  renderPlaceHolder} from "../admin/PageMonitoringServiceForAdmin";
+import {HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, NETWORK_OPTIONS2, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
-import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../shared/Types";
-import {TypeAppInstance, TypeUtilization} from "../../../shared/Types";
+import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
+import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
-import './PageMonitoring.css'
-import {showToast} from "./PageMonitoringChartService";
+import '../PageMonitoring.css'
+import {showToast} from "../PageMonitoringCommonService";
+import {renderBarGraphForCloutdlet, renderLineChartForCloudlet} from "../oper/PageMonitoringServiceForOperator";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -362,7 +363,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     options={{
                                         loop: true,
                                         autoplay: true,
-                                        animationData: require('../../../lotties/loader001'),
+                                        animationData: require('../../../../lotties/loader001'),
                                         rendererSettings: {
                                             preserveAspectRatio: 'xMidYMid slice'
                                         }
@@ -965,7 +966,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         options={{
                                             loop: true,
                                             autoplay: true,
-                                            animationData: require('../../../lotties/loader001'),
+                                            animationData: require('../../../../lotties/loader001'),
                                             rendererSettings: {
                                                 preserveAspectRatio: 'xMidYMid slice'
                                             }

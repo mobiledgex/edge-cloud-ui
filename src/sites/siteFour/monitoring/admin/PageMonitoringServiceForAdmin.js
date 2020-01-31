@@ -2,17 +2,17 @@ import React from 'react';
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
-import {formatData} from "../../../services/formatter/formatComputeInstance";
-import './PageMonitoring.css';
-import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX} from "../../../shared/Constants";
+import {formatData} from "../../../../services/formatter/formatComputeInstance";
+import '../PageMonitoring.css';
+import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX} from "../../../../shared/Constants";
 import {Line as ReactChartJs} from 'react-chartjs-2';
 import Lottie from "react-lottie";
-import BubbleChart from "../../../components/BubbleChart";
-import {TypeAppInstance} from "../../../shared/Types";
+import BubbleChart from "../../../../components/BubbleChart";
+import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageMonitoringForAdmin";
-import {showToast} from "./PageMonitoringChartService";
-import {SHOW_CLOUDLET} from "../../../services/endPointTypes";
-import {sendSyncRequest} from "../../../services/serviceMC";
+import {showToast} from "../PageMonitoringCommonService";
+import {SHOW_CLOUDLET} from "../../../../services/endPointTypes";
+import {sendSyncRequest} from "../../../../services/serviceMC";
 
 export const cutArrayList = (length: number = 5, paramArrayList: any) => {
     let newArrayList = [];
@@ -432,7 +432,7 @@ export const renderLottie = () => {
                     options={{
                         loop: true,
                         autoplay: true,
-                        animationData: require('../../../lotties/loader001'),
+                        animationData: require('../../../../lotties/loader001'),
                         rendererSettings: {
                             preserveAspectRatio: 'xMidYMid slice'
                         }
@@ -602,143 +602,111 @@ export const sortUsageListByType = (usageList, hardwareType) => {
 }
 
 
-export const renderBarGraphForCloutdlet = (usageList, hardwareType, _this) => {
 
-    console.log('renderBarGraph2===>', usageList);
-
-    usageList = sortUsageListByType(usageList, hardwareType)
-
-
-    if (usageList.length === 0) {
-        return (
-            <div style={Styles.noData}>
-                NO DATA
-            </div>
-        )
-    } else {
-
-        let chartDataList = [];
-        chartDataList.push(["Element", hardwareType.toUpperCase() + " USAGE", {role: "style"}, {role: 'annotation'}])
-        for (let index = 0; index < usageList.length; index++) {
-            if (index < 5) {
-                let barDataOne = [
-                    usageList[index].cloudlet.toString().substring(0, 10) + "...",
-                    renderUsageByType(usageList[index], hardwareType),
-                    CHART_COLOR_LIST[index],
-                    renderUsageLabelByType(usageList[index], hardwareType)
-                ]
-                chartDataList.push(barDataOne);
-            }
-        }
-
-        console.log(`chartDataList====>${hardwareType}`, chartDataList)
-
-        return (
-            <Chart
-                width="100%"
-                //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
-                height={'100%'}
-                chartType="BarChart"
-                loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
-                data={chartDataList}
-                options={{
-                    annotations: {
-                        style: 'line',
-                        textStyle: {
-                            //fontName: 'Righteous',
-                            fontSize: 12,
-                            //bold: true,
-                            //italic: true,
-                            // The color of the text.
-                            color: '#fff',
-                            // The color of the text outline.
-                            //auraColor: 'black',
-                            // The transparency of the text.
-                            opacity: 1.0
-                        },
-                        boxStyle: {
-                            // Color of the box outline.
-                            stroke: '#ffffff',
-                            // Thickness of the box outline.
-                            strokeWidth: 1,
-                            // x-radius of the corner curvature.
-                            rx: 10,
-                            // y-radius of the corner curvature.
-                            ry: 10,
-                        }
+export const renderBarChartCore = (chartDataList, hardwareType) =>{
+    return (
+        <Chart
+            width="100%"
+            //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
+            height={'100%'}
+            chartType="BarChart"
+            loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
+            data={chartDataList}
+            options={{
+                annotations: {
+                    style: 'line',
+                    textStyle: {
+                        //fontName: 'Righteous',
+                        fontSize: 12,
+                        //bold: true,
+                        //italic: true,
+                        // The color of the text.
+                        color: '#fff',
+                        // The color of the text outline.
+                        //auraColor: 'black',
+                        // The transparency of the text.
+                        opacity: 1.0
                     },
+                    boxStyle: {
+                        // Color of the box outline.
+                        stroke: '#ffffff',
+                        // Thickness of the box outline.
+                        strokeWidth: 1,
+                        // x-radius of the corner curvature.
+                        rx: 10,
+                        // y-radius of the corner curvature.
+                        ry: 10,
+                    }
+                },
 
-                    is3D: true,
+                is3D: true,
+                title: '',
+                titleTextStyle: {
+                    color: '#fff',
+                    fontSize: 12,
+                    /*fontName: <string>, // i.e. 'Times New Roman'
+                    fontSize: <number>, // 12, 18 whatever you want (don't specify px)
+                     bold: <boolean>,    // true or false
+                      // true of false*/
+                },
+                //titlePosition: 'out',
+                chartArea: {
+                    // left: 20, right: 150, top: 50, bottom: 25,
+                    width: "60%", height: "80%",
+                },
+                legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
+                //xAxis
+                hAxis: {
+                    textPosition: 'none',//HIDE xAxis
                     title: '',
                     titleTextStyle: {
-                        color: '#fff',
+                        //fontName: "Times",
                         fontSize: 12,
-                        /*fontName: <string>, // i.e. 'Times New Roman'
-                        fontSize: <number>, // 12, 18 whatever you want (don't specify px)
-                         bold: <boolean>,    // true or false
-                          // true of false*/
+                        fontStyle: "italic",
+                        color: 'white'
                     },
-                    //titlePosition: 'out',
-                    chartArea: {
-                        // left: 20, right: 150, top: 50, bottom: 25,
-                        width: "60%", height: "80%",
+                    minValue: 0,
+                    textStyle: {
+                        color: "white"
                     },
-                    legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
-                    //xAxis
-                    hAxis: {
-                        textPosition: 'none',//HIDE xAxis
-                        title: '',
-                        titleTextStyle: {
-                            //fontName: "Times",
-                            fontSize: 12,
-                            fontStyle: "italic",
-                            color: 'white'
-                        },
-                        minValue: 0,
-                        textStyle: {
-                            color: "white"
-                        },
-                        gridlines: {
-                            color: "grey"
-                        },
-                        format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '0.##\' byte\'',
-                        baselineColor: "grey",
-                        //out', 'in', 'none'.
+                    gridlines: {
+                        color: "grey"
                     },
-                    //Y축
-                    vAxis: {
-                        title: '',
-                        titleTextStyle: {
-                            fontSize: 20,
-                            fontStyle: "normal",
-                            color: 'white'
-                        },
-                        textStyle: {
-                            color: "white",
-                            fontSize: 12,
-                        },
+                    format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '0.##\' byte\'',
+                    baselineColor: "grey",
+                    //out', 'in', 'none'.
+                },
+                //Y축
+                vAxis: {
+                    title: '',
+                    titleTextStyle: {
+                        fontSize: 20,
+                        fontStyle: "normal",
+                        color: 'white'
+                    },
+                    textStyle: {
+                        color: "white",
+                        fontSize: 12,
+                    },
 
-                    },
-                    //colors: ['#FB7A21'],
-                    fontColor: 'white',
-                    backgroundColor: {
-                        fill: '#1e2124'
-                    },
-                    /*  animation: {
-                          duration: 300,
-                          easing: 'out',
-                          startup: true
-                      }*/
-                    //colors: ['green']
-                }}
+                },
+                //colors: ['#FB7A21'],
+                fontColor: 'white',
+                backgroundColor: {
+                    fill: '#1e2124'
+                },
+                /*  animation: {
+                      duration: 300,
+                      easing: 'out',
+                      startup: true
+                  }*/
+                //colors: ['green']
+            }}
 
-                // For tests
-                rootProps={{'data-testid': '1'}}
-            />
-        );
-    }
-
-
+            // For tests
+            rootProps={{'data-testid': '1'}}
+        />
+    );
 }
 
 /**
@@ -753,7 +721,7 @@ export const renderPlaceHolder = (type: string = '') => {
                 options={{
                     loop: true,
                     autoplay: true,
-                    animationData: require('../../../lotties/loader001'),
+                    animationData: require('../../../../lotties/loader001'),
                     rendererSettings: {
                         preserveAspectRatio: 'xMidYMid slice'
                     }
@@ -809,7 +777,7 @@ export const renderPlaceHolder2 = () => {
                     options={{
                         loop: true,
                         autoplay: true,
-                        animationData: require('../../../lotties/loader001'),
+                        animationData: require('../../../../lotties/loader001'),
                         rendererSettings: {
                             preserveAspectRatio: 'xMidYMid slice'
                         }
@@ -1319,208 +1287,144 @@ export const renderLineChart = (_this: PageMonitoring, hardwareUsageList: Array,
 }
 
 
-export const renderLineChartForCloudlet = (_this: PageMonitoring, pUsageList: Array, hardwareType: string) => {
+export const renderLineChartCore = (instanceNameList, usageSetList, newDateTimeList, hardwareType) =>{
+    const lineChartData = (canvas) => {
 
-    console.log('usageList22222====>', pUsageList);
+        let gradientList = makeGradientColor(canvas, height);
 
-    if (pUsageList.length === 0) {
-        return (
-            <div style={Styles.noData}>
-                NO DATA
-            </div>
-        )
-    } else {
-        let cloudletName = ''
-        let instanceNameList = [];
-        let usageSetList = []
-        let dateTimeList = []
-        for (let i in pUsageList) {
-            let series = pUsageList[i].series
-
-            cloudletName = pUsageList[i].cloudlet
-            let usageList = [];
-
-            for (let j in series) {
-
-                let usageOne = 0;
-                if (hardwareType === HARDWARE_TYPE.VCPU) {
-                    usageOne = series[j][USAGE_INDEX.VCPUUSED];
-                } else if (hardwareType === HARDWARE_TYPE.MEM_USED) {
-                    usageOne = series[j][USAGE_INDEX.MEMUSED];
-                } else if (hardwareType === HARDWARE_TYPE.DISK_USED) {
-                    usageOne = series[j][USAGE_INDEX.DISKUSED];
-                } else if (hardwareType === HARDWARE_TYPE.FLOATING_IPS_USED) {
-                    usageOne = series[j][USAGE_INDEX.FLOATINGIPSUSED];
-                } else if (hardwareType === HARDWARE_TYPE.IPV4_USED) {
-                    usageOne = series[j][USAGE_INDEX.IPV4USED];
+        let finalSeriesDataSets = [];
+        for (let i in usageSetList) {
+            //@todo: top5 만을 추린다
+            if (i < 5) {
+                let datasetsOne = {
+                    label: instanceNameList[i],
+                    //backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '',
+                    backgroundColor: '',
+                    borderColor: gradientList[i],
+                    borderWidth: 2,
+                    pointColor: "#fff",
+                    pointStrokeColor: 'white',
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: 'white',
+                    data: usageSetList[i],
+                    radius: 0,
+                    pointRadius: 1,
                 }
 
-                usageList.push(usageOne);
-
-
-                let dateOne = series[j]["0"];
-                dateOne = dateOne.toString().split("T")
-                dateTimeList.push(dateOne[1]);
-            }
-
-            instanceNameList.push(cloudletName)
-            usageSetList.push(usageList);
-        }
-
-        console.log('usageSetList====>', usageSetList);
-
-
-        //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
-        let newDateTimeList = []
-        for (let i in dateTimeList) {
-            if (i < RECENT_DATA_LIMIT_COUNT) {
-                let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
-                let timeOne = splitDateTimeArrayList[0].replace("T", "T");
-                newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
+                finalSeriesDataSets.push(datasetsOne)
             }
 
         }
 
-        const lineChartData = (canvas) => {
 
-            let gradientList = makeGradientColor(canvas, height);
+        console.log('finalSeriesDataSets====>', finalSeriesDataSets);
 
-            let finalSeriesDataSets = [];
-            for (let i in usageSetList) {
-                //@todo: top5 만을 추린다
-                if (i < 5) {
-                    let datasetsOne = {
-                        label: instanceNameList[i],
-                        //backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '',
-                        backgroundColor: '',
-                        borderColor: gradientList[i],
-                        borderWidth: 2,
-                        pointColor: "#fff",
-                        pointStrokeColor: 'white',
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: 'white',
-                        data: usageSetList[i],
-                        radius: 0,
-                        pointRadius: 1,
-                    }
-
-                    finalSeriesDataSets.push(datasetsOne)
-                }
-
-            }
-
-
-            console.log('finalSeriesDataSets====>', finalSeriesDataSets);
-
-            return {
-                labels: newDateTimeList,
-                datasets: finalSeriesDataSets,
-            }
+        return {
+            labels: newDateTimeList,
+            datasets: finalSeriesDataSets,
         }
+    }
 
-        let height = 500 + 100;
-        let options = {
-            plugins: {
-                zoom: {
-                    pan: {
-                        enabled: true,
-                        mode: 'y'
-                    },
-                    zoom: {
-                        enabled: true,
-                        mode: 'xy'
-                    }
-                }
-            },
-            maintainAspectRatio: true,
-            responsive: true,
-            datasetStrokeWidth: 3,
-            pointDotStrokeWidth: 4,
-            layout: {
-                padding: {
-                    left: 0,
-                    right: 10,
-                    top: 0,
-                    bottom: 0
-                }
-            },
-            legend: {
-                position: 'top',
-                labels: {
-                    boxWidth: 10,
-                    fontColor: 'white'
-                }
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        fontColor: 'white',
-                        callback(value, index, label) {
-                            return numberWithCommas(value);
-
-                        },
-                    },
-                    gridLines: {
-                        color: "#505050",
-                    },
-                    //stacked: true
-
-                }],
-                xAxes: [{
-                    /*ticks: {
-                        fontColor: 'white'
-                    },*/
-                    gridLines: {
-                        color: "#505050",
-                    },
-                    ticks: {
-                        fontSize: 14,
-                        fontColor: 'white',
-                        //maxRotation: 0.05,
-                        //autoSkip: true,
-                        maxRotation: 45,
-                        minRotation: 45,
-                        padding: 10,
-                        labelOffset: 0,
-                        callback(value, index, label) {
-                            return value;
-
-                        },
-                    },
-                    beginAtZero: false,
-                    /* gridLines: {
-                         drawTicks: true,
-                     },*/
-                }],
-                backgroundColor: {
-                    fill: "#1e2124"
+    let height = 500 + 100;
+    let options = {
+        plugins: {
+            zoom: {
+                pan: {
+                    enabled: true,
+                    mode: 'y'
                 },
+                zoom: {
+                    enabled: true,
+                    mode: 'xy'
+                }
             }
+        },
+        maintainAspectRatio: true,
+        responsive: true,
+        datasetStrokeWidth: 3,
+        pointDotStrokeWidth: 4,
+        layout: {
+            padding: {
+                left: 0,
+                right: 10,
+                top: 0,
+                bottom: 0
+            }
+        },
+        legend: {
+            position: 'top',
+            labels: {
+                boxWidth: 10,
+                fontColor: 'white'
+            }
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    fontColor: 'white',
+                    callback(value, index, label) {
+                        return numberWithCommas(value);
 
+                    },
+                },
+                gridLines: {
+                    color: "#505050",
+                },
+                //stacked: true
+
+            }],
+            xAxes: [{
+                /*ticks: {
+                    fontColor: 'white'
+                },*/
+                gridLines: {
+                    color: "#505050",
+                },
+                ticks: {
+                    fontSize: 14,
+                    fontColor: 'white',
+                    //maxRotation: 0.05,
+                    //autoSkip: true,
+                    maxRotation: 45,
+                    minRotation: 45,
+                    padding: 10,
+                    labelOffset: 0,
+                    callback(value, index, label) {
+                        return value;
+
+                    },
+                },
+                beginAtZero: false,
+                /* gridLines: {
+                     drawTicks: true,
+                 },*/
+            }],
+            backgroundColor: {
+                fill: "#1e2124"
+            },
         }
 
-
-        let chartWidth = ((window.innerWidth - 300) * 2 / 3 - 50) / 2
-        let chartHeight = window.innerWidth > 1700 ? ((window.innerHeight - 320) / 2 - 80) - 10 : ((window.innerHeight - 370) / 2 - 80) - 10 //(height 사이즈)-(여유공백)
-        // let chartNetHeight = window.innerWidth > 1782 ? (window.innerHeight-320)/2-50 : (window.innerHeight-370)/2-50
-        //todo :#######################
-        //todo : chart rendering part
-        //todo :#######################
-        return (
-            <div style={{width: '100%', height: '100%'}}>
-                <ReactChartJs
-                    width={chartWidth}
-                    height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
-                    data={lineChartData}
-                    options={options}
-
-                />
-            </div>
-        );
     }
 
 
+    let chartWidth = ((window.innerWidth - 300) * 2 / 3 - 50) / 2
+    let chartHeight = window.innerWidth > 1700 ? ((window.innerHeight - 320) / 2 - 80) - 10 : ((window.innerHeight - 370) / 2 - 80) - 10 //(height 사이즈)-(여유공백)
+    // let chartNetHeight = window.innerWidth > 1782 ? (window.innerHeight-320)/2-50 : (window.innerHeight-370)/2-50
+    //todo :#######################
+    //todo : chart rendering part
+    //todo :#######################
+    return (
+        <div style={{width: '100%', height: '100%'}}>
+            <ReactChartJs
+                width={chartWidth}
+                height={hardwareType === "recv_bytes" || hardwareType === "send_bytes" ? chartHeight + 20 : chartHeight}
+                data={lineChartData}
+                options={options}
+
+            />
+        </div>
+    );
 }
 
 
