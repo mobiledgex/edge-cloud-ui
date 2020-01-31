@@ -1097,12 +1097,17 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={REGIONS_OPTIONS}
                                 defaultValue={REGIONS_OPTIONS[0].value}
                                 onChange={async (e, {value}) => {
-                                    await this.filterByEachTypes(value)
-                                    setTimeout(() => {
-                                        this.setState({
-                                            cloudLetSelectBoxPlaceholder: 'Select CloudLet'
-                                        })
-                                    }, 1000)
+                                    try{
+                                        await this.filterByEachTypes(value)
+                                        setTimeout(() => {
+                                            this.setState({
+                                                cloudLetSelectBoxPlaceholder: 'Select CloudLet'
+                                            })
+                                        }, 1000)
+                                    }catch (e) {
+
+                                    }
+
                                 }}
                                 value={this.state.currentRegion}
                                 // style={Styles.dropDown}
@@ -1128,12 +1133,16 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={this.state.cloudletList}
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
-                                    await this.filterByEachTypes(this.state.currentRegion, value)
-                                    setTimeout(() => {
-                                        this.setState({
-                                            clusterSelectBoxPlaceholder: 'Select Cluster'
-                                        })
-                                    }, 1000)
+                                    try{
+                                        await this.filterByEachTypes(this.state.currentRegion, value)
+                                        setTimeout(() => {
+                                            this.setState({
+                                                clusterSelectBoxPlaceholder: 'Select Cluster'
+                                            })
+                                        }, 1000)
+                                    }catch (e) {
+                                    }
+
                                 }}
                             />
                         </div>
@@ -1158,14 +1167,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={this.state.clusterList}
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
-                                    await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, value)
+                                    try{
+                                        await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, value)
 
-                                    setTimeout(() => {
-                                        this.setState({
-                                            appInstSelectBoxPlaceholder: "Select App Instance",
-                                            currentAppInst: '',
-                                        })
-                                    }, 500)
+                                        setTimeout(() => {
+                                            this.setState({
+                                                appInstSelectBoxPlaceholder: "Select App Instance",
+                                                currentAppInst: '',
+                                            })
+                                        }, 500)
+                                    }catch (e) {
+
+
+                                    }
+
                                 }}
                             />
                         </div>
@@ -1188,10 +1203,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
 
-                                    await this.setState({
-                                        currentAppInst: value,
-                                    })
-                                    await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                    try{
+                                        await this.setState({
+                                            currentAppInst: value,
+                                        })
+                                        await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                    }catch (e) {
+
+                                    }
+
                                 }}
                             />
                         </div>
@@ -1210,13 +1230,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 format="YYYY-MM-DD HH:mm"
                                 placeholder={[moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'), moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm')]}
                                 onOk={async (date) => {
-                                    let stateTime = date[0].format('YYYY-MM-DD HH:mm')
-                                    let endTime = date[1].format('YYYY-MM-DD HH:mm')
-                                    await this.setState({
-                                        startTime: stateTime,
-                                        endTime: endTime,
-                                    })
-                                    this.filterUsageListByDate()
+
+                                    try{
+                                        let stateTime = date[0].format('YYYY-MM-DD HH:mm')
+                                        let endTime = date[1].format('YYYY-MM-DD HH:mm')
+                                        await this.setState({
+                                            startTime: stateTime,
+                                            endTime: endTime,
+                                        })
+                                        this.filterUsageListByDate()
+                                    }catch (e) {
+
+                                    }
+
                                 }}
                                 ranges={{
                                     Today: [moment(), moment()],
