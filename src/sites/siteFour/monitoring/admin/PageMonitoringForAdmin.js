@@ -261,7 +261,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     allNetworkUsageList: [],
                     allDiskUsageList: [],
                     dropdownCloudletList: [],
-                    clusterDropdownList: [],
+                    clusterList: [],
                     filteredCpuUsageList: [],
                     filteredMemUsageList: [],
                     filteredNetworkUsageList: [],
@@ -354,7 +354,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 allDiskUsageList: usageList[3],//disk is last array
                 allConnectionsUsageList: usageList[4],
                 cloudletList: cloudletList,
-                clusterDropdownList: clusterList,
+                clusterList: clusterList,
                 filteredCpuUsageList: usageList[0],
                 filteredMemUsageList: usageList[1],
                 filteredNetworkUsageList: usageList[2],
@@ -531,7 +531,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             let gridInstanceListCpuMax = Math.max.apply(Math, allGridInstanceList.map(function (o) {
                 return o.sumCpuUsage;
             }));
-
             await this.setState({
                 filteredCpuUsageList: filteredCpuUsageList,
                 filteredMemUsageList: filteredMemUsageList,
@@ -545,7 +544,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
                 loading0: false,
                 cloudletList: cloudletSelectBoxList,
-                clusterDropdownList: clusterSelectBoxList,
+                clusterList: clusterSelectBoxList,
                 currentCloudLet: pCloudLet,
                 currentCluster: pCluster,
             });
@@ -674,6 +673,178 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentAppInst: '',
             })
         }
+
+        /**
+         * @todo: 셀렉트박스 Region, CloudLet, Cluster을 변경할때 처리되는 프로세스..
+         * @todo: Process to be processed when changing select box Region, CloudLet, Cluster
+         */
+        async filterByEachTypes(pRegion: string = '', pCloudLet: string = '', pCluster: string = '', pAppInstance: string = '', isDateFiltering: boolean = false,) {
+            let appInstanceList = []
+            let allCpuUsageList = []
+            let allMemUsageList = []
+            let allDiskUsageList = []
+            let allNetworkUsageList = []
+            let allConnectionsUsageList = []
+            let allGridInstanceList = []
+
+            //@todo: 날짜에 의한 필터링인경우
+            if (isDateFiltering) {
+                appInstanceList = this.state.appInstanceList;
+                allCpuUsageList = this.state.usageListByDate[0]
+                allMemUsageList = this.state.usageListByDate[1]
+                allNetworkUsageList = this.state.usageListByDate[2]
+                allDiskUsageList = this.state.usageListByDate[3]
+                allConnectionsUsageList = this.state.usageListByDate[4]
+                allGridInstanceList = makeGridInstanceList(this.state.usageListByDate);
+            } else {
+                appInstanceList = this.state.allAppInstanceList;
+                allCpuUsageList = this.state.allCpuUsageList
+                allMemUsageList = this.state.allMemUsageList
+                allDiskUsageList = this.state.allDiskUsageList
+                allNetworkUsageList = this.state.allNetworkUsageList
+                allConnectionsUsageList = this.state.allConnectionsUsageList
+                allGridInstanceList = this.state.allGridInstanceList;
+            }
+
+            this.props.toggleLoading(true)
+            await this.setState({
+                loading0: true,
+                appInstanceListSortByCloudlet: [],
+                currentRegion: pRegion,
+                cloudletList: [],
+            })
+
+            //todo: -------------------------------------------
+            //todo: FLITER By pRegion
+            //todo: -------------------------------------------
+            appInstanceList = filterAppInstanceListByRegion(pRegion, appInstanceList);
+            let cloudletSelectBoxList = makeCloudletListSelectBox(appInstanceList)
+            let appInstanceListGroupByCloudlet = reducer.groupBy(appInstanceList, CLASSIFICATION.CLOUDLET);
+
+            let filteredCpuUsageList = filterUsageListByRegion(pRegion, allCpuUsageList);
+            let filteredMemUsageList = filterUsageListByRegion(pRegion, allMemUsageList);
+            let filteredDiskUsageList = filterUsageListByRegion(pRegion, allDiskUsageList);
+            let filteredNetworkUsageList = filterUsageListByRegion(pRegion, allNetworkUsageList);
+            let filteredConnectionsUsageList = filterUsageListByRegion(pRegion, allConnectionsUsageList);
+
+            let filteredGridInstanceList = filterUsageListByRegion(pRegion, allGridInstanceList);
+
+            //todo: -------------------------------------------
+            //todo: FLITER  By pCloudLet
+            //todo: -------------------------------------------
+            let clusterSelectBoxList = [];
+            if (pCloudLet !== '') {
+                appInstanceListGroupByCloudlet = filterInstanceCountOnCloutLetOne(appInstanceListGroupByCloudlet, pCloudLet)
+                appInstanceList = filterAppInstanceListByCloudLet(appInstanceList, pCloudLet);
+                clusterSelectBoxList = makeClusterListSelectBox(appInstanceList, pCloudLet)
+                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredCpuUsageList);
+                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredMemUsageList);
+                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredDiskUsageList);
+                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredNetworkUsageList);
+                filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredConnectionsUsageList);
+
+
+                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLOUDLET, pCloudLet, filteredGridInstanceList);
+            }
+
+            //todo: -------------------------------------------
+            //todo: Filter By pCluster
+            //todo: -------------------------------------------
+            if (pCluster !== '') {
+                //todo:LeftTop의 Cloudlet위에 올라가는 인스턴스 리스트를 필터링 처리하는 로직.
+                appInstanceListGroupByCloudlet[0] = filterAppInstOnCloudlet(appInstanceListGroupByCloudlet[0], pCluster)
+                //todo:app instalce list를 필터링
+                appInstanceList = filterAppInstanceListByClusterInst(appInstanceList, pCluster);
+                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredCpuUsageList);
+                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredMemUsageList);
+                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredDiskUsageList);
+                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredNetworkUsageList);
+                filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCloudLet, filteredConnectionsUsageList);
+                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.CLUSTERINST, pCluster, filteredGridInstanceList);
+
+            }
+
+            //todo: -------------------------------------------
+            //todo: FLITER By pAppInstance
+            //todo: -------------------------------------------
+            if (pAppInstance !== '') {
+                appInstanceList = filterAppInstanceListByAppInst(appInstanceList, pAppInstance);
+                filteredCpuUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredCpuUsageList);
+                filteredMemUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredMemUsageList);
+                filteredDiskUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredDiskUsageList);
+                filteredNetworkUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredNetworkUsageList);
+                filteredConnectionsUsageList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredConnectionsUsageList);
+
+                filteredGridInstanceList = filterUsageByType(MONITORING_CATE_SELECT_TYPE.APPNAME, pAppInstance, filteredGridInstanceList);
+
+            }
+
+            //todo: -------------------------------------------
+            //todo: GridInstanceList MEM,CPU MAX VALUE
+            //todo: -------------------------------------------
+            let gridInstanceListMemMax = Math.max.apply(Math, allGridInstanceList.map(function (o) {
+                return o.sumMemUsage;
+            }));
+            let gridInstanceListCpuMax = Math.max.apply(Math, allGridInstanceList.map(function (o) {
+                return o.sumCpuUsage;
+            }));
+
+            await this.setState({
+                filteredCpuUsageList: filteredCpuUsageList,
+                filteredMemUsageList: filteredMemUsageList,
+                filteredDiskUsageList: filteredDiskUsageList,
+                filteredNetworkUsageList: filteredNetworkUsageList,
+                filteredConnectionsUsageList: filteredConnectionsUsageList,
+                filteredGridInstanceList: filteredGridInstanceList,
+                gridInstanceListMemMax: gridInstanceListMemMax,
+                gridInstanceListCpuMax: gridInstanceListCpuMax,
+                appInstanceList: appInstanceList,
+                appInstanceListGroupByCloudlet: appInstanceListGroupByCloudlet,
+                loading0: false,
+                cloudletList: cloudletSelectBoxList,
+                clusterList: clusterSelectBoxList,
+                currentCloudLet: pCloudLet,
+                currentCluster: pCluster,
+            });
+
+
+            //todo: MAKE TOP5 CPU/MEM USAGE SELECTBOX
+            if (pAppInstance === '') {
+                //todo: MAKE TOP5 INSTANCE LIST
+                let appInstanceListTop5 = this.makeSelectBoxList2(cutArrayList(5, this.state.filteredCpuUsageList), CLASSIFICATION.APP_NAME)
+                await this.setState({
+                    appInstanceListTop5: appInstanceListTop5,
+                });
+            }
+            setTimeout(() => {
+                this.setState({
+                    cloudLetSelectBoxPlaceholder: 'Select CloudLet',
+                    clusterSelectBoxPlaceholder: 'Select Cluster',
+                })
+            }, 500)
+
+            //todo: -------------------------------------------
+            //todo: make BUBBLE CHART DATA
+            //todo: -------------------------------------------
+            let bubbleChartData = await this.makeBubbleChartData(appInstanceList);
+            await this.setState({
+                bubbleChartData: bubbleChartData,
+            })
+
+            //todo: -------------------------------------------
+            //todo: NETWORK chart data filtering
+            //todo: -------------------------------------------
+            let networkChartData = makeNetworkLineChartData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
+            let networkBarChartData = makeNetworkBarData(this.state.filteredNetworkUsageList, this.state.currentNetworkType)
+            await this.setState({
+                networkChartData: networkChartData,
+                networkBarChartData: networkBarChartData,
+            })
+
+
+            this.props.toggleLoading(false)
+        }
+
 
 
         renderBottomGridArea() {
