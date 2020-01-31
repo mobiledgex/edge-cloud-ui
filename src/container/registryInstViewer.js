@@ -135,7 +135,8 @@ class RegistryInstViewer extends React.Component {
         if (mcRequest) {
             if (mcRequest.response) {
                 let response = mcRequest.response;
-                let operatorGroup = reducer.groupBy(response.data, 'Operator')
+                let cloudletDataReady = response.data.filter((item) => {return item.State === 5});
+                let operatorGroup = reducer.groupBy(cloudletDataReady, 'Operator')
                 //let cloudletGroup = reducer.groupBy(result, 'CloudletName')
                 let keys = Object.keys(operatorGroup);
                 let assObj = Object.assign([], this.state.keysData);
