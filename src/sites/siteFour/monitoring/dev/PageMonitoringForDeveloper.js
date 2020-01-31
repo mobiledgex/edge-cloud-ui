@@ -37,7 +37,8 @@ import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
 import {handleBubbleChartDropDownForCluster, hardwareTypeToUsageKey, makeBubbleChartDataForCluster, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
-import {filterAppInstanceListByClusterInst, filterAppInstOnCloudlet, filterUsageByType} from "../admin/PageMonitoringServiceForAdmin";
+import {filterAppInstanceListByClusterInst, filterAppInstOnCloudlet, filterUsageByType, getCloudletList} from "../admin/PageMonitoringServiceForAdmin";
+import MiniMapForDevMon from "./MiniMapForDevMon";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -144,6 +145,7 @@ type State = {
     clusterDropdownList: Array,
     currentLevelType: string,
     filteredUsageList: Array,
+    cloudletList: Array,
 
 }
 
@@ -254,7 +256,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster() {
 
             let clusterList = await getClusterList();
-
+            let cloudletList = await getCloudletList();
 
             console.log('clusterList===>', clusterList);
 
@@ -262,6 +264,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 isReady: true,
                 clusterDropdownList: clusterDropdownList,
+                cloudletList: cloudletList,
                 clusterList: clusterList,
                 isAppInstaceDataReady: true,
             });
@@ -902,10 +905,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             Launch status of the {this.state.currentLevelType}
                                                         </div>
                                                     </div>
-                                                    {/* <div className='page_monitoring_container'>
+                                                    <div className='page_monitoring_container'>
                                                         {!this.state.isAppInstaceDataReady ? renderPlaceHolder() :
-                                                            <MiniMap loading={this.state.loading} cloudletList={this.state.cloudletList}/>}
-                                                    </div>*/}
+                                                            <MiniMapForDevMon loading={this.state.loading} markerList={this.state.cloudletList}/>}
+                                                    </div>
                                                 </div>
 
                                                 {/* ___col___2nd*/}
@@ -1029,9 +1032,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                             <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
                                                 <OutsideClickHandler
                                                     onOutsideClick={() => {
-                                                        /*  this.setState({
-                                                              isShowBottomGrid: !this.state.isShowBottomGrid,
-                                                          })*/
                                                     }}
                                                 >
                                                     <div className='page_monitoring_popup_column'>
