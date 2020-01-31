@@ -36,17 +36,17 @@ class SiteFourPageClusterInst extends React.Component {
         this.countObject = {};
         this.headerLayout = [1, 2, 2, 2, 2, 1, 2, 2, 1, 2];
         this.headerInfo = [
-            { field: 'Region', label: 'Region', sortable: true },
-            { field: 'ClusterName', label: 'Cluster Name', sortable: true },
-            { field: 'OrganizationName', label: 'Organization Name', sortable: true },
-            { field: 'Operator', label: 'Operator', sortable: true },
-            { field: 'Cloudlet', label: 'Cloudlet', sortable: true },
-            { field: 'Flavor', label: 'Flavor', sortable: true },
-            { field: 'IpAccess', label: 'IP Access', sortable: true },
-            { field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false},
-            { field: 'State', label: 'State', sortable: true},
-            { field: 'Progress', label: 'Progress', sortable: false},
-            { field: 'Actions', label: 'Actions', sortable: false },
+            { field: 'Region', label: 'Region', sortable: true, width:1 },
+            { field: 'ClusterName', label: 'Cluster Name', sortable: true, width:2  },
+            { field: 'OrganizationName', label: 'Organization Name', sortable: true, width:2  },
+            { field: 'Operator', label: 'Operator', sortable: true, width:2  },
+            { field: 'Cloudlet', label: 'Cloudlet', sortable: true, width:2  },
+            { field: 'Flavor', label: 'Flavor', sortable: true, width:2  },
+            { field: 'IpAccess', label: 'IP Access', sortable: true, width:2  },
+            //{ field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false},
+            { field: 'State', label: 'State', sortable: true, width:2 },
+            { field: 'Progress', label: 'Progress', sortable: false, width:2 },
+            { field: 'Actions', label: 'Actions', sortable: false , width:2 },
         ]
 
     }

@@ -46,7 +46,7 @@ class SiteFourPageAppInst extends React.Component {
             { field: 'Operator', label: 'Operator', sortable: true },
             { field: 'Cloudlet', label: 'Cloudlet', sortable: true },
             { field: 'ClusterInst', label: 'Cluster Instance', sortable: true },
-            { field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false},
+            //{ field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false},
             { field: 'State', label: 'State', sortable: true},
             { field: 'Progress', label: 'Progress', sortable: false},
             { field: 'Actions', label: 'Actions', sortable: false },
