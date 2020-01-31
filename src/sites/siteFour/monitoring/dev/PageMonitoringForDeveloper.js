@@ -1,23 +1,38 @@
 import 'react-hot-loader'
-import {toast} from 'react-semantic-toasts';
+import {SemanticToastContainer, toast} from 'react-semantic-toasts';
+import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-semantic-toasts/styles/react-semantic-alert.css';
 import React, {Component} from 'react';
-import {Button, Dropdown, Grid, Tab, Table} from 'semantic-ui-react'
+import {Button, Dropdown, Grid, Modal, Tab} from 'semantic-ui-react'
 import sizeMe from 'react-sizeme';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
-import {DatePicker, Progress,} from 'antd';
-import {getCloudletList, getClouletLevelUsageList, numberWithCommas,  renderPlaceHolder} from "../admin/PageMonitoringServiceForAdmin";
-import {HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, NETWORK_OPTIONS2, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
+import {DatePicker,} from 'antd';
+import {
+    filterAppInstanceListByAppInst,
+    getAppLevelUsageList,
+    getInstaceListByCurrentOrg,
+    renderBarChartForAppInst,
+    makeCompleteDateTime,
+    makeLineChartDataForAppInst,
+    makeSelectBoxListForClusterList,
+    makeSelectBoxListWithKeyValueCombination,
+    renderBottomGridArea,
+    renderBubbleChartForCloudlet,
+} from "./PageMonitoringServiceForDeveloper";
+import {HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
-import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
+import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
+import ToggleDisplay from 'react-toggle-display';
+import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {showToast} from "../PageMonitoringCommonService";
-import {renderBarGraphForCloutdlet, renderLineChartForCloudlet} from "../oper/PageMonitoringServiceForOperator";
+import {handleBubbleChartDropDownForCluster, makeUniqCloudletList, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {CircularProgress} from "@material-ui/core";
+import MiniMapForDevMon from "./MiniMapForDevMon";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;
@@ -123,8 +138,13 @@ type State = {
     cloudletList: Array,
     maxCpu: number,
     maxMem: number,
+    intervalLoading: boolean,
+    isRequesting: false,
+    dropDownAppInstanceList: Array,
+    dropDownClusterList: Array,
 
 }
+
 
 export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe({monitorHeight: true})(
     class PageMonitoringForDeveloper extends Component<Props, State> {
@@ -177,7 +197,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isShowBottomGrid: false,
             isShowBottomGridForMap: false,
             mapZoomLevel: 0,
-            currentHardwareType: HARDWARE_TYPE.VCPU,
+            currentHardwareType: HARDWARE_TYPE.CPU.toUpperCase(),
             bubbleChartData: [],
             currentNetworkType: NETWORK_TYPE.RECV_BYTES,
             lineChartData: [],
@@ -202,7 +222,14 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             allUsageList: [],
             maxCpu: 0,
             maxMem: 0,
+            intervalLoading: false,
+            isRequesting: false,
+            dropDownAppInstanceList: [],
+            uniqCloudletList: [],
+            dropDownClusterList: [],
         };
+
+        interval = null;
 
 
         constructor(props) {
@@ -211,81 +238,66 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         componentDidMount = async () => {
-            await this.loadInitData();
-        }
-
-
-        async loadInitData() {
             this.setState({
                 loading: true,
             })
-            let cloudletList = await getCloudletList();
-
-            console.log('cloudletList====>', cloudletList);
-
-            let cloudletListForDropdown = [];
-            cloudletList.map(item => {
-                /*{text: 'FLAVOR', value: 'flavor'},*/
-                cloudletListForDropdown.push({
-                    text: item.CloudletName,
-                    value: item.CloudletName,
-                })
-            })
-
-
-            await this.setState({
-                isAppInstaceDataReady: true,
-                dropdownCloudletList: cloudletListForDropdown,
-            }, () => {
-                console.log('dropdownCloudletList===>', this.state.dropdownCloudletList);
-            })
-            //let cloudletLevelUsageList: Array<TypeAppInstance> = require('./cloutletLevelMatric')
-            let allUsageList = await getClouletLevelUsageList(cloudletList, "*", RECENT_DATA_LIMIT_COUNT);
-
-            let bubbleChartData = await this.makeBubbleChartDataForCloudlet(allUsageList);
-            await this.setState({
-                bubbleChartData: bubbleChartData,
-            })
-
-            let maxCpu = Math.max.apply(Math, allUsageList.map(function (o) {
-                return o.avgVCpuUsed;
-            }));
-
-            let maxMem = Math.max.apply(Math, allUsageList.map(function (o) {
-                return o.avgMemUsed;
-            }));
+            await this.loadInitDataForDev();
 
             this.setState({
-                allUsageList: allUsageList,
-                cloudletList: cloudletList,
-                maxCpu: maxCpu,
-                maxMem: maxMem,
-            }, () => {
-                this.setState({
-                    loading: false,
-                    isReady: true,
-                })
+                loading: false,
             })
 
         }
 
-        async makeBubbleChartDataForCloudlet(usageList: any) {
-            let bubbleChartData = []
-            usageList.map((item, index) => {
-                bubbleChartData.push({
-                    index: index,
-                    label: item.cloudlet.toString().substring(0, 10) + "...",
-                    value: item.avgVCpuMax,
-                    favor: item.avgVCpuMax,
-                    fullLabel: item.cloudlet.toString(),
-                })
+        componentWillUnmount(): void {
+            //clearInterval(this.interval)
+        }
+
+
+        async loadInitDataForDev() {
+
+
+            let appInstanceList = await getInstaceListByCurrentOrg();
+
+            let uniqCloudletList = makeUniqCloudletList(appInstanceList)
+            let dropDownAppInstanceList = makeSelectBoxListWithKeyValueCombination(appInstanceList, 'AppName', 'ClusterInst');
+            await this.setState({
+                isReady: true,
+                dropDownAppInstanceList: dropDownAppInstanceList,
+                uniqCloudletList: uniqCloudletList,
+                appInstanceList: appInstanceList,
             })
 
-            return bubbleChartData;
+
+            let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'));
+            let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'));
+            await this.setState({
+                startTime,
+                endTime
+            });
+
+            let allUsageList = await getAppLevelUsageList(appInstanceList, "*", RECENT_DATA_LIMIT_COUNT, startTime, endTime);
+
+            this.setState({
+                allUsageList: allUsageList,
+                allCpuUsageList: allUsageList[0],
+                allMemUsageList: allUsageList[1],
+                allNetworkUsageList: allUsageList[2],
+                allDiskUsageList: allUsageList[3],
+                isAppInstaceDataReady: true,
+            })
+            console.log('allUsageList===>', allUsageList);
+
+            /*  let bubbleChartData = await makeBubbleChartDataForCluster(allUsageList);
+              await this.setState({
+                  bubbleChartData: bubbleChartData,
+              })*/
+
         }
 
 
         async refreshAllData() {
+
             toast({
                 type: 'success',
                 //icon: 'smile',
@@ -301,8 +313,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 cloudLetSelectBoxClearable: true,
             })
-
-            await this.loadInitData();
+            this.setState({
+                loading: true,
+            })
+            await this.loadInitDataForDev();
+            this.setState({
+                loading: false,
+            })
 
             await this.setState({
                 currentRegion: 'ALL',
@@ -310,130 +327,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 currentCluster: '',
                 currentAppInst: '',
             })
-        }
 
-
-        renderBottomGridArea() {
-            return (
-                <Table className="viewListTable" basic='very' sortable striped celled fixed collapsing>
-                    <Table.Header className="viewListTableHeader">
-                        <Table.Row>
-                            <Table.HeaderCell>
-                                index
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                CLOUDLET
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                vCPU(%)
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                MEM
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                DISK
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                RECV BYTES
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                SEND BYTES
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                FLOATING IPS
-                            </Table.HeaderCell>
-                            <Table.HeaderCell>
-                                IPV4
-                            </Table.HeaderCell>
-
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body className="tbBodyList"
-                                ref={(div) => {
-                                    this.messageList = div;
-                                }}
-                    >
-                        {/*-----------------------*/}
-                        {/*todo:ROW HEADER        */}
-                        {/*-----------------------*/}
-                        {!this.state.isReady &&
-                        <Table.Row className='page_monitoring_popup_table_empty'>
-                            <Table.Cell>
-                                <Lottie
-                                    options={{
-                                        loop: true,
-                                        autoplay: true,
-                                        animationData: require('../../../../lotties/loader001'),
-                                        rendererSettings: {
-                                            preserveAspectRatio: 'xMidYMid slice'
-                                        }
-                                    }}
-                                    height={240}
-                                    width={240}
-                                    isStopped={false}
-                                    isPaused={false}
-                                />
-                            </Table.Cell>
-                        </Table.Row>}
-                        {this.state.isReady && this.state.allUsageList.map((item: TypeCloudletUsageList, index) => {
-
-                            return (
-                                <Table.Row className='page_monitoring_popup_table_row'>
-
-                                    <Table.Cell>
-                                        {index}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.cloudlet}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <div>
-                                            <div>
-                                                {item.avgVCpuUsed.toFixed(2) + '%'} + {this.state.maxCpu}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                          percent={(item.avgVCpuUsed / this.state.maxCpu * 100)}
-                                                    //percent={(item.sumCpuUsage / this.state.gridInstanceListCpuMax) * 100}
-                                                          strokeColor={'#29a1ff'} status={'normal'}/>
-                                            </div>
-                                        </div>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <div>
-                                            <div>
-                                                {numberWithCommas(item.avgMemUsed) + ' Byte'}
-                                            </div>
-                                            <div>
-                                                <Progress style={{width: '100%'}} strokeLinecap={'square'} strokeWidth={10} showInfo={false}
-                                                          percent={(item.avgMemUsed / this.state.maxMem * 100)}
-                                                          strokeColor={'#29a1ff'} status={'normal'}/>
-                                            </div>
-
-                                        </div>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.avgDiskUsed) + ' Byte'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.avgNetRecv) + ' Byte'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {numberWithCommas(item.avgNetSend) + ' Byte'}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.avgFloatingIpsUsed}
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        {item.avgIpv4Used}
-                                    </Table.Cell>
-                                </Table.Row>
-
-                            )
-                        })}
-                    </Table.Body>
-                </Table>
-            )
         }
 
         renderCpuTabArea() {
@@ -450,7 +344,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloutdlet(this.state.allUsageList, HARDWARE_TYPE.VCPU)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarChartForAppInst(this.state.allCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -459,11 +353,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                Transition Of CPU Usage
+                                CPU Usage
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allUsageList, HARDWARE_TYPE.VCPU)}
+                            {this.state.loading ? renderPlaceHolder() : makeLineChartDataForAppInst(this, this.state.allCpuUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
                 </div>
@@ -483,7 +377,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloutdlet(this.state.allUsageList, HARDWARE_TYPE.MEM_USED)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarChartForAppInst(this.state.allDiskUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -492,11 +386,11 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                Transition Of MEM Usage
+                                MEM Usage
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allUsageList, HARDWARE_TYPE.MEM_USED)}
+                            {this.state.loading ? renderPlaceHolder() : makeLineChartDataForAppInst(this, this.state.allDiskUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
 
@@ -515,129 +409,88 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloutdlet(this.state.allUsageList, HARDWARE_TYPE.DISK_USED)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarChartForAppInst(this.state.allDiskUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                     {/*2nd_column*/}
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                Transition Of DISK Usage
+                                DISK Usage
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allUsageList, HARDWARE_TYPE.DISK_USED)}
+                            {this.state.loading ? renderPlaceHolder() : makeLineChartDataForAppInst(this, this.state.allDiskUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                 </div>
             )
         }
 
-        renderFloatingIpsTabArea() {
+        /* renderTcpTab() {
+             return (
+                 <div className='page_monitoring_dual_column'>
+                     {/!*1_column*!/}
+                     <div className='page_monitoring_dual_container'>
+                         <div className='page_monitoring_title_area'>
+                             <div className='page_monitoring_title'>
+                                 TOP5 of TCP
+                             </div>
+                         </div>
+                         <div className='page_monitoring_container'>
+                             {this.state.loading ? renderPlaceHolder() : makeBarGraphForAppInst(this.state.allUsageList, HARDWARE_TYPE.TCPCONNS)}
+                         </div>
+                     </div>
+                     {/!*2nd_column*!/}
+                     <div className='page_monitoring_dual_container'>
+                         <div className='page_monitoring_title_area'>
+                             <div className='page_monitoring_title'>
+                                 TCP
+                             </div>
+                         </div>
+                         <div className='page_monitoring_container'>
+                             {this.state.loading ? renderPlaceHolder() : makeLineChartDataForAppInst(this, this.state.allUsageList, HARDWARE_TYPE.TCPCONNS)}
+                         </div>
+                     </div>
+                 </div>
+             )
+         }*/
+
+        /* renderUdpTab() {
+             return (
+                 <div className='page_monitoring_dual_column'>
+                     {/!*1_column*!/}
+                     <div className='page_monitoring_dual_container'>
+                         <div className='page_monitoring_title_area'>
+                             <div className='page_monitoring_title'>
+                                 TOP5 of UDP
+                             </div>
+                         </div>
+                         <div className='page_monitoring_container'>
+                             {this.state.loading ? renderPlaceHolder() : makeBarGraphForAppInst(this.state.allUsageList, HARDWARE_TYPE.UDPSENT, this)}
+                         </div>
+                     </div>
+                     {/!*2nd_column*!/}
+                     <div className='page_monitoring_dual_container'>
+                         <div className='page_monitoring_title_area'>
+                             <div className='page_monitoring_title'>
+                                 UDP
+                             </div>
+                         </div>
+                         <div className='page_monitoring_container'>
+                             {this.state.loading ? renderPlaceHolder() : makeLineChartDataForAppInst(this, this.state.allUsageList, HARDWARE_TYPE.UDPSENT, this)}
+                         </div>
+                     </div>
+                 </div>
+             )
+         }
+ */
+
+        renderNetworkArea(networkType: string) {
+
             return (
-                <div className='page_monitoring_dual_column'>
-                    {/*1_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 Counts of FLOATING IPS
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloutdlet(this.state.allUsageList, HARDWARE_TYPE.FLOATING_IPS_USED)}
-                        </div>
-                    </div>
-                    {/*2nd_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Transition Of FLOATING IPS
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allUsageList, HARDWARE_TYPE.FLOATING_IPS_USED)}
-                        </div>
-                    </div>
-                </div>
-            )
-        }
+                <div>
 
-        renderIPV4TabArea() {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    {/*1_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 Counts of IP V4
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCloutdlet(this.state.allUsageList, HARDWARE_TYPE.IPV4_USED)}
-                        </div>
-                    </div>
-                    {/*2nd_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                Transition Of IP V4
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCloudlet(this, this.state.allUsageList, HARDWARE_TYPE.IPV4_USED)}
-                        </div>
-                    </div>
-                </div>
-            )
-        }
-
-
-        renderNetSendRevcArea(networkType: string) {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of NETWORK Usage
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderBarGraphForCloutdlet(this.state.allUsageList, networkType, this)}
-                        </div>
-                    </div>
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title_select'>
-                                Transition Of NETWORK Usage
-                            </div>
-                            {!this.state.loading &&
-                            <Dropdown
-                                placeholder='SELECT NET TYPE'
-                                selection
-                                loading={this.state.loading}
-                                options={NETWORK_OPTIONS2}
-                                defaultValue={NETWORK_OPTIONS2[0].value}
-                                onChange={async (e, {value}) => {
-                                    if (value === NETWORK_TYPE.NET_SEND) {
-                                        this.setState({
-                                            networkTabIndex: 0,
-                                        })
-                                    } else {
-                                        this.setState({
-                                            networkTabIndex: 1,
-                                        })
-                                    }
-
-                                }}
-                                value={networkType}
-                                // style={Styles.dropDown}
-                            />
-                            }
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderLineChartForCloudlet(this, this.state.allUsageList, networkType)}
-                        </div>
-                    </div>
                 </div>
             )
         }
@@ -686,16 +539,21 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                             >RESET</Button>
                         </div>
-                        <div style={{marginLeft: 50}}>
-                            {this.state.userType}Page FOr dev()..
+                        <div style={{marginLeft: 50, color: 'green', fontWeight: 'bold'}}>
+                            {this.state.userType}
+                            FOR DEV_DEVDEVDEV..
                         </div>
+                        {this.state.intervalLoading &&
+                        <div style={{marginLeft: 50}}>
+                            <CircularProgress size={9} style={{fontSize: 9}}/>
+                        </div>
+                        }
                     </Grid.Row>
                 </div>
             )
         }
 
         renderSelectBoxRow() {
-
 
             return (
                 <div className='page_monitoring_select_row'>
@@ -734,33 +592,69 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             />
 
                         </div>
+                        {/*todo:---------------------------*/}
+                        {/*todo: App Instance Dropdown      */}
+                        {/*todo:---------------------------*/}
+                        <div className="page_monitoring_dropdown_box">
+                            <div className="page_monitoring_dropdown_label">
+                                App Inst
+                            </div>
+                            <Dropdown
+                                //disabled={this.state.currentCluster === '' || this.state.loading}
+                                clearable={this.state.appInstSelectBoxClearable}
+                                loading={this.state.loading}
+                                value={this.state.currentAppInst}
+                                placeholder='Select App Instance'
+                                selection
+                                options={this.state.dropDownAppInstanceList}
+                                // style={Styles.dropDown}
+                                onChange={async (e, {value}) => {
+                                   /* try {
+                                        let _data = value.toString().split("|")
+                                        let appInstOne = _data[0]
+                                        let filteredClusterList = filterAppInstanceListByAppInst(this.state.appInstanceList, appInstOne);
+                                        let dropDownClusterList = makeSelectBoxListForClusterList(filteredClusterList, 'ClusterInst')
+
+                                        await this.setState({
+                                            dropDownClusterList: [],
+                                            currentCluster: '',
+                                            currentAppInst: value,
+                                        }, () => {
+                                            this.setState({
+                                                dropDownClusterList: dropDownClusterList,
+                                                clusterSelectBoxPlaceholder: 'Select Cluster'
+                                            })
+                                        })
+
+                                        await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, this.state.currentCluster, value)
+                                    } catch (e) {
+
+                                    }*/
+
+                                }}
+                            />
+                        </div>
 
                         {/*todo:##########################*/}
-                        {/*todo:CloudLet Dropdown         */}
+                        {/*todo:Cluster Dropdown         */}
                         {/*todo:##########################*/}
                         <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
-                                CloudLet
+                                Cluster
                             </div>
                             <Dropdown
-                                disabled={this.state.loading}
-                                value={this.state.currentCloudLet}
-                                clearable={this.state.cloudLetSelectBoxClearable}
-                                loading={this.state.loading}
-                                placeholder={this.state.cloudLetSelectBoxPlaceholder}
-                                selection={true}
-                                options={this.state.dropdownCloudletList}
+                                value={this.state.currentCluster}
+                                clearable={this.state.clusterSelectBoxClearable}
+                                //disabled={this.state.currentCloudLet === '' || this.state.loading}
+                                placeholder={this.state.clusterSelectBoxPlaceholder}
+                                selection
+                                options={this.state.dropDownClusterList}
                                 // style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
+
                                     this.setState({
-                                        currentCloudLet: value,
+                                        currentCluster: value,
                                     })
-                                    /*   await this.filterByEachTypes(this.state.currentRegion, value)
-                                       setTimeout(() => {
-                                           this.setState({
-                                               clusterSelectBoxPlaceholder: 'Select Cluster'
-                                           })
-                                       }, 1000)*/
                                 }}
                             />
                         </div>
@@ -810,95 +704,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             )
         }
 
-        async handleBubbleChartDropDownForCloudlet(hwType) {
-
-            await this.setState({
-                currentHardwareType: hwType,
-            });
-
-            let allUsageList = this.state.allUsageList;
-            let bubbleChartData = [];
-
-            console.log('sldkflskdflksdlfklsdkfk====>',allUsageList);
-
-            if (hwType === 'vCPU') {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: (item.avgVCpuUsed * 1).toFixed(0),
-                        favor: (item.avgVCpuUsed * 1).toFixed(0),
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.MEM) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgMemUsed,
-                        favor: item.avgMemUsed,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.DISK) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgDiskUsed,
-                        favor: item.avgDiskUsed,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.RECV_BYTES) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgNetRecv,
-                        favor: item.avgNetRecv,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.SEND_BYTES) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgNetSend,
-                        favor: item.avgNetSend,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.FLOATING_IPS) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgFloatingIpsUsed,
-                        favor: item.avgFloatingIpsUsed,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            } else if (hwType === HARDWARE_TYPE_FOR_CLOUDLET.IPV4) {
-                allUsageList.map((item, index) => {
-                    bubbleChartData.push({
-                        index: index,
-                        label: item.cloudlet.toString().substring(0, 10) + "...",
-                        value: item.avgIpv4Used,
-                        favor: item.avgIpv4Used,
-                        fullLabel: item.cloudlet,
-                    })
-                })
-            }
-
-            console.log('1111bubbleChartData====>',bubbleChartData);
-
-            this.setState({
-                bubbleChartData: bubbleChartData,
-            });
-        }
 
         //@todo:-----------------------
         //@todo:    CPU,MEM,DISK TAB
@@ -906,15 +711,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         CPU_MEM_DISK_CONN_TABS = [
 
             {
-                menuItem: 'vCPU', render: () => {
+                menuItem: 'CPU', render: () => {
                     return (
                         <Pane>
                             {this.renderCpuTabArea()}
                         </Pane>
                     )
-                }
+                },
             },
-            {
+            /*{
                 menuItem: 'MEM', render: () => {
                     return (
                         <Pane>
@@ -933,29 +738,29 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 }
             },
             {
-                menuItem: 'FLOATING IPS', render: () => {
+                menuItem: 'TCP', render: () => {
                     return (
                         <Pane>
-                            {this.renderFloatingIpsTabArea()}
+                            {this.renderTcpTab()}
                         </Pane>
                     )
                 }
             },
             {
-                menuItem: 'IPV4', render: () => {
+                menuItem: 'UDP', render: () => {
                     return (
                         <Pane>
-                            {this.renderIPV4TabArea()}
+                            {this.renderUdpTab()}
                         </Pane>
                     )
                 }
             },
-
+*/
         ]
 
         render() {
             // todo: Components showing when the loading of graph data is not completed.
-            if (!this.state.isAppInstaceDataReady) {
+            if (!this.state.isReady) {
                 return (
                     <Grid.Row className='view_contents'>
                         <Grid.Column className='contents_body'>
@@ -987,9 +792,222 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <Grid.Row className='view_contents'>
-                    <div>
-                        Develippoeorpeorrrrrrrrr
-                    </div>
+                    {/*todo:---------------------------------*/}
+                    {/*todo: POPUP APP INSTACE LIST DIV      */}
+                    {/*todo:---------------------------------*/}
+                    <Modal
+                        closeIcon={true}
+                        open={this.state.isModalOpened}
+                        closeOnDimmerClick={true}
+                        onClose={() => {
+                            this.setState({
+                                isModalOpened: false,
+                            })
+                        }}
+                        style={{width: '80%'}}
+                    >
+                        <Modal.Header>Status of Cluster</Modal.Header>
+                        {/*<Modal.Content>
+                            {this.renderBottomGridAreaForCloudlet()}
+                        </Modal.Content>*/}
+                    </Modal>
+                    <SemanticToastContainer/>
+                    <Grid.Column className='contents_body'>
+                        {/*todo:---------------------------------*/}
+                        {/*todo:Content Header                   */}
+                        {/*todo:---------------------------------*/}
+                        {this.renderHeader()}
+                        <Grid.Row className='site_content_body'>
+                            <Grid.Column>
+                                <div className="table-no-resized"
+                                     style={{height: '100%', display: 'flex', overflow: 'hidden'}}>
+
+                                    <div className="page_monitoring">
+                                        {/*todo:---------------------------------*/}
+                                        {/*todo:SELECTBOX_ROW        */}
+                                        {/*todo:---------------------------------*/}
+                                        {this.renderSelectBoxRow()}
+
+                                        <div className='page_monitoring_dashboard'>
+                                            {/*_____row____1*/}
+                                            {/*_____row____1*/}
+                                            {/*_____row____1*/}
+                                            <div className='page_monitoring_row'>
+                                                {/* ___col___1*/}
+                                                {/* ___col___1*/}
+                                                {/* ___col___1*/}
+                                                <div className='page_monitoring_column' style={{}}>
+                                                    <div className='page_monitoring_title_area'>
+                                                        <div className='page_monitoring_title'>
+                                                            Status of Launched Cloudlet
+                                                        </div>
+                                                    </div>
+                                                    <div className='page_monitoring_container'>
+                                                        <MiniMapForDevMon loading={this.state.loading} type={'dev'} markerList={this.state.uniqCloudletList}/>}
+                                                    </div>
+                                                </div>
+
+                                                {/* ___col___2nd*/}
+                                                {/* ___col___2nd*/}
+                                                {/* ___col___2nd*/}
+                                                <div className='page_monitoring_column'>
+
+                                                    {/*todo:---------------------------------*/}
+                                                    {/*todo: RENDER TAB_AREA                 */}
+                                                    {/*todo:---------------------------------*/}
+                                                    <Tab
+                                                        className='page_monitoring_tab'
+                                                        menu={{secondary: true, pointing: true}}
+                                                        panes={this.CPU_MEM_DISK_CONN_TABS}
+                                                        activeIndex={this.state.currentTabIndex}
+                                                        onTabChange={(e, {activeIndex}) => {
+                                                            this.setState({
+                                                                currentTabIndex: activeIndex,
+                                                            })
+                                                        }}
+                                                        defaultActiveIndex={this.state.currentTabIndex}
+                                                    />
+                                                </div>
+                                            </div>
+                                            {/*_____row____2*/}
+                                            {/*_____row____2*/}
+                                            {/*_____row____2*/}
+                                            <div className='page_monitoring_row'>
+                                                {/* ___col___1*/}
+                                                {/* ___col___1*/}
+                                                {/* ___col___1*/}
+                                                <div className='page_monitoring_column'>
+                                                    <div className='page_monitoring_title_area'>
+                                                        <div className='page_monitoring_title_select'>
+                                                            Performance State Of Cluster
+                                                        </div>
+                                                        {/*todo:---------------------------------*/}
+                                                        {/*todo: bubbleChart DropDown            */}
+                                                        {/*todo:---------------------------------*/}
+                                                        <Dropdown
+                                                            disabled={this.state.loading}
+                                                            clearable={this.state.regionSelectBoxClearable}
+                                                            placeholder='SELECT HARDWARE'
+                                                            selection
+                                                            loading={this.state.loading}
+                                                            options={HARDWARE_OPTIONS_FOR_CLUSTER}
+                                                            defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
+                                                            onChange={async (e, {value}) => {
+                                                                await handleBubbleChartDropDownForCluster(value, this);
+                                                            }}
+                                                            value={this.state.currentHardwareType}
+                                                        />
+                                                    </div>
+                                                    {/*todo:---------------------------------*/}
+                                                    {/*todo: RENDER BUBBLE_CHART          */}
+                                                    {/*todo:---------------------------------*/}
+                                                    <div className='page_monitoring_container'>
+                                                        {this.state.loading ? renderPlaceHolder() : renderBubbleChartForCloudlet(this, this.state.currentHardwareType, this.state.bubbleChartData)}
+                                                    </div>
+                                                </div>
+                                                {/* row2___col___2*/}
+                                                {/* row2___col___2*/}
+                                                {/* row2___col___2*/}
+                                                <div className='page_monitoring_column'>
+                                                    {/*todo:---------------------------------*/}
+                                                    {/*todo: NETWORK TAB PANEL AREA           */}
+                                                    {/*todo:---------------------------------*/}
+                                                    <Tabs selectedIndex={this.state.networkTabIndex}
+                                                          className='page_monitoring_tab'>
+                                                        <TabPanel>
+                                                            {this.renderNetworkArea(HARDWARE_TYPE.SENDBYTES)}
+                                                        </TabPanel>
+                                                        <TabPanel>
+                                                            {this.renderNetworkArea(HARDWARE_TYPE.RECVBYTES)}
+                                                        </TabPanel>
+                                                    </Tabs>
+                                                </div>
+
+
+                                            </div>
+
+                                            {/*todo:---------------------------------*/}
+                                            {/*todo: BOTTOM GRID TOGGLE UP BUTTON   */}
+                                            {/*todo:---------------------------------*/}
+                                            <div className='page_monitoring_row'
+                                                 onClick={() => {
+                                                     this.setState({
+                                                         isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                     })
+                                                 }}
+                                            >
+                                                <div className='page_monitoring_table_column'>
+                                                    <div className='page_monitoring_title_area'>
+                                                        <div className='page_monitoring_title'>
+                                                            SHOW CLUSTER LIST
+                                                        </div>
+                                                        <div className='page_monitoring_popup_header_button'>
+                                                            SHOW CLUSTER LIST
+                                                            <div style={{display: 'inline-block', marginLeft: 10}}>
+                                                                <FA name="chevron-up"/>
+                                                            </div>
+                                                        </div>
+                                                        <div/>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/*todo:---------------------------------*/}
+                                            {/*todo: BOTTOM_GRID_AREA_SHOW_UP_AREA   */}
+                                            {/*todo:---------------------------------*/}
+                                            <ToggleDisplay if={this.state.isShowBottomGrid} tag="section" className='bottomGridArea'>
+                                                <OutsideClickHandler
+                                                    onOutsideClick={() => {
+                                                        /*  this.setState({
+                                                              isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                          })*/
+                                                    }}
+                                                >
+                                                    <div className='page_monitoring_popup_column'>
+                                                        <div className='page_monitoring_popup_header_row'
+                                                             onClick={() => {
+                                                                 this.setState({
+                                                                     isShowBottomGrid: !this.state.isShowBottomGrid,
+                                                                 })
+
+                                                             }}
+                                                        >
+                                                            <div className='page_monitoring_popup_header_title'>
+                                                                Status of Cluster
+                                                            </div>
+                                                            <div className='page_monitoring_popup_header_button'>
+                                                                <div>
+                                                                    HIDE CLUSTER LIST
+                                                                </div>
+                                                                <div style={{marginLeft: 10}}>
+                                                                    <FA name="chevron-down"/>
+                                                                </div>
+                                                            </div>
+                                                            <div/>
+                                                        </div>
+                                                        {/*todo:---------------------------------*/}
+                                                        {/*todo: BOTTOM APP INSTACE LIST         */}
+                                                        {/*todo:---------------------------------*/}
+                                                        <div className='page_monitoring_popup_table'>
+                                                            {this.state.uniqCloudletList.length && this.state.isReady === 0 ?
+                                                                <div>
+                                                                    NO DATA
+                                                                </div>
+                                                                : renderBottomGridArea(this)}
+                                                        </div>
+                                                    </div>
+                                                </OutsideClickHandler>
+                                            </ToggleDisplay>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+
+                    </Grid.Column>
 
                 </Grid.Row>
 

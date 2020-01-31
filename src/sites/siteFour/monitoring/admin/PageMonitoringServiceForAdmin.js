@@ -4,13 +4,13 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 import {formatData} from "../../../../services/formatter/formatComputeInstance";
 import '../PageMonitoring.css';
-import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION, USAGE_INDEX} from "../../../../shared/Constants";
+import {CHART_COLOR_LIST, HARDWARE_TYPE, RECENT_DATA_LIMIT_COUNT, REGION} from "../../../../shared/Constants";
 import {Line as ReactChartJs} from 'react-chartjs-2';
 import Lottie from "react-lottie";
 import BubbleChart from "../../../../components/BubbleChart";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageMonitoringForAdmin";
-import {showToast} from "../PageMonitoringCommonService";
+import {numberWithCommas, showToast} from "../PageMonitoringCommonService";
 import {SHOW_CLOUDLET} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 
@@ -29,16 +29,6 @@ export const covertToComparableDate = (paramDate) => {
     let compareableFullDate = arrayDate[0] + arrayDate[1] + arrayDate[2]
     return compareableFullDate
 
-}
-export const numberWithCommas = (x) => {
-    let value = ''
-    try {
-        value = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    } catch (e) {
-        console.log('error===>', e);
-    } finally {
-        return value;
-    }
 }
 
 export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
@@ -603,137 +593,6 @@ export const sortUsageListByType = (usageList, hardwareType) => {
 
 
 
-export const renderBarChartCore = (chartDataList, hardwareType) =>{
-    return (
-        <Chart
-            width="100%"
-            //height={hardwareType === HARDWARE_TYPE.RECV_BYTE || hardwareType === HARDWARE_TYPE.SEND_BYTE ? chartHeight - 10 : '100%'}
-            height={'100%'}
-            chartType="BarChart"
-            loader={<div><CircularProgress style={{color: 'red', zIndex: 999999}}/></div>}
-            data={chartDataList}
-            options={{
-                annotations: {
-                    style: 'line',
-                    textStyle: {
-                        //fontName: 'Righteous',
-                        fontSize: 12,
-                        //bold: true,
-                        //italic: true,
-                        // The color of the text.
-                        color: '#fff',
-                        // The color of the text outline.
-                        //auraColor: 'black',
-                        // The transparency of the text.
-                        opacity: 1.0
-                    },
-                    boxStyle: {
-                        // Color of the box outline.
-                        stroke: '#ffffff',
-                        // Thickness of the box outline.
-                        strokeWidth: 1,
-                        // x-radius of the corner curvature.
-                        rx: 10,
-                        // y-radius of the corner curvature.
-                        ry: 10,
-                    }
-                },
-
-                is3D: true,
-                title: '',
-                titleTextStyle: {
-                    color: '#fff',
-                    fontSize: 12,
-                    /*fontName: <string>, // i.e. 'Times New Roman'
-                    fontSize: <number>, // 12, 18 whatever you want (don't specify px)
-                     bold: <boolean>,    // true or false
-                      // true of false*/
-                },
-                //titlePosition: 'out',
-                chartArea: {
-                    // left: 20, right: 150, top: 50, bottom: 25,
-                    width: "60%", height: "80%",
-                },
-                legend: {position: 'none'},//우측 Data[0]번째 텍스트를 hide..
-                //xAxis
-                hAxis: {
-                    textPosition: 'none',//HIDE xAxis
-                    title: '',
-                    titleTextStyle: {
-                        //fontName: "Times",
-                        fontSize: 12,
-                        fontStyle: "italic",
-                        color: 'white'
-                    },
-                    minValue: 0,
-                    textStyle: {
-                        color: "white"
-                    },
-                    gridlines: {
-                        color: "grey"
-                    },
-                    format: hardwareType === HARDWARE_TYPE.CPU ? '#\'%\'' : '0.##\' byte\'',
-                    baselineColor: "grey",
-                    //out', 'in', 'none'.
-                },
-                //Y축
-                vAxis: {
-                    title: '',
-                    titleTextStyle: {
-                        fontSize: 20,
-                        fontStyle: "normal",
-                        color: 'white'
-                    },
-                    textStyle: {
-                        color: "white",
-                        fontSize: 12,
-                    },
-
-                },
-                //colors: ['#FB7A21'],
-                fontColor: 'white',
-                backgroundColor: {
-                    fill: '#1e2124'
-                },
-                /*  animation: {
-                      duration: 300,
-                      easing: 'out',
-                      startup: true
-                  }*/
-                //colors: ['green']
-            }}
-
-            // For tests
-            rootProps={{'data-testid': '1'}}
-        />
-    );
-}
-
-/**
- * @todo: 로딩이 완료 되기전에 placeholder를 보여준다..
- * @returns {*}
- */
-export const renderPlaceHolder = (type: string = '') => {
-    // let boxWidth = window.innerWidth / 3 - 50;
-    return (
-        <div className='page_monitoring_blank_box' style={{height: type === 'network' ? window.innerHeight / 3 - 10 : '100%'}}>
-            <Lottie
-                options={{
-                    loop: true,
-                    autoplay: true,
-                    animationData: require('../../../../lotties/loader001'),
-                    rendererSettings: {
-                        preserveAspectRatio: 'xMidYMid slice'
-                    }
-                }}
-                height={120}
-                width={120}
-                isStopped={false}
-                isPaused={false}
-            />
-        </div>
-    )
-}
 
 /**
  * bottom Grid InstanceList maker..

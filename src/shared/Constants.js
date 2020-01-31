@@ -84,6 +84,24 @@ export const USAGE_INDEX = {
     IPV4MAX: 14,
 }
 
+export const USAGE_INDEX_FOR_CLUSTER = {
+    TIME: 0,
+    CLUSTER: 1,
+    DEV: 2,
+    CLOUDLET: 3,
+    OPERATOR: 4,
+    CPU: 5,
+    MEM: 6,
+    DISK: 7,
+    SENDBYTES: 8,
+    RECVBYTES: 9,
+    TCPCONNS: 10,
+    TCPRETRANS: 11,
+    UDPSENT: 12,
+    UDPRECV: 13,
+    UDPRECVERR: 14,
+}
+
 
 export const NETWORK_TYPE = {
     RECV_BYTES: 'recv_bytes',
@@ -111,6 +129,20 @@ export const HARDWARE_OPTIONS_FOR_CLOUDLET = [
     {text: 'SEND BYTES', value: 'SEND_BYTES'},
     {text: 'FLOATING_IPS', value: 'FLOATING_IPS'},
     {text: 'IPV4', value: 'IPV4'},
+]
+
+
+export const HARDWARE_OPTIONS_FOR_CLUSTER= [
+    {text: 'CPU', value: 'CPU'},
+    {text: 'MEM', value: 'MEM'},
+    {text: 'DISK', value: 'DISK'},
+    {text: 'RECV BYTES', value: 'RECV_BYTES'},
+    {text: 'SEND BYTES', value: 'SEND_BYTES'},
+    {text: 'UDP_SENT', value: 'UDPSENT'},
+    {text: 'UDP_RECVERR', value: 'UDPRECVERR'},
+    {text: 'TCP_CONNS', value: 'TCPCONNS'},
+    {text: 'TCP_RETRANS', value: 'TCPRETRANS'},
+
 ]
 
 export const HARDWARE_TYPE_FOR_CLOUDLET = {
@@ -143,8 +175,21 @@ export const HARDWARE_TYPE = {
     IPV4_MAX: 'IPV4_MAX',
     IPV4: 'IPV4',
 
+    UDP: 'UDP',
+    TCP: 'TCP',
+    NETWORK: 'NETWORK',
+    /////////////////////////
+    UDPSENT: 'UDPSENT',
+    UDPRECV: 'UDPRECV',
+    UDPRECVERR: 'UDPRECVERR',
+    TCPCONNS: 'TCPCONNS',
+    TCPRETRANS: 'TCPRETRANS',
+    SENDBYTES: 'SEND_BYTES',
+    RECVBYTES: 'RECV_BYTES',
+
 
     MEM: 'mem',
+    MEM2: 'MEM',
     RECV_BYTE: 'recv_bytes',
     SEND_BYTE: 'send_bytes',
     DISK: 'disk',
@@ -185,6 +230,12 @@ export const USER_ROLE = {
     ADMIN_MANAGER: 'AdminManager',
     OPERATOR_MANAGER: 'OperatorManager',
     //ADMIN_MANAGER : 'AdminManager',
+}
+
+export const USER_TYPE = {
+    DEV: 'dev',
+    OPER: 'oper',
+    ADMIN: 'admin'
 }
 
 export const APPINSTANCE_INIT_VALUE = {

@@ -10,14 +10,7 @@ import {connect} from 'react-redux';
 import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker, Progress,} from 'antd';
-import {
-    getCloudletList,
-    getClouletLevelUsageList,
-    numberWithCommas,
-    renderBubbleChartForCloudlet,
-    renderPlaceHolder,
-    Styles
-} from "../admin/PageMonitoringServiceForAdmin";
+import {getCloudletList, getClouletLevelUsageList, renderBubbleChartForCloudlet, Styles} from "../admin/PageMonitoringServiceForAdmin";
 import {HARDWARE_OPTIONS_FOR_CLOUDLET, HARDWARE_TYPE, HARDWARE_TYPE_FOR_CLOUDLET, NETWORK_OPTIONS2, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeCloudletUsageList, TypeGridInstanceList} from "../../../../shared/Types";
@@ -26,8 +19,8 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {showToast} from "../PageMonitoringCommonService";
-import MiniMap from "../MiniMap";
+import {numberWithCommas, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import MiniMap from "./MiniMap";
 import {CircularProgress} from "@material-ui/core";
 import {renderBarGraphForCloutdlet, renderLineChartForCloudlet} from "./PageMonitoringServiceForOperator";
 

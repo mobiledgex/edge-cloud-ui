@@ -29,11 +29,9 @@ import {
     makeGridInstanceList,
     makeNetworkBarData,
     makeNetworkLineChartData,
-    numberWithCommas,
     renderBarGraph,
     renderBubbleChart,
     renderLineChart,
-    renderPlaceHolder,
     renderPlaceHolder2,
     renderSixGridInstanceOnCloudletGrid,
     requestShowAppInstanceList,
@@ -58,7 +56,7 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {showToast} from "../PageMonitoringCommonService";
+import {numberWithCommas, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 
 const FA = require('react-fontawesome')
 const {RangePicker} = DatePicker;

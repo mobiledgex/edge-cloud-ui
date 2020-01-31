@@ -163,7 +163,7 @@ export default class MiniMap extends Component<Props, State> {
                         options={{
                             loop: true,
                             autoplay: true,
-                            animationData: require('../../../lotties/pinjump'),
+                            animationData: require('../../../../lotties/pinjump'),
                             rendererSettings: {
                                 preserveAspectRatio: 'xMidYMid slice'
                             }
