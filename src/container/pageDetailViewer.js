@@ -40,7 +40,7 @@ const detailViewer = (props, type) => (
 )
 
 const makeTable = (values, label, i) => (
-    (label !== 'Edit' && label !== 'uuid') ?
+    (label !== 'Edit' && label !== 'uuid' && label !== 'CloudletInfoState') ?
         <Table.Row key={i}>
             <Table.Cell>
                 <Header as='h4' image>
