@@ -18,7 +18,16 @@ import {
     renderBubbleChartForCloudlet,
     renderLineChartForCluster,
 } from "./PageMonitoringServiceForDeveloper";
-import {HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, MONITORING_CATE_SELECT_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
+import {
+    HARDWARE_OPTIONS_FOR_CLUSTER,
+    HARDWARE_TYPE,
+    INSTANCE_TEST_OPTIONS,
+    MONITORING_CATE_SELECT_TYPE,
+    NETWORK_OPTIONS,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGIONS_OPTIONS
+} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
@@ -83,10 +92,6 @@ type State = {
     appInstanceOne: TypeAppInstance,
     currentRegion: string,
     allUsageList: Array,
-    allCpuUsageList: Array,
-    allMemUsageList: Array,
-    allDiskUsageList: Array,
-    allNetworkUsageList: Array,
     cloudLetSelectBoxPlaceholder: string,
     clusterSelectBoxPlaceholder: string,
     appInstSelectBoxPlaceholder: string,
@@ -138,6 +143,7 @@ type State = {
     isRequesting: false,
     clusterDropdownList: Array,
     currentLevelType: string,
+    filteredUsageList: Array,
 
 }
 
@@ -164,10 +170,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             appInstanceList: [],
             allAppInstanceList: [],
             appInstanceOne: {},
-            allCpuUsageList: [],
-            allMemUsageList: [],
-            allDiskUsageList: [],
-            allNetworkUsageList: [],
             cloudLetSelectBoxPlaceholder: 'Select CloudLet',
             clusterSelectBoxPlaceholder: 'Select Cluster',
             appInstSelectBoxPlaceholder: 'Select Instance',
@@ -222,6 +224,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             isRequesting: false,
             clusterDropdownList: [],
             currentLevelType: 'Cluster',
+            filteredUsageList: [],
         };
 
         interval = null;
@@ -286,6 +289,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
             await this.setState({
                 allUsageList: allUsageList,
+                filteredUsageList: allUsageList,
                 maxCpu: maxCpu,
                 maxMem: maxMem,
                 isRequesting: false,
@@ -299,7 +303,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             toast({
                 type: 'success',
                 //icon: 'smile',
-                title: 'REFRESH ALL DATA',
+                title: 'FETCH NEW DATA!',
                 animation: 'bounce',
                 time: 3 * 1000,
                 color: 'black',
@@ -342,7 +346,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.allUsageList, HARDWARE_TYPE.CPU, this)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.filteredUsageList, HARDWARE_TYPE.CPU, this)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -355,7 +359,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.allUsageList, HARDWARE_TYPE.CPU)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.filteredUsageList, HARDWARE_TYPE.CPU)}
                         </div>
                     </div>
                 </div>
@@ -375,7 +379,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.allUsageList, HARDWARE_TYPE.MEM, this)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.filteredUsageList, HARDWARE_TYPE.MEM, this)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -388,7 +392,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.allUsageList, HARDWARE_TYPE.MEM)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.filteredUsageList, HARDWARE_TYPE.MEM)}
                         </div>
                     </div>
 
@@ -407,7 +411,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.allUsageList, HARDWARE_TYPE.DISK, this)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.filteredUsageList, HARDWARE_TYPE.DISK, this)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -418,7 +422,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.allUsageList, HARDWARE_TYPE.DISK)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.filteredUsageList, HARDWARE_TYPE.DISK)}
                         </div>
                     </div>
                 </div>
@@ -436,7 +440,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.allUsageList, HARDWARE_TYPE.TCPCONNS, this)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.filteredUsageList, HARDWARE_TYPE.TCPCONNS, this)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -447,7 +451,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.allUsageList, HARDWARE_TYPE.TCPCONNS)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.filteredUsageList, HARDWARE_TYPE.TCPCONNS)}
                         </div>
                     </div>
                 </div>
@@ -465,7 +469,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.allUsageList, HARDWARE_TYPE.UDPSENT, this)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.filteredUsageList, HARDWARE_TYPE.UDPSENT, this)}
                         </div>
                     </div>
                     {/*2nd_column*/}
@@ -476,7 +480,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.allUsageList, HARDWARE_TYPE.UDPSENT)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.filteredUsageList, HARDWARE_TYPE.UDPSENT)}
                         </div>
                     </div>
                 </div>
@@ -495,7 +499,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderBarGraphForCluster(this.state.allUsageList, networkType, this)}
+                            {this.state.loading ? renderPlaceHolder('network') : renderBarGraphForCluster(this.state.filteredUsageList, networkType, this)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
@@ -529,7 +533,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderLineChartForCluster(this, this.state.allUsageList, networkType, this)}
+                            {this.state.loading ? renderPlaceHolder('network') : renderLineChartForCluster(this, this.state.filteredUsageList, networkType, this)}
                         </div>
                     </div>
                 </div>
@@ -576,7 +580,10 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         currentGridIndex: -1,
                                         currentTabIndex: 0,
                                     })
-                                    //await this.filterByEachTypes('ALL', '', '', '')
+
+                                    this.setState({
+                                        filteredUsageList: this.state.allUsageList,
+                                    })
                                 }}
                             >RESET</Button>
                         </div>
@@ -635,7 +642,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         </div>
 
                         {/*todo:##########################*/}
-                        {/*todo:Cluster Dropdown         */}
+                        {/*todo:Cluster_Dropdown         */}
                         {/*todo:##########################*/}
                         <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
@@ -656,15 +663,45 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                         currentCluster: value,
                                     })
 
+                                    let allUsageList = this.state.allUsageList
 
-                                    /* await this.filterByEachTypes(this.state.currentRegion, this.state.currentCloudLet, value)
+                                    let _filteredUsageList = []
+                                    allUsageList.map(item => {
+                                        if (item.cluster === value) {
+                                            _filteredUsageList.push(item)
+                                        }
+                                        // console.log('Cluster_Dropdown===>', item);
+                                    })
 
-                                     setTimeout(() => {
-                                         this.setState({
-                                             appInstSelectBoxPlaceholder: "Select App Instance",
-                                             currentAppInst: '',
-                                         })
-                                     }, 500)*/
+                                    console.log('Cluster_Dropdown===>', _filteredUsageList);
+
+                                    this.setState({
+                                        filteredUsageList: _filteredUsageList,
+                                    })
+
+
+                                }}
+                            />
+                        </div>
+
+                        {/*todo:---------------------------*/}
+                        {/*todo: App Instance Dropdown      */}
+                        {/*todo:---------------------------*/}
+                        <div className="page_monitoring_dropdown_box">
+                            <div className="page_monitoring_dropdown_label">
+                                App Inst
+                            </div>
+                            <Dropdown
+                                disabled={this.state.currentCluster === '' || this.state.loading}
+                                clearable={this.state.appInstSelectBoxClearable}
+                                loading={this.state.loading}
+                                value={this.state.currentAppInst}
+                                placeholder='Select App Instance'
+                                selection
+                                options={INSTANCE_TEST_OPTIONS}
+                                //style={Styles.dropDown}
+                                onChange={async (e, {value}) => {
+
                                 }}
                             />
                         </div>
@@ -917,16 +954,15 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                             options={HARDWARE_OPTIONS_FOR_CLUSTER}
                                                             defaultValue={HARDWARE_OPTIONS_FOR_CLUSTER[0].value}
                                                             onChange={async (e, {value}) => {
-                                                                try{
+                                                                try {
                                                                     let bubbleChartData = makeBubbleChartDataForCluster(this.state.allUsageList, value);
                                                                     this.setState({
                                                                         bubbleChartData: bubbleChartData,
                                                                         currentHardwareType: value,
                                                                     })
-                                                                }catch (e) {
+                                                                } catch (e) {
 
                                                                 }
-
 
 
                                                             }}

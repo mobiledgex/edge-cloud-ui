@@ -158,6 +158,18 @@ export const HARDWARE_OPTIONS_FOR_CLUSTER= [
 
 ]
 
+
+export const INSTANCE_TEST_OPTIONS= [
+    {text: 'redhong_inst', value: 'redhong_inst'},
+    {text: 'asbdsf_inst', value: 'asbdsf_inst'},
+    {text: '123241__inst', value: '123241__inst'},
+    {text: 'kyungjoon_inst', value: 'kyungjoon_inst'},
+    {text: 'sdfkjh__inst', value: 'sdfkjh__inst'},
+    {text: 'inki__inst', value: 'inki__inst'},
+
+
+]
+
 export const HARDWARE_TYPE_FOR_CLOUDLET = {
     vCPU : 'vCPU',
     MEM: 'MEM',
