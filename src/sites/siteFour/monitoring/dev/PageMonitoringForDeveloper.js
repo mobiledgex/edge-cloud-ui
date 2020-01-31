@@ -18,16 +18,7 @@ import {
     renderBubbleChartForCloudlet,
     renderLineChartForCluster,
 } from "./PageMonitoringServiceForDeveloper";
-import {
-    HARDWARE_OPTIONS_FOR_CLUSTER,
-    HARDWARE_TYPE,
-    INSTANCE_TEST_OPTIONS,
-    MONITORING_CATE_SELECT_TYPE,
-    NETWORK_OPTIONS,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGIONS_OPTIONS
-} from "../../../../shared/Constants";
+import {HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, INSTANCE_TEST_OPTIONS, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
@@ -35,9 +26,9 @@ import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {handleBubbleChartDropDownForCluster, hardwareTypeToUsageKey, makeBubbleChartDataForCluster, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {makeBubbleChartDataForCluster, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
-import {filterAppInstanceListByClusterInst, filterAppInstOnCloudlet, filterUsageByType, getCloudletList} from "../admin/PageMonitoringServiceForAdmin";
+import {getCloudletList} from "../admin/PageMonitoringServiceForAdmin";
 import MiniMapForDevMon from "./MiniMapForDevMon";
 
 const FA = require('react-fontawesome')
@@ -610,7 +601,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         renderSelectBoxRow() {
-
             return (
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
