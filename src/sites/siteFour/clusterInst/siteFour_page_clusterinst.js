@@ -203,7 +203,7 @@ class SiteFourPageClusterInst extends React.Component {
                         }
                     }
                     let requestList = [];
-                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org: _self.props.selectOrg || localStorage.selectOrg } })
+                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org:localStorage.selectOrg } })
                     requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: data })
                     serviceMC.sendMultiRequest(_self, requestList, _self.receiveClusterInstResult)
                 })

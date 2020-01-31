@@ -101,7 +101,7 @@ class RegistryInstViewer extends React.Component {
                 requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: _region } })
                 requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: { region: _region } })
             } else {
-                requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: _region, org:_self.props.selectOrg || localStorage.selectOrg } })
+                requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: _region, org:localStorage.selectOrg } })
                 requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: { region: _region } })
             }
             serviceMC.sendMultiRequest(_self, requestList, _self.receiveResultCloudlet)
