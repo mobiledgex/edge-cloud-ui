@@ -36,17 +36,18 @@ class SiteFourPageClusterInst extends React.Component {
         this.countObject = {};
         this.headerLayout = [1, 2, 2, 2, 2, 1, 2, 2, 1, 2];
         this.headerInfo = [
-            { field: 'Region', label: 'Region', sortable: true, width:1 },
-            { field: 'ClusterName', label: 'Cluster Name', sortable: true, width:2  },
-            { field: 'OrganizationName', label: 'Organization Name', sortable: true, width:2  },
-            { field: 'Operator', label: 'Operator', sortable: true, width:2  },
-            { field: 'Cloudlet', label: 'Cloudlet', sortable: true, width:2  },
-            { field: 'Flavor', label: 'Flavor', sortable: true, width:2  },
-            { field: 'IpAccess', label: 'IP Access', sortable: true, width:2  },
-            //{ field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false},
-            { field: 'State', label: 'State', sortable: true, width:2 },
-            { field: 'Progress', label: 'Progress', sortable: false, width:2 },
-            { field: 'Actions', label: 'Actions', sortable: false , width:2 },
+            { field: 'Region', label: 'Region', sortable: true, visible: true },
+            { field: 'ClusterName', label: 'Cluster Name', sortable: true, visible: true },
+            { field: 'OrganizationName', label: 'Organization Name', sortable: true, visible: true },
+            { field: 'Operator', label: 'Operator', sortable: true, visible: true },
+            { field: 'Cloudlet', label: 'Cloudlet', sortable: true, visible: true },
+            { field: 'Flavor', label: 'Flavor', sortable: true, visible: true },
+            { field: 'Deployment', label: 'Deployment', sortable: true, visible: true },
+            { field: 'IpAccess', label: 'IP Access', sortable: true, visible: true },
+            { field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false, visible: false },
+            { field: 'State', label: 'State', sortable: true, visible: false },
+            { field: 'Progress', label: 'Progress', sortable: false, visible: true },
+            { field: 'Actions', label: 'Actions', sortable: false, visible: true },
         ]
 
     }
@@ -202,7 +203,7 @@ class SiteFourPageClusterInst extends React.Component {
                         }
                     }
                     let requestList = [];
-                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item } })
+                    requestList.push({ token: token, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: { region: item, org: _self.props.selectOrg || localStorage.selectOrg } })
                     requestList.push({ token: token, method: serviceMC.getEP().SHOW_CLUSTER_INST, data: data })
                     serviceMC.sendMultiRequest(_self, requestList, _self.receiveClusterInstResult)
                 })

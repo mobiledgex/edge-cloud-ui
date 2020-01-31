@@ -3,9 +3,6 @@ import React from 'react';
 import sizeMe from 'react-sizeme';
 import { withRouter } from 'react-router-dom';
 import PageDetailViewer from '../../../container/pageDetailViewer';
-import IconButton from '@material-ui/core/IconButton';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 //redux
 import { connect } from 'react-redux';
 import * as actions from '../../../actions';
@@ -43,14 +40,14 @@ class SiteFourPageCloudlet extends React.Component {
         this.userToken = null;
 
         this.headerInfo = [
-            { field: 'CloudletInfoState', label: 'Status', sortable: false},
-            { field: 'Region', label: 'Region', sortable: true },
-            { field: 'CloudletName', label: 'Cloudlet Name', sortable: true },
-            { field: 'Operator', label: 'Operator', sortable: true },
-            //{ field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false },
-            { field: 'State', label: 'State', sortable: true },
-            { field: 'Progress', label: 'Progress', sortable: false},
-            { field: 'Actions', label: 'Actions', sortable: false },
+            { field: 'Region', label: 'Region', sortable: true, visible: true },
+            { field: 'CloudletName', label: 'Cloudlet Name', sortable: true, visible: true },
+            { field: 'Operator', label: 'Operator', sortable: true, visible: true },
+            { field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false, visible: false },
+            { field: 'State', label: 'State', sortable: true, visible: false },
+            { field: 'Progress', label: 'Progress', sortable: false, visible: true },
+            { field: 'CloudletInfoState', label: 'Status', sortable: false, visible: true },
+            { field: 'Actions', label: 'Actions', sortable: false, visible: true },
         ]
     }
 
@@ -136,33 +133,38 @@ class SiteFourPageCloudlet extends React.Component {
     receiveResult = (mcRequestList) => {
         _self.requestCount -= 1;
         if (mcRequestList && mcRequestList.length > 0) {
-            let cloudletList = null;
-            let cloudletInfoList = null;
+            let cloudletList = [];
+            let cloudletInfoList = [];
             mcRequestList.map(mcRequest => {
-                if (mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET) {
+                let request = mcRequest.request;
+                if (request.method === serviceMC.getEP().SHOW_CLOUDLET || request.method === serviceMC.getEP().SHOW_ORG_CLOUDLET) {
+                    for (let i = 0; i < this.headerInfo.length > 0; i++) {
+                        let headerInfo = this.headerInfo[i];
+                        if (headerInfo.field === 'CloudletInfoState') {
+                            headerInfo.visible = request.method === serviceMC.getEP().SHOW_ORG_CLOUDLET ? false : true;
+                            break;
+                        }
+                    }
+                    
                     cloudletList = mcRequest.response.data
                 }
-                else if (mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET_INFO) {
+                else if (request.method === serviceMC.getEP().SHOW_CLOUDLET_INFO) {
                     cloudletInfoList = mcRequest.response.data
                 }
             })
 
-            for (let i = 0; i < cloudletList.length; i++) {
-                let cloudlet = cloudletList[i]
-                for (let j = 0; j < cloudletInfoList.length; j++) {
-                    let cloudletInfo = cloudletInfoList[j]
-                    if (cloudlet.CloudletName === cloudletInfo.CloudletName) {
-                        cloudlet.CloudletInfoState = cloudletInfo.State
-
-                        break;
+            if (cloudletList && cloudletList.length > 0) {
+                for (let i = 0; i < cloudletList.length; i++) {
+                    let cloudlet = cloudletList[i]
+                    for (let j = 0; j < cloudletInfoList.length; j++) {
+                        let cloudletInfo = cloudletInfoList[j]
+                        if (cloudlet.CloudletName === cloudletInfo.CloudletName) {
+                            cloudlet.CloudletInfoState = cloudletInfo.State
+                            break;
+                        }
                     }
                 }
-            }
-
-            if (cloudletList) {
-                if (cloudletList.length > 0) {
-                    _self.multiRequestData = [..._self.multiRequestData, ...cloudletList]
-                }
+                _self.multiRequestData = [..._self.multiRequestData, ...cloudletList]
             }
 
         }
@@ -202,7 +204,6 @@ class SiteFourPageCloudlet extends React.Component {
                 } else {
                     let data = { region: item, org: _self.props.selectOrg || localStorage.selectOrg };
                     requestList.push({ token: store.userToken, method: serviceMC.getEP().SHOW_ORG_CLOUDLET, data: data })
-                    requestList.push({ token: store.userToken, method: serviceMC.getEP().SHOW_CLOUDLET_INFO, data: { region: item } })
                 }
                 serviceMC.sendMultiRequest(_self, requestList, _self.receiveResult)
             })

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react';
-import { Header, Button, Table, Icon, Input, Popup, Container } from 'semantic-ui-react';
+import { Header, Button, Table, Icon, Input, Popup, Container, Label } from 'semantic-ui-react';
 import { withRouter } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip'
 import { connect } from 'react-redux';
@@ -229,7 +229,7 @@ class MapWithListView extends React.Component {
         return layout
     }
 
-    
+
 
     onLayoutChange(layout) {
         //this.props.onLayoutChange(layout);
@@ -427,35 +427,49 @@ class MapWithListView extends React.Component {
         }
     }
 
-    
+
 
     makeHeader() {
         const { column, direction } = this.state
         if (this.headerLabels.length === 0) {
-            return this.props.headerInfo.map((header,i)=>{
-                return (
-                    <Table.HeaderCell key={i} className={header.sortable ? '' : 'unsortable'} textAlign='center' sorted={column === header.field ? direction : null} onClick={header.sortable ? this.handleSort(header.field) : null}>
-                        {header.label}  
-                    </Table.HeaderCell>)
+            return this.props.headerInfo.map((header, i) => {
+                if (header.visible) {
+                    return (
+                        <Table.HeaderCell key={i} className={header.sortable ? '' : 'unsortable'} textAlign='center' sorted={column === header.field ? direction : null} onClick={header.sortable ? this.handleSort(header.field) : null}>
+                            {header.label}
+                        </Table.HeaderCell>)
+                }
             })
 
         }
     }
 
-    showProgress = (item)=>
-    {
-        return(
-            (item['State'] === 5) ?
-                <Icon className="progressIndicator" name='check' color='rgba(255,255,255,.5)' /> :
-            ((item['State'] === 3 || item['State'] === 7 || item['State'] === 14)) ?
-                <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='green' name='circle notch' />} />:
-            ((item['State'] === 10 || item['State'] === 12)) ?  
-                <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='red' name='circle notch' />} />:
-                null
-        )   
+    showProgress = (item) => {
+        let state = item['State'];
+        let icon = null;
+        let color = 'red';
+        switch (state) {
+            case 5:
+                icon = <Popup content={this.getStateStatus(state)} trigger={<Icon className="progressIndicator" name='check' color='green' />}/>
+                break;
+            case 3:
+            case 7:
+            case 14:
+                icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='green' name='circle notch' />} />
+                break;
+            case 10:
+            case 12:
+                icon = <Popup content='View Progress' trigger={<Icon className={'progressIndicator'} loading size={12} color='red' name='circle notch' />} />
+                break;
+            default:
+                icon = <Popup content={this.getStateStatus(state)} trigger={<Icon className="progressIndicator" name='close' color='red' />}/>
+        }
+        return (
+            icon
+        )
     }
 
-    showAction = (item, field)=>{
+    showAction = (item, field) => {
         return (
             String(item[field]) === 'null' ? '' : <Button disabled={this.props.dimmInfo.onlyView} onClick={() => this.setState({ openDelete: true, selected: item })}><Icon name={'trash alternate'} /></Button>
         )
@@ -494,26 +508,24 @@ class MapWithListView extends React.Component {
         }
 
         return (
-            <Button basic size='mini' color={color} compact style={{width:100}}>
+            <Button basic size='mini' color={color} compact style={{ width: 100 }}>
                 {state}
             </Button>
         )
     }
 
-    getCellClick = (field,item)=>{
-        return(
-            field === 'Progress' ? 
-                this.onProgressClick(item, this.props.siteId, '', item['State']) : 
-            field === 'Actions' ?
-                null:
-                this.detailView(item)
+    getCellClick = (field, item) => {
+        return (
+            field === 'Progress' ?
+                this.onProgressClick(item, this.props.siteId, '', item['State']) :
+                field === 'Actions' ?
+                    null :
+                    this.detailView(item)
         )
     }
 
-    getIPAccessState = (id)=>
-    {
-        switch(id)
-        {
+    getIPAccessState = (id) => {
+        switch (id) {
             case 0:
                 return 'IpAccessUnknown'
             case 1:
@@ -529,25 +541,27 @@ class MapWithListView extends React.Component {
 
     makeBody(i, item) {
         return this.props.headerInfo.map((header, j) => {
-            let field = header.field;
-            return <Table.Cell key={j} textAlign='center' ref={cell => this.tableCell = cell} onClick={() => this.getCellClick(field,item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
-                {
-                    field === 'Actions' ?
-                        this.showAction(item, field) :
-                    field === 'Progress' ?
-                        this.showProgress(item) :
-                    (field === 'State' && item[field]) ?
-                        this.getStateStatus(item[field]):
-                    (field === 'CloudletLocation' && item[field]) ?
-                        item[field].latitude && item[field].longitude ? <div> {`Latitude : ${item[field].latitude}`} <br /> {`Longitude : ${item[field].longitude}`} </div> : '' : 
-                    (field === 'CloudletInfoState' && item[field]) ?
-                        this.getCloudletInfoState(item[field]):
-                    (field === 'IpAccess' && item[field]) ?
-                        this.getIPAccessState(item[field]) :
-                        <div style={{ display: 'flex', alignContent: 'Column', justifyContent: 'center', alignItems: 'center', wordBreak: 'break-all' }}>
-                            <div>{String(item[field])}</div>{(this.compareDate(item['Created']).new && field === 'Region') ? <div className="userNewMark" style={{ marginLeft: 5, fontSize: 10, padding: '0 5px' }}>{`New`}</div> : null}
-                        </div>
-                }</Table.Cell>
+            if (header.visible) {
+                let field = header.field;
+                return <Table.Cell key={j} textAlign='center' ref={cell => this.tableCell = cell} onClick={() => this.getCellClick(field, item)} style={(this.state.selectedItem == i) ? { background: '#444', cursor: 'pointer' } : { cursor: 'pointer' }} onMouseOver={(evt) => this.onItemOver(item, i, evt)}>
+                    {
+                        field === 'Actions' ?
+                            this.showAction(item, field) :
+                            field === 'Progress' ?
+                                this.showProgress(item) :
+                                (field === 'State' && item[field]) ?
+                                    this.getStateStatus(item[field]) :
+                                    (field === 'CloudletLocation' && item[field]) ?
+                                        item[field].latitude && item[field].longitude ? <div> {`Latitude : ${item[field].latitude}`} <br /> {`Longitude : ${item[field].longitude}`} </div> : '' :
+                                        (field === 'CloudletInfoState' && item[field]) ?
+                                            this.getCloudletInfoState(item[field]) :
+                                            (field === 'IpAccess' && item[field]) ?
+                                                this.getIPAccessState(item[field]) :
+                                                <div style={{ display: 'flex', alignContent: 'Column', justifyContent: 'center', alignItems: 'center', wordBreak: 'break-all' }}>
+                                                    <div>{String(item[field])}</div>{(this.compareDate(item['Created']).new && field === 'Region') ? <div className="userNewMark" style={{ marginLeft: 5, fontSize: 10, padding: '0 5px' }}>{`New`}</div> : null}
+                                                </div>
+                    }</Table.Cell>
+            }
         })
     }
 
@@ -563,8 +577,8 @@ class MapWithListView extends React.Component {
 
                     dummyData.map((item, i) => (
                         <Table.Row key={i}>
-                                {this.makeBody(i, item)}
-                            
+                            {this.makeBody(i, item)}
+
                         </Table.Row>
                     ))
 
@@ -625,7 +639,7 @@ class MapWithListView extends React.Component {
         if (nextProps.accountInfo) {
             this.setState({ dimmer: 'blurring', open: true })
         }
-        
+
         nextProps.clickCity.map((item) => {
             cityCoordinates.push(item.coordinates)
         })

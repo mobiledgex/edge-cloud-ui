@@ -68,8 +68,6 @@ export const formatData = (datas, body) => {
                     values.push({ uuid: generateUniqueId(), CloudletInfoState:CloudletInfoState, Region: Region, CloudletName: CloudletName, Operator: Operator, CloudletLocation: CloudletLocation, Ip_support: Ip_support, Num_dynamic_ips: Num_dynamic_ips, Physical_name: Physical_name, Platform_type: Platform_type, State: State,Progress: '', Status: Status, Edit: newRegistKey })
                 }
             })
-        } else {
-            values.push({ Region: '', CloudletLocation: '' })
         }
     }
     return values

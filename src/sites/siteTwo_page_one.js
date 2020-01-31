@@ -262,7 +262,6 @@ class SiteTwoPageOne extends React.Component  {
         }
         rgn.map((item, i) => {
             setTimeout(() => {
-                //serviceMC.sendRequest(_self, { token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResult)
                 if(localStorage.selectRole && localStorage.selectRole === 'AdminManager') {
                     serviceMC.sendRequest(_self,{ token: store ? store.userToken : 'null', method: serviceMC.getEP().SHOW_CLOUDLET, data: { region: item } }, _self.receiveResult)
                 } else {

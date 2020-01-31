@@ -39,17 +39,17 @@ class SiteFourPageAppInst extends React.Component {
         this._diffRev = []
 
         this.headerInfo = [
-            { field: 'Region', label: 'Region', sortable: true },
-            { field: 'OrganizationName', label: 'Organization Name', sortable: true },
-            { field: 'AppName', label: 'App Name', sortable: true },
-            { field: 'Version', label: 'Version', sortable: true },
-            { field: 'Operator', label: 'Operator', sortable: true },
-            { field: 'Cloudlet', label: 'Cloudlet', sortable: true },
-            { field: 'ClusterInst', label: 'Cluster Instance', sortable: true },
-            //{ field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false},
-            { field: 'State', label: 'State', sortable: true},
-            { field: 'Progress', label: 'Progress', sortable: false},
-            { field: 'Actions', label: 'Actions', sortable: false },
+            { field: 'Region', label: 'Region', sortable: true, visible: true },
+            { field: 'OrganizationName', label: 'Organization Name', sortable: true, visible: true },
+            { field: 'AppName', label: 'App Name', sortable: true, visible: true },
+            { field: 'Version', label: 'Version', sortable: true, visible: true },
+            { field: 'Operator', label: 'Operator', sortable: true, visible: true },
+            { field: 'Cloudlet', label: 'Cloudlet', sortable: true, visible: true },
+            { field: 'ClusterInst', label: 'Cluster Instance', sortable: true, visible: true },
+            { field: 'CloudletLocation', label: 'Cloudlet Location', sortable: false, visible: false },
+            { field: 'State', label: 'State', sortable: true, visible: false },
+            { field: 'Progress', label: 'Progress', sortable: false, visible: true },
+            { field: 'Actions', label: 'Actions', sortable: false, visible: true },
         ]
     }
     gotoUrl(site, subPath) {

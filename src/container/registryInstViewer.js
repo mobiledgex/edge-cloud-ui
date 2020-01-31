@@ -116,7 +116,7 @@ class RegistryInstViewer extends React.Component {
             let cloudletList = null;
             let cloudletInfoList = null;
             mcRequestList.map(mcRequest=>{
-                if(mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET)
+                if(mcRequest.request.method === serviceMC.getEP().SHOW_CLOUDLET ||  mcRequest.request.method === serviceMC.getEP().SHOW_ORG_CLOUDLET)
                 {
                     cloudletList = mcRequest.response.data
                 }
