@@ -610,7 +610,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                         {/*todo:REGION Dropdown           */}
                         {/*todo:---------------------------*/}
                         <div className="page_monitoring_dropdown_box">
-                            <div className="page_monitoring_dropdown_label">
+                          {/*  <div className="page_monitoring_dropdown_label">
                                 Region
                             </div>
                             <Dropdown
@@ -636,7 +636,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 }}
                                 value={this.state.currentRegion}
                                 // style={Styles.dropDown}
-                            />
+                            />*/}
 
                         </div>
 
