@@ -2057,11 +2057,7 @@ export const getClouletLevelUsageList = async (cloudletList, pHardwareType, rece
 }
 
 
-/**
- * @todo: getCloudletLevelMatric
- * @param serviceBody
- * @returns {Promise<AxiosResponse<any>>}
- */
+
 export const getCloudletLevelMatric = async (serviceBody: any, pToken: string) => {
     console.log('token2===>', pToken);
     let result = await axios({

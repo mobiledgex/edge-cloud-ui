@@ -7,12 +7,241 @@ import BubbleChart from "../../../../components/BubbleChart";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance} from "../../../../shared/Types";
 import PageMonitoring from "./PageMonitoringForDeveloper";
-import {numberWithCommas, renderBarChartCore, renderUsageByTypeForAppInst, renderUsageLabelByTypeForAppInst} from "../PageMonitoringCommonService";
-import {SHOW_APP_INST} from "../../../../services/endPointTypes";
+import {makeFormForClusterLevelMatric, numberWithCommas, renderBarChartCore, renderUsageByTypeForAppInst, renderUsageLabelByTypeForAppInst} from "../PageMonitoringCommonService";
+import {SHOW_APP_INST, SHOW_CLOUDLET, SHOW_CLUSTER_INST} from "../../../../services/endPointTypes";
 import {sendSyncRequest} from "../../../../services/serviceMC";
 import {Table} from "semantic-ui-react";
 import PageMonitoringForDeveloper from "./PageMonitoringForDeveloper";
-import { renderLineChartCore} from "../admin/PageMonitoringServiceForAdmin";
+import {renderLineChartCore} from "../admin/PageMonitoringServiceForAdmin";
+
+export const getClusterLevelMatric = async (serviceBody: any, pToken: string) => {
+    console.log('token2===>', pToken);
+    let result = await axios({
+        url: '/api/v1/auth/metrics/cluster',
+        method: 'post',
+        data: serviceBody['params'],
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + pToken
+        },
+        timeout: 15 * 1000
+    }).then(async response => {
+        return response.data;
+    }).catch(e => {
+        //showToast(e.toString())
+    })
+    return result;
+}
+
+export const getClusterLevelUsageList = async (clusterList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
+    let instanceBodyList = []
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+
+    console.log('cloudletList====>', clusterList);
+
+    for (let index = 0; index < clusterList.length; index++) {
+        let instanceInfoOneForm = makeFormForClusterLevelMatric(clusterList[index], pHardwareType, token, recentDataLimitCount, pStartTime, pEndTime)
+        instanceBodyList.push(instanceInfoOneForm);
+    }
+
+    let promiseList = []
+    for (let index = 0; index < instanceBodyList.length; index++) {
+        promiseList.push(getClusterLevelMatric(instanceBodyList[index], token))
+    }
+    console.log('instanceBodyList===>', instanceBodyList)
+
+    let clusterLevelUsageList = await Promise.all(promiseList);
+
+    let newClusterLevelUsageList = []
+    clusterLevelUsageList.map((item, index) => {
+
+
+        let sumSendBytes = 0;
+        let sumRecvBytes = 0;
+        let sumUdpSent = 0;
+        let sumUdpRecv = 0;
+        let sumUdpRecvErr = 0;
+        let sumTcpConns = 0;
+        let sumTcpRetrans = 0;
+        let sumMemUsage = 0;
+        let sumDiskUsage = 0;
+        let sumCpuUsage = 0;
+
+
+        let columns = []
+        let cluster = ''
+        let dev = '';
+        let cloudlet = '';
+        let operator = '';
+
+        if (item.data["0"].Series !== null) {
+
+            columns = item.data["0"].Series["0"].columns
+            let udpSeriesList = item.data["0"].Series["0"].values
+            let tcpSeriesList = item.data["0"].Series["1"].values
+            let networkSeriesList = item.data["0"].Series["2"].values
+            let memSeriesList = item.data["0"].Series["3"].values
+            let diskSeriesList = item.data["0"].Series["4"].values
+            let cpuSeriesList = item.data["0"].Series["5"].values
+            //columns = item.data["0"].Series["0"].columns;
+            /*  0: "time"
+              1: "cluster"
+              2: "dev"
+              3: "cloudlet"
+              4: "operator"
+              5: "cpu"
+              6: "mem"
+              7: "disk"
+              8: "sendBytes"
+              9: "recvBytes"
+              10: "tcpConns"
+              11: "tcpRetrans"
+              12: "udpSent"
+              13: "udpRecv"
+              14: "udpRecvErr"*/
+
+            udpSeriesList.map(item => {
+
+                cluster = item[1];
+                dev = item[2];
+                cloudlet = item[3];
+                operator = item[4];
+                sumUdpSent += item[12];
+                sumUdpRecv += item[13];
+                sumUdpRecvErr += item[14];
+            })
+
+            tcpSeriesList.map(item => {
+                sumTcpConns += item[10]
+                sumTcpRetrans += item[11]
+            })
+
+            networkSeriesList.map(item => {
+                sumSendBytes += item[8]
+                sumRecvBytes += item[9]
+            })
+
+            memSeriesList.map(item => {
+                sumMemUsage += item[6]
+            })
+
+            diskSeriesList.map(item => {
+                sumDiskUsage += item[7]
+            })
+
+            cpuSeriesList.map(item => {
+                sumCpuUsage += item[5]
+            })
+
+
+            newClusterLevelUsageList.push({
+                cluster,
+                dev,
+                cloudlet,
+                operator,
+                sumUdpSent: sumUdpSent / 10,
+                sumUdpRecv: sumUdpRecv / 10,
+                sumUdpRecvErr: sumUdpRecvErr / 10,
+                sumTcpConns: sumTcpConns / 10,
+                sumTcpRetrans: sumTcpRetrans / 10,
+                sumSendBytes: sumSendBytes / 10,
+                sumRecvBytes: sumRecvBytes / 10,
+                sumMemUsage: sumMemUsage / 10,
+                sumDiskUsage: sumDiskUsage / 10,
+                sumCpuUsage: sumCpuUsage / 10,
+                columns: columns,
+                udpSeriesList,
+                tcpSeriesList,
+                networkSeriesList,
+                memSeriesList,
+                diskSeriesList,
+                cpuSeriesList,
+
+
+            })
+
+        }
+
+    })
+
+    console.log('newClusterLevelUsageList===>', newClusterLevelUsageList)
+
+
+    return newClusterLevelUsageList;
+}
+
+
+export const getCloudletList2 = async () => {
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+    let requestData = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.EU}};
+    let requestData2 = {token: token, method: SHOW_CLOUDLET, data: {region: REGION.US}};
+    let promiseList = []
+    promiseList.push(sendSyncRequest(this, requestData))
+    promiseList.push(sendSyncRequest(this, requestData2))
+    let showCloudletList = await Promise.all(promiseList);
+    /*console.log('results===EU>', showCloudletList[0].response.data);
+    console.log('results===US>', showCloudletList[1].response.data);*/
+    let resultList = [];
+    showCloudletList.map(item => {
+        //@todo : null check
+        if (item.response.data["0"].Region !== '') {
+            let cloudletList = item.response.data;
+            cloudletList.map(item => {
+                resultList.push(item);
+            })
+        }
+    })
+
+    let newCloudletList = []
+    resultList.map(item => {
+        if (item.Operator === localStorage.selectOrg) {
+            newCloudletList.push(item)
+        }
+    })
+
+    return newCloudletList;
+}
+
+
+export const getClusterList = async () => {
+    let store = JSON.parse(localStorage.PROJECT_INIT);
+    let token = store ? store.userToken : 'null';
+    let requestData = {token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.EU}};
+    let requestData2 = {token: token, method: SHOW_CLUSTER_INST, data: {region: REGION.US}};
+    let promiseList = []
+    promiseList.push(sendSyncRequest(this, requestData))
+    promiseList.push(sendSyncRequest(this, requestData2))
+    let showClusterList = await Promise.all(promiseList);
+
+
+    console.log('showClusterList====>', showClusterList);
+
+    let mergedClusterList = [];
+    showClusterList.map(item => {
+        //@todo : null check
+        if (item.response.data["0"].Region !== '') {
+            let clusterList = item.response.data;
+            clusterList.map(item => {
+                mergedClusterList.push(item);
+            })
+        }
+    })
+
+
+    //todo: 현재 속한 조직의 것만을 가져오도록 필터링
+    /*let orgClusterList = []
+    mergedClusterList.map(item => {
+        if (item.OrganizationName === localStorage.selectOrg) {
+            orgClusterList.push(item)
+        }
+    })
+
+    console.log('orgClusterList====>',orgClusterList);*/
+
+    return mergedClusterList;
+}
 
 
 export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
@@ -101,37 +330,35 @@ function removeDups(names) {
 }
 
 
-
-
 export const renderUsageLabelByTypeForCluster = (usageOne, hardwareType, userType = '') => {
     if (hardwareType === HARDWARE_TYPE.CPU) {
-        let cpuUsageOne = (usageOne.avgCpuUsed * 1).toFixed(2) + " %";
+        let cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
         return cpuUsageOne;
     }
 
     if (hardwareType === HARDWARE_TYPE.MEM) {
-        return numberWithCommas((usageOne.avgMemUsed).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumMemUsage).toFixed(2)) + " Byte"
     }
 
     if (hardwareType === HARDWARE_TYPE.DISK) {
-        return numberWithCommas((usageOne.avgDiskUsed).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumDiskUsage).toFixed(2)) + " Byte"
     }
 
     if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
-        return numberWithCommas((usageOne.avgTcpConns).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumTcpConns).toFixed(2)) + " Byte"
     }
 
     if (hardwareType === HARDWARE_TYPE.UDPSENT) {
-        return numberWithCommas((usageOne.avgUdpSent).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumUdpSent).toFixed(2)) + " Byte"
     }
 
 
     if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
-        return numberWithCommas((usageOne.avgSendBytes).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumSendBytes).toFixed(2)) + " Byte"
     }
 
     if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
-        return numberWithCommas((usageOne.avgRecvBytes).toFixed(2)) + " Byte"
+        return numberWithCommas((usageOne.sumRecvBytes).toFixed(2)) + " Byte"
     }
 }
 
@@ -166,7 +393,7 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
     }
 
     if (hardwareType === HARDWARE_TYPE.CPU) {
-        return usageOne.avgCpuUsed
+        return usageOne.sumCpuUsage
     }
     if (hardwareType === HARDWARE_TYPE.MEM) {
         return usageOne.sumMemUsage
@@ -194,7 +421,6 @@ export const renderUsageByType = (usageOne, hardwareType, role = '',) => {
         return usageOne.sumAcceptsConnection
     }
 }
-
 
 
 export const renderUsageByTypeForCluster = (usageOne, hardwareType) => {
@@ -328,7 +554,7 @@ export const renderBarChartForAppInst = (usageList, hardwareType, _this) => {
 
 }
 
-export const makeBarGraphDataForCluster = (usageList, hardwareType, _this) => {
+export const renderBarGraphForCluster = (usageList, hardwareType, _this) => {
 
     console.log('renderBarGraph2===>', usageList);
 
@@ -347,7 +573,7 @@ export const makeBarGraphDataForCluster = (usageList, hardwareType, _this) => {
             if (index < 5) {
                 let barDataOne = [
                     usageList[index].cluster.toString().substring(0, 10) + "...",//clusterName
-                    renderUsageByTypeForCluster(usageList[index], hardwareType),
+                    renderUsageByType(usageList[index], hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
                 ]
@@ -358,7 +584,6 @@ export const makeBarGraphDataForCluster = (usageList, hardwareType, _this) => {
 
     }
 }
-
 
 
 /**
@@ -379,8 +604,6 @@ export const instanceFlavorToPerformanceValue = (flavor) => {
     }
     return performanceValue;
 }
-
-
 
 
 export const renderBubbleChartForCloudlet = (_this: PageMonitoring, hardwareType: string, pBubbleChartData: any) => {
@@ -557,8 +780,7 @@ export const makeLineChartDataForAppInst = (_this: PageMonitoring, hardwareUsage
 }
 
 
-
-export const makeLineChartDataForCluster = (_this: PageMonitoring, pUsageList: Array, hardwareType: string) => {
+export const renderLineChartForCluster = (_this: PageMonitoring, pUsageList: Array, hardwareType: string) => {
 
     console.log('usageList3333====>', pUsageList);
 
@@ -649,7 +871,6 @@ export const makeLineChartDataForCluster = (_this: PageMonitoring, pUsageList: A
 }
 
 
-
 /**
  *
  * @param canvas
@@ -690,8 +911,6 @@ export const makeGradientColor = (canvas, height) => {
 
     return gradientList;
 }
-
-
 
 
 /**
@@ -757,8 +976,6 @@ export const getInstaceListByCurrentOrg = async () => {
 
     return appInstanceList;
 }
-
-
 
 
 /**
@@ -1039,7 +1256,6 @@ export const getAppLevelUsageList = async (appInstanceList, pHardwareType, recen
 }
 
 
-
 export const getAppLevelUsageList002 = async (appInstanceList, pHardwareType, recentDataLimitCount, pStartTime = '', pEndTime = '') => {
 
     let instanceBodyList = []
@@ -1280,7 +1496,6 @@ export const getAppLevelUsageList002 = async (appInstanceList, pHardwareType, re
 }
 
 
-
 export const makeSelectBoxListForClusterList = (arrList, keyName) => {
     let newArrList = [];
     for (let i in arrList) {
@@ -1297,7 +1512,7 @@ export const makeSelectBoxListWithKeyValueCombination = (arrList, key, value) =>
     for (let i in arrList) {
         newArrList.push({
             text: arrList[i][key],
-            value: arrList[i][key]+ "|"  +arrList[i][value],
+            value: arrList[i][key] + "|" + arrList[i][value],
 
         })
     }

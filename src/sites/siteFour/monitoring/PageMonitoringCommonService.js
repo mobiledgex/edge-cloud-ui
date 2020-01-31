@@ -385,19 +385,15 @@ export const makeCloudletListSelectBox = (appInstanceList) => {
 export const renderUsageLabelByTypeForAppInst = (usageOne, hardwareType, userType = '') => {
     if (hardwareType === HARDWARE_TYPE.CPU) {
 
-        if (userType === 'dev') {
-            return usageOne.avgCpuUsed
-        } else {
-            let cpuUsageOne = '';
-            try {
-                cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
-            } catch (e) {
-                cpuUsageOne = 0;
-            } finally {
-                //cpuUsageOne = 0;
-            }
-            return cpuUsageOne;
+        let cpuUsageOne = '';
+        try {
+            cpuUsageOne = (usageOne.sumCpuUsage * 1).toFixed(2) + " %";
+        } catch (e) {
+            cpuUsageOne = 0;
+        } finally {
+            //cpuUsageOne = 0;
         }
+        return cpuUsageOne;
     }
 
     if (hardwareType === HARDWARE_TYPE.VCPU) {
@@ -428,6 +424,9 @@ export const renderUsageLabelByTypeForAppInst = (usageOne, hardwareType, userTyp
         return usageOne.avgNetRecv;
     }
 
+    if (hardwareType === HARDWARE_TYPE.CPU) {
+        return numberWithCommas(usageOne.sumCpuUsage) + " Byte"
+    }
 
     if (hardwareType === HARDWARE_TYPE.MEM) {
         return numberWithCommas(usageOne.sumMemUsage) + " Byte"
@@ -497,8 +496,8 @@ export const makeBubbleChartDataForCluster = (usageList: any) => {
         bubbleChartData.push({
             index: index,
             label: item.cloudlet.toString().substring(0, 10) + "...",
-            value: item.avgCpuUsed.toFixed(2),
-            favor: item.avgCpuUsed.toFixed(2),
+            value: item.sumCpuUsage.toFixed(2),
+            favor: item.sumCpuUsage.toFixed(2),
             fullLabel: item.cloudlet.toString(),
         })
     })
@@ -538,8 +537,8 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: (item.avgCpuUsed * 1).toFixed(0),
-                favor: (item.avgCpuUsed * 1).toFixed(0),
+                value: (item.sumCpuUsage * 1).toFixed(0),
+                favor: (item.sumCpuUsage * 1).toFixed(0),
                 fullLabel: item.cluster,
             })
         })
@@ -548,8 +547,8 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgMemUsed.toFixed(0),
-                favor: item.avgMemUsed.toFixed(0),
+                value: item.sumMemUsage.toFixed(0),
+                favor: item.sumMemUsage.toFixed(0),
                 fullLabel: item.cluster,
             })
         })
@@ -558,8 +557,8 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgDiskUsed.toFixed(0),
-                favor: item.avgDiskUsed.toFixed(0),
+                value: item.sumDiskUsage.toFixed(0),
+                favor: item.sumDiskUsage.toFixed(0),
                 fullLabel: item.cluster,
             })
         })
@@ -568,8 +567,8 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgNetRecv,
-                favor: item.avgNetRecv,
+                value: item.sumNetRecv,
+                favor: item.sumNetRecv,
                 fullLabel: item.cluster,
             })
         })
@@ -578,8 +577,8 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgNetSend,
-                favor: item.avgNetSend,
+                value: item.sumNetSend,
+                favor: item.sumNetSend,
                 fullLabel: item.cluster,
             })
         })
@@ -588,8 +587,8 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgTcpConns.toFixed(0),
-                favor: item.avgTcpConns.toFixed(0),
+                value: item.sumTcpConns.toFixed(0),
+                favor: item.sumTcpConns.toFixed(0),
                 fullLabel: item.cluster,
             })
         })
@@ -598,8 +597,8 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgUdpSent,
-                favor: item.avgUdpSent,
+                value: item.sumUdpSent,
+                favor: item.sumUdpSent,
                 fullLabel: item.cluster,
             })
         })
@@ -608,8 +607,8 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgSendBytes,
-                favor: item.avgSendBytes,
+                value: item.sumSendBytes,
+                favor: item.sumSendBytes,
                 fullLabel: item.cluster,
             })
         })
@@ -618,8 +617,8 @@ export const handleBubbleChartDropDownForCluster = async (hwType, _this: PageMon
             bubbleChartData.push({
                 index: index,
                 label: item.cloudlet.toString().substring(0, 10) + "...",
-                value: item.avgRecvBytes,
-                favor: item.avgRecvBytes,
+                value: item.sumRecvBytes,
+                favor: item.sumRecvBytes,
                 fullLabel: item.cluster,
             })
         })
