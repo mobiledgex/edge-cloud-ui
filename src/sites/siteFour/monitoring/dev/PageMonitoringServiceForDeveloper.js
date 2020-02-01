@@ -131,8 +131,8 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
 
 
             newClusterLevelUsageList.push({
-                cluster : clusterList[index].ClusterName,
-                cloudletLocation  :clusterList[index].CloudletLocation,
+                cluster: clusterList[index].ClusterName,
+                cloudletLocation: clusterList[index].CloudletLocation,
                 dev: clusterList[index].Region,
                 cloudlet: clusterList[index].Cloudlet,
                 operator: clusterList[index].Operator,
@@ -157,15 +157,15 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
 
             })
 
-        }else{//Seires is null
+        } else {//Seires is null
             newClusterLevelUsageList.push({
                 /*Region: "EU"
                 ClusterName: "hackathon-alex-cluster"
                 OrganizationName: "MobiledgeX"
                 Operator: "mex"
                 Cloudlet: "hackathon-alex"*/
-                cluster : clusterList[index].ClusterName,
-                cloudletLocation  :clusterList[index].CloudletLocation,
+                cluster: clusterList[index].ClusterName,
+                cloudletLocation: clusterList[index].CloudletLocation,
                 dev: clusterList[index].Region,
                 cloudlet: clusterList[index].Cloudlet,
                 operator: clusterList[index].Operator,
@@ -180,12 +180,12 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
                 sumDiskUsage: 0,
                 sumCpuUsage: 0,
                 columns: 0,
-                udpSeriesList:[],
-                tcpSeriesList:[],
-                networkSeriesList:[],
-                memSeriesList:[],
-                diskSeriesList:[],
-                cpuSeriesList:[],
+                udpSeriesList: [],
+                tcpSeriesList: [],
+                networkSeriesList: [],
+                memSeriesList: [],
+                diskSeriesList: [],
+                cpuSeriesList: [],
 
 
             })
@@ -330,6 +330,12 @@ export const makeFormForAppInstance = (dataOne, valid = "*", token, fetchingData
 }
 
 
+/**
+ *
+ * @param appInstanceList
+ * @param pAppInstName
+ * @returns {[]}
+ */
 export const filterAppInstanceListByAppInst = (appInstanceList, pAppInstName = '') => {
     let filteredInstanceList = []
     appInstanceList.map(item => {
@@ -338,6 +344,16 @@ export const filterAppInstanceListByAppInst = (appInstanceList, pAppInstName = '
         }
     })
 
+    return filteredInstanceList;
+}
+
+export const filterUsageByClassification = (classificationList, pTypeValue, mapKey,) => {
+    let filteredInstanceList = []
+    classificationList.map(item => {
+        if (item[mapKey] === pTypeValue) {
+            filteredInstanceList.push(item);
+        }
+    })
     return filteredInstanceList;
 }
 
@@ -604,7 +620,7 @@ export const renderBarGraphForCluster = (usageList, hardwareType, _this) => {
         for (let index = 0; index < usageList.length; index++) {
             if (index < 5) {
                 let barDataOne = [
-                    usageList[index].cluster.toString().substring(0, 10) + "\n["+ usageList[index].cloudlet +"]",//clusterName
+                    usageList[index].cluster.toString().substring(0, 10) + "\n[" + usageList[index].cloudlet + "]",//clusterName
                     renderUsageByType(usageList[index], hardwareType),
                     CHART_COLOR_LIST[index],
                     renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
@@ -614,6 +630,37 @@ export const renderBarGraphForCluster = (usageList, hardwareType, _this) => {
         }
         return renderBarChartCore(chartDataList, hardwareType)
 
+    }
+}
+
+export const makeBarChartDataForCluster = (usageList, hardwareType, _this) => {
+
+    console.log(`renderBarGraphForCluster===>${hardwareType}`, usageList);
+
+    usageList = sortUsageListByTypeForCluster(usageList, hardwareType)
+
+    if (usageList.length === 0) {
+        return "";
+    } else {
+        let chartDataList = [];
+        chartDataList.push(["Element", hardwareType + " USAGE", {role: "style"}, {role: 'annotation'}])
+        for (let index = 0; index < usageList.length; index++) {
+            if (index < 5) {
+                let barDataOne = [
+                    usageList[index].cluster.toString().substring(0, 10) + "\n[" + usageList[index].cloudlet + "]",//clusterName
+                    renderUsageByType(usageList[index], hardwareType),
+                    CHART_COLOR_LIST[index],
+                    renderUsageLabelByTypeForCluster(usageList[index], hardwareType)
+                ]
+                chartDataList.push(barDataOne);
+            }
+        }
+
+        let chartDataSet = {
+            chartDataList,
+            hardwareType,
+        }
+        return chartDataSet
     }
 }
 
@@ -812,6 +859,100 @@ export const makeLineChartDataForAppInst = (_this: PageMonitoring, hardwareUsage
 }
 
 
+export const makeLineChartDataForCluster = (pUsageList: Array, hardwareType: string, _this) => {
+
+    console.log('usageList3333====>', pUsageList);
+
+    if (pUsageList.length === 0) {
+        return "";
+    } else {
+        let classificationName = ''
+        let levelTypeNameList = [];
+        let usageSetList = []
+        let dateTimeList = []
+        let series = []
+        for (let i in pUsageList) {
+
+            if (hardwareType === HARDWARE_TYPE.CPU) {
+                series = pUsageList[i].cpuSeriesList
+            } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                series = pUsageList[i].memSeriesList
+            } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                series = pUsageList[i].diskSeriesList
+            } else if (hardwareType === HARDWARE_TYPE.UDP) {
+                series = pUsageList[i].udpSeriesList
+            } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
+                series = pUsageList[i].tcpSeriesList
+            } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+                series = pUsageList[i].udpSeriesList
+            } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                series = pUsageList[i].networkSeriesList
+            } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                series = pUsageList[i].networkSeriesList
+            }
+
+            console.log('series333333333===>', series);
+
+            classificationName = pUsageList[i].cluster + "\n[" + pUsageList[i].cloudlet + "]";
+            let usageList = [];
+
+            for (let j in series) {
+
+                let usageOne = 0;
+                if (hardwareType === HARDWARE_TYPE.CPU) {
+                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.CPU];
+                } else if (hardwareType === HARDWARE_TYPE.MEM) {
+                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.MEM];
+                } else if (hardwareType === HARDWARE_TYPE.DISK) {
+                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.DISK];
+                } else if (hardwareType === HARDWARE_TYPE.TCPCONNS) {
+                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.TCPCONNS];
+                } else if (hardwareType === HARDWARE_TYPE.UDPSENT) {
+                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.UDPSENT];
+                } else if (hardwareType === HARDWARE_TYPE.SENDBYTES) {
+                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.SENDBYTES];
+                } else if (hardwareType === HARDWARE_TYPE.RECVBYTES) {
+                    usageOne = series[j][USAGE_INDEX_FOR_CLUSTER.RECVBYTES];
+                }
+
+                usageList.push(usageOne);
+
+                let dateOne = series[j]["0"];
+                dateOne = dateOne.toString().split("T")
+                dateTimeList.push(dateOne[1]);
+            }
+
+            levelTypeNameList.push(classificationName)
+            usageSetList.push(usageList);
+        }
+
+        console.log('usageSetList====>', usageSetList);
+
+
+        //@todo: CUST LIST INTO RECENT_DATA_LIMIT_COUNT
+        let newDateTimeList = []
+        for (let i in dateTimeList) {
+            if (i < RECENT_DATA_LIMIT_COUNT) {
+                let splitDateTimeArrayList = dateTimeList[i].toString().split(".");
+                let timeOne = splitDateTimeArrayList[0].replace("T", "T");
+                newDateTimeList.push(timeOne.toString())//.substring(3, timeOne.length))
+            }
+
+        }
+
+        let lineChartDataSet = {
+            levelTypeNameList,
+            usageSetList,
+            newDateTimeList,
+            hardwareType,
+        }
+
+        return lineChartDataSet
+    }
+
+}
+
+
 export const renderLineChartForCluster = (_this: PageMonitoring, pUsageList: Array, hardwareType: string) => {
 
     console.log('usageList3333====>', pUsageList);
@@ -850,7 +991,7 @@ export const renderLineChartForCluster = (_this: PageMonitoring, pUsageList: Arr
 
             console.log('series333333333===>', series);
 
-            classificationName = pUsageList[i].cluster + "\n["+ pUsageList[i].cloudlet +"]";
+            classificationName = pUsageList[i].cluster + "\n[" + pUsageList[i].cloudlet + "]";
             let usageList = [];
 
             for (let j in series) {
@@ -1550,9 +1691,9 @@ export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) =
     let newArrList = [];
     for (let i in arrList) {
         newArrList.push({
-            key: arrList[i][keyName]+ " | "+ arrList[i][valueName],
-            value: arrList[i][keyName]+ " | "+ arrList[i][valueName],
-            text: arrList[i][keyName]+ " | "+ arrList[i][valueName],
+            key: arrList[i][keyName] + " | " + arrList[i][valueName],
+            value: arrList[i][keyName] + " | " + arrList[i][valueName],
+            text: arrList[i][keyName] + " | " + arrList[i][valueName],
         })
     }
     return newArrList;

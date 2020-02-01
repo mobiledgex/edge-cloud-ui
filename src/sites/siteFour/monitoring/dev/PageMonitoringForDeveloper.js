@@ -11,34 +11,24 @@ import * as actions from '../../../../actions';
 import {hot} from "react-hot-loader/root";
 import {DatePicker,} from 'antd';
 import {
+    filterUsageByClassification,
     getClusterLevelUsageList,
-    getClusterList,
-    makeSelectBoxListForClusterList, makeSelectBoxListWithKeyValuePipe,
+    getClusterList, makeBarChartDataForCluster, makeLineChartDataForCluster,
+    makeSelectBoxListWithKeyValuePipe,
     renderBarGraphForCluster,
     renderBubbleChartForCloudlet,
     renderLineChartForCluster,
 } from "./PageMonitoringServiceForDeveloper";
-import {
-    CLASSIFICATION,
-    HARDWARE_OPTIONS_FOR_CLUSTER,
-    HARDWARE_TYPE,
-    INSTANCE_TEST_OPTIONS,
-    NETWORK_OPTIONS,
-    NETWORK_TYPE,
-    RECENT_DATA_LIMIT_COUNT,
-    REGIONS_OPTIONS
-} from "../../../../shared/Constants";
+import {CLASSIFICATION, HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
-import type {TypeGridInstanceList} from "../../../../shared/Types";
+import type {TypeBarChartData, TypeGridInstanceList, TypeLineChartData} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
 import moment from "moment";
 import ToggleDisplay from 'react-toggle-display';
 import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
-import {makeBubbleChartDataForCluster, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
-import {CircularProgress} from "@material-ui/core";
-import {getCloudletList, getAppInstList, StylesForMonitoring} from "../admin/PageMonitoringServiceForAdmin";
-import MiniMapComponent2 from "./MiniMapComponent2____.jsskadjfksdjfkj";
+import {getOneYearStartEndDatetime, makeBubbleChartDataForCluster, renderBarChartCore, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
+import {getAppInstList, getAppLevelUsageList, getCloudletList, renderLineChartCore, StylesForMonitoring} from "../admin/PageMonitoringServiceForAdmin";
 import MapboxComponent from "./MapboxComponent";
 import * as reducer from "../../../../utils";
 
@@ -259,20 +249,20 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 loading: false,
             })
 
-            this.interval = setInterval(async () => {
-                this.setState({
-                    intervalLoading: true,
-                })
-                await this.loadInitDataForCluster(true);
-                this.setState({
-                    intervalLoading: false,
-                })
+            /*  this.interval = setInterval(async () => {
+                  this.setState({
+                      intervalLoading: true,
+                  })
+                  await this.loadInitDataForCluster(true);
+                  this.setState({
+                      intervalLoading: false,
+                  })
 
-            }, 1000 * 10)
+              }, 1000 * 10)*/
         }
 
         componentWillUnmount(): void {
-            clearInterval(this.interval)
+            // clearInterval(this.interval)
         }
 
         async loadInitDataForCluster(isInterval: boolean = false) {
@@ -396,179 +386,60 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         }
 
         renderCpuTabArea() {
-            return (
-                <div className='page_monitoring_dual_column'>
-
-                    {/*1_column*/}
-                    {/*1_column*/}
-                    {/*1_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of CPU Usage on {this.state.currentLevelType}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.filteredUsageList, HARDWARE_TYPE.CPU, this)}
-                        </div>
-                    </div>
-                    {/*2nd_column*/}
-                    {/*2nd_column*/}
-                    {/*2nd_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                CPU Usage of {this.state.currentLevelType}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.filteredUsageList, HARDWARE_TYPE.CPU)}
-                        </div>
-                    </div>
-                </div>
-            )
+            let barChartDataSet: TypeBarChartData = makeBarChartDataForCluster(this.state.filteredUsageList, HARDWARE_TYPE.CPU, this)
+            let lineChartDataSet: TypeLineChartData = makeLineChartDataForCluster(this.state.filteredUsageList, HARDWARE_TYPE.CPU, this)
+            return this.renderGraphArea(HARDWARE_TYPE.CPU, barChartDataSet, lineChartDataSet)
         }
 
         renderMemTabArea() {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    {/*1st_column*/}
-                    {/*1st_column*/}
-                    {/*1st_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of MEM Usage on {this.state.currentLevelType}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.filteredUsageList, HARDWARE_TYPE.MEM, this)}
-                        </div>
-                    </div>
-                    {/*2nd_column*/}
-                    {/*2nd_column*/}
-                    {/*2nd_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                MEM Usage of {this.state.currentLevelType}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.filteredUsageList, HARDWARE_TYPE.MEM)}
-                        </div>
-                    </div>
-
-                </div>
-            )
+            let barChartDataSet: TypeBarChartData = makeBarChartDataForCluster(this.state.filteredUsageList, HARDWARE_TYPE.MEM, this)
+            let lineChartDataSet: TypeLineChartData = makeLineChartDataForCluster(this.state.filteredUsageList, HARDWARE_TYPE.MEM, this)
+            return this.renderGraphArea(HARDWARE_TYPE.MEM, barChartDataSet, lineChartDataSet)
         }
 
         renderDiskTabArea() {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    {/*1_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of DISK Usage on {this.state.currentLevelType}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.filteredUsageList, HARDWARE_TYPE.DISK, this)}
-                        </div>
-                    </div>
-                    {/*2nd_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                DISK Usage of {this.state.currentLevelType}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.filteredUsageList, HARDWARE_TYPE.DISK)}
-                        </div>
-                    </div>
-                </div>
-            )
+            let barChartDataSet: TypeBarChartData = makeBarChartDataForCluster(this.state.filteredUsageList, HARDWARE_TYPE.DISK, this)
+            let lineChartDataSet: TypeLineChartData = makeLineChartDataForCluster(this.state.filteredUsageList, HARDWARE_TYPE.DISK, this)
+            return this.renderGraphArea(HARDWARE_TYPE.DISK, barChartDataSet, lineChartDataSet)
         }
 
         renderTcpTab() {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    {/*1_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of TCP on {this.state.currentLevelType}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.filteredUsageList, HARDWARE_TYPE.TCPCONNS, this)}
-                        </div>
-                    </div>
-                    {/*2nd_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TCP of on {this.state.currentLevelType}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.filteredUsageList, HARDWARE_TYPE.TCPCONNS)}
-                        </div>
-                    </div>
-                </div>
-            )
+            let barChartDataSet: TypeBarChartData = makeBarChartDataForCluster(this.state.filteredUsageList, HARDWARE_TYPE.TCPCONNS, this)
+            let lineChartDataSet: TypeLineChartData = makeLineChartDataForCluster(this.state.filteredUsageList, HARDWARE_TYPE.TCPCONNS, this)
+            return this.renderGraphArea(HARDWARE_TYPE.TCPCONNS, barChartDataSet, lineChartDataSet)
         }
 
         renderUdpTab() {
-            return (
-                <div className='page_monitoring_dual_column'>
-                    {/*1_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                TOP5 of UDP on {this.state.currentLevelType}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderBarGraphForCluster(this.state.filteredUsageList, HARDWARE_TYPE.UDPSENT, this)}
-                        </div>
-                    </div>
-                    {/*2nd_column*/}
-                    <div className='page_monitoring_dual_container'>
-                        <div className='page_monitoring_title_area'>
-                            <div className='page_monitoring_title'>
-                                UDP of {this.state.currentLevelType}
-                            </div>
-                        </div>
-                        <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder() : renderLineChartForCluster(this, this.state.filteredUsageList, HARDWARE_TYPE.UDPSENT)}
-                        </div>
-                    </div>
-                </div>
-            )
+            let barChartDataSet: TypeBarChartData = makeBarChartDataForCluster(this.state.filteredUsageList, HARDWARE_TYPE.UDPSENT, this)
+            let lineChartDataSet: TypeLineChartData = makeLineChartDataForCluster(this.state.filteredUsageList, HARDWARE_TYPE.UDPSENT, this)
+            return this.renderGraphArea(HARDWARE_TYPE.UDPSENT, barChartDataSet, lineChartDataSet)
+        }
+
+        renderNetworkAreaForCluster(networkType: string) {
+            let barChartDataSet: TypeBarChartData = makeBarChartDataForCluster(this.state.filteredUsageList, networkType, this)
+            let lineChartDataSet: TypeLineChartData = makeLineChartDataForCluster(this.state.filteredUsageList, networkType, this)
+            return this.renderGraphAreaForNetwork(networkType, barChartDataSet, lineChartDataSet)
         }
 
 
-        renderNetworkAreaForCluster(networkType: string) {
 
+        renderGraphAreaForNetwork(networkType, barChartDataSet, lineChartDataSet) {
             return (
                 <div className='page_monitoring_dual_column'>
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title'>
-                                TOP5 of NETWORK Usage on {this.state.currentLevelType}
+                                TOP5 of {networkType} Usage on {this.state.currentLevelType}
                             </div>
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderBarGraphForCluster(this.state.filteredUsageList, networkType, this)}
+                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
                         </div>
                     </div>
                     <div className='page_monitoring_dual_container'>
                         <div className='page_monitoring_title_area'>
                             <div className='page_monitoring_title_select'>
-                                NETWORK Usage of {this.state.currentLevelType}
+                                {networkType} Usage of {this.state.currentLevelType}
                             </div>
                             {!this.state.loading &&
                             <Dropdown
@@ -596,13 +467,43 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             }
                         </div>
                         <div className='page_monitoring_container'>
-                            {this.state.loading ? renderPlaceHolder('network') : renderLineChartForCluster(this, this.state.filteredUsageList, networkType, this)}
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
                         </div>
                     </div>
                 </div>
             )
-
         }
+
+
+        renderGraphArea(pHardwareType, barChartDataSet, lineChartDataSet) {
+            return (
+                <div className='page_monitoring_dual_column'>
+                    {/*1_column*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                TOP5 of {pHardwareType} on {this.state.currentLevelType}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderBarChartCore(barChartDataSet.chartDataList, barChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+                    {/*2nd_column*/}
+                    <div className='page_monitoring_dual_container'>
+                        <div className='page_monitoring_title_area'>
+                            <div className='page_monitoring_title'>
+                                {pHardwareType} of on {this.state.currentLevelType}
+                            </div>
+                        </div>
+                        <div className='page_monitoring_container'>
+                            {this.state.loading ? renderPlaceHolder() : renderLineChartCore(lineChartDataSet.levelTypeNameList, lineChartDataSet.usageSetList, lineChartDataSet.newDateTimeList, lineChartDataSet.hardwareType)}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
 
 
         renderHeader = () => {
@@ -671,9 +572,107 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             />
                         </div>
                         }
+
+                        {this.state.appInstLoading &&
+
+                        <div style={{marginLeft: 15}}>
+                            <Lottie
+                                options={{
+                                    loop: true,
+                                    autoplay: true,
+                                    animationData: require('../../../../lotties/198-volume-indicator'),
+                                    rendererSettings: {
+                                        preserveAspectRatio: 'xMidYMid slice'
+                                    }
+                                }}
+                                height={35}
+                                width={35}
+                                isStopped={false}
+                                isPaused={false}
+                            />
+                        </div>
+                        }
                     </Grid.Row>
                 </div>
             )
+        }
+
+        async handleAppInstDropdown(data) {
+            await this.setState({
+                currentAppInst: data,
+            })
+
+            let AppName = data.split('|')[0].trim()
+            let Cloudlet = data.split('|')[1].trim()
+
+            console.log('Instance_Dropdown=1==>', AppName);
+            console.log('Instance_Dropdown=2==>', Cloudlet);
+            console.log('Instance_Dropdown=3==>', this.state.appInstanceList);
+
+            let filteredAppList = filterUsageByClassification(this.state.appInstanceList, AppName, 'AppName');
+            filteredAppList = filterUsageByClassification(filteredAppList, Cloudlet, 'Cloudlet');
+            console.log('Instance_Dropdown=4==>', filteredAppList);
+
+            let arrDateTime = getOneYearStartEndDatetime();
+
+            let usageList = [];
+            this.setState({appInstLoading: true})
+            try {
+                usageList = await getAppLevelUsageList(filteredAppList, "*", RECENT_DATA_LIMIT_COUNT, arrDateTime[0], arrDateTime[1]);
+            } catch (e) {
+                showToast(e.toString())
+            } finally {
+                this.setState({appInstLoading: false})
+            }
+
+            console.log('Instance_Dropdown=5==>', usageList);
+
+        }
+
+        async handleClusterDropdown(value) {
+
+            let selectData = value.split("|")
+            let selectedCluster = selectData[0].trim();
+            let selectedCloudlet = selectData[1].trim();
+
+            await this.setState({
+                currentCluster: value,
+            })
+
+            let allUsageList = this.state.allUsageList
+
+            console.log('allUsageList===>', allUsageList)
+            let filteredUsageList = []
+            allUsageList.map(item => {
+                if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
+                    filteredUsageList.push(item)
+                }
+                // console.log('Cluster_Dropdown===>', item);
+            })
+
+            console.log('filteredUsageList===>', filteredUsageList);
+            this.setState({
+                filteredUsageList: filteredUsageList,
+            })
+
+            let appInstanceList = this.state.appInstanceList;
+
+            let filteredAppInstList = []
+            appInstanceList.map((item: TypeAppInstance, index) => {
+                if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
+                    filteredAppInstList.push(item)
+                }
+            })
+
+            console.log('filteredAppInstList===>', filteredAppInstList);
+            let appInstDropdown = makeSelectBoxListWithKeyValuePipe(filteredAppInstList, 'AppName', CLASSIFICATION.CLOUDLET)
+            await this.setState({
+                appInstDropdown: appInstDropdown,
+                currentAppInst: '',
+                appInstSelectBoxPlaceholder: 'Select App Inst',
+                filteredAppInstanceList: filteredAppInstList,
+                appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
+            })
         }
 
         renderSelectBoxRow() {
@@ -698,62 +697,13 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={this.state.clusterDropdownList}
                                 style={StylesForMonitoring.dropDown}
                                 onChange={async (e, {value}) => {
-
-
-                                    let selectData = value.split("|")
-                                    let selectedCluster = selectData[0].trim();
-                                    let selectedCloudlet = selectData[1].trim();
-
-                                    await this.setState({
-                                        currentCluster: value,
-                                    })
-
-                                    let allUsageList = this.state.allUsageList
-
-                                    console.log('allUsageList===>', allUsageList)
-
-                                    let filteredUsageList = []
-                                    allUsageList.map(item => {
-                                        if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
-                                            filteredUsageList.push(item)
-                                        }
-                                        // console.log('Cluster_Dropdown===>', item);
-                                    })
-
-                                    console.log('filteredUsageList===>', filteredUsageList);
-                                    this.setState({
-                                        filteredUsageList: filteredUsageList,
-                                    })
-
-
-                                    let appInstanceList = this.state.appInstanceList;
-
-                                    let filteredAppInstList = []
-                                    appInstanceList.map((item: TypeAppInstance, index) => {
-                                        if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
-                                            filteredAppInstList.push(item)
-                                        }
-                                    })
-
-                                    console.log('filteredAppInstList===>', filteredAppInstList);
-                                    let appInstDropdown = makeSelectBoxListWithKeyValuePipe(filteredAppInstList, 'AppName', CLASSIFICATION.CLOUDLET)
-
-
-                                    await this.setState({
-                                        appInstDropdown: appInstDropdown,
-                                        currentAppInst: '',
-                                        appInstSelectBoxPlaceholder: 'Select App Inst',
-                                        filteredAppInstanceList: filteredAppInstList,
-                                        appInstanceListGroupByCloudlet: reducer.groupBy(filteredAppInstList, CLASSIFICATION.CLOUDLET),
-                                    })
-
-
+                                    this.handleClusterDropdown(value)
                                 }}
                             />
                         </div>
 
                         {/*todo:---------------------------*/}
-                        {/*todo: App Instance Dropdown      */}
+                        {/*todo: App Instance_Dropdown      */}
                         {/*todo:---------------------------*/}
                         <div className="page_monitoring_dropdown_box">
                             <div className="page_monitoring_dropdown_label">
@@ -769,11 +719,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 options={this.state.appInstDropdown}
                                 //style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
-
-                                    this.setState({
-                                        currentAppInst: value,
-                                    })
-
+                                    this.handleAppInstDropdown(value)
                                 }}
                             />
                         </div>
@@ -974,7 +920,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                         </div>
                                                     </div>
                                                     <div className='page_monitoring_container'>
-                                                        <MapboxComponent  markerList={this.state.appInstanceListGroupByCloudlet}/>
+                                                        <MapboxComponent markerList={this.state.appInstanceListGroupByCloudlet}/>
                                                     </div>
                                                 </div>
 

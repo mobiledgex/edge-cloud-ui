@@ -7,6 +7,8 @@ import {removeDuplication} from "./dev/PageMonitoringServiceForDeveloper";
 import {Chart} from "react-google-charts";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import PageMonitoringForDeveloper from "./dev/PageMonitoringForDeveloper";
+import {makeCompleteDateTime} from "./admin/PageMonitoringServiceForAdmin";
+import moment from "moment";
 
 export const makeFormForCloudletLevelMatric = (dataOne, valid = "*", token, fetchingDataNo = 20, pStartTime = '', pEndTime = '') => {
 
@@ -261,6 +263,18 @@ export const filterUsageByType = (pTypeKey, pTypeValue, usageList,) => {
         }
     });
     return filteredUsageList
+}
+
+export const getOneYearStartEndDatetime = () => {
+
+    let arrDateTime=[]
+    let startTime = makeCompleteDateTime(moment().subtract(364, 'd').format('YYYY-MM-DD HH:mm'));
+    let endTime = makeCompleteDateTime(moment().subtract(0, 'd').format('YYYY-MM-DD HH:mm'));
+
+    arrDateTime.push(startTime)
+    arrDateTime.push(endTime)
+
+    return arrDateTime;
 }
 
 /**
@@ -523,8 +537,8 @@ export const makeBubbleChartDataForCluster = (usageList: any, paramHWType) => {
     let bubbleChartData = []
     usageList.map((item, index) => {
 
-        let usageValue :number = item[hardwareTypeToUsageKey(paramHWType)]
-        usageValue =usageValue.toFixed(2)
+        let usageValue: number = item[hardwareTypeToUsageKey(paramHWType)]
+        usageValue = usageValue.toFixed(2)
 
         bubbleChartData.push({
             index: index,

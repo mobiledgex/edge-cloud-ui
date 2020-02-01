@@ -64,6 +64,19 @@ export type TypeAppInstance = {
     "Revision": number,
 }
 
+export type TypeBarChartData = {
+    chartDataList: string,
+    hardwareType: string,
+}
+
+export type TypeLineChartData = {
+    lineChartDataSet: string,
+    levelTypeNameList: string,
+    usageSetList: string,
+    newDateTimeList: string,
+    hardwareType: string,
+}
+
 /*{
     "Region": "EU",
     "OrganizationName": "MobiledgeX",

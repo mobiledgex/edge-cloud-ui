@@ -188,17 +188,15 @@ export default class MapboxComponent extends Component<Props, State> {
                         width: '100%',
                         height: '100%',
                     }}
-                    //movingMethod={'easeTo'}
+                    movingMethod={'easeTo'}
                     flyToOptions={{
                         speed: 3.5,
-                        /*center: [0, 0],
-                        zoom: 45,*/
-                        /*
-
-                          curve: 3,
-                          easing(t) {
-                              return t;
-                          }*/
+                     /*   center: [0, 0],
+                        zoom: 45,
+                        curve: 3,
+                        easing(t) {
+                            return t;
+                        }*/
                     }}
 
 
@@ -258,7 +256,7 @@ export default class MapboxComponent extends Component<Props, State> {
                         this.setState({
                             isUpdateEnable: true,
                             zoom: 0.8,
-                        },()=>{
+                        }, () => {
                             this.setState({
                                 isUpdateEnable: false,
                             })
@@ -270,7 +268,7 @@ export default class MapboxComponent extends Component<Props, State> {
                         this.setState({
                             isUpdateEnable: true,
                             zoom: this.state.zoom * 1.5
-                        },()=>{
+                        }, () => {
                             this.setState({
                                 isUpdateEnable: false,
                             })
@@ -282,7 +280,7 @@ export default class MapboxComponent extends Component<Props, State> {
                         this.setState({
                             isUpdateEnable: true,
                             zoom: this.state.zoom * 0.5
-                        },()=>{
+                        }, () => {
                             this.setState({
                                 isUpdateEnable: false,
                             })
@@ -294,13 +292,13 @@ export default class MapboxComponent extends Component<Props, State> {
                         this.setState({
                             isUpdateEnable: true,
                             showOffice: !this.state.showOffice,
-                        },()=>{
+                        }, () => {
                             this.setState({
                                 isUpdateEnable: false,
                             })
                         })
                     }}>
-                        <Icon name="star badge square outline"/>
+                        <Icon name="star badge square outline" />
                     </Button>
                 </div>
             </div>
