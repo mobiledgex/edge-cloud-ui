@@ -132,6 +132,7 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
 
             newClusterLevelUsageList.push({
                 cluster : clusterList[index].ClusterName,
+                cloudletLocation  :clusterList[index].CloudletLocation,
                 dev: clusterList[index].Region,
                 cloudlet: clusterList[index].Cloudlet,
                 operator: clusterList[index].Operator,
@@ -164,6 +165,7 @@ export const getClusterLevelUsageList = async (clusterList, pHardwareType, recen
                 Operator: "mex"
                 Cloudlet: "hackathon-alex"*/
                 cluster : clusterList[index].ClusterName,
+                cloudletLocation  :clusterList[index].CloudletLocation,
                 dev: clusterList[index].Region,
                 cloudlet: clusterList[index].Cloudlet,
                 operator: clusterList[index].Operator,
@@ -1537,7 +1539,14 @@ export const makeSelectBoxListForClusterList = (arrList, keyName) => {
     return newArrList;
 }
 
-export const makeSelectBoxListForClusterList2 = (arrList, keyName, valueName) => {
+/**
+ *
+ * @param arrList
+ * @param keyName
+ * @param valueName
+ * @returns {[]}
+ */
+export const makeSelectBoxListWithKeyValuePipe = (arrList, keyName, valueName) => {
     let newArrList = [];
     for (let i in arrList) {
         newArrList.push({

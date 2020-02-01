@@ -1,6 +1,7 @@
 import React, {Component} from "react"
 import {ComposableMap, Geographies, Geography, Marker, Markers, ZoomableGroup} from "react-simple-maps"
 import {Button, Icon} from "semantic-ui-react";
+import type {TypeAppInstance} from "../../../../shared/Types";
 
 const geoUrl =
     "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json"
@@ -116,7 +117,7 @@ export default class MiniMapForDevMon extends Component<Props, State> {
 
                     }}>
                         <Geographies
-                            geography={geoUrl}
+                            geography={require('../world-50m')}
 
 
                         >
@@ -152,7 +153,7 @@ export default class MiniMapForDevMon extends Component<Props, State> {
                             ))}
                         </Geographies>
                         <Markers>
-                            {/* <Marker fill="#777" marker={{coordinates: [-101, 53]}}>
+                             <Marker fill="#777" marker={{coordinates: [-101, 53]}}>
                                 <text textAnchor="middle" fill="#F53">
                                    CANADA
                                 </text>
@@ -168,18 +169,16 @@ export default class MiniMapForDevMon extends Component<Props, State> {
                                 <text textAnchor="middle" fill="#F53">
                                     Mexico
                                 </text>
-                            </Marker>*/}
+                            </Marker>
 
-                            {/* <Marker fill="#777" marker={{coordinates: [10.4515, 51.1657]}}>
+                             <Marker fill="#777" marker={{coordinates: [10.4515, 51.1657]}}>
                                 <text textAnchor="middle" fill="#F53">
                                     Germany
                                 </text>
-                            </Marker>*/}
+                            </Marker>
                         </Markers>
                         <Markers>
-                            {this.props.markerList.map((item, index) => {
-
-
+                            {this.props.markerList.map((item : TypeAppInstance, index) => {
                                 return (
 
                                     <Marker
@@ -188,16 +187,15 @@ export default class MiniMapForDevMon extends Component<Props, State> {
                                             //alert('sdlkfsldkf')
                                         }}
 
-                                        marker={{coordinates: [item.long, item.name === 'hackthon-anand' ? item.lat - 5.5 : item.lat,]}} style={{
+                                        marker={{coordinates: [item.CloudletLocation.longitude, item.CloudletLocation.latitude]}} style={{
                                         hidden: {opacity: 0},
                                     }}>
                                         {/*<svg width="35" height="35">
                                             </svg>*/}
                                         {/*<image href="https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png" style={{color: 'red'}} height="35" width="35"/>*/}
                                         <image href="https://cdn1.iconfinder.com/data/icons/basic-ui-elements-coloricon/21/06_1-512.png" style={{color: 'red'}} height="55" width="35"/>
-                                        <text fill="#fff" style={{fontSize: 20, fontFamily: "Roboto, sans-serif", fontStyle: 'italic',}}>
-                                            {this.props.type === 'dev' ? item.name.toString().substring(0, 17) + "..." : item.CloudletName.toString().substring(0, 17) + "..."}
-
+                                        <text fill="#fff" style={{fontSize: 20, fontFamily: "Barlow Semi Condensed", fontStyle: 'italic',}}>
+                                            {item.AppName} [ {item.Cloudlet} ]
                                         </text>
                                     </Marker>
 

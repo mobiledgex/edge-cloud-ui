@@ -13,12 +13,21 @@ import {DatePicker,} from 'antd';
 import {
     getClusterLevelUsageList,
     getClusterList,
-    makeSelectBoxListForClusterList, makeSelectBoxListForClusterList2,
+    makeSelectBoxListForClusterList, makeSelectBoxListWithKeyValuePipe,
     renderBarGraphForCluster,
     renderBubbleChartForCloudlet,
     renderLineChartForCluster,
 } from "./PageMonitoringServiceForDeveloper";
-import {HARDWARE_OPTIONS_FOR_CLUSTER, HARDWARE_TYPE, INSTANCE_TEST_OPTIONS, NETWORK_OPTIONS, NETWORK_TYPE, RECENT_DATA_LIMIT_COUNT, REGIONS_OPTIONS} from "../../../../shared/Constants";
+import {
+    CLASSIFICATION,
+    HARDWARE_OPTIONS_FOR_CLUSTER,
+    HARDWARE_TYPE,
+    INSTANCE_TEST_OPTIONS,
+    NETWORK_OPTIONS,
+    NETWORK_TYPE,
+    RECENT_DATA_LIMIT_COUNT,
+    REGIONS_OPTIONS
+} from "../../../../shared/Constants";
 import Lottie from "react-lottie";
 import type {TypeGridInstanceList} from "../../../../shared/Types";
 import {TypeAppInstance, TypeUtilization} from "../../../../shared/Types";
@@ -28,7 +37,7 @@ import {TabPanel, Tabs} from "react-tabs";
 import '../PageMonitoring.css'
 import {makeBubbleChartDataForCluster, renderPlaceHolder, showToast} from "../PageMonitoringCommonService";
 import {CircularProgress} from "@material-ui/core";
-import {getCloudletList, StylesForMonitoring} from "../admin/PageMonitoringServiceForAdmin";
+import {getCloudletList, getAppInstList, StylesForMonitoring} from "../admin/PageMonitoringServiceForAdmin";
 import MiniMapForDevMon from "./MiniMapForDevMon";
 
 const FA = require('react-fontawesome')
@@ -137,6 +146,8 @@ type State = {
     currentLevelType: string,
     filteredUsageList: Array,
     cloudletList: Array,
+    filteredAppInstanceList: Array,
+    appInstDropdown: Array,
 
 }
 
@@ -165,7 +176,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             appInstanceOne: {},
             cloudLetSelectBoxPlaceholder: 'Select CloudLet',
             clusterSelectBoxPlaceholder: 'Select Cluster',
-            appInstSelectBoxPlaceholder: 'Select Instance',
+            appInstSelectBoxPlaceholder: 'Select App Inst',
             currentRegion: 'ALL',
             currentCloudLet: '',
             currentCluster: '',
@@ -219,6 +230,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             currentLevelType: 'Cluster',
             filteredUsageList: [],
             selectOrg: '',
+            filteredAppInstanceList: [],
+            appInstDropdown: [],
         };
 
         interval = null;
@@ -250,17 +263,23 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
         async loadInitDataForCluster() {
 
             let clusterList = await getClusterList();
-            let cloudletList = await getCloudletList();
+            let cloudletList = await getCloudletList()
+
+
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
             console.log('clusterList===>', clusterList);
+            console.log('appInstanceList===>', appInstanceList);
 
-            let clusterDropdownList = makeSelectBoxListForClusterList2(clusterList, 'ClusterName', 'Cloudlet')
+            let clusterDropdownList = makeSelectBoxListWithKeyValuePipe(clusterList, 'ClusterName', 'Cloudlet')
             await this.setState({
                 isReady: true,
                 clusterDropdownList: clusterDropdownList,
                 cloudletList: cloudletList,
                 clusterList: clusterList,
                 isAppInstaceDataReady: true,
+                appInstanceList: appInstanceList,
+                filteredAppInstanceList: appInstanceList,
             });
 
             console.log('sdlkfsldkflksdflksdlfk===>', this.state.clusterDropdownList)
@@ -269,7 +288,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             await this.setState({
                 allUsageList: allUsageList,
             });
-            console.log('allUsageList222===>', allUsageList)
+            console.log('getClusterLevelUsageList===>', allUsageList)
 
             let bubbleChartData = await makeBubbleChartDataForCluster(allUsageList, HARDWARE_TYPE.CPU);
             await this.setState({
@@ -606,40 +625,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 <div className='page_monitoring_select_row'>
                     <div className='page_monitoring_select_area'>
 
-                        {/*todo:---------------------------*/}
-                        {/*todo:REGION Dropdown           */}
-                        {/*todo:---------------------------*/}
-                        <div className="page_monitoring_dropdown_box">
-                            {/*  <div className="page_monitoring_dropdown_label">
-                                Region
-                            </div>
-                            <Dropdown
-                                disabled={this.state.loading}
-                                clearable={this.state.regionSelectBoxClearable}
-                                placeholder='REGION'
-                                selection
-                                loading={this.state.loading}
-                                options={REGIONS_OPTIONS}
-                                defaultValue={REGIONS_OPTIONS[0].value}
-                                onChange={async (e, {value}) => {
-
-                                    this.setState({
-                                        currentRegion: value,
-                                    })
-
-
-                                    setTimeout(() => {
-                                        this.setState({
-                                            cloudLetSelectBoxPlaceholder: 'Select CloudLet'
-                                        })
-                                    }, 1000)
-                                }}
-                                value={this.state.currentRegion}
-                                // style={Styles.dropDown}
-                            />*/}
-
-                        </div>
-
                         {/*todo:##########################*/}
                         {/*todo:Cluster_Dropdown         */}
                         {/*todo:##########################*/}
@@ -659,8 +644,8 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
 
                                     let selectData = value.split("|")
-                                    let selectCluster = selectData[0].trim();
-                                    let selectCloudlet = selectData[1].trim();
+                                    let selectedCluster = selectData[0].trim();
+                                    let selectedCloudlet = selectData[1].trim();
 
                                     await this.setState({
                                         currentCluster: value,
@@ -672,7 +657,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
 
                                     let filteredUsageList = []
                                     allUsageList.map(item => {
-                                        if (item.cluster === selectCluster && item.cloudlet === selectCloudlet) {
+                                        if (item.cluster === selectedCluster && item.cloudlet === selectedCloudlet) {
                                             filteredUsageList.push(item)
                                         }
                                         // console.log('Cluster_Dropdown===>', item);
@@ -681,6 +666,26 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                     console.log('filteredUsageList===>', filteredUsageList);
                                     this.setState({
                                         filteredUsageList: filteredUsageList,
+                                    })
+
+
+                                    let appInstanceList = this.state.appInstanceList;
+
+                                    let filteredAppInstList = []
+                                    appInstanceList.map((item: TypeAppInstance, index) => {
+                                        if (item.ClusterInst === selectedCluster && item.Cloudlet === selectedCloudlet) {
+                                            filteredAppInstList.push(item)
+                                        }
+                                    })
+
+                                    console.log('filteredAppInstList===>', filteredAppInstList);
+                                    let appInstDropdown = makeSelectBoxListWithKeyValuePipe(filteredAppInstList, 'AppName', CLASSIFICATION.CLOUDLET)
+
+                                    await this.setState({
+                                        appInstDropdown: appInstDropdown,
+                                        currentAppInst: '',
+                                        appInstSelectBoxPlaceholder: 'Select App Inst'
+
                                     })
 
 
@@ -696,15 +701,19 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                 App Inst
                             </div>
                             <Dropdown
-                                disabled={this.state.currentCluster === '' || this.state.loading}
+                                disabled={this.state.currentCluster === '' || this.state.loading || this.state.appInstDropdown.length === 0}
                                 clearable={this.state.appInstSelectBoxClearable}
                                 loading={this.state.loading}
                                 value={this.state.currentAppInst}
-                                placeholder='Select App Instance'
+                                placeholder={this.state.appInstSelectBoxPlaceholder}
                                 selection
-                                options={INSTANCE_TEST_OPTIONS}
+                                options={this.state.appInstDropdown}
                                 //style={Styles.dropDown}
                                 onChange={async (e, {value}) => {
+
+                                    this.setState({
+                                        currentAppInst: value,
+                                    })
 
                                 }}
                             />
@@ -908,7 +917,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                                                     </div>
                                                     <div className='page_monitoring_container'>
                                                         {!this.state.isAppInstaceDataReady ? renderPlaceHolder() :
-                                                            <MiniMapForDevMon loading={this.state.loading} markerList={this.state.cloudletList}/>}
+                                                            <MiniMapForDevMon loading={this.state.loading} markerList={this.state.appInstanceList}/>}
                                                     </div>
                                                 </div>
 

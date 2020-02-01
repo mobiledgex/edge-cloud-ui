@@ -41,8 +41,12 @@ export const USAGE_TYPE = {
 export const CLASSIFICATION = {
     CLOUDLET: 'Cloudlet',
     APP_NAME: 'AppName',
+    APPNAME: 'AppName',
     CLUSTER_INST: 'ClusterInst',
+    CLUSTER: 'Cluster',
 }
+
+
 
 export const RECENT_DATA_LIMIT_COUNT = 10
 

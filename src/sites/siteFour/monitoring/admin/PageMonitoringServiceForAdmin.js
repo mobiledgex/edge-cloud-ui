@@ -1603,7 +1603,7 @@ export const getCloudletList = async () => {
  * @param pArrayRegion
  * @returns {Promise<[]>}
  */
-export const requestShowAppInstanceList = async (pArrayRegion = ['EU', 'US']) => {
+export const getAppInstList = async (pArrayRegion = ['EU', 'US']) => {
     let store = localStorage.PROJECT_INIT ? JSON.parse(localStorage.PROJECT_INIT) : null
     let mergedAppInstanceList = [];
 

@@ -34,7 +34,7 @@ import {
     renderLineChart,
     renderPlaceHolder2,
     renderSixGridInstanceOnCloudletGrid,
-    requestShowAppInstanceList,
+    getAppInstList,
     StylesForMonitoring
 } from "./PageMonitoringServiceForAdmin";
 import {
@@ -287,7 +287,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                 userType: userRole,
             })
             //todo: REALDATA
-            let appInstanceList: Array<TypeAppInstance> = await requestShowAppInstanceList();
+            let appInstanceList: Array<TypeAppInstance> = await getAppInstList();
 
             //todo: FAKE JSON FOR DEV
             //let appInstanceList: Array<TypeAppInstance> = require('../../../temp/appInstacelist2')

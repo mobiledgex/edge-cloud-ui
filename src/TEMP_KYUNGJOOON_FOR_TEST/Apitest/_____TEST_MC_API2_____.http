@@ -295,5 +295,24 @@ Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODAyNDMwN
 ###
 
 
+POST https://console-stage.mobiledgex.net:443/api/v1/auth/ctrl/ShowCloudletInfo
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA1OTY2ODEsImlhdCI6MTU4MDUxMDI4MSwidXNlcm5hbWUiOiJreXVuZ2pvb25nbzMiLCJlbWFpbCI6ImlhbWplc3NpY2E3Nzc3N0BnbWFpbC5jb20iLCJraWQiOjJ9.4-if0iPPezRQ9w6Z0Xy-iu7_stgC5_75MphW_mgHtfuxF5A6PopdR8_Z5kA-pEnraez5GfXBQDuppUijJnXWeQ
+
+{
+  "region": "EU",
+  "cloudlet": {
+    "key": {
+      "name": "frankfurt-eu",
+      "operator_key": {
+        "name": "TDG"
+      }
+    }
+  }
+}
+
+###
+
+
 
 
