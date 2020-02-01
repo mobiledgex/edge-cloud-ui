@@ -1155,8 +1155,9 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
             if (i < 5) {
                 let datasetsOne = {
                     label: paramLevelTypeNameList[i],
-                    //backgroundColor: hardwareType === HARDWARE_TYPE.CPU ? gradientList[i] : '',
-                    backgroundColor: '',
+                    backgroundColor: gradientList[i],//todo: 리전드box area fill True/false
+                    fill: false,//todo: 라인차트 area fill True/false
+                    //backgroundColor: '',
                     borderColor: gradientList[i],
                     borderWidth: 2,
                     pointColor: "#fff",
@@ -1166,6 +1167,7 @@ export const renderLineChartCore = (paramLevelTypeNameList, usageSetList, newDat
                     data: usageSetList[i],
                     radius: 0,
                     pointRadius: 1,
+
                 }
 
                 finalSeriesDataSets.push(datasetsOne)

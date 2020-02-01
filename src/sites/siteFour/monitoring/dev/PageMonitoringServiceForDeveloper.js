@@ -823,7 +823,7 @@ export const renderLineChartForCluster = (_this: PageMonitoring, pUsageList: Arr
             </div>
         )
     } else {
-        let name = ''
+        let classificationName = ''
         let levelTypeNameList = [];
         let usageSetList = []
         let dateTimeList = []
@@ -850,7 +850,7 @@ export const renderLineChartForCluster = (_this: PageMonitoring, pUsageList: Arr
 
             console.log('series333333333===>', series);
 
-            name = pUsageList[i].cluster
+            classificationName = pUsageList[i].cluster + "\n["+ pUsageList[i].cloudlet +"]";
             let usageList = [];
 
             for (let j in series) {
@@ -879,7 +879,7 @@ export const renderLineChartForCluster = (_this: PageMonitoring, pUsageList: Arr
                 dateTimeList.push(dateOne[1]);
             }
 
-            levelTypeNameList.push(name)
+            levelTypeNameList.push(classificationName)
             usageSetList.push(usageList);
         }
 

@@ -117,9 +117,7 @@ export default class MiniMapForDevMon extends Component<Props, State> {
 
                     }}>
                         <Geographies
-                            geography={require('../world-50m')}
-
-
+                            geography={geoUrl}
                         >
                             {(geographies, projection) => geographies.map((geography, i) => geography.id !== "ATA" && (
                                 <Geography
