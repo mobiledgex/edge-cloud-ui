@@ -33,8 +33,8 @@ const detailViewer = (props, type) => (
             <Table className='page_cloudletPool_table' celled collapsing style={{ width: '100%', height: '100%', border: 'none', display: 'flex', flexDirection: 'column' }}>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell><div style={{ display: 'flex', justifyContent: 'center', width:'25%' }}>Subject</div></Table.HeaderCell>
-                        <Table.HeaderCell><div style={{ display: 'flex', justifyContent: 'center' }}>Value</div></Table.HeaderCell>
+                        <Table.HeaderCell width={6}><div style={{ display: 'flex', justifyContent: 'center' }}>Key</div></Table.HeaderCell>
+                        <Table.HeaderCell width={10}><div style={{ display: 'flex', justifyContent: 'center' }}>Value</div></Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
