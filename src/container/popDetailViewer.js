@@ -153,11 +153,11 @@ export default class PopDetailViewer extends React.Component {
                                         </div>
                                         <br></br>
                                         <div>
-                                            If you image is VM, please upload to our VM registry with your MobiledgeX
-                                            Account Credentials.
+                                            If you image is VM, please upload your image with your MobiledgeX Account Credentials to our VM registry using the following curl command.
                                         </div>
+                                        <br/>
                                         <div>
-                                            {`curl -u<username> -T <path_to_file> `}<span
+                                            {`$ curl -u<username> -T <path_to_file> `}<span
                                             style={{color: 'rgba(136,221,0,.9)'}}>{`"https://artifactory.mobiledgex.net/artifactory/repo-` + this.state.propsData.Organization + `/<target_file_path>"`}</span>
                                             {` --progress-bar -o`}
                                         </div>
