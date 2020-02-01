@@ -26,17 +26,16 @@ export default class MapboxComponent extends Component {
         },
         zoom: 0.9,
     };
+
     constructor() {
         super();
 
     }
 
 
-
-
     render() {
         return (
-            <div style={{width:'100%', height:'100%'}}>
+            <div style={{width: '100%', height: '100%'}}>
                 <Map
                     style={'mapbox://styles/mapbox/dark-v9'}
                     containerStyle={{
@@ -65,15 +64,16 @@ export default class MapboxComponent extends Component {
                                 //style={styles.marker}
                                 coordinates={[item.CloudletLocation.longitude, item.CloudletLocation.latitude]}
                                 onClick={() => {
-
+                                    showToast(item.AppName + "[" + item.Cloudlet + "]")
                                 }}>
                                 <img
-                                    onClick={()=>{
-                                        showToast(item.AppName)
-                                    }}
+
                                     src="https://cdn1.iconfinder.com/data/icons/basic-ui-elements-coloricon/21/06_1-512.png" style={{color: 'red'}} height="25" width="25"/>
-                                <div style={{color:'white', fontWeight:'bold', fontSize:15, fontFamily:'Acme'}}>
-                                    {item.AppName} [{item.Cloudlet}]
+                                <div style={{color: 'white', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                                    {item.AppName}
+                                </div>
+                                <div style={{color: 'yellow', fontWeight: 'bold', fontSize: 15, fontFamily: 'Acme'}}>
+                                    [{item.Cloudlet}]
                                 </div>
                             </Marker>
                         )
@@ -97,7 +97,7 @@ export default class MapboxComponent extends Component {
                     />
                 </div>
                 }
-                <div style={{marginTop:-120}}>
+                <div style={{marginTop: -120}}>
                     <Button id="mapZoomCtl" size='larges' icon onClick={() => {
                         this.setState({
                             zoom: 0.8,
@@ -119,7 +119,7 @@ export default class MapboxComponent extends Component {
                     }}>
                         <Icon name="minus square outline"/>
                     </Button>
-                      <Button id="mapZoomCtl" size='large' icon onClick={() => {
+                    <Button id="mapZoomCtl" size='large' icon onClick={() => {
                         this.setState({
                             showModal: !this.state.showModal
                         })

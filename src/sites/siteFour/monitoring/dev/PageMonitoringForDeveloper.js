@@ -584,6 +584,7 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
             return (
 
                 <div>
+                    <SemanticToastContainer position="center-left" />
                     <Grid.Row className='content_title'
                               style={{width: 'fit-content', display: 'inline-block'}}>
                         <Grid.Column className='title_align'
@@ -900,7 +901,6 @@ export default hot(withRouter(connect(mapStateToProps, mapDispatchProps)(sizeMe(
                             {this.renderBottomGridAreaForCloudlet()}
                         </Modal.Content>*/}
                     </Modal>
-                    <SemanticToastContainer/>
                     <Grid.Column className='contents_body'>
                         {/*todo:---------------------------------*/}
                         {/*todo:Content Header                   */}
