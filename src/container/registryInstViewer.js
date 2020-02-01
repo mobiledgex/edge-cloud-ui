@@ -587,47 +587,46 @@ const mapStateToProps = (state) => {
     let validateValue = null;
     let selectedOrgName = null;
     let selectedRegion = null;
-    if(state.form.createAppFormDefault) {
-        if(state.form.createAppFormDefault.values.Cloudlet !== "") {
-            selectedCloudlet = state.form.createAppFormDefault.values.Cloudlet;
-        }
-        if(state.form.createAppFormDefault.values.Operator !== "") {
-            selectedOperator = state.form.createAppFormDefault.values.Operator;
-        }
-        if(state.form.createAppFormDefault.values.AppName !== "") {
-            selectedApp = state.form.createAppFormDefault.values.AppName;
-        }
-        if(state.form.createAppFormDefault.values.Version !== "") {
-            selectedVersion = state.form.createAppFormDefault.values.Version;
-        }
-        if(state.form.createAppFormDefault.values.DeveloperName !== "") {
-            selectedOrgName = state.form.createAppFormDefault.values.DeveloperName;
-        }
-        if(state.form.createAppFormDefault.values.Region !== "") {
-            selectedRegion = state.form.createAppFormDefault.values.Region;
+    let region = state.changeRegion ? {value: state.changeRegion.region}: {};
+    let regionInfo = (state.regionInfo)?state.regionInfo:null;
+    let formAppInst = {};
+
+    if (state.form.createAppFormDefault) {
+        let values = state.form.createAppFormDefault.values
+        let submitSucceeded = state.form.createAppFormDefault.submitSucceeded
+        if (values) {
+            if (values.Cloudlet !== "") {
+                selectedCloudlet = values.Cloudlet;
+            }
+            if (values.Operator !== "") {
+                selectedOperator = values.Operator;
+            }
+            if (values.AppName !== "") {
+                selectedApp = values.AppName;
+            }
+            if (values.Version !== "") {
+                selectedVersion = values.Version;
+            }
+            if (values.DeveloperName !== "") {
+                selectedOrgName = values.DeveloperName;
+            }
+            if (values.Region !== "") {
+                selectedRegion = values.Region;
+            }
+
+            if (values && submitSucceeded) {
+                let enableValue = reducer.filterDeleteKey(values, 'Edit')
+                submitVal = createFormat(enableValue);
+                validateValue = values;
+            }
         }
 
-        if(state.form.createAppFormDefault.values && state.form.createAppFormDefault.submitSucceeded) {
-            let enableValue = reducer.filterDeleteKey(state.form.createAppFormDefault.values, 'Edit')
-            submitVal = createFormat(enableValue);
-            validateValue = state.form.createAppFormDefault.values;
+        formAppInst = {
+            values: values,
+            submitSucceeded: submitSucceeded
         }
     }
 
-
-    let region = state.changeRegion
-        ? {
-            value: state.changeRegion.region
-        }
-        : {};
-        
-    let formAppInst= state.form.createAppFormDefault
-        ? {
-            values: state.form.createAppFormDefault.values,
-            submitSucceeded: state.form.createAppFormDefault.submitSucceeded
-        }
-        : {};
-    let regionInfo = (state.regionInfo)?state.regionInfo:null;
     return {
         accountInfo,
         dimmInfo,
